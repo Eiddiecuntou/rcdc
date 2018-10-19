@@ -12,5 +12,7 @@
 	<artifactId>rcdc-terminal-module</artifactId>
 	<packaging>pom</packaging>
 	<modules>
+	<module>rcdc-terminal-module-def</module>
+	<module>rcdc-terminal-module-impl</module>
 	</modules>
 </project>
