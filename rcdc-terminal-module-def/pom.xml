@@ -6,4 +6,5 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>rcdc-terminal-module-def</artifactId>
+  <name>终端管理组件定义工程</name>
 </project>

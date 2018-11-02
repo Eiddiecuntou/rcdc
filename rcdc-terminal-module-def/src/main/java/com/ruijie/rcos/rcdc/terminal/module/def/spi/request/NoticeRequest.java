@@ -3,26 +3,30 @@ package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
-import javax.validation.constraints.NotNull;
-
 /**
- * Description: 消息分发请求参数
+ * Description: 终端通知事件请求参数
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/24
  *
  * @author Jarman
  */
-public class DispatcherRequest<T> implements Request {
+public class NoticeRequest implements Request {
 
     @DispatcherKey
     private String dispatcherKey;
-    @NotNull
+
     private String terminalId;
 
-    private String requestId;
 
-    private T data;
+    public NoticeRequest() {
+
+    }
+
+    public NoticeRequest(String dispatcherKey, String terminalId) {
+        this.dispatcherKey = dispatcherKey;
+        this.terminalId = terminalId;
+    }
 
     public String getDispatcherKey() {
         return dispatcherKey;
@@ -38,21 +42,5 @@ public class DispatcherRequest<T> implements Request {
 
     public void setTerminalId(String terminalId) {
         this.terminalId = terminalId;
-    }
-
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 }
