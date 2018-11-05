@@ -106,9 +106,13 @@ public class TranspondMessageHandlerAPIImplTest {
             sender.asyncRequest((Message) any, (RequestCallback) any);
         }};
 
-        ShineMessageRequest request = new ShineMessageRequest();
-        request.setAction("login");
-        transpondMessageHandlerAPI.asyncRequest(request, null);
+        try {
+            ShineMessageRequest request = new ShineMessageRequest();
+            request.setAction("login");
+            transpondMessageHandlerAPI.asyncRequest(request, null);
+        } catch (BusinessException e) {
+            fail();
+        }
 
 
         new Verifications() {{
@@ -125,10 +129,14 @@ public class TranspondMessageHandlerAPIImplTest {
             result = session;
             sender.response((Message) any);
         }};
-        ShineMessageRequest request = new ShineMessageRequest();
-        request.setAction("login");
-        request.setRequestId("123");
-        transpondMessageHandlerAPI.response(request);
+        try {
+            ShineMessageRequest request = new ShineMessageRequest();
+            request.setAction("login");
+            request.setRequestId("123");
+            transpondMessageHandlerAPI.response(request);
+        } catch (BusinessException e) {
+            fail();
+        }
 
     }
 }

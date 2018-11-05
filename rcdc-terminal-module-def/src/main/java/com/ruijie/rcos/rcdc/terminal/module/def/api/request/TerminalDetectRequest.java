@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 public class TerminalDetectRequest implements Request {
     @NotNull
     private String terminalId;
-    private DetectItemEnums[] items;
+    private DetectItemEnums[] itemArr;
 
     public String getTerminalId() {
         return terminalId;
@@ -26,11 +26,11 @@ public class TerminalDetectRequest implements Request {
         this.terminalId = terminalId;
     }
 
-    public DetectItemEnums[] getItems() {
-        return items;
+    public DetectItemEnums[] getItemArr() {
+        return itemArr;
     }
 
-    public void setItems(DetectItemEnums[] items) {
-        this.items = items;
+    public void setItemArr(DetectItemEnums[] itemArr) {
+        this.itemArr = itemArr;
     }
 }

@@ -4,12 +4,12 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
- * Description: 终端通知事件请求参数
- * Copyright: Copyright (c) 2018
- * Company: Ruijie Co., Ltd.
- * Create Time: 2018/10/24
+ * Description: 终端通知事件请求参数
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2018/10/24
  *
- * @author Jarman
+ * @author Jarman
  */
 public class NoticeRequest implements Request {
 

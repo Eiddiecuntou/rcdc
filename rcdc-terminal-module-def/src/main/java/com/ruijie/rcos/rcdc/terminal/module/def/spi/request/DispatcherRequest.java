@@ -6,12 +6,12 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import javax.validation.constraints.NotNull;
 
 /**
- * Description: 消息分发请求参数
- * Copyright: Copyright (c) 2018
- * Company: Ruijie Co., Ltd.
- * Create Time: 2018/10/24
+ * Description: 消息分发请求参数
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2018/10/24
  *
- * @author Jarman
+ * @author Jarman
  */
 public class DispatcherRequest<T> implements Request {
 

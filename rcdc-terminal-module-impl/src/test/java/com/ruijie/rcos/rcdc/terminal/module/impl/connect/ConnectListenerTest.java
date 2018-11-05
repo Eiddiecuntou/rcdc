@@ -216,7 +216,11 @@ public class ConnectListenerTest {
 
     @Test
     public void testExceptionCaught() {
-        connectListener.exceptionCaught();
+        try {
+            connectListener.exceptionCaught();
+        } catch (Exception e) {
+            fail();
+        }
 
     }
 }

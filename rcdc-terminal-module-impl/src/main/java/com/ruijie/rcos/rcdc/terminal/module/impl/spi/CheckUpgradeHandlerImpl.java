@@ -43,6 +43,7 @@ public class CheckUpgradeHandlerImpl implements DispatcherHandlerSPI {
 
     @Override
     public void dispatch(DispatcherRequest request) {
+        Assert.notNull(request, "DispatcherRequest不能为null");
         //保存终端基本信息
         saveBasicInfo(request);
         //通知上层组件当前终端为在线状态

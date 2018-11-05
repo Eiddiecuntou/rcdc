@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalDetectRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalIdRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -46,8 +44,6 @@ public interface TerminalOperatorService {
      */
     void gatherLog(String terminalId) throws BusinessException;
 
-    ;
-
     /**
      * 终端检测
      *
@@ -55,5 +51,4 @@ public interface TerminalOperatorService {
      */
     void detect(String terminalId) throws BusinessException;
 
-    ;
 }

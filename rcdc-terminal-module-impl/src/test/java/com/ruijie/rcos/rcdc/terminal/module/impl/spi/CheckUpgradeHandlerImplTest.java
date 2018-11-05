@@ -60,13 +60,17 @@ public class CheckUpgradeHandlerImplTest {
             }
         }};
 
-        DispatcherRequest request = new DispatcherRequest();
-        request.setTerminalId(terminalId);
-        request.setRequestId("456");
-        request.setData(generateJson());
-        checkUpgradeHandler.dispatch(request);
+        try {
+            DispatcherRequest request = new DispatcherRequest();
+            request.setTerminalId(terminalId);
+            request.setRequestId("456");
+            request.setData(generateJson());
+            checkUpgradeHandler.dispatch(request);
 
-        saveVerifications();
+            saveVerifications();
+        } catch (Exception e) {
+            fail();
+        }
     }
 
 
@@ -84,13 +88,17 @@ public class CheckUpgradeHandlerImplTest {
             }
         }};
 
-        DispatcherRequest request = new DispatcherRequest();
-        request.setTerminalId(terminalId);
-        request.setRequestId("456");
-        request.setData(generateJson());
-        checkUpgradeHandler.dispatch(request);
+        try {
+            DispatcherRequest request = new DispatcherRequest();
+            request.setTerminalId(terminalId);
+            request.setRequestId("456");
+            request.setData(generateJson());
+            checkUpgradeHandler.dispatch(request);
 
-        saveVerifications();
+            saveVerifications();
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     private void saveVerifications() {

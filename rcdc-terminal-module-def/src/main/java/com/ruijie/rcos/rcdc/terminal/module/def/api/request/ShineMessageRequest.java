@@ -5,12 +5,12 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import javax.validation.constraints.NotNull;
 
 /**
- * Description: 向shine请求消息实体类
- * Copyright: Copyright (c) 2018
- * Company: Ruijie Co., Ltd.
- * Create Time: 2018/10/25
+ * Description: 向shine请求消息实体类
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2018/10/25
  *
- * @author Jarman
+ * @author Jarman
  */
 public class ShineMessageRequest<T> implements Request {
 

@@ -47,7 +47,7 @@ public enum SendTerminalEventEnums {
 
     private String name;
 
-    private SendTerminalEventEnums(String name) {
+    SendTerminalEventEnums(String name) {
         this.name = name;
     }
 
