@@ -41,7 +41,8 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     @Override
-    public void modifyTerminalNetworkConfig(String terminalId, ShineNetworkConfig shineNetworkConfig) throws BusinessException {
+    public void modifyTerminalNetworkConfig(String terminalId, ShineNetworkConfig shineNetworkConfig)
+            throws BusinessException {
         Assert.hasLength(terminalId, "terminalId 不能为空");
         Assert.notNull(shineNetworkConfig, "ShineNetworkConfig 不能为null");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);

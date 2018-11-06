@@ -10,26 +10,47 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
  */
 public class ShineTerminalBasicInfo {
     private String name;
+
     private String terminalId;
+
     private String macAddr;
+
     private String ip;
+
     private String subnetMask;
+
     private String gateway;
+
     private String mainDns;
+
     private String secondDns;
+
     private Integer getIpMode;
+
     private Integer getDnsMode;
+
     private String productType;
+
     private String terminalType;
+
     private String serialNumber;
+
     private String cpuMode;
+
     private Integer memorySize;
+
     private Integer diskSize;
+
     private String terminalOsType;
+
     private String terminalOsVersion;
+
     private String terminalSystemVersion;
+
     private String softwareVersion;
+
     private String hardwareVersion;
+
     private Integer networkMode;
 
     public String getName() {

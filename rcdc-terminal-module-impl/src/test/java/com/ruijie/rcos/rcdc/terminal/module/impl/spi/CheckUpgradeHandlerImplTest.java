@@ -91,7 +91,7 @@ public class CheckUpgradeHandlerImplTest {
         try {
             DispatcherRequest request = new DispatcherRequest();
             request.setTerminalId(terminalId);
-            request.setRequestId("456");
+            request.setRequestId("4567");
             request.setData(generateJson());
             checkUpgradeHandler.dispatch(request);
 

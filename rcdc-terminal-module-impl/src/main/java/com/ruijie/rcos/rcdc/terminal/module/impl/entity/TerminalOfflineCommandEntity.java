@@ -19,8 +19,11 @@ public class TerminalOfflineCommandEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
     private String terminalId;
+
     private String command;
+
     private Date createTime;
 
     public UUID getId() {

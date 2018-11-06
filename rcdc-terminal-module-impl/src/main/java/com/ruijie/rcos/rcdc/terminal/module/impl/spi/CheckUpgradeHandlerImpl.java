@@ -34,8 +34,10 @@ public class CheckUpgradeHandlerImpl implements DispatcherHandlerSPI {
 
     @Autowired
     private TranspondMessageHandlerAPI messageHandlerAPI;
+
     @Autowired
     private TerminalEventNoticeSPI terminalEventNoticeSPI;
+
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
 

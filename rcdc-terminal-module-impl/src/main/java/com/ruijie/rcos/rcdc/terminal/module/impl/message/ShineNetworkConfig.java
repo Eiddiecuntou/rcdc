@@ -11,12 +11,37 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 public class ShineNetworkConfig {
 
     private String terminalId;
+
     private String ip;
+
+    /**
+     * 子网掩码
+     */
     private String subnetMask;
+
+    /**
+     * 网关
+     */
     private String gateway;
+
+    /**
+     * 首选DNS
+     */
     private String mainDns;
+
+    /**
+     * 备选DNS
+     */
     private String secondDns;
+
+    /**
+     * 获取IP方式，包括自动和手动
+     */
     private Integer getIpMode;
+
+    /**
+     * 获取DNS方式，包括自动和手动
+     */
     private Integer getDnsMode;
 
     public String getTerminalId() {

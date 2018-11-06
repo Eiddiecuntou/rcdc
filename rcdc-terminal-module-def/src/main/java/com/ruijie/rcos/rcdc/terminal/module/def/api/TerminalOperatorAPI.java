@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service;
+package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -6,11 +6,11 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
  * Description: 终端操作接口
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2018/10/31
+ * Create Time: 2018/11/5
  *
  * @author Jarman
  */
-public interface TerminalOperatorService {
+public interface TerminalOperatorAPI {
 
     /**
      * 关闭终端
@@ -41,10 +41,8 @@ public interface TerminalOperatorService {
      * 收集终端日志
      *
      * @param terminalId
-     * @return 返回日志文件名
-     * @throws BusinessException
      */
-    String gatherLog(String terminalId) throws BusinessException;
+    void gatherLog(String terminalId) throws BusinessException;
 
     /**
      * 终端检测
@@ -52,5 +50,4 @@ public interface TerminalOperatorService {
      * @param terminalId
      */
     void detect(String terminalId) throws BusinessException;
-
 }

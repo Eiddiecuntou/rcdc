@@ -24,7 +24,7 @@ public class SessionManager {
     /**
      * key 为terminalId,value为Session
      */
-    private static final Map<String, Session> sessionMap = new ConcurrentHashMap<>();
+    private static final Map<String, Session> SESSION_MAP = new ConcurrentHashMap<>();
 
     /**
      * 绑定终端连接Session
@@ -35,17 +35,17 @@ public class SessionManager {
     public void bindSession(String terminalId, Session session) {
         Assert.hasLength(terminalId, "terminalId不能为空");
         Assert.notNull(session, "Session 不能为null");
-        sessionMap.put(terminalId, session);
+        SESSION_MAP.put(terminalId, session);
     }
 
     public void removeSession(String terminalId) {
         Assert.hasLength(terminalId, "terminalId不能为空");
-        sessionMap.remove(terminalId);
+        SESSION_MAP.remove(terminalId);
     }
 
     public Session getSession(String terminalId) {
         Assert.hasLength(terminalId, "terminalId不能为空");
-        Session session = sessionMap.get(terminalId);
+        Session session = SESSION_MAP.get(terminalId);
         return session;
     }
 

@@ -13,6 +13,7 @@ import java.util.UUID;
  *
  * @author Jarman
  */
-public interface TermianlSystemUpgradePackageDAO extends SkyEngineJpaRepository<TermianlSystemUpgradePackageEntity, UUID> {
+public interface TermianlSystemUpgradePackageDAO extends SkyEngineJpaRepository<TermianlSystemUpgradePackageEntity,
+        UUID> {
 
 }

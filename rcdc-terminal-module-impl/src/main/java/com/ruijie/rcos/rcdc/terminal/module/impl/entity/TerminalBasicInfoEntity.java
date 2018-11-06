@@ -22,36 +22,64 @@ public class TerminalBasicInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
     private String name;
+
     private String terminalId;
+
     private String macAddr;
+
     private String ip;
+
     private String subnetMask;
+
     private String gateway;
+
     private String mainDns;
+
     private String secondDns;
+
     @Enumerated(EnumType.ORDINAL)
     private GetNetworkModeEnums getIpMode;
+
     @Enumerated(EnumType.ORDINAL)
     private GetNetworkModeEnums getDnsMode;
+
     private String productType;
+
     private String terminalType;
+
     private String serialNumber;
+
     private String cpuMode;
+
     private Integer memorySize;
+
     private Integer diskSize;
+
     private String terminalOsType;
+
     private String terminalOsVersion;
+
     private String terminalSystemVersion;
+
     private String softwareVersion;
+
     private String hardwareVersion;
+
     @Enumerated(EnumType.ORDINAL)
     private NetworkModeEnums networkMode;
+
     private Date createTime;
+
     private Date updateTime;
+
     private Date onlineTime;
+
     private Date offlineTime;
+
     private String detectResult;
+
     private Integer version;
 
     public UUID getId() {

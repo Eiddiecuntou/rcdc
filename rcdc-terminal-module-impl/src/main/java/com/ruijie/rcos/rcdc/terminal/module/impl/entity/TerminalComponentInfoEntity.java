@@ -19,9 +19,13 @@ public class TerminalComponentInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
     private String terminalId;
+
     private String componentName;
+
     private String componentVersion;
+
     private Date updateTime;
 
     public UUID getId() {

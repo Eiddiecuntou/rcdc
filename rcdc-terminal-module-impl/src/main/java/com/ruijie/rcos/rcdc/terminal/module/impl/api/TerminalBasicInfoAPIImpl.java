@@ -27,6 +27,7 @@ public class TerminalBasicInfoAPIImpl implements TerminalBasicInfoAPI {
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
+
     @Autowired
     private TerminalBasicInfoService basicInfoService;
 

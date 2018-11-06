@@ -19,9 +19,13 @@ public class TermianlSystemUpgradePackageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
     private String name;
+
     private String storePath;
+
     private String packageType;
+
     private Date uploadTime;
 
     public UUID getId() {

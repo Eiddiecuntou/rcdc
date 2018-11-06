@@ -14,18 +14,22 @@ public enum DetectItemEnums {
      * ip冲突检测
      */
     IP_CONFILCT,
+
     /**
      * 带宽检测
      */
     BANDWIDTH,
+
     /**
      * 互联网连通检测
      */
     ACCESS_INTERNET,
+
     /**
      * 丢包率
      */
     PACKET_LOSS_RATE,
+
     /**
      * 磁盘空间检测
      */

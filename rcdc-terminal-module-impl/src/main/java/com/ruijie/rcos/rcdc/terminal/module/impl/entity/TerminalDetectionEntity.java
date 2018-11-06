@@ -19,13 +19,21 @@ public class TerminalDetectionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
     private Short isIpConflict;
+
     private String ipConflictMac;
+
     private Short canAccessInternet;
+
     private String bandwidth;
+
     private String packetLossRate;
+
     private Integer diskFreeSpace;
+
     private Integer diskTotalSpace;
+
     private Date detectTime;
 
     public UUID getId() {

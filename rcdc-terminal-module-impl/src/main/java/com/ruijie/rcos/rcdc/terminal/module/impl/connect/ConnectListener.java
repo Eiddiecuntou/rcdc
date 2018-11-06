@@ -34,8 +34,10 @@ public class ConnectListener extends AbstractServerMessageHandler {
 
     @Autowired
     private DispatcherHandlerSPI dispatcherHandlerSPI;
+
     @Autowired
     private TerminalEventNoticeSPI terminalEventNoticeSPI;
+
     @Autowired
     private SessionManager sessionManager;
 
