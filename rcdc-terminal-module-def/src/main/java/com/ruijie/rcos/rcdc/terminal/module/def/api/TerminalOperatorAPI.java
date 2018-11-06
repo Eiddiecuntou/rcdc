@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
  * Description: 终端操作接口
@@ -15,39 +16,44 @@ public interface TerminalOperatorAPI {
     /**
      * 关闭终端
      *
-     * @param terminalId
-     * @throws BusinessException
+     * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
+    @NoRollback
     void shutdown(String terminalId) throws BusinessException;
 
     /**
      * 重启终端
      *
-     * @param terminalId
-     * @throws BusinessException
+     * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
+    @NoRollback
     void restart(String terminalId) throws BusinessException;
 
     /**
      * 修改终端管理员密码
      *
-     * @param terminalId
+     * @param terminalId 终端id
      * @param password
-     * @throws BusinessException
+     * @throws BusinessException 业务异常
      */
+    @NoRollback
     void changePassword(String terminalId, String password) throws BusinessException;
 
     /**
      * 收集终端日志
      *
-     * @param terminalId
+     * @param terminalId 终端id
      */
+    @NoRollback
     void gatherLog(String terminalId) throws BusinessException;
 
     /**
      * 终端检测
      *
-     * @param terminalId
+     * @param terminalId 终端id
      */
+    @NoRollback
     void detect(String terminalId) throws BusinessException;
 }

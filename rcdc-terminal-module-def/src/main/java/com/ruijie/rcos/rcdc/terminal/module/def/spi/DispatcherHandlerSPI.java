@@ -16,5 +16,9 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherInterface;
 @DispatcherInterface
 public interface DispatcherHandlerSPI {
 
+    /**
+     * 消息分发方法
+     * @param request
+     */
     void dispatch(final DispatcherRequest request);
 }

@@ -22,8 +22,6 @@ public interface TerminalCallback extends Callback {
 
     /**
      * 请求超时
-     *
-     * @return
      */
     void timeout();
 

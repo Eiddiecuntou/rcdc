@@ -15,41 +15,40 @@ public interface TerminalOperatorService {
     /**
      * 关闭终端
      *
-     * @param terminalId
-     * @throws BusinessException
+     * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
     void shutdown(String terminalId) throws BusinessException;
 
     /**
      * 重启终端
      *
-     * @param terminalId
-     * @throws BusinessException
+     * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
     void restart(String terminalId) throws BusinessException;
 
     /**
      * 修改终端管理员密码
      *
-     * @param terminalId
-     * @param password
-     * @throws BusinessException
+     * @param terminalId 终端id
+     * @param password 密码
+     * @throws BusinessException 业务异常
      */
     void changePassword(String terminalId, String password) throws BusinessException;
 
     /**
      * 收集终端日志
      *
-     * @param terminalId
-     * @return 返回日志文件名
-     * @throws BusinessException
+     * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
-    String gatherLog(String terminalId) throws BusinessException;
+    void gatherLog(String terminalId) throws BusinessException;
 
     /**
      * 终端检测
-     *
-     * @param terminalId
+     * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
     void detect(String terminalId) throws BusinessException;
 

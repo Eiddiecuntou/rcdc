@@ -29,8 +29,8 @@ public class SessionManager {
     /**
      * 绑定终端连接Session
      *
-     * @param terminalId
-     * @param session
+     * @param terminalId 终端id
+     * @param session 要绑定的Session
      */
     public void bindSession(String terminalId, Session session) {
         Assert.hasLength(terminalId, "terminalId不能为空");
@@ -38,17 +38,32 @@ public class SessionManager {
         SESSION_MAP.put(terminalId, session);
     }
 
+    /**
+     * 移除Session
+     * @param terminalId 终端id
+     */
     public void removeSession(String terminalId) {
         Assert.hasLength(terminalId, "terminalId不能为空");
         SESSION_MAP.remove(terminalId);
     }
 
+    /**
+     * 获取终端Session
+     * @param terminalId 终端id
+     * @return 返回Session
+     */
     public Session getSession(String terminalId) {
         Assert.hasLength(terminalId, "terminalId不能为空");
         Session session = SESSION_MAP.get(terminalId);
         return session;
     }
 
+    /**
+     * 获取连接通道的发送对象
+     * @param terminalId 终端id
+     * @return 返回封装的通道对象
+     * @throws BusinessException 业务异常
+     */
     public DefaultRequestMessageSender getRequestMessageSender(String terminalId) throws BusinessException {
         Assert.hasLength(terminalId, "terminalId不能为空");
         Session session = getSession(terminalId);

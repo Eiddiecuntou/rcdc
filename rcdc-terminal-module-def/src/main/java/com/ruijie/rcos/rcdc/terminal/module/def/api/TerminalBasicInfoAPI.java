@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalNetworkRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
  * Description: 终端基本信息操作接口
@@ -22,6 +23,7 @@ public interface TerminalBasicInfoAPI {
      *
      * @param request
      */
+    @NoRollback
     void delete(TerminalIdRequest request) throws BusinessException;
 
     /**
@@ -30,6 +32,7 @@ public interface TerminalBasicInfoAPI {
      * @param request
      * @return
      */
+    @NoRollback
     TerminalBasicInfoDTO findBasicInfoByTerminalId(TerminalIdRequest request) throws BusinessException;
 
     /**
@@ -37,6 +40,7 @@ public interface TerminalBasicInfoAPI {
      *
      * @param request
      */
+    @NoRollback
     void modifyTerminalName(TerminalNameRequest request) throws BusinessException;
 
     /**
@@ -44,6 +48,7 @@ public interface TerminalBasicInfoAPI {
      *
      * @param request
      */
+    @NoRollback
     void modifyTerminalNetworkConfig(TerminalNetworkRequest request) throws BusinessException;
 
 

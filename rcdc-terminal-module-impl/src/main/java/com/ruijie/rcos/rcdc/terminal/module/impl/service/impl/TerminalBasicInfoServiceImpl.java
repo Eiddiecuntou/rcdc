@@ -1,8 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -25,6 +28,9 @@ import org.springframework.stereotype.Service;
 public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     @Autowired
     private SessionManager sessionManager;
+
+    @Autowired
+    private TerminalBasicInfoDAO basicInfoDAO;
 
     @Override
     public void modifyTerminalName(String terminalId, String terminalName) throws BusinessException {
@@ -53,5 +59,20 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         Message message = new Message(Constants.SYSTEM_TYPE,
                 SendTerminalEventEnums.MODIFY_TERMINAL_NETWORK_CONFIG.getName(), shineNetworkConfig);
         sender.request(message);
+    }
+
+    @Override
+    public void modifyTerminalState(String terminalId, TerminalStateEnums state) throws BusinessException {
+        Assert.hasLength(terminalId, "terminalId 不能为空");
+        Assert.notNull(state, "TerminalStateEnums 不能为空");
+        TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        if (basicInfoEntity == null) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+        }
+
+        int effectRow = basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), state.ordinal());
+        if (effectRow == 0) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+        }
     }
 }

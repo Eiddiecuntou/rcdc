@@ -22,11 +22,17 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
     /**
      * 获取终端详细基本信息
      *
-     * @param terminalId
-     * @return
+     * @param terminalId 终端id
+     * @return 返回终端信息
      */
     TerminalBasicInfoEntity findTerminalBasicInfoEntitiesByTerminalId(String terminalId);
 
+    /**
+     * 删除终端数据
+     * @param terminalId 终端id
+     * @param version 数据版本号
+     * @return 返回影响行数
+     */
     @Modifying
     @Transactional
     @Query("delete from TerminalBasicInfoEntity where terminalId=:terminalId and version=:version")
@@ -35,10 +41,10 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
     /**
      * 修改终端名称
      *
-     * @param terminalId
-     * @param version
-     * @param terminalName
-     * @return
+     * @param terminalId 终端id
+     * @param version 数据版本号
+     * @param terminalName 终端名称
+     * @return 返回影响行数
      */
     @Modifying
     @Transactional
@@ -49,10 +55,10 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
     /**
      * 修改终端网络配置
      *
-     * @param terminalId
-     * @param version
-     * @param network
-     * @return
+     * @param terminalId 终端id
+     * @param version 数据版本号
+     * @param network 终端网络信息配置
+     * @return 返回影响行数
      */
     @Modifying
     @Transactional
@@ -62,4 +68,19 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
             "getDnsMode=:#{network.getDnsMode.ordinal},version=:version+1 " +
             "where terminalId=:terminalId and version=:version")
     int modifyTerminalNetworkConfig(String terminalId, Integer version, TerminalNetworkRequest network);
+
+
+    /**
+     * 修改终端状态
+     *
+     * @param terminalId 终端id
+     * @param version 数据版本号
+     * @param state 终端状态，在线或离线
+     * @return 返回影响行数
+     */
+    @Modifying
+    @Transactional
+    @Query("update TerminalBasicInfoEntity set state=:state,version=:version+1 " +
+            "where terminalId=:terminalId and version=:version")
+    int modifyTerminalState(String terminalId, Integer version, Integer state);
 }

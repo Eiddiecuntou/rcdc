@@ -4,6 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.ShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.ShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.TerminalCallback;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 import java.io.IOException;
 
@@ -22,6 +23,7 @@ public interface TranspondMessageHandlerAPI {
      *
      * @param msg 请求消息对象
      */
+    @NoRollback
     void request(final ShineMessageRequest msg) throws BusinessException;
 
     /**
@@ -32,6 +34,7 @@ public interface TranspondMessageHandlerAPI {
      * @throws InterruptedException 线程中断异常
      * @throws IOException          请求超时
      */
+    @NoRollback
     ShineMessageResponse syncRequest(final ShineMessageRequest msg) throws InterruptedException, IOException,
             BusinessException;
 
@@ -42,6 +45,7 @@ public interface TranspondMessageHandlerAPI {
      * @param requestCallback 请求回调对象
      * @return
      */
+    @NoRollback
     void asyncRequest(final ShineMessageRequest msg, TerminalCallback requestCallback) throws BusinessException;
 
     /**
@@ -49,6 +53,7 @@ public interface TranspondMessageHandlerAPI {
      *
      * @param msg
      */
+    @NoRollback
     void response(final ShineMessageRequest msg) throws BusinessException;
 
 }

@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.GetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalStateEnums;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -81,6 +82,9 @@ public class TerminalBasicInfoEntity {
     private String detectResult;
 
     private Integer version;
+
+    @Enumerated(EnumType.ORDINAL)
+    private TerminalStateEnums state;
 
     public UUID getId() {
         return id;
@@ -313,5 +317,13 @@ public class TerminalBasicInfoEntity {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public TerminalStateEnums getState() {
+        return state;
+    }
+
+    public void setState(TerminalStateEnums state) {
+        this.state = state;
     }
 }

@@ -14,5 +14,9 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherInterface;
 @DispatcherInterface
 public interface TerminalEventNoticeSPI {
 
+    /**
+     * 消息通知
+     * @param request
+     */
     void notify(final NoticeRequest request);
 }

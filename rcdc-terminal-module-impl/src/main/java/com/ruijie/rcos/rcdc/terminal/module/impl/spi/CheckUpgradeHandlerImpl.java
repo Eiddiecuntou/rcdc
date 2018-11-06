@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.TranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.ShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.DispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.NoticeEvent;
@@ -77,6 +78,7 @@ public class CheckUpgradeHandlerImpl implements DispatcherHandlerSPI {
         Date now = new Date();
         basicInfoEntity.setCreateTime(now);
         basicInfoEntity.setUpdateTime(now);
+        basicInfoEntity.setState(TerminalStateEnums.ONLINE);
         basicInfoDAO.save(basicInfoEntity);
     }
 }

@@ -1,13 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.DispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.NoticeEvent;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.TerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.DispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.NoticeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.Assert;
@@ -40,6 +44,9 @@ public class ConnectListener extends AbstractServerMessageHandler {
 
     @Autowired
     private SessionManager sessionManager;
+
+    @Autowired
+    private TerminalBasicInfoService basicInfoService;
 
     /**
      * 绑定终端session的key
@@ -96,9 +103,15 @@ public class ConnectListener extends AbstractServerMessageHandler {
         Assert.notNull(session, "session 不能为null");
         String terminalId = getTerminalIdFromSession(session);
         sessionManager.removeSession(terminalId);
+        try {
+            basicInfoService.modifyTerminalState(terminalId, TerminalStateEnums.OFFLINE);
+        } catch (BusinessException e) {
+            LOGGER.error("修改终端状态失败", e);
+        }
         //发出连接关闭通知
         NoticeRequest noticeRequest = new NoticeRequest(NoticeEvent.OFFLINE, terminalId);
         terminalEventNoticeSPI.notify(noticeRequest);
+
     }
 
     @Override
