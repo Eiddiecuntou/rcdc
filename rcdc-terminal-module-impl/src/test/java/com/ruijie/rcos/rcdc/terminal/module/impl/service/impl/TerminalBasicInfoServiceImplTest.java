@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
@@ -29,6 +30,10 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Tested
     private TerminalBasicInfoServiceImpl basicInfoService;
+
+    @Injectable
+    private TerminalBasicInfoDAO basicInfoDAO;
+
     @Injectable
     private SessionManager sessionManager;
     @Injectable

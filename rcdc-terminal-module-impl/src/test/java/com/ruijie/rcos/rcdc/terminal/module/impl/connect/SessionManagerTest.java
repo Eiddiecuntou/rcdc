@@ -34,7 +34,7 @@ public class SessionManagerTest {
     @Test
     public void testBindSession(@Mocked Session session) {
         String terminalId = "123";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "sessionMap");
+        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
         sessionManager.bindSession(terminalId, session);
         Assert.assertEquals(1, sessionMap.size());
         sessionMap.clear();
@@ -43,7 +43,7 @@ public class SessionManagerTest {
     @Test
     public void testRemoveSession(@Mocked Session session) {
         String terminalId = "321";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "sessionMap");
+        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
         sessionMap.put(terminalId, session);
         sessionManager.removeSession(terminalId);
         Assert.assertEquals(0, sessionMap.size());
@@ -53,7 +53,7 @@ public class SessionManagerTest {
     @Test
     public void testGetSession(@Mocked Session session) {
         String terminalId = "123456";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "sessionMap");
+        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
         sessionMap.put(terminalId, session);
         Session sessionResult = sessionManager.getSession(terminalId);
         Assert.assertNotNull(sessionResult);
@@ -63,7 +63,7 @@ public class SessionManagerTest {
     @Test
     public void testGetRequestMessageSenderNormal(@Mocked Session session) {
         String terminalId = "993993";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "sessionMap");
+        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
         sessionMap.put(terminalId, session);
         DefaultRequestMessageSender sender = null;
         try {

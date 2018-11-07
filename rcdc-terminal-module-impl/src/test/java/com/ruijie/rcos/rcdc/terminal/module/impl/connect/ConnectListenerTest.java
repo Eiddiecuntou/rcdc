@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.DispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.NoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
 import com.ruijie.rcos.sk.commkit.base.DefaultSession;
 import com.ruijie.rcos.sk.commkit.base.Session;
@@ -42,14 +43,21 @@ public class ConnectListenerTest {
 
     @Injectable
     private DispatcherHandlerSPI dispatcherHandlerSPI;
+
     @Injectable
     private TerminalEventNoticeSPI terminalEventNoticeSPI;
+
     @Injectable
     private SessionManager sessionManager;
+
     @Injectable
     private ChannelHandlerContext channelHandlerContext;
+
     @Injectable
     private ResponseMessageSender sender;
+
+    @Injectable
+    private TerminalBasicInfoService basicInfoService;
 
 
     /**

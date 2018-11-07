@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -28,6 +29,10 @@ public class TerminalOperatorServiceImplTest {
 
     @Injectable
     private SessionManager sessionManager;
+
+    @Injectable
+    private GatherLogCacheManager gatherLogCacheManager;
+
     @Injectable
     DefaultRequestMessageSender sender;
 
