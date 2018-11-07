@@ -18,7 +18,7 @@ public interface DispatcherHandlerSPI {
 
     /**
      * 消息分发方法
-     * @param request
+     * @param request 请求参数对象 请求参数
      */
-    void dispatch(final DispatcherRequest request);
+    void dispatch(DispatcherRequest request);
 }

@@ -17,17 +17,24 @@ public class TerminalNetworkRequest implements Request {
 
     @NotNull
     private String terminalId;
+
     @NotNull
     private String ip;
+
     @NotNull
     private String subnetMask;
+
     @NotNull
     private String gateway;
+
     @NotNull
     private String mainDns;
+
     private String secondDns;
+
     @NotNull
     private GetNetworkModeEnums getIpMode;
+
     @NotNull
     private GetNetworkModeEnums getDnsMode;
 

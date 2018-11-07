@@ -12,6 +12,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  */
 public class ChangePasswordRequest implements Request {
     private String terminalId;
+
     private String password;
 
     public String getTerminalId() {

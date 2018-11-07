@@ -21,7 +21,8 @@ public interface TerminalBasicInfoAPI {
     /**
      * 删除终端信息
      *
-     * @param request
+     * @param request 请求参数对象
+     * @throws BusinessException 业务异常
      */
     @NoRollback
     void delete(TerminalIdRequest request) throws BusinessException;
@@ -29,8 +30,9 @@ public interface TerminalBasicInfoAPI {
     /**
      * 根据terminalId获取终端基本信息
      *
-     * @param request
-     * @return
+     * @param request 请求参数对象
+     * @return 终端基本信息DTO
+     * @throws BusinessException 业务异常
      */
     @NoRollback
     TerminalBasicInfoDTO findBasicInfoByTerminalId(TerminalIdRequest request) throws BusinessException;
@@ -38,7 +40,8 @@ public interface TerminalBasicInfoAPI {
     /**
      * 修改终端名称
      *
-     * @param request
+     * @param request 请求参数对象
+     * @throws BusinessException 业务异常
      */
     @NoRollback
     void modifyTerminalName(TerminalNameRequest request) throws BusinessException;
@@ -46,7 +49,8 @@ public interface TerminalBasicInfoAPI {
     /**
      * 修改终端网络配置
      *
-     * @param request
+     * @param request 请求参数对象
+     * @throws BusinessException 业务异常
      */
     @NoRollback
     void modifyTerminalNetworkConfig(TerminalNetworkRequest request) throws BusinessException;

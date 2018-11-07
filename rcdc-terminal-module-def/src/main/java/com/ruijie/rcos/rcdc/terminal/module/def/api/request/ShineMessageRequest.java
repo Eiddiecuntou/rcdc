@@ -10,14 +10,17 @@ import javax.validation.constraints.NotNull;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/25
  *
+ * @param <T> 业务数据对象
  * @author Jarman
  */
 public class ShineMessageRequest<T> implements Request {
 
     @NotNull
     private String action;
+
     @NotNull
     private String requestId;
+
     @NotNull
     private String terminalId;
 

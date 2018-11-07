@@ -35,7 +35,7 @@ public interface TerminalOperatorAPI {
      * 修改终端管理员密码
      *
      * @param terminalId 终端id
-     * @param password
+     * @param password   密码
      * @throws BusinessException 业务异常
      */
     @NoRollback
@@ -45,6 +45,7 @@ public interface TerminalOperatorAPI {
      * 收集终端日志
      *
      * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
     @NoRollback
     void gatherLog(String terminalId) throws BusinessException;
@@ -53,6 +54,7 @@ public interface TerminalOperatorAPI {
      * 终端检测
      *
      * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
     @NoRollback
     void detect(String terminalId) throws BusinessException;

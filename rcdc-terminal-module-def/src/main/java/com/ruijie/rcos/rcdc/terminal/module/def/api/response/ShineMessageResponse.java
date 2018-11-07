@@ -7,14 +7,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/24
- *
+ * @param <T> 应答的业务数据对象
  * @author Jarman
  */
 public class ShineMessageResponse<T> extends DefaultResponse {
 
     private String action;
+
     private String terminalId;
+
     private String responseId;
+
     private T data;
 
     public String getAction() {

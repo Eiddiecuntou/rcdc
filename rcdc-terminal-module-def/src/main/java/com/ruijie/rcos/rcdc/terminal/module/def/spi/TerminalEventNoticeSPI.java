@@ -16,7 +16,7 @@ public interface TerminalEventNoticeSPI {
 
     /**
      * 消息通知
-     * @param request
+     * @param request 请求参数
      */
-    void notify(final NoticeRequest request);
+    void notify(NoticeRequest request);
 }

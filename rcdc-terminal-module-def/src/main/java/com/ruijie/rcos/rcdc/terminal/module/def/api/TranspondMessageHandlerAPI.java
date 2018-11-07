@@ -21,10 +21,11 @@ public interface TranspondMessageHandlerAPI {
     /**
      * 发送消息
      *
-     * @param msg 请求消息对象
+     * @param msg shine消息请求参数
+     * @throws BusinessException 业务异常
      */
     @NoRollback
-    void request(final ShineMessageRequest msg) throws BusinessException;
+    void request(ShineMessageRequest msg) throws BusinessException;
 
     /**
      * 同步发送消息
@@ -33,9 +34,10 @@ public interface TranspondMessageHandlerAPI {
      * @return 消息对象
      * @throws InterruptedException 线程中断异常
      * @throws IOException          请求超时
+     * @throws BusinessException    业务异常
      */
     @NoRollback
-    ShineMessageResponse syncRequest(final ShineMessageRequest msg) throws InterruptedException, IOException,
+    ShineMessageResponse syncRequest(ShineMessageRequest msg) throws InterruptedException, IOException,
             BusinessException;
 
     /**
@@ -43,17 +45,18 @@ public interface TranspondMessageHandlerAPI {
      *
      * @param msg             请求消息对象
      * @param requestCallback 请求回调对象
-     * @return
+     * @throws BusinessException 业务异常
      */
     @NoRollback
-    void asyncRequest(final ShineMessageRequest msg, TerminalCallback requestCallback) throws BusinessException;
+    void asyncRequest(ShineMessageRequest msg, TerminalCallback requestCallback) throws BusinessException;
 
     /**
      * 应答消息
      *
-     * @param msg
+     * @param msg shine消息请参数
+     * @throws BusinessException 业务异常
      */
     @NoRollback
-    void response(final ShineMessageRequest msg) throws BusinessException;
+    void response(ShineMessageRequest msg) throws BusinessException;
 
 }

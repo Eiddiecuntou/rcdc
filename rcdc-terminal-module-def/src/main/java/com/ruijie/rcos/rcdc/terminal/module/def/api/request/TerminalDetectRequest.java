@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 public class TerminalDetectRequest implements Request {
     @NotNull
     private String terminalId;
+
     private DetectItemEnums[] itemArr;
 
     public String getTerminalId() {

@@ -16,6 +16,7 @@ public class TerminalNameRequest implements Request {
 
     @NotNull
     private String terminalId;
+
     @NotNull
     private String terminalName;
 

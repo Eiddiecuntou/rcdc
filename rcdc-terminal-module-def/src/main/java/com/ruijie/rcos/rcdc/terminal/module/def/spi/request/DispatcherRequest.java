@@ -11,12 +11,14 @@ import javax.validation.constraints.NotNull;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/24
  *
+ * @param <T> 分发的业务数据对象
  * @author Jarman
  */
 public class DispatcherRequest<T> implements Request {
 
     @DispatcherKey
     private String dispatcherKey;
+
     @NotNull
     private String terminalId;
 
