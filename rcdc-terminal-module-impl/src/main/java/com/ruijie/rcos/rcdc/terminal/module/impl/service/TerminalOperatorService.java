@@ -32,7 +32,7 @@ public interface TerminalOperatorService {
      * 修改终端管理员密码
      *
      * @param terminalId 终端id
-     * @param password 密码
+     * @param password   密码
      * @throws BusinessException 业务异常
      */
     void changePassword(String terminalId, String password) throws BusinessException;
@@ -47,9 +47,18 @@ public interface TerminalOperatorService {
 
     /**
      * 终端检测
+     *
      * @param terminalId 终端id
      * @throws BusinessException 业务异常
      */
     void detect(String terminalId) throws BusinessException;
+
+    /**
+     * 批量终端检测
+     *
+     * @param terminalIdArr 终端id数组
+     * @throws BusinessException 业务异常
+     */
+    void detect(String[] terminalIdArr) throws BusinessException;
 
 }

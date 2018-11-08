@@ -37,6 +37,16 @@ public class GatherLogCacheManager {
     }
 
     /**
+     * 移除缓存
+     *
+     * @param terminalId 终端id
+     */
+    public void removeCache(String terminalId) {
+        Assert.hasLength(terminalId, "terminalId不能为空");
+        GATHER_LOG_CACHE_MAP.remove(terminalId);
+    }
+
+    /**
      * 更新缓存
      *
      * @param terminalId 终端id

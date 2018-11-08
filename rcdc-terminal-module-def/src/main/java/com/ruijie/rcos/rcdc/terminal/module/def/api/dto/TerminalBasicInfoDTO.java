@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.GetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalStateEnums;
@@ -76,6 +77,17 @@ public class TerminalBasicInfoDTO {
     private String detectResult;
 
     private Integer version;
+
+    /**
+     * 检测时间
+     */
+    private Date detectTime;
+
+    /**
+     * 检测结果状态
+     */
+    @Enumerated(EnumType.ORDINAL)
+    private DetectStateEnums detectState;
 
     @Enumerated(EnumType.ORDINAL)
     private TerminalStateEnums state;
@@ -318,5 +330,21 @@ public class TerminalBasicInfoDTO {
 
     public void setState(TerminalStateEnums state) {
         this.state = state;
+    }
+
+    public Date getDetectTime() {
+        return detectTime;
+    }
+
+    public void setDetectTime(Date detectTime) {
+        this.detectTime = detectTime;
+    }
+
+    public DetectStateEnums getDetectState() {
+        return detectState;
+    }
+
+    public void setDetectState(DetectStateEnums detectState) {
+        this.detectState = detectState;
     }
 }

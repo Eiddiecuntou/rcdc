@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.GetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalStateEnums;
@@ -79,7 +80,16 @@ public class TerminalBasicInfoEntity {
 
     private Date offlineTime;
 
-    private String detectResult;
+    /**
+     * 检测时间
+     */
+    private Date detectTime;
+
+    /**
+     * 检测结果状态
+     */
+    @Enumerated(EnumType.ORDINAL)
+    private DetectStateEnums detectState;
 
     private Integer version;
 
@@ -303,12 +313,20 @@ public class TerminalBasicInfoEntity {
         this.offlineTime = offlineTime;
     }
 
-    public String getDetectResult() {
-        return detectResult;
+    public Date getDetectTime() {
+        return detectTime;
     }
 
-    public void setDetectResult(String detectResult) {
-        this.detectResult = detectResult;
+    public void setDetectTime(Date detectTime) {
+        this.detectTime = detectTime;
+    }
+
+    public DetectStateEnums getDetectState() {
+        return detectState;
+    }
+
+    public void setDetectState(DetectStateEnums detectState) {
+        this.detectState = detectState;
     }
 
     public Integer getVersion() {

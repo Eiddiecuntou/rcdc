@@ -7,10 +7,12 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.NoticeEvent;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.TerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.DispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.NoticeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -47,6 +49,12 @@ public class ConnectListener extends AbstractServerMessageHandler {
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
+
+    @Autowired
+    private GatherLogCacheManager gatherLogCacheManager;
+
+    @Autowired
+    private TerminalDetectService detectService;
 
     /**
      * 绑定终端session的key
@@ -111,6 +119,10 @@ public class ConnectListener extends AbstractServerMessageHandler {
         //发出连接关闭通知
         NoticeRequest noticeRequest = new NoticeRequest(NoticeEvent.OFFLINE, terminalId);
         terminalEventNoticeSPI.notify(noticeRequest);
+        //清除收集日志缓存
+        gatherLogCacheManager.removeCache(terminalId);
+        //更新终端检测状态
+        detectService.setOfflineTerminalToFailureState();
 
     }
 

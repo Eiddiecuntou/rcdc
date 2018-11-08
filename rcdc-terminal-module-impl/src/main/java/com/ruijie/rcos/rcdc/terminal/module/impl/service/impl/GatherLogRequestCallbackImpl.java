@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.CommonResponseMsg;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.CommonMsg;
 import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
@@ -37,7 +37,7 @@ public class GatherLogRequestCallbackImpl extends AbstractRequestCallback {
         Assert.notNull(msg.getData(), "收集日志返回报文消息体不能为null");
         String data = ((String) msg.getData()).trim();
         Assert.hasLength(data, "返回的应答消息不能为空");
-        CommonResponseMsg responseMsg = JSON.parseObject(data, CommonResponseMsg.class);
+        CommonMsg responseMsg = JSON.parseObject(data, CommonMsg.class);
         Assert.notNull(responseMsg, "应答消息格式错误");
         if (StateEnums.SUCCESS == responseMsg.getErrorCode()) {
             String logZipName = responseMsg.getMsg();

@@ -10,7 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
  *
  * @author Jarman
  */
-public class CommonResponseMsg {
+public class CommonMsg {
 
     private StateEnums errorCode;
 

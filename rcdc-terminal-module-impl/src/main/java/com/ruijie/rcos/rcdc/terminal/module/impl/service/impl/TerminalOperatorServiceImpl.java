@@ -1,10 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
@@ -14,6 +17,8 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /**
  * Description: 终端操作
@@ -31,6 +36,9 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     @Autowired
     private GatherLogCacheManager gatherLogCacheManager;
+
+    @Autowired
+    private TerminalBasicInfoDAO basicInfoDAO;
 
     @Override
     public void shutdown(String terminalId) throws BusinessException {
@@ -83,7 +91,22 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     @Override
     public void detect(String terminalId) throws BusinessException {
         Assert.hasLength(terminalId, "terminalId不能为空");
+        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
+        Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.DETECT_TERMINAL.getName(), "");
+        sender.request(message);
+        //更新检测状态未正在检测中
+        //FIXME 当RCDC服务异常退出后，存在状态无法更新的情况，所以需要在RCDC初始化的时候把检测状态为正在检测的终端更新为检测失败
+        TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        basicInfoDAO.modifyDetectInfo(terminalId, basicInfoEntity.getVersion(), new Date(),
+                DetectStateEnums.DOING.ordinal());
+    }
 
-        //TODO
+    @Override
+    public void detect(String[] terminalIdArr) throws BusinessException {
+        Assert.notNull(terminalIdArr, "terminalIdArr不能为null");
+        Assert.state(terminalIdArr.length > 0, "terminalIdArr大小不能为0");
+        for (String terminalId : terminalIdArr) {
+            detect(terminalId);
+        }
     }
 }

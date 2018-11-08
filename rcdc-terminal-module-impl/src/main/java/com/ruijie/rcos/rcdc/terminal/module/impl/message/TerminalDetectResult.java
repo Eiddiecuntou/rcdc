@@ -1,26 +1,14 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
-
-import javax.persistence.*;
-import java.util.Date;
-import java.util.UUID;
+package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 /**
- * Description: 终端检测实体类
- * Copyright: Copyright (c) 2018
- * Company: Ruijie Co., Ltd.
- * Create Time: 2018/10/30
+ * Description: 终端检测返回消息对象
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2018/11/8
  *
- * @author Jarman
+ * @author Jarman
  */
-@Entity
-@Table(name = "t_terminal_detection")
-public class TerminalDetectionEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-
-    private String terminalId;
+public class TerminalDetectResult {
 
     /**
      * ip冲突结果，如果有冲突则保存冲突的mac地址，否则为空值
@@ -46,27 +34,6 @@ public class TerminalDetectionEntity {
      * 网络时延
      */
     private Double networkDelay;
-
-    /**
-     * 检测时间
-     */
-    private Date detectTime;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getTerminalId() {
-        return terminalId;
-    }
-
-    public void setTerminalId(String terminalId) {
-        this.terminalId = terminalId;
-    }
 
     public String getIpConflict() {
         return ipConflict;
@@ -98,14 +65,6 @@ public class TerminalDetectionEntity {
 
     public void setPacketLossRate(Double packetLossRate) {
         this.packetLossRate = packetLossRate;
-    }
-
-    public Date getDetectTime() {
-        return detectTime;
-    }
-
-    public void setDetectTime(Date detectTime) {
-        this.detectTime = detectTime;
     }
 
     public Double getNetworkDelay() {

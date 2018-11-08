@@ -4,6 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -40,6 +41,9 @@ public class TerminalOperatorServiceImplTest {
 
     @Injectable
     DefaultRequestMessageSender sender;
+
+    @Injectable
+    private TerminalBasicInfoDAO basicInfoDAO;
 
     @Tested
     private TerminalOperatorServiceImpl operatorService;
