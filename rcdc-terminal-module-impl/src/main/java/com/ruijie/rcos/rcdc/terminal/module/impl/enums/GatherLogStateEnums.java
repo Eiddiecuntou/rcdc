@@ -11,7 +11,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
 public enum GatherLogStateEnums {
 
     /**
-     * 正在收集中
+     * 正在收集中日志中
      */
     DOING,
 

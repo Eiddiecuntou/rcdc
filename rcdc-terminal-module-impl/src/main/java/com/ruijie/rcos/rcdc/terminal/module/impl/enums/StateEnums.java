@@ -9,6 +9,13 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
  * @author Jarman
  */
 public enum StateEnums {
+    /**
+     * 成功
+     */
     SUCCESS,
+
+    /**
+     * 失败
+     */
     FAILURE
 }

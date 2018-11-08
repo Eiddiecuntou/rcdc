@@ -10,7 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.Session;
-import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
+import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
@@ -62,7 +62,7 @@ public class TranspondMessageHandlerAPIImpl implements TranspondMessageHandlerAP
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(request.getTerminalId());
         Message message = new Message(Constants.SYSTEM_TYPE, request.getAction(), request.getData());
 
-        sender.asyncRequest(message, new RequestCallback() {
+        sender.asyncRequest(message, new AbstractRequestCallback() {
             @Override
             public void success(BaseMessage baseMessage) {
                 Assert.notNull(baseMessage, "baseMessage参数不能为空");
@@ -78,19 +78,8 @@ public class TranspondMessageHandlerAPIImpl implements TranspondMessageHandlerAP
             public void timeout(Throwable throwable) {
                 callback.timeout();
             }
-
-            @Override
-            public boolean isTimeout(long timeoutMillis) {
-                return false;
-            }
-
-            @Override
-            public long getCreateTime() {
-                return 0;
-            }
         });
     }
-
 
     @Override
     public void response(ShineMessageRequest msg) throws BusinessException {

@@ -18,19 +18,13 @@ public class GatherLogCache {
      */
     private static final long EXPIRE = 1000 * 60 * 10;
 
-    public GatherLogCache() {
-        long millisecond = Instant.now().toEpochMilli();
-        this.expireTime = millisecond + EXPIRE;
-
-    }
-
     /**
      * 状态
      */
     private GatherLogStateEnums state;
 
     /**
-     * 只有转态为已完成时才有值
+     * 只有状态为已完成时才有值
      */
     private String logFileName;
 
@@ -39,6 +33,11 @@ public class GatherLogCache {
      */
     private Long expireTime;
 
+    public GatherLogCache() {
+        //记录过期时间
+        long millisecond = Instant.now().toEpochMilli();
+        this.expireTime = millisecond + EXPIRE;
+    }
 
     public GatherLogStateEnums getState() {
         return state;
@@ -58,5 +57,9 @@ public class GatherLogCache {
 
     public Long getExpireTime() {
         return expireTime;
+    }
+
+    public void setExpireTime(Long expireTime) {
+        this.expireTime = expireTime;
     }
 }

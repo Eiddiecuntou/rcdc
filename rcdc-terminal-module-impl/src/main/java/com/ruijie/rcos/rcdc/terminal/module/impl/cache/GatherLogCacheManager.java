@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Description: 收集日志缓存
+ * Description: 缓存收集日志过程的状态，
+ * 前端下载请求时，根据状态来显示界面和操作逻辑
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/11/6
@@ -21,15 +22,18 @@ public class GatherLogCacheManager {
     private static final Map<String, GatherLogCache> GATHER_LOG_CACHE_MAP = new ConcurrentHashMap<>();
 
     /**
-     * 添加缓存
+     * 添加缓存，接收到请求后覆盖原来的缓存信息
+     * 状态标识为正在收集中
      *
      * @param terminalId 终端id
+     * @return 返回对应终端缓存对象
      */
-    public void addCache(String terminalId) {
+    public GatherLogCache addCache(String terminalId) {
         Assert.hasLength(terminalId, "terminalId不能为空");
         GatherLogCache cache = new GatherLogCache();
         cache.setState(GatherLogStateEnums.DOING);
         GATHER_LOG_CACHE_MAP.put(terminalId, cache);
+        return cache;
     }
 
     /**
@@ -47,8 +51,8 @@ public class GatherLogCacheManager {
     /**
      * 更新缓存
      *
-     * @param terminalId 终端id
-     * @param state 终端状态
+     * @param terminalId  终端id
+     * @param state       终端状态
      * @param logFileName 日志上传成功后记录日志文件名称
      */
     public void updateState(String terminalId, GatherLogStateEnums state, String logFileName) {

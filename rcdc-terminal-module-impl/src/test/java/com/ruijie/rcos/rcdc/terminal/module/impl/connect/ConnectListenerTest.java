@@ -164,7 +164,7 @@ public class ConnectListenerTest {
      * 测试参数未传terminalId
      */
     @Test
-    public void testOnReceiveTerminalIsNull(@Mocked Session session) {
+    public void testOnReceiveTerminalIsNull() {
         String action = ReceiveTerminalEvent.CHECK_UPGRADE;
         ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
         basicInfo.setTerminalId(null);
@@ -188,8 +188,6 @@ public class ConnectListenerTest {
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(e.getMessage(), "RequestMessageSender不能为null");
         }
-
-
     }
 
     @Test

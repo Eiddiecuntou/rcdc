@@ -1,9 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import mockit.Expectations;
@@ -14,7 +18,8 @@ import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -40,7 +45,7 @@ public class TerminalOperatorServiceImplTest {
     private TerminalOperatorServiceImpl operatorService;
 
     @Test
-    public void shutdownSuccess() {
+    public void testShutdownSuccess() {
         new Expectations() {{
             try {
                 sessionManager.getRequestMessageSender(anyString);
@@ -65,7 +70,7 @@ public class TerminalOperatorServiceImplTest {
     }
 
     @Test
-    public void restart() {
+    public void testRestart() {
         new Expectations() {{
             try {
                 sessionManager.getRequestMessageSender(anyString);
@@ -90,7 +95,7 @@ public class TerminalOperatorServiceImplTest {
     }
 
     @Test
-    public void changePassword() {
+    public void testChangePassword() {
         new Expectations() {{
             try {
                 sessionManager.getRequestMessageSender(anyString);
@@ -112,6 +117,68 @@ public class TerminalOperatorServiceImplTest {
             sender.request(message = withCapture());
             assertEquals(message.getAction(), SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD.getName());
             assertEquals(String.valueOf(message.getData()), password);
+        }};
+    }
+
+    @Test
+    public void testGatherLogIsDoing() {
+        String terminalId = "12334";
+        GatherLogCache gatherLogCache = new GatherLogCache();
+        gatherLogCache.setState(GatherLogStateEnums.DOING);
+        new Expectations() {{
+            gatherLogCacheManager.getCache(terminalId);
+            result = gatherLogCache;
+        }};
+
+        try {
+            operatorService.gatherLog(terminalId);
+        } catch (BusinessException e) {
+            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_DOING);
+        }
+    }
+
+    @Test
+    public void testGatherLogNoExistsAndIsDoing() {
+        String terminalId = "123";
+        GatherLogCache logCache = new GatherLogCache();
+        logCache.setState(GatherLogStateEnums.DOING);
+        new Expectations() {{
+            gatherLogCacheManager.getCache(terminalId);
+            result = null;
+            gatherLogCacheManager.addCache(terminalId);
+            result = logCache;
+        }};
+
+        try {
+            operatorService.gatherLog(terminalId);
+        } catch (BusinessException e) {
+            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_DOING);
+        }
+    }
+
+    @Test
+    public void testGatherLogSend() throws BusinessException {
+        GatherLogCache logCache = new GatherLogCache();
+        logCache.setState(GatherLogStateEnums.DONE);
+        new Expectations() {{
+            gatherLogCacheManager.getCache(anyString);
+            result = logCache;
+            sessionManager.getRequestMessageSender(anyString);
+            result = sender;
+            sender.asyncRequest((Message) any, (RequestCallback) any);
+
+        }};
+
+        try {
+            String terminalId = "123";
+            operatorService.gatherLog(terminalId);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        new Verifications() {{
+            sender.asyncRequest((Message) any, (RequestCallback) any);
+            times = 1;
         }};
     }
 }

@@ -24,7 +24,7 @@ public class GatherLogQuartz {
     private GatherLogCacheManager cacheManager;
 
     /**
-     * 没10秒执行一次检查并清除过期的缓存
+     * 每10秒执行一次检查并清除过期的缓存
      */
     @Scheduled(cron = "0/10 * *  * * ?")
     public void checkAndCleanExpireCache() {

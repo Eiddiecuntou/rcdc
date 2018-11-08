@@ -76,7 +76,7 @@ public class SessionManagerTest {
     }
 
     @Test
-    public void testGetRequestMessageSenderAbNormal(@Mocked Session session) {
+    public void testGetRequestMessageSenderAbNormal() {
         String terminalId = "993993";
         try {
             sessionManager.getRequestMessageSender(terminalId);

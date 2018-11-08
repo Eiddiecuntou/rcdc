@@ -1,14 +1,21 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl;
 
 /**
- * Description: 常量类
+ * Description: 常量接口
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/31
  *
  * @author Jarman
  */
-public class Constants {
+public interface Constants {
 
-    public static final String SYSTEM_TYPE = "rcdc";
+    String SYSTEM_TYPE = "rcdc";
+
+    /**
+     * 存放终端日志的目录
+     */
+    String STORE_TERMINAL_LOG_PATH = "/opt/ftp/terminal/log/";
+
+
 }
