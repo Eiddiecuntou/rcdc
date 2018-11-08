@@ -19,6 +19,8 @@ import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -183,6 +185,36 @@ public class TerminalOperatorServiceImplTest {
         new Verifications() {{
             sender.asyncRequest((Message) any, (RequestCallback) any);
             times = 1;
+        }};
+    }
+
+    @Test
+    public void testDetect() {
+        String terminalId = "123";
+        try {
+            operatorService.detect(terminalId);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        new Verifications() {{
+            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
+            times = 1;
+        }};
+    }
+
+    @Test
+    public void testDetectArr() {
+        String[] terminalIdArr = {"1", "2", "3"};
+        try {
+            operatorService.detect(terminalIdArr);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        new Verifications() {{
+            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
+            times = 3;
         }};
     }
 }
