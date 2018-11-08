@@ -58,4 +58,13 @@ public interface TerminalOperatorAPI {
      */
     @NoRollback
     void detect(String terminalId) throws BusinessException;
+
+    /**
+     * 批量终端检测
+     *
+     * @param terminalIdArr 终端id数组
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    void detect(String[] terminalIdArr) throws BusinessException;
 }
