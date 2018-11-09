@@ -23,7 +23,6 @@ public class TerminalOperatorAPIImpl implements TerminalOperatorAPI {
     public void shutdown(String terminalId) throws BusinessException {
         Assert.hasLength(terminalId, "terminalId不能为空");
         operatorService.shutdown(terminalId);
-
     }
 
     @Override
@@ -54,7 +53,7 @@ public class TerminalOperatorAPIImpl implements TerminalOperatorAPI {
     @Override
     public void detect(String[] terminalIdArr) throws BusinessException {
         Assert.notNull(terminalIdArr, "terminalIdArr不能为null");
-        Assert.state(0 == terminalIdArr.length, "terminalIdArr孰能为空");
+        Assert.state(0 == terminalIdArr.length, "terminalIdArr不能为空");
         for (String terminalId : terminalIdArr) {
             detect(terminalId);
         }

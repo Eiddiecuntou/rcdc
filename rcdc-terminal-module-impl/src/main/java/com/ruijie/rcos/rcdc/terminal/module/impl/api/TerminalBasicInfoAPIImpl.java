@@ -33,7 +33,7 @@ public class TerminalBasicInfoAPIImpl implements TerminalBasicInfoAPI {
 
     @Override
     public TerminalBasicInfoDTO findBasicInfoByTerminalId(TerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "TerminalIdRequest");
+        Assert.notNull(request, "TerminalIdRequest不能为null");
         TerminalBasicInfoEntity basicInfoEntity =
                 basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(request.getTerminalId());
         if (basicInfoEntity == null) {
@@ -49,7 +49,7 @@ public class TerminalBasicInfoAPIImpl implements TerminalBasicInfoAPI {
 
     @Override
     public void delete(TerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "TerminalIdRequest");
+        Assert.notNull(request, "TerminalIdRequest不能为null");
         String terminalId = request.getTerminalId();
         int version = getVersion(terminalId);
         int effectRow = basicInfoDAO.deleteByTerminalId(terminalId, version);
@@ -60,7 +60,7 @@ public class TerminalBasicInfoAPIImpl implements TerminalBasicInfoAPI {
 
     @Override
     public void modifyTerminalName(TerminalNameRequest request) throws BusinessException {
-        Assert.notNull(request, "TerminalNameRequest");
+        Assert.notNull(request, "TerminalNameRequest不能为null");
         //先发送终端名称给shine，后修改数据库
         String terminalId = request.getTerminalId();
         basicInfoService.modifyTerminalName(terminalId, request.getTerminalName());
@@ -73,7 +73,7 @@ public class TerminalBasicInfoAPIImpl implements TerminalBasicInfoAPI {
 
     @Override
     public void modifyTerminalNetworkConfig(TerminalNetworkRequest request) throws BusinessException {
-        Assert.notNull(request, "TerminalNetworkRequest不能为空");
+        Assert.notNull(request, "TerminalNetworkRequest不能为null");
         //先发送网络配置消息给shine，后修改数据库
         String terminalId = request.getTerminalId();
         ShineNetworkConfig shineNetworkConfig = new ShineNetworkConfig();

@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 
 /**
- * Description: Function Description
+ * Description: 转发消息给终端（Shine）
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/25
@@ -83,7 +83,7 @@ public class TranspondMessageHandlerAPIImpl implements TranspondMessageHandlerAP
 
     @Override
     public void response(ShineMessageRequest msg) throws BusinessException {
-        Assert.notNull(msg, "ShineMessageRequest");
+        Assert.notNull(msg, "ShineMessageRequest不能为null");
 
         Session session = sessionManager.getSession(msg.getTerminalId());
         if (session == null) {
