@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -29,13 +30,16 @@ public class GatherLogQuartz {
     @Scheduled(cron = "0/10 * *  * * ?")
     public void checkAndCleanExpireCache() {
         Map<String, GatherLogCache> caches = cacheManager.getGatherLogCaches();
-        caches.forEach((k, v) -> {
-            long expire = v.getExpireTime();
+        Iterator<Map.Entry<String, GatherLogCache>> it = caches.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, GatherLogCache> item = it.next();
+            GatherLogCache logCache = item.getValue();
+            long expire = logCache.getExpireTime();
             long now = Instant.now().toEpochMilli();
             if (now > expire) {
-                caches.remove(k);
+                it.remove();
             }
-        });
+        }
     }
 }
 
