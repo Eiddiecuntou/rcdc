@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -62,9 +62,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     @Override
-    public void modifyTerminalState(String terminalId, TerminalStateEnums state) throws BusinessException {
+    public void modifyTerminalState(String terminalId, CbbTerminalStateEnums state) throws BusinessException {
         Assert.hasLength(terminalId, "terminalId 不能为空");
-        Assert.notNull(state, "TerminalStateEnums 不能为空");
+        Assert.notNull(state, "CbbTerminalStateEnums 不能为空");
         TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);

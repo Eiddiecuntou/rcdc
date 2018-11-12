@@ -15,6 +15,7 @@
     <modules>
         <module>rcdc-terminal-module-def</module>
         <module>rcdc-terminal-module-impl</module>
+        <module>rcdc-terminal-module-web</module>
     </modules>
 
     <!--定义依赖包版本号-->

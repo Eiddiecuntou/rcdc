@@ -1,10 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.DispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.TerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.DispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.NoticeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -39,10 +39,10 @@ public class ConnectListenerTest {
 
 
     @Injectable
-    private DispatcherHandlerSPI dispatcherHandlerSPI;
+    private CbbDispatcherHandlerSPI cbbDispatcherHandlerSPI;
 
     @Injectable
-    private TerminalEventNoticeSPI terminalEventNoticeSPI;
+    private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
 
     @Injectable
     private SessionManager sessionManager;
@@ -71,7 +71,7 @@ public class ConnectListenerTest {
         String terminalId = "01-1C-42-F1-2D-45";
         new Expectations() {
             {
-                dispatcherHandlerSPI.dispatch((DispatcherRequest) any);
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
                 result = null;
                 sessionManager.bindSession(terminalId, (Session) any);
                 result = null;
@@ -109,7 +109,7 @@ public class ConnectListenerTest {
         String terminalId = "01-1C-42-F1-2D-45";
         new Expectations() {
             {
-                dispatcherHandlerSPI.dispatch((DispatcherRequest) any);
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
                 result = null;
                 session.getAttribute(anyString);
                 result = terminalId;
@@ -199,7 +199,7 @@ public class ConnectListenerTest {
             {
                 sessionManager.removeSession(anyString);
                 result = null;
-                terminalEventNoticeSPI.notify((NoticeRequest) any);
+                cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
                 result = null;
                 session.getAttribute(anyString);
                 result = "123";
@@ -214,7 +214,7 @@ public class ConnectListenerTest {
                 {
                     sessionManager.removeSession(anyString);
                     times = 1;
-                    terminalEventNoticeSPI.notify((NoticeRequest) any);
+                    cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
                     times = 1;
                 }
             };

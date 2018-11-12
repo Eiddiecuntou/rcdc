@@ -1,11 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.DetectStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -13,7 +13,6 @@ import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,19 +43,43 @@ public class TerminalDetectServiceTest {
     @Test
     public void testUpdateBasicInfoAndDetect() {
         new Expectations() {{
-            detectionDAO.save((TerminalDetectionEntity) any);
             basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
             basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
         }};
 
         try {
             String terminalId = "123";
-            TerminalDetectResult detectResult = new TerminalDetectResult();
-            detectResult.setBandwidth(12.3);
-            detectResult.setCanAccessInternet(1);
-            detectResult.setIpConflict("ddd");
-            detectResult.setNetworkDelay(233.2);
-            detectResult.setPacketLossRate(233.2);
+            TerminalDetectResponse detectResult = new TerminalDetectResponse();
+            TerminalDetectResponse.DetectResult result = new TerminalDetectResponse.DetectResult();
+            result.setBandwidth(12.3);
+            result.setCanAccessInternet(1);
+            result.setIpConflict("ddd");
+            result.setNetworkDelay(233.2);
+            result.setPacketLossRate(233.2);
+            detectResult.setErrorCode(StateEnums.SUCCESS);
+            detectResult.setResult(result);
+
+            detectService.updateBasicInfoAndDetect(terminalId, detectResult);
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testUpdateBasicInfo() {
+        new Expectations() {{
+            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
+        }};
+
+        try {
+            String terminalId = "123";
+            TerminalDetectResponse detectResult = new TerminalDetectResponse();
+            TerminalDetectResponse.DetectResult result = new TerminalDetectResponse.DetectResult();
+            result.setBandwidth(12.3);
+            result.setCanAccessInternet(1);
+            detectResult.setErrorCode(StateEnums.FAILURE);
+            detectResult.setResult(result);
             detectService.updateBasicInfoAndDetect(terminalId, detectResult);
         } catch (Exception e) {
             fail();
@@ -71,7 +94,7 @@ public class TerminalDetectServiceTest {
             basicInfoList.add(entity);
         }
         new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByDetectState(DetectStateEnums.DOING);
+            basicInfoDAO.findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums.DOING);
             result = basicInfoList;
         }};
 
@@ -85,6 +108,6 @@ public class TerminalDetectServiceTest {
             basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
             times = 3;
         }};
-
     }
+
 }

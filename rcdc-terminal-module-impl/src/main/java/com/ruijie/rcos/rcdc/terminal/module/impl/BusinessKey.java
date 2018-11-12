@@ -24,4 +24,9 @@ public interface BusinessKey {
      * 正在收集终端日志中
      */
     String RCDC_TERMINAL_GATHER_LOG_DOING = "rcdc_terminal_gather_log_doing";
+
+    /**
+     * 不存在日志文件
+     */
+    String RCDC_TERMINAL_GATHER_LOG_NOT_EXIST = "rcdc_terminal_gather_log_not_exist";
 }

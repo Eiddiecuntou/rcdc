@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.DetectStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
@@ -98,7 +98,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         //FIXME 当RCDC服务异常退出后，存在状态无法更新的情况，所以需要在RCDC初始化的时候把检测状态为正在检测的终端更新为检测失败
         TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
         basicInfoDAO.modifyDetectInfo(terminalId, basicInfoEntity.getVersion(), new Date(),
-                DetectStateEnums.DOING.ordinal());
+                CbbDetectStateEnums.DOING.ordinal());
     }
 
     @Override

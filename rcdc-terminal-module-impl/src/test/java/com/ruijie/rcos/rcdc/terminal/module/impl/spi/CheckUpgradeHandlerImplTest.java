@@ -1,11 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.TranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.ShineMessageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.TerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.DispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.NoticeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
@@ -33,12 +33,12 @@ import static org.junit.Assert.fail;
 public class CheckUpgradeHandlerImplTest {
 
     @Tested
-    private CheckUpgradeHandlerImpl checkUpgradeHandler;
+    private CheckUpgradeHandlerImplCbb checkUpgradeHandler;
 
     @Injectable
-    private TranspondMessageHandlerAPI messageHandlerAPI;
+    private CbbTranspondMessageHandlerAPI messageHandlerAPI;
     @Injectable
-    private TerminalEventNoticeSPI terminalEventNoticeSPI;
+    private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
 
@@ -50,18 +50,18 @@ public class CheckUpgradeHandlerImplTest {
         entity.setName("t-box3");
         entity.setCpuMode("intel");
         new Expectations() {{
-            terminalEventNoticeSPI.notify((NoticeRequest) any);
+            cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
             basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
             result = entity;
             try {
-                messageHandlerAPI.response((ShineMessageRequest) any);
+                messageHandlerAPI.response((CbbShineMessageRequest) any);
             } catch (BusinessException e) {
                 fail();
             }
         }};
 
         try {
-            DispatcherRequest request = new DispatcherRequest();
+            CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setTerminalId(terminalId);
             request.setRequestId("456");
             request.setData(generateJson());
@@ -78,18 +78,18 @@ public class CheckUpgradeHandlerImplTest {
     public void testDispatchAddTerminalBasicInfo() {
         String terminalId = "123";
         new Expectations() {{
-            terminalEventNoticeSPI.notify((NoticeRequest) any);
+            cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
             basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
             result = null;
             try {
-                messageHandlerAPI.response((ShineMessageRequest) any);
+                messageHandlerAPI.response((CbbShineMessageRequest) any);
             } catch (BusinessException e) {
                 fail();
             }
         }};
 
         try {
-            DispatcherRequest request = new DispatcherRequest();
+            CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
             request.setData(generateJson());

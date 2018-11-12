@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.DetectStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalNetworkRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -71,7 +71,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
             "secondDns=:#{network.secondDns},getIpMode=:#{network.getIpMode.ordinal}," +
             "getDnsMode=:#{network.getDnsMode.ordinal},version=:version+1 " +
             "where terminalId=:terminalId and version=:version")
-    int modifyTerminalNetworkConfig(String terminalId, Integer version, TerminalNetworkRequest network);
+    int modifyTerminalNetworkConfig(String terminalId, Integer version, CbbTerminalNetworkRequest network);
 
 
     /**
@@ -111,5 +111,5 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
      * @param state 检测状态
      * @return 基本信息列表
      */
-    List<TerminalBasicInfoEntity> findTerminalBasicInfoEntitiesByDetectState(DetectStateEnums state);
+    List<TerminalBasicInfoEntity> findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums state);
 }

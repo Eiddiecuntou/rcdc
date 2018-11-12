@@ -1,0 +1,96 @@
+package com.ruijie.rcos.rcdc.terminal.module.impl.api;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.util.Assert;
+import com.ruijie.rcos.sk.commkit.base.Session;
+import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
+import com.ruijie.rcos.sk.commkit.base.message.Message;
+import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
+import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.sk.commkit.base.sender.DefaultResponseMessageSender;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+
+/**
+ * Description: 转发消息给终端（Shine）
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2018/10/25
+ *
+ * @author Jarman
+ */
+public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHandlerAPI {
+
+    @Autowired
+    private SessionManager sessionManager;
+
+    @Override
+    public void request(CbbShineMessageRequest request) throws BusinessException {
+        Assert.notNull(request, "request参数不能为空");
+        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(request.getTerminalId());
+        Message message = new Message(Constants.SYSTEM_TYPE, request.getAction(), request.getData());
+
+        sender.request(message);
+    }
+
+    @Override
+    public CbbShineMessageResponse syncRequest(CbbShineMessageRequest request) throws IOException, InterruptedException,
+            BusinessException {
+        Assert.notNull(request, "request参数不能为空");
+        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(request.getTerminalId());
+        Message message = new Message(Constants.SYSTEM_TYPE, request.getAction(), request.getData());
+
+        BaseMessage baseMessage = sender.syncRequest(message);
+        CbbShineMessageResponse cbbShineMessageResponse = new CbbShineMessageResponse();
+        cbbShineMessageResponse.setAction(baseMessage.getAction());
+        cbbShineMessageResponse.setData(baseMessage.getData());
+
+        return cbbShineMessageResponse;
+    }
+
+    @Override
+    public void asyncRequest(CbbShineMessageRequest request, CbbTerminalCallback callback) throws BusinessException {
+        Assert.notNull(request, "request参数不能为空");
+        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(request.getTerminalId());
+        Message message = new Message(Constants.SYSTEM_TYPE, request.getAction(), request.getData());
+
+        sender.asyncRequest(message, new AbstractRequestCallback() {
+            @Override
+            public void success(BaseMessage baseMessage) {
+                Assert.notNull(baseMessage, "baseMessage参数不能为空");
+                Assert.notNull(baseMessage.getAction(), "action不能为空");
+                CbbShineMessageResponse cbbShineMessageResponse = new CbbShineMessageResponse();
+                cbbShineMessageResponse.setAction(baseMessage.getAction());
+                cbbShineMessageResponse.setData(baseMessage.getData());
+                cbbShineMessageResponse.setTerminalId(request.getTerminalId());
+                callback.success(cbbShineMessageResponse);
+            }
+
+            @Override
+            public void timeout(Throwable throwable) {
+                callback.timeout();
+            }
+        });
+    }
+
+    @Override
+    public void response(CbbShineMessageRequest msg) throws BusinessException {
+        Assert.notNull(msg, "ShineMessageRequest不能为null");
+
+        Session session = sessionManager.getSession(msg.getTerminalId());
+        if (session == null) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
+        }
+        DefaultResponseMessageSender sender = new DefaultResponseMessageSender(msg.getRequestId(), session);
+        Message message = new Message(Constants.SYSTEM_TYPE, msg.getAction(), msg.getData());
+        sender.response(message);
+    }
+}

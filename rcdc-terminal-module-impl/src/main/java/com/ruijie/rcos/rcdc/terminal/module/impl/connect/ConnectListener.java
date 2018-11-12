@@ -1,14 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.DispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.NoticeEvent;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.TerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.DispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.NoticeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbNoticeEvent;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
@@ -39,10 +38,10 @@ public class ConnectListener extends AbstractServerMessageHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectListener.class);
 
     @Autowired
-    private DispatcherHandlerSPI dispatcherHandlerSPI;
+    private CbbDispatcherHandlerSPI cbbDispatcherHandlerSPI;
 
     @Autowired
-    private TerminalEventNoticeSPI terminalEventNoticeSPI;
+    private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
 
     @Autowired
     private SessionManager sessionManager;
@@ -69,12 +68,12 @@ public class ConnectListener extends AbstractServerMessageHandler {
         handleFirstMessage(sender, message);
 
         String terminalId = getTerminalIdFromSession(sender.getSession());
-        DispatcherRequest request = new DispatcherRequest();
+        CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setDispatcherKey(message.getAction());
         request.setRequestId(sender.getResponseId());
         request.setTerminalId(terminalId);
         request.setData(message.getData());
-        dispatcherHandlerSPI.dispatch(request);
+        cbbDispatcherHandlerSPI.dispatch(request);
     }
 
     /**
@@ -112,13 +111,13 @@ public class ConnectListener extends AbstractServerMessageHandler {
         String terminalId = getTerminalIdFromSession(session);
         sessionManager.removeSession(terminalId);
         try {
-            basicInfoService.modifyTerminalState(terminalId, TerminalStateEnums.OFFLINE);
+            basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
         } catch (BusinessException e) {
             LOGGER.error("修改终端状态失败", e);
         }
         //发出连接关闭通知
-        NoticeRequest noticeRequest = new NoticeRequest(NoticeEvent.OFFLINE, terminalId);
-        terminalEventNoticeSPI.notify(noticeRequest);
+        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(CbbNoticeEvent.OFFLINE, terminalId);
+        cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
         //清除收集日志缓存
         gatherLogCacheManager.removeCache(terminalId);
         //更新终端检测状态

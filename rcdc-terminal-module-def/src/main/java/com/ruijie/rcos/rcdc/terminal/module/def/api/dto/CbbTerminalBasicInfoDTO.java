@@ -1,28 +1,25 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
-
+package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 
-import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Date;
 import java.util.UUID;
 
 /**
- * Description: 终端基本信息实体类
- * Copyright: Copyright (c) 2018
- * Company: Ruijie Co., Ltd.
- * Create Time: 2018/10/30
+ * Description: Function Description
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2018/10/31
  *
- * @author Jarman
+ * @author Jarman
  */
-@Entity
-@Table(name = "t_terminal_basic_info")
-public class TerminalBasicInfoEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class CbbTerminalBasicInfoDTO {
+
     private UUID id;
 
     private String name;
@@ -41,10 +38,8 @@ public class TerminalBasicInfoEntity {
 
     private String secondDns;
 
-    @Enumerated(EnumType.ORDINAL)
     private CbbGetNetworkModeEnums getIpMode;
 
-    @Enumerated(EnumType.ORDINAL)
     private CbbGetNetworkModeEnums getDnsMode;
 
     private String productType;
@@ -69,7 +64,6 @@ public class TerminalBasicInfoEntity {
 
     private String hardwareVersion;
 
-    @Enumerated(EnumType.ORDINAL)
     private CbbNetworkModeEnums networkMode;
 
     private Date createTime;
@@ -79,6 +73,10 @@ public class TerminalBasicInfoEntity {
     private Date onlineTime;
 
     private Date offlineTime;
+
+    private String detectResult;
+
+    private Integer version;
 
     /**
      * 检测时间
@@ -90,8 +88,6 @@ public class TerminalBasicInfoEntity {
      */
     @Enumerated(EnumType.ORDINAL)
     private CbbDetectStateEnums detectState;
-
-    private Integer version;
 
     @Enumerated(EnumType.ORDINAL)
     private CbbTerminalStateEnums state;
@@ -168,6 +164,21 @@ public class TerminalBasicInfoEntity {
         this.secondDns = secondDns;
     }
 
+    public CbbGetNetworkModeEnums getGetIpMode() {
+        return getIpMode;
+    }
+
+    public void setGetIpMode(CbbGetNetworkModeEnums getIpMode) {
+        this.getIpMode = getIpMode;
+    }
+
+    public CbbGetNetworkModeEnums getGetDnsMode() {
+        return getDnsMode;
+    }
+
+    public void setGetDnsMode(CbbGetNetworkModeEnums getDnsMode) {
+        this.getDnsMode = getDnsMode;
+    }
 
     public String getProductType() {
         return productType;
@@ -257,22 +268,6 @@ public class TerminalBasicInfoEntity {
         this.hardwareVersion = hardwareVersion;
     }
 
-    public CbbGetNetworkModeEnums getGetIpMode() {
-        return getIpMode;
-    }
-
-    public void setGetIpMode(CbbGetNetworkModeEnums getIpMode) {
-        this.getIpMode = getIpMode;
-    }
-
-    public CbbGetNetworkModeEnums getGetDnsMode() {
-        return getDnsMode;
-    }
-
-    public void setGetDnsMode(CbbGetNetworkModeEnums getDnsMode) {
-        this.getDnsMode = getDnsMode;
-    }
-
     public CbbNetworkModeEnums getNetworkMode() {
         return networkMode;
     }
@@ -313,20 +308,12 @@ public class TerminalBasicInfoEntity {
         this.offlineTime = offlineTime;
     }
 
-    public Date getDetectTime() {
-        return detectTime;
+    public String getDetectResult() {
+        return detectResult;
     }
 
-    public void setDetectTime(Date detectTime) {
-        this.detectTime = detectTime;
-    }
-
-    public CbbDetectStateEnums getDetectState() {
-        return detectState;
-    }
-
-    public void setDetectState(CbbDetectStateEnums detectState) {
-        this.detectState = detectState;
+    public void setDetectResult(String detectResult) {
+        this.detectResult = detectResult;
     }
 
     public Integer getVersion() {
@@ -343,5 +330,21 @@ public class TerminalBasicInfoEntity {
 
     public void setState(CbbTerminalStateEnums state) {
         this.state = state;
+    }
+
+    public Date getDetectTime() {
+        return detectTime;
+    }
+
+    public void setDetectTime(Date detectTime) {
+        this.detectTime = detectTime;
+    }
+
+    public CbbDetectStateEnums getDetectState() {
+        return detectState;
+    }
+
+    public void setDetectState(CbbDetectStateEnums detectState) {
+        this.detectState = detectState;
     }
 }

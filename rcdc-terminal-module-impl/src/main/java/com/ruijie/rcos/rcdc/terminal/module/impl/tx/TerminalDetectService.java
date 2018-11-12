@@ -1,11 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.DetectStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
 import com.ruijie.rcos.sk.base.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,25 +36,34 @@ public class TerminalDetectService {
      * @param terminalId   终端id
      * @param detectResult 检测结果数据对象
      */
-    public void updateBasicInfoAndDetect(String terminalId, TerminalDetectResult detectResult) {
+    public void updateBasicInfoAndDetect(String terminalId, TerminalDetectResponse detectResult) {
         Assert.hasLength(terminalId, "terminalId不能为空");
         Assert.notNull(detectResult, "TerminalDetectResult不能为null");
+        TerminalDetectResponse.DetectResult result = detectResult.getResult();
+        if (StateEnums.FAILURE == detectResult.getErrorCode()) {
+            modifyDetectInfo(terminalId, CbbDetectStateEnums.FAILURE);
+            return;
+        }
 
         //检测数据入库
         TerminalDetectionEntity entity = new TerminalDetectionEntity();
         Date now = new Date();
         entity.setTerminalId(terminalId);
-        entity.setBandwidth(detectResult.getBandwidth());
-        entity.setCanAccessInternet(detectResult.getCanAccessInternet());
-        entity.setPacketLossRate(detectResult.getPacketLossRate());
-        entity.setIpConflict(detectResult.getIpConflict());
-        entity.setNetworkDelay(detectResult.getNetworkDelay());
+        entity.setBandwidth(result.getBandwidth());
+        entity.setCanAccessInternet(result.getCanAccessInternet());
+        entity.setPacketLossRate(result.getPacketLossRate());
+        entity.setIpConflict(result.getIpConflict());
+        entity.setNetworkDelay(result.getNetworkDelay());
         entity.setDetectTime(now);
         detectionDAO.save(entity);
         //更新基本信息表检测数据字段
+        modifyDetectInfo(terminalId, CbbDetectStateEnums.SUCCESS);
+    }
+
+    private void modifyDetectInfo(String terminalId, CbbDetectStateEnums state) {
         TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
-        basicInfoDAO.modifyDetectInfo(terminalId, basicInfoEntity.getVersion(), now,
-                DetectStateEnums.SUCCESS.ordinal());
+        basicInfoDAO.modifyDetectInfo(terminalId, basicInfoEntity.getVersion(), new Date(),
+                state.ordinal());
     }
 
     /**
@@ -61,11 +71,11 @@ public class TerminalDetectService {
      */
     public void setOfflineTerminalToFailureState() {
         List<TerminalBasicInfoEntity> basicInfoList =
-                basicInfoDAO.findTerminalBasicInfoEntitiesByDetectState(DetectStateEnums.DOING);
+                basicInfoDAO.findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums.DOING);
         Date now = new Date();
         basicInfoList.forEach(entity -> {
             basicInfoDAO.modifyDetectInfo(entity.getTerminalId(), entity.getVersion(), now,
-                    DetectStateEnums.FAILURE.ordinal());
+                    CbbDetectStateEnums.FAILURE.ordinal());
         });
     }
 }
