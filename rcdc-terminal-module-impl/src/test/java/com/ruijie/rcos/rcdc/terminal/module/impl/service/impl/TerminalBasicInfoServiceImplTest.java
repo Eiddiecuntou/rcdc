@@ -1,8 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
@@ -12,6 +14,7 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -138,6 +141,35 @@ public class TerminalBasicInfoServiceImplTest {
             fail();
         } catch (BusinessException e) {
             assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+        }
+    }
+
+    @Test
+    public void testModifyTerminalState() {
+        new Expectations() {{
+            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+            result = null;
+        }};
+
+        String terminalId = "123";
+        try {
+            basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+        }
+    }
+    @Test
+    public void testModifyTerminalState2() {
+        new Expectations() {{
+            basicInfoDAO.modifyTerminalState(anyString, anyInt, anyInt);
+            result = 0;
+        }};
+
+        String terminalId = "123";
+        try {
+            basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
     }
 

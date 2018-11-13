@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Jarman
  */
 @DispatcherImplemetion(ReceiveTerminalEvent.TERMINAL_DETECT)
-public class TerminalDetectResponseHandlerImplCbb implements CbbDispatcherHandlerSPI {
+public class TerminalDetectResponseHandlerImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired
     private TerminalDetectService detectService;

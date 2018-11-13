@@ -64,7 +64,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public void detect(String[] terminalIdArr) throws BusinessException {
         Assert.notNull(terminalIdArr, "terminalIdArr不能为null");
-        Assert.state(0 == terminalIdArr.length, "terminalIdArr不能为空");
+        Assert.state(terminalIdArr.length > 0, "terminalIdArr不能为空");
         for (String terminalId : terminalIdArr) {
             detect(terminalId);
         }
