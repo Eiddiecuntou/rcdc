@@ -33,7 +33,7 @@ import static org.junit.Assert.fail;
 public class CheckUpgradeHandlerImplTest {
 
     @Tested
-    private CheckUpgradeHandlerImplCbb checkUpgradeHandler;
+    private CheckUpgradeHandlerImpl checkUpgradeHandler;
 
     @Injectable
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;

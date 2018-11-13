@@ -1,17 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.web;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
+import com.ruijie.rcos.rcdc.terminal.module.web.request.DownloadLogRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.webmvc.api.response.DownloadWebResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * Description: 收集终端日志
@@ -22,8 +23,12 @@ import java.io.IOException;
  * @author Jarman
  */
 @RestController
+@RequestMapping("/terminal")
 public class TermianlLogController {
 
+    /**
+     * 终端日志文件存储路径
+     */
     private static final String TERMINAL_LOG_DIR = "/opt/ftp/terminal/log/";
 
     @Autowired
@@ -32,25 +37,21 @@ public class TermianlLogController {
     /**
      * 下载日志文件
      *
-     * @param terminalId
+     * @param request 请求参数
+     * @return 返回下载
+     * @throws BusinessException 业务异常
      */
-    @GetMapping("/download/{terminalId}")
-    public ResponseEntity<InputStreamResource> download(String terminalId) throws IOException, BusinessException {
-        String logFileName = cbbTerminalOperatorAPI.getTerminalLogName(terminalId);
+    @RequestMapping("download")
+    public DownloadWebResponse download(DownloadLogRequest request) throws BusinessException {
+        Assert.notNull(request, "DownloadLogRequest 不能为null");
+        String logFileName = cbbTerminalOperatorAPI.getTerminalLogName(request.getTerminalId());
         String logFilePath = TERMINAL_LOG_DIR + logFileName;
-        FileSystemResource file = new FileSystemResource(logFilePath);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getFilename()));
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
+        final DownloadWebResponse response = new DownloadWebResponse.Builder()
+                .setFile(new File(logFilePath))
+                .build();
 
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentLength(file.contentLength())
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(new InputStreamResource(file.getInputStream()));
+        return response;
     }
+
 
 }

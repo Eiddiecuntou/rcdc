@@ -34,6 +34,9 @@ public class TerminalDetectResponse {
         this.result = result;
     }
 
+    /**
+     * 检测结果对象
+     */
     public static class DetectResult {
         /**
          * ip冲突结果，如果有冲突则保存冲突的mac地址，否则为空值

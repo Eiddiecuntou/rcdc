@@ -31,7 +31,7 @@ import java.util.Date;
  * @author Jarman
  */
 @DispatcherImplemetion(ReceiveTerminalEvent.CHECK_UPGRADE)
-public class CheckUpgradeHandlerImplCbb implements CbbDispatcherHandlerSPI {
+public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
@@ -42,7 +42,10 @@ public class CheckUpgradeHandlerImplCbb implements CbbDispatcherHandlerSPI {
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerImplCbb.class);
+    private static final BeanCopier beanCopier = BeanCopier.create(ShineTerminalBasicInfo.class,
+            TerminalBasicInfoEntity.class, false);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerImpl.class);
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
@@ -73,7 +76,6 @@ public class CheckUpgradeHandlerImplCbb implements CbbDispatcherHandlerSPI {
 
         String jsonData = String.valueOf(request.getData());
         ShineTerminalBasicInfo shineTerminalBasicInfo = JSON.parseObject(jsonData, ShineTerminalBasicInfo.class);
-        BeanCopier beanCopier = BeanCopier.create(shineTerminalBasicInfo.getClass(), basicInfoEntity.getClass(), false);
         beanCopier.copy(shineTerminalBasicInfo, basicInfoEntity, null);
         Date now = new Date();
         basicInfoEntity.setCreateTime(now);

@@ -6,6 +6,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/11/12
  *
+ * @param <T> 业务数据对象
  * @author Jarman
  */
 public class ShineMessageResponse<T> {
