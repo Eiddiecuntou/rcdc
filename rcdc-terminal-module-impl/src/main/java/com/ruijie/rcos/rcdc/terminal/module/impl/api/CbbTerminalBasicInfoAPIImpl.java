@@ -31,7 +31,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     @Autowired
     private TerminalBasicInfoService basicInfoService;
 
-    private static final BeanCopier beanCopier = BeanCopier.create(TerminalBasicInfoEntity.class,
+    private static final BeanCopier BEAN_COPIER = BeanCopier.create(TerminalBasicInfoEntity.class,
             CbbTerminalBasicInfoDTO.class, false);
 
     @Override
@@ -43,7 +43,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
         CbbTerminalBasicInfoDTO basicInfoDTO = new CbbTerminalBasicInfoDTO();
-        beanCopier.copy(basicInfoEntity, basicInfoDTO, null);
+        BEAN_COPIER.copy(basicInfoEntity, basicInfoDTO, null);
 
         return basicInfoDTO;
     }

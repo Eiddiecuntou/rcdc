@@ -42,7 +42,7 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
 
-    private static final BeanCopier beanCopier = BeanCopier.create(ShineTerminalBasicInfo.class,
+    private static final BeanCopier BEAN_COPIER = BeanCopier.create(ShineTerminalBasicInfo.class,
             TerminalBasicInfoEntity.class, false);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerImpl.class);
@@ -76,7 +76,7 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
 
         String jsonData = String.valueOf(request.getData());
         ShineTerminalBasicInfo shineTerminalBasicInfo = JSON.parseObject(jsonData, ShineTerminalBasicInfo.class);
-        beanCopier.copy(shineTerminalBasicInfo, basicInfoEntity, null);
+        BEAN_COPIER.copy(shineTerminalBasicInfo, basicInfoEntity, null);
         Date now = new Date();
         basicInfoEntity.setCreateTime(now);
         basicInfoEntity.setUpdateTime(now);
