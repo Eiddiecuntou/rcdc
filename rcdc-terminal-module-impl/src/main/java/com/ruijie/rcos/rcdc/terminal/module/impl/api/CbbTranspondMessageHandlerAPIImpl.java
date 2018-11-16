@@ -57,7 +57,8 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
 
     @Override
     public void asyncRequest(CbbShineMessageRequest request, CbbTerminalCallback callback) throws BusinessException {
-        Assert.notNull(request, "request参数不能为空");
+        Assert.notNull(request, "request参数不能为null");
+        Assert.notNull(callback, "CbbTerminalCallback 不能为null");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(request.getTerminalId());
         Message message = new Message(Constants.SYSTEM_TYPE, request.getAction(), request.getData());
         sender.asyncRequest(message, new AsyncRequestCallBack(request.getTerminalId(), callback));

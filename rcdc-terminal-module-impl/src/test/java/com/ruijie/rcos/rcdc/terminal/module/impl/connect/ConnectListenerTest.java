@@ -67,7 +67,7 @@ public class ConnectListenerTest {
      * 测试第一个报文正常执行逻辑过程
      */
     @Test
-    public void testOnReceiveFirstMessageNormal(@Mocked Session session) {
+    public void testOnReceiveFirstMessageNormal(@Mocked Session session) throws InterruptedException {
         String terminalId = "01-1C-42-F1-2D-45";
         new Expectations() {
             {
@@ -86,7 +86,12 @@ public class ConnectListenerTest {
         String data = JSON.toJSONString(basicInfo);
         BaseMessage baseMessage = new BaseMessage(action, data);
 
-        connectListener.onReceive(sender, baseMessage);
+        try {
+            connectListener.onReceive(sender, baseMessage);
+        } catch (Exception e) {
+            fail();
+        }
+        Thread.sleep(1000);
         try {
             new Verifications() {
                 {
@@ -105,7 +110,7 @@ public class ConnectListenerTest {
      * 测试不是第一个报文执行逻辑过程
      */
     @Test
-    public void testOnReceiveNotFirstMessage(@Mocked Session session) {
+    public void testOnReceiveNotFirstMessage(@Mocked Session session) throws InterruptedException {
         String terminalId = "01-1C-42-F1-2D-45";
         new Expectations() {
             {
@@ -116,13 +121,18 @@ public class ConnectListenerTest {
             }
         };
 
-        String action = ReceiveTerminalEvent.NOTICE_UPLOAD_LOG_FINISH;
-        ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
-        basicInfo.setTerminalId(terminalId);
-        String data = JSON.toJSONString(basicInfo);
-        BaseMessage baseMessage = new BaseMessage(action, data);
+        try {
+            String action = ReceiveTerminalEvent.NOTICE_UPLOAD_LOG_FINISH;
+            ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
+            basicInfo.setTerminalId(terminalId);
+            String data = JSON.toJSONString(basicInfo);
+            BaseMessage baseMessage = new BaseMessage(action, data);
 
-        connectListener.onReceive(sender, baseMessage);
+            connectListener.onReceive(sender, baseMessage);
+        } catch (Exception e) {
+            fail();
+        }
+        Thread.sleep(1000);
         try {
             new Verifications() {
                 {
@@ -135,55 +145,6 @@ public class ConnectListenerTest {
         }
     }
 
-
-    /**
-     * 测试未绑定session情况
-     */
-    @Test
-    public void testOnReceiveNotBindSession(@Mocked Session session) {
-        String terminalId = "01-1C-42-F1-2D-45";
-        new Expectations() {
-            {
-                session.getAttribute(anyString);
-                result = null;
-            }
-        };
-
-        String action = ReceiveTerminalEvent.NOTICE_UPLOAD_LOG_FINISH;
-        ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
-        basicInfo.setTerminalId(terminalId);
-        String data = JSON.toJSONString(basicInfo);
-        BaseMessage baseMessage = new BaseMessage(action, data);
-
-        try {
-            connectListener.onReceive(sender, baseMessage);
-            fail();
-        } catch (IllegalArgumentException e) {
-            Assert.assertEquals(e.getMessage(), "session 未绑定终端");
-        }
-    }
-
-    /**
-     * 测试参数未传terminalId
-     */
-    @Test
-    public void testOnReceiveTerminalIsNull() {
-        String action = ReceiveTerminalEvent.CHECK_UPGRADE;
-        ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
-        basicInfo.setTerminalId(null);
-        String data = JSON.toJSONString(basicInfo);
-        BaseMessage baseMessage = new BaseMessage(action, data);
-
-        try {
-            connectListener.onReceive(sender, baseMessage);
-            Assert.fail();
-
-        } catch (IllegalArgumentException e) {
-            Assert.assertEquals(e.getMessage(), "terminalId不能为空");
-        }
-    }
-
-
     @Test
     public void testOnConnectSuccessParamIsNull() {
         try {
@@ -194,7 +155,7 @@ public class ConnectListenerTest {
     }
 
     @Test
-    public void testOnConnectClosed(@Mocked Session session) {
+    public void testOnConnectClosed(@Mocked Session session) throws InterruptedException {
         new Expectations() {
             {
                 sessionManager.removeSession(anyString);
@@ -208,7 +169,7 @@ public class ConnectListenerTest {
         };
 
         connectListener.onConnectClosed(session);
-
+        Thread.sleep(1000);
         try {
             new Verifications() {
                 {

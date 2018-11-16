@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
+import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -56,6 +57,12 @@ public class ConnectListener extends AbstractServerMessageHandler {
     private TerminalDetectService detectService;
 
     /**
+     * 接收报文处理线程池,分配50个线程数
+     */
+    private static final SkyengineScheduledThreadPoolExecutor MESSAGE_HANDLER_THREAD_POOL
+            = new SkyengineScheduledThreadPoolExecutor(50, ConnectListener.class.getName());
+
+    /**
      * 绑定终端session的key
      */
     private static final String TERMINAL_BIND_KEY = "terminal_bind_session_key";
@@ -64,9 +71,19 @@ public class ConnectListener extends AbstractServerMessageHandler {
     public void onReceive(ResponseMessageSender sender, BaseMessage message) {
         Assert.notNull(sender, "ResponseMessageSender不能为null");
         Assert.notNull(message, "BaseMessage不能为null");
+        //使用线程池处理接收到的报文
+        MESSAGE_HANDLER_THREAD_POOL.execute(() -> handleMessage(sender, message));
+    }
+
+    /**
+     * 处理接收到的报文
+     *
+     * @param sender  连接通道对象
+     * @param message 报文对象
+     */
+    private void handleMessage(ResponseMessageSender sender, BaseMessage message) {
         //处理第一个报文
         handleFirstMessage(sender, message);
-
         String terminalId = getTerminalIdFromSession(sender.getSession());
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setDispatcherKey(message.getAction());

@@ -20,12 +20,24 @@ public class TermianlSystemUpgradePackageEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    /**
+     * 刷机包名称
+     */
     private String name;
 
+    /**
+     * 存储路径
+     */
     private String storePath;
 
+    /**
+     * 包类型，VDI ISO、IDV ISO、OTA
+     */
     private String packageType;
 
+    /**
+     * 上传时间
+     */
     private Date uploadTime;
 
     public UUID getId() {
