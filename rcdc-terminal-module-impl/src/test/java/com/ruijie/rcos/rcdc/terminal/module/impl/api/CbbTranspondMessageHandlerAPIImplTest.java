@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.Session;
@@ -98,7 +99,8 @@ public class CbbTranspondMessageHandlerAPIImplTest {
     }
 
     @Test
-    public void testAsyncRequest() throws BusinessException, IOException, InterruptedException {
+    public void testAsyncRequest(@Mocked CbbTerminalCallback cbbTerminalCallback) throws BusinessException, IOException,
+            InterruptedException {
         new Expectations() {{
             sessionManager.getRequestMessageSender(anyString);
             result = sender;
@@ -108,7 +110,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         try {
             CbbShineMessageRequest request = new CbbShineMessageRequest();
             request.setAction("login");
-            transpondMessageHandlerAPI.asyncRequest(request, null);
+            transpondMessageHandlerAPI.asyncRequest(request, cbbTerminalCallback);
         } catch (BusinessException e) {
             fail();
         }
