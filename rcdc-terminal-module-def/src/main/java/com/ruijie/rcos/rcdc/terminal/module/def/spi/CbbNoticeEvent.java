@@ -18,4 +18,10 @@ public interface CbbNoticeEvent {
      * 连接关闭，离线状态
      */
     String OFFLINE = "offline";
+
+    /**
+     * 接收usb信息
+     */
+    String RECEIVE_USB_INFO = "receive_usb_info";
+
 }
