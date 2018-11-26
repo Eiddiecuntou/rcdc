@@ -19,17 +19,17 @@ public class CbbUsbInfoRequest implements Request {
     /**
      * 厂商标识码
      */
-    private Integer idVendor;
+    private String idVendor;
 
     /**
      * 产品标识码
       */
-    private Integer idProduct;
+    private String idProduct;
 
     /**
      * 发行版本号
      */
-    private Integer bcdDevice;
+    private String bcdDevice;
 
     /**
      * 厂商名
@@ -59,27 +59,27 @@ public class CbbUsbInfoRequest implements Request {
         this.dispatcherKey = dispatcherKey;
     }
 
-    public Integer getIdVendor() {
+    public String getIdVendor() {
         return idVendor;
     }
 
-    public void setIdVendor(Integer idVendor) {
+    public void setIdVendor(String idVendor) {
         this.idVendor = idVendor;
     }
 
-    public Integer getIdProduct() {
+    public String getIdProduct() {
         return idProduct;
     }
 
-    public void setIdProduct(Integer idProduct) {
+    public void setIdProduct(String idProduct) {
         this.idProduct = idProduct;
     }
 
-    public Integer getBcdDevice() {
+    public String getBcdDevice() {
         return bcdDevice;
     }
 
-    public void setBcdDevice(Integer bcdDevice) {
+    public void setBcdDevice(String bcdDevice) {
         this.bcdDevice = bcdDevice;
     }
 
