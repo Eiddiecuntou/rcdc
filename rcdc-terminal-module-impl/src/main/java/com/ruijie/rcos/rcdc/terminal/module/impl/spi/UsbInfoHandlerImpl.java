@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbUsbInfoSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.dto.CbbNoticeEvent;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.dto.CbbNoticeEventSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbUsbInfoRequest;
 import com.ruijie.rcos.sk.base.util.Assert;
@@ -38,7 +38,7 @@ public class UsbInfoHandlerImpl implements CbbDispatcherHandlerSPI {
         String data = (String) request.getData();
         LOGGER.debug("接收到的usb报文信息：{}",data);
         CbbUsbInfoRequest cbbUsbInfoRequest = JSON.parseObject(data,CbbUsbInfoRequest.class);
-        cbbUsbInfoRequest.setDispatcherKey(CbbNoticeEvent.RECEIVE_USB_INFO);
+        cbbUsbInfoRequest.setDispatcherKey(CbbNoticeEventSPI.RECEIVE_USB_INFO);
         cbbUsbInfoSPI.receiveUsbInfo(cbbUsbInfoRequest);
     }
 }

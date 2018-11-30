@@ -8,7 +8,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.spi.dto;
  *
  * @author Jarman
  */
-public interface CbbNoticeEvent {
+public interface CbbNoticeEventSPI {
     /**
      * 连接成功，在线状态
      */

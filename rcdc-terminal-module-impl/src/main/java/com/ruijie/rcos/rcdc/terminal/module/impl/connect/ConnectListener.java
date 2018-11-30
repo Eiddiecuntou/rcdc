@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.dto.CbbNoticeEvent;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.dto.CbbNoticeEventSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
@@ -133,7 +133,7 @@ public class ConnectListener extends AbstractServerMessageHandler {
             LOGGER.error("修改终端状态失败", e);
         }
         //发出连接关闭通知
-        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(CbbNoticeEvent.OFFLINE, terminalId);
+        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(CbbNoticeEventSPI.OFFLINE, terminalId);
         cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
         //清除收集日志缓存
         gatherLogCacheManager.removeCache(terminalId);

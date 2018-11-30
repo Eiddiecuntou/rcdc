@@ -6,7 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.dto.CbbNoticeEvent;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.dto.CbbNoticeEventSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -53,7 +53,7 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
         //保存终端基本信息
         saveBasicInfo(request);
         //通知上层组件当前终端为在线状态
-        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(CbbNoticeEvent.ONLINE, request.getTerminalId());
+        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(CbbNoticeEventSPI.ONLINE, request.getTerminalId());
         cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
         //TODO 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
         CbbShineMessageRequest cbbShineMessageRequest = new CbbShineMessageRequest();
