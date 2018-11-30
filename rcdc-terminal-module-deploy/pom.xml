@@ -31,5 +31,12 @@
 			<version>${project.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.ruijie.rcos.sk.commkit</groupId>
+			<artifactId>sk-commkit-server</artifactId>
+			<version>${skyengine.version}</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 </project>

@@ -40,15 +40,4 @@
         </dependency>
 
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.ruijie.rcos.sk.commkit</groupId>
-                <artifactId>sk-commkit-server</artifactId>
-                <version>${skyengine.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
 </project>
