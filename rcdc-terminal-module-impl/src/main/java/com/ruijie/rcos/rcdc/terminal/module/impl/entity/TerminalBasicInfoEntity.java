@@ -92,6 +92,7 @@ public class TerminalBasicInfoEntity {
     @Enumerated(EnumType.STRING)
     private CbbDetectStateEnums detectState;
 
+    @Version
     private Integer version;
 
     @Enumerated(EnumType.STRING)

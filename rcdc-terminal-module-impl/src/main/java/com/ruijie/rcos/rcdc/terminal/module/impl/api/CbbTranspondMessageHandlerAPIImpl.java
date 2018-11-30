@@ -40,7 +40,7 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         sender.request(message);
     }
 
-    @Override
+//    @Override
     public CbbShineMessageResponse syncRequest(CbbShineMessageRequest request) throws IOException, InterruptedException,
             BusinessException {
         Assert.notNull(request, "request参数不能为空");

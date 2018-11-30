@@ -69,13 +69,13 @@ public interface CbbTerminalOperatorAPI {
     void detect(String[] terminalIdArr) throws BusinessException;
 
     /**
-     * 获取终端日志文件名
-     * @param terminalId 终端id
-     * @return 返回日志文件名
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    String getTerminalLogName(String terminalId) throws BusinessException;
+//     * 获取终端日志文件名
+//     * @param terminalId 终端id
+//     * @return 返回日志文件名
+//     * @throws BusinessException 业务异常
+//     */
+//    @NoRollback
+//    String getTerminalLogName(String terminalId) throws BusinessException;
 
 
 }

@@ -27,18 +27,18 @@ public interface CbbTranspondMessageHandlerAPI {
     @NoRollback
     void request(CbbShineMessageRequest msg) throws BusinessException;
 
-    /**
-     * 同步发送消息
-     *
-     * @param msg 请求消息对象
-     * @return 消息对象
-     * @throws InterruptedException 线程中断异常
-     * @throws IOException          请求超时
-     * @throws BusinessException    业务异常
-     */
-    @NoRollback
-    CbbShineMessageResponse syncRequest(CbbShineMessageRequest msg) throws InterruptedException, IOException,
-            BusinessException;
+//    /**
+//     * 同步发送消息
+//     *
+//     * @param msg 请求消息对象
+//     * @return 消息对象
+//     * @throws InterruptedException 线程中断异常
+//     * @throws IOException          请求超时
+//     * @throws BusinessException    业务异常
+//     */
+//    @NoRollback
+//    CbbShineMessageResponse syncRequest(CbbShineMessageRequest msg) throws InterruptedException, IOException,
+//            BusinessException;
 
     /**
      * 异步发送消息

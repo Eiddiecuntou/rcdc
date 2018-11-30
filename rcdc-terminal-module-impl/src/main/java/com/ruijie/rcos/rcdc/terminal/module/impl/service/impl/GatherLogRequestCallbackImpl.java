@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
@@ -8,8 +11,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.CommonMsg;
 import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Description: 收集日志回调接口实现类
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Service;
  *
  * @author Jarman
  */
-@Service
+//@Service
+//@Scope("prototype")
 public class GatherLogRequestCallbackImpl extends AbstractRequestCallback {
 
     private String terminalId;

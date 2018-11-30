@@ -70,7 +70,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         }
     }
 
-    @Override
+//    @Override
     public String getTerminalLogName(String terminalId) throws BusinessException {
         Assert.hasLength(terminalId, "terminalId不能为空");
         GatherLogCache cache = gatherLogCacheManager.getCache(terminalId);

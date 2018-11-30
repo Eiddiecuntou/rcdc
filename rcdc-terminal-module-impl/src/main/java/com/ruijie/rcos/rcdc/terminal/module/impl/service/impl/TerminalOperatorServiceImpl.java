@@ -15,9 +15,11 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 
 /**
@@ -29,7 +31,7 @@ import java.util.Date;
  * @author Jarman
  */
 @Service
-public class TerminalOperatorServiceImpl implements TerminalOperatorService {
+public class TerminalOperatorServiceImpl implements TerminalOperatorService, ApplicationContextAware {
 
     @Autowired
     private SessionManager sessionManager;
@@ -39,6 +41,13 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
+
+    private ApplicationContext applicationContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     public void shutdown(String terminalId) throws BusinessException {
@@ -77,15 +86,15 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         if (gatherLogCache == null) {
             gatherLogCache = gatherLogCacheManager.addCache(terminalId);
         }
-        //正在收集中,不允许重复执行
+        // 正在收集中,不允许重复执行
         if (GatherLogStateEnums.DOING == gatherLogCache.getState()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_GATHER_LOG_DOING);
         }
 
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.GATHER_TERMINAL_LOG.getName(), "");
-        //发消息给shine，执行日志收集，异步等待日志收集结果
-        sender.asyncRequest(message, new GatherLogRequestCallbackImpl(terminalId));
+        // 发消息给shine，执行日志收集，异步等待日志收集结果
+        sender.asyncRequest(message, applicationContext.getBean(GatherLogRequestCallbackImpl.class, terminalId));
     }
 
     @Override
@@ -94,8 +103,8 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.DETECT_TERMINAL.getName(), "");
         sender.request(message);
-        //更新检测状态未正在检测中
-        //FIXME 当RCDC服务异常退出后，存在状态无法更新的情况，所以需要在RCDC初始化的时候把检测状态为正在检测的终端更新为检测失败
+        // 更新检测状态未正在检测中
+        // FIXME 当RCDC服务异常退出后，存在状态无法更新的情况，所以需要在RCDC初始化的时候把检测状态为正在检测的终端更新为检测失败
         TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
         basicInfoDAO.modifyDetectInfo(terminalId, basicInfoEntity.getVersion(), new Date(),
                 CbbDetectStateEnums.DOING.ordinal());

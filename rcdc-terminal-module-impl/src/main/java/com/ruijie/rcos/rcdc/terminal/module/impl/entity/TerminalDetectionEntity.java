@@ -51,6 +51,9 @@ public class TerminalDetectionEntity {
      * 检测时间
      */
     private Date detectTime;
+    
+    @Version
+    private int version;
 
     public UUID getId() {
         return id;
@@ -114,5 +117,13 @@ public class TerminalDetectionEntity {
 
     public void setNetworkDelay(Double networkDelay) {
         this.networkDelay = networkDelay;
+    }
+    
+    public void setVersion(int version) {
+        this.version = version;
+    }
+    
+    public int getVersion() {
+        return version;
     }
 }

@@ -34,7 +34,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     private static final BeanCopier BEAN_COPIER = BeanCopier.create(TerminalBasicInfoEntity.class,
             CbbTerminalBasicInfoDTO.class, false);
 
-    @Override
+//    @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
         TerminalBasicInfoEntity basicInfoEntity =

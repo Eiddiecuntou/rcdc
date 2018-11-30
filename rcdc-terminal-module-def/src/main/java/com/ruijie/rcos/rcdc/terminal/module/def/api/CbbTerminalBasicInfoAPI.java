@@ -27,15 +27,15 @@ public interface CbbTerminalBasicInfoAPI {
     @NoRollback
     void delete(CbbTerminalIdRequest request) throws BusinessException;
 
-    /**
-     * 根据terminalId获取终端基本信息
-     *
-     * @param request 请求参数对象
-     * @return 终端基本信息DTO
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException;
+//    /**
+//     * 根据terminalId获取终端基本信息
+//     *
+//     * @param request 请求参数对象
+//     * @return 终端基本信息DTO
+//     * @throws BusinessException 业务异常
+//     */
+//    @NoRollback
+//    CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 修改终端名称

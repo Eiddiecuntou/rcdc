@@ -40,6 +40,17 @@ public class TermianlSystemUpgradePackageEntity {
      */
     private Date uploadTime;
 
+    @Version
+    private int version;
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
     public UUID getId() {
         return id;
     }

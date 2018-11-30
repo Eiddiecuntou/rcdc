@@ -25,6 +25,9 @@ public class TerminalOfflineCommandEntity {
     private String command;
 
     private Date createTime;
+    
+    @Version
+    private int version;
 
     public UUID getId() {
         return id;
@@ -56,5 +59,13 @@ public class TerminalOfflineCommandEntity {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+    
+    public void setVersion(int version) {
+        this.version = version;
+    }
+    
+    public int getVersion() {
+        return version;
     }
 }
