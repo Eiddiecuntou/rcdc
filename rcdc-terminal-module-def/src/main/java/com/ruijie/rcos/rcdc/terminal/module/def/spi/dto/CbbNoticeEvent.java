@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.spi;
+package com.ruijie.rcos.rcdc.terminal.module.def.spi.dto;
 
 /**
  * Description: 终端通知事件定义

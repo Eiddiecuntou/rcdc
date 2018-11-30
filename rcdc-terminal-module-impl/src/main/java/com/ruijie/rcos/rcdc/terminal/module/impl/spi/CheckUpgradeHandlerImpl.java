@@ -5,8 +5,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAP
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbNoticeEvent;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.dto.CbbNoticeEvent;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
