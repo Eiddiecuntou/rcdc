@@ -86,10 +86,10 @@ public class CbbTerminalBasicInfoDTO {
     /**
      * 检测结果状态
      */
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private CbbDetectStateEnums detectState;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private CbbTerminalStateEnums state;
 
     public UUID getId() {

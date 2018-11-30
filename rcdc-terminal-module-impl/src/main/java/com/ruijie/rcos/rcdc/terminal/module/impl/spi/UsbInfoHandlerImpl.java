@@ -1,5 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbNoticeEvent;
@@ -8,9 +12,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbUsbInfoRequest;
 import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**

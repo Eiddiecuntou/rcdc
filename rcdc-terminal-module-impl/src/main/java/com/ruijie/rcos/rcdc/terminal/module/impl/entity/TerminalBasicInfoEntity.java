@@ -1,14 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
+
+import javax.persistence.*;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 
 /**
  * Description: 终端基本信息实体类
@@ -41,10 +42,10 @@ public class TerminalBasicInfoEntity {
 
     private String secondDns;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private CbbGetNetworkModeEnums getIpMode;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private CbbGetNetworkModeEnums getDnsMode;
 
     private String productType;
@@ -69,7 +70,7 @@ public class TerminalBasicInfoEntity {
 
     private String hardwareVersion;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private CbbNetworkModeEnums networkMode;
 
     private Date createTime;
@@ -88,12 +89,12 @@ public class TerminalBasicInfoEntity {
     /**
      * 检测结果状态
      */
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private CbbDetectStateEnums detectState;
 
     private Integer version;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private CbbTerminalStateEnums state;
 
     public UUID getId() {
