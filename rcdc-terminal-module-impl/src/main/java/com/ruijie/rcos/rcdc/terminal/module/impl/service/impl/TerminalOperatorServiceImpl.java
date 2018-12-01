@@ -44,20 +44,20 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     @Override
     public void shutdown(String terminalId) throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId 不能为空");
+        Assert.hasText(terminalId, "terminalId 不能为空");
         operateTerminal(terminalId, SendTerminalEventEnums.SHUTDOWN_TERMINAL, "");
     }
 
     @Override
     public void restart(String terminalId) throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId 不能为空");
+        Assert.hasText(terminalId, "terminalId 不能为空");
         operateTerminal(terminalId, SendTerminalEventEnums.RESTART_TERMINAL, "");
     }
 
     @Override
     public void changePassword(String terminalId, String password) throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId 不能为空");
-        Assert.hasLength(password, "password 不能为空");
+        Assert.hasText(terminalId, "terminalId 不能为空");
+        Assert.hasText(password, "password 不能为空");
         operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD, password);
     }
 
@@ -74,7 +74,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     @Override
     public void gatherLog(final String terminalId) throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         GatherLogCache gatherLogCache = gatherLogCacheManager.getCache(terminalId);
         if (gatherLogCache == null) {
             gatherLogCache = gatherLogCacheManager.addCache(terminalId);
@@ -92,7 +92,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     @Override
     public void detect(String terminalId) throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.DETECT_TERMINAL.getName(), "");
         sender.request(message);

@@ -33,7 +33,7 @@ public class UsbInfoHandlerImpl implements CbbDispatcherHandlerSPI {
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "DispatcherRequest不能为null");
-        Assert.hasLength(request.getTerminalId(), "terminalId 不能为空");
+        Assert.hasText(request.getTerminalId(), "terminalId 不能为空");
         Assert.notNull(request.getData(), "报文消息体不能为空");
         String data = (String) request.getData();
         LOGGER.debug("接收到的usb报文信息：{}",data);

@@ -32,12 +32,12 @@ public class GatherLogRequestCallbackImpl extends AbstractRequestCallback {
         Assert.notNull(msg, "收集日志返回消息不能为null");
         Assert.notNull(msg.getData(), "收集日志返回报文消息体不能为null");
         String data = ((String) msg.getData()).trim();
-        Assert.hasLength(data, "返回的应答消息不能为空");
+        Assert.hasText(data, "返回的应答消息不能为空");
         CommonMsg responseMsg = JSON.parseObject(data, CommonMsg.class);
         Assert.notNull(responseMsg, "应答消息格式错误");
         if (StateEnums.SUCCESS == responseMsg.getErrorCode()) {
             String logZipName = responseMsg.getMsg();
-            Assert.hasLength(logZipName, "返回的日志文件名称不能为空");
+            Assert.hasText(logZipName, "返回的日志文件名称不能为空");
             gatherLogCacheManager.updateState(terminalId, GatherLogStateEnums.DONE, logZipName);
             return;
         }

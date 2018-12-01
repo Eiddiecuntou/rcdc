@@ -107,7 +107,7 @@ public class ConnectListener extends AbstractServerMessageHandler {
             String data = String.valueOf(message.getData());
             ShineTerminalBasicInfo basicInfo = JSON.parseObject(data, ShineTerminalBasicInfo.class);
             String terminalId = basicInfo.getTerminalId();
-            Assert.hasLength(terminalId, "terminalId不能为空");
+            Assert.hasText(terminalId, "terminalId不能为空");
             //Session 绑定terminalId
             sender.getSession().setAttribute(TERMINAL_BIND_KEY, terminalId);
             sessionManager.bindSession(terminalId, sender.getSession());
@@ -149,7 +149,7 @@ public class ConnectListener extends AbstractServerMessageHandler {
 
     private String getTerminalIdFromSession(Session session) {
         String terminalId = session.getAttribute(TERMINAL_BIND_KEY);
-        Assert.hasLength(terminalId, "session 未绑定终端");
+        Assert.hasText(terminalId, "session 未绑定终端");
         return terminalId;
     }
 }

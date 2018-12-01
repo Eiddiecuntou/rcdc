@@ -34,7 +34,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     @Override
     public void modifyTerminalName(String terminalId, String terminalName) throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId 不能为空");
+        Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(terminalName, "terminalName 不能为空");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
@@ -49,7 +49,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     @Override
     public void modifyTerminalNetworkConfig(String terminalId, ShineNetworkConfig shineNetworkConfig)
             throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId 不能为空");
+        Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(shineNetworkConfig, "ShineNetworkConfig 不能为null");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
@@ -63,7 +63,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     @Override
     public void modifyTerminalState(String terminalId, CbbTerminalStateEnums state) throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId 不能为空");
+        Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(state, "CbbTerminalStateEnums 不能为空");
         CbbTerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
         if (basicInfoEntity == null) {

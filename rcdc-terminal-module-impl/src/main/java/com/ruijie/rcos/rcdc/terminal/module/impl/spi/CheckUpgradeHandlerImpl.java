@@ -66,7 +66,7 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
 
     private void saveBasicInfo(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest 不能为null");
-        Assert.hasLength(request.getTerminalId(), "terminalId 不能为空");
+        Assert.hasText(request.getTerminalId(), "terminalId 不能为空");
         Assert.notNull(request.getData(), "报文消息体不能为空");
         String terminalId = request.getTerminalId();
         CbbTerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);

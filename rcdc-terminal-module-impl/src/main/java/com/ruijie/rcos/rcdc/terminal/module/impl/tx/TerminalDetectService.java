@@ -37,7 +37,7 @@ public class TerminalDetectService {
      * @param detectResult 检测结果数据对象
      */
     public void updateBasicInfoAndDetect(String terminalId, TerminalDetectResponse detectResult) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(detectResult, "TerminalDetectResult不能为null");
         TerminalDetectResponse.DetectResult result = detectResult.getResult();
         if (StateEnums.FAILURE == detectResult.getErrorCode()) {
