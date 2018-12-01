@@ -1,19 +1,21 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
  * Description: 终端基本信息维护
@@ -23,7 +25,7 @@ import org.springframework.cglib.beans.BeanCopier;
  *
  * @author Jarman
  */
-public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
+public class CbbTerminalAPIImpl implements CbbTerminalAPI {
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
@@ -31,13 +33,13 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     @Autowired
     private TerminalBasicInfoService basicInfoService;
 
-    private static final BeanCopier BEAN_COPIER = BeanCopier.create(TerminalBasicInfoEntity.class,
+    private static final BeanCopier BEAN_COPIER = BeanCopier.create(CbbTerminalEntity.class,
             CbbTerminalBasicInfoDTO.class, false);
 
-//    @Override
+    @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
-        TerminalBasicInfoEntity basicInfoEntity =
+        CbbTerminalEntity basicInfoEntity =
                 basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(request.getTerminalId());
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
@@ -49,7 +51,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     }
 
     @Override
-    public void delete(CbbTerminalIdRequest request) throws BusinessException {
+    public DefaultResponse delete(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
         String terminalId = request.getTerminalId();
         int version = getVersion(terminalId);
@@ -57,10 +59,11 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         if (effectRow == 0) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
+        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public void modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException {
+    public DefaultResponse modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalNameRequest不能为null");
         //先发送终端名称给shine，后修改数据库
         String terminalId = request.getTerminalId();
@@ -70,10 +73,11 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         if (effectRow == 0) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
+        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public void modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException {
+    public DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalNetworkRequest不能为null");
         //先发送网络配置消息给shine，后修改数据库
         String terminalId = request.getTerminalId();
@@ -85,11 +89,15 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         basicInfoService.modifyTerminalNetworkConfig(request.getTerminalId(), shineNetworkConfig);
 
         int version = getVersion(terminalId);
-        basicInfoDAO.modifyTerminalNetworkConfig(terminalId, version, request);
+        int effectRow = basicInfoDAO.modifyTerminalNetworkConfig(terminalId, version, request);
+        if(effectRow == 0){
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+        }
+        return DefaultResponse.Builder.success();
     }
 
     private Integer getVersion(String terminalId) throws BusinessException {
-        TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }

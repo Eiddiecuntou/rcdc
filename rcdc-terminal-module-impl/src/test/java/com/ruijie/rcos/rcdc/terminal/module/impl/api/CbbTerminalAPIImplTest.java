@@ -7,7 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameReque
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -31,10 +31,10 @@ import static org.junit.Assert.fail;
  * @author Jarman
  */
 @RunWith(JMockit.class)
-public class CbbTerminalBasicInfoAPIImplTest {
+public class CbbTerminalAPIImplTest {
 
     @Tested
-    private CbbTerminalBasicInfoAPIImpl terminalBasicInfoAPI;
+    private CbbTerminalAPIImpl terminalBasicInfoAPI;
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
@@ -80,7 +80,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
         String terminalId = "123";
         String name = "t-box01";
         Date now = new Date();
-        TerminalBasicInfoEntity entity = new TerminalBasicInfoEntity();
+        CbbTerminalEntity entity = new CbbTerminalEntity();
         entity.setTerminalId(terminalId);
         entity.setName(name);
         entity.setGetIpMode(CbbGetNetworkModeEnums.AUTO);
@@ -114,7 +114,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     @Test
     public void testDeleteSuccess() {
-        TerminalBasicInfoEntity entity = new TerminalBasicInfoEntity();
+        CbbTerminalEntity entity = new CbbTerminalEntity();
         entity.setVersion(1);
         new Expectations() {{
             basicInfoDAO.deleteByTerminalId(anyString, anyInt);
@@ -148,7 +148,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
             result = 0;
         }};
 
-        new MockUp<CbbTerminalBasicInfoAPIImpl>() {
+        new MockUp<CbbTerminalAPIImpl>() {
             @Mock
             private Integer getVersion(String terminalId) throws BusinessException {
                 return 1;
@@ -239,6 +239,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
                 fail();
             }
             basicInfoDAO.modifyTerminalNetworkConfig(anyString, anyInt, (CbbTerminalNetworkRequest) any);
+            result = 1;
         }};
         CbbTerminalNetworkRequest request = new CbbTerminalNetworkRequest();
         String terminalId = "123";

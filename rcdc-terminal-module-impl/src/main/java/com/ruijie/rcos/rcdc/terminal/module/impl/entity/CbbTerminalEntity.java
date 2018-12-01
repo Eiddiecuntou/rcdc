@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import javax.persistence.*;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -20,8 +19,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
  * @author Jarman
  */
 @Entity
-@Table(name = "t_terminal_basic_info")
-public class TerminalBasicInfoEntity {
+@Table(name = "t_cbb_terminal")
+public class CbbTerminalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -64,33 +63,20 @@ public class TerminalBasicInfoEntity {
 
     private String terminalOsVersion;
 
-    private String terminalSystemVersion;
+    private String rainOsVersion;
 
-    private String softwareVersion;
+    private String rainUpgradeVersion;
 
     private String hardwareVersion;
 
     @Enumerated(EnumType.STRING)
-    private CbbNetworkModeEnums networkMode;
+    private CbbNetworkModeEnums networkAccessMode;
 
     private Date createTime;
 
-    private Date updateTime;
+    private Date lastOnlineTime;
 
-    private Date onlineTime;
-
-    private Date offlineTime;
-
-    /**
-     * 检测时间
-     */
-    private Date detectTime;
-
-    /**
-     * 检测结果状态
-     */
-    @Enumerated(EnumType.STRING)
-    private CbbDetectStateEnums detectState;
+    private Date lastOfflineTime;
 
     @Version
     private Integer version;
@@ -235,20 +221,20 @@ public class TerminalBasicInfoEntity {
         this.terminalOsVersion = terminalOsVersion;
     }
 
-    public String getTerminalSystemVersion() {
-        return terminalSystemVersion;
+    public String getRainOsVersion() {
+        return rainOsVersion;
     }
 
-    public void setTerminalSystemVersion(String terminalSystemVersion) {
-        this.terminalSystemVersion = terminalSystemVersion;
+    public void setRainOsVersion(String rainOsVersion) {
+        this.rainOsVersion = rainOsVersion;
     }
 
-    public String getSoftwareVersion() {
-        return softwareVersion;
+    public String getRainUpgradeVersion() {
+        return rainUpgradeVersion;
     }
 
-    public void setSoftwareVersion(String softwareVersion) {
-        this.softwareVersion = softwareVersion;
+    public void setRainUpgradeVersion(String rainUpgradeVersion) {
+        this.rainUpgradeVersion = rainUpgradeVersion;
     }
 
     public String getHardwareVersion() {
@@ -275,12 +261,12 @@ public class TerminalBasicInfoEntity {
         this.getDnsMode = getDnsMode;
     }
 
-    public CbbNetworkModeEnums getNetworkMode() {
-        return networkMode;
+    public CbbNetworkModeEnums getNetworkAccessMode() {
+        return networkAccessMode;
     }
 
-    public void setNetworkMode(CbbNetworkModeEnums networkMode) {
-        this.networkMode = networkMode;
+    public void setNetworkAccessMode(CbbNetworkModeEnums networkAccessMode) {
+        this.networkAccessMode = networkAccessMode;
     }
 
     public Date getCreateTime() {
@@ -291,44 +277,20 @@ public class TerminalBasicInfoEntity {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public Date getLastOnlineTime() {
+        return lastOnlineTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setLastOnlineTime(Date lastOnlineTime) {
+        this.lastOnlineTime = lastOnlineTime;
     }
 
-    public Date getOnlineTime() {
-        return onlineTime;
+    public Date getLastOfflineTime() {
+        return lastOfflineTime;
     }
 
-    public void setOnlineTime(Date onlineTime) {
-        this.onlineTime = onlineTime;
-    }
-
-    public Date getOfflineTime() {
-        return offlineTime;
-    }
-
-    public void setOfflineTime(Date offlineTime) {
-        this.offlineTime = offlineTime;
-    }
-
-    public Date getDetectTime() {
-        return detectTime;
-    }
-
-    public void setDetectTime(Date detectTime) {
-        this.detectTime = detectTime;
-    }
-
-    public CbbDetectStateEnums getDetectState() {
-        return detectState;
-    }
-
-    public void setDetectState(CbbDetectStateEnums detectState) {
-        this.detectState = detectState;
+    public void setLastOfflineTime(Date lastOfflineTime) {
+        this.lastOfflineTime = lastOfflineTime;
     }
 
     public Integer getVersion() {

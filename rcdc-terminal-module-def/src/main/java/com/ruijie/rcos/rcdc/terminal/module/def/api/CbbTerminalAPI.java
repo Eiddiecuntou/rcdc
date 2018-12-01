@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
@@ -15,45 +16,48 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
  *
  * @author Jarman
  */
-public interface CbbTerminalBasicInfoAPI {
+public interface CbbTerminalAPI {
 
 
     /**
      * 删除终端信息
      *
      * @param request 请求参数对象
+     * @return 返回成功失败状态
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void delete(CbbTerminalIdRequest request) throws BusinessException;
+    DefaultResponse delete(CbbTerminalIdRequest request) throws BusinessException;
 
-//    /**
-//     * 根据terminalId获取终端基本信息
-//     *
-//     * @param request 请求参数对象
-//     * @return 终端基本信息DTO
-//     * @throws BusinessException 业务异常
-//     */
-//    @NoRollback
-//    CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException;
+    /**
+     * 根据terminalId获取终端基本信息
+     *
+     * @param request 请求参数对象
+     * @return 终端基本信息DTO
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 修改终端名称
      *
      * @param request 请求参数对象
+     * @return 返回成功失败状态
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException;
+    DefaultResponse modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException;
 
     /**
      * 修改终端网络配置
      *
      * @param request 请求参数对象
+     * @return 返回成功失败状态
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException;
+    DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException;
 
 
 }

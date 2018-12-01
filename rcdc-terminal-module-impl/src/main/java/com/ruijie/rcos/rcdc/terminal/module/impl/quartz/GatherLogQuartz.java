@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
+import com.ruijie.rcos.sk.base.quartz.QuartzTask;
+import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,16 +20,20 @@ import java.util.Map;
  *
  * @author Jarman
  */
-@Service
-public class GatherLogQuartz {
+@GlobalUniqueBean("gatherLogQuartz")
+public class GatherLogQuartz implements QuartzTask {
 
     @Autowired
     private GatherLogCacheManager cacheManager;
 
+    @Override
+    public void execute() throws Exception {
+        checkAndCleanExpireCache();
+    }
+
     /**
      * 每10秒执行一次检查并清除过期的缓存
      */
-    @Scheduled(cron = "0/10 * *  * * ?")
     public void checkAndCleanExpireCache() {
         Map<String, GatherLogCache> caches = cacheManager.getGatherLogCaches();
         Iterator<Map.Entry<String, GatherLogCache>> it = caches.entrySet().iterator();

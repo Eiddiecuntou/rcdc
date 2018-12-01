@@ -14,8 +14,10 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultResponseMessageSender;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.xml.transform.Result;
 import java.io.IOException;
 
 /**
@@ -32,15 +34,16 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     private SessionManager sessionManager;
 
     @Override
-    public void request(CbbShineMessageRequest request) throws BusinessException {
+    public DefaultResponse request(CbbShineMessageRequest request) throws BusinessException {
         Assert.notNull(request, "request参数不能为空");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(request.getTerminalId());
         Message message = new Message(Constants.SYSTEM_TYPE, request.getAction(), request.getData());
 
         sender.request(message);
+        return DefaultResponse.Builder.success();
     }
 
-//    @Override
+    @Override
     public CbbShineMessageResponse syncRequest(CbbShineMessageRequest request) throws IOException, InterruptedException,
             BusinessException {
         Assert.notNull(request, "request参数不能为空");
@@ -56,16 +59,17 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     }
 
     @Override
-    public void asyncRequest(CbbShineMessageRequest request, CbbTerminalCallback callback) throws BusinessException {
+    public DefaultResponse asyncRequest(CbbShineMessageRequest request, CbbTerminalCallback callback) throws BusinessException {
         Assert.notNull(request, "request参数不能为null");
         Assert.notNull(callback, "CbbTerminalCallback 不能为null");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(request.getTerminalId());
         Message message = new Message(Constants.SYSTEM_TYPE, request.getAction(), request.getData());
         sender.asyncRequest(message, new AsyncRequestCallBack(request.getTerminalId(), callback));
+        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public void response(CbbShineMessageRequest msg) throws BusinessException {
+    public DefaultResponse response(CbbShineMessageRequest msg) throws BusinessException {
         Assert.notNull(msg, "ShineMessageRequest不能为null");
 
         Session session = sessionManager.getSession(msg.getTerminalId());
@@ -75,5 +79,6 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         DefaultResponseMessageSender sender = new DefaultResponseMessageSender(msg.getRequestId(), session);
         Message message = new Message(Constants.SYSTEM_TYPE, msg.getAction(), msg.getData());
         sender.response(message);
+        return DefaultResponse.Builder.success();
     }
 }

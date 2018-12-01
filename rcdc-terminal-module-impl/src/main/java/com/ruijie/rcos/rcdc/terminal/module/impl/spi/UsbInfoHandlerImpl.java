@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbUsbInfoSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.dto.CbbNoticeEventSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbUsbInfoRequest;
 import com.ruijie.rcos.sk.base.util.Assert;
@@ -38,7 +38,7 @@ public class UsbInfoHandlerImpl implements CbbDispatcherHandlerSPI {
         String data = (String) request.getData();
         LOGGER.debug("接收到的usb报文信息：{}",data);
         CbbUsbInfoRequest cbbUsbInfoRequest = JSON.parseObject(data,CbbUsbInfoRequest.class);
-        cbbUsbInfoRequest.setDispatcherKey(CbbNoticeEventSPI.RECEIVE_USB_INFO);
+        cbbUsbInfoRequest.setDispatcherKey(NoticeEventEnums.RECEIVE_USB_INFO.getName());
         cbbUsbInfoSPI.receiveUsbInfo(cbbUsbInfoRequest);
     }
 }

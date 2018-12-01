@@ -1,19 +1,25 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import static org.junit.Assert.fail;
+
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+
 import mockit.*;
 import mockit.integration.junit4.JMockit;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -40,7 +46,9 @@ public class CbbTerminalOperatorAPIImplTest {
 
         try {
             String terminalId = "123";
-            terminalOperatorAPI.shutdown(terminalId);
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            terminalOperatorAPI.shutdown(request);
         } catch (Exception e) {
             fail();
         }
@@ -56,7 +64,10 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testRestart() throws BusinessException {
         try {
             String terminalId = "123";
-            terminalOperatorAPI.restart(terminalId);
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            terminalOperatorAPI.shutdown(request);
+            terminalOperatorAPI.restart(request);
         } catch (Exception e) {
             fail();
         }
@@ -71,7 +82,10 @@ public class CbbTerminalOperatorAPIImplTest {
         try {
             String terminalId = "123";
             String password = "adf";
-            terminalOperatorAPI.changePassword(terminalId, password);
+            CbbChangePasswordRequest request = new CbbChangePasswordRequest();
+            request.setTerminalId(terminalId);
+            request.setPassword(password);
+            terminalOperatorAPI.changePassword(request);
         } catch (Exception e) {
             fail();
         }
@@ -86,7 +100,9 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testGatherLog() throws BusinessException {
         try {
             String terminalId = "123";
-            terminalOperatorAPI.gatherLog(terminalId);
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            terminalOperatorAPI.gatherLog(request);
         } catch (Exception e) {
             fail();
         }
@@ -100,7 +116,9 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testDetect() throws BusinessException {
         try {
             String terminalId = "123";
-            terminalOperatorAPI.detect(terminalId);
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            terminalOperatorAPI.detect(request);
         } catch (Exception e) {
             fail();
         }
@@ -116,17 +134,20 @@ public class CbbTerminalOperatorAPIImplTest {
 
         new MockUp<CbbTerminalOperatorAPIImpl>() {
             @Mock
-            public void detect(String terminalId) throws BusinessException {
+            public DefaultResponse detect(CbbTerminalIdRequest request) throws BusinessException {
+                return DefaultResponse.Builder.success();
             }
         };
 
         try {
-            terminalOperatorAPI.detect(terminalIdArr);
+            CbbTerminalBatDetectRequest request = new CbbTerminalBatDetectRequest();
+            request.setTerminalIdArr(terminalIdArr);
+            terminalOperatorAPI.detect(request);
         } catch (Exception e) {
             fail();
         }
         new Verifications() {{
-            terminalOperatorAPI.detect(anyString);
+            terminalOperatorAPI.detect((CbbTerminalIdRequest) any);
             times = 3;
         }};
 
@@ -139,8 +160,10 @@ public class CbbTerminalOperatorAPIImplTest {
             result = null;
         }};
         String terminalId = "123";
+        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+        request.setTerminalId(terminalId);
         try {
-            terminalOperatorAPI.getTerminalLogName(terminalId);
+            terminalOperatorAPI.getTerminalLogName(request);
         } catch (BusinessException e) {
             Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_NOT_EXIST);
         }
@@ -155,8 +178,10 @@ public class CbbTerminalOperatorAPIImplTest {
             result = cache;
         }};
         String terminalId = "123";
+        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+        request.setTerminalId(terminalId);
         try {
-            terminalOperatorAPI.getTerminalLogName(terminalId);
+            terminalOperatorAPI.getTerminalLogName(request);
         } catch (BusinessException e) {
             Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_NOT_EXIST);
         }
@@ -173,9 +198,11 @@ public class CbbTerminalOperatorAPIImplTest {
             result = cache;
         }};
         String terminalId = "123";
+        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+        request.setTerminalId(terminalId);
         try {
-            String result = terminalOperatorAPI.getTerminalLogName(terminalId);
-            Assert.assertEquals(result, logName);
+            TerminalNameResponse result = terminalOperatorAPI.getTerminalLogName(request);
+            Assert.assertEquals(result.getTerminalName(), logName);
 
         } catch (BusinessException e) {
             fail();

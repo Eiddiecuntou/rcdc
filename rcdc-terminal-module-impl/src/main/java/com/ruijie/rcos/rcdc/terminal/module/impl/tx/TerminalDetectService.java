@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
@@ -61,7 +61,7 @@ public class TerminalDetectService {
     }
 
     private void modifyDetectInfo(String terminalId, CbbDetectStateEnums state) {
-        TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
         basicInfoDAO.modifyDetectInfo(terminalId, basicInfoEntity.getVersion(), new Date(),
                 state.ordinal());
     }
@@ -70,7 +70,7 @@ public class TerminalDetectService {
      * 当终端断开连接时，把状态为正在检测改为检测失败状态
      */
     public void setOfflineTerminalToFailureState() {
-        List<TerminalBasicInfoEntity> basicInfoList =
+        List<CbbTerminalEntity> basicInfoList =
                 basicInfoDAO.findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums.DOING);
         Date now = new Date();
         basicInfoList.forEach(entity -> {

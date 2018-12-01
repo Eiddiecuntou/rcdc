@@ -44,13 +44,13 @@ public class TermianlLogController {
     @RequestMapping("download")
     public DownloadWebResponse download(DownloadLogRequest request) throws BusinessException {
         Assert.notNull(request, "DownloadLogRequest 不能为null");
-        String logFileName = cbbTerminalOperatorAPI.getTerminalLogName(request.getTerminalId());
-        String logFilePath = TERMINAL_LOG_DIR + logFileName;
-        final DownloadWebResponse response = new DownloadWebResponse.Builder()
-                .setFile(new File(logFilePath))
-                .build();
+//        String logFileName = cbbTerminalOperatorAPI.getTerminalLogName(request.getTerminalId());
+//        String logFilePath = TERMINAL_LOG_DIR + logFileName;
+//        final DownloadWebResponse response = new DownloadWebResponse.Builder()
+//                .setFile(new File(logFilePath))
+//                .build();
 
-        return response;
+        return null;
     }
 
 

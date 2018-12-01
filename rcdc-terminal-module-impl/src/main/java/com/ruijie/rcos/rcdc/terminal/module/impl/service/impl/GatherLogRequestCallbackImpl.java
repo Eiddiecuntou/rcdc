@@ -1,8 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
@@ -20,18 +17,15 @@ import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
  *
  * @author Jarman
  */
-//@Service
-//@Scope("prototype")
 public class GatherLogRequestCallbackImpl extends AbstractRequestCallback {
+    private GatherLogCacheManager gatherLogCacheManager;
 
     private String terminalId;
 
-    public GatherLogRequestCallbackImpl(String terminalId) {
+    public GatherLogRequestCallbackImpl(GatherLogCacheManager gatherLogCacheManager,String terminalId) {
+        this.gatherLogCacheManager = gatherLogCacheManager;
         this.terminalId = terminalId;
     }
-
-    @Autowired
-    private GatherLogCacheManager gatherLogCacheManager;
 
     @Override
     public void success(BaseMessage msg) {

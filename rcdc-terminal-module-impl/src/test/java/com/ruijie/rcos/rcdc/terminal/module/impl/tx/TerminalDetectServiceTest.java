@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
 import mockit.Expectations;
@@ -88,9 +88,9 @@ public class TerminalDetectServiceTest {
 
     @Test
     public void testSetOfflineTerminalToFailureState() {
-        List<TerminalBasicInfoEntity> basicInfoList = new ArrayList<>();
+        List<CbbTerminalEntity> basicInfoList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            TerminalBasicInfoEntity entity = new TerminalBasicInfoEntity();
+            CbbTerminalEntity entity = new CbbTerminalEntity();
             basicInfoList.add(entity);
         }
         new Expectations() {{

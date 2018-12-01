@@ -48,7 +48,7 @@ public class GatherLogRequestCallbackImplTest {
                 this.terminalId = terminalId;
             }
         };
-        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl("123");
+        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl(gatherLogCacheManager,"123");
         Deencapsulation.setField(requestCallback, "gatherLogCacheManager", gatherLogCacheManager);
         try {
             String action = "testAction";
@@ -86,7 +86,7 @@ public class GatherLogRequestCallbackImplTest {
                 this.terminalId = terminalId;
             }
         };
-        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl("123");
+        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl(gatherLogCacheManager,"123");
         Deencapsulation.setField(requestCallback, "gatherLogCacheManager", gatherLogCacheManager);
         try {
             String action = "testAction";
@@ -129,7 +129,7 @@ public class GatherLogRequestCallbackImplTest {
                 this.terminalId = terminalId;
             }
         };
-        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl("123");
+        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl(gatherLogCacheManager,"123");
         Deencapsulation.setField(requestCallback, "gatherLogCacheManager", gatherLogCacheManager);
 
         try {
