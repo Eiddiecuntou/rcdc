@@ -23,4 +23,9 @@ public interface ReceiveTerminalEvent {
      * 上传终端检测消息
      */
     String TERMINAL_DETECT = "detect";
+
+    /**
+     * 上传USB 信息
+     */
+    String USB_INFO = "usb_info";
 }

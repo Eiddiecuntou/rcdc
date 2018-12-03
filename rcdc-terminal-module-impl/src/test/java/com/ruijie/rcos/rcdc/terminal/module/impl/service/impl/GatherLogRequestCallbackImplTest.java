@@ -53,7 +53,7 @@ public class GatherLogRequestCallbackImplTest {
                 this.terminalId = terminalId;
             }
         };
-        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl("123");
+        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl(gatherLogCacheManager, "123");
         Deencapsulation.setField(requestCallback, "gatherLogCacheManager", gatherLogCacheManager);
         try {
             String action = "testAction";
@@ -95,7 +95,7 @@ public class GatherLogRequestCallbackImplTest {
                 this.terminalId = terminalId;
             }
         };
-        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl("123");
+        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl(gatherLogCacheManager, "123");
         Deencapsulation.setField(requestCallback, "gatherLogCacheManager", gatherLogCacheManager);
         try {
             String action = "testAction";
@@ -124,10 +124,7 @@ public class GatherLogRequestCallbackImplTest {
         return JSON.toJSONString(map);
     }
 
-    
-    /**
-     * 测试收集日志超时
-     */
+
     @Test
     public void timeout() {
         new Expectations() {
@@ -145,7 +142,7 @@ public class GatherLogRequestCallbackImplTest {
                 this.terminalId = terminalId;
             }
         };
-        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl("123");
+        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl(gatherLogCacheManager, "123");
         Deencapsulation.setField(requestCallback, "gatherLogCacheManager", gatherLogCacheManager);
 
         try {

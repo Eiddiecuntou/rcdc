@@ -27,6 +27,17 @@ public class TerminalComponentInfoEntity {
     private String componentVersion;
 
     private Date updateTime;
+    
+    @Version
+    private int version;
+    
+    public void setVersion(int version) {
+        this.version = version;
+    }
+    
+    public int getVersion() {
+        return version;
+    }
 
     public UUID getId() {
         return id;

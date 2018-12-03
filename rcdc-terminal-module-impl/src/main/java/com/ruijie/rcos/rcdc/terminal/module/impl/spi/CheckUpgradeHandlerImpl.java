@@ -5,12 +5,12 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAP
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbNoticeEvent;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
@@ -43,7 +43,7 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
     private TerminalBasicInfoDAO basicInfoDAO;
 
     private static final BeanCopier BEAN_COPIER = BeanCopier.create(ShineTerminalBasicInfo.class,
-            TerminalBasicInfoEntity.class, false);
+            CbbTerminalEntity.class, false);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerImpl.class);
 
@@ -53,7 +53,7 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
         //保存终端基本信息
         saveBasicInfo(request);
         //通知上层组件当前终端为在线状态
-        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(CbbNoticeEvent.ONLINE, request.getTerminalId());
+        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(NoticeEventEnums.ONLINE, request.getTerminalId());
         cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
         //TODO 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
         CbbShineMessageRequest cbbShineMessageRequest = new CbbShineMessageRequest();
@@ -66,12 +66,12 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
 
     private void saveBasicInfo(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest 不能为null");
-        Assert.hasLength(request.getTerminalId(), "terminalId 不能为空");
+        Assert.hasText(request.getTerminalId(), "terminalId 不能为空");
         Assert.notNull(request.getData(), "报文消息体不能为空");
         String terminalId = request.getTerminalId();
-        TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
         if (basicInfoEntity == null) {
-            basicInfoEntity = new TerminalBasicInfoEntity();
+            basicInfoEntity = new CbbTerminalEntity();
         }
 
         String jsonData = String.valueOf(request.getData());
@@ -79,7 +79,6 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
         BEAN_COPIER.copy(shineTerminalBasicInfo, basicInfoEntity, null);
         Date now = new Date();
         basicInfoEntity.setCreateTime(now);
-        basicInfoEntity.setUpdateTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         basicInfoDAO.save(basicInfoEntity);
     }

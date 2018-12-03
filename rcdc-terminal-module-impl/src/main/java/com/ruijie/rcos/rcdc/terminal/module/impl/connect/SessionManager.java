@@ -33,7 +33,7 @@ public class SessionManager {
      * @param session 要绑定的Session
      */
     public void bindSession(String terminalId, Session session) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(session, "Session 不能为null");
         SESSION_MAP.put(terminalId, session);
     }
@@ -43,7 +43,7 @@ public class SessionManager {
      * @param terminalId 终端id
      */
     public void removeSession(String terminalId) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         SESSION_MAP.remove(terminalId);
     }
 
@@ -53,7 +53,7 @@ public class SessionManager {
      * @return 返回Session
      */
     public Session getSession(String terminalId) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         Session session = SESSION_MAP.get(terminalId);
         return session;
     }
@@ -65,7 +65,7 @@ public class SessionManager {
      * @throws BusinessException 业务异常
      */
     public DefaultRequestMessageSender getRequestMessageSender(String terminalId) throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         Session session = getSession(terminalId);
         if (session == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);

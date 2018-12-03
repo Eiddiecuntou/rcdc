@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +20,7 @@ import java.util.UUID;
  *
  * @author Jarman
  */
-public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBasicInfoEntity, UUID> {
+public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<CbbTerminalEntity, UUID> {
 
     /**
      * 获取终端详细基本信息
@@ -28,7 +28,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
      * @param terminalId 终端id
      * @return 返回终端信息
      */
-    TerminalBasicInfoEntity findTerminalBasicInfoEntitiesByTerminalId(String terminalId);
+    CbbTerminalEntity findTerminalBasicInfoEntitiesByTerminalId(String terminalId);
 
     /**
      * 删除终端数据
@@ -39,7 +39,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
      */
     @Modifying
     @Transactional
-    @Query("delete from TerminalBasicInfoEntity where terminalId=:terminalId and version=:version")
+    @Query("delete from CbbTerminalEntity where terminalId=:terminalId and version=:version")
     int deleteByTerminalId(String terminalId, Integer version);
 
     /**
@@ -52,7 +52,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
      */
     @Modifying
     @Transactional
-    @Query("update TerminalBasicInfoEntity set name=:terminalName,version=version+1 where terminalId=:terminalId and " +
+    @Query("update CbbTerminalEntity set name=:terminalName,version=version+1 where terminalId=:terminalId and " +
             "version=:version")
     int modifyTerminalName(String terminalId, Integer version, String terminalName);
 
@@ -66,7 +66,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
      */
     @Modifying
     @Transactional
-    @Query("update TerminalBasicInfoEntity " +
+    @Query("update CbbTerminalEntity " +
             "set ip=:#{#network.ip},gateway=:#{#network.gateway},mainDns=:#{network.mainDns}," +
             "secondDns=:#{network.secondDns},getIpMode=:#{network.getIpMode.ordinal}," +
             "getDnsMode=:#{network.getDnsMode.ordinal},version=:version+1 " +
@@ -84,7 +84,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
      */
     @Modifying
     @Transactional
-    @Query("update TerminalBasicInfoEntity set state=:state,version=:version+1 " +
+    @Query("update CbbTerminalEntity set state=:state,version=:version+1 " +
             "where terminalId=:terminalId and version=:version")
     int modifyTerminalState(String terminalId, Integer version, Integer state);
 
@@ -99,7 +99,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
      */
     @Modifying
     @Transactional
-    @Query("update TerminalBasicInfoEntity set detectState=:detectState" +
+    @Query("update CbbTerminalEntity set detectState=:detectState" +
             ",detectTime=:detectTime" +
             ",version=:version+1 " +
             "where terminalId=:terminalId and version=:version")
@@ -111,5 +111,5 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalBas
      * @param state 检测状态
      * @return 基本信息列表
      */
-    List<TerminalBasicInfoEntity> findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums state);
+    List<CbbTerminalEntity> findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums state);
 }

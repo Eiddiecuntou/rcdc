@@ -1,11 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -19,6 +13,10 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -39,13 +37,9 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private SessionManager sessionManager;
-    
     @Injectable
     private DefaultRequestMessageSender sender;
 
-    /**
-     * 测试修改终端名称成功
-     */
     @Test
     public void testModifyTerminalNameSuccess() {
         new Expectations() {
@@ -53,7 +47,7 @@ public class TerminalBasicInfoServiceImplTest {
                 try {
                     sessionManager.getRequestMessageSender(anyString);
                 } catch (BusinessException e) {
-                    Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+                    e.printStackTrace();
                 }
                 result = sender;
             }
@@ -74,9 +68,6 @@ public class TerminalBasicInfoServiceImplTest {
         };
     }
 
-    /**
-     * 测试修改终端名称失败
-     */
     @Test
     public void testModifyTerminalNameFail() {
         new Expectations() {
@@ -84,7 +75,7 @@ public class TerminalBasicInfoServiceImplTest {
                 try {
                     sessionManager.getRequestMessageSender(anyString);
                 } catch (BusinessException e) {
-                    Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+                    e.printStackTrace();
                 }
                 result = null;
             }
@@ -99,9 +90,6 @@ public class TerminalBasicInfoServiceImplTest {
         }
     }
 
-    /**
-     * 测试修改终端网络配置成功
-     */
     @Test
     public void testModifyTerminalNetworkConfigSuccess() {
         new Expectations() {
@@ -110,7 +98,7 @@ public class TerminalBasicInfoServiceImplTest {
                     sessionManager.getRequestMessageSender(anyString);
                     result = sender;
                 } catch (BusinessException e) {
-                    Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+                    e.printStackTrace();
                 }
             }
         };
@@ -140,9 +128,6 @@ public class TerminalBasicInfoServiceImplTest {
         };
     }
 
-    /**
-     * 测试修改终端网络配置失败
-     */
     @Test
     public void testModifyTerminalNetworkConfigFail() {
         new Expectations() {
@@ -151,7 +136,7 @@ public class TerminalBasicInfoServiceImplTest {
                     sessionManager.getRequestMessageSender(anyString);
                     result = null;
                 } catch (BusinessException e) {
-                    Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+                    e.printStackTrace();
                 }
             }
         };
@@ -169,9 +154,6 @@ public class TerminalBasicInfoServiceImplTest {
         }
     }
 
-    /**
-     * 测试修改终端状态时终端不存在情况
-     */
     @Test
     public void testModifyTerminalState() {
         new Expectations() {
@@ -189,9 +171,6 @@ public class TerminalBasicInfoServiceImplTest {
         }
     }
 
-    /**
-     * 测试修改终端状态修改失败情况
-     */
     @Test
     public void testModifyTerminalState2() {
         new Expectations() {

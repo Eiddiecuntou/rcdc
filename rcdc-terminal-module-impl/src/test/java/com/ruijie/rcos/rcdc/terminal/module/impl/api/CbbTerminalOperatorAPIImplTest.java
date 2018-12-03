@@ -1,21 +1,21 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import static org.junit.Assert.fail;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -38,18 +38,14 @@ public class CbbTerminalOperatorAPIImplTest {
     @Injectable
     private GatherLogCacheManager gatherLogCacheManager;
 
-    /**
-     * 
-     * 测试关闭终端
-     * 
-     * @throws BusinessException 业务异常
-     */
     @Test
     public void testShutdown() throws BusinessException {
 
         try {
             String terminalId = "123";
-            terminalOperatorAPI.shutdown(terminalId);
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            terminalOperatorAPI.shutdown(request);
         } catch (Exception e) {
             fail();
         }
@@ -63,17 +59,14 @@ public class CbbTerminalOperatorAPIImplTest {
 
     }
 
-    /**
-     * 
-     * 测试终端重启
-     * 
-     * @throws BusinessException 业务异常
-     */
     @Test
     public void testRestart() throws BusinessException {
         try {
             String terminalId = "123";
-            terminalOperatorAPI.restart(terminalId);
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            terminalOperatorAPI.shutdown(request);
+            terminalOperatorAPI.restart(request);
         } catch (Exception e) {
             fail();
         }
@@ -85,18 +78,15 @@ public class CbbTerminalOperatorAPIImplTest {
         };
     }
 
-    /**
-     * 
-     * 测试修改密码
-     * 
-     * @throws BusinessException 业务异常
-     */
     @Test
     public void testChangePassword() throws BusinessException {
         try {
             String terminalId = "123";
             String password = "adf";
-            terminalOperatorAPI.changePassword(terminalId, password);
+            CbbChangePasswordRequest request = new CbbChangePasswordRequest();
+            request.setTerminalId(terminalId);
+            request.setPassword(password);
+            terminalOperatorAPI.changePassword(request);
         } catch (Exception e) {
             fail();
         }
@@ -109,17 +99,13 @@ public class CbbTerminalOperatorAPIImplTest {
 
     }
 
-    /**
-     * 
-     * 测试收集日志
-     * 
-     * @throws BusinessException 业务异常
-     */
     @Test
     public void testGatherLog() throws BusinessException {
         try {
             String terminalId = "123";
-            terminalOperatorAPI.gatherLog(terminalId);
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            terminalOperatorAPI.gatherLog(request);
         } catch (Exception e) {
             fail();
         }
@@ -131,17 +117,13 @@ public class CbbTerminalOperatorAPIImplTest {
         };
     }
 
-   /**
-    * 
-    * 测试终端检测
-    * 
-    * @throws BusinessException 业务异常
-    */
     @Test
     public void testDetect() throws BusinessException {
         try {
             String terminalId = "123";
-            terminalOperatorAPI.detect(terminalId);
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            terminalOperatorAPI.detect(request);
         } catch (Exception e) {
             fail();
         }
@@ -153,40 +135,33 @@ public class CbbTerminalOperatorAPIImplTest {
         };
     }
 
-    /**
-     * 
-     * 测试批量进行终端检测
-     * 
-     * @throws BusinessException 业务异常
-     */
     @Test
     public void testDetectForArr() throws BusinessException {
         String[] terminalIdArr = {"1", "2", "3"};
 
         new MockUp<CbbTerminalOperatorAPIImpl>() {
             @Mock
-            public void detect(String terminalId) throws BusinessException {
-                
+            public DefaultResponse detect(CbbTerminalIdRequest request) throws BusinessException {
+                return DefaultResponse.Builder.success();
             }
         };
 
         try {
-            terminalOperatorAPI.detect(terminalIdArr);
+            CbbTerminalBatDetectRequest request = new CbbTerminalBatDetectRequest();
+            request.setTerminalIdArr(terminalIdArr);
+            terminalOperatorAPI.detect(request);
         } catch (Exception e) {
             fail();
         }
         new Verifications() {
             {
-                terminalOperatorAPI.detect(anyString);
+                terminalOperatorAPI.detect((CbbTerminalIdRequest) any);
                 times = 3;
             }
         };
 
     }
 
-    /**
-     * 测试获取终端日志名称为空
-     */
     @Test
     public void testGetTerminalLogNameIsNull() {
         new Expectations() {
@@ -196,16 +171,15 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
         String terminalId = "123";
+        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+        request.setTerminalId(terminalId);
         try {
-            terminalOperatorAPI.getTerminalLogName(terminalId);
+            terminalOperatorAPI.getTerminalLogName(request);
         } catch (BusinessException e) {
             Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_NOT_EXIST);
         }
     }
 
-    /**
-     * 测试哦急脾气终端日志名称失败
-     */
     @Test
     public void testGetTerminalLogNameStateIsFailure() {
         GatherLogCache cache = new GatherLogCache();
@@ -217,16 +191,15 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
         String terminalId = "123";
+        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+        request.setTerminalId(terminalId);
         try {
-            terminalOperatorAPI.getTerminalLogName(terminalId);
+            terminalOperatorAPI.getTerminalLogName(request);
         } catch (BusinessException e) {
             Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_NOT_EXIST);
         }
     }
 
-    /**
-     * 测试获取终端日志名称
-     */
     @Test
     public void testGetTerminalLogName() {
         String logName = "shine.zip";
@@ -240,9 +213,11 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
         String terminalId = "123";
+        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+        request.setTerminalId(terminalId);
         try {
-            String result = terminalOperatorAPI.getTerminalLogName(terminalId);
-            Assert.assertEquals(result, logName);
+            TerminalNameResponse result = terminalOperatorAPI.getTerminalLogName(request);
+            Assert.assertEquals(result.getTerminalName(), logName);
 
         } catch (BusinessException e) {
             fail();

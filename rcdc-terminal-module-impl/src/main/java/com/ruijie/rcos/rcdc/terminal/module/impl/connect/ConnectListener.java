@@ -3,8 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbNoticeEvent;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
@@ -107,7 +107,7 @@ public class ConnectListener extends AbstractServerMessageHandler {
             String data = String.valueOf(message.getData());
             ShineTerminalBasicInfo basicInfo = JSON.parseObject(data, ShineTerminalBasicInfo.class);
             String terminalId = basicInfo.getTerminalId();
-            Assert.hasLength(terminalId, "terminalId不能为空");
+            Assert.hasText(terminalId, "terminalId不能为空");
             //Session 绑定terminalId
             sender.getSession().setAttribute(TERMINAL_BIND_KEY, terminalId);
             sessionManager.bindSession(terminalId, sender.getSession());
@@ -133,7 +133,7 @@ public class ConnectListener extends AbstractServerMessageHandler {
             LOGGER.error("修改终端状态失败", e);
         }
         //发出连接关闭通知
-        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(CbbNoticeEvent.OFFLINE, terminalId);
+        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(NoticeEventEnums.OFFLINE, terminalId);
         cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
         //清除收集日志缓存
         gatherLogCacheManager.removeCache(terminalId);
@@ -149,7 +149,7 @@ public class ConnectListener extends AbstractServerMessageHandler {
 
     private String getTerminalIdFromSession(Session session) {
         String terminalId = session.getAttribute(TERMINAL_BIND_KEY);
-        Assert.hasLength(terminalId, "session 未绑定终端");
+        Assert.hasText(terminalId, "session 未绑定终端");
         return terminalId;
     }
 }

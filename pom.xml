@@ -16,12 +16,10 @@
         <module>rcdc-terminal-module-def</module>
         <module>rcdc-terminal-module-impl</module>
         <module>rcdc-terminal-module-web</module>
+        <module>rcdc-terminal-module-deploy</module>
     </modules>
 
     <!--定义依赖包版本号-->
-    <properties>
-        <skCommkitServer.version>2.0.0-SNAPSHOT</skCommkitServer.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.jmockit</groupId>
@@ -42,15 +40,4 @@
         </dependency>
 
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.ruijie.rcos.sk.commkit</groupId>
-                <artifactId>sk-commkit-server</artifactId>
-                <version>${skCommkitServer.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
 </project>

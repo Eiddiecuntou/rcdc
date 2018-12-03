@@ -29,7 +29,7 @@ public class GatherLogCacheManager {
      * @return 返回对应终端缓存对象
      */
     public GatherLogCache addCache(String terminalId) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         GatherLogCache cache = new GatherLogCache();
         cache.setState(GatherLogStateEnums.DOING);
         GATHER_LOG_CACHE_MAP.put(terminalId, cache);
@@ -42,7 +42,7 @@ public class GatherLogCacheManager {
      * @param terminalId 终端id
      */
     public void removeCache(String terminalId) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         GATHER_LOG_CACHE_MAP.remove(terminalId);
     }
 
@@ -53,7 +53,7 @@ public class GatherLogCacheManager {
      * @param state      缓存转态
      */
     public void updateState(String terminalId, GatherLogStateEnums state) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(state, "GatherLogStateEnums不能为null");
         updateState(terminalId, state, "");
     }
@@ -66,9 +66,9 @@ public class GatherLogCacheManager {
      * @param logFileName 日志上传成功后记录日志文件名称
      */
     public void updateState(String terminalId, GatherLogStateEnums state, String logFileName) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(state, "GatherLogStateEnums不能为null");
-        Assert.hasLength(logFileName, "logFileName不能为空");
+        Assert.hasText(logFileName, "logFileName不能为空");
         GatherLogCache cache = GATHER_LOG_CACHE_MAP.get(terminalId);
         if (cache == null) {
             cache = new GatherLogCache();
@@ -85,7 +85,7 @@ public class GatherLogCacheManager {
      * @return 返回对应终端缓存对象
      */
     public GatherLogCache getCache(String terminalId) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         return GATHER_LOG_CACHE_MAP.get(terminalId);
     }
 

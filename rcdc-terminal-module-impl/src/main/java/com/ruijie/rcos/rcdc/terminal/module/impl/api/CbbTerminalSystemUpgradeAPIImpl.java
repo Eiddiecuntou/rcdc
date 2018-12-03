@@ -37,8 +37,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TermianlSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TermianlSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -283,13 +283,13 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         for (String terminalId : request.getTerminalIdArr()) {
             uuidList.add(UUID.fromString(terminalId));
         }
-        List<TerminalBasicInfoEntity> terminals = basicInfoDAO.findAllById(uuidList);
+        List<CbbTerminalEntity> terminals = basicInfoDAO.findAllById(uuidList);
         if (CollectionUtils.isEmpty(terminals)) {
             LOGGER.debug("terminal set is empty");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
 
-        for (TerminalBasicInfoEntity terminal : terminals) {
+        for (CbbTerminalEntity terminal : terminals) {
             addSystemUpgradeTask(upgradePackage, terminal);
         }
 
@@ -308,7 +308,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
         }
 
-        TerminalBasicInfoEntity terminal =
+        CbbTerminalEntity terminal =
                 basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(request.getTerminalId());
         if (terminal == null) {
             LOGGER.debug("terminal id is [{}], terminal not found", request.getTerminalId());
@@ -321,7 +321,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     private void addSystemUpgradeTask(TermianlSystemUpgradePackageEntity upgradePackage,
-            TerminalBasicInfoEntity terminal) throws BusinessException {
+            CbbTerminalEntity terminal) throws BusinessException {
         // 非在线状态的终端不进行刷机
         if (!CbbTerminalStateEnums.ONLINE.equals(terminal.getState())) {
             LOGGER.info("terminal offline, can not upgrade system");
@@ -374,7 +374,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throws BusinessException {
         Assert.notNull(request, "RemoveSystemUpgradeTaskRequest can not be null");
 
-        TerminalBasicInfoEntity terminal =
+        CbbTerminalEntity terminal =
                 basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(request.getTerminalId());
         if (terminal == null) {
             LOGGER.debug("query terminal by terminal id[{}] is null", request.getTerminalId());

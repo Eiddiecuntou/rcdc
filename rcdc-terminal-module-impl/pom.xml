@@ -19,9 +19,7 @@
         <dependency>
             <groupId>com.ruijie.rcos.sk.commkit</groupId>
             <artifactId>sk-commkit-server</artifactId>
-            <version>${skCommkitServer.version}</version>
+            <version>${skyengine.version}</version>
         </dependency>
-
-
     </dependencies>
 </project>

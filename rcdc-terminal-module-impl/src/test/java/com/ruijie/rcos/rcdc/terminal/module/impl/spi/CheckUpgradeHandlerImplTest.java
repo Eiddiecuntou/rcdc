@@ -1,9 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
@@ -11,7 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import mockit.Expectations;
@@ -19,6 +15,10 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -36,20 +36,15 @@ public class CheckUpgradeHandlerImplTest {
 
     @Injectable
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
-    
     @Injectable
     private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
-    
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
 
-    /**
-     * 测试分发更新终端消息
-     */
     @Test
     public void testDispatchUpdateTerminalBasicInfo() {
         String terminalId = "123";
-        TerminalBasicInfoEntity entity = new TerminalBasicInfoEntity();
+        CbbTerminalEntity entity = new CbbTerminalEntity();
         entity.setTerminalId("123456");
         entity.setName("t-box3");
         entity.setCpuMode("intel");
@@ -79,9 +74,7 @@ public class CheckUpgradeHandlerImplTest {
         }
     }
 
-    /**
-     * 测试分发添加终端消息
-     */
+
     @Test
     public void testDispatchAddTerminalBasicInfo() {
         String terminalId = "123";
@@ -114,7 +107,7 @@ public class CheckUpgradeHandlerImplTest {
     private void saveVerifications() {
         new Verifications() {
             {
-                TerminalBasicInfoEntity basicInfoEntity;
+                CbbTerminalEntity basicInfoEntity;
                 basicInfoDAO.save(basicInfoEntity = withCapture());
                 assertEquals(basicInfoEntity.getTerminalId(), "123");
                 assertEquals(basicInfoEntity.getName(), "t-box2");

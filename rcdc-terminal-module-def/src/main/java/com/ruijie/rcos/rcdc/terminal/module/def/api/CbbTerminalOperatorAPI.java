@@ -1,6 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalNameResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
@@ -16,66 +21,65 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 关闭终端
      *
-     * @param terminalId 终端id
+     * @param request 终端id请求参数对象
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void shutdown(String terminalId) throws BusinessException;
+    DefaultResponse shutdown(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 重启终端
      *
-     * @param terminalId 终端id
+     * @param request 终端id请求参数对象
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void restart(String terminalId) throws BusinessException;
+    DefaultResponse restart(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 修改终端管理员密码
      *
-     * @param terminalId 终端id
-     * @param password   密码
+     * @param request   修改密码请求参数对象
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void changePassword(String terminalId, String password) throws BusinessException;
+    DefaultResponse changePassword(CbbChangePasswordRequest request) throws BusinessException;
 
     /**
      * 收集终端日志
      *
-     * @param terminalId 终端id
+     * @param request 终端id请求参数对象
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void gatherLog(String terminalId) throws BusinessException;
+    DefaultResponse gatherLog(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 终端检测
      *
-     * @param terminalId 终端id
+     * @param request 终端id请求参数对象
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void detect(String terminalId) throws BusinessException;
+    DefaultResponse detect(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 批量终端检测
      *
-     * @param terminalIdArr 终端id数组
+     * @param request 请求参数
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void detect(String[] terminalIdArr) throws BusinessException;
+    DefaultResponse detect(CbbTerminalBatDetectRequest request) throws BusinessException;
 
     /**
      * 获取终端日志文件名
-     * @param terminalId 终端id
+     * @param request 终端id请求参数对象
      * @return 返回日志文件名
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    String getTerminalLogName(String terminalId) throws BusinessException;
+    TerminalNameResponse getTerminalLogName(CbbTerminalIdRequest request) throws BusinessException;
 
 
 }

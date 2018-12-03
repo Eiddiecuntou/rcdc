@@ -8,8 +8,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.CommonMsg;
 import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Description: 收集日志回调接口实现类
@@ -19,29 +17,27 @@ import org.springframework.stereotype.Service;
  *
  * @author Jarman
  */
-@Service
 public class GatherLogRequestCallbackImpl extends AbstractRequestCallback {
+    private GatherLogCacheManager gatherLogCacheManager;
 
     private String terminalId;
 
-    public GatherLogRequestCallbackImpl(String terminalId) {
+    public GatherLogRequestCallbackImpl(GatherLogCacheManager gatherLogCacheManager,String terminalId) {
+        this.gatherLogCacheManager = gatherLogCacheManager;
         this.terminalId = terminalId;
     }
-
-    @Autowired
-    private GatherLogCacheManager gatherLogCacheManager;
 
     @Override
     public void success(BaseMessage msg) {
         Assert.notNull(msg, "收集日志返回消息不能为null");
         Assert.notNull(msg.getData(), "收集日志返回报文消息体不能为null");
         String data = ((String) msg.getData()).trim();
-        Assert.hasLength(data, "返回的应答消息不能为空");
+        Assert.hasText(data, "返回的应答消息不能为空");
         CommonMsg responseMsg = JSON.parseObject(data, CommonMsg.class);
         Assert.notNull(responseMsg, "应答消息格式错误");
         if (StateEnums.SUCCESS == responseMsg.getErrorCode()) {
             String logZipName = responseMsg.getMsg();
-            Assert.hasLength(logZipName, "返回的日志文件名称不能为空");
+            Assert.hasText(logZipName, "返回的日志文件名称不能为空");
             gatherLogCacheManager.updateState(terminalId, GatherLogStateEnums.DONE, logZipName);
             return;
         }

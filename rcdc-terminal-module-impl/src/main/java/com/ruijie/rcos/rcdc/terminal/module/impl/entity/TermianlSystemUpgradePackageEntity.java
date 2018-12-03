@@ -50,6 +50,17 @@ public class TermianlSystemUpgradePackageEntity {
      * 外部版本号
      */
     private String externalVersion;
+    
+    @Version
+    private int version;
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public int getVersion() {
+        return version;
+    }
 
     public UUID getId() {
         return id;

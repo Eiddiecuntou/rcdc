@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
@@ -18,13 +19,8 @@ public class CbbNoticeRequest implements Request {
 
     private String terminalId;
 
-
-    public CbbNoticeRequest() {
-
-    }
-
-    public CbbNoticeRequest(String dispatcherKey, String terminalId) {
-        this.dispatcherKey = dispatcherKey;
+    public CbbNoticeRequest(NoticeEventEnums noticeEvent, String terminalId) {
+        this.dispatcherKey = noticeEvent.getName();
         this.terminalId = terminalId;
     }
 

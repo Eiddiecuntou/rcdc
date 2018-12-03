@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
@@ -37,7 +37,7 @@ public class TerminalDetectService {
      * @param detectResult 检测结果数据对象
      */
     public void updateBasicInfoAndDetect(String terminalId, TerminalDetectResponse detectResult) {
-        Assert.hasLength(terminalId, "terminalId不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(detectResult, "TerminalDetectResult不能为null");
         TerminalDetectResponse.DetectResult result = detectResult.getResult();
         if (StateEnums.FAILURE == detectResult.getErrorCode()) {
@@ -61,7 +61,7 @@ public class TerminalDetectService {
     }
 
     private void modifyDetectInfo(String terminalId, CbbDetectStateEnums state) {
-        TerminalBasicInfoEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
         basicInfoDAO.modifyDetectInfo(terminalId, basicInfoEntity.getVersion(), new Date(),
                 state.ordinal());
     }
@@ -70,7 +70,7 @@ public class TerminalDetectService {
      * 当终端断开连接时，把状态为正在检测改为检测失败状态
      */
     public void setOfflineTerminalToFailureState() {
-        List<TerminalBasicInfoEntity> basicInfoList =
+        List<CbbTerminalEntity> basicInfoList =
                 basicInfoDAO.findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums.DOING);
         Date now = new Date();
         basicInfoList.forEach(entity -> {

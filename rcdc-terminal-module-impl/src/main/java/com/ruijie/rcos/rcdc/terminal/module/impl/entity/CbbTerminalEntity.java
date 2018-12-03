@@ -1,25 +1,29 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
+package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * Description: Function Description
- * Copyright: Copyright (c) 2018
- * Company: Ruijie Co., Ltd.
- * Create Time: 2018/10/31
- *
- * @author Jarman
- */
-public class CbbTerminalBasicInfoDTO {
+import javax.persistence.*;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+
+/**
+ * Description: 终端基本信息实体类
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2018/10/30
+ *
+ * @author Jarman
+ */
+@Entity
+@Table(name = "t_cbb_terminal")
+public class CbbTerminalEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     private String name;
@@ -38,13 +42,15 @@ public class CbbTerminalBasicInfoDTO {
 
     private String secondDns;
 
+    @Enumerated(EnumType.STRING)
     private CbbGetNetworkModeEnums getIpMode;
 
+    @Enumerated(EnumType.STRING)
     private CbbGetNetworkModeEnums getDnsMode;
 
     private String productType;
 
-    private String terminalType;
+    private CbbTerminalTypeEnums terminalType;
 
     private String serialNumber;
 
@@ -58,36 +64,23 @@ public class CbbTerminalBasicInfoDTO {
 
     private String terminalOsVersion;
 
-    private String terminalSystemVersion;
+    private String rainOsVersion;
 
-    private String softwareVersion;
+    private String rainUpgradeVersion;
 
     private String hardwareVersion;
 
-    private CbbNetworkModeEnums networkMode;
+    @Enumerated(EnumType.STRING)
+    private CbbNetworkModeEnums networkAccessMode;
 
     private Date createTime;
 
-    private Date updateTime;
+    private Date lastOnlineTime;
 
-    private Date onlineTime;
+    private Date lastOfflineTime;
 
-    private Date offlineTime;
-
-    private String detectResult;
-
+    @Version
     private Integer version;
-
-    /**
-     * 检测时间
-     */
-    private Date detectTime;
-
-    /**
-     * 检测结果状态
-     */
-    @Enumerated(EnumType.STRING)
-    private CbbDetectStateEnums detectState;
 
     @Enumerated(EnumType.STRING)
     private CbbTerminalStateEnums state;
@@ -164,21 +157,6 @@ public class CbbTerminalBasicInfoDTO {
         this.secondDns = secondDns;
     }
 
-    public CbbGetNetworkModeEnums getGetIpMode() {
-        return getIpMode;
-    }
-
-    public void setGetIpMode(CbbGetNetworkModeEnums getIpMode) {
-        this.getIpMode = getIpMode;
-    }
-
-    public CbbGetNetworkModeEnums getGetDnsMode() {
-        return getDnsMode;
-    }
-
-    public void setGetDnsMode(CbbGetNetworkModeEnums getDnsMode) {
-        this.getDnsMode = getDnsMode;
-    }
 
     public String getProductType() {
         return productType;
@@ -188,11 +166,11 @@ public class CbbTerminalBasicInfoDTO {
         this.productType = productType;
     }
 
-    public String getTerminalType() {
+    public CbbTerminalTypeEnums getTerminalType() {
         return terminalType;
     }
 
-    public void setTerminalType(String terminalType) {
+    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
         this.terminalType = terminalType;
     }
 
@@ -244,20 +222,20 @@ public class CbbTerminalBasicInfoDTO {
         this.terminalOsVersion = terminalOsVersion;
     }
 
-    public String getTerminalSystemVersion() {
-        return terminalSystemVersion;
+    public String getRainOsVersion() {
+        return rainOsVersion;
     }
 
-    public void setTerminalSystemVersion(String terminalSystemVersion) {
-        this.terminalSystemVersion = terminalSystemVersion;
+    public void setRainOsVersion(String rainOsVersion) {
+        this.rainOsVersion = rainOsVersion;
     }
 
-    public String getSoftwareVersion() {
-        return softwareVersion;
+    public String getRainUpgradeVersion() {
+        return rainUpgradeVersion;
     }
 
-    public void setSoftwareVersion(String softwareVersion) {
-        this.softwareVersion = softwareVersion;
+    public void setRainUpgradeVersion(String rainUpgradeVersion) {
+        this.rainUpgradeVersion = rainUpgradeVersion;
     }
 
     public String getHardwareVersion() {
@@ -268,12 +246,28 @@ public class CbbTerminalBasicInfoDTO {
         this.hardwareVersion = hardwareVersion;
     }
 
-    public CbbNetworkModeEnums getNetworkMode() {
-        return networkMode;
+    public CbbGetNetworkModeEnums getGetIpMode() {
+        return getIpMode;
     }
 
-    public void setNetworkMode(CbbNetworkModeEnums networkMode) {
-        this.networkMode = networkMode;
+    public void setGetIpMode(CbbGetNetworkModeEnums getIpMode) {
+        this.getIpMode = getIpMode;
+    }
+
+    public CbbGetNetworkModeEnums getGetDnsMode() {
+        return getDnsMode;
+    }
+
+    public void setGetDnsMode(CbbGetNetworkModeEnums getDnsMode) {
+        this.getDnsMode = getDnsMode;
+    }
+
+    public CbbNetworkModeEnums getNetworkAccessMode() {
+        return networkAccessMode;
+    }
+
+    public void setNetworkAccessMode(CbbNetworkModeEnums networkAccessMode) {
+        this.networkAccessMode = networkAccessMode;
     }
 
     public Date getCreateTime() {
@@ -284,36 +278,20 @@ public class CbbTerminalBasicInfoDTO {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public Date getLastOnlineTime() {
+        return lastOnlineTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setLastOnlineTime(Date lastOnlineTime) {
+        this.lastOnlineTime = lastOnlineTime;
     }
 
-    public Date getOnlineTime() {
-        return onlineTime;
+    public Date getLastOfflineTime() {
+        return lastOfflineTime;
     }
 
-    public void setOnlineTime(Date onlineTime) {
-        this.onlineTime = onlineTime;
-    }
-
-    public Date getOfflineTime() {
-        return offlineTime;
-    }
-
-    public void setOfflineTime(Date offlineTime) {
-        this.offlineTime = offlineTime;
-    }
-
-    public String getDetectResult() {
-        return detectResult;
-    }
-
-    public void setDetectResult(String detectResult) {
-        this.detectResult = detectResult;
+    public void setLastOfflineTime(Date lastOfflineTime) {
+        this.lastOfflineTime = lastOfflineTime;
     }
 
     public Integer getVersion() {
@@ -330,21 +308,5 @@ public class CbbTerminalBasicInfoDTO {
 
     public void setState(CbbTerminalStateEnums state) {
         this.state = state;
-    }
-
-    public Date getDetectTime() {
-        return detectTime;
-    }
-
-    public void setDetectTime(Date detectTime) {
-        this.detectTime = detectTime;
-    }
-
-    public CbbDetectStateEnums getDetectState() {
-        return detectState;
-    }
-
-    public void setDetectState(CbbDetectStateEnums detectState) {
-        this.detectState = detectState;
     }
 }

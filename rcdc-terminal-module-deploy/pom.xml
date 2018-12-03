@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ruijie.rcos.rcdc.terminal.module</groupId>
+		<artifactId>rcdc-terminal-module</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>rcdc-terminal-module-deploy</artifactId>
+	<packaging>war</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ruijie.rcos.sk.root</groupId>
+			<artifactId>sk-root-runtime</artifactId>
+			<version>${skyengine.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ruijie.rcos.rcdc.terminal.module</groupId>
+			<artifactId>rcdc-terminal-module-impl</artifactId>
+			<version>${project.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ruijie.rcos.rcdc.terminal.module</groupId>
+			<artifactId>rcdc-terminal-module-web</artifactId>
+			<version>${project.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ruijie.rcos.sk.commkit</groupId>
+			<artifactId>sk-commkit-server</artifactId>
+			<version>${skyengine.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+</project>
