@@ -43,7 +43,12 @@ public enum SendTerminalEventEnums {
     /**
      * 修改终端网络配置
      */
-    MODIFY_TERMINAL_NETWORK_CONFIG("modify_network_config");
+    MODIFY_TERMINAL_NETWORK_CONFIG("modify_network_config"),
+    
+    /**
+     * 升级终端
+     */
+    UPGRADE_TERMINAL_SYSTEM("upgrade_system");
 
     private String name;
 

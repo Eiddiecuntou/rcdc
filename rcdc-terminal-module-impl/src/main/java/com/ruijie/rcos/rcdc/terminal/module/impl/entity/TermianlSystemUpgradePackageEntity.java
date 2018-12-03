@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import javax.persistence.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import java.util.Date;
 import java.util.UUID;
 
@@ -33,12 +34,22 @@ public class TermianlSystemUpgradePackageEntity {
     /**
      * 包类型，VDI ISO、IDV ISO、OTA
      */
-    private String packageType;
+    private CbbTerminalTypeEnums packageType;
 
     /**
      * 上传时间
      */
     private Date uploadTime;
+    
+    /**
+     * 内部版本号
+     */
+    private String internalVersion;
+    
+    /**
+     * 外部版本号
+     */
+    private String externalVersion;
 
     public UUID getId() {
         return id;
@@ -64,11 +75,11 @@ public class TermianlSystemUpgradePackageEntity {
         this.storePath = storePath;
     }
 
-    public String getPackageType() {
+    public CbbTerminalTypeEnums getPackageType() {
         return packageType;
     }
 
-    public void setPackageType(String packageType) {
+    public void setPackageType(CbbTerminalTypeEnums packageType) {
         this.packageType = packageType;
     }
 
@@ -79,4 +90,22 @@ public class TermianlSystemUpgradePackageEntity {
     public void setUploadTime(Date uploadTime) {
         this.uploadTime = uploadTime;
     }
+
+    public String getInternalVersion() {
+        return internalVersion;
+    }
+
+    public void setInternalVersion(String internalVersion) {
+        this.internalVersion = internalVersion;
+    }
+
+    public String getExternalVersion() {
+        return externalVersion;
+    }
+
+    public void setExternalVersion(String externalVersion) {
+        this.externalVersion = externalVersion;
+    }
+    
+    
 }

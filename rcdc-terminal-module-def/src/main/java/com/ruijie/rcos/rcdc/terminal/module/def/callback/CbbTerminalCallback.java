@@ -22,8 +22,9 @@ public interface CbbTerminalCallback extends Callback {
 
     /**
      * 请求超时
+     * @param terminalId 终端id
      */
-    void timeout();
+    void timeout(String terminalId);
 
 
 }

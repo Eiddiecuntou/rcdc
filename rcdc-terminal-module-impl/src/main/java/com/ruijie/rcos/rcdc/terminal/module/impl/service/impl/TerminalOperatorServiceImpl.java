@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -15,10 +18,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * Description: 终端操作
@@ -57,17 +56,6 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         Assert.hasLength(terminalId, "terminalId 不能为空");
         Assert.hasLength(password, "password 不能为空");
         operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD, password);
-    }
-
-    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, String data)
-            throws BusinessException {
-        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
-        if (sender == null) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
-        }
-
-        Message message = new Message(Constants.SYSTEM_TYPE, terminalEvent.getName(), data);
-        sender.request(message);
     }
 
     @Override
@@ -109,4 +97,18 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             detect(terminalId);
         }
     }
+
+    
+    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data)
+            throws BusinessException {
+        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
+        if (sender == null) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
+        }
+
+        Message message = new Message(Constants.SYSTEM_TYPE, terminalEvent.getName(), data);
+        sender.request(message);
+    }
+    
+    
 }

@@ -41,7 +41,7 @@ public interface CbbTranspondMessageHandlerAPI {
             BusinessException;
 
     /**
-     * 异步发送消息
+     *          异步发送消息
      *
      * @param msg             请求消息对象
      * @param requestCallback 请求回调对象

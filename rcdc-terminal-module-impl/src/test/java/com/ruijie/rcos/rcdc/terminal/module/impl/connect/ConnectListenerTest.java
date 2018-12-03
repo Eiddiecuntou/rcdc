@@ -64,7 +64,11 @@ public class ConnectListenerTest {
 
 
     /**
+     * 
      * 测试第一个报文正常执行逻辑过程
+     * 
+     * @param session session
+     * @throws InterruptedException 中断异常
      */
     @Test
     public void testOnReceiveFirstMessageNormal(@Mocked Session session) throws InterruptedException {
@@ -107,7 +111,11 @@ public class ConnectListenerTest {
     }
 
     /**
-     * 测试不是第一个报文执行逻辑过程
+     * 
+     * 测试第一个报文正常执行逻辑过程
+     * 
+     * @param session session
+     * @throws InterruptedException 中断异常
      */
     @Test
     public void testOnReceiveNotFirstMessage(@Mocked Session session) throws InterruptedException {
@@ -145,6 +153,9 @@ public class ConnectListenerTest {
         }
     }
 
+    /**
+     * 测试连接成功参数为空
+     */
     @Test
     public void testOnConnectSuccessParamIsNull() {
         try {
@@ -154,6 +165,13 @@ public class ConnectListenerTest {
         }
     }
 
+    /**
+     * 
+     * 测试连接关闭
+     * 
+     * @param session 连接会话
+     * @throws InterruptedException 中断异常
+     */
     @Test
     public void testOnConnectClosed(@Mocked Session session) throws InterruptedException {
         new Expectations() {
@@ -185,6 +203,9 @@ public class ConnectListenerTest {
 
     }
 
+    /**
+     * 测试连接异常捕获
+     */
     @Test
     public void testExceptionCaught() {
         try {

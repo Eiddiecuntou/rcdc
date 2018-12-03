@@ -1,10 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
@@ -14,11 +19,6 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -39,19 +39,25 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private SessionManager sessionManager;
+    
     @Injectable
     private DefaultRequestMessageSender sender;
 
+    /**
+     * 测试修改终端名称成功
+     */
     @Test
     public void testModifyTerminalNameSuccess() {
-        new Expectations() {{
-            try {
-                sessionManager.getRequestMessageSender(anyString);
-            } catch (BusinessException e) {
-                e.printStackTrace();
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                } catch (BusinessException e) {
+                    Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+                }
+                result = sender;
             }
-            result = sender;
-        }};
+        };
         String terminalId = "123";
         String terminalName = "t-box";
         try {
@@ -60,22 +66,29 @@ public class TerminalBasicInfoServiceImplTest {
             fail();
         }
 
-        new Verifications() {{
-            sender.request((Message) any);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                sender.request((Message) any);
+                times = 1;
+            }
+        };
     }
 
+    /**
+     * 测试修改终端名称失败
+     */
     @Test
     public void testModifyTerminalNameFail() {
-        new Expectations() {{
-            try {
-                sessionManager.getRequestMessageSender(anyString);
-            } catch (BusinessException e) {
-                e.printStackTrace();
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                } catch (BusinessException e) {
+                    Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+                }
+                result = null;
             }
-            result = null;
-        }};
+        };
         String terminalId = "123";
         String terminalName = "t-box";
         try {
@@ -86,16 +99,21 @@ public class TerminalBasicInfoServiceImplTest {
         }
     }
 
+    /**
+     * 测试修改终端网络配置成功
+     */
     @Test
     public void testModifyTerminalNetworkConfigSuccess() {
-        new Expectations() {{
-            try {
-                sessionManager.getRequestMessageSender(anyString);
-                result = sender;
-            } catch (BusinessException e) {
-                e.printStackTrace();
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+                } catch (BusinessException e) {
+                    Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+                }
             }
-        }};
+        };
         String terminalId = "123";
         ShineNetworkConfig config = new ShineNetworkConfig();
         config.setTerminalId(terminalId);
@@ -108,28 +126,35 @@ public class TerminalBasicInfoServiceImplTest {
             fail();
         }
 
-        new Verifications() {{
-            Message message;
-            sender.request(message = withCapture());
-            ShineNetworkConfig shineNetworkConfig = (ShineNetworkConfig) message.getData();
-            assertNotNull(shineNetworkConfig);
-            assertEquals(shineNetworkConfig.getTerminalId(), terminalId);
-            assertEquals(shineNetworkConfig.getGetDnsMode(), (Integer) 0);
-            assertEquals(shineNetworkConfig.getGetIpMode(), (Integer) 1);
-            assertEquals(shineNetworkConfig.getMainDns(), "main_dns");
-        }};
+        new Verifications() {
+            {
+                Message message;
+                sender.request(message = withCapture());
+                ShineNetworkConfig shineNetworkConfig = (ShineNetworkConfig) message.getData();
+                assertNotNull(shineNetworkConfig);
+                assertEquals(shineNetworkConfig.getTerminalId(), terminalId);
+                assertEquals(shineNetworkConfig.getGetDnsMode(), (Integer) 0);
+                assertEquals(shineNetworkConfig.getGetIpMode(), (Integer) 1);
+                assertEquals(shineNetworkConfig.getMainDns(), "main_dns");
+            }
+        };
     }
 
+    /**
+     * 测试修改终端网络配置失败
+     */
     @Test
     public void testModifyTerminalNetworkConfigFail() {
-        new Expectations() {{
-            try {
-                sessionManager.getRequestMessageSender(anyString);
-                result = null;
-            } catch (BusinessException e) {
-                e.printStackTrace();
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = null;
+                } catch (BusinessException e) {
+                    Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+                }
             }
-        }};
+        };
         String terminalId = "123";
         ShineNetworkConfig config = new ShineNetworkConfig();
         config.setTerminalId(terminalId);
@@ -144,12 +169,17 @@ public class TerminalBasicInfoServiceImplTest {
         }
     }
 
+    /**
+     * 测试修改终端状态时终端不存在情况
+     */
     @Test
     public void testModifyTerminalState() {
-        new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-            result = null;
-        }};
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+                result = null;
+            }
+        };
 
         String terminalId = "123";
         try {
@@ -158,12 +188,18 @@ public class TerminalBasicInfoServiceImplTest {
             Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
     }
+
+    /**
+     * 测试修改终端状态修改失败情况
+     */
     @Test
     public void testModifyTerminalState2() {
-        new Expectations() {{
-            basicInfoDAO.modifyTerminalState(anyString, anyInt, anyInt);
-            result = 0;
-        }};
+        new Expectations() {
+            {
+                basicInfoDAO.modifyTerminalState(anyString, anyInt, anyInt);
+                result = 0;
+            }
+        };
 
         String terminalId = "123";
         try {

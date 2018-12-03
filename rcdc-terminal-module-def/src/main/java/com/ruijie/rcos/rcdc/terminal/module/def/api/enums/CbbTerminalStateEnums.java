@@ -18,5 +18,15 @@ public enum CbbTerminalStateEnums {
     /**
      * 在线
      */
-    ONLINE
+    ONLINE,
+    
+    /**
+     * 升级中
+     */
+    UPGRADING,
+    
+    /**
+     * 升级失败
+     */
+    FAIL
 }

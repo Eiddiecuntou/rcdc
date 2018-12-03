@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
+import com.ruijie.rcos.rcdc.terminal.module.impl.callback.AsyncRequestCallBack;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import mockit.Injectable;
 import mockit.Verifications;
@@ -25,6 +26,9 @@ public class AsyncRequestCallBackTest {
     @Injectable
     private CbbTerminalCallback callback;
 
+    /**
+     * 测试成功情况
+     */
     @Test
     public void testSuccess() {
         try {
@@ -38,12 +42,17 @@ public class AsyncRequestCallBackTest {
             fail();
         }
 
-        new Verifications() {{
-            callback.success((CbbShineMessageResponse) any);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                callback.success((CbbShineMessageResponse) any);
+                times = 1;
+            }
+        };
     }
 
+    /**
+     * 测试超时情况
+     */
     @Test
     public void testTimeout() {
         try {
@@ -56,9 +65,11 @@ public class AsyncRequestCallBackTest {
             fail();
         }
 
-        new Verifications() {{
-            callback.timeout();
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                callback.timeout(anyString);
+                times = 1;
+            }
+        };
     }
 }

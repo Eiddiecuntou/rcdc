@@ -25,6 +25,9 @@ public class GatherLogCacheManagerTest {
     @Tested
     private GatherLogCacheManager cacheManager;
 
+    /**
+     * 测试添加收集日志缓存
+     */
     @Test
     public void testAddCache() {
         Map<String, GatherLogCache> caches = Deencapsulation.getField(cacheManager, "GATHER_LOG_CACHE_MAP");
@@ -40,6 +43,9 @@ public class GatherLogCacheManagerTest {
         caches.clear();
     }
 
+    /**
+     *  测试移除收集日志缓存
+     */
     @Test
     public void testRemoveCache() {
         Map<String, GatherLogCache> caches = Deencapsulation.getField(cacheManager, "GATHER_LOG_CACHE_MAP");
@@ -54,6 +60,9 @@ public class GatherLogCacheManagerTest {
         Assert.assertEquals(caches.size(), 0);
     }
 
+    /**
+     * 测试更新收集日志缓存
+     */
     @Test
     public void testUpdateState() {
 
@@ -72,6 +81,9 @@ public class GatherLogCacheManagerTest {
         }
     }
 
+    /**
+     * 测试更新日志收集缓存状态到收集失败
+     */
     @Test
     public void testUpdateState2() {
         String terminalId = "123";
@@ -88,6 +100,9 @@ public class GatherLogCacheManagerTest {
         }
     }
 
+    /**
+     * 测试获取日志收集缓存
+     */
     @Test
     public void testGetCache() {
         try {
@@ -101,6 +116,9 @@ public class GatherLogCacheManagerTest {
         }
     }
 
+    /**
+     * 测试获取日志收集缓存集合
+     */
     @Test
     public void testGetGatherLogCaches() {
         String terminalId = "123";

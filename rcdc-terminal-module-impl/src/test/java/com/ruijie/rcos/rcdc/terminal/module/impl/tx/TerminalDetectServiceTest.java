@@ -1,5 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
+import static org.junit.Assert.fail;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
@@ -11,14 +17,6 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -40,12 +38,17 @@ public class TerminalDetectServiceTest {
     @Injectable
     private TerminalDetectionDAO detectionDAO;
 
+    /**
+     * 测试更新终端基本信息表和检测表
+     */
     @Test
     public void testUpdateBasicInfoAndDetect() {
-        new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
-        }};
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+                basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
+            }
+        };
 
         try {
             String terminalId = "123";
@@ -65,12 +68,17 @@ public class TerminalDetectServiceTest {
         }
     }
 
+    /**
+     * 测试更新终端基本信息
+     */
     @Test
     public void testUpdateBasicInfo() {
-        new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
-        }};
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+                basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
+            }
+        };
 
         try {
             String terminalId = "123";
@@ -86,6 +94,9 @@ public class TerminalDetectServiceTest {
         }
     }
 
+    /**
+     * 测试设置终端离线，将状态正在检测改为检测失败
+     */
     @Test
     public void testSetOfflineTerminalToFailureState() {
         List<TerminalBasicInfoEntity> basicInfoList = new ArrayList<>();
@@ -93,10 +104,12 @@ public class TerminalDetectServiceTest {
             TerminalBasicInfoEntity entity = new TerminalBasicInfoEntity();
             basicInfoList.add(entity);
         }
-        new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums.DOING);
-            result = basicInfoList;
-        }};
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums.DOING);
+                result = basicInfoList;
+            }
+        };
 
         try {
             detectService.setOfflineTerminalToFailureState();
@@ -104,10 +117,12 @@ public class TerminalDetectServiceTest {
             fail();
         }
 
-        new Verifications() {{
-            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
-            times = 3;
-        }};
+        new Verifications() {
+            {
+                basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
+                times = 3;
+            }
+        };
     }
 
 }

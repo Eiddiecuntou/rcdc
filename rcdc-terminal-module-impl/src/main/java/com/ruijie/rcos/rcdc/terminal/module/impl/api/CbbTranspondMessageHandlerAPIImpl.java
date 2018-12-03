@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResp
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.callback.AsyncRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
@@ -55,6 +56,7 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         return cbbShineMessageResponse;
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void asyncRequest(CbbShineMessageRequest request, CbbTerminalCallback callback) throws BusinessException {
         Assert.notNull(request, "request参数不能为null");

@@ -1,10 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
+import org.springframework.data.domain.Page;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPageRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
@@ -16,7 +19,6 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
  * @author Jarman
  */
 public interface CbbTerminalBasicInfoAPI {
-
 
     /**
      * 删除终端信息
@@ -54,6 +56,18 @@ public interface CbbTerminalBasicInfoAPI {
      */
     @NoRollback
     void modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException;
+
+    /**
+     * 终端列表分页
+     * 
+     * @param pageRequest 分页请求
+     * 
+     * @return 列表分页信息
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    DefaultPageResponse<CbbTerminalBasicInfoDTO> listTerminal(CbbTerminalPageRequest pageRequest)
+            throws BusinessException;
 
 
 }

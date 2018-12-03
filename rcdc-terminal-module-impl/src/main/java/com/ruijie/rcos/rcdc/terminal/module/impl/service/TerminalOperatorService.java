@@ -60,5 +60,5 @@ public interface TerminalOperatorService {
      * @throws BusinessException 业务异常
      */
     void detect(String[] terminalIdArr) throws BusinessException;
-
+    
 }

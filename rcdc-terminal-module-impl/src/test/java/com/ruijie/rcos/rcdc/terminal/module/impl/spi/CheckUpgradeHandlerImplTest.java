@@ -1,5 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
@@ -15,11 +19,6 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -37,11 +36,16 @@ public class CheckUpgradeHandlerImplTest {
 
     @Injectable
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
+    
     @Injectable
     private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
+    
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
 
+    /**
+     * 测试分发更新终端消息
+     */
     @Test
     public void testDispatchUpdateTerminalBasicInfo() {
         String terminalId = "123";
@@ -49,16 +53,18 @@ public class CheckUpgradeHandlerImplTest {
         entity.setTerminalId("123456");
         entity.setName("t-box3");
         entity.setCpuMode("intel");
-        new Expectations() {{
-            cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-            result = entity;
-            try {
-                messageHandlerAPI.response((CbbShineMessageRequest) any);
-            } catch (BusinessException e) {
-                fail();
+        new Expectations() {
+            {
+                cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
+                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+                result = entity;
+                try {
+                    messageHandlerAPI.response((CbbShineMessageRequest) any);
+                } catch (BusinessException e) {
+                    fail();
+                }
             }
-        }};
+        };
 
         try {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
@@ -73,20 +79,24 @@ public class CheckUpgradeHandlerImplTest {
         }
     }
 
-
+    /**
+     * 测试分发添加终端消息
+     */
     @Test
     public void testDispatchAddTerminalBasicInfo() {
         String terminalId = "123";
-        new Expectations() {{
-            cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-            result = null;
-            try {
-                messageHandlerAPI.response((CbbShineMessageRequest) any);
-            } catch (BusinessException e) {
-                fail();
+        new Expectations() {
+            {
+                cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
+                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+                result = null;
+                try {
+                    messageHandlerAPI.response((CbbShineMessageRequest) any);
+                } catch (BusinessException e) {
+                    fail();
+                }
             }
-        }};
+        };
 
         try {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
@@ -102,13 +112,15 @@ public class CheckUpgradeHandlerImplTest {
     }
 
     private void saveVerifications() {
-        new Verifications() {{
-            TerminalBasicInfoEntity basicInfoEntity;
-            basicInfoDAO.save(basicInfoEntity = withCapture());
-            assertEquals(basicInfoEntity.getTerminalId(), "123");
-            assertEquals(basicInfoEntity.getName(), "t-box2");
-            assertEquals(basicInfoEntity.getCpuMode(), "intel5");
-        }};
+        new Verifications() {
+            {
+                TerminalBasicInfoEntity basicInfoEntity;
+                basicInfoDAO.save(basicInfoEntity = withCapture());
+                assertEquals(basicInfoEntity.getTerminalId(), "123");
+                assertEquals(basicInfoEntity.getName(), "t-box2");
+                assertEquals(basicInfoEntity.getCpuMode(), "intel5");
+            }
+        };
     }
 
 

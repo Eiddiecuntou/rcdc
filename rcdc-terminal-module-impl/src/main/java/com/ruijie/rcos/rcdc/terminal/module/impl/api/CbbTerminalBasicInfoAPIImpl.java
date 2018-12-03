@@ -2,9 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalBasicInfoEntity;
@@ -12,8 +14,23 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.bval.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Description: 终端基本信息维护
@@ -31,8 +48,8 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     @Autowired
     private TerminalBasicInfoService basicInfoService;
 
-    private static final BeanCopier BEAN_COPIER = BeanCopier.create(TerminalBasicInfoEntity.class,
-            CbbTerminalBasicInfoDTO.class, false);
+    private static final BeanCopier BEAN_COPIER =
+            BeanCopier.create(TerminalBasicInfoEntity.class, CbbTerminalBasicInfoDTO.class, false);
 
     @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
@@ -62,7 +79,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     @Override
     public void modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalNameRequest不能为null");
-        //先发送终端名称给shine，后修改数据库
+        // 先发送终端名称给shine，后修改数据库
         String terminalId = request.getTerminalId();
         basicInfoService.modifyTerminalName(terminalId, request.getTerminalName());
         int version = getVersion(terminalId);
@@ -75,7 +92,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     @Override
     public void modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalNetworkRequest不能为null");
-        //先发送网络配置消息给shine，后修改数据库
+        // 先发送网络配置消息给shine，后修改数据库
         String terminalId = request.getTerminalId();
         ShineNetworkConfig shineNetworkConfig = new ShineNetworkConfig();
         BeanCopier beanCopier = BeanCopier.create(request.getClass(), shineNetworkConfig.getClass(), false);
@@ -95,4 +112,51 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         }
         return basicInfoEntity.getVersion();
     }
+
+    @Override
+    public DefaultPageResponse<CbbTerminalBasicInfoDTO> listTerminal(CbbTerminalPageRequest pageRequest)
+            throws BusinessException {
+        Assert.notNull(pageRequest, "TerminalpageRequest can not be null");
+
+        Specification<TerminalBasicInfoEntity> specification =
+                buildSpecification(pageRequest.getTerminalType(), pageRequest.getTerminalSystemVersion());
+        Pageable pageable = PageRequest.of(pageRequest.getCurrentPage(), pageRequest.getPageSize());
+        Page<TerminalBasicInfoEntity> terminalPage = basicInfoDAO.findAll(specification, pageable);
+        List<TerminalBasicInfoEntity> terminalEntityList = terminalPage.getContent();
+        if (CollectionUtils.isEmpty(terminalEntityList)) {
+            return DefaultPageResponse.Builder.success(pageRequest.getPageSize(), 0, new CbbTerminalBasicInfoDTO[0]);
+        }
+
+        CbbTerminalBasicInfoDTO[] terminalDtoArr = new CbbTerminalBasicInfoDTO[terminalEntityList.size()];
+        Stream.iterate(0, i -> i + 1).limit(terminalEntityList.size()).forEach(i -> {
+            CbbTerminalBasicInfoDTO terminalDto = new CbbTerminalBasicInfoDTO();
+            BEAN_COPIER.copy(terminalEntityList.get(i), terminalDto, null);
+            terminalDtoArr[i] = terminalDto;
+        });
+        return DefaultPageResponse.Builder.success(pageRequest.getPageSize(), (int) terminalPage.getTotalElements(),
+                terminalDtoArr);
+    }
+
+    private Specification<TerminalBasicInfoEntity> buildSpecification(CbbTerminalTypeEnums terminalType,
+            String terminalSystemVersion) {
+        return new Specification<TerminalBasicInfoEntity>() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Predicate toPredicate(Root<TerminalBasicInfoEntity> root, CriteriaQuery<?> query,
+                    CriteriaBuilder criteriaBuilder) {
+                Predicate predicate = null;
+                if (terminalType != null) {
+                    predicate = criteriaBuilder.equal(root.get("terminalType"), terminalType);
+                }
+                if (!StringUtils.isBlank(terminalSystemVersion)) {
+                    predicate = criteriaBuilder.equal(root.get("terminalSystemVersion"), terminalSystemVersion);
+                }
+                return predicate;
+            }
+        };
+    }
+
+
 }

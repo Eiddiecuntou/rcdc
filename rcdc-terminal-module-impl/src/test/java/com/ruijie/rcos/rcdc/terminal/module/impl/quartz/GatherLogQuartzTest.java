@@ -1,21 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
+import static org.junit.Assert.fail;
+import java.time.Instant;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
-import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.time.Instant;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -34,13 +31,18 @@ public class GatherLogQuartzTest {
     @Injectable
     private GatherLogCacheManager cacheManager;
 
+    /**
+     * 测试检验和清除过期缓存
+     */
     @Test
     public void checkAndCleanExpireCache() {
         Map<String, GatherLogCache> cacheMap = generateCaches();
-        new Expectations() {{
-            cacheManager.getGatherLogCaches();
-            result = cacheMap;
-        }};
+        new Expectations() {
+            {
+                cacheManager.getGatherLogCaches();
+                result = cacheMap;
+            }
+        };
 
         try {
             gatherLogQuartz.checkAndCleanExpireCache();
