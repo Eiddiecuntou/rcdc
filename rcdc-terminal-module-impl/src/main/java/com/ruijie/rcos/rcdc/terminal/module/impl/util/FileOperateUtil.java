@@ -64,8 +64,6 @@ public class FileOperateUtil {
      */
     public static void moveFile(final String fileName, final String filePath, final String destPath)
             throws BusinessException {
-        //TODO 
-        //FileSystemUtils FileCopyUtils
         Assert.hasLength(fileName, "fileName 不能为空");
         Assert.hasLength(filePath, "filePath 不能为空");
         Assert.hasLength(destPath, "destPath 不能为空");

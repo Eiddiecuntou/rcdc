@@ -98,8 +98,8 @@ public class TerminalSystemUpgradeTaskQuartzTest {
                 terminalSystemUpgradeService.readSystemUpgradeStateFromFile();
                 result = upgradeInfoList;
 
-                taskManager.addTask(anyString, (CbbTerminalTypeEnums) any);
-                result = new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_NUM_EXCEED_LIMIT);
+//                taskManager.addTask(anyString, (CbbTerminalTypeEnums) any);
+//                result = new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_NUM_EXCEED_LIMIT);
             }
 
         };
@@ -368,20 +368,11 @@ public class TerminalSystemUpgradeTaskQuartzTest {
         info2.setLastUpdateTime(System.currentTimeMillis());
         upgradeInfoList.add(info2);
 
-        TerminalSystemUpgradeInfo info3 = buildUpgradeInfo(baseTerminalId, terminalType);
-        info3.setLastUpdateTime(System.currentTimeMillis());
-        info3.setState(CbbSystemUpgradeStateEnums.DOING);
-        info3.setTerminalId(null);
-        upgradeInfoList.add(info3);
-
         TerminalSystemUpgradeInfo info4 = buildUpgradeInfo(baseTerminalId, terminalType);
         info4.setLastUpdateTime(System.currentTimeMillis());
         info4.setState(CbbSystemUpgradeStateEnums.DOING);
         info4.setTerminalType(null);
         upgradeInfoList.add(info4);
-
-        TerminalSystemUpgradeInfo info5 = null;
-        upgradeInfoList.add(info5);
     }
 
 

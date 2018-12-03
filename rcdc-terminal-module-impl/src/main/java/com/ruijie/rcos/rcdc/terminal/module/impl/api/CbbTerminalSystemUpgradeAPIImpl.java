@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.FileCopyUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalSystemUpgradeTaskDTO;
@@ -76,13 +78,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
      */
     private static final String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s %s";
 
-
     private static final BeanCopier PACKAGE_BEAN_COPIER = BeanCopier.create(TermianlSystemUpgradePackageEntity.class,
             CbbTerminalSystemUpgradePackageInfoDTO.class, false);
 
     private static final BeanCopier TASK_BEAN_COPIER =
             BeanCopier.create(SystemUpgradeTask.class, TerminalSystemUpgradeTaskDTO.class, false);
-
 
     @Autowired
     private TermianlSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
@@ -101,6 +101,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     public DefaultResponse uploadUpgradeFile(ChunkUploadFile file) throws BusinessException {
 
         Assert.notNull(file, "file can not be null");
+        // 校验是否有正在升级中的任务，如果有则认为升级包正在被使用，不允许替换
+
         // 1.校验包类型是否正确，必须是iso或zip文件
 
         // 2.校验包的完整性MD5校验
@@ -112,9 +114,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         final String fileName = file.getFileName();
         final String filePath = file.getFilePath();
         final String fileMD5 = file.getFileMD5();
-        Assert.hasText(fileName, "fileName can not be null");
-        Assert.hasText(filePath, "filePath can not be null");
-        Assert.hasText(fileMD5, "fileMD5 can not be null");
+
+        // 判断是否有正在升级中的任务
+        if (systemUpgradeTaskManager.countUpgradingNum() > 0) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
+        }
 
         // 校验文件类型
         boolean isCorrectType = checkFileType(fileName);
@@ -140,16 +144,36 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         umountUpgradePackage(filePath);
 
         // 将新升级文件移动到目录下
-        FileOperateUtil.moveFile(fileName, filePath, Constants.TERMINAL_UPGRADE_ISO_PATH_VDI);
+        moveUpgradePackage(fileName, filePath, versionInfo.getPackageType());
 
         // 更新升级包信息入库
-        versionInfo.setPackageName(fileName);
+        // versionInfo.setPackageName(fileName);
         terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion(versionInfo);
 
         // 替换升级文件,清除原升级包目录下旧文件，
         FileOperateUtil.deleteFile(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI, fileName);
 
         return DefaultResponse.Builder.success();
+    }
+
+    private void moveUpgradePackage(String fileName, String filePath, CbbTerminalTypeEnums packageType)
+            throws BusinessException {
+        File out = null;
+        if (packageType == CbbTerminalTypeEnums.VDI) {
+            out = new File(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI + fileName);
+        } else if (packageType == CbbTerminalTypeEnums.IDV) {
+            out = new File(Constants.TERMINAL_UPGRADE_ISO_PATH_IDV + fileName);
+        } else {
+            out = new File(Constants.TERMINAL_UPGRADE_ISO_PATH_OTA + fileName);
+        }
+        File in = new File(filePath);
+        try {
+            FileCopyUtils.copy(in, out);
+        } catch (IOException e) {
+            LOGGER.debug("copy upgrade file to target directory fail, fileName : {}, packageType : {}", fileName,
+                    packageType.getName());
+            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+        }
     }
 
     private boolean checkFileType(String fileName) throws BusinessException {
@@ -170,7 +194,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
      */
     private boolean isComplete(String md5) {
         // TODO
-        return false;
+        return true;
     }
 
     private void mountUpgradePackage(final String filePath) throws BusinessException {
@@ -216,8 +240,10 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
         versionInfo.setPackageType(CbbTerminalTypeEnums
                 .valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE)));
-        versionInfo.setInternalVersion(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_INTERNAL_VERSION);
-        versionInfo.setExternalVersion(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_EXTERNAL_VERSION);
+        versionInfo
+                .setInternalVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_INTERNAL_VERSION));
+        versionInfo
+                .setExternalVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_EXTERNAL_VERSION));
 
         return versionInfo;
     }
@@ -308,8 +334,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
         }
 
-        CbbTerminalEntity terminal =
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(request.getTerminalId());
+        CbbTerminalEntity terminal = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(request.getTerminalId());
         if (terminal == null) {
             LOGGER.debug("terminal id is [{}], terminal not found", request.getTerminalId());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
@@ -320,8 +345,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         return DefaultResponse.Builder.success();
     }
 
-    private void addSystemUpgradeTask(TermianlSystemUpgradePackageEntity upgradePackage,
-            CbbTerminalEntity terminal) throws BusinessException {
+    private void addSystemUpgradeTask(TermianlSystemUpgradePackageEntity upgradePackage, CbbTerminalEntity terminal)
+            throws BusinessException {
         // 非在线状态的终端不进行刷机
         if (!CbbTerminalStateEnums.ONLINE.equals(terminal.getState())) {
             LOGGER.info("terminal offline, can not upgrade system");
@@ -359,9 +384,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             }
 
         }
-
-
-
     }
 
     private boolean isRuningVirtualMachine() {
@@ -374,13 +396,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throws BusinessException {
         Assert.notNull(request, "RemoveSystemUpgradeTaskRequest can not be null");
 
-        CbbTerminalEntity terminal =
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(request.getTerminalId());
-        if (terminal == null) {
-            LOGGER.debug("query terminal by terminal id[{}] is null", request.getTerminalId());
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
-        }
-
         SystemUpgradeTask task = systemUpgradeTaskManager.getTaskByTerminalId(request.getTerminalId());
         if (task == null) {
             LOGGER.debug("query terminal upgrade task by terminal id[{}] is null", request.getTerminalId());
@@ -391,7 +406,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             LOGGER.debug("terminal upgrade task state is doing, terminal id[{}] ", request.getTerminalId());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }
-
         systemUpgradeTaskManager.removeTaskByTerminalId(request.getTerminalId());
 
         return DefaultResponse.Builder.success();
@@ -408,7 +422,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         // 对列表进行排序
         Collections.sort(tasks, new Comparator<SystemUpgradeTask>() {
-
             @Override
             public int compare(SystemUpgradeTask o1, SystemUpgradeTask o2) {
                 if (o1.getState() == o2.getState()) {
@@ -420,10 +433,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
                         return 1;
                     }
                 }
-
                 return -1;
             }
-
         });
 
         TerminalSystemUpgradeTaskDTO[] dtoArr = new TerminalSystemUpgradeTaskDTO[tasks.size()];
@@ -433,7 +444,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             TASK_BEAN_COPIER.copy(tasks.get(i), dto, null);
             dtoArr[i] = dto;
         });
-        
+
         return new CbbBaseListResponse<>(dtoArr);
     }
 

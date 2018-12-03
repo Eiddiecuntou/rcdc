@@ -22,6 +22,11 @@ public enum CbbTerminalTypeEnums {
     IDV("idv"),
     
     /**
+     * ota
+     */
+    OTA("ota"),
+    
+    /**
      * 所有
      */
     ALL("all");

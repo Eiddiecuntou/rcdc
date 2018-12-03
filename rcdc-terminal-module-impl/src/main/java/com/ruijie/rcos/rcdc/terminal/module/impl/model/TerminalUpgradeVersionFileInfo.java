@@ -30,7 +30,6 @@ public class TerminalUpgradeVersionFileInfo {
     
     /**
      * 更新包类型
-     *FIXME 用枚举
      */
     private CbbTerminalTypeEnums packageType;
    

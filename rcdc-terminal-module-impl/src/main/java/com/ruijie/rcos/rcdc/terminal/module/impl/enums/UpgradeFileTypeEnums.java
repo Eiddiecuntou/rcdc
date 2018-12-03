@@ -14,14 +14,14 @@ import org.springframework.util.Assert;
 public enum UpgradeFileTypeEnums {
 
     /**
-     * 系统刷机包文件类型iso
+     * 文件类型iso
      */
-    SYSTEM_UPGRADE_FILE_ISO("iso"),
+    ISO("iso"),
 
     /**
-     * 系统组件刷机包文件类型zip
+     * 文件类型zip
      */
-    SYSTEM_MODULE_UPGRADE_FILE("zip");
+    ZIP("zip");
 
 
     private String fileType;

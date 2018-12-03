@@ -34,7 +34,6 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
             return;
         }
 
-        Object data = msg.getData();
 
     }
 

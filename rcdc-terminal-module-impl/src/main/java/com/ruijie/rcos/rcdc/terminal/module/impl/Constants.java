@@ -30,12 +30,12 @@ public interface Constants {
     /**
      * 存放终端系统idv刷机包路径
      */
-    String TEMINAL_UPGRADE_ISO_PATH_IDV = "/opt/upgrade/linux_idv/";
+    String TERMINAL_UPGRADE_ISO_PATH_IDV = "/opt/upgrade/linux_idv/";
 
     /**
      * 存放终端系统ota刷机包路径
      */
-    String TEMINAL_UPGRADE_ISO_PATH_OTA = "/opt/upgrade/ota/";
+    String TERMINAL_UPGRADE_ISO_PATH_OTA = "/opt/upgrade/ota/";
   
     /**
      * TODO 系统刷机包挂载路径  

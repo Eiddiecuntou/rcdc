@@ -2,16 +2,17 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import static org.junit.Assert.fail;
 import java.io.File;
-import java.lang.reflect.Method;
+import java.io.InputStream;
+import java.util.Properties;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.util.FileCopyUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TermianlSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.FilePropertyInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.CmdExecuteUtil;
@@ -85,22 +86,14 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
 
             @Mock
-            private TerminalUpgradeVersionFileInfo getVersionInfo(String verContent) {
-                TerminalUpgradeVersionFileInfo info = new TerminalUpgradeVersionFileInfo();
-                info.setInternalVersion("111");
-                info.setPackageName("222");
-                info.setPackageType(CbbTerminalTypeEnums.VDI);
-                info.setExternalVersion("444");
+            private TerminalUpgradeVersionFileInfo getVersionInfo() {
+                TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
+                versionInfo.setPackageName("package");
+                versionInfo.setPackageType(CbbTerminalTypeEnums.IDV);
+                versionInfo.setInternalVersion("interVer");
+                versionInfo.setExternalVersion("exterVer");
                 
-                return info;
-            }
-
-            @Mock
-            private FilePropertyInfo getFileProperty(String filePath) {
-                FilePropertyInfo info = new FilePropertyInfo();
-                info.setMd5("md5");
-                info.setFileType("iso");
-                return info;
+                return versionInfo;
             }
         };
         
@@ -110,17 +103,18 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             public void deleteFile(final String directoryPath, final String exceptFileName) {
                 
             }
-            
-            @Mock
-            public void moveFile(final String fileName, final String filePath, final String destPath) {
-                
-            }
-            
-            @Mock
-            public String getSmallFileContent(final String filePath)  {
-                return "123";
-            }
+
         };
+        
+        new MockUp<FileCopyUtils>() {
+            
+            @Mock
+            public int copy(File in, File out) {
+                return 10;
+            }
+            
+        };
+        
 
         cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(file);
 
@@ -131,41 +125,6 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 times = 1;
             }
         };
-
-    }
-
-
-    /**
-     * 测试升级包上传md5校验不正确
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testUploadUpgradeFileMD5Incorrect() throws BusinessException {
-
-        // 将文件挂载炒作全部mock
-        ChunkUploadFile file = new ChunkUploadFile();
-        file.setFileMD5("md6");
-        file.setFileName("aaa.iso");
-        file.setFilePath("/usr/data");
-
-        new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
-
-            @Mock
-            private FilePropertyInfo getFileProperty(String filePath) {
-                FilePropertyInfo info = new FilePropertyInfo();
-                info.setMd5("md5");
-                info.setFileType("iso");
-                return info;
-            }
-        };
-
-        try {
-            cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(file);
-            fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_COMPLETE_CHECK_FAIL, e.getKey());
-        }
 
     }
 
@@ -180,19 +139,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         // 将文件挂载炒作全部mock
         ChunkUploadFile file = new ChunkUploadFile();
         file.setFileMD5("md5");
-        file.setFileName("aaa.iso");
+        file.setFileName("aaa.ios");
         file.setFilePath("/usr/data");
-
-        new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
-
-            @Mock
-            private FilePropertyInfo getFileProperty(String filePath) {
-                FilePropertyInfo info = new FilePropertyInfo();
-                info.setMd5("md5");
-                info.setFileType("aaa");
-                return info;
-            }
-        };
 
         try {
             cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(file);
@@ -203,37 +151,6 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     }
 
-    /**
-     * 测试升级包上传文件文件属性为空
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testUploadUpgradeFileFilePropertyIsNull() throws BusinessException {
-
-        final ChunkUploadFile file = new ChunkUploadFile();
-        file.setFileMD5("md5");
-        file.setFileName("aaa.iso");
-        file.setFilePath("/usr/data");
-
-        final FilePropertyInfo info = null;
-
-        new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
-
-            @Mock
-            private FilePropertyInfo getFileProperty(String filePath) {
-                return info;
-            }
-        };
-
-        try {
-            cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(file);
-            fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_COMPLETE_CHECK_FAIL, e.getKey());
-        }
-
-    }
 
     /**
      * 测试升级包上传文件文件属性MD5为空
@@ -241,21 +158,17 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testUploadUpgradeFileFilePropertyMD5IsEmpty() throws BusinessException {
+    public void testUploadUpgradeFileMD5CheckFail() throws BusinessException {
 
         final ChunkUploadFile file = new ChunkUploadFile();
         file.setFileMD5("md5");
         file.setFileName("aaa.iso");
         file.setFilePath("/usr/data");
-
-        final FilePropertyInfo info = new FilePropertyInfo();
-        info.setFileType("aaa");
-
+        
         new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
-
             @Mock
-            private FilePropertyInfo getFileProperty(String filePath) {
-                return info;
+            public boolean isComplete(String md5) {
+                return false;
             }
         };
 
@@ -278,25 +191,14 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         final ChunkUploadFile file = new ChunkUploadFile();
         file.setFileMD5("md5");
-        file.setFileName("aaa.iso");
+        file.setFileName("aaa");
         file.setFilePath("/usr/data");
-
-        final FilePropertyInfo info = new FilePropertyInfo();
-        info.setMd5("md5");
-
-        new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
-
-            @Mock
-            private FilePropertyInfo getFileProperty(String filePath) {
-                return info;
-            }
-        };
-
+       
         try {
             cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(file);
             fail();
         } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_COMPLETE_CHECK_FAIL, e.getKey());
+            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR, e.getKey());
         }
 
     }

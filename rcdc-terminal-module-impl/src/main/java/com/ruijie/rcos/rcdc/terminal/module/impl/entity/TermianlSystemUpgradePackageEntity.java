@@ -34,6 +34,7 @@ public class TermianlSystemUpgradePackageEntity {
     /**
      * 包类型，VDI ISO、IDV ISO、OTA
      */
+    @Enumerated(EnumType.STRING)
     private CbbTerminalTypeEnums packageType;
 
     /**

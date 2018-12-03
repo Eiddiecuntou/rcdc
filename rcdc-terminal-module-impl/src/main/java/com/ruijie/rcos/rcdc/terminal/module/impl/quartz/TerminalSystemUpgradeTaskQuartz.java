@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -57,7 +56,7 @@ public class TerminalSystemUpgradeTaskQuartz {
 
     /**
      * 
-     * 每10秒与状态文件同步一次状态 TODO 时间待定
+     * 每10秒与状态文件同步一次状态
      */
     @Scheduled(cron = "0/10 * *  * * ?")
     public void stateSynchronize() {

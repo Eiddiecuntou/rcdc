@@ -82,7 +82,8 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         entity.setPackageType(versionInfo.getPackageType());
         entity.setExternalVersion(versionInfo.getExternalVersion());
         entity.setInternalVersion(versionInfo.getInternalVersion());
-        entity.setStorePath(Constants.TEMINAL_UPGRADE_ISO_PATH_IDV);
+        //TODO
+        entity.setStorePath(Constants.TERMINAL_UPGRADE_ISO_PATH_IDV);
         entity.setUploadTime(new Date());
         entity.setId(UUID.randomUUID());
         return entity;
