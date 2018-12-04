@@ -50,6 +50,7 @@ public class TerminalEntity {
 
     private String productType;
 
+    @Enumerated(EnumType.STRING)
     private TerminalTypeEnums terminalType;
 
     private String serialNumber;
