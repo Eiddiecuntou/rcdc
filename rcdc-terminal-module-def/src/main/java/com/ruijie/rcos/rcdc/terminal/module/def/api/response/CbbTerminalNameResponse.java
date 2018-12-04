@@ -10,7 +10,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  *
  * @author Jarman
  */
-public class TerminalNameResponse extends DefaultResponse {
+public class CbbTerminalNameResponse extends DefaultResponse {
     private String terminalName;
 
     public String getTerminalName() {

@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
@@ -79,7 +79,7 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    TerminalNameResponse getTerminalLogName(CbbTerminalIdRequest request) throws BusinessException;
+    CbbTerminalNameResponse getTerminalLogName(CbbTerminalIdRequest request) throws BusinessException;
 
 
 }

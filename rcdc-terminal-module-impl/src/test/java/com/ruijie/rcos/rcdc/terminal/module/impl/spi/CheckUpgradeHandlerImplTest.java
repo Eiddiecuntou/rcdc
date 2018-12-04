@@ -7,7 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import mockit.Expectations;
@@ -45,7 +45,7 @@ public class CheckUpgradeHandlerImplTest {
     @Test
     public void testDispatchUpdateTerminalBasicInfo() {
         String terminalId = "123";
-        CbbTerminalEntity entity = new CbbTerminalEntity();
+        TerminalEntity entity = new TerminalEntity();
         entity.setTerminalId("123456");
         entity.setName("t-box3");
         entity.setCpuMode("intel");
@@ -103,7 +103,7 @@ public class CheckUpgradeHandlerImplTest {
 
     private void saveVerifications() {
         new Verifications() {{
-            CbbTerminalEntity basicInfoEntity;
+            TerminalEntity basicInfoEntity;
             basicInfoDAO.save(basicInfoEntity = withCapture());
             assertEquals(basicInfoEntity.getTerminalId(), "123");
             assertEquals(basicInfoEntity.getName(), "t-box2");

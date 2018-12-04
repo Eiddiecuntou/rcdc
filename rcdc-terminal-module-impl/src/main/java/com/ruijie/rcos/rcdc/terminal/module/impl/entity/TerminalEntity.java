@@ -9,6 +9,7 @@ import javax.persistence.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 
 /**
  * Description: 终端基本信息实体类
@@ -20,7 +21,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
  */
 @Entity
 @Table(name = "t_cbb_terminal")
-public class CbbTerminalEntity {
+public class TerminalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -49,7 +50,7 @@ public class CbbTerminalEntity {
 
     private String productType;
 
-    private String terminalType;
+    private TerminalTypeEnums terminalType;
 
     private String serialNumber;
 
@@ -165,11 +166,11 @@ public class CbbTerminalEntity {
         this.productType = productType;
     }
 
-    public String getTerminalType() {
+    public TerminalTypeEnums getTerminalType() {
         return terminalType;
     }
 
-    public void setTerminalType(String terminalType) {
+    public void setTerminalType(TerminalTypeEnums terminalType) {
         this.terminalType = terminalType;
     }
 

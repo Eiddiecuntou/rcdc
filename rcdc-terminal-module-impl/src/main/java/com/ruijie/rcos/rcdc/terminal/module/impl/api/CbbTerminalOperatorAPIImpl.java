@@ -8,7 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
@@ -94,7 +94,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public TerminalNameResponse getTerminalLogName(CbbTerminalIdRequest request) throws BusinessException {
+    public CbbTerminalNameResponse getTerminalLogName(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request,"CbbTerminalIdRequest不能为空");
         Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
@@ -106,7 +106,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         if (cache.getState() == GatherLogStateEnums.FAILURE) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_GATHER_LOG_NOT_EXIST);
         }
-        TerminalNameResponse response = new TerminalNameResponse();
+        CbbTerminalNameResponse response = new CbbTerminalNameResponse();
         response.setTerminalName(cache.getLogFileName());
         return response;
     }
