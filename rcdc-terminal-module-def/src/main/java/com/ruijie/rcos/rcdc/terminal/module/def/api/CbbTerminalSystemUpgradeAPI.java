@@ -6,11 +6,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystem
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbBatchAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbBaseListResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
-import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
 
 /**
  * 
@@ -27,12 +27,12 @@ public interface CbbTerminalSystemUpgradeAPI {
      * 
      * 上传终端系统升级文件
      * 
-     * @param file 上传文件信息
+     * @param request 请求参数
      * @return 上传文件结果
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse uploadUpgradeFile(ChunkUploadFile file) throws BusinessException;
+    DefaultResponse uploadUpgradeFile(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException;
 
     /**
      * 

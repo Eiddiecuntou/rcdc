@@ -3,11 +3,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
@@ -35,7 +35,7 @@ public class SystemUpgradeTaskManager {
     /**
      * 升级任务集合
      */
-    private static final Map<String, SystemUpgradeTask> TASK_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, SystemUpgradeTask> TASK_MAP = new LinkedHashMap<>();
 
     /**
      * TODO 最大同时刷机数
@@ -175,7 +175,7 @@ public class SystemUpgradeTaskManager {
         Set<Entry<String, SystemUpgradeTask>> entrySet = TASK_MAP.entrySet();
         for (Iterator<Entry<String, SystemUpgradeTask>> it = entrySet.iterator(); it.hasNext();) {
             SystemUpgradeTask task = it.next().getValue();
-            if (task.getState().equals(CbbSystemUpgradeStateEnums.DOING)) {
+            if (task.getState() == CbbSystemUpgradeStateEnums.DOING) {
                 LOGGER.debug("task is doing; terminal id[{}]", task.getTerminalId());
                 count++;
             }
@@ -203,7 +203,7 @@ public class SystemUpgradeTaskManager {
         List<SystemUpgradeTask> upgradingTaskList = new ArrayList<>();
         for (Iterator<Entry<String, SystemUpgradeTask>> it = TASK_MAP.entrySet().iterator(); it.hasNext();) {
             SystemUpgradeTask task = it.next().getValue();
-            if (task.getState().equals(CbbSystemUpgradeStateEnums.DOING)) {
+            if (task.getState() == CbbSystemUpgradeStateEnums.DOING) {
                 LOGGER.debug("task is doing; terminal id[{}]", task.getTerminalId());
                 upgradingTaskList.add(task);
             }
@@ -259,11 +259,8 @@ public class SystemUpgradeTaskManager {
                             task.toString());
                     break;
                 }
-
             }
-
         }
-
         return startTaskList;
     }
 
@@ -303,4 +300,13 @@ public class SystemUpgradeTaskManager {
     }
 
 
+    /**
+     * 查询数量是否超过最大数量
+     * 
+     * @param num 数量
+     * @return 是否超出数量限制 true: 超过,  false: 未超过
+     */
+    public boolean checkMaxAddNum(int num) {
+        return (TASK_MAP_MAX_NUM - TASK_MAP.size()) < num;
+    }
 }

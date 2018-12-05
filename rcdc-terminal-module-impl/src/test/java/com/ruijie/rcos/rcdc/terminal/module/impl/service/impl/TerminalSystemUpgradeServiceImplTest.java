@@ -11,8 +11,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.callback.CbbTerminalSystemUpgradeRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TermianlSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TermianlSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -49,7 +49,7 @@ public class TerminalSystemUpgradeServiceImplTest {
     private DefaultRequestMessageSender sender;
 
     @Injectable
-    private TermianlSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
 
     @Injectable
     private CbbTerminalSystemUpgradeRequestCallBack callback;
@@ -63,11 +63,11 @@ public class TerminalSystemUpgradeServiceImplTest {
     public void testModifyTerminalUpgradePackageVersion() throws BusinessException {
         // 构造版本信息,升级包信息
         TerminalUpgradeVersionFileInfo versionInfo = buildUpgradePackageVersion();
-        TermianlSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
+        TerminalSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
                 termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion((CbbTerminalTypeEnums) any,
@@ -81,7 +81,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Verifications() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 times = 1;
 
                 termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion((CbbTerminalTypeEnums) any,
@@ -118,11 +118,11 @@ public class TerminalSystemUpgradeServiceImplTest {
     public void testModifyTerminalUpgradePackageVersionDAOReturnZero() throws BusinessException {
         // 构造版本信息,升级包信息
         TerminalUpgradeVersionFileInfo versionInfo = buildUpgradePackageVersion();
-        TermianlSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
+        TerminalSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
                 termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion((CbbTerminalTypeEnums) any,
@@ -152,7 +152,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 result = null;
             }
         };
@@ -180,10 +180,10 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 result = null;
 
-                termianlSystemUpgradePackageDAO.save((TermianlSystemUpgradePackageEntity) any);
+                termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
             }
         };
 
@@ -192,10 +192,10 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Verifications() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 times = 1;
 
-                termianlSystemUpgradePackageDAO.save((TermianlSystemUpgradePackageEntity) any);
+                termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
                 times = 1;
             }
         };
@@ -211,11 +211,11 @@ public class TerminalSystemUpgradeServiceImplTest {
     public void testAddTerminalUpgradePackagepackageIsExist() throws BusinessException {
         // 构造测试数据
         TerminalUpgradeVersionFileInfo versionInfo = buildUpgradePackageVersion();
-        TermianlSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
+        TerminalSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
             }
         };
@@ -357,8 +357,8 @@ public class TerminalSystemUpgradeServiceImplTest {
     }
 
 
-    private TermianlSystemUpgradePackageEntity buildUpgradePackage() {
-        TermianlSystemUpgradePackageEntity upgradePackage = new TermianlSystemUpgradePackageEntity();
+    private TerminalSystemUpgradePackageEntity buildUpgradePackage() {
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         upgradePackage.setId(UUID.randomUUID());
         upgradePackage.setInternalVersion("internalVersion");
         upgradePackage.setExternalVersion("externalVersion");

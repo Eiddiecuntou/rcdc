@@ -11,8 +11,8 @@ import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TermianlSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TermianlSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
@@ -52,7 +52,7 @@ public class TerminalSystemUpgradeTaskQuartz {
      * 终端系统升级包DAO
      */
     @Autowired
-    private TermianlSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
 
     /**
      * 
@@ -121,8 +121,8 @@ public class TerminalSystemUpgradeTaskQuartz {
         // 发送升级指令
         for (SystemUpgradeTask task : startTaskList) {
             // 下发系统刷机指令
-            TermianlSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO
-                    .findTermianlSystemUpgradePackageByPackageType(task.getTerminalType());
+            TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO
+                    .findFirstByPackageType(task.getTerminalType());
             if (upgradePackage == null) {
                 LOGGER.info("终端类型[" + task.getTerminalType() + "]升级包不存在");
                 taskManager.modifyTaskState(task.getTerminalId(), CbbSystemUpgradeStateEnums.WAIT);
@@ -138,8 +138,8 @@ public class TerminalSystemUpgradeTaskQuartz {
                 task.setIsSend(true);
             } catch (Exception e) {
                 LOGGER.info("终端[" + task.getTerminalId() + "]升级指令发送失败");
-                // 系统刷机指令发送失败，将失败任务移除队列
-                taskManager.removeTaskByTerminalId(task.getTerminalId());
+                // 系统刷机指令发送失败，将任务重置为等待中
+                taskManager.modifyTaskState(task.getTerminalId(), CbbSystemUpgradeStateEnums.WAIT);
             }
         }
     }

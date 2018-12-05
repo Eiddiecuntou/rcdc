@@ -65,7 +65,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     public void modifyTerminalState(String terminalId, CbbTerminalStateEnums state) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(state, "CbbTerminalStateEnums 不能为空");
-        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }

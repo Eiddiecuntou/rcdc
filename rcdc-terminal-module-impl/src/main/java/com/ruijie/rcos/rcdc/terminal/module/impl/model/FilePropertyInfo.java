@@ -7,7 +7,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.model;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月21日
  * 
- * @author "nt"
+ * @author nt
  */
 public class FilePropertyInfo {
 

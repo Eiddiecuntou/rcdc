@@ -10,8 +10,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.callback.AsyncRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.callback.CbbTerminalSystemUpgradeRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TermianlSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TermianlSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
@@ -29,7 +29,7 @@ import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月20日
  * 
- * @author "nt"
+ * @author nt
  */
 @Service
 public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeService {
@@ -38,8 +38,8 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     private SessionManager sessionManager;
 
     @Autowired
-    private TermianlSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
-    
+    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+
     @Autowired
     private CbbTerminalSystemUpgradeRequestCallBack callback;
 
@@ -48,8 +48,8 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
             throws BusinessException {
         Assert.notNull(versionInfo, "terminalUpgradeVersionFileInfo 不能为空");
 
-        TermianlSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO
-                .findTermianlSystemUpgradePackageByPackageType(versionInfo.getPackageType());
+        TerminalSystemUpgradePackageEntity upgradePackage =
+                termianlSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
         if (upgradePackage == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
         }
@@ -62,27 +62,26 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     }
 
     @Override
-    public void addTerminalUpgradePackage(TerminalUpgradeVersionFileInfo versionInfo)
-            throws BusinessException {
+    public void addTerminalUpgradePackage(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
         Assert.notNull(versionInfo, "terminalUpgradeVersionFileInfo 不能为空");
 
-        TermianlSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO
-                .findTermianlSystemUpgradePackageByPackageType(versionInfo.getPackageType());
+        TerminalSystemUpgradePackageEntity upgradePackage =
+                termianlSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
         if (upgradePackage != null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_HAS_EXIST);
         }
-        TermianlSystemUpgradePackageEntity entity = buildTerminalSystemUpgradePackageEntity(versionInfo);
+        TerminalSystemUpgradePackageEntity entity = buildTerminalSystemUpgradePackageEntity(versionInfo);
         termianlSystemUpgradePackageDAO.save(entity);
     }
 
-    private TermianlSystemUpgradePackageEntity buildTerminalSystemUpgradePackageEntity(
+    private TerminalSystemUpgradePackageEntity buildTerminalSystemUpgradePackageEntity(
             TerminalUpgradeVersionFileInfo versionInfo) {
-        TermianlSystemUpgradePackageEntity entity = new TermianlSystemUpgradePackageEntity();
+        TerminalSystemUpgradePackageEntity entity = new TerminalSystemUpgradePackageEntity();
         entity.setName(versionInfo.getPackageName());
         entity.setPackageType(versionInfo.getPackageType());
         entity.setExternalVersion(versionInfo.getExternalVersion());
         entity.setInternalVersion(versionInfo.getInternalVersion());
-        //TODO
+        // TODO
         entity.setStorePath(Constants.TERMINAL_UPGRADE_ISO_PATH_IDV);
         entity.setUploadTime(new Date());
         entity.setId(UUID.randomUUID());
@@ -107,8 +106,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
 
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.UPGRADE_TERMINAL_SYSTEM.getName(),
                 upgradeMsg);
-        sender.asyncRequest(message,
-                new AsyncRequestCallBack(terminalId, callback));
+        sender.asyncRequest(message, new AsyncRequestCallBack(terminalId, callback));
     }
 
 }

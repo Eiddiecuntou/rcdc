@@ -13,7 +13,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月20日
  * 
- * @author "nt"
+ * @author nt
  */
 public interface TerminalSystemUpgradeService {
 

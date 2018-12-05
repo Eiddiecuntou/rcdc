@@ -43,7 +43,7 @@ public class TerminalDetectServiceTest {
     @Test
     public void testUpdateBasicInfoAndDetect() {
         new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+            basicInfoDAO.findFirstByTerminalId(anyString);
             basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
         }};
 
@@ -68,7 +68,7 @@ public class TerminalDetectServiceTest {
     @Test
     public void testUpdateBasicInfo() {
         new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+            basicInfoDAO.findFirstByTerminalId(anyString);
             basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
         }};
 

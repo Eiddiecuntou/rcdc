@@ -51,7 +51,7 @@ public class CheckUpgradeHandlerImplTest {
         new Expectations() {
             {
                 cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+                basicInfoDAO.findFirstByTerminalId(anyString);
                 result = entity;
                 try {
                     messageHandlerAPI.response((CbbShineMessageRequest) any);
@@ -81,7 +81,7 @@ public class CheckUpgradeHandlerImplTest {
         new Expectations() {
             {
                 cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+                basicInfoDAO.findFirstByTerminalId(anyString);
                 result = null;
                 try {
                     messageHandlerAPI.response((CbbShineMessageRequest) any);

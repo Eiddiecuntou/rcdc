@@ -10,7 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月24日
  * 
- * @author "nt"
+ * @author nt
  */
 public class TerminalSystemUpgradeInfo {
     

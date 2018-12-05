@@ -13,8 +13,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TermianlSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TermianlSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
@@ -47,7 +47,7 @@ public class TerminalSystemUpgradeTaskQuartzTest {
     private TerminalSystemUpgradeService terminalSystemUpgradeService;
 
     @Injectable
-    private TermianlSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
 
 
     /**
@@ -150,7 +150,7 @@ public class TerminalSystemUpgradeTaskQuartzTest {
      */
     @Test
     public void testDealWaitTask() throws BusinessException {
-        TermianlSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
+        TerminalSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
         List<SystemUpgradeTask> taskList = buildTaskList();
         new Expectations() {
             {
@@ -158,7 +158,7 @@ public class TerminalSystemUpgradeTaskQuartzTest {
                 result = taskList;
 
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
                 terminalSystemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
@@ -183,7 +183,7 @@ public class TerminalSystemUpgradeTaskQuartzTest {
      */
     @Test
     public void testDealWaitTaskSendUpgradeMsgFail() throws BusinessException {
-        TermianlSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
+        TerminalSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
         List<SystemUpgradeTask> taskList = buildTaskList();
         new Expectations() {
             {
@@ -191,7 +191,7 @@ public class TerminalSystemUpgradeTaskQuartzTest {
                 result = taskList;
 
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
                 terminalSystemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
@@ -228,7 +228,7 @@ public class TerminalSystemUpgradeTaskQuartzTest {
                 result = startTaskList;
 
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 result = null;
 
                 taskManager.modifyTaskState(anyString, (CbbSystemUpgradeStateEnums) any);
@@ -271,15 +271,15 @@ public class TerminalSystemUpgradeTaskQuartzTest {
                 times = 1;
 
                 termianlSystemUpgradePackageDAO
-                        .findTermianlSystemUpgradePackageByPackageType((CbbTerminalTypeEnums) any);
+                        .findByPackageType((CbbTerminalTypeEnums) any);
                 times = 0;
             }
         };
 
     }
 
-    private TermianlSystemUpgradePackageEntity buildUpgradePackage() {
-        TermianlSystemUpgradePackageEntity upgradePackage = new TermianlSystemUpgradePackageEntity();
+    private TerminalSystemUpgradePackageEntity buildUpgradePackage() {
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         upgradePackage.setId(UUID.randomUUID());
         upgradePackage.setInternalVersion("internalVersion");
         upgradePackage.setExternalVersion("externalVersion");

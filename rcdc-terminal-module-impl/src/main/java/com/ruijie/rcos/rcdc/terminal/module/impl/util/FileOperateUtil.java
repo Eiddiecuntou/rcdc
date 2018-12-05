@@ -1,11 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.FileSystemUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;

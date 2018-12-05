@@ -28,7 +28,15 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<CbbTerminal
      * @param terminalId 终端id
      * @return 返回终端信息
      */
-    CbbTerminalEntity findTerminalBasicInfoEntitiesByTerminalId(String terminalId);
+    CbbTerminalEntity findFirstByTerminalId(String terminalId);
+    
+    /**
+     * 获取终端详细基本信息
+     *
+     * @param terminalIdList 终端集合
+     * @return 返回终端信息集合
+     */
+    List<CbbTerminalEntity> findByTerminalIdIn(List<String> terminalIdList);
 
     /**
      * 删除终端数据

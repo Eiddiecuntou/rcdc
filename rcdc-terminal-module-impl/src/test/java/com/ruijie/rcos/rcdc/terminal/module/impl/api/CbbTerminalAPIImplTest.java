@@ -48,7 +48,7 @@ public class CbbTerminalAPIImplTest {
     public void testFindBasicInfoByTerminalIdNotFindBasicInfo() {
         String terminalId = "123";
         new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+            basicInfoDAO.findFirstByTerminalId(terminalId);
             result = null;
         }};
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
@@ -63,7 +63,7 @@ public class CbbTerminalAPIImplTest {
         try {
             new Verifications() {{
                 String tid;
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(tid = withCapture());
+                basicInfoDAO.findFirstByTerminalId(tid = withCapture());
                 times = 1;
                 Assert.assertEquals(tid, terminalId);
             }};
@@ -86,7 +86,7 @@ public class CbbTerminalAPIImplTest {
         entity.setGetIpMode(CbbGetNetworkModeEnums.AUTO);
         entity.setCreateTime(now);
         new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+            basicInfoDAO.findFirstByTerminalId(terminalId);
             result = entity;
         }};
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
@@ -103,7 +103,7 @@ public class CbbTerminalAPIImplTest {
 
         try {
             new Verifications() {{
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+                basicInfoDAO.findFirstByTerminalId(terminalId);
                 times = 1;
             }};
         } catch (Exception e) {
@@ -119,7 +119,7 @@ public class CbbTerminalAPIImplTest {
         new Expectations() {{
             basicInfoDAO.deleteByTerminalId(anyString, anyInt);
             result = 1;
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+            basicInfoDAO.findFirstByTerminalId(anyString);
             result = entity;
 
         }};
@@ -135,7 +135,7 @@ public class CbbTerminalAPIImplTest {
         new Verifications() {{
             basicInfoDAO.deleteByTerminalId(anyString, anyInt);
             times = 1;
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+            basicInfoDAO.findFirstByTerminalId(anyString);
             times = 1;
         }};
     }

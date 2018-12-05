@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
-import java.io.IOException;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
@@ -12,7 +11,7 @@ import com.ruijie.rcos.sk.base.util.Assert;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月19日
  * 
- * @author "nt"
+ * @author nt
  */
 public class CmdExecuteUtil {
 

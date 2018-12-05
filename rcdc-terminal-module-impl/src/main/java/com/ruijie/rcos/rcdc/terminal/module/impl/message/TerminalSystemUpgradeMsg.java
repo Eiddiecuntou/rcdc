@@ -7,7 +7,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月22日
  * 
- * @author "nt"
+ * @author nt
  */
 public class TerminalSystemUpgradeMsg {
     

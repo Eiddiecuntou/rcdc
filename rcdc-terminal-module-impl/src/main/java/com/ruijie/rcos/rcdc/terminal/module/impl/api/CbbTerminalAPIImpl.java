@@ -54,7 +54,7 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
         CbbTerminalEntity basicInfoEntity =
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(request.getTerminalId());
+                basicInfoDAO.findFirstByTerminalId(request.getTerminalId());
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
@@ -111,7 +111,7 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
     }
 
     private Integer getVersion(String terminalId) throws BusinessException {
-        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }

@@ -158,7 +158,7 @@ public class TerminalBasicInfoServiceImplTest {
     public void testModifyTerminalState() {
         new Expectations() {
             {
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+                basicInfoDAO.findFirstByTerminalId(anyString);
                 result = null;
             }
         };

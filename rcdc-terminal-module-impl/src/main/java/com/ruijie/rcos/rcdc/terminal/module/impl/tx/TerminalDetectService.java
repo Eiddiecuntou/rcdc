@@ -61,7 +61,7 @@ public class TerminalDetectService {
     }
 
     private void modifyDetectInfo(String terminalId, CbbDetectStateEnums state) {
-        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
         basicInfoDAO.modifyDetectInfo(terminalId, basicInfoEntity.getVersion(), new Date(),
                 state.ordinal());
     }

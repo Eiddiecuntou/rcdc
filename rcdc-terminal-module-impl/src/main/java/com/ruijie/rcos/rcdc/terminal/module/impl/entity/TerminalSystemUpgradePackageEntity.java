@@ -14,8 +14,8 @@ import java.util.UUID;
  * @author Jarman
  */
 @Entity
-@Table(name = "t_termianl_system_upgrade_package")
-public class TermianlSystemUpgradePackageEntity {
+@Table(name = "t_terminal_system_upgrade_package")
+public class TerminalSystemUpgradePackageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

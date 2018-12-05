@@ -15,7 +15,7 @@ import com.ruijie.rcos.sk.base.util.Assert;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月26日
  * 
- * @author nieti
+ * @author nt
  */
 @Component
 public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallback {
