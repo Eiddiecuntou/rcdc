@@ -1,16 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 
 /**
  * Description: 终端基本信息表DAO
@@ -88,28 +86,4 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
             "where terminalId=:terminalId and version=:version")
     int modifyTerminalState(String terminalId, Integer version, Integer state);
 
-    /**
-     * 修改终端检测信息
-     *
-     * @param terminalId  终端id
-     * @param version     数据版本号
-     * @param detectTime  检测时间
-     * @param detectState 检测状态
-     * @return 影响行数
-     */
-    @Modifying
-    @Transactional
-    @Query("update TerminalEntity set detectState=:detectState" +
-            ",detectTime=:detectTime" +
-            ",version=:version+1 " +
-            "where terminalId=:terminalId and version=:version")
-    int modifyDetectInfo(String terminalId, Integer version, Date detectTime, Integer detectState);
-
-    /**
-     * 根据检查状态查询基本信息列表
-     *
-     * @param state 检测状态
-     * @return 基本信息列表
-     */
-    List<TerminalEntity> findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums state);
 }

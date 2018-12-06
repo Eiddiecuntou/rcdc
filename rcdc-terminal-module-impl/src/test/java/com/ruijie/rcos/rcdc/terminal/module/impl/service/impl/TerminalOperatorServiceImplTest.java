@@ -1,5 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
@@ -11,18 +17,12 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -188,33 +188,4 @@ public class TerminalOperatorServiceImplTest {
         }};
     }
 
-    @Test
-    public void testDetect() {
-        String terminalId = "123";
-        try {
-            operatorService.detect(terminalId);
-        } catch (BusinessException e) {
-            fail();
-        }
-
-        new Verifications() {{
-            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
-            times = 1;
-        }};
-    }
-
-    @Test
-    public void testDetectArr() {
-        String[] terminalIdArr = {"1", "2", "3"};
-        try {
-            operatorService.detect(terminalIdArr);
-        } catch (BusinessException e) {
-            fail();
-        }
-
-        new Verifications() {{
-            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
-            times = 3;
-        }};
-    }
 }

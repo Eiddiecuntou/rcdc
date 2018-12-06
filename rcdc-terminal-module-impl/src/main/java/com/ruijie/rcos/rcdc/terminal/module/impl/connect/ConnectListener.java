@@ -137,9 +137,6 @@ public class ConnectListener extends AbstractServerMessageHandler {
         cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
         //清除收集日志缓存
         gatherLogCacheManager.removeCache(terminalId);
-        //更新终端检测状态
-        detectService.setOfflineTerminalToFailureState();
-
     }
 
     @Override

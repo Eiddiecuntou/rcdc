@@ -45,7 +45,7 @@ public class TerminalDetectResponseHandlerImplTest {
         }
 
         new Verifications() {{
-            detectService.updateBasicInfoAndDetect(anyString, (TerminalDetectResponse) any);
+            detectService.updateTerminalDetect(anyString, (TerminalDetectResponse) any);
             times = 1;
         }};
     }

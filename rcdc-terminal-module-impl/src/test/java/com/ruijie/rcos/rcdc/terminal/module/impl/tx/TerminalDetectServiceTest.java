@@ -44,7 +44,6 @@ public class TerminalDetectServiceTest {
     public void testUpdateBasicInfoAndDetect() {
         new Expectations() {{
             basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
         }};
 
         try {
@@ -59,55 +58,11 @@ public class TerminalDetectServiceTest {
             detectResult.setErrorCode(StateEnums.SUCCESS);
             detectResult.setResult(result);
 
-            detectService.updateBasicInfoAndDetect(terminalId, detectResult);
+            detectService.updateTerminalDetect(terminalId, detectResult);
         } catch (Exception e) {
             fail();
         }
     }
 
-    @Test
-    public void testUpdateBasicInfo() {
-        new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
-        }};
-
-        try {
-            String terminalId = "123";
-            TerminalDetectResponse detectResult = new TerminalDetectResponse();
-            TerminalDetectResponse.DetectResult result = new TerminalDetectResponse.DetectResult();
-            result.setBandwidth(12.3);
-            result.setCanAccessInternet(1);
-            detectResult.setErrorCode(StateEnums.FAILURE);
-            detectResult.setResult(result);
-            detectService.updateBasicInfoAndDetect(terminalId, detectResult);
-        } catch (Exception e) {
-            fail();
-        }
-    }
-
-    @Test
-    public void testSetOfflineTerminalToFailureState() {
-        List<TerminalEntity> basicInfoList = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            TerminalEntity entity = new TerminalEntity();
-            basicInfoList.add(entity);
-        }
-        new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByDetectState(CbbDetectStateEnums.DOING);
-            result = basicInfoList;
-        }};
-
-        try {
-            detectService.setOfflineTerminalToFailureState();
-        } catch (Exception e) {
-            fail();
-        }
-
-        new Verifications() {{
-            basicInfoDAO.modifyDetectInfo(anyString, anyInt, (Date) any, anyInt);
-            times = 3;
-        }};
-    }
 
 }

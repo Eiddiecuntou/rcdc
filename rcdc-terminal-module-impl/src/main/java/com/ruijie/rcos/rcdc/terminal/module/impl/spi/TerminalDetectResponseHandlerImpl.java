@@ -31,6 +31,6 @@ public class TerminalDetectResponseHandlerImpl implements CbbDispatcherHandlerSP
         String data = (String) request.getData();
         TerminalDetectResponse result = JSON.parseObject(data, TerminalDetectResponse.class);
 
-        detectService.updateBasicInfoAndDetect(request.getTerminalId(), result);
+        detectService.updateTerminalDetect(request.getTerminalId(), result);
     }
 }
