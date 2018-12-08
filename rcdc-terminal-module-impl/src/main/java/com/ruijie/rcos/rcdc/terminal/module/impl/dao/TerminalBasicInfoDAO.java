@@ -71,7 +71,6 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
             "where terminalId=:terminalId and version=:version")
     int modifyTerminalNetworkConfig(String terminalId, Integer version, CbbTerminalNetworkRequest network);
 
-
     /**
      * 修改终端状态
      *

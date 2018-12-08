@@ -4,13 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbSearchTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
@@ -21,12 +17,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Description: 终端基本信息维护
@@ -115,31 +106,5 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
         return basicInfoEntity.getVersion();
-    }
-
-    @Override
-    public DefaultPageResponse<CbbTerminalBasicInfoDTO> search(CbbSearchTerminalRequest request) {
-        Assert.notNull(request,"CbbSearchTerminalRequest不能为null");
-        Pageable pageable = PageRequest.of(request.getPage() - 1, request.getLimit());
-        SearchTerminalSpecification specification = new SearchTerminalSpecification(request.getKeyword());
-        Page<TerminalEntity> page = basicInfoDAO.findAll(specification,pageable);
-        long total = page.getTotalElements();
-        DefaultPageResponse response = new DefaultPageResponse();
-        response.setTotal(total);
-        if(total == 0){
-            response.setItemArr(new Object[]{});
-            return response;
-        }
-        List<TerminalEntity> entityList = page.getContent();
-        List<CbbTerminalBasicInfoDTO> dtoList = new ArrayList<>(entityList.size());
-        entityList.forEach((item->{
-            CbbTerminalBasicInfoDTO dto = new CbbTerminalBasicInfoDTO();
-            BEAN_COPIER.copy(item,dto,null);
-            dtoList.add(dto);
-        }));
-
-        response.setItemArr(dtoList.toArray());
-
-        return response;
     }
 }
