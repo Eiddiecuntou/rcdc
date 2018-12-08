@@ -188,7 +188,7 @@ public class ConnectListenerTest {
     @Test
     public void testExceptionCaught() {
         try {
-            connectListener.exceptionCaught();
+            connectListener.exceptionCaught(new Throwable());
         } catch (Exception e) {
             fail();
         }

@@ -42,12 +42,9 @@ public class TerminalDetectServiceTest {
 
     @Test
     public void testUpdateBasicInfoAndDetect() {
-        new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-        }};
+        String terminalId = "123";
 
         try {
-            String terminalId = "123";
             TerminalDetectResponse detectResult = new TerminalDetectResponse();
             TerminalDetectResponse.DetectResult result = new TerminalDetectResponse.DetectResult();
             result.setBandwidth(12.3);

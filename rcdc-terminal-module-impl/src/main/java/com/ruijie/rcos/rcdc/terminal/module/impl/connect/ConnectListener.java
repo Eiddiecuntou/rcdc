@@ -140,7 +140,7 @@ public class ConnectListener extends AbstractServerMessageHandler {
     }
 
     @Override
-    public void exceptionCaught() {
+    public void exceptionCaught(Throwable throwable) {
         LOGGER.error("连接异常");
     }
 
@@ -149,4 +149,5 @@ public class ConnectListener extends AbstractServerMessageHandler {
         Assert.hasText(terminalId, "session 未绑定终端");
         return terminalId;
     }
+
 }

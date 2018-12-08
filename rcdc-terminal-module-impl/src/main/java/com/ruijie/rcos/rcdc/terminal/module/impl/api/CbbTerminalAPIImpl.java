@@ -120,7 +120,7 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
     @Override
     public DefaultPageResponse<CbbTerminalBasicInfoDTO> search(CbbSearchTerminalRequest request) {
         Assert.notNull(request,"CbbSearchTerminalRequest不能为null");
-        Pageable pageable = PageRequest.of(request.getCurrentPage() - 1, request.getPageSize());
+        Pageable pageable = PageRequest.of(request.getPage() - 1, request.getLimit());
         SearchTerminalSpecification specification = new SearchTerminalSpecification(request.getKeyword());
         Page<TerminalEntity> page = basicInfoDAO.findAll(specification,pageable);
         long total = page.getTotalElements();
