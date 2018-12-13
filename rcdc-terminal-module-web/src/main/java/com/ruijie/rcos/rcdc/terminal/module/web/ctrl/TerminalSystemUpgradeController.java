@@ -1,8 +1,6 @@
-package com.ruijie.rcos.rcdc.terminal.module.web;
+package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
@@ -12,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystem
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbBatchAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbBaseListResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.AddTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.BatchAddTerminalSystemUpgradeRequest;
@@ -20,8 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.web.request.RemoveTerminalSystemUpgr
 import com.ruijie.rcos.rcdc.terminal.module.web.request.UploadUpgradeFileRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
 
@@ -32,7 +29,7 @@ import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月19日
  * 
- * @author "nt"
+ * @author nt
  */
 @RestController
 @RequestMapping("/terminal/sysUpgrade")
@@ -53,8 +50,9 @@ public class TerminalSystemUpgradeController {
 
         Assert.notNull(uploadRequest, "uploadRequest 不能为空");
 
-        cbbTerminalUpgradeAPI.uploadUpgradeFile(uploadRequest.getFile());
-
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFile(uploadRequest.getFile());
+        cbbTerminalUpgradeAPI.uploadUpgradeFile(request);
         return DefaultWebResponse.Builder.success();
     }
 

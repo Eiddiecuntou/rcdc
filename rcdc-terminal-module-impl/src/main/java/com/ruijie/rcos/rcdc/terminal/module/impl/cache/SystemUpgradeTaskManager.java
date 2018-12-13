@@ -38,7 +38,7 @@ public class SystemUpgradeTaskManager {
     private static final Map<String, SystemUpgradeTask> TASK_MAP = new LinkedHashMap<>();
 
     /**
-     * TODO 最大同时刷机数
+     * 最大同时刷机数
      */
     private static final int UPGRADING_MAX_NUM = 50;
 
@@ -106,33 +106,6 @@ public class SystemUpgradeTaskManager {
     public SystemUpgradeTask removeTaskByTerminalId(String terminalId) {
         Assert.hasLength(terminalId, "terminalId 不能为空");
         return TASK_MAP.remove(terminalId);
-    }
-
-    /**
-     * 
-     * 移除升级任务
-     * 
-     * @param removeTask 升级任务信息
-     */
-    public void removeTask(SystemUpgradeTask removeTask) {
-        Assert.notNull(removeTask, "removetask 不能为空");
-
-        if (StringUtils.isNotBlank(removeTask.getTerminalId())) {
-            LOGGER.debug("removeTask terminal id is not null, remove by id[{}]", removeTask.getTerminalId());
-            TASK_MAP.remove(removeTask.getTerminalId());
-            return;
-        }
-
-        Set<Entry<String, SystemUpgradeTask>> entrySet = TASK_MAP.entrySet();
-        for (Iterator<Entry<String, SystemUpgradeTask>> it = entrySet.iterator(); it.hasNext();) {
-            Entry<String, SystemUpgradeTask> entry = it.next();
-            SystemUpgradeTask task = entry.getValue();
-            if (task == removeTask) {
-                LOGGER.debug("find the removeTask; {}", removeTask.toString());
-                TASK_MAP.remove(entry.getKey());
-                break;
-            }
-        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.web;
+package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.DownloadLogRequest;

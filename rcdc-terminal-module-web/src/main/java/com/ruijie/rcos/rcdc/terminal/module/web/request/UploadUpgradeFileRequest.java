@@ -11,7 +11,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月20日
  * 
- * @author "nt"
+ * @author nt
  */
 public class UploadUpgradeFileRequest implements Request {
     

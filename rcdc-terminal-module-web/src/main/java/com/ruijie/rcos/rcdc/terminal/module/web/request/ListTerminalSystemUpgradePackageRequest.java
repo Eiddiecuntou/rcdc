@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.request;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
 /**

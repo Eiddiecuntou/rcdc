@@ -15,7 +15,7 @@ public class TerminalSystemUpgradeTaskCacheInit implements SafetySingletonInitia
 
     @Override
     public void safeInit() {
-        // TODO FIXME 从服务器上对应文件中初始化任务队列
+        // TODO FIXME 1. 从服务器上对应文件中初始化任务队列  2.队列初始化完成后，判断队列是否为空,若为空，关闭NFS服务
 
     }
 

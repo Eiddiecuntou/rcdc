@@ -372,6 +372,14 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }
         systemUpgradeTaskManager.removeTaskByTerminalId(request.getTerminalId());
+        // 队列为空，关闭NFS服务
+        if (systemUpgradeTaskManager.getTaskMap().size() == 0) {
+            try {
+                NfsServiceUtil.shutDownService();
+            } catch (Exception e) {
+                LOGGER.debug("shutdown NFS server fail");
+            }
+        }
 
         return DefaultResponse.Builder.success();
 

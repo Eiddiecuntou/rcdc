@@ -6,6 +6,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResp
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.NfsServiceUtil;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.Assert;
 
 /**
@@ -19,6 +22,8 @@ import com.ruijie.rcos.sk.base.util.Assert;
  */
 @Component
 public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallback {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalSystemUpgradeRequestCallBack.class);
     
     @Autowired
     private SystemUpgradeTaskManager manager;
@@ -41,6 +46,14 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
     public void timeout(String terminalId) {
         Assert.hasLength(terminalId, "terminalId 不能为空");
         manager.removeTaskByTerminalId(terminalId);
+        // 队列为空，关闭NFS服务
+        if (manager.getTaskMap().size() == 0) {
+            try {
+                NfsServiceUtil.shutDownService();
+            } catch (Exception e) {
+                LOGGER.debug("shutdown NFS server fail");
+            }
+        }
     }
 
 }

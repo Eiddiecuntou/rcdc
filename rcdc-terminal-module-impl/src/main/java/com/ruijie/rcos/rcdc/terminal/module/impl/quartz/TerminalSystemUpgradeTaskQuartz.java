@@ -75,11 +75,6 @@ public class TerminalSystemUpgradeTaskQuartz {
         }
 
         for (SystemUpgradeTask task : upgradingTaskList) {
-            if (StringUtils.isBlank(task.getTerminalId())) {
-                LOGGER.debug("upgrade  task is invalid, remove it");
-                taskManager.removeTask(task);
-                continue;
-            }
             // 查找匹配的升级信息
             TerminalSystemUpgradeInfo matchInfo = null;
             for (Iterator<TerminalSystemUpgradeInfo> iterator = systemUpgradeInfoList.iterator(); iterator.hasNext();) {

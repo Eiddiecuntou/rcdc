@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.web;
+package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +19,7 @@ import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月21日
  * 
- * @author "nt"
+ * @author nt
  */
 @Controller
 @RequestMapping("/terminal")
