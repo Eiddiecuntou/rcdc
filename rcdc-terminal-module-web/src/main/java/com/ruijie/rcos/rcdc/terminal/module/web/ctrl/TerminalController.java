@@ -6,10 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalPageRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
+import com.ruijie.rcos.sk.base.validation.EnableCustomValidate;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
+import com.ruijie.rcos.sk.webmvc.api.annotation.NoAuthUrl;
+import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
 
 /**
@@ -23,6 +25,7 @@ import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
  */
 @Controller
 @RequestMapping("/terminal")
+@EnableCustomValidate(enable = false)
 public class TerminalController {
 
 
@@ -36,26 +39,36 @@ public class TerminalController {
      * 
      * 终端分页列表
      * 
-     * @param request 分页列表请求
-     * @return 分页响应
+     * @param request 分页列表请求参数
+     * @return 分页结果
      * @throws BusinessException 业务异常  
      */
-    @RequestMapping("listTerminal")
-    public DefaultWebResponse listTerminal(ListTerminalPageRequest request) throws BusinessException {
+    @RequestMapping(value = "list")
+    @NoAuthUrl
+    public DefaultWebResponse listTerminal(PageWebRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         CbbTerminalPageRequest pageRequest = new CbbTerminalPageRequest();
-        pageRequest.setCurrentPage(request.getCurrentPage());
-        pageRequest.setPageSize(request.getPageSize());
-        pageRequest.setTerminalSystemVersion(request.getTerminalSystemVersion());
-        pageRequest.setTerminalType(request.getTerminalType());
+        pageRequest.setPage(request.getPage());
+        pageRequest.setLimit(request.getLimit());
         DefaultPageResponse<CbbTerminalBasicInfoDTO> resp = cbbTerminalAPI.listTerminal(pageRequest);
         return DefaultWebResponse.Builder.success(resp);
     }
     
-//    public DefaultWebResponse getTerminalPage(PageWebRequest request) {
-//        request.getLimit();
-//        request.getPage();
-//    }
+    /**
+     * 
+     * 终端分页列表
+     * 
+     * @param request 分页列表请求参数
+     * @return 分页结果
+     * @throws BusinessException 业务异常  
+     */
+    @RequestMapping(value = "test")
+    @NoAuthUrl
+    public DefaultWebResponse test(PageWebRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
 
+        return DefaultWebResponse.Builder.success();
+    }
+    
 }

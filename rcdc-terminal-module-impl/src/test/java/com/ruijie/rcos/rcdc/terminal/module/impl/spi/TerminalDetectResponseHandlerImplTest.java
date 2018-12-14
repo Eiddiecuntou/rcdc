@@ -1,8 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import static org.junit.Assert.fail;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
@@ -12,6 +9,10 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -30,9 +31,6 @@ public class TerminalDetectResponseHandlerImplTest {
     @Injectable
     private TerminalDetectService detectService;
 
-    /**
-     * 测试消息分发
-     */
     @Test
     public void dispatch() {
         try {
@@ -46,12 +44,10 @@ public class TerminalDetectResponseHandlerImplTest {
             fail();
         }
 
-        new Verifications() {
-            {
-                detectService.updateBasicInfoAndDetect(anyString, (TerminalDetectResponse) any);
-                times = 1;
-            }
-        };
+        new Verifications() {{
+            detectService.updateTerminalDetect(anyString, (TerminalDetectResponse) any);
+            times = 1;
+        }};
     }
 
     private String generateJson() {

@@ -12,7 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
  * 
  * @author "nt"
  */
-public class TerminalSystemUpgradeTaskDTO {
+public class CbbTerminalSystemUpgradeTaskDTO {
 
     
     /**

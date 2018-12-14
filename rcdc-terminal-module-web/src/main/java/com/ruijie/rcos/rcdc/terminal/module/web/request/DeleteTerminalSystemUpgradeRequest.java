@@ -13,7 +13,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
  *
  * @author nt
  */
-public class RemoveTerminalSystemUpgradeRequest implements WebRequest {
+public class DeleteTerminalSystemUpgradeRequest implements WebRequest {
 
     /**
      * 终端id

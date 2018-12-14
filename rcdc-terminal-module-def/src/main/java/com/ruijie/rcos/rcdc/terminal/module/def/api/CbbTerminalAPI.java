@@ -61,7 +61,6 @@ public interface CbbTerminalAPI {
     @NoRollback
     DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException;
 
-
     /**
      * 终端列表分页
      * 
@@ -73,4 +72,5 @@ public interface CbbTerminalAPI {
     @NoRollback
     DefaultPageResponse<CbbTerminalBasicInfoDTO> listTerminal(CbbTerminalPageRequest pageRequest)
             throws BusinessException;
+
 }

@@ -19,7 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.FileCopyUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalSystemUpgradeTaskDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
@@ -35,7 +35,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
@@ -78,7 +78,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             CbbTerminalSystemUpgradePackageInfoDTO.class, false);
 
     private static final BeanCopier TASK_BEAN_COPIER =
-            BeanCopier.create(SystemUpgradeTask.class, TerminalSystemUpgradeTaskDTO.class, false);
+            BeanCopier.create(SystemUpgradeTask.class, CbbTerminalSystemUpgradeTaskDTO.class, false);
 
     @Autowired
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
@@ -274,13 +274,13 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         if (systemUpgradeTaskManager.checkMaxAddNum(terminalIdList.size())) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_NUM_EXCEED_LIMIT);
         }
-        List<CbbTerminalEntity> terminals = basicInfoDAO.findByTerminalIdIn(terminalIdList);
+        List<TerminalEntity> terminals = basicInfoDAO.findByTerminalIdIn(terminalIdList);
         if (CollectionUtils.isEmpty(terminals) || terminals.size() < terminalIdList.size()) {
             LOGGER.debug("terminal can not found by terminal ids {}", terminalIdList.toString());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
 
-        for (CbbTerminalEntity terminal : terminals) {
+        for (TerminalEntity terminal : terminals) {
             addTask(upgradePackage, terminal);
         }
 
@@ -299,7 +299,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
         }
 
-        CbbTerminalEntity terminal = basicInfoDAO.findFirstByTerminalId(request.getTerminalId());
+        TerminalEntity terminal = basicInfoDAO.findFirstByTerminalId(request.getTerminalId());
         if (terminal == null) {
             LOGGER.debug("terminal id is [{}], terminal not found", request.getTerminalId());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
@@ -310,7 +310,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         return DefaultResponse.Builder.success();
     }
 
-    private void addTask(TerminalSystemUpgradePackageEntity upgradePackage, CbbTerminalEntity terminal)
+    private void addTask(TerminalSystemUpgradePackageEntity upgradePackage, TerminalEntity terminal)
             throws BusinessException {
         // 非在线状态的终端不进行刷机
         if (!CbbTerminalStateEnums.ONLINE.equals(terminal.getState())) {
@@ -386,7 +386,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbBaseListResponse<TerminalSystemUpgradeTaskDTO> listTerminalSystemUpgradeTask() throws BusinessException {
+    public CbbBaseListResponse<CbbTerminalSystemUpgradeTaskDTO> listTerminalSystemUpgradeTask() throws BusinessException {
         // 获取所以升级任务
         List<SystemUpgradeTask> tasks = systemUpgradeTaskManager.getAllTasks();
         if (CollectionUtils.isEmpty(tasks)) {
@@ -410,10 +410,10 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             }
         });
 
-        TerminalSystemUpgradeTaskDTO[] dtoArr = new TerminalSystemUpgradeTaskDTO[tasks.size()];
+        CbbTerminalSystemUpgradeTaskDTO[] dtoArr = new CbbTerminalSystemUpgradeTaskDTO[tasks.size()];
         // 将数据转换成dto输出
         Stream.iterate(0, i -> i + 1).limit(tasks.size()).forEach(i -> {
-            TerminalSystemUpgradeTaskDTO dto = new TerminalSystemUpgradeTaskDTO();
+            CbbTerminalSystemUpgradeTaskDTO dto = new CbbTerminalSystemUpgradeTaskDTO();
             TASK_BEAN_COPIER.copy(tasks.get(i), dto, null);
             dtoArr[i] = dto;
         });

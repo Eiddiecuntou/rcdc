@@ -12,7 +12,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
  * 
  * @author nt
  */
-public class ListTerminalPageRequest implements WebRequest {
+public class ListTerminalRequest implements WebRequest {
     
     /**
      * 分页行数

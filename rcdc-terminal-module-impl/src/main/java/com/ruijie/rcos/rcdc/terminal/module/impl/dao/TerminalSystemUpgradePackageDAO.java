@@ -53,7 +53,7 @@ public interface TerminalSystemUpgradePackageDAO
      */
     @Modifying
     @Transactional
-    @Query("update TermianlSystemUpgradePackageEntity set internalVersion=:internalVersion "
+    @Query("update TerminalSystemUpgradePackageEntity set internalVersion=:internalVersion "
             + ",externalVersion=:externalVersion where packageType=:packageType")
     int modifyTerminalUpgradePackageVersion(CbbTerminalTypeEnums packageType, String internalVersion,
             String externalVersion);

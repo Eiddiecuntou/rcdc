@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
@@ -216,7 +216,7 @@ public class CbbTerminalOperatorAPIImplTest {
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId(terminalId);
         try {
-            TerminalNameResponse result = terminalOperatorAPI.getTerminalLogName(request);
+            CbbTerminalNameResponse result = terminalOperatorAPI.getTerminalLogName(request);
             Assert.assertEquals(result.getTerminalName(), logName);
 
         } catch (BusinessException e) {

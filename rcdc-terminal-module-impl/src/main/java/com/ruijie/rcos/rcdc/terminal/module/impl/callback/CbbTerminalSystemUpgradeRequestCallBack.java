@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.callback;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
@@ -20,7 +20,7 @@ import com.ruijie.rcos.sk.base.util.Assert;
  * 
  * @author nt
  */
-@Component
+@Service
 public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallback {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalSystemUpgradeRequestCallBack.class);

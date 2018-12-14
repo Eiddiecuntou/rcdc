@@ -137,13 +137,10 @@ public class ConnectListener extends AbstractServerMessageHandler {
         cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
         //清除收集日志缓存
         gatherLogCacheManager.removeCache(terminalId);
-        //更新终端检测状态
-        detectService.setOfflineTerminalToFailureState();
-
     }
 
     @Override
-    public void exceptionCaught() {
+    public void exceptionCaught(Throwable throwable) {
         LOGGER.error("连接异常");
     }
 
@@ -152,4 +149,5 @@ public class ConnectListener extends AbstractServerMessageHandler {
         Assert.hasText(terminalId, "session 未绑定终端");
         return terminalId;
     }
+
 }

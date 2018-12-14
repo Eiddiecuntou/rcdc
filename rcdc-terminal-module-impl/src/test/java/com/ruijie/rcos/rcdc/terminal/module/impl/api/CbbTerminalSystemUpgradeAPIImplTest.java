@@ -20,7 +20,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
@@ -388,7 +388,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         request.setTerminalType(CbbTerminalTypeEnums.VDI);
         request.setTerminalId("11");
         TerminalSystemUpgradePackageEntity entity = new TerminalSystemUpgradePackageEntity();
-        CbbTerminalEntity terminal = new CbbTerminalEntity();
+        TerminalEntity terminal = new TerminalEntity();
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
@@ -402,7 +402,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         
         new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
             @Mock
-            public void addTask(TerminalSystemUpgradePackageEntity upgradePackage, CbbTerminalEntity terminal) {
+            public void addTask(TerminalSystemUpgradePackageEntity upgradePackage, TerminalEntity terminal) {
             }
 
         };
@@ -422,10 +422,10 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         return packageList;
     }
 
-    private List<CbbTerminalEntity> buildTerminalList() {
-        List<CbbTerminalEntity> terminalList = new ArrayList<>();
+    private List<TerminalEntity> buildTerminalList() {
+        List<TerminalEntity> terminalList = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            CbbTerminalEntity entity = new CbbTerminalEntity();
+            TerminalEntity entity = new TerminalEntity();
             terminalList.add(entity);
         }
         return terminalList;

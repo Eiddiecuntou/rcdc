@@ -1,21 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalSystemUpgradeTaskDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbBatchAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbBaseListResponse;
-import com.ruijie.rcos.rcdc.terminal.module.web.request.AddTerminalSystemUpgradeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.web.request.BatchAddTerminalSystemUpgradeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.request.CreateTerminalSystemUpgradeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.request.DeleteTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradePackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.web.request.RemoveTerminalSystemUpgradeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.UploadUpgradeFileRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.util.Assert;
@@ -31,8 +30,8 @@ import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
  * 
  * @author nt
  */
-@RestController
-@RequestMapping("/terminal/sysUpgrade")
+@Controller
+@RequestMapping("/terminal/system/upgrade")
 public class TerminalSystemUpgradeController {
 
     @Autowired
@@ -45,8 +44,8 @@ public class TerminalSystemUpgradeController {
      * @return 上传响应返回
      * @throws BusinessException 业务异常
      */
-    @RequestMapping("uploadPackage")
-    public DefaultWebResponse upload(UploadUpgradeFileRequest uploadRequest) throws BusinessException {
+    @RequestMapping("/package/upload")
+    public DefaultWebResponse uploadPackage(UploadUpgradeFileRequest uploadRequest) throws BusinessException {
 
         Assert.notNull(uploadRequest, "uploadRequest 不能为空");
 
@@ -64,8 +63,8 @@ public class TerminalSystemUpgradeController {
      * @return 分页列表信息
      * @throws BusinessException 业务异常
      */
-    @RequestMapping("listSystemUpgradePackage")
-    public DefaultWebResponse listSystemUpgradePackage(ListTerminalSystemUpgradePackageRequest listRequest)
+    @RequestMapping("/package/list")
+    public DefaultWebResponse listPackage(ListTerminalSystemUpgradePackageRequest listRequest)
             throws BusinessException {
         Assert.notNull(listRequest, "ListTerminalSystemUpgradePackageRequest can not be null");
 
@@ -78,58 +77,36 @@ public class TerminalSystemUpgradeController {
 
     /**
      * 
-     * 批量添加终端系统升级任务
+     * 添加终端系统升级任务
      * 
-     * @param request 批量添加升级请求
+     * @param request 添加升级请求
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    @RequestMapping("batchAddUpgradeTask")
-    public DefaultWebResponse batchAddSystemUpgradeTask(BatchAddTerminalSystemUpgradeRequest request)
-            throws BusinessException {
-        Assert.notNull(request, "batchAddTerminalSystemUpgradeRequest can not be null");
+    @RequestMapping("create")
+    public DefaultWebResponse create(CreateTerminalSystemUpgradeRequest request) throws BusinessException {
+        Assert.notNull(request, "CreateTerminalSystemUpgradeRequest can not be null");
 
         CbbBatchAddTerminalSystemUpgradeTaskRequest batchAddRequest = new CbbBatchAddTerminalSystemUpgradeTaskRequest();
-        batchAddRequest.setTerminalIdArr(request.getTerminalIds().split(","));
+        batchAddRequest.setTerminalIdArr(request.getTerminalIdArr());
         batchAddRequest.setTerminalType(request.getTerminalType());
         DefaultResponse resp = cbbTerminalUpgradeAPI.batchAddSystemUpgradeTask(batchAddRequest);
 
         return DefaultWebResponse.Builder.success(resp);
     }
 
-    /**
-     * 
-     * 添加终端系统升级任务
-     * 
-     * @param request 批量添加升级请求
-     * @return 请求响应
-     * @throws BusinessException 业务异常
-     */
-    @RequestMapping("addUpgradeTask")
-    public DefaultWebResponse addTerminalSystemUpgradeTask(AddTerminalSystemUpgradeRequest request)
-            throws BusinessException {
-        Assert.notNull(request, "addterminalSystemUpgradeRequest 不能为空");
-
-        CbbAddTerminalSystemUpgradeTaskRequest addRequest = new CbbAddTerminalSystemUpgradeTaskRequest();
-        addRequest.setTerminalId(request.getTerminalId());
-        addRequest.setTerminalType(request.getTerminalType());
-        DefaultResponse resp = cbbTerminalUpgradeAPI.addSystemUpgradeTask(addRequest);
-
-        return DefaultWebResponse.Builder.success(resp);
-    }
 
     /**
      * 
-     * 移除系统升级任务
+     * 移除系统升级
      * 
-     * @param request 移除系统升级任务请求
+     * @param request 移除系统升级请求
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    @RequestMapping("removeUpgradeTask")
-    public DefaultWebResponse removeTerminalSystemUpgradeTask(RemoveTerminalSystemUpgradeRequest request)
-            throws BusinessException {
-        Assert.notNull(request, "removeTerminalSystemUpgradeRequest 不能为空");
+    @RequestMapping("delete")
+    public DefaultWebResponse delete(DeleteTerminalSystemUpgradeRequest request) throws BusinessException {
+        Assert.notNull(request, "DeleteTerminalSystemUpgradeRequest can not be null");
 
         CbbRemoveTerminalSystemUpgradeTaskRequest removeRequest = new CbbRemoveTerminalSystemUpgradeTaskRequest();
         removeRequest.setTerminalId(request.getTerminalId());
@@ -142,12 +119,16 @@ public class TerminalSystemUpgradeController {
      * 
      * 终端升级任务列表
      * 
+     * @param request 请求参数
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    @RequestMapping("listUpgradeTask")
-    public DefaultWebResponse listTerminalSystemUpgradeTask() throws BusinessException {
-        CbbBaseListResponse<TerminalSystemUpgradeTaskDTO> resp = cbbTerminalUpgradeAPI.listTerminalSystemUpgradeTask();
+    @RequestMapping("list")
+    public DefaultWebResponse list(ListTerminalSystemUpgradeRequest request) throws BusinessException {
+        Assert.notNull(request, "ListTerminalSystemUpgradeRequest can not be null");
+        
+        CbbBaseListResponse<CbbTerminalSystemUpgradeTaskDTO> resp =
+                cbbTerminalUpgradeAPI.listTerminalSystemUpgradeTask();
         return DefaultWebResponse.Builder.success(resp);
     }
 

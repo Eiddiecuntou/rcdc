@@ -14,14 +14,14 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
  * 
  * @author nt
  */
-public class BatchAddTerminalSystemUpgradeRequest implements WebRequest {
+public class CreateTerminalSystemUpgradeRequest implements WebRequest {
 
     /**
      * 终端id
      */
     @NotNull
     @Size(min = 1)
-    private String terminalIds;
+    private String[] terminalIdArr;
 
     /**
      * 终端升级类型
@@ -29,12 +29,13 @@ public class BatchAddTerminalSystemUpgradeRequest implements WebRequest {
     @NotNull
     private CbbTerminalTypeEnums terminalType;
 
-    public String getTerminalIds() {
-        return terminalIds;
+
+    public String[] getTerminalIdArr() {
+        return terminalIdArr;
     }
 
-    public void setTerminalIds(String terminalIds) {
-        this.terminalIds = terminalIds;
+    public void setTerminalIdArr(String[] terminalIdArr) {
+        this.terminalIdArr = terminalIdArr;
     }
 
     public CbbTerminalTypeEnums getTerminalType() {

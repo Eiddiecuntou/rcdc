@@ -7,7 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameReque
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -80,7 +80,7 @@ public class CbbTerminalAPIImplTest {
         String terminalId = "123";
         String name = "t-box01";
         Date now = new Date();
-        CbbTerminalEntity entity = new CbbTerminalEntity();
+        TerminalEntity entity = new TerminalEntity();
         entity.setTerminalId(terminalId);
         entity.setName(name);
         entity.setGetIpMode(CbbGetNetworkModeEnums.AUTO);
@@ -114,7 +114,7 @@ public class CbbTerminalAPIImplTest {
 
     @Test
     public void testDeleteSuccess() {
-        CbbTerminalEntity entity = new CbbTerminalEntity();
+        TerminalEntity entity = new TerminalEntity();
         entity.setVersion(1);
         new Expectations() {{
             basicInfoDAO.deleteByTerminalId(anyString, anyInt);

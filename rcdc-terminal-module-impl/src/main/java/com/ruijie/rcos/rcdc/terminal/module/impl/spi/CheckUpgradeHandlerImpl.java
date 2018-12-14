@@ -9,7 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -43,7 +43,7 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
     private TerminalBasicInfoDAO basicInfoDAO;
 
     private static final BeanCopier BEAN_COPIER = BeanCopier.create(ShineTerminalBasicInfo.class,
-            CbbTerminalEntity.class, false);
+            TerminalEntity.class, false);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerImpl.class);
 
@@ -69,9 +69,10 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
         Assert.hasText(request.getTerminalId(), "terminalId 不能为空");
         Assert.notNull(request.getData(), "报文消息体不能为空");
         String terminalId = request.getTerminalId();
-        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
+
+        TerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
         if (basicInfoEntity == null) {
-            basicInfoEntity = new CbbTerminalEntity();
+            basicInfoEntity = new TerminalEntity();
         }
 
         String jsonData = String.valueOf(request.getData());

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+
 import java.util.List;
 import java.util.stream.Stream;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -7,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.apache.bval.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.data.domain.Page;
@@ -23,7 +26,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRe
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.CbbTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -41,19 +44,22 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  */
 public class CbbTerminalAPIImpl implements CbbTerminalAPI {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalAPIImpl.class);
+
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
 
-    private static final BeanCopier BEAN_COPIER =
-            BeanCopier.create(CbbTerminalEntity.class, CbbTerminalBasicInfoDTO.class, false);
+    private static final BeanCopier BEAN_COPIER = BeanCopier.create(TerminalEntity.class,
+            CbbTerminalBasicInfoDTO.class, false);
 
     @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
-        CbbTerminalEntity basicInfoEntity =
+
+        TerminalEntity basicInfoEntity =
                 basicInfoDAO.findFirstByTerminalId(request.getTerminalId());
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
@@ -111,7 +117,8 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
     }
 
     private Integer getVersion(String terminalId) throws BusinessException {
-        CbbTerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
+
+        TerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
@@ -123,11 +130,11 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
             throws BusinessException {
         Assert.notNull(pageRequest, "TerminalpageRequest can not be null");
 
-        Specification<CbbTerminalEntity> specification =
+        Specification<TerminalEntity> specification =
                 buildSpecification(pageRequest.getTerminalType(), pageRequest.getTerminalSystemVersion());
         Pageable pageable = PageRequest.of(pageRequest.getCurrentPage(), pageRequest.getPageSize());
-        Page<CbbTerminalEntity> terminalPage = basicInfoDAO.findAll(specification, pageable);
-        List<CbbTerminalEntity> terminalEntityList = terminalPage.getContent();
+        Page<TerminalEntity> terminalPage = basicInfoDAO.findAll(specification, pageable);
+        List<TerminalEntity> terminalEntityList = terminalPage.getContent();
         if (CollectionUtils.isEmpty(terminalEntityList)) {
             return DefaultPageResponse.Builder.success(pageRequest.getPageSize(), 0, new CbbTerminalBasicInfoDTO[0]);
         }
@@ -142,14 +149,14 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
                 terminalDtoArr);
     }
 
-    private Specification<CbbTerminalEntity> buildSpecification(CbbTerminalTypeEnums terminalType,
+    private Specification<TerminalEntity> buildSpecification(CbbTerminalTypeEnums terminalType,
             String terminalSystemVersion) {
-        return new Specification<CbbTerminalEntity>() {
+        return new Specification<TerminalEntity>() {
 
             private static final long serialVersionUID = 1L;
 
             @Override
-            public Predicate toPredicate(Root<CbbTerminalEntity> root, CriteriaQuery<?> query,
+            public Predicate toPredicate(Root<TerminalEntity> root, CriteriaQuery<?> query,
                     CriteriaBuilder criteriaBuilder) {
                 Predicate predicate = null;
                 if (terminalType != null) {
