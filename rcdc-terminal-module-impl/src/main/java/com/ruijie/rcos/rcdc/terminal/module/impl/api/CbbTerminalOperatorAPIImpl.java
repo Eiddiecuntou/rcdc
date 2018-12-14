@@ -52,7 +52,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         String terminalId = request.getTerminalId();
         operatorService.restart(terminalId);
         return DefaultResponse.Builder.success();
-  }
+    }
 
     @Override
     public DefaultResponse changePassword(CbbChangePasswordRequest request) throws BusinessException {

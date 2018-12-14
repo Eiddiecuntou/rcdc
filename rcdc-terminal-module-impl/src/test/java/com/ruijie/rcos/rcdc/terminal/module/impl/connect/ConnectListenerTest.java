@@ -209,7 +209,7 @@ public class ConnectListenerTest {
     @Test
     public void testExceptionCaught() {
         try {
-            connectListener.exceptionCaught();
+            connectListener.exceptionCaught(new Exception("异常"));
         } catch (Exception e) {
             fail();
         }

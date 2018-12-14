@@ -132,11 +132,11 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
 
         Specification<TerminalEntity> specification =
                 buildSpecification(pageRequest.getTerminalType(), pageRequest.getTerminalSystemVersion());
-        Pageable pageable = PageRequest.of(pageRequest.getCurrentPage(), pageRequest.getPageSize());
+        Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getLimit());
         Page<TerminalEntity> terminalPage = basicInfoDAO.findAll(specification, pageable);
         List<TerminalEntity> terminalEntityList = terminalPage.getContent();
         if (CollectionUtils.isEmpty(terminalEntityList)) {
-            return DefaultPageResponse.Builder.success(pageRequest.getPageSize(), 0, new CbbTerminalBasicInfoDTO[0]);
+            return DefaultPageResponse.Builder.success(pageRequest.getLimit(), 0, new CbbTerminalBasicInfoDTO[0]);
         }
 
         CbbTerminalBasicInfoDTO[] terminalDtoArr = new CbbTerminalBasicInfoDTO[terminalEntityList.size()];
@@ -145,7 +145,7 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
             BEAN_COPIER.copy(terminalEntityList.get(i), terminalDto, null);
             terminalDtoArr[i] = terminalDto;
         });
-        return DefaultPageResponse.Builder.success(pageRequest.getPageSize(), (int) terminalPage.getTotalElements(),
+        return DefaultPageResponse.Builder.success(pageRequest.getLimit(), (int) terminalPage.getTotalElements(),
                 terminalDtoArr);
     }
 
