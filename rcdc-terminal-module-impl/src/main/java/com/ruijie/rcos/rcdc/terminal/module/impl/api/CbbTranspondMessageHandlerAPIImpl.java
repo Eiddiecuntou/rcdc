@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
@@ -69,8 +70,8 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     }
 
     @Override
-    public DefaultResponse response(CbbShineMessageRequest msg) throws BusinessException {
-        Assert.notNull(msg, "ShineMessageRequest不能为null");
+    public DefaultResponse response(CbbResponseShineMessage msg) throws BusinessException {
+        Assert.notNull(msg, "CbbResponseShineMessage不能为null");
 
         Session session = sessionManager.getSession(msg.getTerminalId());
         if (session == null) {

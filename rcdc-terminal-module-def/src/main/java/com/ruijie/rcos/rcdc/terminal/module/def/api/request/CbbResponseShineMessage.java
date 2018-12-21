@@ -12,10 +12,13 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @param <T> 业务数据对象
  * @author Jarman
  */
-public class CbbShineMessageRequest<T> implements Request {
+public class CbbResponseShineMessage<T> implements Request {
 
     @NotBlank
     private String action;
+
+    @NotBlank
+    private String requestId;
 
     @NotBlank
     private String terminalId;
@@ -28,6 +31,14 @@ public class CbbShineMessageRequest<T> implements Request {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     public String getTerminalId() {

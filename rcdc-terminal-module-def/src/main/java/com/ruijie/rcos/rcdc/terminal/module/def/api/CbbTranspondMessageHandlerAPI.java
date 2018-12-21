@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import java.io.IOException;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
@@ -61,6 +62,6 @@ public interface CbbTranspondMessageHandlerAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse response(CbbShineMessageRequest msg) throws BusinessException;
+    DefaultResponse response(CbbResponseShineMessage msg) throws BusinessException;
 
 }
