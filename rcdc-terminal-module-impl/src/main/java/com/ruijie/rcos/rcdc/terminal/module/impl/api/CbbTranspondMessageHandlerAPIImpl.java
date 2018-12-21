@@ -1,5 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
@@ -16,10 +20,6 @@ import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultResponseMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.xml.transform.Result;
-import java.io.IOException;
 
 /**
  * Description: 转发消息给终端（Shine）
