@@ -53,9 +53,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
                 e.printStackTrace();
             }
         }};
-        CbbShineMessageRequest request = new CbbShineMessageRequest();
-        request.setAction("login");
-        request.setTerminalId("123");
+        CbbShineMessageRequest request = CbbShineMessageRequest.create("login","223");
         try {
             transpondMessageHandlerAPI.request(request);
         } catch (BusinessException e) {
@@ -78,9 +76,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
             sender.syncRequest((Message) any);
             result = baseMessage;
         }};
-        CbbShineMessageRequest request = new CbbShineMessageRequest();
-        request.setAction("login");
-        request.setTerminalId("123");
+        CbbShineMessageRequest request = CbbShineMessageRequest.create("login","223");
         try {
             CbbShineMessageResponse messageResponse = transpondMessageHandlerAPI.syncRequest(request);
             assertEquals(messageResponse.getAction(), action);
@@ -109,8 +105,9 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         }};
 
         try {
-            CbbShineMessageRequest request = new CbbShineMessageRequest();
-            request.setAction("login");
+            String action = "login";
+            String terminalId = "123";
+            CbbShineMessageRequest request = CbbShineMessageRequest.create(action,terminalId);
             transpondMessageHandlerAPI.asyncRequest(request, cbbTerminalCallback);
         } catch (BusinessException e) {
             fail();
@@ -132,9 +129,10 @@ public class CbbTranspondMessageHandlerAPIImplTest {
             sender.response((Message) any);
         }};
         try {
-            CbbResponseShineMessage request = new CbbResponseShineMessage();
-            request.setAction("login");
-            request.setRequestId("123");
+            String action = "login";
+            String terminalId = "123";
+            String requestId = "333";
+            CbbResponseShineMessage request = CbbResponseShineMessage.create(action,terminalId,requestId);
             transpondMessageHandlerAPI.response(request);
         } catch (BusinessException e) {
             fail();
