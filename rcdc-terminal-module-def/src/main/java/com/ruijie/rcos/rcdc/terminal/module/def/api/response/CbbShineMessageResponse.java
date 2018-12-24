@@ -16,8 +16,6 @@ public class CbbShineMessageResponse<T> extends DefaultResponse {
 
     private String terminalId;
 
-    private String responseId;
-
     private T data;
 
     public String getAction() {
@@ -34,14 +32,6 @@ public class CbbShineMessageResponse<T> extends DefaultResponse {
 
     public void setTerminalId(String terminalId) {
         this.terminalId = terminalId;
-    }
-
-    public String getResponseId() {
-        return responseId;
-    }
-
-    public void setResponseId(String responseId) {
-        this.responseId = responseId;
     }
 
     public T getData() {
