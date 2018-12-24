@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
 import java.util.Date;
 
+import org.springframework.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
-import com.ruijie.rcos.sk.base.util.Assert;
 
 /**
  * Description: 终端检测数据处理

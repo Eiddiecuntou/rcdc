@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
-import com.ruijie.rcos.sk.base.util.Assert;
+import org.springframework.util.Assert;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

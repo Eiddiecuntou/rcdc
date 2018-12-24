@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
@@ -13,7 +14,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.util.Assert;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
         CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(NoticeEventEnums.ONLINE, request.getTerminalId());
         cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
         //TODO 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        CbbShineMessageRequest cbbShineMessageRequest = new CbbShineMessageRequest();
+        CbbResponseShineMessage cbbShineMessageRequest = new CbbResponseShineMessage();
         try {
             messageHandlerAPI.response(cbbShineMessageRequest);
         } catch (BusinessException e) {

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
@@ -131,7 +132,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
             sender.response((Message) any);
         }};
         try {
-            CbbShineMessageRequest request = new CbbShineMessageRequest();
+            CbbResponseShineMessage request = new CbbResponseShineMessage();
             request.setAction("login");
             request.setRequestId("123");
             transpondMessageHandlerAPI.response(request);

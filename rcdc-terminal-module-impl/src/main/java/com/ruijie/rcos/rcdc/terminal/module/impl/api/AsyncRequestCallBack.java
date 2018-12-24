@@ -2,9 +2,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
-import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
+import org.springframework.util.Assert;
 
 /**
  * Description: 异步请求回调接口实现

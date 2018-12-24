@@ -5,9 +5,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.CommonMsg;
-import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
+import org.springframework.util.Assert;
 
 /**
  * Description: 收集日志回调接口实现类
