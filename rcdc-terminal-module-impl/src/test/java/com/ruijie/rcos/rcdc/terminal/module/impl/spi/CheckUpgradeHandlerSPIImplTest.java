@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
@@ -33,10 +32,10 @@ import mockit.integration.junit4.JMockit;
  * @author Jarman
  */
 @RunWith(JMockit.class)
-public class CheckUpgradeHandlerImplTest {
+public class CheckUpgradeHandlerSPIImplTest {
 
     @Tested
-    private CheckUpgradeHandlerImpl checkUpgradeHandler;
+    private CheckUpgradeHandlerSPIImpl checkUpgradeHandler;
 
     @Injectable
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;

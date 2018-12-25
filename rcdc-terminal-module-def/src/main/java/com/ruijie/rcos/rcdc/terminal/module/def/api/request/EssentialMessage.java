@@ -19,10 +19,6 @@ public class EssentialMessage<T> implements Request {
     @NotBlank
     protected String terminalId;
 
-    protected int errorCode;
-
-    protected String errorMsg;
-
     protected T content;
 
     public String getAction() {
@@ -31,22 +27,6 @@ public class EssentialMessage<T> implements Request {
 
     public String getTerminalId() {
         return terminalId;
-    }
-
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getErrorMsg() {
-        return errorMsg;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
     }
 
     public T getContent() {

@@ -1,8 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.request;
 
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
-
-import javax.validation.constraints.NotNull;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
+import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
 /**
  * Description: 下载终端日志请求参数
@@ -12,7 +11,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author Jarman
  */
-public class DownloadLogRequest implements Request {
+public class DownloadLogRequest implements WebRequest {
 
     @NotNull
     private String terminalId;

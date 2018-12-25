@@ -23,9 +23,9 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  * @author Jarman
  */
 @DispatcherImplemetion(ReceiveTerminalEvent.USB_INFO)
-public class UsbInfoHandlerImpl implements CbbDispatcherHandlerSPI {
+public class UsbInfoHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UsbInfoHandlerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UsbInfoHandlerSPIImpl.class);
 
     @Autowired
     private CbbUsbInfoSPI cbbUsbInfoSPI;

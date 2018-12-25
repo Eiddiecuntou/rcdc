@@ -58,8 +58,7 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
     public DefaultResponse delete(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
         String terminalId = request.getTerminalId();
-        int version = getVersion(terminalId);
-        int effectRow = basicInfoDAO.deleteByTerminalId(terminalId, version);
+        int effectRow = basicInfoDAO.deleteByTerminalId(terminalId);
         if (effectRow == 0) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }

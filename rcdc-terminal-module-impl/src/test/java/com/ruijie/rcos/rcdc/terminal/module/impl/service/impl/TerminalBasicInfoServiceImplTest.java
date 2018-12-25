@@ -1,5 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -8,16 +13,12 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -151,25 +152,19 @@ public class TerminalBasicInfoServiceImplTest {
         }};
 
         String terminalId = "123";
-        try {
-            basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
-        } catch (BusinessException e) {
-            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
-        }
+        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
     }
+
     @Test
     public void testModifyTerminalState2() {
         new Expectations() {{
-            basicInfoDAO.modifyTerminalState(anyString, anyInt, anyInt);
+            basicInfoDAO.modifyTerminalState(anyString, anyInt, (CbbTerminalStateEnums) any);
             result = 0;
         }};
 
         String terminalId = "123";
-        try {
-            basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
-        } catch (BusinessException e) {
-            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
-        }
+        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
+
     }
 
 }

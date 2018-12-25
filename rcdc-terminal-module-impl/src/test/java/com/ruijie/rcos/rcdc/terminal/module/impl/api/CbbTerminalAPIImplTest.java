@@ -1,5 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.Date;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -11,16 +20,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+
 import mockit.*;
 import mockit.integration.junit4.JMockit;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -117,11 +119,8 @@ public class CbbTerminalAPIImplTest {
         TerminalEntity entity = new TerminalEntity();
         entity.setVersion(1);
         new Expectations() {{
-            basicInfoDAO.deleteByTerminalId(anyString, anyInt);
+            basicInfoDAO.deleteByTerminalId(anyString);
             result = 1;
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-            result = entity;
-
         }};
 
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
@@ -133,9 +132,7 @@ public class CbbTerminalAPIImplTest {
         }
 
         new Verifications() {{
-            basicInfoDAO.deleteByTerminalId(anyString, anyInt);
-            times = 1;
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
+            basicInfoDAO.deleteByTerminalId(anyString);
             times = 1;
         }};
     }
@@ -144,7 +141,7 @@ public class CbbTerminalAPIImplTest {
     @Test
     public void testDeleteNoExistData() {
         new Expectations() {{
-            basicInfoDAO.deleteByTerminalId(anyString, anyInt);
+            basicInfoDAO.deleteByTerminalId(anyString);
             result = 0;
         }};
 
@@ -165,7 +162,7 @@ public class CbbTerminalAPIImplTest {
         }
 
         new Verifications() {{
-            basicInfoDAO.deleteByTerminalId(anyString, anyInt);
+            basicInfoDAO.deleteByTerminalId(anyString);
             times = 1;
         }};
     }

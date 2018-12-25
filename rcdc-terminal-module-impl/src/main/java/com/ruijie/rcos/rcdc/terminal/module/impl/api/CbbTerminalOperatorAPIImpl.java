@@ -66,7 +66,6 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public DefaultResponse gatherLog(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request,"CbbTerminalIdRequest不能为空");
-        Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
         operatorService.gatherLog(terminalId);
         return DefaultResponse.Builder.success();
@@ -75,7 +74,6 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public DefaultResponse detect(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request,"CbbTerminalIdRequest不能为空");
-        Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
         operatorService.detect(terminalId);
         return DefaultResponse.Builder.success();

@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 /**
- * Description: Function Description
+ * Description: 向shine请求消息实体类
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/12/24
@@ -22,8 +22,6 @@ public class CbbShineMessageRequest extends EssentialMessage {
         return "CbbShineMessageRequest{" +
                 "action='" + action + '\'' +
                 ", terminalId='" + terminalId + '\'' +
-                ", errorCode=" + errorCode +
-                ", errorMsg='" + errorMsg + '\'' +
                 ", content=" + content +
                 '}';
     }

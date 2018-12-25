@@ -1,5 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 /**
  * Description: shine上传的终端基本信息
  * Copyright: Copyright (c) 2018
@@ -9,6 +16,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
  * @author Jarman
  */
 public class ShineTerminalBasicInfo {
+
     private String name;
 
     private String terminalId;
@@ -25,13 +33,19 @@ public class ShineTerminalBasicInfo {
 
     private String secondDns;
 
-    private Integer getIpMode;
+    @Enumerated(EnumType.STRING)
+    private CbbGetNetworkModeEnums getIpMode;
 
-    private Integer getDnsMode;
+    @Enumerated(EnumType.STRING)
+    private CbbGetNetworkModeEnums getDnsMode;
 
     private String productType;
 
-    private String terminalType;
+    @Enumerated(EnumType.STRING)
+    private TerminalTypeEnums terminalType;
+
+    @Enumerated(EnumType.STRING)
+    private CbbNetworkModeEnums networkAccessMode;
 
     private String serialNumber;
 
@@ -45,13 +59,11 @@ public class ShineTerminalBasicInfo {
 
     private String terminalOsVersion;
 
-    private String terminalSystemVersion;
+    private String rainOsVersion;
 
-    private String softwareVersion;
+    private String rainUpgradeVersion;
 
     private String hardwareVersion;
-
-    private Integer networkMode;
 
     public String getName() {
         return name;
@@ -117,19 +129,19 @@ public class ShineTerminalBasicInfo {
         this.secondDns = secondDns;
     }
 
-    public Integer getGetIpMode() {
+    public CbbGetNetworkModeEnums getGetIpMode() {
         return getIpMode;
     }
 
-    public void setGetIpMode(Integer getIpMode) {
+    public void setGetIpMode(CbbGetNetworkModeEnums getIpMode) {
         this.getIpMode = getIpMode;
     }
 
-    public Integer getGetDnsMode() {
+    public CbbGetNetworkModeEnums getGetDnsMode() {
         return getDnsMode;
     }
 
-    public void setGetDnsMode(Integer getDnsMode) {
+    public void setGetDnsMode(CbbGetNetworkModeEnums getDnsMode) {
         this.getDnsMode = getDnsMode;
     }
 
@@ -141,12 +153,20 @@ public class ShineTerminalBasicInfo {
         this.productType = productType;
     }
 
-    public String getTerminalType() {
+    public TerminalTypeEnums getTerminalType() {
         return terminalType;
     }
 
-    public void setTerminalType(String terminalType) {
+    public void setTerminalType(TerminalTypeEnums terminalType) {
         this.terminalType = terminalType;
+    }
+
+    public CbbNetworkModeEnums getNetworkAccessMode() {
+        return networkAccessMode;
+    }
+
+    public void setNetworkAccessMode(CbbNetworkModeEnums networkAccessMode) {
+        this.networkAccessMode = networkAccessMode;
     }
 
     public String getSerialNumber() {
@@ -197,20 +217,20 @@ public class ShineTerminalBasicInfo {
         this.terminalOsVersion = terminalOsVersion;
     }
 
-    public String getTerminalSystemVersion() {
-        return terminalSystemVersion;
+    public String getRainOsVersion() {
+        return rainOsVersion;
     }
 
-    public void setTerminalSystemVersion(String terminalSystemVersion) {
-        this.terminalSystemVersion = terminalSystemVersion;
+    public void setRainOsVersion(String rainOsVersion) {
+        this.rainOsVersion = rainOsVersion;
     }
 
-    public String getSoftwareVersion() {
-        return softwareVersion;
+    public String getRainUpgradeVersion() {
+        return rainUpgradeVersion;
     }
 
-    public void setSoftwareVersion(String softwareVersion) {
-        this.softwareVersion = softwareVersion;
+    public void setRainUpgradeVersion(String rainUpgradeVersion) {
+        this.rainUpgradeVersion = rainUpgradeVersion;
     }
 
     public String getHardwareVersion() {
@@ -219,13 +239,5 @@ public class ShineTerminalBasicInfo {
 
     public void setHardwareVersion(String hardwareVersion) {
         this.hardwareVersion = hardwareVersion;
-    }
-
-    public Integer getNetworkMode() {
-        return networkMode;
-    }
-
-    public void setNetworkMode(Integer networkMode) {
-        this.networkMode = networkMode;
     }
 }

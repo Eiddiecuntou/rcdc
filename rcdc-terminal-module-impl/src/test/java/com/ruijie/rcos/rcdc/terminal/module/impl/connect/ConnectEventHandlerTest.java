@@ -32,10 +32,10 @@ import static org.junit.Assert.fail;
  * @author Jarman
  */
 @RunWith(JMockit.class)
-public class ConnectListenerTest {
+public class ConnectEventHandlerTest {
 
     @Tested
-    private ConnectListener connectListener;
+    private ConnectEventHandler connectEventHandler;
 
 
     @Injectable
@@ -87,7 +87,7 @@ public class ConnectListenerTest {
         BaseMessage baseMessage = new BaseMessage(action, data);
 
         try {
-            connectListener.onReceive(sender, baseMessage);
+            connectEventHandler.onReceive(sender, baseMessage);
         } catch (Exception e) {
             fail();
         }
@@ -128,7 +128,7 @@ public class ConnectListenerTest {
             String data = JSON.toJSONString(basicInfo);
             BaseMessage baseMessage = new BaseMessage(action, data);
 
-            connectListener.onReceive(sender, baseMessage);
+            connectEventHandler.onReceive(sender, baseMessage);
         } catch (Exception e) {
             fail();
         }
@@ -148,7 +148,7 @@ public class ConnectListenerTest {
     @Test
     public void testOnConnectSuccessParamIsNull() {
         try {
-            connectListener.onConnectSuccess(null);
+            connectEventHandler.onConnectSuccess(null);
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(e.getMessage(), "RequestMessageSender不能为null");
         }
@@ -168,7 +168,7 @@ public class ConnectListenerTest {
             }
         };
 
-        connectListener.onConnectClosed(session);
+        connectEventHandler.onConnectClosed(session);
         Thread.sleep(1000);
         try {
             new Verifications() {
@@ -188,7 +188,7 @@ public class ConnectListenerTest {
     @Test
     public void testExceptionCaught() {
         try {
-            connectListener.exceptionCaught(new Throwable());
+            connectEventHandler.exceptionCaught(new Throwable());
         } catch (Exception e) {
             fail();
         }

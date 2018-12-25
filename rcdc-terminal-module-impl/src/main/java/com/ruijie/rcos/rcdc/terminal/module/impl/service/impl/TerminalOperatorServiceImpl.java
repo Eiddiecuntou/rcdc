@@ -91,7 +91,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.DETECT_TERMINAL.getName(), "");
         sender.request(message);
-        // 更新检测状态未正在检测中
+        // 更新检测状态为正在检测中
         // FIXME 当RCDC服务异常退出后，存在状态无法更新的情况，所以需要在RCDC初始化的时候把检测状态为正在检测的终端更新为检测失败
     }
 

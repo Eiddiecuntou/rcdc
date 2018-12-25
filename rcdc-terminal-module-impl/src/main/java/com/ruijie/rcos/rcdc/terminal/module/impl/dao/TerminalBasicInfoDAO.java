@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,19 +27,15 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @param terminalId 终端id
      * @return 返回终端信息
      */
-    TerminalEntity findTerminalBasicInfoEntitiesByTerminalId(String terminalId);
+    TerminalEntity findTerminalEntityByTerminalId(String terminalId);
 
     /**
      * 删除终端数据
      *
      * @param terminalId 终端id
-     * @param version    数据版本号
      * @return 返回影响行数
      */
-    @Modifying
-    @Transactional
-    @Query("delete from TerminalEntity where terminalId=:terminalId and version=:version")
-    int deleteByTerminalId(String terminalId, Integer version);
+    int deleteByTerminalId(String terminalId);
 
     /**
      * 修改终端名称
@@ -83,6 +80,6 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     @Transactional
     @Query("update TerminalEntity set state=:state,version=:version+1 " +
             "where terminalId=:terminalId and version=:version")
-    int modifyTerminalState(String terminalId, Integer version, Integer state);
+    int modifyTerminalState(String terminalId, Integer version, CbbTerminalStateEnums state);
 
 }
