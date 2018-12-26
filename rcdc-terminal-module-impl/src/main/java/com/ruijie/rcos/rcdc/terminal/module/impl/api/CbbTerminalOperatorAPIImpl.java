@@ -38,7 +38,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Override
     public DefaultResponse shutdown(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request,"CbbTerminalIdRequest不能为空");
+        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
         operatorService.shutdown(terminalId);
@@ -47,12 +47,12 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Override
     public DefaultResponse restart(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request,"CbbTerminalIdRequest不能为空");
+        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
         operatorService.restart(terminalId);
         return DefaultResponse.Builder.success();
-  }
+    }
 
     @Override
     public DefaultResponse changePassword(CbbChangePasswordRequest request) throws BusinessException {
@@ -65,7 +65,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Override
     public DefaultResponse gatherLog(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request,"CbbTerminalIdRequest不能为空");
+        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         String terminalId = request.getTerminalId();
         operatorService.gatherLog(terminalId);
         return DefaultResponse.Builder.success();
@@ -73,7 +73,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Override
     public DefaultResponse detect(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request,"CbbTerminalIdRequest不能为空");
+        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         String terminalId = request.getTerminalId();
         operatorService.detect(terminalId);
         return DefaultResponse.Builder.success();
@@ -93,7 +93,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Override
     public CbbTerminalNameResponse getTerminalLogName(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request,"CbbTerminalIdRequest不能为空");
+        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
         GatherLogCache cache = gatherLogCacheManager.getCache(terminalId);
