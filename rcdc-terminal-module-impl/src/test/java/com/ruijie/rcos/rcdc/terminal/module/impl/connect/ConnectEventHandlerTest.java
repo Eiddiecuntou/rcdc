@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
@@ -52,7 +52,7 @@ public class ConnectEventHandlerTest {
     private TerminalBasicInfoService basicInfoService;
 
     @Injectable
-    private GatherLogCacheManager gatherLogCacheManager;
+    private CollectLogCacheManager collectLogCacheManager;
 
     @Injectable
     private TerminalDetectService detectService;
@@ -157,7 +157,7 @@ public class ConnectEventHandlerTest {
                 result = null;
                 session.getAttribute(anyString);
                 result = "123";
-                gatherLogCacheManager.removeCache(anyString);
+                collectLogCacheManager.removeCache(anyString);
             }
         };
 

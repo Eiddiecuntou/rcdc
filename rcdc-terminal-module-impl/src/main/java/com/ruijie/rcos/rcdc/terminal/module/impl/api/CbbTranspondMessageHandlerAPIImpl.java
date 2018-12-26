@@ -91,8 +91,7 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         }
         DefaultResponseMessageSender sender = new DefaultResponseMessageSender(msg.getRequestId(), session);
         ShineResponseMessageDTO shineResponseMessageDTO = new ShineResponseMessageDTO();
-        shineResponseMessageDTO.setErrorCode(msg.getErrorCode());
-        shineResponseMessageDTO.setErrorMsg(msg.getErrorMsg());
+        shineResponseMessageDTO.setErrorCode(msg.getCode());
         shineResponseMessageDTO.setContent(msg.getContent());
         Message message = new Message(Constants.SYSTEM_TYPE, msg.getAction(), shineResponseMessageDTO);
         sender.response(message);

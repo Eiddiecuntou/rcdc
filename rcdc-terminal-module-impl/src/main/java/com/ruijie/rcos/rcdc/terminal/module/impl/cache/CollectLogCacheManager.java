@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import org.springframework.util.Assert;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Jarman
  */
 @Service
-public class GatherLogCacheManager {
+public class CollectLogCacheManager {
 
-    private static final Map<String, GatherLogCache> GATHER_LOG_CACHE_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, CollectLogCache> COLLECT_LOG_CACHE_MAP = new ConcurrentHashMap<>();
 
     /**
      * 添加缓存，接收到请求后覆盖原来的缓存信息
@@ -28,11 +28,11 @@ public class GatherLogCacheManager {
      * @param terminalId 终端id
      * @return 返回对应终端缓存对象
      */
-    public GatherLogCache addCache(String terminalId) {
+    public CollectLogCache addCache(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        GatherLogCache cache = new GatherLogCache();
-        cache.setState(GatherLogStateEnums.DOING);
-        GATHER_LOG_CACHE_MAP.put(terminalId, cache);
+        CollectLogCache cache = new CollectLogCache();
+        cache.setState(CollectLogStateEnums.DOING);
+        COLLECT_LOG_CACHE_MAP.put(terminalId, cache);
         return cache;
     }
 
@@ -43,7 +43,7 @@ public class GatherLogCacheManager {
      */
     public void removeCache(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        GATHER_LOG_CACHE_MAP.remove(terminalId);
+        COLLECT_LOG_CACHE_MAP.remove(terminalId);
     }
 
     /**
@@ -52,9 +52,9 @@ public class GatherLogCacheManager {
      * @param terminalId 终端id
      * @param state      缓存转态
      */
-    public void updateState(String terminalId, GatherLogStateEnums state) {
+    public void updateState(String terminalId, CollectLogStateEnums state) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        Assert.notNull(state, "GatherLogStateEnums不能为null");
+        Assert.notNull(state, "CollectLogStateEnums不能为null");
         updateState(terminalId, state, "");
     }
 
@@ -65,17 +65,17 @@ public class GatherLogCacheManager {
      * @param state       终端状态
      * @param logFileName 日志上传成功后记录日志文件名称
      */
-    public void updateState(String terminalId, GatherLogStateEnums state, String logFileName) {
+    public void updateState(String terminalId, CollectLogStateEnums state, String logFileName) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        Assert.notNull(state, "GatherLogStateEnums不能为null");
+        Assert.notNull(state, "CollectLogStateEnums不能为null");
         Assert.hasText(logFileName, "logFileName不能为空");
-        GatherLogCache cache = GATHER_LOG_CACHE_MAP.get(terminalId);
+        CollectLogCache cache = COLLECT_LOG_CACHE_MAP.get(terminalId);
         if (cache == null) {
-            cache = new GatherLogCache();
+            cache = new CollectLogCache();
         }
         cache.setState(state);
         cache.setLogFileName(logFileName);
-        GATHER_LOG_CACHE_MAP.put(terminalId, cache);
+        COLLECT_LOG_CACHE_MAP.put(terminalId, cache);
     }
 
     /**
@@ -84,9 +84,9 @@ public class GatherLogCacheManager {
      * @param terminalId 终端id
      * @return 返回对应终端缓存对象
      */
-    public GatherLogCache getCache(String terminalId) {
+    public CollectLogCache getCache(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        return GATHER_LOG_CACHE_MAP.get(terminalId);
+        return COLLECT_LOG_CACHE_MAP.get(terminalId);
     }
 
     /**
@@ -94,8 +94,8 @@ public class GatherLogCacheManager {
      *
      * @return 返回集合对象
      */
-    public Map<String, GatherLogCache> getGatherLogCaches() {
-        return GATHER_LOG_CACHE_MAP;
+    public Map<String, CollectLogCache> getCollectLogCaches() {
+        return COLLECT_LOG_CACHE_MAP;
     }
 
 }

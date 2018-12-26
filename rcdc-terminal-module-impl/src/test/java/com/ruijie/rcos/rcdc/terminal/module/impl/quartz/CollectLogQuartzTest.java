@@ -1,11 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
-import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,24 +25,24 @@ import static org.junit.Assert.*;
  * @author Jarman
  */
 @RunWith(JMockit.class)
-public class GatherLogQuartzTest {
+public class CollectLogQuartzTest {
 
     @Tested
-    private GatherLogQuartz gatherLogQuartz;
+    private CollectLogQuartz collectLogQuartz;
 
     @Injectable
-    private GatherLogCacheManager cacheManager;
+    private CollectLogCacheManager cacheManager;
 
     @Test
     public void checkAndCleanExpireCache() {
-        Map<String, GatherLogCache> cacheMap = generateCaches();
+        Map<String, CollectLogCache> cacheMap = generateCaches();
         new Expectations() {{
-            cacheManager.getGatherLogCaches();
+            cacheManager.getCollectLogCaches();
             result = cacheMap;
         }};
 
         try {
-            gatherLogQuartz.checkAndCleanExpireCache();
+            collectLogQuartz.checkAndCleanExpireCache();
             Assert.assertEquals(cacheMap.size(), 3);
 
         } catch (Exception e) {
@@ -51,10 +50,10 @@ public class GatherLogQuartzTest {
         }
     }
 
-    private Map<String, GatherLogCache> generateCaches() {
-        Map<String, GatherLogCache> caches = new ConcurrentHashMap<>();
+    private Map<String, CollectLogCache> generateCaches() {
+        Map<String, CollectLogCache> caches = new ConcurrentHashMap<>();
         for (int i = 0; i < 5; i++) {
-            GatherLogCache cache = new GatherLogCache();
+            CollectLogCache cache = new CollectLogCache();
             cache.setLogFileName("test" + 1);
             long millisecond = Instant.now().toEpochMilli();
             if (i % 2 == 0) {

@@ -16,7 +16,7 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
  *
  * @author Jarman
  */
-public interface CbbTerminalAPI {
+public interface CbbTerminalBasicInfoAPI {
 
 
     /**

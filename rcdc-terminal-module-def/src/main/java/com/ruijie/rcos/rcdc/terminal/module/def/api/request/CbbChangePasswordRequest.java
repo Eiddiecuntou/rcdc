@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -11,8 +12,11 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @author Jarman
  */
 public class CbbChangePasswordRequest implements Request {
+
+    @NotBlank
     private String terminalId;
 
+    @NotBlank
     private String password;
 
     public String getTerminalId() {

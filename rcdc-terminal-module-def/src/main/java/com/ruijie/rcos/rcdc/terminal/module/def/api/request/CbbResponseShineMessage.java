@@ -15,9 +15,7 @@ public class CbbResponseShineMessage extends EssentialMessage {
     @NotBlank
     private String requestId;
 
-    private int errorCode;
-
-    private String errorMsg;
+    private int code;
 
     /**
      * 创建应答消息实体
@@ -39,28 +37,19 @@ public class CbbResponseShineMessage extends EssentialMessage {
         return requestId;
     }
 
-    public int getErrorCode() {
-        return errorCode;
+    public int getCode() {
+        return code;
     }
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getErrorMsg() {
-        return errorMsg;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     @Override
     public String toString() {
         return "CbbResponseShineMessage{" +
                 "requestId='" + requestId + '\'' +
-                ", errorCode=" + errorCode +
-                ", errorMsg='" + errorMsg + '\'' +
+                ", code=" + code +
                 ", action='" + action + '\'' +
                 ", terminalId='" + terminalId + '\'' +
                 ", content=" + content +

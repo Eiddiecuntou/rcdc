@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import mockit.*;
@@ -24,11 +24,11 @@ import static org.junit.Assert.fail;
  * @author Jarman
  */
 @RunWith(JMockit.class)
-public class GatherLogRequestCallbackImplTest {
+public class CollectLogRequestCallbackImplTest {
 
 
     @Injectable
-    private GatherLogCacheManager gatherLogCacheManager;
+    private CollectLogCacheManager collectLogCacheManager;
 
     /**
      * 测试返回正常应答数据
@@ -36,11 +36,11 @@ public class GatherLogRequestCallbackImplTest {
     @Test
     public void testSuccessForOk() {
         new Expectations() {{
-            gatherLogCacheManager.updateState(anyString, (GatherLogStateEnums) any, anyString);
+            collectLogCacheManager.updateState(anyString, (CollectLogStateEnums) any, anyString);
             result = null;
         }};
 
-        new MockUp<GatherLogRequestCallbackImpl>() {
+        new MockUp<CollectLogRequestCallbackImpl>() {
             private String terminalId;
 
             @Mock
@@ -48,8 +48,8 @@ public class GatherLogRequestCallbackImplTest {
                 this.terminalId = terminalId;
             }
         };
-        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl(gatherLogCacheManager,"123");
-        Deencapsulation.setField(requestCallback, "gatherLogCacheManager", gatherLogCacheManager);
+        CollectLogRequestCallbackImpl requestCallback = new CollectLogRequestCallbackImpl(collectLogCacheManager, "123");
+        Deencapsulation.setField(requestCallback, "collectLogCacheManager", collectLogCacheManager);
         try {
             String action = "testAction";
             String data = getJsonData(StateEnums.SUCCESS);
@@ -60,9 +60,9 @@ public class GatherLogRequestCallbackImplTest {
         }
 
         new Verifications() {{
-            gatherLogCacheManager.updateState(anyString, (GatherLogStateEnums) any, anyString);
+            collectLogCacheManager.updateState(anyString, (CollectLogStateEnums) any, anyString);
             times = 1;
-            gatherLogCacheManager.updateState(anyString, GatherLogStateEnums.FAILURE);
+            collectLogCacheManager.updateState(anyString, CollectLogStateEnums.FAILURE);
             times = 0;
 
         }};
@@ -74,11 +74,11 @@ public class GatherLogRequestCallbackImplTest {
     @Test
     public void testSuccessForFailure() {
         new Expectations() {{
-            gatherLogCacheManager.updateState(anyString, (GatherLogStateEnums) any);
+            collectLogCacheManager.updateState(anyString, (CollectLogStateEnums) any);
             result = null;
         }};
 
-        new MockUp<GatherLogRequestCallbackImpl>() {
+        new MockUp<CollectLogRequestCallbackImpl>() {
             private String terminalId;
 
             @Mock
@@ -86,8 +86,8 @@ public class GatherLogRequestCallbackImplTest {
                 this.terminalId = terminalId;
             }
         };
-        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl(gatherLogCacheManager,"123");
-        Deencapsulation.setField(requestCallback, "gatherLogCacheManager", gatherLogCacheManager);
+        CollectLogRequestCallbackImpl requestCallback = new CollectLogRequestCallbackImpl(collectLogCacheManager, "123");
+        Deencapsulation.setField(requestCallback, "collectLogCacheManager", collectLogCacheManager);
         try {
             String action = "testAction";
             String data = getJsonData(StateEnums.FAILURE);
@@ -98,9 +98,9 @@ public class GatherLogRequestCallbackImplTest {
         }
 
         new Verifications() {{
-            gatherLogCacheManager.updateState(anyString, (GatherLogStateEnums) any, anyString);
+            collectLogCacheManager.updateState(anyString, (CollectLogStateEnums) any, anyString);
             times = 0;
-            gatherLogCacheManager.updateState(anyString, GatherLogStateEnums.FAILURE);
+            collectLogCacheManager.updateState(anyString, CollectLogStateEnums.FAILURE);
             times = 1;
 
         }};
@@ -117,11 +117,11 @@ public class GatherLogRequestCallbackImplTest {
     @Test
     public void timeout() {
         new Expectations() {{
-            gatherLogCacheManager.updateState(anyString, (GatherLogStateEnums) any);
+            collectLogCacheManager.updateState(anyString, (CollectLogStateEnums) any);
             result = null;
         }};
 
-        new MockUp<GatherLogRequestCallbackImpl>() {
+        new MockUp<CollectLogRequestCallbackImpl>() {
             private String terminalId;
 
             @Mock
@@ -129,8 +129,8 @@ public class GatherLogRequestCallbackImplTest {
                 this.terminalId = terminalId;
             }
         };
-        GatherLogRequestCallbackImpl requestCallback = new GatherLogRequestCallbackImpl(gatherLogCacheManager,"123");
-        Deencapsulation.setField(requestCallback, "gatherLogCacheManager", gatherLogCacheManager);
+        CollectLogRequestCallbackImpl requestCallback = new CollectLogRequestCallbackImpl(collectLogCacheManager, "123");
+        Deencapsulation.setField(requestCallback, "collectLogCacheManager", collectLogCacheManager);
 
         try {
             requestCallback.timeout(null);
@@ -139,7 +139,7 @@ public class GatherLogRequestCallbackImplTest {
         }
 
         new Verifications() {{
-            gatherLogCacheManager.updateState(anyString, GatherLogStateEnums.FAILURE);
+            collectLogCacheManager.updateState(anyString, CollectLogStateEnums.FAILURE);
             times = 1;
         }};
 

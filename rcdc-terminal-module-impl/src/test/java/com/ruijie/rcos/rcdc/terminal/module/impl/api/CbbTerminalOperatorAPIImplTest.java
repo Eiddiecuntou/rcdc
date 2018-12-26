@@ -12,9 +12,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetect
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -39,7 +39,7 @@ public class CbbTerminalOperatorAPIImplTest {
     private TerminalOperatorService operatorService;
 
     @Injectable
-    private GatherLogCacheManager gatherLogCacheManager;
+    private CollectLogCacheManager collectLogCacheManager;
 
     @Test
     public void testShutdown() throws BusinessException {
@@ -97,17 +97,17 @@ public class CbbTerminalOperatorAPIImplTest {
     }
 
     @Test
-    public void testGatherLog() throws BusinessException {
+    public void testCollectLog() throws BusinessException {
         try {
             String terminalId = "123";
             CbbTerminalIdRequest request = new CbbTerminalIdRequest();
             request.setTerminalId(terminalId);
-            terminalOperatorAPI.gatherLog(request);
+            terminalOperatorAPI.collectLog(request);
         } catch (Exception e) {
             fail();
         }
         new Verifications() {{
-            operatorService.gatherLog(anyString);
+            operatorService.collectLog(anyString);
             times = 1;
         }};
     }
@@ -156,7 +156,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testGetTerminalLogNameIsNull() {
         new Expectations() {{
-            gatherLogCacheManager.getCache(anyString);
+            collectLogCacheManager.getCache(anyString);
             result = null;
         }};
         String terminalId = "123";
@@ -165,16 +165,16 @@ public class CbbTerminalOperatorAPIImplTest {
         try {
             terminalOperatorAPI.getTerminalLogName(request);
         } catch (BusinessException e) {
-            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_NOT_EXIST);
+            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
         }
     }
 
     @Test
     public void testGetTerminalLogNameStateIsFailure() {
-        GatherLogCache cache = new GatherLogCache();
-        cache.setState(GatherLogStateEnums.FAILURE);
+        CollectLogCache cache = new CollectLogCache();
+        cache.setState(CollectLogStateEnums.FAILURE);
         new Expectations() {{
-            gatherLogCacheManager.getCache(anyString);
+            collectLogCacheManager.getCache(anyString);
             result = cache;
         }};
         String terminalId = "123";
@@ -183,18 +183,18 @@ public class CbbTerminalOperatorAPIImplTest {
         try {
             terminalOperatorAPI.getTerminalLogName(request);
         } catch (BusinessException e) {
-            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_NOT_EXIST);
+            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
         }
     }
 
     @Test
     public void testGetTerminalLogName() {
         String logName = "shine.zip";
-        GatherLogCache cache = new GatherLogCache();
-        cache.setState(GatherLogStateEnums.DONE);
+        CollectLogCache cache = new CollectLogCache();
+        cache.setState(CollectLogStateEnums.DONE);
         cache.setLogFileName(logName);
         new Expectations() {{
-            gatherLogCacheManager.getCache(anyString);
+            collectLogCacheManager.getCache(anyString);
             result = cache;
         }};
         String terminalId = "123";

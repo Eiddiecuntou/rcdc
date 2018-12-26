@@ -10,6 +10,10 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
  */
 public class CbbShineMessageRequest extends EssentialMessage {
 
+    private CbbShineMessageRequest() {
+
+    }
+
     /**
      * 创建消息实体
      *
