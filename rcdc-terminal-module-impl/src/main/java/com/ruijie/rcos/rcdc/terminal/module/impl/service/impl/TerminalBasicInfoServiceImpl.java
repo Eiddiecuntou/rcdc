@@ -1,9 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -18,6 +14,9 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
  * Description: Function Description
@@ -82,7 +81,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     private boolean updateTerminalState(String terminalId, CbbTerminalStateEnums state) {
-        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             LOGGER.error("不存在terminalId=[{}]的终端", terminalId);
             return false;

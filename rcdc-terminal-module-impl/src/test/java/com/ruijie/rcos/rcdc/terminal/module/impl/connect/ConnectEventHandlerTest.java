@@ -2,9 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -40,9 +38,6 @@ public class ConnectEventHandlerTest {
 
     @Injectable
     private CbbDispatcherHandlerSPI cbbDispatcherHandlerSPI;
-
-    @Injectable
-    private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
 
     @Injectable
     private SessionManager sessionManager;
@@ -160,8 +155,6 @@ public class ConnectEventHandlerTest {
             {
                 sessionManager.removeSession(anyString);
                 result = null;
-                cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
-                result = null;
                 session.getAttribute(anyString);
                 result = "123";
                 gatherLogCacheManager.removeCache(anyString);
@@ -174,8 +167,6 @@ public class ConnectEventHandlerTest {
             new Verifications() {
                 {
                     sessionManager.removeSession(anyString);
-                    times = 1;
-                    cbbTerminalEventNoticeSPI.notify((CbbNoticeRequest) any);
                     times = 1;
                 }
             };

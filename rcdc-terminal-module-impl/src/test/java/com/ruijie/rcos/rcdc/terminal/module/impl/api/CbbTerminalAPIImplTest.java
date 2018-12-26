@@ -1,14 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.Date;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -20,9 +11,16 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-
 import mockit.*;
 import mockit.integration.junit4.JMockit;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -50,7 +48,7 @@ public class CbbTerminalAPIImplTest {
     public void testFindBasicInfoByTerminalIdNotFindBasicInfo() {
         String terminalId = "123";
         new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+            basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
             result = null;
         }};
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
@@ -65,7 +63,7 @@ public class CbbTerminalAPIImplTest {
         try {
             new Verifications() {{
                 String tid;
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(tid = withCapture());
+                basicInfoDAO.findTerminalEntityByTerminalId(tid = withCapture());
                 times = 1;
                 Assert.assertEquals(tid, terminalId);
             }};
@@ -88,7 +86,7 @@ public class CbbTerminalAPIImplTest {
         entity.setGetIpMode(CbbGetNetworkModeEnums.AUTO);
         entity.setCreateTime(now);
         new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+            basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
             result = entity;
         }};
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
@@ -105,7 +103,7 @@ public class CbbTerminalAPIImplTest {
 
         try {
             new Verifications() {{
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
             }};
         } catch (Exception e) {
@@ -257,10 +255,10 @@ public class CbbTerminalAPIImplTest {
                 basicInfoService.modifyTerminalNetworkConfig(anyString, (ShineNetworkConfig) any);
                 ShineNetworkConfig shineNetworkConfig;
                 basicInfoService.modifyTerminalNetworkConfig(anyString, shineNetworkConfig = withCapture());
-                assertEquals(shineNetworkConfig.getTerminalId(),terminalId);
-                assertEquals(shineNetworkConfig.getGateway(),gateway);
-                assertEquals(shineNetworkConfig.getGetDnsMode(),(Integer) 0);
-                assertEquals(shineNetworkConfig.getGetIpMode(),(Integer) 1);
+                assertEquals(shineNetworkConfig.getTerminalId(), terminalId);
+                assertEquals(shineNetworkConfig.getGateway(), gateway);
+                assertEquals(shineNetworkConfig.getGetDnsMode(), (Integer) 0);
+                assertEquals(shineNetworkConfig.getGetIpMode(), (Integer) 1);
 
             } catch (BusinessException e) {
                 fail();

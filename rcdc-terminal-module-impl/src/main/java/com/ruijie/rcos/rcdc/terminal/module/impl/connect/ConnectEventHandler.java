@@ -2,11 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
@@ -40,9 +37,6 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
 
     @Autowired
     private CbbDispatcherHandlerSPI cbbDispatcherHandlerSPI;
-
-    @Autowired
-    private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
 
     @Autowired
     private SessionManager sessionManager;
@@ -143,10 +137,6 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         sessionManager.removeSession(terminalId);
         LOGGER.debug("terminalId:[{}]连接关闭", terminalId);
         basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
-        //发出连接关闭通知
-        CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(NoticeEventEnums.OFFLINE, terminalId);
-        cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
-        //清除收集日志缓存
         gatherLogCacheManager.removeCache(terminalId);
     }
 

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.web;
 
+import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,10 +39,10 @@ public class TermianlLogController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping("download")
-    public DownloadWebResponse download(DownloadLogRequest request) throws BusinessException {
+    public DefaultWebResponse download(DownloadLogRequest request) throws BusinessException {
         Assert.notNull(request, "DownloadLogRequest 不能为null");
-
-        return null;
+        //TODO
+        return DefaultWebResponse.Builder.success();
     }
 
 

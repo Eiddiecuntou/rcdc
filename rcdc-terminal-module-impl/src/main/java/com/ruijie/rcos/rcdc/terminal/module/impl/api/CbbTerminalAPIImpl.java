@@ -1,10 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -16,8 +11,12 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import org.springframework.util.Assert;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.util.Assert;
 
 /**
  * Description: 终端基本信息维护
@@ -44,7 +43,7 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
         TerminalEntity basicInfoEntity =
-                basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(request.getTerminalId());
+                basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
@@ -93,14 +92,14 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
 
         int version = getVersion(terminalId);
         int effectRow = basicInfoDAO.modifyTerminalNetworkConfig(terminalId, version, request);
-        if(effectRow == 0){
+        if (effectRow == 0) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
         return DefaultResponse.Builder.success();
     }
 
     private Integer getVersion(String terminalId) throws BusinessException {
-        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(terminalId);
+        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }

@@ -143,28 +143,4 @@ public class TerminalBasicInfoServiceImplTest {
             assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
     }
-
-    @Test
-    public void testModifyTerminalState() {
-        new Expectations() {{
-            basicInfoDAO.findTerminalBasicInfoEntitiesByTerminalId(anyString);
-            result = null;
-        }};
-
-        String terminalId = "123";
-        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
-    }
-
-    @Test
-    public void testModifyTerminalState2() {
-        new Expectations() {{
-            basicInfoDAO.modifyTerminalState(anyString, anyInt, (CbbTerminalStateEnums) any);
-            result = 0;
-        }};
-
-        String terminalId = "123";
-        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
-
-    }
-
 }

@@ -40,6 +40,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
+        Assert.notNull(request, "CbbDispatcherRequest不能为空");
         LOGGER.debug("=====终端升级报文===={}", request.getData());
         Assert.notNull(request, "DispatcherRequest不能为null");
         //保存终端基本信息
