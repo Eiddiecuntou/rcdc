@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import org.springframework.util.Assert;
+
 /**
  * Description: 向shine请求消息实体类
  * Copyright: Copyright (c) 2018
@@ -22,6 +24,8 @@ public class CbbShineMessageRequest extends EssentialMessage {
      * @return 消息实体
      */
     public static CbbShineMessageRequest create(String action, String terminalId) {
+        Assert.hasText(action, "action不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
         CbbShineMessageRequest message = new CbbShineMessageRequest();
         message.action = action;
         message.terminalId = terminalId;

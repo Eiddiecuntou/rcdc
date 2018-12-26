@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import org.springframework.util.Assert;
 
 /**
  * Description: 向shine应答消息实体类
@@ -26,6 +27,9 @@ public class CbbResponseShineMessage extends EssentialMessage {
      * @return 消息实体
      */
     public static CbbResponseShineMessage create(String action, String terminalId, String requestId) {
+        Assert.hasText(action, "action不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
+        Assert.hasText(requestId, "requestId不能为空");
         CbbResponseShineMessage message = new CbbResponseShineMessage();
         message.action = action;
         message.terminalId = terminalId;
