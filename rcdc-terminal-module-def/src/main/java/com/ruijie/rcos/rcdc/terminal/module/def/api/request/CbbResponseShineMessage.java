@@ -19,6 +19,14 @@ public class CbbResponseShineMessage extends EssentialMessage {
 
     private String errorMsg;
 
+    /**
+     * 创建应答消息实体
+     *
+     * @param action     消息action值
+     * @param terminalId 终端id
+     * @param requestId  请求id
+     * @return 消息实体
+     */
     public static CbbResponseShineMessage create(String action, String terminalId, String requestId) {
         CbbResponseShineMessage message = new CbbResponseShineMessage();
         message.action = action;

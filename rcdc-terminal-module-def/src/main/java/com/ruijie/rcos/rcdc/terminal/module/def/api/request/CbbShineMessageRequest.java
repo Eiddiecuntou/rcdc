@@ -10,6 +10,13 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
  */
 public class CbbShineMessageRequest extends EssentialMessage {
 
+    /**
+     * 创建消息实体
+     *
+     * @param action     消息action值
+     * @param terminalId 终端id
+     * @return 消息实体
+     */
     public static CbbShineMessageRequest create(String action, String terminalId) {
         CbbShineMessageRequest message = new CbbShineMessageRequest();
         message.action = action;

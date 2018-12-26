@@ -9,6 +9,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/12/24
  *
+ * @param <T> 消息实体
  * @author Jarman
  */
 public class EssentialMessage<T> implements Request {

@@ -6,6 +6,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/12/25
  *
+ * @param <T> 应答的业务消息
  * @author Jarman
  */
 public class ShineResponseMessageDTO<T> {
