@@ -21,6 +21,7 @@ public class AsyncRequestCallBack extends AbstractRequestCallback {
     private CbbTerminalCallback callback;
 
     public AsyncRequestCallBack(String terminalId, CbbTerminalCallback callback) {
+        Assert.hasText(terminalId, "terminalId不能为空");
         this.terminalId = terminalId;
         this.callback = callback;
     }
