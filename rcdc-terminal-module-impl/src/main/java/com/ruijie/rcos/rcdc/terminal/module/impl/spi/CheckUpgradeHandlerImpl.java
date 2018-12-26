@@ -1,26 +1,28 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.util.Assert;
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalComponentUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalVersionRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalVersionResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-
-import java.util.Date;
 
 /**
  * Description: 终端检查升级，同时需要保存终端基本信息
@@ -41,6 +43,9 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
+    
+    @Autowired
+    private CbbTerminalComponentUpgradeAPI componentUpgradeAPI;
 
     private static final BeanCopier BEAN_COPIER = BeanCopier.create(ShineTerminalBasicInfo.class,
             TerminalEntity.class, false);
@@ -55,13 +60,28 @@ public class CheckUpgradeHandlerImpl implements CbbDispatcherHandlerSPI {
         //通知上层组件当前终端为在线状态
         CbbNoticeRequest cbbNoticeRequest = new CbbNoticeRequest(NoticeEventEnums.ONLINE, request.getTerminalId());
         cbbTerminalEventNoticeSPI.notify(cbbNoticeRequest);
-        //TODO 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        CbbShineMessageRequest cbbShineMessageRequest = new CbbShineMessageRequest();
+        //检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
+        String reqData = (String) request.getData();
+        CbbTerminalVersionRequest versionReq = JSON.parseObject(reqData, CbbTerminalVersionRequest.class);
+        CbbTerminalVersionResponse versionResp = componentUpgradeAPI.getVersion(versionReq);
+        
+        CbbShineMessageRequest<CbbTerminalVersionResponse> cbbShineMessageRequest =
+                buildMessageRequest(request, versionResp);
         try {
             messageHandlerAPI.response(cbbShineMessageRequest);
         } catch (BusinessException e) {
             LOGGER.error("升级检查消息应答失败", e);
         }
+    }
+
+    private CbbShineMessageRequest<CbbTerminalVersionResponse> buildMessageRequest(CbbDispatcherRequest request,
+            CbbTerminalVersionResponse versionResp) {
+        CbbShineMessageRequest<CbbTerminalVersionResponse> cbbShineMessageRequest = new CbbShineMessageRequest<>();
+        cbbShineMessageRequest.setRequestId(request.getRequestId());
+        cbbShineMessageRequest.setTerminalId(request.getTerminalId());
+        cbbShineMessageRequest.setAction(request.getDispatcherKey());
+        cbbShineMessageRequest.setData(versionResp);
+        return cbbShineMessageRequest;
     }
 
     private void saveBasicInfo(CbbDispatcherRequest request) {

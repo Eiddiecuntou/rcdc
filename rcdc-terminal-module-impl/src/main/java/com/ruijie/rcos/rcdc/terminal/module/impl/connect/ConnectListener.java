@@ -1,10 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
@@ -16,14 +19,11 @@ import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolE
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.RequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.ResponseMessageSender;
 import com.ruijie.rcos.sk.commkit.server.AbstractServerMessageHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Description: 连接监听

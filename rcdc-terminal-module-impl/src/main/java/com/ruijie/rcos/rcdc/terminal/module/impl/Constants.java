@@ -48,19 +48,39 @@ public interface Constants {
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH = "";
     
     /**
+     * TODO 系统刷机包镜像文件路径   
+     */
+    String TERMINAL_UPGRADE_ISO_IMG_FILE_PATH = "/home/partimag/";
+    
+    /**
+     * 系统镜像挂载指令
+     */
+    String SYSTEM_CMD_MOUNT_UPGRADE_ISO = "mount %s %s";
+
+    /**
+     * 系统镜像解除挂载指令
+     */
+    String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s %s";
+    
+    /**
      * 系统刷机包版本文件属性-包类型
      */
-    String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE = "packageType";
+    String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE = "plat";
     
     /**
      * 系统刷机包版本文件属性-外部版本号
      */
-    String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_INTERNAL_VERSION = "internalVersion";
+    String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION = "version";
     
     /**
-     * 系统刷机包版本文件属性-内部版本号
+     * 终端组件升级包路径 TODO
      */
-    String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_EXTERNAL_VERSION = "externalVersion";
+    String TERMINAL_COMPONENT_UPGRADE_PACKAGE_PATH = "";
+
+    /**
+     * 终端组件升级包updatelist文件名
+     */
+    String TERMINAL_COMPONET_UPDATE_LIST_FILE_NAME = "update.list";
 
 
 }

@@ -64,7 +64,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
-
+    
+ 
     /**
      * 测试升级包上传
      * 
@@ -96,10 +97,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             @Mock
             private TerminalUpgradeVersionFileInfo getVersionInfo() {
                 TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
-                versionInfo.setPackageName("package");
+                versionInfo.setImgName("package");
                 versionInfo.setPackageType(CbbTerminalTypeEnums.IDV);
-                versionInfo.setInternalVersion("interVer");
-                versionInfo.setExternalVersion("exterVer");
+                versionInfo.setVersion("interVer");
                 return versionInfo;
             }
         };

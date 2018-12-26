@@ -12,70 +12,38 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 public class TerminalSystemUpgradeMsg {
     
     /**
-     * 系统升级包名称
+     * 升级镜像名称
      */
-    private String packageName;
+    private String imgName;
     
     /**
-     * 系统升级包路径
+     * 版本号
      */
-    private String packagePath;
+    private String version;
     
     
-    /**
-     * 内部版本号
-     */
-    private String internalVersion;
-    
-    /**
-     * 外部版本号
-     */
-    private String externalVersion;
-    
-    
-
     public TerminalSystemUpgradeMsg() {
     }
 
-    public TerminalSystemUpgradeMsg(String packageName, String packagePath, String internalVersion,
-            String externalVersion) {
-        this.packageName = packageName;
-        this.packagePath = packagePath;
-        this.internalVersion = internalVersion;
-        this.externalVersion = externalVersion;
+    public TerminalSystemUpgradeMsg(String imgName, String version) {
+        this.imgName = imgName;
+        this.version = version;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public String getImgName() {
+        return imgName;
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
+    public void setImgName(String imgName) {
+        this.imgName = imgName;
     }
 
-    public String getPackagePath() {
-        return packagePath;
+    public String getVersion() {
+        return version;
     }
 
-    public void setPackagePath(String packagePath) {
-        this.packagePath = packagePath;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
-    public String getInternalVersion() {
-        return internalVersion;
-    }
-
-    public void setInternalVersion(String internalVersion) {
-        this.internalVersion = internalVersion;
-    }
-
-    public String getExternalVersion() {
-        return externalVersion;
-    }
-
-    public void setExternalVersion(String externalVersion) {
-        this.externalVersion = externalVersion;
-    }
-
-    
 }

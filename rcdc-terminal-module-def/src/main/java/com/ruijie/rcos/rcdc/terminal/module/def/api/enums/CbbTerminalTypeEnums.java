@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
 
+import org.springframework.util.Assert;
+
 /**
  * 
  * Description: 终端类型
@@ -39,6 +41,17 @@ public enum CbbTerminalTypeEnums {
     
     public String getName() {
         return name;
+    }
+    
+    public static boolean contains(String name) {
+        Assert.hasText(name, "name can not be null");
+        
+        for(CbbTerminalTypeEnums type : values()) {
+            if(type.name().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }

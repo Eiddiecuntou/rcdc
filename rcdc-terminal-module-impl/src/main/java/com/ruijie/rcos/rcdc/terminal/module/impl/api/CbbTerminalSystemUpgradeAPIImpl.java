@@ -8,13 +8,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.FileCopyUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
@@ -47,7 +47,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.NfsServiceUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
 
@@ -63,16 +62,6 @@ import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
 public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgradeAPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalSystemUpgradeAPIImpl.class);
-
-    /**
-     * 系统镜像挂载指令
-     */
-    private static final String SYSTEM_CMD_MOUNT_UPGRADE_ISO = "mount %s %s";
-
-    /**
-     * 系统镜像解除挂载指令
-     */
-    private static final String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s %s";
 
     private static final BeanCopier PACKAGE_BEAN_COPIER = BeanCopier.create(TerminalSystemUpgradePackageEntity.class,
             CbbTerminalSystemUpgradePackageInfoDTO.class, false);
@@ -133,7 +122,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         moveUpgradePackage(fileName, filePath, versionInfo.getPackageType());
 
         // 更新升级包信息入库
-        // versionInfo.setPackageName(fileName);
         terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion(versionInfo);
 
         // 替换升级文件,清除原升级包目录下旧文件，
@@ -185,23 +173,22 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     private void mountUpgradePackage(final String filePath) throws BusinessException {
         LOGGER.debug("mount package");
-        CmdExecuteUtil.executeCmd(
-                String.format(SYSTEM_CMD_MOUNT_UPGRADE_ISO, filePath, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH));
+        CmdExecuteUtil.executeCmd(String.format(Constants.SYSTEM_CMD_MOUNT_UPGRADE_ISO, filePath,
+                Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH));
     }
 
     private void umountUpgradePackage(final String filePath) throws BusinessException {
         LOGGER.debug("umount package");
-        CmdExecuteUtil.executeCmd(
-                String.format(SYSTEM_CMD_UMOUNT_UPGRADE_ISO, filePath, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH));
+        CmdExecuteUtil.executeCmd(String.format(Constants.SYSTEM_CMD_UMOUNT_UPGRADE_ISO, filePath,
+                Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH));
     }
 
 
     private TerminalUpgradeVersionFileInfo checkVersionFile() throws BusinessException {
         // 获取升级文件信息
         TerminalUpgradeVersionFileInfo verInfo = getVersionInfo();
-        if (verInfo.getPackageType() == null || StringUtils.isBlank(verInfo.getPackageName())
-                || StringUtils.isBlank(verInfo.getInternalVersion())
-                || StringUtils.isBlank(verInfo.getExternalVersion())) {
+        if (verInfo.getPackageType() == null || StringUtils.isBlank(verInfo.getImgName())
+                || StringUtils.isBlank(verInfo.getVersion())) {
             LOGGER.debug("version file info error: {}", verInfo.toString());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT);
         }
@@ -223,14 +210,22 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
 
+        //TODO FIXME 获取镜像名称
+        String imgName = "";
+        String imgPath = Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_ISO_IMG_FILE_PATH;
+        File file = new File(imgPath);
+        if(file.isDirectory()) {
+            String[] fileNames = file.list();
+            if(fileNames != null) {
+                imgName = fileNames[0];
+            }
+        }
+        
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
         versionInfo.setPackageType(CbbTerminalTypeEnums
                 .valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE)));
-        versionInfo
-                .setInternalVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_INTERNAL_VERSION));
-        versionInfo
-                .setExternalVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_EXTERNAL_VERSION));
-
+        versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION));
+        versionInfo.setImgName(imgName);
         return versionInfo;
     }
 
@@ -336,8 +331,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             LOGGER.debug("send terminal system upgrade message ...");
             // 下发系统刷机指令
             TerminalSystemUpgradeMsg upgradeMsg =
-                    new TerminalSystemUpgradeMsg(upgradePackage.getName(), upgradePackage.getStorePath(),
-                            upgradePackage.getInternalVersion(), upgradePackage.getExternalVersion());
+                    new TerminalSystemUpgradeMsg(upgradePackage.getImgName(), upgradePackage.getPackageVersion());
             try {
                 terminalSystemUpgradeService.systemUpgrade(terminal.getId().toString(), upgradeMsg);
                 upgradeTask.setIsSend(true);
@@ -382,11 +376,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
 
         return DefaultResponse.Builder.success();
-
     }
 
     @Override
-    public CbbBaseListResponse<CbbTerminalSystemUpgradeTaskDTO> listTerminalSystemUpgradeTask() throws BusinessException {
+    public CbbBaseListResponse<CbbTerminalSystemUpgradeTaskDTO> listTerminalSystemUpgradeTask()
+            throws BusinessException {
         // 获取所以升级任务
         List<SystemUpgradeTask> tasks = systemUpgradeTaskManager.getAllTasks();
         if (CollectionUtils.isEmpty(tasks)) {
@@ -394,22 +388,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
 
         // 对列表进行排序
-        Collections.sort(tasks, new Comparator<SystemUpgradeTask>() {
-            @Override
-            public int compare(SystemUpgradeTask o1, SystemUpgradeTask o2) {
-                if (o1.getState() == o2.getState()) {
-                    if (o1.getStartTime() < o2.getStartTime()) {
-                        return 1;
-                    }
-                } else {
-                    if (o1.getState() == CbbSystemUpgradeStateEnums.DOING) {
-                        return 1;
-                    }
-                }
-                return -1;
-            }
-        });
-
+        Collections.sort(tasks, new SystemUpgradeTaskComparator());
         CbbTerminalSystemUpgradeTaskDTO[] dtoArr = new CbbTerminalSystemUpgradeTaskDTO[tasks.size()];
         // 将数据转换成dto输出
         Stream.iterate(0, i -> i + 1).limit(tasks.size()).forEach(i -> {

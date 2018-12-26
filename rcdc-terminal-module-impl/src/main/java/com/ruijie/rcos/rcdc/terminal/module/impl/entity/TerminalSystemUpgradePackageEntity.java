@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author Jarman
  */
 @Entity
-@Table(name = "t_terminal_system_upgrade_package")
+@Table(name = "t_cbb_sys_upgrade_package")
 public class TerminalSystemUpgradePackageEntity {
 
     @Id
@@ -22,14 +22,10 @@ public class TerminalSystemUpgradePackageEntity {
     private UUID id;
 
     /**
-     * 刷机包名称
+     *镜像名称
      */
-    private String name;
+    private String ImgName;
 
-    /**
-     * 存储路径
-     */
-    private String storePath;
 
     /**
      * 包类型，VDI ISO、IDV ISO、OTA
@@ -43,81 +39,72 @@ public class TerminalSystemUpgradePackageEntity {
     private Date uploadTime;
     
     /**
-     * 内部版本号
+     * 升级包版本号
      */
-    private String internalVersion;
+    private String packageVersion;
     
-    /**
-     * 外部版本号
-     */
-    private String externalVersion;
     
     @Version
     private int version;
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public int getVersion() {
-        return version;
-    }
 
     public UUID getId() {
         return id;
     }
 
+
     public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+
+    public String getImgName() {
+        return ImgName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+
+    public void setImgName(String imgName) {
+        ImgName = imgName;
     }
 
-    public String getStorePath() {
-        return storePath;
-    }
-
-    public void setStorePath(String storePath) {
-        this.storePath = storePath;
-    }
 
     public CbbTerminalTypeEnums getPackageType() {
         return packageType;
     }
 
+
     public void setPackageType(CbbTerminalTypeEnums packageType) {
         this.packageType = packageType;
     }
+
 
     public Date getUploadTime() {
         return uploadTime;
     }
 
+
     public void setUploadTime(Date uploadTime) {
         this.uploadTime = uploadTime;
     }
 
-    public String getInternalVersion() {
-        return internalVersion;
+
+    public String getPackageVersion() {
+        return packageVersion;
     }
 
-    public void setInternalVersion(String internalVersion) {
-        this.internalVersion = internalVersion;
+
+    public void setPackageVersion(String packageVersion) {
+        this.packageVersion = packageVersion;
     }
 
-    public String getExternalVersion() {
-        return externalVersion;
+
+    public int getVersion() {
+        return version;
     }
 
-    public void setExternalVersion(String externalVersion) {
-        this.externalVersion = externalVersion;
+
+    public void setVersion(int version) {
+        this.version = version;
     }
-    
-    
+
 }

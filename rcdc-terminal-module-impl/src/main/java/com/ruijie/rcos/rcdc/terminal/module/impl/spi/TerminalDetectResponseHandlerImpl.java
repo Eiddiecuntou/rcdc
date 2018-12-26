@@ -1,13 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
-import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Description: 接收终端检测应答消息处理

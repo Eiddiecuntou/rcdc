@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
@@ -11,7 +12,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.callback.AsyncRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;

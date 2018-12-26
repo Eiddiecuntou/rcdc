@@ -16,46 +16,32 @@ public class TerminalUpgradeVersionFileInfo {
     /**
      * 升级包名称
      */
-    private String packageName;
+    private String imgName;
     
     /**
      * 内部版本号
      */
-    private String internalVersion;
-    
-    /**
-     * 外部版本号
-     */
-    private String externalVersion;
+    private String version;
     
     /**
      * 更新包类型
      */
     private CbbTerminalTypeEnums packageType;
-   
 
-    public String getPackageName() {
-        return packageName;
+    public String getImgName() {
+        return imgName;
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
+    public void setImgName(String imgName) {
+        this.imgName = imgName;
     }
 
-    public String getInternalVersion() {
-        return internalVersion;
+    public String getVersion() {
+        return version;
     }
 
-    public void setInternalVersion(String internalVersion) {
-        this.internalVersion = internalVersion;
-    }
-
-    public String getExternalVersion() {
-        return externalVersion;
-    }
-
-    public void setExternalVersion(String externalVersion) {
-        this.externalVersion = externalVersion;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public CbbTerminalTypeEnums getPackageType() {
@@ -68,13 +54,8 @@ public class TerminalUpgradeVersionFileInfo {
 
     @Override
     public String toString() {
-        return "TerminalUpgradeVersionFileInfo [packageName=" + packageName + ", internalVersion=" + internalVersion
-                + ", externalVersion=" + externalVersion + ", packageType=" + packageType + ", getPackageName()="
-                + getPackageName() + ", getInternalVersion()=" + getInternalVersion() + ", getExternalVersion()="
-                + getExternalVersion() + ", getPackageType()=" + getPackageType() + ", getClass()=" + getClass()
-                + ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
+        return "TerminalUpgradeVersionFileInfo [imgName=" + imgName + ", version=" + version + ", packageType="
+                + packageType + "]";
     }
-    
-    
-    
+   
 }

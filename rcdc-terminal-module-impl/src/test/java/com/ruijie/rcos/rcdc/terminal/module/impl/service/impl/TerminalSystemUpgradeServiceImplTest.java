@@ -70,8 +70,8 @@ public class TerminalSystemUpgradeServiceImplTest {
                         .findByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
-                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion((CbbTerminalTypeEnums) any,
-                        anyString, anyString);
+                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (CbbTerminalTypeEnums) any,
+                        anyString, anyInt);
                 result = 1;
             }
         };
@@ -84,8 +84,8 @@ public class TerminalSystemUpgradeServiceImplTest {
                         .findByPackageType((CbbTerminalTypeEnums) any);
                 times = 1;
 
-                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion((CbbTerminalTypeEnums) any,
-                        anyString, anyString);
+                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (CbbTerminalTypeEnums) any,
+                        anyString, anyInt);
                 times = 1;
             }
         };
@@ -125,8 +125,8 @@ public class TerminalSystemUpgradeServiceImplTest {
                         .findByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
-                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion((CbbTerminalTypeEnums) any,
-                        anyString, anyString);
+                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (CbbTerminalTypeEnums) any,
+                        anyString, anyInt);
                 result = 0;
             }
         };
@@ -351,8 +351,8 @@ public class TerminalSystemUpgradeServiceImplTest {
     private TerminalUpgradeVersionFileInfo buildUpgradePackageVersion() {
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
         versionInfo.setPackageType(CbbTerminalTypeEnums.VDI);
-        versionInfo.setInternalVersion("internalVersion");
-        versionInfo.setExternalVersion("externalVersion");
+        versionInfo.setVersion("version");
+        versionInfo.setImgName("imgname");
         return versionInfo;
     }
 
@@ -360,11 +360,9 @@ public class TerminalSystemUpgradeServiceImplTest {
     private TerminalSystemUpgradePackageEntity buildUpgradePackage() {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         upgradePackage.setId(UUID.randomUUID());
-        upgradePackage.setInternalVersion("internalVersion");
-        upgradePackage.setExternalVersion("externalVersion");
-        upgradePackage.setName("packageName");
+        upgradePackage.setPackageVersion("internalVersion");
+        upgradePackage.setImgName("packageName");
         upgradePackage.setPackageType(CbbTerminalTypeEnums.VDI);
-        upgradePackage.setStorePath("storePath");
         upgradePackage.setUploadTime(new Date());
         return upgradePackage;
     }

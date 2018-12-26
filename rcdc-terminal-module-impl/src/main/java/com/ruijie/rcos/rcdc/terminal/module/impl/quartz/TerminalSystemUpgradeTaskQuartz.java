@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -116,16 +115,15 @@ public class TerminalSystemUpgradeTaskQuartz {
         // 发送升级指令
         for (SystemUpgradeTask task : startTaskList) {
             // 下发系统刷机指令
-            TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO
-                    .findFirstByPackageType(task.getTerminalType());
+            TerminalSystemUpgradePackageEntity upgradePackage =
+                    termianlSystemUpgradePackageDAO.findFirstByPackageType(task.getTerminalType());
             if (upgradePackage == null) {
                 LOGGER.info("终端类型[" + task.getTerminalType() + "]升级包不存在");
                 taskManager.modifyTaskState(task.getTerminalId(), CbbSystemUpgradeStateEnums.WAIT);
                 continue;
             }
             TerminalSystemUpgradeMsg upgradeMsg =
-                    new TerminalSystemUpgradeMsg(upgradePackage.getName(), upgradePackage.getStorePath(),
-                            upgradePackage.getInternalVersion(), upgradePackage.getExternalVersion());
+                    new TerminalSystemUpgradeMsg(upgradePackage.getImgName(), upgradePackage.getPackageVersion());
             try {
                 LOGGER.debug("终端[" + task.getTerminalId() + "]开始发送升级指令");
                 terminalSystemUpgradeService.systemUpgrade(task.getTerminalId(), upgradeMsg);

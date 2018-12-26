@@ -1,14 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.util.Assert;
-import com.ruijie.rcos.sk.commkit.base.Session;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import org.springframework.stereotype.Service;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.commkit.base.Session;
+import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 
 /**
  * Description: 终端连接Session管理

@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
@@ -11,15 +12,18 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSys
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbBaseListResponse;
+import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.CreateTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.DeleteTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradePackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.UploadUpgradeFileRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.util.Assert;
+import com.ruijie.rcos.sk.base.validation.EnableCustomValidate;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.webmvc.api.annotation.OptLog;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
+import com.ruijie.rcos.sk.webmvc.api.response.WebResponse.Status;
 
 /**
  * 
@@ -32,6 +36,7 @@ import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
  */
 @Controller
 @RequestMapping("/terminal/system/upgrade")
+@EnableCustomValidate(enable = false)
 public class TerminalSystemUpgradeController {
 
     @Autowired
@@ -45,8 +50,11 @@ public class TerminalSystemUpgradeController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping("/package/upload")
+    @OptLog(msgKey = BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
+            msgArgs = {"request.userName", "request.terminalId"})
+    @OptLog(msgKey = BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
+            msgArgs = {"request.userName", "request.terminalId", "response.message"}, matchStatus = Status.ERROR)
     public DefaultWebResponse uploadPackage(UploadUpgradeFileRequest uploadRequest) throws BusinessException {
-
         Assert.notNull(uploadRequest, "uploadRequest 不能为空");
 
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
@@ -84,6 +92,10 @@ public class TerminalSystemUpgradeController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping("create")
+    @OptLog(msgKey = BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_SUCCESS_LOG,
+    msgArgs = {"request.userName", "request.terminalId"})
+    @OptLog(msgKey = BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG,
+    msgArgs = {"request.userName", "request.terminalId", "response.message"}, matchStatus = Status.ERROR)
     public DefaultWebResponse create(CreateTerminalSystemUpgradeRequest request) throws BusinessException {
         Assert.notNull(request, "CreateTerminalSystemUpgradeRequest can not be null");
 
@@ -126,7 +138,7 @@ public class TerminalSystemUpgradeController {
     @RequestMapping("list")
     public DefaultWebResponse list(ListTerminalSystemUpgradeRequest request) throws BusinessException {
         Assert.notNull(request, "ListTerminalSystemUpgradeRequest can not be null");
-        
+
         CbbBaseListResponse<CbbTerminalSystemUpgradeTaskDTO> resp =
                 cbbTerminalUpgradeAPI.listTerminalSystemUpgradeTask();
         return DefaultWebResponse.Builder.success(resp);

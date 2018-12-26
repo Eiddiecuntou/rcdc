@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.callback.AsyncRequestCallBack;
@@ -18,7 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.util.Assert;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 
@@ -54,8 +54,8 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
         }
 
-        int effectRow = termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(
-                versionInfo.getPackageType(), versionInfo.getInternalVersion(), versionInfo.getExternalVersion());
+        int effectRow = termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(versionInfo.getImgName(),
+                versionInfo.getPackageType(), versionInfo.getVersion(), upgradePackage.getVersion());
         if (effectRow == 0) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
         }
@@ -77,12 +77,9 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     private TerminalSystemUpgradePackageEntity buildTerminalSystemUpgradePackageEntity(
             TerminalUpgradeVersionFileInfo versionInfo) {
         TerminalSystemUpgradePackageEntity entity = new TerminalSystemUpgradePackageEntity();
-        entity.setName(versionInfo.getPackageName());
+        entity.setImgName(versionInfo.getImgName());
         entity.setPackageType(versionInfo.getPackageType());
-        entity.setExternalVersion(versionInfo.getExternalVersion());
-        entity.setInternalVersion(versionInfo.getInternalVersion());
-        // TODO
-        entity.setStorePath(Constants.TERMINAL_UPGRADE_ISO_PATH_IDV);
+        entity.setPackageVersion(versionInfo.getVersion());
         entity.setUploadTime(new Date());
         entity.setId(UUID.randomUUID());
         return entity;

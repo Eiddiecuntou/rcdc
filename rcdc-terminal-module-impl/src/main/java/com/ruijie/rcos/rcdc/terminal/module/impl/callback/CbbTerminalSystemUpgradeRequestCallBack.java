@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.callback;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
@@ -9,7 +10,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.NfsServiceUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.base.util.Assert;
 
 /**
  * 

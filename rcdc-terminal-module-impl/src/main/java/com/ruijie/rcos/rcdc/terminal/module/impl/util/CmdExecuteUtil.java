@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.util.Assert;
 
 /**
  * 

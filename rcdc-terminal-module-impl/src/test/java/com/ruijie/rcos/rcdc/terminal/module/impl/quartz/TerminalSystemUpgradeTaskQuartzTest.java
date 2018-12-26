@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -281,11 +280,9 @@ public class TerminalSystemUpgradeTaskQuartzTest {
     private TerminalSystemUpgradePackageEntity buildUpgradePackage() {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         upgradePackage.setId(UUID.randomUUID());
-        upgradePackage.setInternalVersion("internalVersion");
-        upgradePackage.setExternalVersion("externalVersion");
-        upgradePackage.setName("packageName");
+        upgradePackage.setPackageVersion("version");
+        upgradePackage.setImgName("packageName");
         upgradePackage.setPackageType(CbbTerminalTypeEnums.VDI);
-        upgradePackage.setStorePath("storePath");
         upgradePackage.setUploadTime(new Date());
         return upgradePackage;
     }

@@ -1,9 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
@@ -15,7 +14,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.util.Assert;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**

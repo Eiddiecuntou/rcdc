@@ -21,7 +21,7 @@ import java.util.UUID;
 public class CbbTerminalBasicInfoDTO {
 
     private UUID id;
-
+    
     private String name;
 
     private String terminalId;
