@@ -3,42 +3,32 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
- * Description: 向终端应答的数据
+ * Description: 终端应答的数据
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/24
- * @param <T> 应答的业务数据对象
+ *
  * @author Jarman
  */
 public class CbbShineMessageResponse<T> extends DefaultResponse {
 
-    private String action;
+    private int code;
 
-    private String terminalId;
+    protected T content;
 
-    private T data;
-
-    public String getAction() {
-        return action;
+    public int getCode() {
+        return code;
     }
 
-    public void setAction(String action) {
-        this.action = action;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getTerminalId() {
-        return terminalId;
+    public T getContent() {
+        return content;
     }
 
-    public void setTerminalId(String terminalId) {
-        this.terminalId = terminalId;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
+    public void setContent(T content) {
+        this.content = content;
     }
 }

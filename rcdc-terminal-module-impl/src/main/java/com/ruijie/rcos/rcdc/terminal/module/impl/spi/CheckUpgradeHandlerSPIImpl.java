@@ -49,7 +49,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         CbbResponseShineMessage cbbShineMessageRequest = new CbbResponseShineMessage();
         try {
             messageHandlerAPI.response(cbbShineMessageRequest);
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             LOGGER.error("升级检查消息应答失败", e);
         }
     }

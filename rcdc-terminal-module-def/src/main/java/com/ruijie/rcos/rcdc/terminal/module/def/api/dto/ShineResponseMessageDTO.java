@@ -11,26 +11,16 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
  */
 public class ShineResponseMessageDTO<T> {
 
-    private Integer errorCode;
-
-    private String errorMsg;
+    private Integer code;
 
     private T content;
 
-    public Integer getErrorCode() {
-        return errorCode;
+    public Integer getCode() {
+        return code;
     }
 
-    public void setErrorCode(Integer errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getErrorMsg() {
-        return errorMsg;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
+    public void setCode(Integer code) {
+        this.code = code;
     }
 
     public T getContent() {

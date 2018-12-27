@@ -1,9 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -29,11 +31,12 @@ public class AsyncRequestCallBack extends AbstractRequestCallback {
     @Override
     public void success(BaseMessage baseMessage) {
         Assert.notNull(baseMessage, "baseMessage参数不能为空");
-        Assert.notNull(baseMessage.getAction(), "action不能为空");
-        CbbShineMessageResponse cbbShineMessageResponse = new CbbShineMessageResponse();
-        cbbShineMessageResponse.setAction(baseMessage.getAction());
-        cbbShineMessageResponse.setData(baseMessage.getData());
-        cbbShineMessageResponse.setTerminalId(terminalId);
+        Assert.hasText(baseMessage.getAction(), "action不能为空");
+        Object data = baseMessage.getData();
+        if (data == null || StringUtils.isBlank(data.toString())) {
+            throw new IllegalArgumentException("执行syncRequest方法后shine返回的应答消息不能为空。data:" + data);
+        }
+        CbbShineMessageResponse cbbShineMessageResponse = JSON.parseObject(data.toString(), CbbShineMessageResponse.class);
         callback.success(cbbShineMessageResponse);
     }
 

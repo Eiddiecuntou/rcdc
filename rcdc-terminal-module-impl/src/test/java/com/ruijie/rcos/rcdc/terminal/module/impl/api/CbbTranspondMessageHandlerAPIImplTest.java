@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
@@ -16,8 +17,11 @@ import mockit.*;
 import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.DataAccessException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -68,8 +72,10 @@ public class CbbTranspondMessageHandlerAPIImplTest {
     @Test
     public void testSyncRequestSuccess() throws IOException, InterruptedException, BusinessException {
         String action = "login";
-        String data = "test";
-        BaseMessage baseMessage = new BaseMessage(action, data);
+        Map<String,Object> data = new HashMap<>();
+        data.put("code",100);
+        data.put("content","hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {{
             sessionManager.getRequestMessageSender(anyString);
             result = sender;
@@ -79,8 +85,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         CbbShineMessageRequest request = CbbShineMessageRequest.create("login","223");
         try {
             CbbShineMessageResponse messageResponse = transpondMessageHandlerAPI.syncRequest(request);
-            assertEquals(messageResponse.getAction(), action);
-            assertEquals(messageResponse.getData(), data);
+            assertEquals(messageResponse.getContent(), "hello");
         } catch (BusinessException e) {
             fail();
         } catch (InterruptedException e) {
@@ -122,7 +127,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
     }
 
     @Test
-    public void testResponse(@Mocked Session session, @Mocked DefaultResponseMessageSender sender) throws BusinessException {
+    public void testResponse(@Mocked Session session, @Mocked DefaultResponseMessageSender sender) {
         new Expectations() {{
             sessionManager.getSession(anyString);
             result = session;
@@ -134,7 +139,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
             String requestId = "333";
             CbbResponseShineMessage request = CbbResponseShineMessage.create(action,terminalId,requestId);
             transpondMessageHandlerAPI.response(request);
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             fail();
         }
 

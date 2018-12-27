@@ -62,6 +62,6 @@ public interface CbbTranspondMessageHandlerAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse response(CbbResponseShineMessage msg) throws BusinessException;
+    DefaultResponse response(CbbResponseShineMessage msg) throws Exception;
 
 }
