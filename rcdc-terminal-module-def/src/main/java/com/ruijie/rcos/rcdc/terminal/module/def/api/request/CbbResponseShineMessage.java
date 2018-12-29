@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.util.Assert;
 
 /**
@@ -9,14 +10,23 @@ import org.springframework.util.Assert;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/25
  *
+ * @param <T> 消息体
  * @author Jarman
  */
-public class CbbResponseShineMessage extends EssentialMessage {
+public class CbbResponseShineMessage<T> implements Request {
 
     @NotBlank
     private String requestId;
 
+    @NotBlank
+    protected String action;
+
+    @NotBlank
+    protected String terminalId;
+
     private int code;
+
+    protected T content;
 
     /**
      * 创建应答消息实体
@@ -47,6 +57,34 @@ public class CbbResponseShineMessage extends EssentialMessage {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getTerminalId() {
+        return terminalId;
+    }
+
+    public void setTerminalId(String terminalId) {
+        this.terminalId = terminalId;
+    }
+
+    public T getContent() {
+        return content;
+    }
+
+    public void setContent(T content) {
+        this.content = content;
     }
 
     @Override

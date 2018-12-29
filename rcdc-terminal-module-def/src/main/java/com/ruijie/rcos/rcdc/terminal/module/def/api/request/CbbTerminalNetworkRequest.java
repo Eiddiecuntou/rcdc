@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
-import javax.validation.constraints.NotNull;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 
 /**
  * Description: 配置终端网络请求参数对象
