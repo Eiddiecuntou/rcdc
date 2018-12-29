@@ -1,9 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
 import java.util.Date;
+
+import org.springframework.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
@@ -20,7 +22,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
  */
 @Service
 public class TerminalDetectService {
-
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
 
@@ -30,7 +31,7 @@ public class TerminalDetectService {
     /**
      * 更新基础信息表和检测表，存在事务
      *
-     * @param terminalId 终端id
+     * @param terminalId   终端id
      * @param detectResult 检测结果数据对象
      */
     public void updateTerminalDetect(String terminalId, TerminalDetectResponse detectResult) {
@@ -38,12 +39,12 @@ public class TerminalDetectService {
         Assert.notNull(detectResult, "TerminalDetectResult不能为null");
         TerminalDetectResponse.DetectResult result = detectResult.getResult();
         if (StateEnums.FAILURE == detectResult.getErrorCode()) {
-            // TODO 检测失败
+            //TODO 检测失败
 
             return;
         }
 
-        // 检测数据入库
+        //检测数据入库
         TerminalDetectionEntity entity = new TerminalDetectionEntity();
         Date now = new Date();
         entity.setTerminalId(terminalId);
@@ -55,5 +56,4 @@ public class TerminalDetectService {
         entity.setDetectTime(now);
         detectionDAO.save(entity);
     }
-
 }

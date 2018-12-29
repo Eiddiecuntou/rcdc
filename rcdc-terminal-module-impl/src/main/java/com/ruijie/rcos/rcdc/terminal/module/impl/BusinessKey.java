@@ -23,12 +23,12 @@ public interface BusinessKey {
     /**
      * 正在收集终端日志中
      */
-    String RCDC_TERMINAL_GATHER_LOG_DOING = "rcdc_terminal_gather_log_doing";
+    String RCDC_TERMINAL_COLLECT_LOG_DOING = "rcdc_terminal_collect_log_doing";
 
     /**
      * 不存在日志文件
      */
-    String RCDC_TERMINAL_GATHER_LOG_NOT_EXIST = "rcdc_terminal_gather_log_not_exist";
+    String RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST = "rcdc_terminal_collect_log_not_exist";
 
     /**
      * 上传系统升级文件类型错误

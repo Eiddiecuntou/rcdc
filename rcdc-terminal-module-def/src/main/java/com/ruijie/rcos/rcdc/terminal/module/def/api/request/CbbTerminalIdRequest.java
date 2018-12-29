@@ -1,8 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
-import javax.validation.constraints.NotNull;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 
 /**
  * Description: 封装terminalId请求参数对象
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotNull;
  */
 public class CbbTerminalIdRequest implements Request {
 
-    @NotNull
+    @NotBlank
     private String terminalId;
 
     public String getTerminalId() {

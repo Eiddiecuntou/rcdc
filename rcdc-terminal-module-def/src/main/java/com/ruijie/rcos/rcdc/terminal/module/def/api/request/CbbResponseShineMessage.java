@@ -5,15 +5,18 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.util.Assert;
 
 /**
- * Description: 向shine请求消息实体类
+ * Description: 向shine应答消息实体类
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2018/12/24
+ * Create Time: 2018/10/25
  *
  * @param <T> 消息体
  * @author Jarman
  */
-public class CbbShineMessageRequest<T> implements Request {
+public class CbbResponseShineMessage<T> implements Request {
+
+    @NotBlank
+    private String requestId;
 
     @NotBlank
     protected String action;
@@ -21,27 +24,43 @@ public class CbbShineMessageRequest<T> implements Request {
     @NotBlank
     protected String terminalId;
 
+    private int code;
+
     protected T content;
 
-
-    private CbbShineMessageRequest() {
-
-    }
-
     /**
-     * 创建消息实体
+     * 创建应答消息实体
      *
      * @param action     消息action值
      * @param terminalId 终端id
+     * @param requestId  请求id
      * @return 消息实体
      */
-    public static CbbShineMessageRequest create(String action, String terminalId) {
+    public static CbbResponseShineMessage create(String action, String terminalId, String requestId) {
         Assert.hasText(action, "action不能为空");
         Assert.hasText(terminalId, "terminalId不能为空");
-        CbbShineMessageRequest message = new CbbShineMessageRequest();
+        Assert.hasText(requestId, "requestId不能为空");
+        CbbResponseShineMessage message = new CbbResponseShineMessage();
         message.action = action;
         message.terminalId = terminalId;
+        message.requestId = requestId;
         return message;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     public String getAction() {
@@ -70,8 +89,10 @@ public class CbbShineMessageRequest<T> implements Request {
 
     @Override
     public String toString() {
-        return "CbbShineMessageRequest{" +
-                "action='" + action + '\'' +
+        return "CbbResponseShineMessage{" +
+                "requestId='" + requestId + '\'' +
+                ", code=" + code +
+                ", action='" + action + '\'' +
                 ", terminalId='" + terminalId + '\'' +
                 ", content=" + content +
                 '}';

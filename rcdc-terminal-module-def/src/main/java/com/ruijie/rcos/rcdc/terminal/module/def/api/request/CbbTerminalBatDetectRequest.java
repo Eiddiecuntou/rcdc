@@ -1,9 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import javax.validation.constraints.NotNull;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectItemEnums;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.lang.Nullable;
 
 /**
  * Description: 终端批量检测请求参数对象
@@ -17,6 +18,7 @@ public class CbbTerminalBatDetectRequest implements Request {
     @NotNull
     private String[] terminalIdArr;
 
+    @Nullable
     private CbbDetectItemEnums[] itemArr;
 
     public String[] getTerminalIdArr() {

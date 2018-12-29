@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 
 import java.time.Instant;
 
@@ -9,10 +9,9 @@ import java.time.Instant;
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/11/6
- *
  * @author Jarman
  */
-public class GatherLogCache {
+public class CollectLogCache {
     /**
      * 缓存有效时间，单位毫秒，默认10分钟
      */
@@ -21,7 +20,7 @@ public class GatherLogCache {
     /**
      * 状态
      */
-    private GatherLogStateEnums state;
+    private CollectLogStateEnums state;
 
     /**
      * 只有状态为已完成时才有值
@@ -33,17 +32,17 @@ public class GatherLogCache {
      */
     private Long expireTime;
 
-    public GatherLogCache() {
+    public CollectLogCache() {
         //记录过期时间
         long millisecond = Instant.now().toEpochMilli();
         this.expireTime = millisecond + EXPIRE;
     }
 
-    public GatherLogStateEnums getState() {
+    public CollectLogStateEnums getState() {
         return state;
     }
 
-    public void setState(GatherLogStateEnums state) {
+    public void setState(CollectLogStateEnums state) {
         this.state = state;
     }
 

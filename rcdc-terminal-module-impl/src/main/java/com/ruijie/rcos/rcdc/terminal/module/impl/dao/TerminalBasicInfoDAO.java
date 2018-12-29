@@ -1,13 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
-import java.util.Date;
+
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
@@ -28,6 +27,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @param terminalId 终端id
      * @return 返回终端信息
      */
+
     TerminalEntity findFirstByTerminalId(String terminalId);
     
     /**
@@ -42,13 +42,9 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * 删除终端数据
      *
      * @param terminalId 终端id
-     * @param version    数据版本号
      * @return 返回影响行数
      */
-    @Modifying
-    @Transactional
-    @Query("delete from TerminalEntity where terminalId=:terminalId and version=:version")
-    int deleteByTerminalId(String terminalId, Integer version);
+    int deleteByTerminalId(String terminalId);
 
     /**
      * 修改终端名称
@@ -93,23 +89,6 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     @Transactional
     @Query("update TerminalEntity set state=:state,version=:version+1 " +
             "where terminalId=:terminalId and version=:version")
-    int modifyTerminalState(String terminalId, Integer version, Integer state);
-
-    /**
-     * 修改终端检测信息
-     *
-     * @param terminalId  终端id
-     * @param version     数据版本号
-     * @param detectTime  检测时间
-     * @param detectState 检测状态
-     * @return 影响行数
-     */
-    @Modifying
-    @Transactional
-    @Query("update TerminalEntity set detectState=:detectState" +
-            ",detectTime=:detectTime" +
-            ",version=:version+1 " +
-            "where terminalId=:terminalId and version=:version")
-    int modifyDetectInfo(String terminalId, Integer version, Date detectTime, Integer detectState);
+    int modifyTerminalState(String terminalId, Integer version, CbbTerminalStateEnums state);
 
 }

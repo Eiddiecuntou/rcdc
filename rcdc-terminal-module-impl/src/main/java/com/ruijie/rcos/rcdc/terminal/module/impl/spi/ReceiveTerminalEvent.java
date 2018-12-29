@@ -28,4 +28,9 @@ public interface ReceiveTerminalEvent {
      * 上传USB 信息
      */
     String USB_INFO = "usb_info";
+
+    /**
+     * 心跳报文
+     */
+    String HEARTBEAT = "heartBeat";
 }

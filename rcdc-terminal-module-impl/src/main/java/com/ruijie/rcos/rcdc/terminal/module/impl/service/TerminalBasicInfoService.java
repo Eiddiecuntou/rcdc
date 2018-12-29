@@ -37,5 +37,5 @@ public interface TerminalBasicInfoService {
      * @param state 终端状态，在线或离线
      * @throws BusinessException 业务异常
      */
-    void modifyTerminalState(String terminalId, CbbTerminalStateEnums state) throws BusinessException;
+    void modifyTerminalState(String terminalId, CbbTerminalStateEnums state);
 }

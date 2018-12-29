@@ -33,7 +33,7 @@ public enum SendTerminalEventEnums {
     /**
      * 收集终端日志
      */
-    GATHER_TERMINAL_LOG("gather_log"),
+    COLLECT_TERMINAL_LOG("collect_log"),
 
     /**
      * 修改终端名称

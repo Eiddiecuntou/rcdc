@@ -31,10 +31,10 @@ import static org.junit.Assert.fail;
  * @author Jarman
  */
 @RunWith(JMockit.class)
-public class CbbTerminalAPIImplTest {
+public class CbbTerminalBasicInfoAPIImplTest {
 
     @Tested
-    private CbbTerminalAPIImpl terminalBasicInfoAPI;
+    private CbbTerminalBasicInfoAPIImpl terminalBasicInfoAPI;
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
@@ -117,11 +117,8 @@ public class CbbTerminalAPIImplTest {
         TerminalEntity entity = new TerminalEntity();
         entity.setVersion(1);
         new Expectations() {{
-            basicInfoDAO.deleteByTerminalId(anyString, anyInt);
+            basicInfoDAO.deleteByTerminalId(anyString);
             result = 1;
-            basicInfoDAO.findFirstByTerminalId(anyString);
-            result = entity;
-
         }};
 
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
@@ -133,9 +130,7 @@ public class CbbTerminalAPIImplTest {
         }
 
         new Verifications() {{
-            basicInfoDAO.deleteByTerminalId(anyString, anyInt);
-            times = 1;
-            basicInfoDAO.findFirstByTerminalId(anyString);
+            basicInfoDAO.deleteByTerminalId(anyString);
             times = 1;
         }};
     }
@@ -144,11 +139,11 @@ public class CbbTerminalAPIImplTest {
     @Test
     public void testDeleteNoExistData() {
         new Expectations() {{
-            basicInfoDAO.deleteByTerminalId(anyString, anyInt);
+            basicInfoDAO.deleteByTerminalId(anyString);
             result = 0;
         }};
 
-        new MockUp<CbbTerminalAPIImpl>() {
+        new MockUp<CbbTerminalBasicInfoAPIImpl>() {
             @Mock
             private Integer getVersion(String terminalId) throws BusinessException {
                 return 1;
@@ -165,7 +160,7 @@ public class CbbTerminalAPIImplTest {
         }
 
         new Verifications() {{
-            basicInfoDAO.deleteByTerminalId(anyString, anyInt);
+            basicInfoDAO.deleteByTerminalId(anyString);
             times = 1;
         }};
     }
@@ -260,10 +255,10 @@ public class CbbTerminalAPIImplTest {
                 basicInfoService.modifyTerminalNetworkConfig(anyString, (ShineNetworkConfig) any);
                 ShineNetworkConfig shineNetworkConfig;
                 basicInfoService.modifyTerminalNetworkConfig(anyString, shineNetworkConfig = withCapture());
-                assertEquals(shineNetworkConfig.getTerminalId(),terminalId);
-                assertEquals(shineNetworkConfig.getGateway(),gateway);
-                assertEquals(shineNetworkConfig.getGetDnsMode(),(Integer) 0);
-                assertEquals(shineNetworkConfig.getGetIpMode(),(Integer) 1);
+                assertEquals(shineNetworkConfig.getTerminalId(), terminalId);
+                assertEquals(shineNetworkConfig.getGateway(), gateway);
+                assertEquals(shineNetworkConfig.getGetDnsMode(), (Integer) 0);
+                assertEquals(shineNetworkConfig.getGetIpMode(), (Integer) 1);
 
             } catch (BusinessException e) {
                 fail();

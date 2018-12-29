@@ -22,6 +22,7 @@ public interface CbbTerminalOperatorAPI {
      * 关闭终端
      *
      * @param request 终端id请求参数对象
+     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback
@@ -31,6 +32,7 @@ public interface CbbTerminalOperatorAPI {
      * 重启终端
      *
      * @param request 终端id请求参数对象
+     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback
@@ -39,7 +41,8 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 修改终端管理员密码
      *
-     * @param request   修改密码请求参数对象
+     * @param request 修改密码请求参数对象
+     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback
@@ -49,15 +52,17 @@ public interface CbbTerminalOperatorAPI {
      * 收集终端日志
      *
      * @param request 终端id请求参数对象
+     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse gatherLog(CbbTerminalIdRequest request) throws BusinessException;
+    DefaultResponse collectLog(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 终端检测
      *
      * @param request 终端id请求参数对象
+     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback
@@ -67,6 +72,7 @@ public interface CbbTerminalOperatorAPI {
      * 批量终端检测
      *
      * @param request 请求参数
+     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback
@@ -74,6 +80,7 @@ public interface CbbTerminalOperatorAPI {
 
     /**
      * 获取终端日志文件名
+     *
      * @param request 终端id请求参数对象
      * @return 返回日志文件名
      * @throws BusinessException 业务异常

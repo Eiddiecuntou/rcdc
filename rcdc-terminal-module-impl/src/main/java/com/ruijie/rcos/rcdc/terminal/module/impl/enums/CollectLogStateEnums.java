@@ -8,7 +8,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
  *
  * @author Jarman
  */
-public enum GatherLogStateEnums {
+public enum CollectLogStateEnums {
 
     /**
      * 正在收集中日志中

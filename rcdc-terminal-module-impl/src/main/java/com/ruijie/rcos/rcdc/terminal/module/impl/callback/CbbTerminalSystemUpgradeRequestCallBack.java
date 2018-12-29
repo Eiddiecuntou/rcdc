@@ -34,10 +34,6 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
         // TODO 根据响应信息判断终端是否进行升级，不升级则将升级队列中的任务移除
         Assert.notNull(msg, "TerminalSystemUpgradeRequest 不能为空");
 
-        // 事件类型不对
-        if (!SendTerminalEventEnums.UPGRADE_TERMINAL_SYSTEM.getName().equals(msg.getAction())) {
-            return;
-        }
 
 
     }

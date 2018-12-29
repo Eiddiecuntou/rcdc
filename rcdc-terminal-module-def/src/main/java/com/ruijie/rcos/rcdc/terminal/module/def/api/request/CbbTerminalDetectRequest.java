@@ -3,7 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectItemEnums;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
-import javax.validation.constraints.NotNull;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
+import org.springframework.lang.Nullable;
 
 /**
  * Description: 终端检测请求参数对象
@@ -17,6 +18,7 @@ public class CbbTerminalDetectRequest implements Request {
     @NotNull
     private String terminalId;
 
+    @Nullable
     private CbbDetectItemEnums[] itemArr;
 
     public String getTerminalId() {

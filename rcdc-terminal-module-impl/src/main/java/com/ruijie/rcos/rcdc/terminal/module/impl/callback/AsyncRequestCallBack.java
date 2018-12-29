@@ -30,9 +30,7 @@ public class AsyncRequestCallBack extends AbstractRequestCallback {
         Assert.notNull(baseMessage, "baseMessage参数不能为空");
         Assert.notNull(baseMessage.getAction(), "action不能为空");
         CbbShineMessageResponse cbbShineMessageResponse = new CbbShineMessageResponse();
-        cbbShineMessageResponse.setAction(baseMessage.getAction());
-        cbbShineMessageResponse.setData(baseMessage.getData());
-        cbbShineMessageResponse.setTerminalId(terminalId);
+        cbbShineMessageResponse.setContent(baseMessage.getData());
         callback.success(cbbShineMessageResponse);
     }
 

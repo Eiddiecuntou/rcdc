@@ -319,9 +319,9 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             return;
         }
 
-        // 添加进任务队列中
+        // TODO FIXME 终端类型有差异  添加进任务队列中
         SystemUpgradeTask upgradeTask =
-                systemUpgradeTaskManager.addTask(terminal.getTerminalId(), terminal.getTerminalType());
+                systemUpgradeTaskManager.addTask(terminal.getTerminalId(), null);
 
         // 开启NFS服务
         NfsServiceUtil.startService();

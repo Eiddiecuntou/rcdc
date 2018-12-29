@@ -43,7 +43,7 @@ public interface TerminalOperatorService {
      * @param terminalId 终端id
      * @throws BusinessException 业务异常
      */
-    void gatherLog(String terminalId) throws BusinessException;
+    void collectLog(String terminalId) throws BusinessException;
 
     /**
      * 终端检测
@@ -60,5 +60,5 @@ public interface TerminalOperatorService {
      * @throws BusinessException 业务异常
      */
     void detect(String[] terminalIdArr) throws BusinessException;
-    
+
 }

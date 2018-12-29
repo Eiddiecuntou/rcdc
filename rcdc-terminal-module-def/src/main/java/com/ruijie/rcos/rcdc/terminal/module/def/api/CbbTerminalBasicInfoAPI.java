@@ -4,9 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPageRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
@@ -18,7 +16,7 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
  *
  * @author Jarman
  */
-public interface CbbTerminalAPI {
+public interface CbbTerminalBasicInfoAPI {
 
 
     /**
@@ -60,17 +58,5 @@ public interface CbbTerminalAPI {
      */
     @NoRollback
     DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException;
-
-    /**
-     * 终端列表分页
-     * 
-     * @param pageRequest 分页请求
-     * 
-     * @return 列表分页信息
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    DefaultPageResponse<CbbTerminalBasicInfoDTO> listTerminal(CbbTerminalPageRequest pageRequest)
-            throws BusinessException;
 
 }
