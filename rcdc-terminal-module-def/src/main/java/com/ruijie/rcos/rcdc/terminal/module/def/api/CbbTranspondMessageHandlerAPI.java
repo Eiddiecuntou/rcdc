@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import java.io.IOException;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
@@ -9,6 +7,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
+import java.io.IOException;
 
 /**
  * Description: 转发消息给终端（Shine）
@@ -59,9 +59,8 @@ public interface CbbTranspondMessageHandlerAPI {
      *
      * @param msg shine消息请参数
      * @return 返回成功失败状态
-     * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse response(CbbResponseShineMessage msg) throws Exception;
+    DefaultResponse response(CbbResponseShineMessage msg);
 
 }

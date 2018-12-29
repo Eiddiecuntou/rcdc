@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/12/24
  *
+ * @param <T> 消息体
  * @author Jarman
  */
 public class CbbShineMessageRequest<T> implements Request {

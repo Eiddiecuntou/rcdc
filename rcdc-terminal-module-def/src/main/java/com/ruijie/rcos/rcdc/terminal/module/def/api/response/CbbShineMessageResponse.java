@@ -8,6 +8,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/24
  *
+ * @param <T> 消息体
  * @author Jarman
  */
 public class CbbShineMessageResponse<T> extends DefaultResponse {
