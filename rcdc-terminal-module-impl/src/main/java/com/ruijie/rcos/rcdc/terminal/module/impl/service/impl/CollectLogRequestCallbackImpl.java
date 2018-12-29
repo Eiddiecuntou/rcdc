@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.CommonMsg;
 import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
@@ -17,13 +17,13 @@ import org.springframework.util.Assert;
  *
  * @author Jarman
  */
-public class GatherLogRequestCallbackImpl extends AbstractRequestCallback {
-    private GatherLogCacheManager gatherLogCacheManager;
+public class CollectLogRequestCallbackImpl extends AbstractRequestCallback {
+    private CollectLogCacheManager collectLogCacheManager;
 
     private String terminalId;
 
-    public GatherLogRequestCallbackImpl(GatherLogCacheManager gatherLogCacheManager,String terminalId) {
-        this.gatherLogCacheManager = gatherLogCacheManager;
+    public CollectLogRequestCallbackImpl(CollectLogCacheManager collectLogCacheManager, String terminalId) {
+        this.collectLogCacheManager = collectLogCacheManager;
         this.terminalId = terminalId;
     }
 
@@ -38,15 +38,15 @@ public class GatherLogRequestCallbackImpl extends AbstractRequestCallback {
         if (StateEnums.SUCCESS == responseMsg.getErrorCode()) {
             String logZipName = responseMsg.getMsg();
             Assert.hasText(logZipName, "返回的日志文件名称不能为空");
-            gatherLogCacheManager.updateState(terminalId, GatherLogStateEnums.DONE, logZipName);
+            collectLogCacheManager.updateState(terminalId, CollectLogStateEnums.DONE, logZipName);
             return;
         }
-        gatherLogCacheManager.updateState(terminalId, GatherLogStateEnums.FAILURE);
+        collectLogCacheManager.updateState(terminalId, CollectLogStateEnums.FAILURE);
     }
 
     @Override
     public void timeout(Throwable throwable) {
-        gatherLogCacheManager.updateState(terminalId, GatherLogStateEnums.FAILURE);
+        collectLogCacheManager.updateState(terminalId, CollectLogStateEnums.FAILURE);
 
     }
 }

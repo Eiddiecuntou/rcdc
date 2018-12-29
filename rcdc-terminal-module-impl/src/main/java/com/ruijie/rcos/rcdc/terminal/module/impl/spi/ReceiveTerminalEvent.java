@@ -32,5 +32,5 @@ public interface ReceiveTerminalEvent {
     /**
      * 心跳报文
      */
-    String HEARTBEART = "heartbeat";
+    String HEARTBEAT = "heartBeat";
 }

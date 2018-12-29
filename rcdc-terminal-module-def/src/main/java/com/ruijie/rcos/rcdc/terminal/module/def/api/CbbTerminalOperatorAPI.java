@@ -62,7 +62,7 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse gatherLog(CbbTerminalIdRequest request) throws BusinessException;
+    DefaultResponse collectLog(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 终端检测

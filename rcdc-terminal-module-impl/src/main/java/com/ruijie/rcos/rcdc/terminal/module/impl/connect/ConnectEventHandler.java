@@ -5,7 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
@@ -45,7 +45,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
     private TerminalBasicInfoService basicInfoService;
 
     @Autowired
-    private GatherLogCacheManager gatherLogCacheManager;
+    private CollectLogCacheManager collectLogCacheManager;
 
     /**
      * 接收报文处理线程池,分配50个线程数
@@ -79,12 +79,12 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
                 LOGGER.debug("报文消息体：{}", message.getData().toString());
             }
         }
-        if (ReceiveTerminalEvent.HEARTBEART.equals(message.getAction())) {
+        if (ReceiveTerminalEvent.HEARTBEAT.equals(message.getAction())) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("terminalId:[{}]收到心跳报文", sender.getSession().getAttribute(TERMINAL_BIND_KEY) + "");
             }
             //应答心跳报文
-            sender.response(new Message(Constants.SYSTEM_TYPE, ReceiveTerminalEvent.HEARTBEART, null));
+            sender.response(new Message(Constants.SYSTEM_TYPE, ReceiveTerminalEvent.HEARTBEAT, null));
             return;
         }
         if (ReceiveTerminalEvent.CHECK_UPGRADE.equals(message.getAction())) {
@@ -137,7 +137,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         sessionManager.removeSession(terminalId);
         LOGGER.debug("terminalId:[{}]连接关闭", terminalId);
         basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
-        gatherLogCacheManager.removeCache(terminalId);
+        collectLogCacheManager.removeCache(terminalId);
     }
 
     @Override

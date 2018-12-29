@@ -2,24 +2,22 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -41,7 +39,7 @@ public class TerminalOperatorServiceImplTest {
     private SessionManager sessionManager;
 
     @Injectable
-    private GatherLogCacheManager gatherLogCacheManager;
+    private CollectLogCacheManager collectLogCacheManager;
 
     @Injectable
     DefaultRequestMessageSender sender;
@@ -127,52 +125,53 @@ public class TerminalOperatorServiceImplTest {
             Message message;
             sender.request(message = withCapture());
             assertEquals(message.getAction(), SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD.getName());
-            assertEquals(String.valueOf(message.getData()), password);
+            ChangeTerminalPasswordRequest data = (ChangeTerminalPasswordRequest)message.getData();
+            assertEquals(String.valueOf(data.getPassword()), password);
         }};
     }
 
     @Test
-    public void testGatherLogIsDoing() {
+    public void testCollectLogIsDoing() {
         String terminalId = "12334";
-        GatherLogCache gatherLogCache = new GatherLogCache();
-        gatherLogCache.setState(GatherLogStateEnums.DOING);
+        CollectLogCache collectLogCache = new CollectLogCache();
+        collectLogCache.setState(CollectLogStateEnums.DOING);
         new Expectations() {{
-            gatherLogCacheManager.getCache(terminalId);
-            result = gatherLogCache;
+            collectLogCacheManager.getCache(terminalId);
+            result = collectLogCache;
         }};
 
         try {
-            operatorService.gatherLog(terminalId);
+            operatorService.collectLog(terminalId);
         } catch (BusinessException e) {
-            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_DOING);
+            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_COLLECT_LOG_DOING);
         }
     }
 
     @Test
-    public void testGatherLogNoExistsAndIsDoing() {
+    public void testCollectLogNoExistsAndIsDoing() {
         String terminalId = "123";
-        GatherLogCache logCache = new GatherLogCache();
-        logCache.setState(GatherLogStateEnums.DOING);
+        CollectLogCache logCache = new CollectLogCache();
+        logCache.setState(CollectLogStateEnums.DOING);
         new Expectations() {{
-            gatherLogCacheManager.getCache(terminalId);
+            collectLogCacheManager.getCache(terminalId);
             result = null;
-            gatherLogCacheManager.addCache(terminalId);
+            collectLogCacheManager.addCache(terminalId);
             result = logCache;
         }};
 
         try {
-            operatorService.gatherLog(terminalId);
+            operatorService.collectLog(terminalId);
         } catch (BusinessException e) {
-            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_GATHER_LOG_DOING);
+            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_COLLECT_LOG_DOING);
         }
     }
 
     @Test
-    public void testGatherLogSend() throws BusinessException {
-        GatherLogCache logCache = new GatherLogCache();
-        logCache.setState(GatherLogStateEnums.DONE);
+    public void testCollectLogSend() throws BusinessException {
+        CollectLogCache logCache = new CollectLogCache();
+        logCache.setState(CollectLogStateEnums.DONE);
         new Expectations() {{
-            gatherLogCacheManager.getCache(anyString);
+            collectLogCacheManager.getCache(anyString);
             result = logCache;
             sessionManager.getRequestMessageSender(anyString);
             result = sender;
@@ -182,7 +181,7 @@ public class TerminalOperatorServiceImplTest {
 
         try {
             String terminalId = "123";
-            operatorService.gatherLog(terminalId);
+            operatorService.collectLog(terminalId);
         } catch (BusinessException e) {
             fail();
         }

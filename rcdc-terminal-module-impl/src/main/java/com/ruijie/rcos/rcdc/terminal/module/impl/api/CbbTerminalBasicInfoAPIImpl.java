@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
@@ -11,9 +11,10 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.util.Assert;
@@ -26,18 +27,15 @@ import org.springframework.util.Assert;
  *
  * @author Jarman
  */
-public class CbbTerminalAPIImpl implements CbbTerminalAPI {
+public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalAPIImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalBasicInfoAPIImpl.class);
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
-
-    private static final BeanCopier BEAN_COPIER = BeanCopier.create(TerminalEntity.class,
-            CbbTerminalBasicInfoDTO.class, false);
 
     @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
@@ -48,8 +46,7 @@ public class CbbTerminalAPIImpl implements CbbTerminalAPI {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
         CbbTerminalBasicInfoDTO basicInfoDTO = new CbbTerminalBasicInfoDTO();
-        BEAN_COPIER.copy(basicInfoEntity, basicInfoDTO, null);
-
+        BeanUtils.copyProperties(basicInfoEntity,basicInfoDTO);
         return basicInfoDTO;
     }
 

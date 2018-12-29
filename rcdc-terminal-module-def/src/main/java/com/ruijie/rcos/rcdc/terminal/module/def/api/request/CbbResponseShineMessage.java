@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.util.Assert;
 
 /**
  * Description: 向shine应答消息实体类
@@ -8,16 +10,23 @@ import com.ruijie.rcos.sk.base.annotation.NotBlank;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/25
  *
+ * @param <T> 消息体
  * @author Jarman
  */
-public class CbbResponseShineMessage extends EssentialMessage {
+public class CbbResponseShineMessage<T> implements Request {
 
     @NotBlank
     private String requestId;
 
-    private int errorCode;
+    @NotBlank
+    protected String action;
 
-    private String errorMsg;
+    @NotBlank
+    protected String terminalId;
+
+    private int code;
+
+    protected T content;
 
     /**
      * 创建应答消息实体
@@ -28,6 +37,9 @@ public class CbbResponseShineMessage extends EssentialMessage {
      * @return 消息实体
      */
     public static CbbResponseShineMessage create(String action, String terminalId, String requestId) {
+        Assert.hasText(action, "action不能为空");
+        Assert.hasText(terminalId, "terminalId不能为空");
+        Assert.hasText(requestId, "requestId不能为空");
         CbbResponseShineMessage message = new CbbResponseShineMessage();
         message.action = action;
         message.terminalId = terminalId;
@@ -39,28 +51,47 @@ public class CbbResponseShineMessage extends EssentialMessage {
         return requestId;
     }
 
-    public int getErrorCode() {
-        return errorCode;
+    public int getCode() {
+        return code;
     }
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getTerminalId() {
+        return terminalId;
+    }
+
+    public void setTerminalId(String terminalId) {
+        this.terminalId = terminalId;
+    }
+
+    public T getContent() {
+        return content;
+    }
+
+    public void setContent(T content) {
+        this.content = content;
     }
 
     @Override
     public String toString() {
         return "CbbResponseShineMessage{" +
                 "requestId='" + requestId + '\'' +
-                ", errorCode=" + errorCode +
-                ", errorMsg='" + errorMsg + '\'' +
+                ", code=" + code +
                 ", action='" + action + '\'' +
                 ", terminalId='" + terminalId + '\'' +
                 ", content=" + content +

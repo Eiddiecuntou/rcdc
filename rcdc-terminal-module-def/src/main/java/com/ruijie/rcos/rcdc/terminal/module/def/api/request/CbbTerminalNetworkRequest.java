@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
-import com.ruijie.rcos.sk.base.annotation.NotBlank;
-import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 
 /**
  * Description: 配置终端网络请求参数对象
@@ -15,19 +15,19 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  */
 public class CbbTerminalNetworkRequest implements Request {
 
-    @NotBlank
+    @NotNull
     private String terminalId;
 
-    @NotBlank
+    @NotNull
     private String ip;
 
-    @NotBlank
+    @NotNull
     private String subnetMask;
 
-    @NotBlank
+    @NotNull
     private String gateway;
 
-    @NotBlank
+    @NotNull
     private String mainDns;
 
     private String secondDns;

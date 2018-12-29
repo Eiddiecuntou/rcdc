@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
@@ -30,9 +31,12 @@ public class AsyncRequestCallBackTest {
         try {
             String terminalId = "123";
             String action = "test";
-            Object data = "";
+            CbbShineMessageResponse data = new CbbShineMessageResponse();
+            data.setCode(200);
+            data.setContent("hello");
+
             AsyncRequestCallBack callBack = new AsyncRequestCallBack(terminalId, callback);
-            BaseMessage message = new BaseMessage(action, data);
+            BaseMessage message = new BaseMessage(action, JSON.toJSON(data));
             callBack.success(message);
         } catch (Exception e) {
             fail();

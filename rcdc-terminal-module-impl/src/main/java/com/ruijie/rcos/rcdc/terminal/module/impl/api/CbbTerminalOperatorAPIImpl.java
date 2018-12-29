@@ -19,10 +19,10 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -49,7 +49,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     private TerminalDetectService detectService;
 
     @Autowired
-    private GatherLogCacheManager gatherLogCacheManager;
+    private CollectLogCacheManager collectLogCacheManager;
 
     @Override
     public DefaultResponse shutdown(CbbTerminalIdRequest request) throws BusinessException {
@@ -79,10 +79,10 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public DefaultResponse gatherLog(CbbTerminalIdRequest request) throws BusinessException {
+    public DefaultResponse collectLog(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         String terminalId = request.getTerminalId();
-        operatorService.gatherLog(terminalId);
+        operatorService.collectLog(terminalId);
         return DefaultResponse.Builder.success();
     }
 
@@ -105,13 +105,13 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
-        GatherLogCache cache = gatherLogCacheManager.getCache(terminalId);
+        CollectLogCache cache = collectLogCacheManager.getCache(terminalId);
         if (cache == null) {
             LOGGER.warn("收集日志缓存中不存在日志文件");
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_GATHER_LOG_NOT_EXIST);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
         }
-        if (cache.getState() == GatherLogStateEnums.FAILURE) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_GATHER_LOG_NOT_EXIST);
+        if (cache.getState() == CollectLogStateEnums.FAILURE) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
         }
         CbbTerminalNameResponse response = new CbbTerminalNameResponse();
         response.setTerminalName(cache.getLogFileName());

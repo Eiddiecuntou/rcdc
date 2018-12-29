@@ -51,7 +51,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             result = entity;
             try {
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
-            } catch (BusinessException e) {
+            } catch (Exception e) {
                 fail();
             }
         }};
@@ -78,7 +78,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             result = null;
             try {
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
-            } catch (BusinessException e) {
+            } catch (Exception e) {
                 fail();
             }
         }};

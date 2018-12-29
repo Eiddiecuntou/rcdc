@@ -31,10 +31,10 @@ import static org.junit.Assert.fail;
  * @author Jarman
  */
 @RunWith(JMockit.class)
-public class CbbTerminalAPIImplTest {
+public class CbbTerminalBasicInfoAPIImplTest {
 
     @Tested
-    private CbbTerminalAPIImpl terminalBasicInfoAPI;
+    private CbbTerminalBasicInfoAPIImpl terminalBasicInfoAPI;
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
@@ -143,7 +143,7 @@ public class CbbTerminalAPIImplTest {
             result = 0;
         }};
 
-        new MockUp<CbbTerminalAPIImpl>() {
+        new MockUp<CbbTerminalBasicInfoAPIImpl>() {
             @Mock
             private Integer getVersion(String terminalId) throws BusinessException {
                 return 1;

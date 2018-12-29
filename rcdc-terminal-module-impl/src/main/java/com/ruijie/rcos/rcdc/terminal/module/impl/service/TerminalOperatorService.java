@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectItemEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -44,7 +43,7 @@ public interface TerminalOperatorService {
      * @param terminalId 终端id
      * @throws BusinessException 业务异常
      */
-    void gatherLog(String terminalId) throws BusinessException;
+    void collectLog(String terminalId) throws BusinessException;
 
     /**
      * 终端检测
