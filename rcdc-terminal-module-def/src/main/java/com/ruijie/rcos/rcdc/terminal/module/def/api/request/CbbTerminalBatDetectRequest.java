@@ -1,8 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import javax.validation.constraints.NotNull;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectItemEnums;
+import com.ruijie.rcos.sk.base.annotation.NotEmpty;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -14,10 +12,16 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @author Jarman
  */
 public class CbbTerminalBatDetectRequest implements Request {
-    @NotNull
+    
+    @NotEmpty
     private String[] terminalIdArr;
+    
+    public CbbTerminalBatDetectRequest() {
+    }
 
-    private CbbDetectItemEnums[] itemArr;
+    public CbbTerminalBatDetectRequest(String[] terminalIdArr) {
+        this.terminalIdArr = terminalIdArr;
+    }
 
     public String[] getTerminalIdArr() {
         return terminalIdArr;
@@ -27,11 +31,4 @@ public class CbbTerminalBatDetectRequest implements Request {
         this.terminalIdArr = terminalIdArr;
     }
 
-    public CbbDetectItemEnums[] getItemArr() {
-        return itemArr;
-    }
-
-    public void setItemArr(CbbDetectItemEnums[] itemArr) {
-        this.itemArr = itemArr;
-    }
 }

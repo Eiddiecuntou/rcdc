@@ -5,14 +5,16 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.GatherLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.GatherLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
@@ -49,6 +51,9 @@ public class TerminalOperatorServiceImplTest {
 
     @Tested
     private TerminalOperatorServiceImpl operatorService;
+    
+    @Injectable
+    private TerminalDetectService terminalDetectService;
 
     @Test
     public void testShutdownSuccess() {
@@ -186,6 +191,20 @@ public class TerminalOperatorServiceImplTest {
             sender.asyncRequest((Message) any, (RequestCallback) any);
             times = 1;
         }};
+    }
+    
+    @Test
+    public void testDetect() throws BusinessException {
+        String terminalId = "123";
+        
+        new Expectations() {
+            {
+                terminalDetectService.findInCurrentDate(anyString);
+                result = new TerminalDetectionEntity();
+            }
+        };
+        //TODO 未完成
+        operatorService.detect(terminalId);
     }
 
 }

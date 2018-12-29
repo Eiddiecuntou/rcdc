@@ -48,9 +48,10 @@ public class TerminalDetectServiceTest {
             TerminalDetectResponse detectResult = new TerminalDetectResponse();
             TerminalDetectResponse.DetectResult result = new TerminalDetectResponse.DetectResult();
             result.setBandwidth(12.3);
-            result.setCanAccessInternet(1);
-            result.setIpConflict("ddd");
-            result.setNetworkDelay(233.2);
+            result.setAccessInternet(1);
+            result.setIpConflict(1);
+            result.setIpConflictMac("123");
+            result.setDelay(233.2);
             result.setPacketLossRate(233.2);
             detectResult.setErrorCode(StateEnums.SUCCESS);
             detectResult.setResult(result);

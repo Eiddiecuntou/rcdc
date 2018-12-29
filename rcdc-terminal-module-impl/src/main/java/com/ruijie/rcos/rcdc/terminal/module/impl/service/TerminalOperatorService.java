@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectItemEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**

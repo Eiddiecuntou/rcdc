@@ -1,10 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
@@ -61,12 +67,12 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 终端检测
      *
-     * @param request 终端id请求参数对象
+     * @param request 终端检测请求参数对象
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse detect(CbbTerminalIdRequest request) throws BusinessException;
+    DefaultResponse detect(CbbTerminalDetectRequest request) throws BusinessException;
 
     /**
      * 批量终端检测
@@ -88,5 +94,23 @@ public interface CbbTerminalOperatorAPI {
     @NoRollback
     CbbTerminalNameResponse getTerminalLogName(CbbTerminalIdRequest request) throws BusinessException;
 
-
+    /**
+     * 获取检测记录分页列表
+     * 
+     * @param request 分页请求参数
+     * @return 检测记录分页列表
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException;
+    
+    /**
+     * 获取终端检测记录结果
+     * 
+     * @param request 检测结果请求参数
+     * @return 终端检测结果
+     */
+    @NoRollback
+    CbbDetectResultResponse getDetectResult(CbbTerminalDetectResultRequest request);
+    
 }

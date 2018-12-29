@@ -1,9 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectItemEnums;
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * Description: 终端检测请求参数对象
@@ -14,10 +12,18 @@ import javax.validation.constraints.NotNull;
  * @author Jarman
  */
 public class CbbTerminalDetectRequest implements Request {
-    @NotNull
+   
+    @NotBlank
     private String terminalId;
+    
+    
 
-    private CbbDetectItemEnums[] itemArr;
+    public CbbTerminalDetectRequest() {
+    }
+
+    public CbbTerminalDetectRequest(String terminalId) {
+        this.terminalId = terminalId;
+    }
 
     public String getTerminalId() {
         return terminalId;
@@ -27,11 +33,4 @@ public class CbbTerminalDetectRequest implements Request {
         this.terminalId = terminalId;
     }
 
-    public CbbDetectItemEnums[] getItemArr() {
-        return itemArr;
-    }
-
-    public void setItemArr(CbbDetectItemEnums[] itemArr) {
-        this.itemArr = itemArr;
-    }
 }

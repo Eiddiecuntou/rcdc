@@ -55,9 +55,10 @@ public class TerminalDetectResponseHandlerImplTest {
         response.setErrorCode(StateEnums.SUCCESS);
         TerminalDetectResponse.DetectResult detectResult = new TerminalDetectResponse.DetectResult();
         detectResult.setBandwidth(1234.2);
-        detectResult.setCanAccessInternet(1);
-        detectResult.setIpConflict("222");
-        detectResult.setNetworkDelay(23.22);
+        detectResult.setAccessInternet(1);
+        detectResult.setIpConflict(1);
+        detectResult.setIpConflictMac("222");
+        detectResult.setDelay(23.22);
         detectResult.setPacketLossRate(22.2);
         response.setResult(detectResult);
         return JSON.toJSONString(detectResult);
