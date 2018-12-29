@@ -80,7 +80,7 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     }
 
     @Override
-    public DefaultResponse response(CbbResponseShineMessage msg) throws Exception{
+    public DefaultResponse response(CbbResponseShineMessage msg) throws Exception {
         Assert.notNull(msg, "CbbResponseShineMessage不能为null");
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("RCDC应答消息：{}", msg.toString());
