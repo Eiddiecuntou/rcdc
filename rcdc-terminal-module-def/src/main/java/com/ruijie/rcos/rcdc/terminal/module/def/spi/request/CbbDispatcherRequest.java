@@ -4,7 +4,7 @@ import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
-import javax.validation.constraints.NotNull;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 
 /**
  * Description: 消息分发请求参数

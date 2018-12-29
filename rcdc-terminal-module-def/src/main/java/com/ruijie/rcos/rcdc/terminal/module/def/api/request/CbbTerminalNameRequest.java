@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
-import javax.validation.constraints.NotNull;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 
 /**
  * Description: 封装terminalName请求参数对象
