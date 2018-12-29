@@ -43,7 +43,7 @@ public class TerminalSystemUpgradeController {
     private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
 
     /**
-     * 上传iso文件
+     * 上传系统升级文件
      * 
      * @param uploadRequest 上传文件请求
      * @return 上传响应返回
