@@ -38,7 +38,7 @@ public class TerminalBusinessInitializingBean implements InitializingBean {
      */
     private void initTerminalState() {
 
-        List<TerminalEntity> list = terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE.name());
+        List<TerminalEntity> list = terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);
         if (CollectionUtils.isEmpty(list)) {
             LOGGER.debug("没有需要初始化的终端状态");
             return;

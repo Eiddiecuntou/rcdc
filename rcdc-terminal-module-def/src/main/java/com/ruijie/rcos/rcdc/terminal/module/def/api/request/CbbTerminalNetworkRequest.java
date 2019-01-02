@@ -1,9 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 import com.ruijie.rcos.sk.base.annotation.NotNull;
+import org.springframework.lang.Nullable;
 
 /**
  * Description: 配置终端网络请求参数对象
@@ -15,21 +17,22 @@ import com.ruijie.rcos.sk.base.annotation.NotNull;
  */
 public class CbbTerminalNetworkRequest implements Request {
 
-    @NotNull
+    @NotBlank
     private String terminalId;
 
-    @NotNull
+    @NotBlank
     private String ip;
 
-    @NotNull
+    @NotBlank
     private String subnetMask;
 
-    @NotNull
+    @NotBlank
     private String gateway;
 
-    @NotNull
+    @NotBlank
     private String mainDns;
 
+    @Nullable
     private String secondDns;
 
     @NotNull

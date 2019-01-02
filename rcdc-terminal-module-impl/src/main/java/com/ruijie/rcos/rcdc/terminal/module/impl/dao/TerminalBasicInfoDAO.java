@@ -36,7 +36,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @param state 终端状态
      * @return 返回终端列表
      */
-    List<TerminalEntity> findTerminalEntitiesByState(String state);
+    List<TerminalEntity> findTerminalEntitiesByState(CbbTerminalStateEnums state);
 
     /**
      * 删除终端数据

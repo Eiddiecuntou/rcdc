@@ -1,7 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
@@ -24,8 +26,10 @@ public class CbbResponseShineMessage<T> implements Request {
     @NotBlank
     protected String terminalId;
 
-    private int code;
+    @NotNull
+    private Integer code;
 
+    @Nullable
     protected T content;
 
     /**
@@ -51,11 +55,11 @@ public class CbbResponseShineMessage<T> implements Request {
         return requestId;
     }
 
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(Integer code) {
         this.code = code;
     }
 

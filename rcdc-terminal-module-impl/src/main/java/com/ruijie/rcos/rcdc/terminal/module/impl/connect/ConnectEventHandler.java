@@ -105,7 +105,11 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         request.setRequestId(sender.getResponseId());
         request.setTerminalId(terminalId);
         request.setData(message.getData());
-        cbbDispatcherHandlerSPI.dispatch(request);
+        try {
+            cbbDispatcherHandlerSPI.dispatch(request);
+        } catch (Exception e) {
+            LOGGER.error("消息分发执行异常;action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + String.valueOf(message.getData()), e);
+        }
     }
 
     /**

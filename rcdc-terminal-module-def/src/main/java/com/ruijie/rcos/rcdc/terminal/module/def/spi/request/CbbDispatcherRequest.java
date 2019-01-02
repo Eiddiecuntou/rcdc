@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.lang.Nullable;
 
 /**
  * Description: 消息分发请求参数
@@ -15,14 +16,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  */
 public class CbbDispatcherRequest<T> implements Request {
 
+    @NotBlank
     @DispatcherKey
     private String dispatcherKey;
 
     @NotBlank
     private String terminalId;
 
+    @Nullable
     private String requestId;
 
+    @Nullable
     private T data;
 
     public String getDispatcherKey() {

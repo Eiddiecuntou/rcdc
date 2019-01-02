@@ -1,8 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.lang.Nullable;
 
 /**
  * Description: Function Description
@@ -14,9 +16,11 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  */
 public class CbbNoticeRequest implements Request {
 
+    @NotBlank
     @DispatcherKey
     private String dispatcherKey;
 
+    @Nullable
     private String terminalId;
 
     public CbbNoticeRequest(NoticeEventEnums noticeEvent, String terminalId) {

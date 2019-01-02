@@ -4,6 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,7 +19,7 @@ import java.util.UUID;
  *
  * @author Jarman
  */
-public class CbbTerminalBasicInfoDTO {
+public class CbbTerminalBasicInfoResponse extends DefaultResponse {
 
     private UUID id;
 
