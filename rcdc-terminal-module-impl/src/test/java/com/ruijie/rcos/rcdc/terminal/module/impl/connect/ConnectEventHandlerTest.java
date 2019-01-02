@@ -117,7 +117,7 @@ public class ConnectEventHandlerTest {
         };
 
         try {
-            String action = ReceiveTerminalEvent.NOTICE_UPLOAD_LOG_FINISH;
+            String action = ReceiveTerminalEvent.COLLECT_TERMINAL_LOG_FINISH;
             ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
             basicInfo.setTerminalId(terminalId);
             String data = JSON.toJSONString(basicInfo);

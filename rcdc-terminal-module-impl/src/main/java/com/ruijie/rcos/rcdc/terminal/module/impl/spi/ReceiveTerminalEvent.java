@@ -17,7 +17,7 @@ public interface ReceiveTerminalEvent {
     /**
      * 通知日志已上传完成
      */
-    String NOTICE_UPLOAD_LOG_FINISH = "upload_log_finish";
+    String COLLECT_TERMINAL_LOG_FINISH = "collect_terminal_log_finish";
 
     /**
      * 上传终端检测消息

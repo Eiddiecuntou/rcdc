@@ -18,7 +18,6 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
  */
 public interface CbbTerminalBasicInfoAPI {
 
-
     /**
      * 删除终端信息
      *
