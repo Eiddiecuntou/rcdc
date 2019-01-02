@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -28,6 +29,14 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @return 返回终端信息
      */
     TerminalEntity findTerminalEntityByTerminalId(String terminalId);
+
+    /**
+     * 根据状态查询终端列表
+     *
+     * @param state 终端状态
+     * @return 返回终端列表
+     */
+    List<TerminalEntity> findTerminalEntitiesByState(String state);
 
     /**
      * 删除终端数据
