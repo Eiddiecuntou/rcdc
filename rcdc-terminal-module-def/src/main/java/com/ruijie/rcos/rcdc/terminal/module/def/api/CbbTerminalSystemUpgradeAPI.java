@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbBatchAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
@@ -57,18 +56,6 @@ public interface CbbTerminalSystemUpgradeAPI {
      */
     @NoRollback
     DefaultResponse addSystemUpgradeTask(CbbAddTerminalSystemUpgradeTaskRequest request) throws BusinessException;
-
-    /**
-     * 
-     * 批量添加终端系统升级任务
-     * 
-     * @param request 请求参数
-     * @return 批量添加结果
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    DefaultResponse batchAddSystemUpgradeTask(CbbBatchAddTerminalSystemUpgradeTaskRequest request)
-            throws BusinessException;
 
     /**
      * 移除终端系统升级任务

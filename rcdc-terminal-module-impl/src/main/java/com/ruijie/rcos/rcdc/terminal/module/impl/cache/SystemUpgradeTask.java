@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
+import org.springframework.core.Ordered;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 
@@ -49,7 +50,7 @@ public class SystemUpgradeTask {
      * 是否发送升级指令
      */
     private Boolean isSend;
-
+    
 
     public String getTerminalId() {
         return terminalId;

@@ -1,7 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import javax.validation.constraints.NotNull;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -18,7 +19,7 @@ public class CbbAddTerminalSystemUpgradeTaskRequest implements Request {
     /**
      * 终端id
      */
-    @NotNull
+    @NotBlank
     private String terminalId;
 
     /**
@@ -27,6 +28,14 @@ public class CbbAddTerminalSystemUpgradeTaskRequest implements Request {
     @NotNull
     private CbbTerminalTypeEnums terminalType;
     
+
+    public CbbAddTerminalSystemUpgradeTaskRequest() {
+    }
+
+    public CbbAddTerminalSystemUpgradeTaskRequest(String terminalId, CbbTerminalTypeEnums terminalType) {
+        this.terminalId = terminalId;
+        this.terminalType = terminalType;
+    }
 
     public String getTerminalId() {
         return terminalId;

@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -18,8 +17,7 @@ public class CbbRemoveTerminalSystemUpgradeTaskRequest implements Request {
     /**
      * 终端id
      */
-    @NotNull
-    @Size(min = 1)
+    @NotBlank
     private String terminalId;
     
 

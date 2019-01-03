@@ -1,7 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import javax.validation.constraints.NotNull;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.sk.base.annotation.NotEmpty;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -18,7 +19,7 @@ public class CbbBatchAddTerminalSystemUpgradeTaskRequest implements Request {
     /**
      * 终端id集合
      */
-    @NotNull
+    @NotEmpty
     private String[] terminalIdArr;
 
     /**

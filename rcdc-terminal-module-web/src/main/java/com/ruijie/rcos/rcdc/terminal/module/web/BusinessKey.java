@@ -32,4 +32,14 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG = "rcdc_terminal_create_system_upgrade_task_fail_log";
 
+    /**
+     * 移除终端升级任务失败日志
+     */
+    String RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG = "rcdc_terminal_delete_system_upgrade_fail_log";
+
+    /**
+     * 移除终端升级任务成功日志
+     */
+    String RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_SUCCESS_LOG = "rcdc_terminal_delete_system_upgrade_success_log";
+
 }

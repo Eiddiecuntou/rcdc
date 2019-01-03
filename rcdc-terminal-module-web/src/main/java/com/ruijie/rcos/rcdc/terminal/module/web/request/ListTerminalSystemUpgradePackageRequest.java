@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.request;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
 /**
@@ -17,6 +18,7 @@ public class ListTerminalSystemUpgradePackageRequest implements WebRequest {
     /**
      * 终端类型
      */
+    @NotNull
     private CbbTerminalTypeEnums terminalType;
 
     public CbbTerminalTypeEnums getTerminalType() {

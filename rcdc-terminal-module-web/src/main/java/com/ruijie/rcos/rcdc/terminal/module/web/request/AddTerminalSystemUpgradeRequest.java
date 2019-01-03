@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.request;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
 /**
@@ -19,8 +19,7 @@ public class AddTerminalSystemUpgradeRequest implements WebRequest {
     /**
      * 终端id
      */
-    @NotNull
-    @Size(min = 1)
+    @NotBlank
     private String terminalId;
     
     /**

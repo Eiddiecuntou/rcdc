@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradeTaskDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbBatchAddTerminalSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
@@ -19,11 +20,11 @@ import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgrad
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.UploadUpgradeFileRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.validation.EnableCustomValidate;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.webmvc.api.annotation.OptLog;
+import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
-import com.ruijie.rcos.sk.webmvc.api.response.WebResponse.Status;
 
 /**
  * 
@@ -38,6 +39,8 @@ import com.ruijie.rcos.sk.webmvc.api.response.WebResponse.Status;
 @RequestMapping("/terminal/system/upgrade")
 @EnableCustomValidate(enable = false)
 public class TerminalSystemUpgradeController {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeController.class);
 
     @Autowired
     private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
@@ -46,20 +49,28 @@ public class TerminalSystemUpgradeController {
      * 上传系统升级文件
      * 
      * @param uploadRequest 上传文件请求
+     * @param optLogRecorder 日志记录
      * @return 上传响应返回
      * @throws BusinessException 业务异常
      */
     @RequestMapping("/package/upload")
-    @OptLog(msgKey = BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
-            msgArgs = {"request.userName", "request.terminalId"})
-    @OptLog(msgKey = BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
-            msgArgs = {"request.userName", "request.terminalId", "response.message"}, matchStatus = Status.ERROR)
-    public DefaultWebResponse uploadPackage(UploadUpgradeFileRequest uploadRequest) throws BusinessException {
+    public DefaultWebResponse uploadPackage(UploadUpgradeFileRequest uploadRequest, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         Assert.notNull(uploadRequest, "uploadRequest 不能为空");
 
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFile(uploadRequest.getFile());
-        cbbTerminalUpgradeAPI.uploadUpgradeFile(request);
+        try {
+            cbbTerminalUpgradeAPI.uploadUpgradeFile(request);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG, uploadRequest.getFile().getFileName());
+        } catch (Exception e) {
+            if (e instanceof BusinessException) {
+                BusinessException ex = (BusinessException) e;
+                // 上传文件处理失败
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG, ex.getI18nMessage());
+            } else {
+                throw e;
+            }
+        }
         return DefaultWebResponse.Builder.success();
     }
 
@@ -88,43 +99,78 @@ public class TerminalSystemUpgradeController {
      * 添加终端系统升级任务
      * 
      * @param request 添加升级请求
+     * @param optLogRecorder 日志记录
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
     @RequestMapping("create")
-    @OptLog(msgKey = BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_SUCCESS_LOG,
-    msgArgs = {"request.userName", "request.terminalId"})
-    @OptLog(msgKey = BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG,
-    msgArgs = {"request.userName", "request.terminalId", "response.message"}, matchStatus = Status.ERROR)
-    public DefaultWebResponse create(CreateTerminalSystemUpgradeRequest request) throws BusinessException {
+    public DefaultWebResponse create(CreateTerminalSystemUpgradeRequest request, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         Assert.notNull(request, "CreateTerminalSystemUpgradeRequest can not be null");
 
-        CbbBatchAddTerminalSystemUpgradeTaskRequest batchAddRequest = new CbbBatchAddTerminalSystemUpgradeTaskRequest();
-        batchAddRequest.setTerminalIdArr(request.getTerminalIdArr());
-        batchAddRequest.setTerminalType(request.getTerminalType());
-        DefaultResponse resp = cbbTerminalUpgradeAPI.batchAddSystemUpgradeTask(batchAddRequest);
+        CbbTerminalTypeEnums terminalType = request.getTerminalType();
+        for(String terminalId : request.getTerminalIdArr()) {
+            addUpgradeTaskAddOptLog(terminalId, terminalType, optLogRecorder);
+        }
 
-        return DefaultWebResponse.Builder.success(resp);
+        return DefaultWebResponse.Builder.success();
     }
 
+
+    private void addUpgradeTaskAddOptLog(String terminalId, CbbTerminalTypeEnums terminalType, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+        CbbAddTerminalSystemUpgradeTaskRequest addRequest = new CbbAddTerminalSystemUpgradeTaskRequest();
+        addRequest.setTerminalId(terminalId);
+        addRequest.setTerminalType(terminalType);
+        try {
+            cbbTerminalUpgradeAPI.addSystemUpgradeTask(addRequest);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_SUCCESS_LOG, terminalId);
+        } catch (Exception e) {
+            if (e instanceof BusinessException) {
+                BusinessException ex = (BusinessException) e;
+                // 添加升级失败
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG, ex.getI18nMessage());
+            } else {
+                throw e;
+            }
+        }
+        
+    }
 
     /**
      * 
      * 移除系统升级
      * 
      * @param request 移除系统升级请求
+     * @param optLogRecorder 日志记录
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
     @RequestMapping("delete")
-    public DefaultWebResponse delete(DeleteTerminalSystemUpgradeRequest request) throws BusinessException {
+    public DefaultWebResponse delete(DeleteTerminalSystemUpgradeRequest request, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         Assert.notNull(request, "DeleteTerminalSystemUpgradeRequest can not be null");
 
-        CbbRemoveTerminalSystemUpgradeTaskRequest removeRequest = new CbbRemoveTerminalSystemUpgradeTaskRequest();
-        removeRequest.setTerminalId(request.getTerminalId());
-        DefaultResponse resp = cbbTerminalUpgradeAPI.removeTerminalSystemUpgradeTask(removeRequest);
+        LOGGER.warn("start remove system upgrade task...");
+        for(String terminalId : request.getIdArr()) {
+            deleteAddOptLog(terminalId, optLogRecorder);
+        }
+        LOGGER.warn("finish remove system upgrade task");
+        return DefaultWebResponse.Builder.success();
+    }
 
-        return DefaultWebResponse.Builder.success(resp);
+    private void deleteAddOptLog(String terminalId, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+        CbbRemoveTerminalSystemUpgradeTaskRequest removeRequest = new CbbRemoveTerminalSystemUpgradeTaskRequest();
+        removeRequest.setTerminalId(terminalId);
+        try {
+            cbbTerminalUpgradeAPI.removeTerminalSystemUpgradeTask(removeRequest);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_SUCCESS_LOG, terminalId);
+        } catch (Exception e) {
+            if (e instanceof BusinessException) {
+                BusinessException ex = (BusinessException) e;
+                // 批量删除升级失败
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG, ex.getI18nMessage());
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**

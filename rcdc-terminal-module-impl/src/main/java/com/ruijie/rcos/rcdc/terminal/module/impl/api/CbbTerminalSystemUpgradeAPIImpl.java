@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.core.OrderComparator;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.FileCopyUtils;
@@ -210,17 +211,17 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
 
-        //TODO FIXME 获取镜像名称
+        // TODO FIXME 获取镜像名称
         String imgName = "";
         String imgPath = Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_ISO_IMG_FILE_PATH;
         File file = new File(imgPath);
-        if(file.isDirectory()) {
+        if (file.isDirectory()) {
             String[] fileNames = file.list();
-            if(fileNames != null) {
+            if (fileNames != null) {
                 imgName = fileNames[0];
             }
         }
-        
+
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
         versionInfo.setPackageType(CbbTerminalTypeEnums
                 .valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE)));
@@ -232,7 +233,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     @Override
     public CbbBaseListResponse<CbbTerminalSystemUpgradePackageInfoDTO> listSystemUpgradePackage(
             CbbTerminalSystemUpgradePackageListRequest request) throws BusinessException {
-        Assert.notNull(request, "SystemUpgradePackageListRequest can not be null");
+        Assert.notNull(request, "request can not be null");
+
         List<TerminalSystemUpgradePackageEntity> packages =
                 terminalSystemUpgradePackageDAO.findByPackageType(request.getTerminalType());
         if (CollectionUtils.isEmpty(packages)) {
@@ -251,52 +253,26 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultResponse batchAddSystemUpgradeTask(CbbBatchAddTerminalSystemUpgradeTaskRequest request)
-            throws BusinessException {
-
-        Assert.notNull(request, "BatchAddSystemUpgradeTaskRequest can not be null");
-
-        TerminalSystemUpgradePackageEntity upgradePackage =
-                terminalSystemUpgradePackageDAO.findFirstByPackageType(request.getTerminalType());
-        if (upgradePackage == null) {
-            LOGGER.debug("query terminal system upgrade package by terminal type [{}] is null",
-                    request.getTerminalType());
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
-        }
-
-        List<String> terminalIdList = new ArrayList<>(Arrays.asList(request.getTerminalIdArr()));
-        // 判断添加数量是否超过限制
-        if (systemUpgradeTaskManager.checkMaxAddNum(terminalIdList.size())) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_NUM_EXCEED_LIMIT);
-        }
-        List<TerminalEntity> terminals = basicInfoDAO.findByTerminalIdIn(terminalIdList);
-        if (CollectionUtils.isEmpty(terminals) || terminals.size() < terminalIdList.size()) {
-            LOGGER.debug("terminal can not found by terminal ids {}", terminalIdList.toString());
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
-        }
-
-        for (TerminalEntity terminal : terminals) {
-            addTask(upgradePackage, terminal);
-        }
-
-        return DefaultResponse.Builder.success();
-    }
-
-    @Override
     public DefaultResponse addSystemUpgradeTask(CbbAddTerminalSystemUpgradeTaskRequest request)
             throws BusinessException {
-        Assert.notNull(request, "AddSystemUpgradeTaskRequest can not be null");
+        Assert.notNull(request, "request can not be null");
 
         TerminalSystemUpgradePackageEntity upgradePackage =
                 terminalSystemUpgradePackageDAO.findFirstByPackageType(request.getTerminalType());
         if (upgradePackage == null) {
-            LOGGER.debug("terminal type is [{}], terminal system upgrade package not found", request.getTerminalType());
+            LOGGER.error("terminal type is [{}], terminal system upgrade package not found", request.getTerminalType());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
+        }
+
+        // 判断添加数量是否超过限制
+        if (systemUpgradeTaskManager.checkMaxAddNum()) {
+            LOGGER.error("terminal system upgrade has exceed limit");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_NUM_EXCEED_LIMIT);
         }
 
         TerminalEntity terminal = basicInfoDAO.findFirstByTerminalId(request.getTerminalId());
         if (terminal == null) {
-            LOGGER.debug("terminal id is [{}], terminal not found", request.getTerminalId());
+            LOGGER.error("terminal id is [{}], terminal not found", request.getTerminalId());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
 
@@ -319,9 +295,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             return;
         }
 
-        // TODO FIXME 终端类型有差异  添加进任务队列中
-        SystemUpgradeTask upgradeTask =
-                systemUpgradeTaskManager.addTask(terminal.getTerminalId(), null);
+        // TODO FIXME 终端类型有差异 添加进任务队列中
+        SystemUpgradeTask upgradeTask = systemUpgradeTaskManager.addTask(terminal.getTerminalId(), null);
 
         // 开启NFS服务
         NfsServiceUtil.startService();
@@ -353,7 +328,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     @Override
     public DefaultResponse removeTerminalSystemUpgradeTask(CbbRemoveTerminalSystemUpgradeTaskRequest request)
             throws BusinessException {
-        Assert.notNull(request, "RemoveSystemUpgradeTaskRequest can not be null");
+        Assert.notNull(request, "request can not be null");
 
         SystemUpgradeTask task = systemUpgradeTaskManager.getTaskByTerminalId(request.getTerminalId());
         if (task == null) {

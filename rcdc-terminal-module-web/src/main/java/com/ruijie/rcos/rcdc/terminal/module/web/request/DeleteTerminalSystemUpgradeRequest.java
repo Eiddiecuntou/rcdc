@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.request;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import com.ruijie.rcos.sk.base.annotation.NotEmpty;
 import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
 /**
@@ -18,17 +17,15 @@ public class DeleteTerminalSystemUpgradeRequest implements WebRequest {
     /**
      * 终端id
      */
-    @NotNull
-    @Size(min = 1)
-    private String terminalId;
-    
+    @NotEmpty
+    private String[] idArr;
 
-    public String getTerminalId() {
-        return terminalId;
+    public String[] getIdArr() {
+        return idArr;
     }
 
-    public void setTerminalId(String terminalId) {
-        this.terminalId = terminalId;
+    public void setIdArr(String[] idArr) {
+        this.idArr = idArr;
     }
 
 }
