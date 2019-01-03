@@ -38,13 +38,13 @@ public class TerminalBusinessInitializingBean implements InitializingBean {
      */
     private void initTerminalState() {
 
-        List<TerminalEntity> list = terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);
-        if (CollectionUtils.isEmpty(list)) {
+        List<TerminalEntity> terminalList = terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);
+        if (CollectionUtils.isEmpty(terminalList)) {
             LOGGER.debug("没有需要初始化的终端状态");
             return;
         }
-        LOGGER.debug("存在异常关机导致终端状态不一致的情况，总共有{}台终端状态需要初始化", list.size());
-        list.forEach(item ->
+        LOGGER.debug("存在异常关机导致终端状态不一致的情况，总共有{}台终端状态需要初始化", terminalList.size());
+        terminalList.forEach(item ->
                 terminalBasicInfoDAO.modifyTerminalState(item.getTerminalId(), item.getVersion(), CbbTerminalStateEnums.OFFLINE)
         );
     }
