@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
@@ -82,7 +82,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
         Date now = new Date();
         TerminalEntity entity = new TerminalEntity();
         entity.setTerminalId(terminalId);
-        entity.setName(name);
+        entity.setTerminalName(name);
         entity.setGetIpMode(CbbGetNetworkModeEnums.AUTO);
         entity.setCreateTime(now);
         new Expectations() {{
@@ -92,9 +92,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId(terminalId);
         try {
-            CbbTerminalBasicInfoDTO dto = terminalBasicInfoAPI.findBasicInfoByTerminalId(request);
+            CbbTerminalBasicInfoResponse dto = terminalBasicInfoAPI.findBasicInfoByTerminalId(request);
             assertEquals(dto.getTerminalId(), terminalId);
-            assertEquals(dto.getName(), name);
+            assertEquals(dto.getTerminalName(), name);
             assertEquals(dto.getCreateTime(), now);
             assertEquals(dto.getGetIpMode(), CbbGetNetworkModeEnums.AUTO);
         } catch (BusinessException e) {

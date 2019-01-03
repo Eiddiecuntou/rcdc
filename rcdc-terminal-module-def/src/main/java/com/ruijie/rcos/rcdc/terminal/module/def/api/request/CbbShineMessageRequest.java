@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
@@ -21,6 +22,7 @@ public class CbbShineMessageRequest<T> implements Request {
     @NotBlank
     protected String terminalId;
 
+    @Nullable
     protected T content;
 
 

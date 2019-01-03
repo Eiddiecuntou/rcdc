@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
@@ -56,6 +57,9 @@ public class ConnectEventHandlerTest {
 
     @Injectable
     private TerminalDetectService detectService;
+
+    @Injectable
+    private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
 
 
     /**
@@ -117,7 +121,7 @@ public class ConnectEventHandlerTest {
         };
 
         try {
-            String action = ReceiveTerminalEvent.NOTICE_UPLOAD_LOG_FINISH;
+            String action = ReceiveTerminalEvent.COLLECT_TERMINAL_LOG_FINISH;
             ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
             basicInfo.setTerminalId(terminalId);
             String data = JSON.toJSONString(basicInfo);

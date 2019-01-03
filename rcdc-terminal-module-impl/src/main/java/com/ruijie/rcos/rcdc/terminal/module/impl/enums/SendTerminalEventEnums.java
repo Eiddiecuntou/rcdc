@@ -13,17 +13,17 @@ public enum SendTerminalEventEnums {
     /**
      * 关闭终端
      */
-    SHUTDOWN_TERMINAL("shutdown"),
+    SHUTDOWN_TERMINAL("shutdown_terminal"),
 
     /**
      * 重启终端
      */
-    RESTART_TERMINAL("restart"),
+    RESTART_TERMINAL("restart_terminal"),
 
     /**
      * 修改终端管理员密码
      */
-    CHANGE_TERMINAL_PASSWORD("change_password"),
+    CHANGE_TERMINAL_PASSWORD("change_terminal_password"),
 
     /**
      * 终端检测
@@ -33,7 +33,7 @@ public enum SendTerminalEventEnums {
     /**
      * 收集终端日志
      */
-    COLLECT_TERMINAL_LOG("collect_log"),
+    COLLECT_TERMINAL_LOG("collect_terminal_log"),
 
     /**
      * 修改终端名称
