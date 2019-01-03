@@ -23,7 +23,7 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
 
     private UUID id;
 
-    private String name;
+    private String terminalName;
 
     private String terminalId;
 
@@ -90,12 +90,12 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTerminalName() {
+        return terminalName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTerminalName(String terminalName) {
+        this.terminalName = terminalName;
     }
 
     public String getTerminalId() {

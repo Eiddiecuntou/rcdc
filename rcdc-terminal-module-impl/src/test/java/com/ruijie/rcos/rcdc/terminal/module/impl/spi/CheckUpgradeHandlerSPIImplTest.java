@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -37,6 +38,9 @@ public class CheckUpgradeHandlerSPIImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
+
+    @Injectable
+    private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
 
     @Test
     public void testDispatchUpdateTerminalBasicInfo() {
@@ -109,7 +113,7 @@ public class CheckUpgradeHandlerSPIImplTest {
     private String generateJson() {
         ShineTerminalBasicInfo info = new ShineTerminalBasicInfo();
         info.setTerminalId("123");
-        info.setName("t-box2");
+        info.setTerminalName("t-box2");
         info.setCpuMode("intel5");
         return JSON.toJSONString(info);
     }

@@ -94,7 +94,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
         try {
             CbbTerminalBasicInfoResponse dto = terminalBasicInfoAPI.findBasicInfoByTerminalId(request);
             assertEquals(dto.getTerminalId(), terminalId);
-            assertEquals(dto.getName(), name);
+            assertEquals(dto.getTerminalName(), name);
             assertEquals(dto.getCreateTime(), now);
             assertEquals(dto.getGetIpMode(), CbbGetNetworkModeEnums.AUTO);
         } catch (BusinessException e) {
