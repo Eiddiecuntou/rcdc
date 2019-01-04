@@ -4,62 +4,47 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.quartz.Quartz;
+import com.ruijie.rcos.sk.base.quartz.QuartzTask;
+import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
 
 /**
  * 
- * Description: 定时同步终端系统升级任务状态
+ * Description: 系统升级状态同步定时器
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2018年11月24日
+ * Create Time: 2019年1月3日
  * 
  * @author nt
  */
-@Service
-public class TerminalSystemUpgradeTaskQuartz {
+@GlobalUniqueBean("upgradeStateSyncQuartz")
+@Quartz(cron = "0/10 * *  * * ?")
+public class SystemUpgradeStateSyncQuartz implements QuartzTask {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeStateSyncQuartz.class);
 
-    /**
-     * logger
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeTaskQuartz.class);
-
-    /**
-     * 终端系统升级任务管理器
-     */
     @Autowired
     private SystemUpgradeTaskManager taskManager;
 
-    /**
-     * 终端系统升级服务
-     */
     @Autowired
     private TerminalSystemUpgradeService terminalSystemUpgradeService;
 
-    /**
-     * 终端系统升级包DAO
-     */
-    @Autowired
-    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+    @Override
+    public void execute() throws Exception {
+        LOGGER.debug("start to synchronize system upgrade state...");
+        syncState();
+        LOGGER.debug("finish synchronize system upgrade state");
+    }
 
-    /**
-     * 
-     * 每10秒与状态文件同步一次状态
-     */
-    @Scheduled(cron = "0/10 * *  * * ?")
-    public void stateSynchronize() {
-        // 获取缓存中的升级中的任务
+    private void syncState() {
+     // 获取缓存中的升级中的任务
         List<SystemUpgradeTask> upgradingTaskList = taskManager.getUpgradingTask();
         // 获取文件系统中的升级信息
         List<TerminalSystemUpgradeInfo> systemUpgradeInfoList =
@@ -98,46 +83,8 @@ public class TerminalSystemUpgradeTaskQuartz {
                 synchronizeStateWithMatchUpgradeInfo(task, matchInfo);
             }
         }
-
     }
-
-    /**
-     * 每15秒检查一次队列中升级中数量是否有空闲，如果有将等待中的任务加入升级中
-     */
-    @Scheduled(cron = "0/15 * *  * * ?")
-    public void dealWaitingTask() {
-        List<SystemUpgradeTask> startTaskList = taskManager.startWaitTask();
-        if (CollectionUtils.isEmpty(startTaskList)) {
-            LOGGER.debug("no task to be started");
-            return;
-        }
-
-        // 发送升级指令
-        for (SystemUpgradeTask task : startTaskList) {
-            // 下发系统刷机指令
-            TerminalSystemUpgradePackageEntity upgradePackage =
-                    termianlSystemUpgradePackageDAO.findFirstByPackageType(task.getTerminalType());
-            if (upgradePackage == null) {
-                LOGGER.info("终端类型[" + task.getTerminalType() + "]升级包不存在");
-                taskManager.modifyTaskState(task.getTerminalId(), CbbSystemUpgradeStateEnums.WAIT);
-                continue;
-            }
-            TerminalSystemUpgradeMsg upgradeMsg =
-                    new TerminalSystemUpgradeMsg(upgradePackage.getImgName(), upgradePackage.getPackageVersion());
-            try {
-                LOGGER.debug("终端[" + task.getTerminalId() + "]开始发送升级指令");
-                terminalSystemUpgradeService.systemUpgrade(task.getTerminalId(), upgradeMsg);
-                LOGGER.debug("终端[" + task.getTerminalId() + "]发送升级指令成功");
-                task.setIsSend(true);
-            } catch (Exception e) {
-                LOGGER.info("终端[" + task.getTerminalId() + "]升级指令发送失败");
-                // 系统刷机指令发送失败，将任务重置为等待中
-                taskManager.modifyTaskState(task.getTerminalId(), CbbSystemUpgradeStateEnums.WAIT);
-            }
-        }
-    }
-
-
+    
     private void synchronizeStateWithMatchUpgradeInfo(SystemUpgradeTask task, TerminalSystemUpgradeInfo matchInfo) {
         // TODO FIXME 根据终端升级信息状态同步,还需同数据库中的终端状态进行比对
         task.setState(matchInfo.getState());
@@ -146,7 +93,8 @@ public class TerminalSystemUpgradeTaskQuartz {
 
     private void synchronizeStateWithoutMatchUpgradeInfo(SystemUpgradeTask task) {
         // TODO FIXME 无终端升级信息时状态同步,判断是否第一次心跳超时,还需同数据库中的终端状态进行比对
-
+        long lastActiveTime = task.getTimeStamp();
+        
     }
-}
 
+}

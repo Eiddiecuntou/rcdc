@@ -67,7 +67,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
                 termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (CbbTerminalTypeEnums) any,
@@ -81,7 +81,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Verifications() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
                 times = 1;
 
                 termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (CbbTerminalTypeEnums) any,
@@ -122,7 +122,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
                 termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (CbbTerminalTypeEnums) any,
@@ -152,7 +152,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = null;
             }
         };
@@ -180,7 +180,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = null;
 
                 termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
@@ -192,7 +192,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Verifications() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
                 times = 1;
 
                 termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
@@ -208,14 +208,14 @@ public class TerminalSystemUpgradeServiceImplTest {
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testAddTerminalUpgradePackagepackageIsExist() throws BusinessException {
+    public void testAddTerminalUpgradePackagePackageIsExist() throws BusinessException {
         // 构造测试数据
         TerminalUpgradeVersionFileInfo versionInfo = buildUpgradePackageVersion();
         TerminalSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
             }
         };

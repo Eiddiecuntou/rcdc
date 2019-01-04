@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
@@ -15,18 +16,46 @@ import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
  */
 public class CbbTerminalUpgradePackageUploadRequest implements Request {
 
-    /**
-     * 升级包上传信息
-     */
-    @NotNull
-    private ChunkUploadFile file;
-
-    public ChunkUploadFile getFile() {
-        return file;
+    @NotBlank
+    private String filePath;
+    
+    @NotBlank
+    private String fileName;
+    
+    @NotBlank
+    private String fileMD5;
+    
+    public CbbTerminalUpgradePackageUploadRequest() {
     }
 
-    public void setFile(ChunkUploadFile file) {
-        this.file = file;
+    public CbbTerminalUpgradePackageUploadRequest(String filePath, String fileName, String fileMD5) {
+        this.filePath = filePath;
+        this.fileName = fileName;
+        this.fileMD5 = fileMD5;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileMD5() {
+        return fileMD5;
+    }
+
+    public void setFileMD5(String fileMD5) {
+        this.fileMD5 = fileMD5;
     }
     
 }

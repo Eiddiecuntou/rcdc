@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
@@ -27,10 +28,9 @@ public interface TerminalSystemUpgradePackageDAO
      * @param packageType 升级包类型
      * @return 返回系统升级包信息
      */
-    TerminalSystemUpgradePackageEntity findFirstByPackageType(
-            CbbTerminalTypeEnums packageType);
+    TerminalSystemUpgradePackageEntity findFirstByPackageType(CbbTerminalTypeEnums packageType);
 
-    
+
     /**
      * 
      * 获取系统升级包列表信息
@@ -38,10 +38,9 @@ public interface TerminalSystemUpgradePackageDAO
      * @param packageType 升级包类型
      * @return 返回系统升级包信息
      */
-    List<TerminalSystemUpgradePackageEntity> findByPackageType(
-            CbbTerminalTypeEnums packageType);
+    List<TerminalSystemUpgradePackageEntity> findByPackageType(CbbTerminalTypeEnums packageType);
 
-    
+
     /**
      * 
      * 修改升级包信息
@@ -55,7 +54,8 @@ public interface TerminalSystemUpgradePackageDAO
     @Transactional
     @Query("update TerminalSystemUpgradePackageEntity set packageVersion=:packageVersion "
             + ",imgName=:imgName,version = version + 1 where packageType=:packageType and version=:version")
-    int modifyTerminalUpgradePackageVersion(String imgName, CbbTerminalTypeEnums packageType, String packageVersion,
-            int version);
+    int modifyTerminalUpgradePackageVersion(@Param("imgName") String imgName,
+            @Param("packageType") CbbTerminalTypeEnums packageType, @Param("packageVersion") String packageVersion,
+            @Param("version") int version);
 
 }

@@ -86,10 +86,9 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     @Override
     public DefaultResponse uploadUpgradeFile(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        ChunkUploadFile file = request.getFile();
-        final String fileName = file.getFileName();
-        final String filePath = file.getFilePath();
-        final String fileMD5 = file.getFileMD5();
+        final String fileName = request.getFileName();
+        final String filePath = request.getFilePath();
+        final String fileMD5 = request.getFileMD5();
 
         // 判断是否有正在升级中的任务
         if (systemUpgradeTaskManager.countUpgradingNum() > 0) {

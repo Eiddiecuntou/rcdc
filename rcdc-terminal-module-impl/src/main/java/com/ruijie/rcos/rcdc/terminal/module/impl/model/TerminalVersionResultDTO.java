@@ -1,33 +1,30 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
+package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
  * 
- * Description: 请求终端版本响应
+ * Description: 终端组件升级请求结果信息
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2018年12月14日
+ * Create Time: 2019年1月3日
  * 
  * @author nt
  */
-public class CbbTerminalVersionResponse extends DefaultResponse {
-    
+public class TerminalVersionResultDTO {
+
     private Integer result;
 
     private CbbTerminalComponentUpdateListDTO updatelist;
     
-    public CbbTerminalVersionResponse() {
-        super();
+    public TerminalVersionResultDTO() {
     }
 
-    public CbbTerminalVersionResponse(Integer result, CbbTerminalComponentUpdateListDTO updatelist) {
-        super();
+    public TerminalVersionResultDTO(Integer result, CbbTerminalComponentUpdateListDTO updatelist) {
         this.result = result;
         this.updatelist = updatelist;
     }
-
+    
     public Integer getResult() {
         return result;
     }
@@ -43,5 +40,4 @@ public class CbbTerminalVersionResponse extends DefaultResponse {
     public void setUpdatelist(CbbTerminalComponentUpdateListDTO updatelist) {
         this.updatelist = updatelist;
     }
-    
 }

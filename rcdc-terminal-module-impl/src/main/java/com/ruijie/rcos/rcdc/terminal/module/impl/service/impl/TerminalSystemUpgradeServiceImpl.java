@@ -93,7 +93,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
 
     @Override
     public void systemUpgrade(String terminalId, TerminalSystemUpgradeMsg upgradeMsg) throws BusinessException {
-        Assert.hasLength(terminalId, "terminalId 不能为空");
+        Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(upgradeMsg, "systemUpgradeMsg 不能为空");
 
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);

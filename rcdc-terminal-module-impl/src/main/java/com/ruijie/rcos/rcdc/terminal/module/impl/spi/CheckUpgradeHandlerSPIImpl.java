@@ -1,23 +1,28 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+
 import java.util.Date;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalComponentUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalVersionRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalVersionResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
 /**
@@ -38,7 +43,10 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private TerminalBasicInfoDAO basicInfoDAO;
     
     @Autowired
-    private CbbTerminalComponentUpgradeAPI componentUpgradeAPI;
+    private TerminalComponentUpgradeService componentUpgradeService;
+
+    @Autowired
+    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerSPIImpl.class);
 
@@ -50,11 +58,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         //保存终端基本信息
         saveBasicInfo(request);
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        String reqData = (String) request.getData();
-        CbbTerminalVersionRequest versionReq = JSON.parseObject(reqData, CbbTerminalVersionRequest.class);
-        CbbTerminalVersionResponse versionResp = componentUpgradeAPI.getVersion(versionReq);
         
-        CbbResponseShineMessage cbbShineMessageRequest = buildMessageResponse(request, versionResp);
+        TerminalVersionResultDTO versionResult = getCheckVersionResult(request);
+        CbbResponseShineMessage cbbShineMessageRequest = buildMessageResponse(request, versionResult);
         try {
             messageHandlerAPI.response(cbbShineMessageRequest);
         } catch (Exception e) {
@@ -62,11 +68,22 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         }
     }
     
+    private TerminalVersionResultDTO getCheckVersionResult(CbbDispatcherRequest request) {
+        ShineTerminalBasicInfo basicInfo = convertJsondata(request);
+        CbbTerminalTypeEnums terminalType = convertTerminalType(basicInfo.getTerminalType());
+        return componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(), terminalType);
+    }
+    
+    private CbbTerminalTypeEnums convertTerminalType(TerminalTypeEnums terminalType) {
+        // TODO 终端类型转换
+        return null;
+    }
+
     private CbbResponseShineMessage buildMessageResponse(CbbDispatcherRequest request,
-            CbbTerminalVersionResponse versionResp) {
+            TerminalVersionResultDTO versionResult) {
         CbbResponseShineMessage cbbShineMessageRequest = CbbResponseShineMessage.create(request.getDispatcherKey(), request.getTerminalId(), request.getRequestId());
         cbbShineMessageRequest.setCode(0);
-        cbbShineMessageRequest.setContent(versionResp);
+        cbbShineMessageRequest.setContent(versionResult);
         return cbbShineMessageRequest;
     }
 
@@ -81,11 +98,19 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             basicInfoEntity = new TerminalEntity();
             basicInfoEntity.setCreateTime(now);
         }
-        String jsonData = String.valueOf(request.getData());
-        ShineTerminalBasicInfo shineTerminalBasicInfo = JSON.parseObject(jsonData, ShineTerminalBasicInfo.class);
+        ShineTerminalBasicInfo shineTerminalBasicInfo = convertJsondata(request);
         BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity);
         basicInfoEntity.setLastOnlineTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         basicInfoDAO.save(basicInfoEntity);
+        //通知其他组件终端为在线状态
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.ONLINE, request.getTerminalId());
+        terminalEventNoticeSPI.notify(noticeRequest);
+    }
+
+    private ShineTerminalBasicInfo convertJsondata(CbbDispatcherRequest request) {
+        String jsonData = String.valueOf(request.getData());
+        ShineTerminalBasicInfo shineTerminalBasicInfo = JSON.parseObject(jsonData, ShineTerminalBasicInfo.class);
+        return shineTerminalBasicInfo;
     }
 }

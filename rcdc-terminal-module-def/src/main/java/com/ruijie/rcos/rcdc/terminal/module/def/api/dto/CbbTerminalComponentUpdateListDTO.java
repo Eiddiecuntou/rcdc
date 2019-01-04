@@ -19,7 +19,7 @@ public class CbbTerminalComponentUpdateListDTO {
     
     private Integer componentSize;
     
-    private String minimumVersion;
+    private String limitVersion;
     
     private List<CbbTerminalComponentVersionInfoDTO> componentList;
     
@@ -64,12 +64,12 @@ public class CbbTerminalComponentUpdateListDTO {
         this.baseVersion = baseVersion;
     }
 
-    public String getMinimumVersion() {
-        return minimumVersion;
+    public String getLimitVersion() {
+        return limitVersion;
     }
 
-    public void setMinimumVersion(String minimumVersion) {
-        this.minimumVersion = minimumVersion;
+    public void setLimitVersion(String limitVersion) {
+        this.limitVersion = limitVersion;
     }
-    
+
 }

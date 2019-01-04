@@ -2,8 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
@@ -46,6 +49,9 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
 
     @Autowired
     private CollectLogCacheManager collectLogCacheManager;
+
+    @Autowired
+    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
     /**
      * 接收报文处理线程池,分配50个线程数
@@ -99,7 +105,11 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         request.setRequestId(sender.getResponseId());
         request.setTerminalId(terminalId);
         request.setData(message.getData());
-        cbbDispatcherHandlerSPI.dispatch(request);
+        try {
+            cbbDispatcherHandlerSPI.dispatch(request);
+        } catch (Exception e) {
+            LOGGER.error("消息分发执行异常;action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + String.valueOf(message.getData()), e);
+        }
     }
 
     /**
@@ -138,6 +148,8 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         LOGGER.debug("terminalId:[{}]连接关闭", terminalId);
         basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
         collectLogCacheManager.removeCache(terminalId);
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.OFFLINE, terminalId);
+        terminalEventNoticeSPI.notify(noticeRequest);
     }
 
     @Override

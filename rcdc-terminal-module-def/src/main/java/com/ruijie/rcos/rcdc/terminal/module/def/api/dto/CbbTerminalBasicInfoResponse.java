@@ -4,6 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,11 +19,11 @@ import java.util.UUID;
  *
  * @author Jarman
  */
-public class CbbTerminalBasicInfoDTO {
+public class CbbTerminalBasicInfoResponse extends DefaultResponse {
 
     private UUID id;
 
-    private String name;
+    private String terminalName;
 
     private String terminalId;
 
@@ -89,12 +90,12 @@ public class CbbTerminalBasicInfoDTO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTerminalName() {
+        return terminalName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTerminalName(String terminalName) {
+        this.terminalName = terminalName;
     }
 
     public String getTerminalId() {

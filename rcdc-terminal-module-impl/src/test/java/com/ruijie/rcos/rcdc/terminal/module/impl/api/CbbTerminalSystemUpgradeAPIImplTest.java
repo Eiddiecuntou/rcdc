@@ -5,15 +5,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.FileCopyUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbBatchAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -29,7 +26,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response;
-import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
@@ -74,13 +70,11 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testUploadUpgradeFile() throws BusinessException {
 
-        // 将文件挂载炒作全部mock
+        // 将文件挂载操作全部mock
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        ChunkUploadFile file = new ChunkUploadFile();
-        file.setFileMD5("md5");
-        file.setFileName("aaa.iso");
-        file.setFilePath("/usr/data");
-        request.setFile(file);
+        request.setFileMD5("md5");
+        request.setFileName("aaa.iso");
+        request.setFilePath("/usr/data");
 
         new Expectations() {
             {
@@ -133,11 +127,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         // 将文件挂载炒作全部mock
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        ChunkUploadFile file = new ChunkUploadFile();
-        file.setFileMD5("md5");
-        file.setFileName("aaa.ios");
-        file.setFilePath("/usr/data");
-        request.setFile(file);
+        request.setFileMD5("md5");
+        request.setFileName("aaa.ios");
+        request.setFilePath("/usr/data");
 
         new Expectations() {
             {
@@ -165,11 +157,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         // 将文件挂载炒作全部mock
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        ChunkUploadFile file = new ChunkUploadFile();
-        file.setFileMD5("md5");
-        file.setFileName("aaa.ios");
-        file.setFilePath("/usr/data");
-        request.setFile(file);
+        request.setFileMD5("md5");
+        request.setFileName("aaa.ios");
+        request.setFilePath("/usr/data");
 
         try {
             cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(request);
@@ -190,11 +180,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testUploadUpgradeFileMD5CheckFail() throws BusinessException {
 
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        final ChunkUploadFile file = new ChunkUploadFile();
-        file.setFileMD5("md5");
-        file.setFileName("aaa.iso");
-        file.setFilePath("/usr/data");
-        request.setFile(file);
+        request.setFileMD5("md5");
+        request.setFileName("aaa.iso");
+        request.setFilePath("/usr/data");
 
         new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
             @Mock
@@ -221,11 +209,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testUploadUpgradeFileFileTypeIsNull() throws BusinessException {
 
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        final ChunkUploadFile file = new ChunkUploadFile();
-        file.setFileMD5("md5");
-        file.setFileName("aaa");
-        file.setFilePath("/usr/data");
-        request.setFile(file);
+        request.setFileMD5("md5");
+        request.setFileName("aaa");
+        request.setFilePath("/usr/data");
 
         try {
             cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(request);
@@ -244,7 +230,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         new Expectations() {
             {
-                termianlSystemUpgradePackageDAO.findAll((Specification) any);
+                termianlSystemUpgradePackageDAO.findByPackageType((CbbTerminalTypeEnums) any);
                 result = packageList;
             }
         };
@@ -253,7 +239,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         new Verifications() {
             {
-                termianlSystemUpgradePackageDAO.findAll((Specification) any);
+                termianlSystemUpgradePackageDAO.findByPackageType((CbbTerminalTypeEnums) any);
                 times = 1;
             }
         };
@@ -267,7 +253,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         new Expectations() {
             {
-                termianlSystemUpgradePackageDAO.findAll((Specification) any);
+                termianlSystemUpgradePackageDAO.findByPackageType((CbbTerminalTypeEnums) any);
                 result = Collections.emptyList();
             }
         };
@@ -276,7 +262,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         new Verifications() {
             {
-                termianlSystemUpgradePackageDAO.findAll((Specification) any);
+                termianlSystemUpgradePackageDAO.findByPackageType((CbbTerminalTypeEnums) any);
                 times = 1;
             }
         };
@@ -293,7 +279,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = entity;
                 
                 basicInfoDAO.findFirstByTerminalId(anyString);

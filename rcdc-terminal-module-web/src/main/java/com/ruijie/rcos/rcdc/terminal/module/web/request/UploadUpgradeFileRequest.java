@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotNull;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
+import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
 /**
  *
@@ -13,7 +13,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
  * 
  * @author nt
  */
-public class UploadUpgradeFileRequest implements Request {
+public class UploadUpgradeFileRequest implements WebRequest {
     
     /**
      * 上传的文件信息

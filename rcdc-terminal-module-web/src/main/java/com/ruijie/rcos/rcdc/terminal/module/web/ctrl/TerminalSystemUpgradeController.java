@@ -24,6 +24,7 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.validation.EnableCustomValidate;
 import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
+import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
 
 /**
@@ -39,7 +40,7 @@ import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
 @RequestMapping("/terminal/system/upgrade")
 @EnableCustomValidate(enable = false)
 public class TerminalSystemUpgradeController {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeController.class);
 
     @Autowired
@@ -54,19 +55,22 @@ public class TerminalSystemUpgradeController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping("/package/upload")
-    public DefaultWebResponse uploadPackage(UploadUpgradeFileRequest uploadRequest, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
-        Assert.notNull(uploadRequest, "uploadRequest 不能为空");
+    public DefaultWebResponse uploadPackage(ChunkUploadFile file, ProgrammaticOptLogRecorder optLogRecorder)
+            throws BusinessException {
+        Assert.notNull(file, "file 不能为空");
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFile(uploadRequest.getFile());
+        CbbTerminalUpgradePackageUploadRequest request =
+                new CbbTerminalUpgradePackageUploadRequest(file.getFilePath(), file.getFileName(), file.getFileMD5());
         try {
             cbbTerminalUpgradeAPI.uploadUpgradeFile(request);
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG, uploadRequest.getFile().getFileName());
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
+                    file.getFileName());
         } catch (Exception e) {
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
                 // 上传文件处理失败
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG, ex.getI18nMessage());
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
+                        ex.getI18nMessage());
             } else {
                 throw e;
             }
@@ -104,11 +108,12 @@ public class TerminalSystemUpgradeController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping("create")
-    public DefaultWebResponse create(CreateTerminalSystemUpgradeRequest request, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+    public DefaultWebResponse create(CreateTerminalSystemUpgradeRequest request,
+            ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         Assert.notNull(request, "CreateTerminalSystemUpgradeRequest can not be null");
 
         CbbTerminalTypeEnums terminalType = request.getTerminalType();
-        for(String terminalId : request.getTerminalIdArr()) {
+        for (String terminalId : request.getTerminalIdArr()) {
             addUpgradeTaskAddOptLog(terminalId, terminalType, optLogRecorder);
         }
 
@@ -116,7 +121,8 @@ public class TerminalSystemUpgradeController {
     }
 
 
-    private void addUpgradeTaskAddOptLog(String terminalId, CbbTerminalTypeEnums terminalType, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+    private void addUpgradeTaskAddOptLog(String terminalId, CbbTerminalTypeEnums terminalType,
+            ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         CbbAddTerminalSystemUpgradeTaskRequest addRequest = new CbbAddTerminalSystemUpgradeTaskRequest();
         addRequest.setTerminalId(terminalId);
         addRequest.setTerminalType(terminalType);
@@ -127,12 +133,13 @@ public class TerminalSystemUpgradeController {
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
                 // 添加升级失败
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG, ex.getI18nMessage());
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG,
+                        ex.getI18nMessage());
             } else {
                 throw e;
             }
         }
-        
+
     }
 
     /**
@@ -145,18 +152,20 @@ public class TerminalSystemUpgradeController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping("delete")
-    public DefaultWebResponse delete(DeleteTerminalSystemUpgradeRequest request, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+    public DefaultWebResponse delete(DeleteTerminalSystemUpgradeRequest request,
+            ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         Assert.notNull(request, "DeleteTerminalSystemUpgradeRequest can not be null");
 
         LOGGER.warn("start remove system upgrade task...");
-        for(String terminalId : request.getIdArr()) {
+        for (String terminalId : request.getIdArr()) {
             deleteAddOptLog(terminalId, optLogRecorder);
         }
         LOGGER.warn("finish remove system upgrade task");
         return DefaultWebResponse.Builder.success();
     }
 
-    private void deleteAddOptLog(String terminalId, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+    private void deleteAddOptLog(String terminalId, ProgrammaticOptLogRecorder optLogRecorder)
+            throws BusinessException {
         CbbRemoveTerminalSystemUpgradeTaskRequest removeRequest = new CbbRemoveTerminalSystemUpgradeTaskRequest();
         removeRequest.setTerminalId(terminalId);
         try {
@@ -166,7 +175,8 @@ public class TerminalSystemUpgradeController {
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
                 // 批量删除升级失败
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG, ex.getI18nMessage());
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG,
+                        ex.getI18nMessage());
             } else {
                 throw e;
             }

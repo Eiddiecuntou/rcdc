@@ -32,7 +32,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      */
     @NoRollback
     DefaultResponse uploadUpgradeFile(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException;
-
+    
     /**
      * 
      * 获取系统升级包列表

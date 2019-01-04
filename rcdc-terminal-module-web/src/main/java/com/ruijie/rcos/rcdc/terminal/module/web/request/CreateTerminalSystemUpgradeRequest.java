@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.request;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.base.annotation.NotEmpty;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
@@ -19,7 +19,7 @@ public class CreateTerminalSystemUpgradeRequest implements WebRequest {
     /**
      * 终端id
      */
-    @NotBlank
+    @NotEmpty
     private String[] terminalIdArr;
 
     /**
