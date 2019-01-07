@@ -1,9 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import javax.persistence.*;
+
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,7 +31,7 @@ public class TerminalDetectionEntity {
      * ip冲突结果，0 不冲突，1 冲突，如果有冲突则ipConflictMac字段保存冲突的mac地址，否则为空值
      */
     private Integer ipConflict;
-    
+
     /**
      * ip冲突的mac地址，未冲突时为空值
      */
@@ -59,29 +61,29 @@ public class TerminalDetectionEntity {
      * 检测时间
      */
     private Date detectTime;
-    
+
     /**
      * 终端检测状态
      */
     @Enumerated(EnumType.STRING)
     private DetectStateEnums detectState;
-    
+
     /**
      * 检测失败原因
      */
     private String detectFailMsg;
-    
+
     @Version
     private int version;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "terminalId", referencedColumnName = "terminalId")
     private TerminalEntity terminal;
 
-    
+
     public void convertTo(CbbTerminalDetectDTO detectDTO) {
         Assert.notNull(detectDTO, "detect dto can not be null");
-        
+
         //TODO FIXME 状态信息需确认
         detectDTO.setTerminalId(terminalId);
         detectDTO.setAccessInternet(accessInternet);
@@ -90,12 +92,12 @@ public class TerminalDetectionEntity {
         detectDTO.setIpConflict(ipConflict);
         detectDTO.setPacketLossRate(packetLossRate);
         detectDTO.setIp(terminal.getIp());
-        detectDTO.setTerminalName(terminal.getName());
-        CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();;
+        detectDTO.setTerminalName(terminal.getTerminalName());
+        CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();
         state.setState(detectState.getName());
         state.setMessage(detectFailMsg);
     }
-    
+
     public UUID getId() {
         return id;
     }
@@ -175,7 +177,7 @@ public class TerminalDetectionEntity {
     public void setNetworkDelay(Double networkDelay) {
         this.networkDelay = networkDelay;
     }
-    
+
     public DetectStateEnums getDetectState() {
         return detectState;
     }
@@ -187,7 +189,7 @@ public class TerminalDetectionEntity {
     public void setVersion(int version) {
         this.version = version;
     }
-    
+
     public int getVersion() {
         return version;
     }
