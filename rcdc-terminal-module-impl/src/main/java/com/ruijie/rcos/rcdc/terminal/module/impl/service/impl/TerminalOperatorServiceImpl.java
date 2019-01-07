@@ -78,8 +78,8 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.COLLECT_TERMINAL_LOG.getName(), "");
-        // 发消息给shine，执行日志收集，异步等待日志收集结果
-        sender.asyncRequest(message, new CollectLogRequestCallbackImpl(collectLogCacheManager, terminalId));
+        // 发消息给shine，执行日志收集
+        sender.request(message);
     }
 
     @Override
