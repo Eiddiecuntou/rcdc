@@ -18,16 +18,17 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
  */
 @Service
 public class ComponentUpdateListCacheManager {
-    
-    
+
+
     /**
      * updatelist更新状态
      */
     public static boolean isUpdate = false;
 
-    
-    private static final Map<CbbTerminalTypeEnums, CbbTerminalComponentUpdateListDTO> UPDATE_LIST_CACHE_MAP = new ConcurrentHashMap<>();
-    
+
+    private static final Map<CbbTerminalTypeEnums, CbbTerminalComponentUpdateListDTO> UPDATE_LIST_CACHE_MAP =
+            new ConcurrentHashMap<>();
+
     /**
      * 添加缓存
      *
@@ -36,7 +37,7 @@ public class ComponentUpdateListCacheManager {
     public void addCache(CbbTerminalTypeEnums terminalType, CbbTerminalComponentUpdateListDTO updatelist) {
         Assert.notNull(terminalType, "terminalType can not be null");
         Assert.notNull(updatelist, "updatelist can not be null");
-        
+
         UPDATE_LIST_CACHE_MAP.put(terminalType, updatelist);
     }
 
@@ -47,7 +48,7 @@ public class ComponentUpdateListCacheManager {
      */
     public void removeCache(CbbTerminalTypeEnums terminalType) {
         Assert.notNull(terminalType, "terminalType can not be null");
-        
+
         UPDATE_LIST_CACHE_MAP.remove(terminalType);
     }
 
@@ -59,7 +60,7 @@ public class ComponentUpdateListCacheManager {
      */
     public CbbTerminalComponentUpdateListDTO getCache(CbbTerminalTypeEnums terminalType) {
         Assert.notNull(terminalType, "terminalType can not be null");
-        
+
         return UPDATE_LIST_CACHE_MAP.get(terminalType);
     }
 
@@ -71,5 +72,5 @@ public class ComponentUpdateListCacheManager {
     public Map<CbbTerminalTypeEnums, CbbTerminalComponentUpdateListDTO> getUpdateListCaches() {
         return UPDATE_LIST_CACHE_MAP;
     }
-    
+
 }

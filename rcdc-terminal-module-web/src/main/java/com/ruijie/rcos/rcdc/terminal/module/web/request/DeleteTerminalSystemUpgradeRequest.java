@@ -14,9 +14,6 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
  */
 public class DeleteTerminalSystemUpgradeRequest implements WebRequest {
 
-    /**
-     * 终端id
-     */
     @NotEmpty
     private String[] idArr;
 

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
+import java.util.Iterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -18,7 +19,11 @@ import com.ruijie.rcos.rcdc.terminal.module.web.request.CreateTerminalSystemUpgr
 import com.ruijie.rcos.rcdc.terminal.module.web.request.DeleteTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradePackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.web.request.UploadUpgradeFileRequest;
+import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
+import com.ruijie.rcos.sk.base.batch.BatchTaskFinishResult;
+import com.ruijie.rcos.sk.base.batch.BatchTaskHandler;
+import com.ruijie.rcos.sk.base.batch.BatchTaskItem;
+import com.ruijie.rcos.sk.base.batch.BatchTaskItemResult;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -70,7 +75,7 @@ public class TerminalSystemUpgradeController {
                 BusinessException ex = (BusinessException) e;
                 // 上传文件处理失败
                 optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
-                        ex.getI18nMessage());
+                        file.getFileName(), ex.getI18nMessage());
             } else {
                 throw e;
             }
@@ -133,7 +138,7 @@ public class TerminalSystemUpgradeController {
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
                 // 添加升级失败
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG,
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG, terminalId,
                         ex.getI18nMessage());
             } else {
                 throw e;
@@ -153,10 +158,51 @@ public class TerminalSystemUpgradeController {
      */
     @RequestMapping("delete")
     public DefaultWebResponse delete(DeleteTerminalSystemUpgradeRequest request,
-            ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
-        Assert.notNull(request, "DeleteTerminalSystemUpgradeRequest can not be null");
+            ProgrammaticOptLogRecorder optLogRecorder, BatchTaskBuilder builder) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        Assert.notNull(optLogRecorder, "optLogRecorder can not be null");
+        Assert.notNull(builder, "builder can not be null");
 
         LOGGER.warn("start remove system upgrade task...");
+        final String[] idArr = request.getIdArr();
+//        builder.setTaskName("批量删除系统升级任务")
+//               .setTaskDesc("批量删除系统升级任务")
+//               .enableParallel()
+//               .registerHandler(new BatchTaskHandler<BatchTaskItem>() {
+//                   final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr)
+//                           .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("删除云桌面").build()).iterator();
+//
+//                @Override
+//                public boolean hasNext() {
+//                    // TODO Auto-generated method stub
+//                    return false;
+//                }
+//
+//                @Override
+//                public BatchTaskItem next() {
+//                    // TODO Auto-generated method stub
+//                    return null;
+//                }
+//
+//                @Override
+//                public void afterException(BatchTaskItem arg0, Exception arg1) {
+//                    // TODO Auto-generated method stub
+//                    
+//                }
+//
+//                @Override
+//                public BatchTaskFinishResult onFinish(int arg0, int arg1) {
+//                    // TODO Auto-generated method stub
+//                    return null;
+//                }
+//
+//                @Override
+//                public BatchTaskItemResult processItem(BatchTaskItem arg0) throws BusinessException {
+//                    // TODO Auto-generated method stub
+//                    return null;
+//                }
+//                   
+//               }).start();
         for (String terminalId : request.getIdArr()) {
             deleteAddOptLog(terminalId, optLogRecorder);
         }
@@ -175,7 +221,7 @@ public class TerminalSystemUpgradeController {
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
                 // 批量删除升级失败
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG,
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG, terminalId,
                         ex.getI18nMessage());
             } else {
                 throw e;
@@ -193,7 +239,7 @@ public class TerminalSystemUpgradeController {
      */
     @RequestMapping("list")
     public DefaultWebResponse list(ListTerminalSystemUpgradeRequest request) throws BusinessException {
-        Assert.notNull(request, "ListTerminalSystemUpgradeRequest can not be null");
+        Assert.notNull(request, "request can not be null");
 
         CbbBaseListResponse<CbbTerminalSystemUpgradeTaskDTO> resp =
                 cbbTerminalUpgradeAPI.listTerminalSystemUpgradeTask();
