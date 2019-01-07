@@ -12,6 +12,8 @@ public interface Constants {
 
     String SYSTEM_TYPE = "rcdc";
 
+    int SUCCESS = 0;
+
     /**
      * 存放终端日志的目录
      */

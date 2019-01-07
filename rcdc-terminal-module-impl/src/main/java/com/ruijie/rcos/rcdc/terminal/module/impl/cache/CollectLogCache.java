@@ -9,13 +9,17 @@ import java.time.Instant;
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/11/6
+ *
  * @author Jarman
  */
 public class CollectLogCache {
-    /**
-     * 缓存有效时间，单位毫秒，默认10分钟
-     */
-    private static final long EXPIRE = 1000 * 60 * 10;
+
+    public CollectLogCache() {
+    }
+
+    public CollectLogCache(CollectLogStateEnums state) {
+        this.state = state;
+    }
 
     /**
      * 状态
@@ -27,16 +31,6 @@ public class CollectLogCache {
      */
     private String logFileName;
 
-    /**
-     * 缓存过期时间
-     */
-    private Long expireTime;
-
-    public CollectLogCache() {
-        //记录过期时间
-        long millisecond = Instant.now().toEpochMilli();
-        this.expireTime = millisecond + EXPIRE;
-    }
 
     public CollectLogStateEnums getState() {
         return state;
@@ -54,11 +48,4 @@ public class CollectLogCache {
         this.logFileName = logFileName;
     }
 
-    public Long getExpireTime() {
-        return expireTime;
-    }
-
-    public void setExpireTime(Long expireTime) {
-        this.expireTime = expireTime;
-    }
 }

@@ -70,6 +70,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             LOGGER.debug("新终端接入,terminalId:[{}]", terminalId);
             basicInfoEntity = new TerminalEntity();
             basicInfoEntity.setCreateTime(now);
+            basicInfoEntity.setLastOnlineTime(now);
         }
         String jsonData = String.valueOf(request.getData());
         ShineTerminalBasicInfo shineTerminalBasicInfo = JSON.parseObject(jsonData, ShineTerminalBasicInfo.class);
