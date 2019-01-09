@@ -74,11 +74,6 @@ public class TerminalDetectionEntity {
     @Version
     private int version;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "terminalId", referencedColumnName = "terminalId")
-    private TerminalEntity terminal;
-
-    
     public void convertTo(CbbTerminalDetectDTO detectDTO) {
         Assert.notNull(detectDTO, "detect dto can not be null");
         
@@ -89,8 +84,6 @@ public class TerminalDetectionEntity {
         detectDTO.setDelay(networkDelay);
         detectDTO.setIpConflict(ipConflict);
         detectDTO.setPacketLossRate(packetLossRate);
-        detectDTO.setIp(terminal.getIp());
-        detectDTO.setTerminalName(terminal.getName());
         CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();;
         state.setState(detectState.getName());
         state.setMessage(detectFailMsg);
@@ -190,14 +183,6 @@ public class TerminalDetectionEntity {
     
     public int getVersion() {
         return version;
-    }
-
-    public TerminalEntity getTerminal() {
-        return terminal;
-    }
-
-    public void setTerminal(TerminalEntity terminal) {
-        this.terminal = terminal;
     }
 
 }
