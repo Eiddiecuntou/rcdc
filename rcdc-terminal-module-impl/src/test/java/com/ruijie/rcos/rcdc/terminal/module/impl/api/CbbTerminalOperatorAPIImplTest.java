@@ -297,7 +297,6 @@ public class CbbTerminalOperatorAPIImplTest {
         List<TerminalDetectionEntity> list = new ArrayList<>();
         TerminalDetectionEntity entity = new TerminalDetectionEntity();
         entity.setDetectState(DetectStateEnums.CHECKING);
-        entity.setTerminal(new TerminalEntity());
         list.add(entity);
         return new PageImpl<>(list, PageRequest.of(1, 10), 1);
     }

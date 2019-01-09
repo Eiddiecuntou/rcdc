@@ -1,33 +1,32 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.lang.Nullable;
 
 /**
- * Description: 消息分发请求参数
+ * Description: Function Description
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2018/10/24
+ * Create Time: 2019/1/2
  *
- * @param <T> 分发的业务数据对象
  * @author Jarman
  */
-public class CbbDispatcherRequest<T> implements Request {
+public class CbbNoticeRequest implements Request {
 
     @NotBlank
     @DispatcherKey
     private String dispatcherKey;
 
-    @NotBlank
+    @Nullable
     private String terminalId;
 
-    @Nullable
-    private String requestId;
-
-    @Nullable
-    private T data;
+    public CbbNoticeRequest(NoticeEventEnums noticeEvent, String terminalId) {
+        this.dispatcherKey = noticeEvent.getName();
+        this.terminalId = terminalId;
+    }
 
     public String getDispatcherKey() {
         return dispatcherKey;
@@ -43,21 +42,5 @@ public class CbbDispatcherRequest<T> implements Request {
 
     public void setTerminalId(String terminalId) {
         this.terminalId = terminalId;
-    }
-
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 }

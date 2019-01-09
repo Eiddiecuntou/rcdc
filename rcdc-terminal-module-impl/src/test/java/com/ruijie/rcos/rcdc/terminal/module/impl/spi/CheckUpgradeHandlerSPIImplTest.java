@@ -3,11 +3,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -39,12 +39,15 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
 
+    @Injectable
+    private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
+
     @Test
     public void testDispatchUpdateTerminalBasicInfo() {
         String terminalId = "123";
         TerminalEntity entity = new TerminalEntity();
         entity.setTerminalId("123456");
-        entity.setName("t-box3");
+        entity.setTerminalName("t-box3");
         entity.setCpuMode("intel");
         new Expectations() {{
             basicInfoDAO.findTerminalEntityByTerminalId(anyString);
@@ -101,7 +104,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             TerminalEntity basicInfoEntity;
             basicInfoDAO.save(basicInfoEntity = withCapture());
             assertEquals(basicInfoEntity.getTerminalId(), "123");
-            assertEquals(basicInfoEntity.getName(), "t-box2");
+            assertEquals(basicInfoEntity.getTerminalName(), "t-box2");
             assertEquals(basicInfoEntity.getCpuMode(), "intel5");
         }};
     }
@@ -110,7 +113,7 @@ public class CheckUpgradeHandlerSPIImplTest {
     private String generateJson() {
         ShineTerminalBasicInfo info = new ShineTerminalBasicInfo();
         info.setTerminalId("123");
-        info.setName("t-box2");
+        info.setTerminalName("t-box2");
         info.setCpuMode("intel5");
         return JSON.toJSONString(info);
     }

@@ -1,11 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
-import org.springframework.util.Assert;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description: 缓存收集日志过程的状态，
@@ -19,7 +20,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class CollectLogCacheManager {
 
-    private static final Map<String, CollectLogCache> COLLECT_LOG_CACHE_MAP = new ConcurrentHashMap<>();
+    /**
+     * 收集日志缓存，设置120秒后过期
+     */
+    private static final Cache<String, CollectLogCache> COLLECT_LOG_CACHE = CacheBuilder.newBuilder().expireAfterWrite(120, TimeUnit.SECONDS).build();
 
     /**
      * 添加缓存，接收到请求后覆盖原来的缓存信息
@@ -30,9 +34,8 @@ public class CollectLogCacheManager {
      */
     public CollectLogCache addCache(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        CollectLogCache cache = new CollectLogCache();
-        cache.setState(CollectLogStateEnums.DOING);
-        COLLECT_LOG_CACHE_MAP.put(terminalId, cache);
+        CollectLogCache cache = new CollectLogCache(CollectLogStateEnums.DOING);
+        COLLECT_LOG_CACHE.put(terminalId, cache);
         return cache;
     }
 
@@ -43,7 +46,7 @@ public class CollectLogCacheManager {
      */
     public void removeCache(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        COLLECT_LOG_CACHE_MAP.remove(terminalId);
+        COLLECT_LOG_CACHE.invalidate(terminalId);
     }
 
     /**
@@ -69,13 +72,13 @@ public class CollectLogCacheManager {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(state, "CollectLogStateEnums不能为null");
         Assert.hasText(logFileName, "logFileName不能为空");
-        CollectLogCache cache = COLLECT_LOG_CACHE_MAP.get(terminalId);
+        CollectLogCache cache = COLLECT_LOG_CACHE.getIfPresent(terminalId);
         if (cache == null) {
             cache = new CollectLogCache();
         }
         cache.setState(state);
         cache.setLogFileName(logFileName);
-        COLLECT_LOG_CACHE_MAP.put(terminalId, cache);
+        COLLECT_LOG_CACHE.put(terminalId, cache);
     }
 
     /**
@@ -86,7 +89,7 @@ public class CollectLogCacheManager {
      */
     public CollectLogCache getCache(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        return COLLECT_LOG_CACHE_MAP.get(terminalId);
+        return COLLECT_LOG_CACHE.getIfPresent(terminalId);
     }
 
     /**
@@ -94,8 +97,8 @@ public class CollectLogCacheManager {
      *
      * @return 返回集合对象
      */
-    public Map<String, CollectLogCache> getCollectLogCaches() {
-        return COLLECT_LOG_CACHE_MAP;
+    public Cache<String, CollectLogCache> getCollectLogCaches() {
+        return COLLECT_LOG_CACHE;
     }
 
 }

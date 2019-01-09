@@ -143,7 +143,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             detectionEntity.convertTo(detectDTO);
             TerminalEntity terminalEntity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
             detectDTO.setIp(terminalEntity.getIp());
-            detectDTO.setTerminalName(terminalEntity.getName());
+            detectDTO.setTerminalName(terminalEntity.getTerminalName());
             detectDTOArr[i] = detectDTO;
         });
 

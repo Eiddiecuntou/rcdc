@@ -10,6 +10,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl;
  */
 public interface Constants {
 
+    int SUCCESS = 0;
+
+
     String SYSTEM_TYPE = "rcdc";
 
     /**
@@ -21,12 +24,12 @@ public interface Constants {
      * 终端检测带宽正常标准值,小于等于20Mb为异常
      */
     int TERMINAL_DETECT_BINDWIDTH_NORM = 20;
-    
+
     /**
      * 终端检测延时正常标准值，大于等于50ms为异常
      */
     int TERMINAL_DETECT_DELAY_NORM = 50;
-    
+
     /**
      * 丢包率正常标准值(该数值是实际比率乘以100的数值)，大于等于0.1时为异常
      */
