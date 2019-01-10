@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
@@ -56,8 +57,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      */
     @Modifying
     @Transactional
-    @Query("update TerminalEntity set name=:terminalName,version=version+1 where terminalId=:terminalId and " +
-            "version=:version")
+    @Query("update TerminalEntity set name=?3,version=version+1 where terminalId=?1 and version=?2")
     int modifyTerminalName(String terminalId, Integer version, String terminalName);
 
     /**
@@ -75,7 +75,8 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
             "secondDns=:#{network.secondDns},getIpMode=:#{network.getIpMode.ordinal}," +
             "getDnsMode=:#{network.getDnsMode.ordinal},version=:version+1 " +
             "where terminalId=:terminalId and version=:version")
-    int modifyTerminalNetworkConfig(String terminalId, Integer version, CbbTerminalNetworkRequest network);
+    int modifyTerminalNetworkConfig(@Param("terminalId") String terminalId, @Param("version") Integer version,
+                                    @Param("network") CbbTerminalNetworkRequest network);
 
     /**
      * 修改终端状态
@@ -87,8 +88,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      */
     @Modifying
     @Transactional
-    @Query("update TerminalEntity set state=:state,version=:version+1 " +
-            "where terminalId=:terminalId and version=:version")
+    @Query("update TerminalEntity set state=?3,version=:version+1 where terminalId=?1 and version=?2")
     int modifyTerminalState(String terminalId, Integer version, CbbTerminalStateEnums state);
 
 }

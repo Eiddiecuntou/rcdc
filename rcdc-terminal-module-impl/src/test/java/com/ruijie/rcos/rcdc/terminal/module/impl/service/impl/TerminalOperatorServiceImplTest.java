@@ -1,9 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
@@ -15,7 +11,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import mockit.Expectations;
@@ -23,6 +18,11 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -49,7 +49,7 @@ public class TerminalOperatorServiceImplTest {
 
     @Tested
     private TerminalOperatorServiceImpl operatorService;
-    
+
     @Injectable
     private TerminalDetectService terminalDetectService;
 
@@ -125,7 +125,7 @@ public class TerminalOperatorServiceImplTest {
             Message message;
             sender.request(message = withCapture());
             assertEquals(message.getAction(), SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD.getName());
-            ChangeTerminalPasswordRequest data = (ChangeTerminalPasswordRequest)message.getData();
+            ChangeTerminalPasswordRequest data = (ChangeTerminalPasswordRequest) message.getData();
             assertEquals(String.valueOf(data.getPassword()), password);
         }};
     }
@@ -175,7 +175,7 @@ public class TerminalOperatorServiceImplTest {
             result = logCache;
             sessionManager.getRequestMessageSender(anyString);
             result = sender;
-            sender.asyncRequest((Message) any, (RequestCallback) any);
+            sender.request((Message) any);
 
         }};
 
@@ -187,15 +187,15 @@ public class TerminalOperatorServiceImplTest {
         }
 
         new Verifications() {{
-            sender.asyncRequest((Message) any, (RequestCallback) any);
+            sender.request((Message) any);
             times = 1;
         }};
     }
-    
+
     @Test
     public void testDetect() throws BusinessException {
         String terminalId = "123";
-        
+
         new Expectations() {
             {
                 terminalDetectService.findInCurrentDate(anyString);
