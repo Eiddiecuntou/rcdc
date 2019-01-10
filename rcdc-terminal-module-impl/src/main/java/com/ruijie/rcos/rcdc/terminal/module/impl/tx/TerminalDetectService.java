@@ -169,7 +169,7 @@ public class TerminalDetectService {
 
         int ipConflict = detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), startDt, endDt);
         int bandwidth = detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, startDt, endDt);
-        int accessInternet = detectionDAO.countByAssessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), startDt, endDt);
+        int accessInternet = detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), startDt, endDt);
         int packetLossRate =
                 detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, startDt, endDt);
         int delay = detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, startDt, endDt);

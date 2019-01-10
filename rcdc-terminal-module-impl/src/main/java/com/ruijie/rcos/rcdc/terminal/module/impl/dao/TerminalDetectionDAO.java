@@ -71,7 +71,7 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
      * @param endDt 结束时间
      * @return 统计数量
      */
-    int countByAssessInternetAndDetectTimeBetween(int state, Date startDt, Date endDt);
+    int countByAccessInternetAndDetectTimeBetween(int state, Date startDt, Date endDt);
 
     /**
      * 统计时间段内的丢包率大于等于标准的数量

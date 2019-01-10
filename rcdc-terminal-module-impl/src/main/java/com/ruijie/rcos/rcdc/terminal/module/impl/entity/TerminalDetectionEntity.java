@@ -18,7 +18,7 @@ import java.util.UUID;
  * @author Jarman
  */
 @Entity
-@Table(name = "t_terminal_detection")
+@Table(name = "t_cbb_terminal_detection")
 public class TerminalDetectionEntity {
 
     @Id
