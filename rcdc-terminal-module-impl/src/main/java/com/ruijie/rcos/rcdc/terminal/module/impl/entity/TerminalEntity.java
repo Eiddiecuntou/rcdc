@@ -55,7 +55,7 @@ public class TerminalEntity {
 
     private String serialNumber;
 
-    private String cpuMode;
+    private String cpuType;
 
     private Integer memorySize;
 
@@ -183,12 +183,12 @@ public class TerminalEntity {
         this.serialNumber = serialNumber;
     }
 
-    public String getCpuMode() {
-        return cpuMode;
+    public String getCpuType() {
+        return cpuType;
     }
 
-    public void setCpuMode(String cpuMode) {
-        this.cpuMode = cpuMode;
+    public void setCpuType(String cpuType) {
+        this.cpuType = cpuType;
     }
 
     public Integer getMemorySize() {

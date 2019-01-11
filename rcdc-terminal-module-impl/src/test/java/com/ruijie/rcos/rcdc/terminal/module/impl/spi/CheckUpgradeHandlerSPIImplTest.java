@@ -48,7 +48,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         TerminalEntity entity = new TerminalEntity();
         entity.setTerminalId("123456");
         entity.setTerminalName("t-box3");
-        entity.setCpuMode("intel");
+        entity.setCpuType("intel");
         new Expectations() {{
             basicInfoDAO.findTerminalEntityByTerminalId(anyString);
             result = entity;
@@ -105,7 +105,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             basicInfoDAO.save(basicInfoEntity = withCapture());
             assertEquals(basicInfoEntity.getTerminalId(), "123");
             assertEquals(basicInfoEntity.getTerminalName(), "t-box2");
-            assertEquals(basicInfoEntity.getCpuMode(), "intel5");
+            assertEquals(basicInfoEntity.getCpuType(), "intel5");
         }};
     }
 
