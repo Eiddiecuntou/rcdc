@@ -49,7 +49,7 @@ public class ShineTerminalBasicInfo {
 
     private String serialNumber;
 
-    private String cpuMode;
+    private String cpuType;
 
     private Integer memorySize;
 
@@ -64,6 +64,16 @@ public class ShineTerminalBasicInfo {
     private String rainUpgradeVersion;
 
     private String hardwareVersion;
+
+    private String platform;
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
 
     public String getTerminalName() {
         return terminalName;
@@ -177,12 +187,12 @@ public class ShineTerminalBasicInfo {
         this.serialNumber = serialNumber;
     }
 
-    public String getCpuMode() {
-        return cpuMode;
+    public String getCpuType() {
+        return cpuType;
     }
 
-    public void setCpuMode(String cpuMode) {
-        this.cpuMode = cpuMode;
+    public void setCpuType(String cpuType) {
+        this.cpuType = cpuType;
     }
 
     public Integer getMemorySize() {

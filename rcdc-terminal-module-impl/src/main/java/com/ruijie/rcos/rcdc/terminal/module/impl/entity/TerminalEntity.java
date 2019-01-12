@@ -86,6 +86,16 @@ public class TerminalEntity {
     @Enumerated(EnumType.STRING)
     private CbbTerminalStateEnums state;
 
+    private String platform;
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
     public UUID getId() {
         return id;
     }

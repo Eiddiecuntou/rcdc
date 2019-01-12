@@ -114,7 +114,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         ShineTerminalBasicInfo info = new ShineTerminalBasicInfo();
         info.setTerminalId("123");
         info.setTerminalName("t-box2");
-        info.setCpuMode("intel5");
+        info.setCpuType("intel5");
         return JSON.toJSONString(info);
     }
 
