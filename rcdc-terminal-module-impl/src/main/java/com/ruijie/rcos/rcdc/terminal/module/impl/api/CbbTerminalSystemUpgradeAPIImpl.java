@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -14,7 +12,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.core.OrderComparator;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.FileCopyUtils;
@@ -25,7 +22,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateE
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbBatchAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
@@ -49,7 +45,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
 
 /**
  * 
@@ -110,6 +105,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
 
         // 挂载升级文件，读取版本信息内容，校验正确
+        // TODO 异常处理
         mountUpgradePackage(filePath);
 
         // 读取校验文件内容
@@ -121,6 +117,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // 将新升级文件移动到目录下
         moveUpgradePackage(fileName, filePath, versionInfo.getPackageType());
 
+        // TODO 考虑下如果文件移动成功，但未入库的话是否会导致bug
         // 更新升级包信息入库
         terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion(versionInfo);
 
@@ -142,6 +139,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
         File in = new File(filePath);
         try {
+            // TODO 可以直接rename
             FileCopyUtils.copy(in, out);
         } catch (IOException e) {
             LOGGER.debug("copy upgrade file to target directory fail, fileName : {}, packageType : {}", fileName,

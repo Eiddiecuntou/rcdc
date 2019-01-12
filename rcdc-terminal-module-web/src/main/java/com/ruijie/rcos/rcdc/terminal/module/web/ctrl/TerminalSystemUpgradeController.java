@@ -71,6 +71,7 @@ public class TerminalSystemUpgradeController {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
                     file.getFileName());
         } catch (Exception e) {
+            // TODO 精简一下
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
                 // 上传文件处理失败
@@ -117,6 +118,8 @@ public class TerminalSystemUpgradeController {
             ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         Assert.notNull(request, "CreateTerminalSystemUpgradeRequest can not be null");
 
+        
+        // TODO 批处理框架
         CbbTerminalTypeEnums terminalType = request.getTerminalType();
         for (String terminalId : request.getTerminalIdArr()) {
             addUpgradeTaskAddOptLog(terminalId, terminalType, optLogRecorder);

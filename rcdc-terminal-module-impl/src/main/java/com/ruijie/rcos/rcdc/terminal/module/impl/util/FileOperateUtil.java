@@ -103,6 +103,7 @@ public class FileOperateUtil {
             subFile = new File(sub);
             if (subFile.isFile()) {
                 try {
+                    // TODO 删除用国祥提供的工具类
                     subFile.delete();
                 } catch (Exception e) {
                     throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
