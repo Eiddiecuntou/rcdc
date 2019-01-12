@@ -88,7 +88,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      */
     @Modifying
     @Transactional
-    @Query("update TerminalEntity set state=?3,version=:version+1 where terminalId=?1 and version=?2")
-    int modifyTerminalState(String terminalId, Integer version, CbbTerminalStateEnums state);
+    @Query("update TerminalEntity set state=:state,version=version+1 where terminalId=:terminalId and version=:version")
+    int modifyTerminalState(@Param("terminalId") String terminalId, @Param("version") Integer version, @Param("state") CbbTerminalStateEnums state);
 
 }
