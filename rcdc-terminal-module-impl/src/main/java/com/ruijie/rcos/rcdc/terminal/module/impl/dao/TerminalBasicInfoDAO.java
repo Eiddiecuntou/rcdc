@@ -45,6 +45,8 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @param terminalId 终端id
      * @return 返回影响行数
      */
+    @Modifying
+    @Transactional
     int deleteByTerminalId(String terminalId);
 
     /**
