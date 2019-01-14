@@ -30,6 +30,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.Response;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 
 /**
@@ -159,7 +160,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         DefaultPageResponse<CbbTerminalDetectDTO> emptyResp = new DefaultPageResponse<CbbTerminalDetectDTO>();
         emptyResp.setItemArr(new CbbTerminalDetectDTO[0]);
         emptyResp.setTotal(total);
-        emptyResp.setStauts(Status.SUCCESS);
+        emptyResp.setStatus(Response.Status.SUCCESS);
         return emptyResp;
     }
 
@@ -169,7 +170,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
         CbbTerminalDetectResultDTO result = detectService.getDetectResult(request.getDetectDate());
         CbbDetectResultResponse resp = new CbbDetectResultResponse(result);
-        resp.setStauts(Status.SUCCESS);
+        resp.setStatus(Response.Status.SUCCESS);
         return resp;
     }
 
