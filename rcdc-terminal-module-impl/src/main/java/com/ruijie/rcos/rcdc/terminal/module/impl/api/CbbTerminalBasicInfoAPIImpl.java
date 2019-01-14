@@ -46,7 +46,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
         CbbTerminalBasicInfoResponse basicInfoDTO = new CbbTerminalBasicInfoResponse();
-        BeanUtils.copyProperties(basicInfoEntity,basicInfoDTO);
+        BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO);
         return basicInfoDTO;
     }
 
@@ -64,14 +64,19 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     @Override
     public DefaultResponse modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalNameRequest不能为null");
-        //先发送终端名称给shine，后修改数据库
         String terminalId = request.getTerminalId();
-        basicInfoService.modifyTerminalName(terminalId, request.getTerminalName());
+        //不管不是不在线状态，都可修改终端名称
         int version = getVersion(terminalId);
         int effectRow = basicInfoDAO.modifyTerminalName(terminalId, version, request.getTerminalName());
         if (effectRow == 0) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
+        try {
+            basicInfoService.modifyTerminalName(terminalId, request.getTerminalName());
+        } catch (BusinessException e) {
+            LOGGER.error("修改终端名称状态失败", e);
+        }
+
         return DefaultResponse.Builder.success();
     }
 

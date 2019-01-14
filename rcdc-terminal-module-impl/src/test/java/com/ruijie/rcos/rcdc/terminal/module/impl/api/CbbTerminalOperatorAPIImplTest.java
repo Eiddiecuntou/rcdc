@@ -4,6 +4,8 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +63,9 @@ public class CbbTerminalOperatorAPIImplTest {
     
     @Injectable
     private TerminalDetectService detectService;
+
+    @Injectable
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     @Test
     public void testShutdown() throws BusinessException {

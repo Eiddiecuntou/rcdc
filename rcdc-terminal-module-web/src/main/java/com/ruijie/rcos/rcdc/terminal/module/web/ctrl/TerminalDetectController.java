@@ -60,13 +60,8 @@ public class TerminalDetectController {
             operatorAPI.detect(detectReq);
             // 添加检测成功日志
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, terminalId);
-        } catch (Exception e) {
-            if (e instanceof BusinessException) {
-                BusinessException ex = (BusinessException) e;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, ex.getI18nMessage());
-            } else {
-                throw e;
-            }
+        } catch (BusinessException ex) {
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, ex.getI18nMessage());
         }
     }
 
