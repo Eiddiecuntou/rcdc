@@ -204,6 +204,13 @@ public class TerminalOperatorServiceImplTest {
         };
         //TODO 未完成
         operatorService.detect(terminalId);
+        
+        new Verifications() {
+            {
+                terminalDetectService.findInCurrentDate(anyString);
+                times = 1;
+            }
+        };
     }
 
 }
