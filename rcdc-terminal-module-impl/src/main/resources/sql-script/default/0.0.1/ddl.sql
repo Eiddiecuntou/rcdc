@@ -5,7 +5,7 @@ create table t_cbb_terminal
     constraint t_rcdc_terminal_basic_info_pkey
     primary key,
   terminal_name        varchar(32),
-  terminal_id          varchar(32) not null,
+  terminal_id          varchar(64) not null,
   mac_addr             varchar(64),
   ip                   varchar(64),
   subnet_mask          varchar(64),
