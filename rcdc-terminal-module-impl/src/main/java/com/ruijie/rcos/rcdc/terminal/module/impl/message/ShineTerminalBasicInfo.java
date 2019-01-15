@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -42,7 +42,7 @@ public class ShineTerminalBasicInfo {
     private String productType;
 
     @Enumerated(EnumType.STRING)
-    private TerminalTypeEnums terminalType;
+    private TerminalPlatformEnums terminalType;
 
     @Enumerated(EnumType.STRING)
     private CbbNetworkModeEnums networkAccessMode;
@@ -65,13 +65,14 @@ public class ShineTerminalBasicInfo {
 
     private String hardwareVersion;
 
-    private String platform;
+    @Enumerated(EnumType.STRING)
+    private TerminalPlatformEnums platform;
 
-    public String getPlatform() {
+    public TerminalPlatformEnums getPlatform() {
         return platform;
     }
 
-    public void setPlatform(String platform) {
+    public void setPlatform(TerminalPlatformEnums platform) {
         this.platform = platform;
     }
 
@@ -163,11 +164,11 @@ public class ShineTerminalBasicInfo {
         this.productType = productType;
     }
 
-    public TerminalTypeEnums getTerminalType() {
+    public TerminalPlatformEnums getTerminalType() {
         return terminalType;
     }
 
-    public void setTerminalType(TerminalTypeEnums terminalType) {
+    public void setTerminalType(TerminalPlatformEnums terminalType) {
         this.terminalType = terminalType;
     }
 

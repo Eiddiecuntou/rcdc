@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 import javax.persistence.EnumType;
@@ -48,7 +48,7 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
     private String productType;
 
     @Enumerated(EnumType.STRING)
-    private TerminalTypeEnums terminalType;
+    private TerminalPlatformEnums terminalPlatform;
 
     private String serialNumber;
 
@@ -178,12 +178,12 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
         this.productType = productType;
     }
 
-    public TerminalTypeEnums getTerminalType() {
-        return terminalType;
+    public TerminalPlatformEnums getTerminalPlatform() {
+        return terminalPlatform;
     }
 
-    public void setTerminalType(TerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
+    public void setTerminalPlatform(TerminalPlatformEnums terminalPlatform) {
+        this.terminalPlatform = terminalPlatform;
     }
 
     public String getSerialNumber() {
