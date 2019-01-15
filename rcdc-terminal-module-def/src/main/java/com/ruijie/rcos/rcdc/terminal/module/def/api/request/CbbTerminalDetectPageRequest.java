@@ -13,8 +13,8 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageRequest;
  * 
  * @author nt
  */
-public class CbbTerminalDetectPageRequest extends DefaultPageRequest{
-    
+public class CbbTerminalDetectPageRequest extends DefaultPageRequest {
+
     @NotNull
     private CbbDetectDateEnums date;
 
@@ -25,5 +25,5 @@ public class CbbTerminalDetectPageRequest extends DefaultPageRequest{
     public void setDate(CbbDetectDateEnums date) {
         this.date = date;
     }
-    
+
 }

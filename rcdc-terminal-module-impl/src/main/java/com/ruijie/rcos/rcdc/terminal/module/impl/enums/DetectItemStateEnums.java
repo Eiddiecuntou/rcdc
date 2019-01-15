@@ -17,7 +17,7 @@ public enum DetectItemStateEnums {
     
     private int state;
     
-    DetectItemStateEnums(int state){
+    DetectItemStateEnums(int state) {
         this.state = state;
     }
     

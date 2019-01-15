@@ -22,27 +22,25 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
 
     /**
      * 获取终端最后检测结果
-     * @param terminalId
-     * @return
+     * @param terminalId 终端id
+     * @return  终端检测结果
      */
     TerminalDetectionEntity findFirstByTerminalIdOrderByDetectTimeDesc(String terminalId);
-
-    int countByDetectState(DetectStateEnums checking);
 
     /**
      * 获取终端时间段内的检测记录
      * @param terminalId 终端id
      * @param startDt 开始时间
      * @param endDt 结束时间
-     * @return
+     * @return 终端检测结果列表
      */
     List<TerminalDetectionEntity> findByTerminalIdAndDetectTimeBetween(String terminalId, Date startDt, Date endDt);
 
     /**
      * 获取指定状态的检测记录
-     * @param terminalId
-     * @param detectState
-     * @return
+     * @param terminalId 终端id
+     * @param detectState 检测状态
+     * @return 终端检测结果列表
      */
     List<TerminalDetectionEntity> findByTerminalIdAndDetectState(String terminalId, DetectStateEnums detectState);
 
@@ -104,6 +102,7 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
      * 更新所有检测中记录为检测失败
      * @param fromState 待更新状态
      * @param targetState 更新后状态
+     * @return 更新影响的行数
      */
     @Transactional
     @Modifying

@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import org.springframework.util.Assert;
 
 /**
  * 
@@ -17,10 +18,12 @@ public class TerminalDateUtil {
     /**
      * 得到日期的起始时间点。
      * 
-     * @param 日期
+     * @param date 日期
      * @return 起始时间
      */
     public static Date getDayStart(Date date) {
+        Assert.notNull(date, "date can not be null");
+        
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -33,10 +36,12 @@ public class TerminalDateUtil {
     /**
      * 得到day的终止时间点.
      * 
-     * @param 日期
+     * @param date 日期
      * @return 终止时间
      */
     public static Date getDayEnd(Date date) {
+        Assert.notNull(date, "date can not be null");
+        
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -49,13 +54,15 @@ public class TerminalDateUtil {
     }
 
     /**
-     * 计算 day 天后的时间
+     * 获取指定天数后的时间
      * 
      * @param date 日期
      * @param day 天数
-     * @return
+     * @return 日期
      */
     public static Date addDay(Date date, int day) {
+        Assert.notNull(date, "date can not be null");
+        
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_MONTH, day);

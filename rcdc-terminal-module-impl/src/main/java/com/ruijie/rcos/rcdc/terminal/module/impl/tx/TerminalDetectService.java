@@ -66,7 +66,7 @@ public class TerminalDetectService {
 
         for (TerminalDetectionEntity entity : entityList) {
             if (StateEnums.FAILURE == detectResult.getErrorCode()) {
-                // TODO 检测失败
+                // 检测失败
                 detectFailure(entity);
                 return;
             }
@@ -97,7 +97,6 @@ public class TerminalDetectService {
      * 保存检测记录
      * 
      * @param terminalId 终端id
-     * @param batch 批次
      */
     public void save(String terminalId) {
         Assert.hasText(terminalId, "terminalId can not be null");
@@ -134,6 +133,7 @@ public class TerminalDetectService {
         Date endDt = TerminalDateUtil.getDayEnd(now);
         List<TerminalDetectionEntity> detectionList = detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, startDt, endDt);
         if (CollectionUtils.isEmpty(detectionList)) {
+            //当天无记录，返回null
             return null;
         }
 

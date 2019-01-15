@@ -4,7 +4,6 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import org.junit.Assert;
 import org.junit.Test;
@@ -60,7 +59,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     @Injectable
     private CollectLogCacheManager collectLogCacheManager;
-    
+
     @Injectable
     private TerminalDetectService detectService;
 
@@ -79,13 +78,20 @@ public class CbbTerminalOperatorAPIImplTest {
             fail();
         }
 
-        new Verifications() {{
-            operatorService.shutdown(anyString);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                operatorService.shutdown(anyString);
+                times = 1;
+            }
+        };
 
     }
 
+    /**
+     * 测试重启
+     * 
+     * @throws BusinessException 业务异常
+     */
     @Test
     public void testRestart() throws BusinessException {
         try {
@@ -97,10 +103,12 @@ public class CbbTerminalOperatorAPIImplTest {
         } catch (Exception e) {
             fail();
         }
-        new Verifications() {{
-            operatorService.restart(anyString);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                operatorService.restart(anyString);
+                times = 1;
+            }
+        };
     }
 
     @Test
@@ -115,10 +123,12 @@ public class CbbTerminalOperatorAPIImplTest {
         } catch (Exception e) {
             fail();
         }
-        new Verifications() {{
-            operatorService.changePassword(anyString, anyString);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                operatorService.changePassword(anyString, anyString);
+                times = 1;
+            }
+        };
 
     }
 
@@ -132,10 +142,12 @@ public class CbbTerminalOperatorAPIImplTest {
         } catch (Exception e) {
             fail();
         }
-        new Verifications() {{
-            operatorService.collectLog(anyString);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                operatorService.collectLog(anyString);
+                times = 1;
+            }
+        };
     }
 
     @Test
@@ -172,10 +184,12 @@ public class CbbTerminalOperatorAPIImplTest {
 
     @Test
     public void testGetTerminalLogNameIsNull() {
-        new Expectations() {{
-            collectLogCacheManager.getCache(anyString);
-            result = null;
-        }};
+        new Expectations() {
+            {
+                collectLogCacheManager.getCache(anyString);
+                result = null;
+            }
+        };
         String terminalId = "123";
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId(terminalId);
@@ -190,10 +204,12 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testGetTerminalLogNameStateIsFailure() {
         CollectLogCache cache = new CollectLogCache();
         cache.setState(CollectLogStateEnums.FAILURE);
-        new Expectations() {{
-            collectLogCacheManager.getCache(anyString);
-            result = cache;
-        }};
+        new Expectations() {
+            {
+                collectLogCacheManager.getCache(anyString);
+                result = cache;
+            }
+        };
         String terminalId = "123";
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId(terminalId);
@@ -210,10 +226,12 @@ public class CbbTerminalOperatorAPIImplTest {
         CollectLogCache cache = new CollectLogCache();
         cache.setState(CollectLogStateEnums.DONE);
         cache.setLogFileName(logName);
-        new Expectations() {{
-            collectLogCacheManager.getCache(anyString);
-            result = cache;
-        }};
+        new Expectations() {
+            {
+                collectLogCacheManager.getCache(anyString);
+                result = cache;
+            }
+        };
         String terminalId = "123";
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId(terminalId);
@@ -225,7 +243,7 @@ public class CbbTerminalOperatorAPIImplTest {
             fail();
         }
     }
-    
+
     /**
      * 测试获取终端检测列表
      * 
@@ -299,11 +317,11 @@ public class CbbTerminalOperatorAPIImplTest {
     }
 
     private Page<TerminalDetectionEntity> buildRespPage() {
-        List<TerminalDetectionEntity> list = new ArrayList<>();
+        List<TerminalDetectionEntity> detectionList = new ArrayList<>();
         TerminalDetectionEntity entity = new TerminalDetectionEntity();
         entity.setDetectState(DetectStateEnums.CHECKING);
-        list.add(entity);
-        return new PageImpl<>(list, PageRequest.of(1, 10), 1);
+        detectionList.add(entity);
+        return new PageImpl<>(detectionList, PageRequest.of(1, 10), 1);
     }
 
     /**
@@ -313,7 +331,7 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testGetDetectResult() {
         CbbTerminalDetectResultRequest request = new CbbTerminalDetectResultRequest();
         request.setDetectDate(CbbDetectDateEnums.TODAY);
-        
+
         CbbDetectResultResponse detectResult = terminalOperatorAPI.getDetectResult(request);
         Assert.assertEquals(Status.SUCCESS, detectResult.getStatus());
     }
@@ -324,7 +342,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testGetDetectResultRequestIsNull() {
         CbbTerminalDetectResultRequest request = null;
-        
+
         try {
             terminalOperatorAPI.getDetectResult(request);
             fail();

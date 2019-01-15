@@ -32,6 +32,7 @@ public class TerminalDetectController {
      * 批量开启终端检测
      * 
      * @param request 请求参数
+     * @param optLogRecorder 日志记录
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
@@ -62,6 +63,7 @@ public class TerminalDetectController {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, terminalId);
         } catch (BusinessException ex) {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, ex.getI18nMessage());
+            throw ex;
         }
     }
 
@@ -70,7 +72,7 @@ public class TerminalDetectController {
      * 
      * @param request 请求参数
      * @return 检测分页列表
-     * @throws BusinessException
+     * @throws BusinessException 业务异常
      */
     @RequestMapping(value = "list")
     public DefaultWebResponse list(DetectPageWebRequest request) throws BusinessException {

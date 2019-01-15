@@ -19,7 +19,7 @@ public enum DetectStateEnums {
     
     private String name;
     
-    DetectStateEnums(String name){
+    DetectStateEnums(String name) {
         this.name = name;
     }
     

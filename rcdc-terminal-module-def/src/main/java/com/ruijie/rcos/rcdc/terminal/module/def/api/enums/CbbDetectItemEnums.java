@@ -36,30 +36,31 @@ public enum CbbDetectItemEnums {
      * 时延
      */
     DELAY("delay");
-    
+
     private String name;
-    
-    CbbDetectItemEnums(String name){
+
+    CbbDetectItemEnums(String name) {
         this.name = name;
     }
-    
+
     /**
      * 判断是否包含字符串匹配的枚举类型
-     * @param name
-     * @return
+     * 
+     * @param name 名称
+     * @return 是否包含
      */
     public static boolean contains(String name) {
         Assert.hasText(name, "name can not be null");
-        
+
         CbbDetectItemEnums[] itemArr = values();
-        for(CbbDetectItemEnums item : itemArr) {
-            if(name.equals(item.getName())) {
+        for (CbbDetectItemEnums item : itemArr) {
+            if (name.equals(item.getName())) {
                 return true;
             }
         }
         return false;
     }
-    
+
 
     public String getName() {
         return name;

@@ -13,9 +13,9 @@ public class CbbTerminalDetectDTO {
 
 
     private String terminalId;
-    
+
     private String terminalName;
-    
+
     private String ip;
 
     /**
@@ -42,17 +42,25 @@ public class CbbTerminalDetectDTO {
      * 网络时延
      */
     private Double delay;
-    
+
     /**
      * 检测状态
      */
     private DetectState checkState = new DetectState();
 
-    
-    public class DetectState{
-        
+    /**
+     * 
+     * Description: 检测状态
+     * Copyright: Copyright (c) 2018
+     * Company: Ruijie Co., Ltd.
+     * Create Time: 2019年1月15日
+     * 
+     * @author nt
+     */
+    public class DetectState {
+
         private String state;
-        
+
         private String message;
 
         public String getState() {
@@ -70,7 +78,7 @@ public class CbbTerminalDetectDTO {
         public void setMessage(String message) {
             this.message = message;
         }
-        
+
     }
 
 
@@ -162,5 +170,5 @@ public class CbbTerminalDetectDTO {
     public void setCheckState(DetectState checkState) {
         this.checkState = checkState;
     }
-    
+
 }
