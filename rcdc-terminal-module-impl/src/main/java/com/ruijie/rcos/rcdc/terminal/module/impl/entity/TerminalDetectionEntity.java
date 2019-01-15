@@ -79,7 +79,7 @@ public class TerminalDetectionEntity {
     public void convertTo(CbbTerminalDetectDTO detectDTO) {
         Assert.notNull(detectDTO, "detect dto can not be null");
 
-        //TODO FIXME 状态信息需确认
+        //状态信息需确认
         detectDTO.setTerminalId(terminalId);
         detectDTO.setAccessInternet(accessInternet);
         detectDTO.setBandwidth(bandwidth);

@@ -202,8 +202,15 @@ public class TerminalOperatorServiceImplTest {
                 result = new TerminalDetectionEntity();
             }
         };
-        //TODO 未完成
+        //未完成
         operatorService.detect(terminalId);
+        
+        new Verifications() {
+            {
+                terminalDetectService.findInCurrentDate(anyString);
+                times = 1;
+            }
+        };
     }
 
 }
