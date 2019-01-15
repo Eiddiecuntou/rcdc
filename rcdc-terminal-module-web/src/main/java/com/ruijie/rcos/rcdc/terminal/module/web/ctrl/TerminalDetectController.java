@@ -20,6 +20,14 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
 
+/**
+ * Description: 终端检测
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2019/1/15
+ *
+ * @author nt
+ */
 @Controller
 @RequestMapping("/terminal/detect")
 @EnableCustomValidate(enable = false)
@@ -30,8 +38,8 @@ public class TerminalDetectController {
 
     /**
      * 批量开启终端检测
-     * 
-     * @param request 请求参数
+     *
+     * @param request        请求参数
      * @param optLogRecorder 日志记录
      * @return 请求结果
      * @throws BusinessException 业务异常
@@ -50,7 +58,7 @@ public class TerminalDetectController {
 
     /**
      * 开始终端检测并记录操作日志
-     * 
+     *
      * @param optLogRecorder
      * @param terminalId
      * @throws BusinessException
@@ -69,7 +77,7 @@ public class TerminalDetectController {
 
     /**
      * 获取终端检测分页列表
-     * 
+     *
      * @param request 请求参数
      * @return 检测分页列表
      * @throws BusinessException 业务异常
