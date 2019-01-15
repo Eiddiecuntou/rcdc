@@ -91,7 +91,7 @@ public class SystemUpgradeTaskManager {
         long currentTime = System.currentTimeMillis();
         task.setStartTime(currentTime);
         task.setTimeStamp(currentTime);
-        task.setState(CbbSystemUpgradeStateEnums.DOING);
+        task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(false);
         return task;
     }
@@ -147,7 +147,7 @@ public class SystemUpgradeTaskManager {
         Set<Entry<String, SystemUpgradeTask>> entrySet = TASK_MAP.entrySet();
         for (Iterator<Entry<String, SystemUpgradeTask>> it = entrySet.iterator(); it.hasNext();) {
             SystemUpgradeTask task = it.next().getValue();
-            if (task.getState() == CbbSystemUpgradeStateEnums.DOING) {
+            if (task.getState() == CbbSystemUpgradeStateEnums.UPGRADING) {
                 LOGGER.debug("task is doing; terminal id[{}]", task.getTerminalId());
                 count++;
             }
@@ -175,7 +175,7 @@ public class SystemUpgradeTaskManager {
         List<SystemUpgradeTask> upgradingTaskList = new ArrayList<>();
         for (Iterator<Entry<String, SystemUpgradeTask>> it = TASK_MAP.entrySet().iterator(); it.hasNext();) {
             SystemUpgradeTask task = it.next().getValue();
-            if (task.getState() == CbbSystemUpgradeStateEnums.DOING) {
+            if (task.getState() == CbbSystemUpgradeStateEnums.UPGRADING) {
                 LOGGER.debug("task is doing; terminal id[{}]", task.getTerminalId());
                 upgradingTaskList.add(task);
             }
@@ -266,7 +266,7 @@ public class SystemUpgradeTaskManager {
                         task.getTerminalId());
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADING_NUM_EXCEED_LIMIT);
             }
-            toStartTask.setState(CbbSystemUpgradeStateEnums.DOING);
+            toStartTask.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         }
 
     }

@@ -55,10 +55,11 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
         LOGGER.debug("=====终端升级报文===={}", request.getData());
         Assert.notNull(request, "DispatcherRequest不能为null");
+        
         //保存终端基本信息
         saveBasicInfo(request);
-        // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
         
+        // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级        
         TerminalVersionResultDTO versionResult = getCheckVersionResult(request);
         CbbResponseShineMessage cbbShineMessageRequest = buildMessageResponse(request, versionResult);
         try {
@@ -90,6 +91,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private void saveBasicInfo(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest 不能为null");
         Assert.notNull(request.getData(), "报文消息体不能为空");
+        
         String terminalId = request.getTerminalId();
         TerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
         Date now = new Date();

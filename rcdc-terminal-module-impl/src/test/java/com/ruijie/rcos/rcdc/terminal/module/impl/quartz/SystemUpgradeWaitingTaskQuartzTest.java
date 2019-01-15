@@ -203,7 +203,7 @@ public class SystemUpgradeWaitingTaskQuartzTest {
         SystemUpgradeTask task = new SystemUpgradeTask();
         task.setTerminalId(terminalId);
         task.setTerminalType(terminalType);
-        task.setState(CbbSystemUpgradeStateEnums.DOING);
+        task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(true);
         task.setStartTime(System.currentTimeMillis() - 50000);
         task.setTimeStamp(System.currentTimeMillis() - 10000);

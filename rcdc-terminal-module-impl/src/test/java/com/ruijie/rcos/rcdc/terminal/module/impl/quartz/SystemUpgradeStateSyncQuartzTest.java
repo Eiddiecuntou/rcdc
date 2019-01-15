@@ -117,7 +117,7 @@ public class SystemUpgradeStateSyncQuartzTest {
         SystemUpgradeTask task = new SystemUpgradeTask();
         task.setTerminalId(terminalId);
         task.setTerminalType(terminalType);
-        task.setState(CbbSystemUpgradeStateEnums.DOING);
+        task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(true);
         task.setStartTime(System.currentTimeMillis() - 50000);
         task.setTimeStamp(System.currentTimeMillis() - 10000);
@@ -133,7 +133,7 @@ public class SystemUpgradeStateSyncQuartzTest {
             TerminalSystemUpgradeInfo info = buildUpgradeInfo(baseTerminalId + i, terminalType);
             info.setLastUpdateTime(System.currentTimeMillis() - 3000);
             if (i % 2 == 0) {
-                info.setState(CbbSystemUpgradeStateEnums.DOING);
+                info.setState(CbbSystemUpgradeStateEnums.UPGRADING);
             } else {
                 info.setState(CbbSystemUpgradeStateEnums.SUCCESS);
             }
@@ -142,7 +142,7 @@ public class SystemUpgradeStateSyncQuartzTest {
 
         TerminalSystemUpgradeInfo notIncacheInfo = buildUpgradeInfo(baseTerminalId + 12, terminalType);
         notIncacheInfo.setLastUpdateTime(System.currentTimeMillis() - 3000);
-        notIncacheInfo.setState(CbbSystemUpgradeStateEnums.DOING);
+        notIncacheInfo.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         upgradeInfoList.add(notIncacheInfo);
 
         // 构建无效信息
@@ -156,7 +156,7 @@ public class SystemUpgradeStateSyncQuartzTest {
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI;
 
         TerminalSystemUpgradeInfo info1 = buildUpgradeInfo(baseTerminalId, terminalType);
-        info1.setState(CbbSystemUpgradeStateEnums.DOING);
+        info1.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         upgradeInfoList.add(info1);
 
         TerminalSystemUpgradeInfo info2 = buildUpgradeInfo(baseTerminalId, terminalType);
@@ -165,7 +165,7 @@ public class SystemUpgradeStateSyncQuartzTest {
 
         TerminalSystemUpgradeInfo info4 = buildUpgradeInfo(baseTerminalId, terminalType);
         info4.setLastUpdateTime(System.currentTimeMillis());
-        info4.setState(CbbSystemUpgradeStateEnums.DOING);
+        info4.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         info4.setTerminalType(null);
         upgradeInfoList.add(info4);
     }

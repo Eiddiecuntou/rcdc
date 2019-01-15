@@ -42,7 +42,7 @@ import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
  * @author nt
  */
 @Controller
-@RequestMapping("/terminal/system/upgrade")
+@RequestMapping("/cbb/terminal/system/upgrade")
 @EnableCustomValidate(enable = false)
 public class TerminalSystemUpgradeController {
 
@@ -70,15 +70,11 @@ public class TerminalSystemUpgradeController {
             cbbTerminalUpgradeAPI.uploadUpgradeFile(request);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
                     file.getFileName());
-        } catch (Exception e) {
-            if (e instanceof BusinessException) {
-                BusinessException ex = (BusinessException) e;
-                // 上传文件处理失败
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
-                        file.getFileName(), ex.getI18nMessage());
-            } else {
-                throw e;
-            }
+        } catch (BusinessException ex) {
+            // 上传文件处理失败
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
+                    file.getFileName(), ex.getI18nMessage());
+            throw ex;
         }
         return DefaultWebResponse.Builder.success();
     }
@@ -117,6 +113,8 @@ public class TerminalSystemUpgradeController {
             ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         Assert.notNull(request, "CreateTerminalSystemUpgradeRequest can not be null");
 
+        
+        // TODO 批处理框架
         CbbTerminalTypeEnums terminalType = request.getTerminalType();
         for (String terminalId : request.getTerminalIdArr()) {
             addUpgradeTaskAddOptLog(terminalId, terminalType, optLogRecorder);
@@ -165,44 +163,44 @@ public class TerminalSystemUpgradeController {
 
         LOGGER.warn("start remove system upgrade task...");
         final String[] idArr = request.getIdArr();
-//        builder.setTaskName("批量删除系统升级任务")
-//               .setTaskDesc("批量删除系统升级任务")
-//               .enableParallel()
-//               .registerHandler(new BatchTaskHandler<BatchTaskItem>() {
-//                   final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr)
-//                           .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("删除云桌面").build()).iterator();
-//
-//                @Override
-//                public boolean hasNext() {
-//                    // TODO Auto-generated method stub
-//                    return false;
-//                }
-//
-//                @Override
-//                public BatchTaskItem next() {
-//                    // TODO Auto-generated method stub
-//                    return null;
-//                }
-//
-//                @Override
-//                public void afterException(BatchTaskItem arg0, Exception arg1) {
-//                    // TODO Auto-generated method stub
-//                    
-//                }
-//
-//                @Override
-//                public BatchTaskFinishResult onFinish(int arg0, int arg1) {
-//                    // TODO Auto-generated method stub
-//                    return null;
-//                }
-//
-//                @Override
-//                public BatchTaskItemResult processItem(BatchTaskItem arg0) throws BusinessException {
-//                    // TODO Auto-generated method stub
-//                    return null;
-//                }
-//                   
-//               }).start();
+        // builder.setTaskName("批量删除系统升级任务")
+        // .setTaskDesc("批量删除系统升级任务")
+        // .enableParallel()
+        // .registerHandler(new BatchTaskHandler<BatchTaskItem>() {
+        // final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr)
+        // .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("删除云桌面").build()).iterator();
+        //
+        // @Override
+        // public boolean hasNext() {
+        // // TODO Auto-generated method stub
+        // return false;
+        // }
+        //
+        // @Override
+        // public BatchTaskItem next() {
+        // // TODO Auto-generated method stub
+        // return null;
+        // }
+        //
+        // @Override
+        // public void afterException(BatchTaskItem arg0, Exception arg1) {
+        // // TODO Auto-generated method stub
+        //
+        // }
+        //
+        // @Override
+        // public BatchTaskFinishResult onFinish(int arg0, int arg1) {
+        // // TODO Auto-generated method stub
+        // return null;
+        // }
+        //
+        // @Override
+        // public BatchTaskItemResult processItem(BatchTaskItem arg0) throws BusinessException {
+        // // TODO Auto-generated method stub
+        // return null;
+        // }
+        //
+        // }).start();
         for (String terminalId : request.getIdArr()) {
             deleteAddOptLog(terminalId, optLogRecorder);
         }

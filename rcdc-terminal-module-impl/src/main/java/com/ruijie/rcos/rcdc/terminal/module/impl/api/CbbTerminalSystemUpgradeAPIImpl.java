@@ -110,6 +110,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
 
         // 挂载升级文件，读取版本信息内容，校验正确
+        // TODO 异常处理
         mountUpgradePackage(filePath);
 
         // 读取校验文件内容
@@ -121,6 +122,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // 将新升级文件移动到目录下
         moveUpgradePackage(fileName, filePath, versionInfo.getPackageType());
 
+        // TODO 考虑下如果文件移动成功，但未入库的话是否会导致bug
         // 更新升级包信息入库
         terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion(versionInfo);
 
@@ -142,6 +144,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
         File in = new File(filePath);
         try {
+            // TODO 可以直接rename
             FileCopyUtils.copy(in, out);
         } catch (IOException e) {
             LOGGER.debug("copy upgrade file to target directory fail, fileName : {}, packageType : {}", fileName,
@@ -300,7 +303,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // 开启NFS服务
         NfsServiceUtil.startService();
 
-        if (upgradeTask != null && CbbSystemUpgradeStateEnums.DOING == upgradeTask.getState()
+        if (upgradeTask != null && CbbSystemUpgradeStateEnums.UPGRADING == upgradeTask.getState()
                 && !upgradeTask.getIsSend()) {
             LOGGER.debug("send terminal system upgrade message ...");
             // 下发系统刷机指令
@@ -335,7 +338,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_NOT_EXIST);
         }
 
-        if (CbbSystemUpgradeStateEnums.DOING == task.getState()) {
+        if (CbbSystemUpgradeStateEnums.UPGRADING == task.getState()) {
             LOGGER.debug("terminal upgrade task state is doing, terminal id[{}] ", request.getTerminalId());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }

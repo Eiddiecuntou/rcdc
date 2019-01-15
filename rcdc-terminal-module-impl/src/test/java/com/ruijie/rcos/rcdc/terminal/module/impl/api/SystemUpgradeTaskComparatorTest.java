@@ -26,10 +26,10 @@ public class SystemUpgradeTaskComparatorTest {
     public void testCompare() {
         long curTime = new Date().getTime();
         SystemUpgradeTask o1 = new SystemUpgradeTask();
-        o1.setState(CbbSystemUpgradeStateEnums.DOING);
+        o1.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         o1.setStartTime(curTime);
         SystemUpgradeTask o2 = new SystemUpgradeTask();
-        o2.setState(CbbSystemUpgradeStateEnums.DOING);
+        o2.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         o2.setStartTime(curTime - 1);
         
         comparator.compare(o1, o2);
@@ -39,10 +39,10 @@ public class SystemUpgradeTaskComparatorTest {
     public void testCompareStateEqualFirstTimeSmall() {
         long curTime = new Date().getTime();
         SystemUpgradeTask o1 = new SystemUpgradeTask();
-        o1.setState(CbbSystemUpgradeStateEnums.DOING);
+        o1.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         o1.setStartTime(curTime);
         SystemUpgradeTask o2 = new SystemUpgradeTask();
-        o2.setState(CbbSystemUpgradeStateEnums.DOING);
+        o2.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         o2.setStartTime(curTime + 1);
         
         comparator.compare(o1, o2);
@@ -55,7 +55,7 @@ public class SystemUpgradeTaskComparatorTest {
         o1.setState(CbbSystemUpgradeStateEnums.WAIT);
         o1.setStartTime(curTime);
         SystemUpgradeTask o2 = new SystemUpgradeTask();
-        o2.setState(CbbSystemUpgradeStateEnums.DOING);
+        o2.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         o2.setStartTime(curTime - 1);
         
         comparator.compare(o1, o2);
@@ -65,7 +65,7 @@ public class SystemUpgradeTaskComparatorTest {
     public void testCompareStateNotEqualOther() {
         long curTime = new Date().getTime();
         SystemUpgradeTask o1 = new SystemUpgradeTask();
-        o1.setState(CbbSystemUpgradeStateEnums.DOING);
+        o1.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         o1.setStartTime(curTime);
         SystemUpgradeTask o2 = new SystemUpgradeTask();
         o2.setState(CbbSystemUpgradeStateEnums.WAIT);

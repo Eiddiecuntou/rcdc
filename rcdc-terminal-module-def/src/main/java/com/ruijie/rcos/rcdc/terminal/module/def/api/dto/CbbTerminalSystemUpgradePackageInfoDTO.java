@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import java.util.Date;
 import java.util.UUID;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 
 /**
  * 
@@ -16,25 +17,17 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
     
     private UUID id;
 
-    /**
-     * 刷机包名称
-     */
     private String name;
 
-    /**
-     * 存储路径
-     */
-    private String storePath;
 
     /**
      * 包类型，VDI ISO、IDV ISO、OTA
      */
-    private String packageType;
-
-    /**
-     * 上传时间
-     */
-    private Date uploadTime;
+    private CbbTerminalTypeEnums packageType;
+    
+    private String origin;
+    
+    private String distributionMode;
 
     public UUID getId() {
         return id;
@@ -52,28 +45,29 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
         this.name = name;
     }
 
-    public String getStorePath() {
-        return storePath;
-    }
-
-    public void setStorePath(String storePath) {
-        this.storePath = storePath;
-    }
-
-    public String getPackageType() {
+    public CbbTerminalTypeEnums getPackageType() {
         return packageType;
     }
 
-    public void setPackageType(String packageType) {
+    public void setPackageType(CbbTerminalTypeEnums packageType) {
         this.packageType = packageType;
     }
 
-    public Date getUploadTime() {
-        return uploadTime;
+    public String getOrigin() {
+        return origin;
     }
 
-    public void setUploadTime(Date uploadTime) {
-        this.uploadTime = uploadTime;
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
+
+    public String getDistributionMode() {
+        return distributionMode;
+    }
+
+    public void setDistributionMode(String distributionMode) {
+        this.distributionMode = distributionMode;
+    }
+
     
 }

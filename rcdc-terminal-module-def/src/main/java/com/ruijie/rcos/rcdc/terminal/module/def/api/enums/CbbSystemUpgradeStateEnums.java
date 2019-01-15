@@ -18,7 +18,7 @@ public enum CbbSystemUpgradeStateEnums {
     /**
      * 正在更新中
      */
-    DOING,
+    UPGRADING,
     
     /**
      * 等待更新中

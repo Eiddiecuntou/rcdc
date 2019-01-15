@@ -22,7 +22,7 @@ public class SystemUpgradeTaskComparator implements Comparator<SystemUpgradeTask
                 return 1;
             }
         } else {
-            if (o1.getState() == CbbSystemUpgradeStateEnums.DOING) {
+            if (o1.getState() == CbbSystemUpgradeStateEnums.UPGRADING) {
                 return 1;
             }
         }

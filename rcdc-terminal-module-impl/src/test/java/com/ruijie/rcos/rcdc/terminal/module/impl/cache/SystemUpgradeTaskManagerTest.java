@@ -405,7 +405,7 @@ public class SystemUpgradeTaskManagerTest {
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.IDV;
 
         SystemUpgradeTask task = buildSystemUpgradeTask(terminalId, terminalType);
-        task.setState(CbbSystemUpgradeStateEnums.DOING);
+        task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         caches.put(terminalId, task);
 
         Assert.assertEquals(1, caches.size());
@@ -429,7 +429,7 @@ public class SystemUpgradeTaskManagerTest {
         task.setTerminalType(terminalType);
         task.setStartTime(System.currentTimeMillis());
         task.setTimeStamp(System.currentTimeMillis());
-        task.setState(CbbSystemUpgradeStateEnums.DOING);
+        task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(false);
         return task;
     }
