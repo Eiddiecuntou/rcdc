@@ -182,3 +182,21 @@ is '版本号，实现乐观锁';
 alter table t_cbb_terminal_detection
   owner to postgres;
 
+/** 终端系统升级包*/
+CREATE TABLE t_cbb_sys_upgrade_package (
+  "id" uuid NOT NULL,
+  "img_name" varchar(64) COLLATE "pg_catalog"."default",
+  "package_type" varchar(32) COLLATE "pg_catalog"."default",
+  "upload_time" timestamp(6),
+  "package_version" varchar(64) COLLATE "pg_catalog"."default",
+  "version" int4 NOT NULL DEFAULT 0
+);
+
+COMMENT ON COLUMN t_cbb_sys_upgrade_package.img_name IS '升级包名称';
+COMMENT ON COLUMN t_cbb_sys_upgrade_package.package_type IS '升级包类型，包括android升级包、Linux vdi升级包、Linux IDV升级包';
+COMMENT ON COLUMN t_cbb_sys_upgrade_package.upload_time IS '上传时间';
+COMMENT ON COLUMN t_cbb_sys_upgrade_package.package_version IS '升级包版本号';
+COMMENT ON COLUMN t_cbb_sys_upgrade_package.version IS '版本号';
+COMMENT ON TABLE t_cbb_sys_upgrade_package IS '终端系统升级包表';
+
+ALTER TABLE "public"."t_cbb_sys_upgrade_package" ADD CONSTRAINT "t_termianl_system_upgrade_package_pkey" PRIMARY KEY ("id");
