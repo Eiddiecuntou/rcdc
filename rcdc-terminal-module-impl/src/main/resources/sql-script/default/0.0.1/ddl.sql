@@ -130,20 +130,18 @@ create unique index t_rcdc_terminal_basic_info_terminal_id_uindex
 /**终端检测表*/
 create table t_cbb_terminal_detection
 (
-  id               uuid        not null
-    constraint t_terminal_detection_pkey
-    primary key,
-  ip_conflict      smallint,
-  ip_conflict_mac  varchar(32),
-  access_internet  smallint,
-  bandwidth        varchar(32),
-  packet_loss_rate varchar(32),
-  network_delay    integer,
-  detect_time      timestamp,
-  terminal_id      varchar(32) not null,
-  detect_state     varchar(64) not null,
-  detect_fail_msg  varchar(128),
-  version          integer default 1
+  "id" uuid NOT NULL,
+  "ip_conflict" int2,
+  "ip_conflict_mac" varchar(32) COLLATE "pg_catalog"."default",
+  "access_internet" int2,
+  "bandwidth" float4,
+  "packet_loss_rate" int2,
+  "network_delay" int4,
+  "detect_time" timestamp(6),
+  "terminal_id" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
+  "detect_state" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
+  "detect_fail_msg" varchar(128) COLLATE "pg_catalog"."default",
+  "version" int4 DEFAULT 1
 );
 
 comment on column t_cbb_terminal_detection.ip_conflict
@@ -179,6 +177,8 @@ is '检测失败原因';
 comment on column t_cbb_terminal_detection.version
 is '版本号，实现乐观锁';
 
+ALTER TABLE t_cbb_terminal_detection ADD CONSTRAINT "t_terminal_detection_pkey" PRIMARY KEY ("id");
+
 alter table t_cbb_terminal_detection
   owner to postgres;
 
@@ -199,4 +199,4 @@ COMMENT ON COLUMN t_cbb_sys_upgrade_package.package_version IS '升级包版本�
 COMMENT ON COLUMN t_cbb_sys_upgrade_package.version IS '版本号';
 COMMENT ON TABLE t_cbb_sys_upgrade_package IS '终端系统升级包表';
 
-ALTER TABLE "public"."t_cbb_sys_upgrade_package" ADD CONSTRAINT "t_termianl_system_upgrade_package_pkey" PRIMARY KEY ("id");
+ALTER TABLE t_cbb_sys_upgrade_package ADD CONSTRAINT "t_termianl_system_upgrade_package_pkey" PRIMARY KEY ("id");
