@@ -27,7 +27,7 @@ public class MessageUtils {
      * @param data 待解析的消息
      * @param clz  消息对应的类
      * @param <T>  消息对应的实体类
-     * @return
+     * @return 返回消息对象
      */
     public static <T> CbbShineMessageResponse parse(Object data, @Nullable Class<T> clz) {
         Assert.notNull(data, "data不能为null");
