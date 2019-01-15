@@ -159,7 +159,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         DefaultPageResponse<CbbTerminalDetectDTO> emptyResp = new DefaultPageResponse<CbbTerminalDetectDTO>();
         emptyResp.setItemArr(new CbbTerminalDetectDTO[0]);
         emptyResp.setTotal(total);
-        emptyResp.setStauts(Status.SUCCESS);
+        emptyResp.setStatus(Status.SUCCESS);
         return emptyResp;
     }
 
@@ -169,7 +169,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
         CbbTerminalDetectResultDTO result = detectService.getDetectResult(request.getDetectDate());
         CbbDetectResultResponse resp = new CbbDetectResultResponse(result);
-        resp.setStauts(Status.SUCCESS);
+        resp.setStatus(Status.SUCCESS);
         return resp;
     }
 
