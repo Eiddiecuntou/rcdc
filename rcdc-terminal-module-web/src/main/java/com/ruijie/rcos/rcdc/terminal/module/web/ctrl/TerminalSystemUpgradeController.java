@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
-import java.util.Iterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -20,10 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.web.request.DeleteTerminalSystemUpgr
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradePackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
-import com.ruijie.rcos.sk.base.batch.BatchTaskFinishResult;
-import com.ruijie.rcos.sk.base.batch.BatchTaskHandler;
-import com.ruijie.rcos.sk.base.batch.BatchTaskItem;
-import com.ruijie.rcos.sk.base.batch.BatchTaskItemResult;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -42,7 +37,7 @@ import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
  * @author nt
  */
 @Controller
-@RequestMapping("/terminal/system/upgrade")
+@RequestMapping("/cbb/terminal/system/upgrade")
 @EnableCustomValidate(enable = false)
 public class TerminalSystemUpgradeController {
 
@@ -63,6 +58,7 @@ public class TerminalSystemUpgradeController {
     public DefaultWebResponse uploadPackage(ChunkUploadFile file, ProgrammaticOptLogRecorder optLogRecorder)
             throws BusinessException {
         Assert.notNull(file, "file 不能为空");
+        Assert.notNull(optLogRecorder, "optLogRecorder 不能为空");
 
         CbbTerminalUpgradePackageUploadRequest request =
                 new CbbTerminalUpgradePackageUploadRequest(file.getFilePath(), file.getFileName(), file.getFileMD5());
@@ -70,16 +66,11 @@ public class TerminalSystemUpgradeController {
             cbbTerminalUpgradeAPI.uploadUpgradeFile(request);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
                     file.getFileName());
-        } catch (Exception e) {
-            // TODO 精简一下
-            if (e instanceof BusinessException) {
-                BusinessException ex = (BusinessException) e;
-                // 上传文件处理失败
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
-                        file.getFileName(), ex.getI18nMessage());
-            } else {
-                throw e;
-            }
+        } catch (BusinessException ex) {
+            // 上传文件处理失败
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
+                    file.getFileName(), ex.getI18nMessage());
+            throw ex;
         }
         return DefaultWebResponse.Builder.success();
     }
@@ -95,7 +86,7 @@ public class TerminalSystemUpgradeController {
     @RequestMapping("/package/list")
     public DefaultWebResponse listPackage(ListTerminalSystemUpgradePackageRequest listRequest)
             throws BusinessException {
-        Assert.notNull(listRequest, "ListTerminalSystemUpgradePackageRequest can not be null");
+        Assert.notNull(listRequest, "listRequest can not be null");
 
         CbbTerminalSystemUpgradePackageListRequest request = new CbbTerminalSystemUpgradePackageListRequest();
         request.setTerminalType(listRequest.getTerminalType());
@@ -117,8 +108,9 @@ public class TerminalSystemUpgradeController {
     public DefaultWebResponse create(CreateTerminalSystemUpgradeRequest request,
             ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         Assert.notNull(request, "CreateTerminalSystemUpgradeRequest can not be null");
+        Assert.notNull(optLogRecorder, "optLogRecorder can not be null");
 
-        
+
         // TODO 批处理框架
         CbbTerminalTypeEnums terminalType = request.getTerminalType();
         for (String terminalId : request.getTerminalIdArr()) {
@@ -137,15 +129,11 @@ public class TerminalSystemUpgradeController {
         try {
             cbbTerminalUpgradeAPI.addSystemUpgradeTask(addRequest);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_SUCCESS_LOG, terminalId);
-        } catch (Exception e) {
-            if (e instanceof BusinessException) {
-                BusinessException ex = (BusinessException) e;
-                // 添加升级失败
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG, terminalId,
-                        ex.getI18nMessage());
-            } else {
-                throw e;
-            }
+        } catch (BusinessException ex) {
+            // 添加升级失败
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG, terminalId,
+                    ex.getI18nMessage());
+            throw ex;
         }
 
     }
@@ -168,44 +156,7 @@ public class TerminalSystemUpgradeController {
 
         LOGGER.warn("start remove system upgrade task...");
         final String[] idArr = request.getIdArr();
-//        builder.setTaskName("批量删除系统升级任务")
-//               .setTaskDesc("批量删除系统升级任务")
-//               .enableParallel()
-//               .registerHandler(new BatchTaskHandler<BatchTaskItem>() {
-//                   final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr)
-//                           .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("删除云桌面").build()).iterator();
-//
-//                @Override
-//                public boolean hasNext() {
-//                    // TODO Auto-generated method stub
-//                    return false;
-//                }
-//
-//                @Override
-//                public BatchTaskItem next() {
-//                    // TODO Auto-generated method stub
-//                    return null;
-//                }
-//
-//                @Override
-//                public void afterException(BatchTaskItem arg0, Exception arg1) {
-//                    // TODO Auto-generated method stub
-//                    
-//                }
-//
-//                @Override
-//                public BatchTaskFinishResult onFinish(int arg0, int arg1) {
-//                    // TODO Auto-generated method stub
-//                    return null;
-//                }
-//
-//                @Override
-//                public BatchTaskItemResult processItem(BatchTaskItem arg0) throws BusinessException {
-//                    // TODO Auto-generated method stub
-//                    return null;
-//                }
-//                   
-//               }).start();
+
         for (String terminalId : request.getIdArr()) {
             deleteAddOptLog(terminalId, optLogRecorder);
         }
@@ -220,15 +171,11 @@ public class TerminalSystemUpgradeController {
         try {
             cbbTerminalUpgradeAPI.removeTerminalSystemUpgradeTask(removeRequest);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_SUCCESS_LOG, terminalId);
-        } catch (Exception e) {
-            if (e instanceof BusinessException) {
-                BusinessException ex = (BusinessException) e;
-                // 批量删除升级失败
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG, terminalId,
-                        ex.getI18nMessage());
-            } else {
-                throw e;
-            }
+        } catch (BusinessException ex) {
+            // 批量删除升级失败
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG, terminalId,
+                    ex.getI18nMessage());
+            throw ex;
         }
     }
 
