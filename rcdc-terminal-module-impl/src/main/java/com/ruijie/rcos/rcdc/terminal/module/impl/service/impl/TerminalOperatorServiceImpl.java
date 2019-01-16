@@ -140,6 +140,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         // 发消息给shine，执行日志收集
         sender.request(message);
     }
+
     @Override
     public void detect(String[] terminalIdArr) throws BusinessException {
         Assert.notEmpty(terminalIdArr, "terminalIdArr大小不能为0");

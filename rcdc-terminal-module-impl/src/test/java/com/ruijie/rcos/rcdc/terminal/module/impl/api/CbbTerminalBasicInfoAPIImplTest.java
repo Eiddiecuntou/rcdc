@@ -209,10 +209,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
         new Expectations() {
             {
                 try {
-                    basicInfoService.modifyTerminalName(anyString, anyString);
                     basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
                     result = 0;
-                } catch (BusinessException e) {
+                } catch (Exception e) {
                     fail();
                 }
             }
@@ -233,12 +232,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
         new Verifications() {
             {
                 try {
-                    basicInfoService.modifyTerminalName(anyString, anyString);
-                    times = 1;
                     basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
                     times = 1;
 
-                } catch (BusinessException e) {
+                } catch (Exception e) {
                     fail();
                 }
             }

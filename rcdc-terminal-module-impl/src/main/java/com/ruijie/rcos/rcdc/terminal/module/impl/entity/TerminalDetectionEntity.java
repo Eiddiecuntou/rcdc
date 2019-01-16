@@ -76,6 +76,10 @@ public class TerminalDetectionEntity {
     @Version
     private int version;
 
+    /**
+     *  对象转换
+     * @param detectDTO 设值对象
+     */
     public void convertTo(CbbTerminalDetectDTO detectDTO) {
         Assert.notNull(detectDTO, "detect dto can not be null");
 
