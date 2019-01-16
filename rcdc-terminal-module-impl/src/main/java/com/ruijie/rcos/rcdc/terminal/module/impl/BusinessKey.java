@@ -29,6 +29,11 @@ public interface BusinessKey {
      * 不存在日志文件
      */
     String RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST = "rcdc_terminal_collect_log_not_exist";
+    
+    /**
+     * 终端管理员密码记录不存在
+     */
+    String RCDC_TERMINAL_ADMIN_PWD_RECORD_NOT_EXIST = "rcdc_terminal_admin_pwd_record_not_exist";
 
     /**
      * 上传系统升级文件类型错误
@@ -118,4 +123,5 @@ public interface BusinessKey {
      * 文件操作失败
      */
     String RCDC_FILE_OPERATE_FAIL = "rcdc_file_operate_fail";
+    
 }

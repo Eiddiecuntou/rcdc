@@ -14,18 +14,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 public class CbbChangePasswordRequest implements Request {
 
     @NotBlank
-    private String terminalId;
-
-    @NotBlank
     private String password;
-
-    public String getTerminalId() {
-        return terminalId;
-    }
-
-    public void setTerminalId(String terminalId) {
-        this.terminalId = terminalId;
-    }
 
     public String getPassword() {
         return password;

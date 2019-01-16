@@ -81,7 +81,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     private boolean updateTerminalState(String terminalId, CbbTerminalStateEnums state) {
-        TerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
+        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             LOGGER.error("不存在terminalId=[{}]的终端", terminalId);
             return false;

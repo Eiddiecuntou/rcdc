@@ -28,7 +28,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @return 返回终端信息
      */
 
-    TerminalEntity findFirstByTerminalId(String terminalId);
+    TerminalEntity findTerminalEntityByTerminalId(String terminalId);
 
     /**
      * 获取终端详细基本信息
@@ -52,6 +52,8 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @param terminalId 终端id
      * @return 返回影响行数
      */
+    @Modifying
+    @Transactional
     int deleteByTerminalId(String terminalId);
 
     /**
@@ -64,10 +66,8 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      */
     @Modifying
     @Transactional
-    @Query("update TerminalEntity set name=:terminalName,version=version+1 where terminalId=:terminalId and "
-            + "version=:version")
-    int modifyTerminalName(@Param("terminalId") String terminalId, @Param("version") Integer version,
-            @Param("version") String terminalName);
+    @Query("update TerminalEntity set name=?3,version=version+1 where terminalId=?1 and version=?2")
+    int modifyTerminalName(String terminalId, Integer version, String terminalName);
 
     /**
      * 修改终端网络配置
@@ -79,12 +79,13 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      */
     @Modifying
     @Transactional
-    @Query("update TerminalEntity " + "set ip=:#{#network.ip},gateway=:#{#network.gateway},mainDns=:#{network.mainDns},"
-            + "secondDns=:#{network.secondDns},getIpMode=:#{network.getIpMode.ordinal},"
-            + "getDnsMode=:#{network.getDnsMode.ordinal},version=:version+1 "
-            + "where terminalId=:terminalId and version=:version")
+    @Query("update TerminalEntity " +
+            "set ip=:#{#network.ip},gateway=:#{#network.gateway},mainDns=:#{network.mainDns}," +
+            "secondDns=:#{network.secondDns},getIpMode=:#{network.getIpMode.ordinal}," +
+            "getDnsMode=:#{network.getDnsMode.ordinal},version=:version+1 " +
+            "where terminalId=:terminalId and version=:version")
     int modifyTerminalNetworkConfig(@Param("terminalId") String terminalId, @Param("version") Integer version,
-            @Param("network") CbbTerminalNetworkRequest network);
+                                    @Param("network") CbbTerminalNetworkRequest network);
 
     /**
      * 修改终端状态
@@ -96,9 +97,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      */
     @Modifying
     @Transactional
-    @Query("update TerminalEntity set state=:state,version=version+1 "
-            + "where terminalId=:terminalId and version=:version")
-    int modifyTerminalState(@Param("terminalId") String terminalId, @Param("version") Integer version,
-            @Param("state") CbbTerminalStateEnums state);
+    @Query("update TerminalEntity set state=:state,version=version+1 where terminalId=:terminalId and version=:version")
+    int modifyTerminalState(@Param("terminalId") String terminalId, @Param("version") Integer version, @Param("state") CbbTerminalStateEnums state);
 
 }

@@ -1,3 +1,4 @@
+
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;

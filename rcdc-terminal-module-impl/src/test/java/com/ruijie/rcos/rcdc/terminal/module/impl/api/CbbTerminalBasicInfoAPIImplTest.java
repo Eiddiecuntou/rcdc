@@ -16,9 +16,7 @@ import mockit.integration.junit4.JMockit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.Date;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -47,10 +45,12 @@ public class CbbTerminalBasicInfoAPIImplTest {
     @Test
     public void testFindBasicInfoByTerminalIdNotFindBasicInfo() {
         String terminalId = "123";
-        new Expectations() {{
-            basicInfoDAO.findFirstByTerminalId(terminalId);
-            result = null;
-        }};
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = null;
+            }
+        };
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId(terminalId);
         try {
@@ -61,12 +61,14 @@ public class CbbTerminalBasicInfoAPIImplTest {
         }
 
         try {
-            new Verifications() {{
-                String tid;
-                basicInfoDAO.findFirstByTerminalId(tid = withCapture());
-                times = 1;
-                Assert.assertEquals(tid, terminalId);
-            }};
+            new Verifications() {
+                {
+                    String tid;
+                    basicInfoDAO.findTerminalEntityByTerminalId(tid = withCapture());
+                    times = 1;
+                    Assert.assertEquals(tid, terminalId);
+                }
+            };
         } catch (Exception e) {
             fail();
         }
@@ -85,10 +87,12 @@ public class CbbTerminalBasicInfoAPIImplTest {
         entity.setTerminalName(name);
         entity.setGetIpMode(CbbGetNetworkModeEnums.AUTO);
         entity.setCreateTime(now);
-        new Expectations() {{
-            basicInfoDAO.findFirstByTerminalId(terminalId);
-            result = entity;
-        }};
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = entity;
+            }
+        };
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId(terminalId);
         try {
@@ -102,10 +106,12 @@ public class CbbTerminalBasicInfoAPIImplTest {
         }
 
         try {
-            new Verifications() {{
-                basicInfoDAO.findFirstByTerminalId(terminalId);
-                times = 1;
-            }};
+            new Verifications() {
+                {
+                    basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                    times = 1;
+                }
+            };
         } catch (Exception e) {
             fail();
         }
@@ -116,10 +122,12 @@ public class CbbTerminalBasicInfoAPIImplTest {
     public void testDeleteSuccess() {
         TerminalEntity entity = new TerminalEntity();
         entity.setVersion(1);
-        new Expectations() {{
-            basicInfoDAO.deleteByTerminalId(anyString);
-            result = 1;
-        }};
+        new Expectations() {
+            {
+                basicInfoDAO.deleteByTerminalId(anyString);
+                result = 1;
+            }
+        };
 
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId("123");
@@ -129,19 +137,23 @@ public class CbbTerminalBasicInfoAPIImplTest {
             fail();
         }
 
-        new Verifications() {{
-            basicInfoDAO.deleteByTerminalId(anyString);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                basicInfoDAO.deleteByTerminalId(anyString);
+                times = 1;
+            }
+        };
     }
 
 
     @Test
     public void testDeleteNoExistData() {
-        new Expectations() {{
-            basicInfoDAO.deleteByTerminalId(anyString);
-            result = 0;
-        }};
+        new Expectations() {
+            {
+                basicInfoDAO.deleteByTerminalId(anyString);
+                result = 0;
+            }
+        };
 
         new MockUp<CbbTerminalBasicInfoAPIImpl>() {
             @Mock
@@ -159,23 +171,27 @@ public class CbbTerminalBasicInfoAPIImplTest {
             assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
 
-        new Verifications() {{
-            basicInfoDAO.deleteByTerminalId(anyString);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                basicInfoDAO.deleteByTerminalId(anyString);
+                times = 1;
+            }
+        };
     }
 
     @Test
     public void testModifyTerminalNameSuccess() {
-        new Expectations() {{
-            try {
-                basicInfoService.modifyTerminalName(anyString, anyString);
-                basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
-                result = 1;
-            } catch (BusinessException e) {
-                fail();
+        new Expectations() {
+            {
+                try {
+                    basicInfoService.modifyTerminalName(anyString, anyString);
+                    basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
+                    result = 1;
+                } catch (BusinessException e) {
+                    fail();
+                }
             }
-        }};
+        };
 
         try {
             CbbTerminalNameRequest request = new CbbTerminalNameRequest();
@@ -190,15 +206,16 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     @Test
     public void testModifyTerminalNameFail() {
-        new Expectations() {{
-            try {
-                basicInfoService.modifyTerminalName(anyString, anyString);
-                basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
-                result = 0;
-            } catch (BusinessException e) {
-                fail();
+        new Expectations() {
+            {
+                try {
+                    basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
+                    result = 0;
+                } catch (Exception e) {
+                    fail();
+                }
             }
-        }};
+        };
 
         try {
             CbbTerminalNameRequest request = new CbbTerminalNameRequest();
@@ -212,30 +229,32 @@ public class CbbTerminalBasicInfoAPIImplTest {
     }
 
     private void modifyNameVerifications() {
-        new Verifications() {{
-            try {
-                basicInfoService.modifyTerminalName(anyString, anyString);
-                times = 1;
-                basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
-                times = 1;
+        new Verifications() {
+            {
+                try {
+                    basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
+                    times = 1;
 
-            } catch (BusinessException e) {
-                fail();
+                } catch (Exception e) {
+                    fail();
+                }
             }
-        }};
+        };
     }
 
     @Test
     public void testModifyTerminalNetworkConfig() {
-        new Expectations() {{
-            try {
-                basicInfoService.modifyTerminalNetworkConfig(anyString, (ShineNetworkConfig) any);
-            } catch (BusinessException e) {
-                fail();
+        new Expectations() {
+            {
+                try {
+                    basicInfoService.modifyTerminalNetworkConfig(anyString, (ShineNetworkConfig) any);
+                } catch (BusinessException e) {
+                    fail();
+                }
+                basicInfoDAO.modifyTerminalNetworkConfig(anyString, anyInt, (CbbTerminalNetworkRequest) any);
+                result = 1;
             }
-            basicInfoDAO.modifyTerminalNetworkConfig(anyString, anyInt, (CbbTerminalNetworkRequest) any);
-            result = 1;
-        }};
+        };
         CbbTerminalNetworkRequest request = new CbbTerminalNetworkRequest();
         String terminalId = "123";
         String gateway = "gateway";
@@ -250,22 +269,24 @@ public class CbbTerminalBasicInfoAPIImplTest {
             fail();
         }
 
-        new Verifications() {{
-            try {
-                basicInfoService.modifyTerminalNetworkConfig(anyString, (ShineNetworkConfig) any);
-                ShineNetworkConfig shineNetworkConfig;
-                basicInfoService.modifyTerminalNetworkConfig(anyString, shineNetworkConfig = withCapture());
-                assertEquals(shineNetworkConfig.getTerminalId(), terminalId);
-                assertEquals(shineNetworkConfig.getGateway(), gateway);
-                assertEquals(shineNetworkConfig.getGetDnsMode(), (Integer) 0);
-                assertEquals(shineNetworkConfig.getGetIpMode(), (Integer) 1);
+        new Verifications() {
+            {
+                try {
+                    basicInfoService.modifyTerminalNetworkConfig(anyString, (ShineNetworkConfig) any);
+                    ShineNetworkConfig shineNetworkConfig;
+                    basicInfoService.modifyTerminalNetworkConfig(anyString, shineNetworkConfig = withCapture());
+                    assertEquals(shineNetworkConfig.getTerminalId(), terminalId);
+                    assertEquals(shineNetworkConfig.getGateway(), gateway);
+                    assertEquals(shineNetworkConfig.getGetDnsMode(), (Integer) 0);
+                    assertEquals(shineNetworkConfig.getGetIpMode(), (Integer) 1);
 
-            } catch (BusinessException e) {
-                fail();
+                } catch (BusinessException e) {
+                    fail();
+                }
+                times = 1;
+                basicInfoDAO.modifyTerminalNetworkConfig(anyString, anyInt, (CbbTerminalNetworkRequest) any);
+                times = 1;
             }
-            times = 1;
-            basicInfoDAO.modifyTerminalNetworkConfig(anyString, anyInt, (CbbTerminalNetworkRequest) any);
-            times = 1;
-        }};
+        };
     }
 }

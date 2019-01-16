@@ -91,6 +91,12 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
             }
             //应答心跳报文
             sender.response(new Message(Constants.SYSTEM_TYPE, ReceiveTerminalEvent.HEARTBEAT, null));
+            
+            //for test
+            Session session = sender.getSession();
+            session.setAttribute(TERMINAL_BIND_KEY, "58:69:6c:7f:d3:b0");
+            sessionManager.bindSession("58:69:6c:7f:d3:b0", session);
+            
             return;
         }
         if (ReceiveTerminalEvent.CHECK_UPGRADE.equals(message.getAction())) {
@@ -98,6 +104,8 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
             //处理第一个报文
             handleFirstMessage(sender, message);
         }
+        
+        LOGGER.debug("其他业务报文， action[{}]", message.getAction());
         //执行消息分发
         String terminalId = getTerminalIdFromSession(sender.getSession());
         CbbDispatcherRequest request = new CbbDispatcherRequest();
@@ -106,6 +114,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         request.setTerminalId(terminalId);
         request.setData(message.getData());
         try {
+            LOGGER.debug("分发消息， action: {}", message.getAction());
             cbbDispatcherHandlerSPI.dispatch(request);
         } catch (Exception e) {
             LOGGER.error("消息分发执行异常;action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + String.valueOf(message.getData()), e);

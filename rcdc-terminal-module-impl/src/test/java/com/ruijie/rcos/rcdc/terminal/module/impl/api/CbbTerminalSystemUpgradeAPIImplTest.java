@@ -282,7 +282,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                         .findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = entity;
                 
-                basicInfoDAO.findFirstByTerminalId(anyString);
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 result = terminal;
             }
         };

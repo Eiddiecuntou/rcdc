@@ -267,7 +267,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_NUM_EXCEED_LIMIT);
         }
 
-        TerminalEntity terminal = basicInfoDAO.findFirstByTerminalId(request.getTerminalId());
+        TerminalEntity terminal = basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
         if (terminal == null) {
             LOGGER.error("terminal id is [{}], terminal not found", request.getTerminalId());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);

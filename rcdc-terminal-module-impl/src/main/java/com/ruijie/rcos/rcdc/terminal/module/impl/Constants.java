@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl;
 
 /**
- * Description: 常量接口
+ * Description: 常量
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/31
@@ -9,9 +9,13 @@ package com.ruijie.rcos.rcdc.terminal.module.impl;
  * @author Jarman
  */
 public interface Constants {
+    
+    int SUCCESS = 0;
+    
+    
 
     String SYSTEM_TYPE = "rcdc";
-    
+
     /**
      * 系统默认编码
      */
@@ -21,7 +25,28 @@ public interface Constants {
      * 存放终端日志的目录
      */
     String STORE_TERMINAL_LOG_PATH = "/opt/ftp/terminal/log/";
-    
+
+    /**
+     * 终端检测带宽正常标准值,小于等于20Mb为异常
+     */
+    double TERMINAL_DETECT_BINDWIDTH_NORM = 20;
+
+    /**
+     * 终端检测延时正常标准值，大于等于50ms为异常
+     */
+    int TERMINAL_DETECT_DELAY_NORM = 50;
+
+    /**
+     * 丢包率正常标准值(该数值是实际比率乘以100的数值)，大于等于0.1时为异常
+     */
+    double TERMINAL_DETECT_PACKET_LOSS_RATE = 0.1;
+
+    /** 终端管理员密码 */
+    String RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY = "terminal_pwd";
+
+    /** 终端管理员密码aes加密key */
+    String RCDC_TERMINAL_ADMIN_PWD_AES_KEY = "";
+
     /**
      * 存放终端系统vdi刷机包路径
      */
@@ -36,22 +61,22 @@ public interface Constants {
      * 存放终端系统ota刷机包路径
      */
     String TERMINAL_UPGRADE_ISO_PATH_OTA = "/opt/upgrade/ota/";
-  
+
     /**
-     * TODO 系统刷机包挂载路径  
+     * TODO 系统刷机包挂载路径
      */
     String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "";
 
     /**
-     * TODO 系统刷机包版本文件路径   
+     * TODO 系统刷机包版本文件路径
      */
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH = "";
-    
+
     /**
-     * TODO 系统刷机包镜像文件路径   
+     * TODO 系统刷机包镜像文件路径
      */
     String TERMINAL_UPGRADE_ISO_IMG_FILE_PATH = "/home/partimag/";
-    
+
     /**
      * 系统镜像挂载指令
      */
@@ -61,17 +86,17 @@ public interface Constants {
      * 系统镜像解除挂载指令
      */
     String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s %s";
-    
+
     /**
      * 系统刷机包版本文件属性-包类型
      */
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE = "plat";
-    
+
     /**
      * 系统刷机包版本文件属性-外部版本号
      */
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION = "version";
-    
+
     /**
      * 终端组件升级包路径 TODO
      */
@@ -81,6 +106,5 @@ public interface Constants {
      * 终端组件升级包updatelist文件名
      */
     String TERMINAL_COMPONET_UPDATE_LIST_FILE_NAME = "update.list";
-
 
 }

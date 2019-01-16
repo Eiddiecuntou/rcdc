@@ -11,7 +11,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
@@ -71,11 +71,11 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     
     private TerminalVersionResultDTO getCheckVersionResult(CbbDispatcherRequest request) {
         ShineTerminalBasicInfo basicInfo = convertJsondata(request);
-        CbbTerminalTypeEnums terminalType = convertTerminalType(basicInfo.getTerminalType());
+        CbbTerminalTypeEnums terminalType = convertPlatform(basicInfo.getTerminalType());
         return componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(), terminalType);
     }
     
-    private CbbTerminalTypeEnums convertTerminalType(TerminalTypeEnums terminalType) {
+    private CbbTerminalTypeEnums convertPlatform(TerminalPlatformEnums terminalType) {
         // TODO 终端类型转换
         return null;
     }
@@ -93,7 +93,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request.getData(), "报文消息体不能为空");
         
         String terminalId = request.getTerminalId();
-        TerminalEntity basicInfoEntity = basicInfoDAO.findFirstByTerminalId(terminalId);
+        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         Date now = new Date();
         if (basicInfoEntity == null) {
             LOGGER.debug("新终端接入,terminalId:[{}]", terminalId);
@@ -116,3 +116,4 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return shineTerminalBasicInfo;
     }
 }
+

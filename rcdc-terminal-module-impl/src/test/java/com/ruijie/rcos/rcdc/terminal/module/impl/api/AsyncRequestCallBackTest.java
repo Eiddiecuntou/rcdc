@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import static org.junit.Assert.fail;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
@@ -7,10 +10,6 @@ import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import mockit.Injectable;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -26,6 +25,9 @@ public class AsyncRequestCallBackTest {
     @Injectable
     private CbbTerminalCallback callback;
 
+    /**
+     * 测试回调成功
+     */
     @Test
     public void testSuccess() {
         try {
@@ -42,12 +44,17 @@ public class AsyncRequestCallBackTest {
             fail();
         }
 
-        new Verifications() {{
-            callback.success((CbbShineMessageResponse) any);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                callback.success((CbbShineMessageResponse) any);
+                times = 1;
+            }
+        };
     }
 
+    /**
+     * 测试回调超时
+     */
     @Test
     public void testTimeout() {
         try {
@@ -60,9 +67,11 @@ public class AsyncRequestCallBackTest {
             fail();
         }
 
-        new Verifications() {{
-            callback.timeout(anyString);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                callback.timeout("123");
+                times = 1;
+            }
+        };
     }
 }

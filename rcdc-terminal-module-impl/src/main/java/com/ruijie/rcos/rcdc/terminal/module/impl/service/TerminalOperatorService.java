@@ -31,11 +31,10 @@ public interface TerminalOperatorService {
     /**
      * 修改终端管理员密码
      *
-     * @param terminalId 终端id
      * @param password   密码
      * @throws BusinessException 业务异常
      */
-    void changePassword(String terminalId, String password) throws BusinessException;
+    void changePassword(String password) throws BusinessException;
 
     /**
      * 收集终端日志
@@ -60,5 +59,13 @@ public interface TerminalOperatorService {
      * @throws BusinessException 业务异常
      */
     void detect(String[] terminalIdArr) throws BusinessException;
+
+    /**
+     * 获取终端管理员密码
+     * 
+     * @return 终端管理员密码
+     * @throws BusinessException 业务异常
+     */
+    String getTerminalPassword()throws BusinessException;
 
 }

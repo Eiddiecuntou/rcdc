@@ -39,14 +39,19 @@ public class TerminalDetectResponse {
      */
     public static class DetectResult {
         /**
-         * ip冲突结果，如果有冲突则保存冲突的mac地址，否则为空值
+         * ip冲突结果，如果有冲突则ipConflictMac字段保存冲突的mac地址，否则为空值
          */
-        private String ipConflict;
+        private Integer ipConflict;
+        
+        /**
+         * ip冲突的mac地址，未冲突时为空值
+         */
+        private String ipConflictMac;
 
         /**
-         * 是否可访问外网，0不能访问，1可访问
+         * 是否可访问外网
          */
-        private Integer canAccessInternet;
+        private Integer accessInternet;
 
         /**
          * 带宽大小
@@ -61,22 +66,31 @@ public class TerminalDetectResponse {
         /**
          * 网络时延
          */
-        private Double networkDelay;
+        private Integer delay;
 
-        public String getIpConflict() {
+        
+        public Integer getIpConflict() {
             return ipConflict;
         }
 
-        public void setIpConflict(String ipConflict) {
+        public void setIpConflict(Integer ipConflict) {
             this.ipConflict = ipConflict;
         }
 
-        public Integer getCanAccessInternet() {
-            return canAccessInternet;
+        public String getIpConflictMac() {
+            return ipConflictMac;
         }
 
-        public void setCanAccessInternet(Integer canAccessInternet) {
-            this.canAccessInternet = canAccessInternet;
+        public void setIpConflictMac(String ipConflictMac) {
+            this.ipConflictMac = ipConflictMac;
+        }
+
+        public Integer getAccessInternet() {
+            return accessInternet;
+        }
+
+        public void setAccessInternet(Integer accessInternet) {
+            this.accessInternet = accessInternet;
         }
 
         public Double getBandwidth() {
@@ -95,12 +109,13 @@ public class TerminalDetectResponse {
             this.packetLossRate = packetLossRate;
         }
 
-        public Double getNetworkDelay() {
-            return networkDelay;
+        public Integer getDelay() {
+            return delay;
         }
 
-        public void setNetworkDelay(Double networkDelay) {
-            this.networkDelay = networkDelay;
+        public void setDelay(Integer delay) {
+            this.delay = delay;
         }
+
     }
 }

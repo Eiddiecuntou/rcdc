@@ -12,7 +12,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -38,9 +37,6 @@ public class CheckUpgradeHandlerSPIImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
-    
-    @Injectable
-    private TerminalComponentUpgradeService componentUpgradeService;
 
     @Injectable
     private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
@@ -51,23 +47,24 @@ public class CheckUpgradeHandlerSPIImplTest {
         TerminalEntity entity = new TerminalEntity();
         entity.setTerminalId("123456");
         entity.setTerminalName("t-box3");
-        entity.setCpuMode("intel");
-        new Expectations() {{
-            basicInfoDAO.findFirstByTerminalId(anyString);
-            result = entity;
-            try {
-                messageHandlerAPI.response((CbbResponseShineMessage) any);
-            } catch (Exception e) {
-                fail();
+        entity.setCpuType("intel");
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+                try {
+                    messageHandlerAPI.response((CbbResponseShineMessage) any);
+                } catch (Exception e) {
+                    fail();
+                }
             }
-        }};
+        };
 
         try {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setTerminalId(terminalId);
             request.setRequestId("456");
             request.setData(generateJson());
-            request.setDispatcherKey(ReceiveTerminalEvent.CHECK_UPGRADE);
             checkUpgradeHandler.dispatch(request);
 
             saveVerifications();
@@ -80,22 +77,23 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Test
     public void testDispatchAddTerminalBasicInfo() {
         String terminalId = "123";
-        new Expectations() {{
-            basicInfoDAO.findFirstByTerminalId(anyString);
-            result = null;
-            try {
-                messageHandlerAPI.response((CbbResponseShineMessage) any);
-            } catch (Exception e) {
-                fail();
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = null;
+                try {
+                    messageHandlerAPI.response((CbbResponseShineMessage) any);
+                } catch (Exception e) {
+                    fail();
+                }
             }
-        }};
+        };
 
         try {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
             request.setData(generateJson());
-            request.setDispatcherKey(ReceiveTerminalEvent.CHECK_UPGRADE);
             checkUpgradeHandler.dispatch(request);
 
             saveVerifications();
@@ -105,13 +103,15 @@ public class CheckUpgradeHandlerSPIImplTest {
     }
 
     private void saveVerifications() {
-        new Verifications() {{
-            TerminalEntity basicInfoEntity;
-            basicInfoDAO.save(basicInfoEntity = withCapture());
-            assertEquals(basicInfoEntity.getTerminalId(), "123");
-            assertEquals(basicInfoEntity.getTerminalName(), "t-box2");
-            assertEquals(basicInfoEntity.getCpuMode(), "intel5");
-        }};
+        new Verifications() {
+            {
+                TerminalEntity basicInfoEntity;
+                basicInfoDAO.save(basicInfoEntity = withCapture());
+                assertEquals(basicInfoEntity.getTerminalId(), "123");
+                assertEquals(basicInfoEntity.getTerminalName(), "t-box2");
+                assertEquals(basicInfoEntity.getCpuType(), "intel5");
+            }
+        };
     }
 
 
@@ -119,7 +119,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         ShineTerminalBasicInfo info = new ShineTerminalBasicInfo();
         info.setTerminalId("123");
         info.setTerminalName("t-box2");
-        info.setCpuMode("intel5");
+        info.setCpuType("intel5");
         return JSON.toJSONString(info);
     }
 

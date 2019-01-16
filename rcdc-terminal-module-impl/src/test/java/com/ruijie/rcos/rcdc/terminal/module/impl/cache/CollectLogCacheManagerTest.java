@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
+import com.google.common.cache.Cache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import mockit.*;
 import mockit.integration.junit4.JMockit;
@@ -27,7 +28,7 @@ public class CollectLogCacheManagerTest {
 
     @Test
     public void testAddCache() {
-        Map<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE_MAP");
+        Cache<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
         String terminalId = "123";
         try {
             cacheManager.addCache(terminalId);
@@ -36,13 +37,13 @@ public class CollectLogCacheManagerTest {
         }
 
         Assert.assertEquals(caches.size(), 1);
-        Assert.assertEquals(caches.get(terminalId).getState(), CollectLogStateEnums.DOING);
-        caches.clear();
+        Assert.assertEquals(caches.getIfPresent(terminalId).getState(), CollectLogStateEnums.DOING);
+        caches.invalidateAll();
     }
 
     @Test
     public void testRemoveCache() {
-        Map<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE_MAP");
+        Cache<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
         String terminalId = "123";
         CollectLogCache cache = new CollectLogCache();
         caches.put(terminalId, cache);
@@ -76,12 +77,12 @@ public class CollectLogCacheManagerTest {
     public void testUpdateState2() {
         String terminalId = "123";
         try {
-            Map<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE_MAP");
+            Cache<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
             CollectLogCache cache = new CollectLogCache();
             caches.put(terminalId, cache);
             cacheManager.updateState(terminalId, CollectLogStateEnums.FAILURE, "shine.zip");
             Assert.assertEquals(caches.size(), 1);
-            Assert.assertEquals(caches.get(terminalId).getState(), CollectLogStateEnums.FAILURE);
+            Assert.assertEquals(caches.getIfPresent(terminalId).getState(), CollectLogStateEnums.FAILURE);
 
         } catch (Exception e) {
             fail();
@@ -92,7 +93,7 @@ public class CollectLogCacheManagerTest {
     public void testGetCache() {
         try {
             String terminalId = "123";
-            Map<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE_MAP");
+            Cache<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
             CollectLogCache cache = new CollectLogCache();
             caches.put(terminalId, cache);
             cacheManager.getCache(terminalId);
@@ -104,11 +105,11 @@ public class CollectLogCacheManagerTest {
     @Test
     public void testGetCollectLogCaches() {
         String terminalId = "123";
-        Map<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE_MAP");
+        Cache<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
         CollectLogCache cache = new CollectLogCache();
         caches.put(terminalId, cache);
         try {
-            Map<String, CollectLogCache> result = cacheManager.getCollectLogCaches();
+            Cache<String, CollectLogCache> result = cacheManager.getCollectLogCaches();
             Assert.assertEquals(result.size(), 1);
         } catch (Exception e) {
             fail();
