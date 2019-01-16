@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -42,14 +42,14 @@ public class ShineTerminalBasicInfo {
     private String productType;
 
     @Enumerated(EnumType.STRING)
-    private TerminalTypeEnums terminalType;
+    private TerminalPlatformEnums terminalType;
 
     @Enumerated(EnumType.STRING)
     private CbbNetworkModeEnums networkAccessMode;
 
     private String serialNumber;
 
-    private String cpuMode;
+    private String cpuType;
 
     private Integer memorySize;
 
@@ -64,6 +64,17 @@ public class ShineTerminalBasicInfo {
     private String rainUpgradeVersion;
 
     private String hardwareVersion;
+
+    @Enumerated(EnumType.STRING)
+    private TerminalPlatformEnums platform;
+
+    public TerminalPlatformEnums getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(TerminalPlatformEnums platform) {
+        this.platform = platform;
+    }
 
     public String getTerminalName() {
         return terminalName;
@@ -153,11 +164,11 @@ public class ShineTerminalBasicInfo {
         this.productType = productType;
     }
 
-    public TerminalTypeEnums getTerminalType() {
+    public TerminalPlatformEnums getTerminalType() {
         return terminalType;
     }
 
-    public void setTerminalType(TerminalTypeEnums terminalType) {
+    public void setTerminalType(TerminalPlatformEnums terminalType) {
         this.terminalType = terminalType;
     }
 
@@ -177,12 +188,12 @@ public class ShineTerminalBasicInfo {
         this.serialNumber = serialNumber;
     }
 
-    public String getCpuMode() {
-        return cpuMode;
+    public String getCpuType() {
+        return cpuType;
     }
 
-    public void setCpuMode(String cpuMode) {
-        this.cpuMode = cpuMode;
+    public void setCpuType(String cpuType) {
+        this.cpuType = cpuType;
     }
 
     public Integer getMemorySize() {

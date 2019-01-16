@@ -9,7 +9,7 @@ import javax.persistence.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * Description: 终端基本信息实体类
@@ -51,11 +51,11 @@ public class TerminalEntity {
     private String productType;
 
     @Enumerated(EnumType.STRING)
-    private TerminalTypeEnums terminalType;
+    private TerminalPlatformEnums platform;
 
     private String serialNumber;
 
-    private String cpuMode;
+    private String cpuType;
 
     private Integer memorySize;
 
@@ -167,12 +167,12 @@ public class TerminalEntity {
         this.productType = productType;
     }
 
-    public TerminalTypeEnums getTerminalType() {
-        return terminalType;
+    public TerminalPlatformEnums getPlatform() {
+        return platform;
     }
 
-    public void setTerminalType(TerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
+    public void setPlatform(TerminalPlatformEnums platform) {
+        this.platform = platform;
     }
 
     public String getSerialNumber() {
@@ -183,12 +183,12 @@ public class TerminalEntity {
         this.serialNumber = serialNumber;
     }
 
-    public String getCpuMode() {
-        return cpuMode;
+    public String getCpuType() {
+        return cpuType;
     }
 
-    public void setCpuMode(String cpuMode) {
-        this.cpuMode = cpuMode;
+    public void setCpuType(String cpuType) {
+        this.cpuType = cpuType;
     }
 
     public Integer getMemorySize() {

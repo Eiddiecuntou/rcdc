@@ -8,7 +8,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.enums;
  *
  * @author Jarman
  */
-public enum  TerminalTypeEnums {
+public enum TerminalPlatformEnums {
 
     /**
      * VDI Linux硬终端

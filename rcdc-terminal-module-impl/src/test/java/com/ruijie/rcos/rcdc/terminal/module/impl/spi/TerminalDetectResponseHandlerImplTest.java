@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import static org.junit.Assert.fail;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
@@ -9,10 +12,6 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -31,6 +30,9 @@ public class TerminalDetectResponseHandlerImplTest {
     @Injectable
     private TerminalDetectService detectService;
 
+    /**
+     * 测试分发
+     */
     @Test
     public void dispatch() {
         try {
@@ -44,10 +46,12 @@ public class TerminalDetectResponseHandlerImplTest {
             fail();
         }
 
-        new Verifications() {{
-            detectService.updateTerminalDetect(anyString, (TerminalDetectResponse) any);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                detectService.updateTerminalDetect(anyString, (TerminalDetectResponse) any);
+                times = 1;
+            }
+        };
     }
 
     private String generateJson() {
@@ -55,9 +59,10 @@ public class TerminalDetectResponseHandlerImplTest {
         response.setErrorCode(StateEnums.SUCCESS);
         TerminalDetectResponse.DetectResult detectResult = new TerminalDetectResponse.DetectResult();
         detectResult.setBandwidth(1234.2);
-        detectResult.setCanAccessInternet(1);
-        detectResult.setIpConflict("222");
-        detectResult.setNetworkDelay(23.22);
+        detectResult.setAccessInternet(1);
+        detectResult.setIpConflict(1);
+        detectResult.setIpConflictMac("222");
+        detectResult.setDelay(23.22);
         detectResult.setPacketLossRate(22.2);
         response.setResult(detectResult);
         return JSON.toJSONString(detectResult);

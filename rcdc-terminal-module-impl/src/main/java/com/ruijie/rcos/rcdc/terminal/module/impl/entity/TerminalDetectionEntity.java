@@ -1,6 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import javax.persistence.*;
+
+import org.springframework.util.Assert;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -13,7 +18,7 @@ import java.util.UUID;
  * @author Jarman
  */
 @Entity
-@Table(name = "t_terminal_detection")
+@Table(name = "t_cbb_terminal_detection")
 public class TerminalDetectionEntity {
 
     @Id
@@ -23,14 +28,19 @@ public class TerminalDetectionEntity {
     private String terminalId;
 
     /**
-     * ip冲突结果，如果有冲突则保存冲突的mac地址，否则为空值
+     * ip冲突结果，0 不冲突，1 冲突，如果有冲突则ipConflictMac字段保存冲突的mac地址，否则为空值
      */
-    private String ipConflict;
+    private Integer ipConflict;
+
+    /**
+     * ip冲突的mac地址，未冲突时为空值
+     */
+    private String ipConflictMac;
 
     /**
      * 是否可访问外网，0不能访问，1可访问
      */
-    private Integer canAccessInternet;
+    private Integer accessInternet;
 
     /**
      * 带宽大小
@@ -51,9 +61,39 @@ public class TerminalDetectionEntity {
      * 检测时间
      */
     private Date detectTime;
-    
+
+    /**
+     * 终端检测状态
+     */
+    @Enumerated(EnumType.STRING)
+    private DetectStateEnums detectState;
+
+    /**
+     * 检测失败原因
+     */
+    private String detectFailMsg;
+
     @Version
     private int version;
+
+    /**
+     *  对象转换
+     * @param detectDTO 设值对象
+     */
+    public void convertTo(CbbTerminalDetectDTO detectDTO) {
+        Assert.notNull(detectDTO, "detect dto can not be null");
+
+        //状态信息需确认
+        detectDTO.setTerminalId(terminalId);
+        detectDTO.setAccessInternet(accessInternet);
+        detectDTO.setBandwidth(bandwidth);
+        detectDTO.setDelay(networkDelay);
+        detectDTO.setIpConflict(ipConflict);
+        detectDTO.setPacketLossRate(packetLossRate);
+        CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();;
+        state.setState(detectState.getName());
+        state.setMessage(detectFailMsg);
+    }
 
     public UUID getId() {
         return id;
@@ -71,20 +111,36 @@ public class TerminalDetectionEntity {
         this.terminalId = terminalId;
     }
 
-    public String getIpConflict() {
+    public Integer getIpConflict() {
         return ipConflict;
     }
 
-    public void setIpConflict(String ipConflict) {
+    public void setIpConflict(Integer ipConflict) {
         this.ipConflict = ipConflict;
     }
 
-    public Integer getCanAccessInternet() {
-        return canAccessInternet;
+    public String getIpConflictMac() {
+        return ipConflictMac;
     }
 
-    public void setCanAccessInternet(Integer canAccessInternet) {
-        this.canAccessInternet = canAccessInternet;
+    public void setIpConflictMac(String ipConflictMac) {
+        this.ipConflictMac = ipConflictMac;
+    }
+
+    public Integer getAccessInternet() {
+        return accessInternet;
+    }
+
+    public void setAccessInternet(Integer accessInternet) {
+        this.accessInternet = accessInternet;
+    }
+
+    public String getDetectFailMsg() {
+        return detectFailMsg;
+    }
+
+    public void setDetectFailMsg(String detectFailMsg) {
+        this.detectFailMsg = detectFailMsg;
     }
 
     public Double getBandwidth() {
@@ -118,12 +174,21 @@ public class TerminalDetectionEntity {
     public void setNetworkDelay(Double networkDelay) {
         this.networkDelay = networkDelay;
     }
-    
+
+    public DetectStateEnums getDetectState() {
+        return detectState;
+    }
+
+    public void setDetectState(DetectStateEnums detectState) {
+        this.detectState = detectState;
+    }
+
     public void setVersion(int version) {
         this.version = version;
     }
-    
+
     public int getVersion() {
         return version;
     }
+
 }
