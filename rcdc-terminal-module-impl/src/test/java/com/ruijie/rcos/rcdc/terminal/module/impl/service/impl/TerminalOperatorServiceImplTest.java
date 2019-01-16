@@ -104,33 +104,6 @@ public class TerminalOperatorServiceImplTest {
     }
 
     @Test
-    public void testChangePassword() {
-        new Expectations() {{
-            try {
-                sessionManager.getRequestMessageSender(anyString);
-                result = sender;
-            } catch (BusinessException e) {
-                e.printStackTrace();
-            }
-        }};
-        String terminalId = "123";
-        String password = "newpassword";
-        try {
-            operatorService.changePassword(terminalId, password);
-        } catch (BusinessException e) {
-            fail();
-        }
-
-        new Verifications() {{
-            Message message;
-            sender.request(message = withCapture());
-            assertEquals(message.getAction(), SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD.getName());
-            ChangeTerminalPasswordRequest data = (ChangeTerminalPasswordRequest) message.getData();
-            assertEquals(String.valueOf(data.getPassword()), password);
-        }};
-    }
-
-    @Test
     public void testCollectLogIsDoing() {
         String terminalId = "12334";
         CollectLogCache collectLogCache = new CollectLogCache();

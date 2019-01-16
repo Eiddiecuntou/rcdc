@@ -60,7 +60,7 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
      * @param endDt 结束时间
      * @return 统计数量
      */
-    int countByBandwidthLessThanEqualAndDetectTimeBetween(int bindwidthNorm, Date startDt, Date endDt);
+    int countByBandwidthLessThanEqualAndDetectTimeBetween(double bindwidthNorm, Date startDt, Date endDt);
 
     /**
      * 统计时间段内的网络访问状态数量

@@ -62,7 +62,7 @@ public class TerminalDetectController {
             // 添加检测成功日志
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, terminalId);
         } catch (BusinessException ex) {
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, ex.getI18nMessage());
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, terminalId, ex.getI18nMessage());
             throw ex;
         }
     }

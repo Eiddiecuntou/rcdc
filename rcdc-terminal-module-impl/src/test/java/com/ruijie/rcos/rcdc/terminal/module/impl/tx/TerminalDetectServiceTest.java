@@ -51,7 +51,7 @@ public class TerminalDetectServiceTest {
             result.setAccessInternet(1);
             result.setIpConflict(1);
             result.setIpConflictMac("123");
-            result.setDelay(233.2);
+            result.setDelay(233);
             result.setPacketLossRate(233.2);
             detectResult.setErrorCode(StateEnums.SUCCESS);
             detectResult.setResult(result);

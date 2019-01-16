@@ -41,7 +41,7 @@ public class CbbTerminalDetectDTO {
     /**
      * 网络时延
      */
-    private Double delay;
+    private Integer delay;
 
     /**
      * 检测状态
@@ -152,12 +152,12 @@ public class CbbTerminalDetectDTO {
     }
 
 
-    public Double getDelay() {
+    public Integer getDelay() {
         return delay;
     }
 
 
-    public void setDelay(Double delay) {
+    public void setDelay(Integer delay) {
         this.delay = delay;
     }
 

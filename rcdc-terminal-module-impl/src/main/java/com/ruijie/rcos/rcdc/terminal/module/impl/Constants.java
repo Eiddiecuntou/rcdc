@@ -23,7 +23,7 @@ public interface Constants {
     /**
      * 终端检测带宽正常标准值,小于等于20Mb为异常
      */
-    int TERMINAL_DETECT_BINDWIDTH_NORM = 20;
+    double TERMINAL_DETECT_BINDWIDTH_NORM = 20;
 
     /**
      * 终端检测延时正常标准值，大于等于50ms为异常
@@ -34,4 +34,10 @@ public interface Constants {
      * 丢包率正常标准值(该数值是实际比率乘以100的数值)，大于等于0.1时为异常
      */
     double TERMINAL_DETECT_PACKET_LOSS_RATE = 0.1;
+    
+    /** 终端管理员密码 */
+    String RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY = "terminal_pwd";
+    
+    /** 终端管理员密码aes加密key */
+    String RCDC_TERMINAL_ADMIN_PWD_AES_KEY = "";
 }

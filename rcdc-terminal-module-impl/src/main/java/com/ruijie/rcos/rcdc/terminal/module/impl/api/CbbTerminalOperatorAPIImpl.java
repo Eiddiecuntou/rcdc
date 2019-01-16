@@ -7,6 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -19,12 +20,13 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
+import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
-
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -45,7 +47,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Autowired
     private TerminalDetectService detectService;
-    
+
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
@@ -73,9 +75,8 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public DefaultResponse changePassword(CbbChangePasswordRequest request) throws BusinessException {
         Assert.notNull(request, "CbbChangePasswordRequest不能为空");
-        Assert.hasText(request.getTerminalId(), "terminalId不能为空");
-        Assert.hasText(request.getPassword(), "password不能为空");
-        operatorService.changePassword(request.getTerminalId(), request.getPassword());
+
+        operatorService.changePassword(request.getPassword());
         return DefaultResponse.Builder.success();
     }
 
@@ -148,6 +149,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     /**
      * 构建空列表返回参数
+     * 
      * @param total 总数
      * @return
      */

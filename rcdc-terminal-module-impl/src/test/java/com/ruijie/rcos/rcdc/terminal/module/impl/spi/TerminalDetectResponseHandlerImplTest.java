@@ -62,7 +62,7 @@ public class TerminalDetectResponseHandlerImplTest {
         detectResult.setAccessInternet(1);
         detectResult.setIpConflict(1);
         detectResult.setIpConflictMac("222");
-        detectResult.setDelay(23.22);
+        detectResult.setDelay(23);
         detectResult.setPacketLossRate(22.2);
         response.setResult(detectResult);
         return JSON.toJSONString(detectResult);

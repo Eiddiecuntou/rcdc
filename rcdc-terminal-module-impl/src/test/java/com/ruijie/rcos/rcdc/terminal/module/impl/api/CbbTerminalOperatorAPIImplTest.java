@@ -112,27 +112,6 @@ public class CbbTerminalOperatorAPIImplTest {
     }
 
     @Test
-    public void testChangePassword() throws BusinessException {
-        try {
-            String terminalId = "123";
-            String password = "adf";
-            CbbChangePasswordRequest request = new CbbChangePasswordRequest();
-            request.setTerminalId(terminalId);
-            request.setPassword(password);
-            terminalOperatorAPI.changePassword(request);
-        } catch (Exception e) {
-            fail();
-        }
-        new Verifications() {
-            {
-                operatorService.changePassword(anyString, anyString);
-                times = 1;
-            }
-        };
-
-    }
-
-    @Test
     public void testCollectLog() throws BusinessException {
         try {
             String terminalId = "123";
