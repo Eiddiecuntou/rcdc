@@ -92,7 +92,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             private TerminalUpgradeVersionFileInfo getVersionInfo() {
                 TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
                 versionInfo.setImgName("package");
-                versionInfo.setPackageType(TerminalPlatformEnums.IDV_LINUX_HARDWARE);
+                versionInfo.setPackageType(TerminalPlatformEnums.IDV);
                 versionInfo.setVersion("interVer");
                 return versionInfo;
             }
@@ -225,7 +225,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testListSystemUpgradePackage() throws BusinessException {
         CbbTerminalSystemUpgradePackageListRequest request = new CbbTerminalSystemUpgradePackageListRequest();
-        request.setPaltform(TerminalPlatformEnums.IDV_LINUX_HARDWARE);
+        request.setPaltform(TerminalPlatformEnums.IDV);
         List<TerminalSystemUpgradePackageEntity> packageList = buildPackageList();
 
         new Expectations() {
@@ -272,7 +272,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testAddSystemUpgradeTask() throws BusinessException {
 
         CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
-        request.setPlatform(TerminalPlatformEnums.VDI_LINUX_HARDWARE);
+        request.setPlatform(TerminalPlatformEnums.VDI);
         request.setTerminalId("11");
         TerminalSystemUpgradePackageEntity entity = new TerminalSystemUpgradePackageEntity();
         TerminalEntity terminal = new TerminalEntity();

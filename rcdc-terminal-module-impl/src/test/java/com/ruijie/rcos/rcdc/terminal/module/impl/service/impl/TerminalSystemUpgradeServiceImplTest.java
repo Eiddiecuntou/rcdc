@@ -350,7 +350,7 @@ public class TerminalSystemUpgradeServiceImplTest {
 
     private TerminalUpgradeVersionFileInfo buildUpgradePackageVersion() {
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
-        versionInfo.setPackageType(TerminalPlatformEnums.VDI_LINUX_HARDWARE);
+        versionInfo.setPackageType(TerminalPlatformEnums.VDI);
         versionInfo.setVersion("version");
         versionInfo.setImgName("imgname");
         return versionInfo;
@@ -362,7 +362,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         upgradePackage.setId(UUID.randomUUID());
         upgradePackage.setPackageVersion("internalVersion");
         upgradePackage.setImgName("packageName");
-        upgradePackage.setPackageType(TerminalPlatformEnums.VDI_LINUX_HARDWARE);
+        upgradePackage.setPackageType(TerminalPlatformEnums.VDI);
         upgradePackage.setUploadTime(new Date());
         return upgradePackage;
     }

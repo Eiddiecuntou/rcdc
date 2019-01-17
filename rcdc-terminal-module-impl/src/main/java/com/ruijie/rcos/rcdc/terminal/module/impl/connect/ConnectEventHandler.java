@@ -1,26 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
 import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.Session;
-import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.RequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.ResponseMessageSender;
 import com.ruijie.rcos.sk.commkit.server.AbstractServerMessageHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -43,15 +36,6 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
 
     @Autowired
     private SessionManager sessionManager;
-
-    @Autowired
-    private TerminalBasicInfoService basicInfoService;
-
-    @Autowired
-    private CollectLogCacheManager collectLogCacheManager;
-
-    @Autowired
-    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
     /**
      * 接收报文处理线程池,分配50个线程数
@@ -79,39 +63,41 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
      * @param message 报文对象
      */
     private void handleMessage(ResponseMessageSender sender, BaseMessage message) {
+        //打印接收到的报文debug日志
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("接收到的报文：action:{}", message.getAction());
-            if (message.getData() != null) {
-                LOGGER.debug("报文消息体：{}", message.getData().toString());
-            }
+            LOGGER.debug("接收到的报文：action:{};data:{}", message.getAction(), String.valueOf(message.getData()));
         }
-        if (ReceiveTerminalEvent.HEARTBEAT.equals(message.getAction())) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("terminalId:[{}]收到心跳报文", sender.getSession().getAttribute(TERMINAL_BIND_KEY) + "");
-            }
-            //应答心跳报文
-            sender.response(new Message(Constants.SYSTEM_TYPE, ReceiveTerminalEvent.HEARTBEAT, null));
+        //检查session是否已绑定终端，未绑定且不是第一个报文则不处理报文
+        if (!hasBindSession(sender.getSession(), message.getAction())) {
+            LOGGER.debug("终端未绑定session，不处理报文。action：{};data:{}", message.getAction(), String.valueOf(message.getData()));
             return;
         }
+        //处理第一个报文，获取terminal绑定终端
         if (ReceiveTerminalEvent.CHECK_UPGRADE.equals(message.getAction())) {
             LOGGER.debug("开始处理第一个报文[{}]", ReceiveTerminalEvent.CHECK_UPGRADE);
-            //处理第一个报文
-            handleFirstMessage(sender, message);
+            //绑定终端
+            bindSession(sender, message.getData());
         }
-        
-        LOGGER.debug("其他业务报文， action[{}]", message.getAction());
-        //执行消息分发
+        //消息分发
+        dispatchMessage(sender, message);
+    }
+
+    /**
+     * 执行消息分发
+     */
+    private void dispatchMessage(ResponseMessageSender sender, BaseMessage message) {
         String terminalId = getTerminalIdFromSession(sender.getSession());
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setDispatcherKey(message.getAction());
         request.setRequestId(sender.getResponseId());
         request.setTerminalId(terminalId);
-        request.setData(message.getData());
+        Object data = message.getData();
+        request.setData(data == null ? null : String.valueOf(data));
         try {
             LOGGER.debug("分发消息， action: {}", message.getAction());
             cbbDispatcherHandlerSPI.dispatch(request);
         } catch (Exception e) {
-            LOGGER.error("消息分发执行异常;action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + String.valueOf(message.getData()), e);
+            LOGGER.error("消息分发执行异常;action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + message.getData(), e);
         }
     }
 
@@ -119,21 +105,31 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
      * 处理终端请求的第一个报文,解析出terminalId值
      * 设置terminalId，绑定连接session,
      * 后续报文请求都是基于已绑定terminalId的连接
-     *
-     * @param sender  应答消息对象
-     * @param message 接受到的报文
      */
-    private void handleFirstMessage(ResponseMessageSender sender, BaseMessage message) {
-        Assert.notNull(message.getData(), "终端信息不能为空");
-        String data = String.valueOf(message.getData());
-        ShineTerminalBasicInfo basicInfo = JSON.parseObject(data, ShineTerminalBasicInfo.class);
+    private void bindSession(ResponseMessageSender sender, Object message) {
+        Assert.notNull(message, "终端信息不能为空");
+        String data = String.valueOf(message);
+        ShineTerminalBasicInfo basicInfo;
+        try {
+            basicInfo = JSON.parseObject(data, ShineTerminalBasicInfo.class);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("接收到的报文格式错误;data:" + data, e);
+        }
         String terminalId = basicInfo.getTerminalId();
-        Assert.hasText(terminalId, "terminalId不能为空");
-        //Session 绑定terminalId
+        Assert.hasText(terminalId, "绑定终端连接session的terminalId不能为空");
         Session session = sender.getSession();
         session.setAttribute(TERMINAL_BIND_KEY, terminalId);
         sessionManager.bindSession(terminalId, session);
-        LOGGER.debug("终端terminalId={}绑定Session", basicInfo.getTerminalId());
+    }
+
+    private boolean hasBindSession(Session session, String action) {
+        Assert.notNull(session, "Session为null,连接异常");
+        if (ReceiveTerminalEvent.CHECK_UPGRADE.equals(action)) {
+            //报文为第一个报文（升级检查）不做session绑定判断
+            return true;
+        }
+        String terminalId = session.getAttribute(TERMINAL_BIND_KEY);
+        return StringUtils.isNotBlank(terminalId);
     }
 
     @Override
@@ -144,26 +140,28 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
 
     @Override
     public void onConnectClosed(Session session) {
-        Assert.notNull(session, "session 不能为null");
         LOGGER.debug("====连接关闭=====");
+        Assert.notNull(session, "session 不能为null");
         String terminalId = getTerminalIdFromSession(session);
+        //移除Session绑定
         sessionManager.removeSession(terminalId);
-        LOGGER.debug("terminalId:[{}]连接关闭", terminalId);
-        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
-        collectLogCacheManager.removeCache(terminalId);
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.OFFLINE, terminalId);
-        terminalEventNoticeSPI.notify(noticeRequest);
-    }
-
-    @Override
-    public void exceptionCaught(Throwable throwable) {
-        Assert.notNull(throwable, "Throwable不能为null");
-        LOGGER.error("连接异常", throwable);
+        LOGGER.debug("terminalId[{}]连接关闭", terminalId);
+        //发送连接关闭事件
+        CbbDispatcherRequest request = new CbbDispatcherRequest();
+        request.setDispatcherKey(ReceiveTerminalEvent.CONNECT_CLOSE);
+        request.setTerminalId(terminalId);
+        cbbDispatcherHandlerSPI.dispatch(request);
     }
 
     private String getTerminalIdFromSession(Session session) {
         String terminalId = session.getAttribute(TERMINAL_BIND_KEY);
         Assert.hasText(terminalId, "session 未绑定终端");
         return terminalId;
+    }
+
+    @Override
+    public void exceptionCaught(Throwable throwable) {
+        Assert.notNull(throwable, "Throwable不能为null");
+        LOGGER.error("连接异常", throwable);
     }
 }

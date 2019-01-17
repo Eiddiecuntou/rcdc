@@ -40,7 +40,7 @@ public class SystemUpgradeTaskManagerTest {
 
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
         String baseTerminalId = "bt-";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
 
         for (int i = 0; i < 10000; i++) {
             try {
@@ -67,7 +67,7 @@ public class SystemUpgradeTaskManagerTest {
 
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
         String terminalId = "id1";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
 
         manager.addTask(terminalId, terminalType);
 
@@ -97,7 +97,7 @@ public class SystemUpgradeTaskManagerTest {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
 
         String terminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
         SystemUpgradeTask addTask = manager.addTask(terminalId, terminalType);
         Assert.assertEquals(1, manager.getTaskMap().size());
 
@@ -118,7 +118,7 @@ public class SystemUpgradeTaskManagerTest {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
 
         String terminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
         manager.addTask(terminalId, terminalType);
         Assert.assertEquals(1, manager.getTaskMap().size());
 
@@ -143,7 +143,7 @@ public class SystemUpgradeTaskManagerTest {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
 
         String terminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
         SystemUpgradeTask addTask = manager.addTask(terminalId, terminalType);
         Assert.assertEquals(1, manager.getTaskMap().size());
 
@@ -164,7 +164,7 @@ public class SystemUpgradeTaskManagerTest {
 
         String terminalId = "id";
         String terminalId2 = "id2";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
         SystemUpgradeTask addTask = manager.addTask(terminalId, terminalType);
         Assert.assertEquals(1, manager.getTaskMap().size());
 
@@ -185,7 +185,7 @@ public class SystemUpgradeTaskManagerTest {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
 
         String baseTerminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
         SystemUpgradeTask task = null;
         for (int i = 0; i < 20; i++) {
             String terminalId = baseTerminalId + i;
@@ -219,7 +219,7 @@ public class SystemUpgradeTaskManagerTest {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
 
         String baseTerminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
         SystemUpgradeTask task = null;
         for (int i = 0; i < 50; i++) {
             String terminalId = baseTerminalId + i;
@@ -272,7 +272,7 @@ public class SystemUpgradeTaskManagerTest {
     public void testStartWaitTaskStartTaskFail() throws BusinessException {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
         String baseTerminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
         SystemUpgradeTask task = null;
         for (int i = 0; i < 5; i++) {
             String terminalId = baseTerminalId + i;
@@ -313,7 +313,7 @@ public class SystemUpgradeTaskManagerTest {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
 
         String terminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
 
         SystemUpgradeTask task = buildSystemUpgradeTask(terminalId, terminalType);
         task.setState(CbbSystemUpgradeStateEnums.WAIT);
@@ -336,7 +336,7 @@ public class SystemUpgradeTaskManagerTest {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
 
         String terminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
 
         SystemUpgradeTask task = buildSystemUpgradeTask(terminalId, terminalType);
         task.setState(CbbSystemUpgradeStateEnums.WAIT);
@@ -372,7 +372,7 @@ public class SystemUpgradeTaskManagerTest {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
 
         String terminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
 
         SystemUpgradeTask task = buildSystemUpgradeTask(terminalId, terminalType);
         task.setState(CbbSystemUpgradeStateEnums.WAIT);
@@ -402,7 +402,7 @@ public class SystemUpgradeTaskManagerTest {
         Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
 
         String terminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
 
         SystemUpgradeTask task = buildSystemUpgradeTask(terminalId, terminalType);
         task.setState(CbbSystemUpgradeStateEnums.UPGRADING);

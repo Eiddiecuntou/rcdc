@@ -104,7 +104,7 @@ public class SystemUpgradeStateSyncQuartzTest {
     private List<SystemUpgradeTask> getMockedUpgradingTask() {
         List<SystemUpgradeTask> upgradeTaskList = new ArrayList<>();
         String baseTerminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
         for (int i = 0; i < 11; i++) {
             SystemUpgradeTask task = buildUpgradingTask(baseTerminalId + i, terminalType);
             upgradeTaskList.add(task);
@@ -128,7 +128,7 @@ public class SystemUpgradeStateSyncQuartzTest {
     private List<TerminalSystemUpgradeInfo> getMockedUpgradeInfoList() {
         List<TerminalSystemUpgradeInfo> upgradeInfoList = new ArrayList<>();
         String baseTerminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI;
         for (int i = 0; i < 10; i++) {
             TerminalSystemUpgradeInfo info = buildUpgradeInfo(baseTerminalId + i, terminalType);
             info.setLastUpdateTime(System.currentTimeMillis() - 3000);
@@ -153,7 +153,7 @@ public class SystemUpgradeStateSyncQuartzTest {
 
     private void buildUnvalidUpgradeInfo(List<TerminalSystemUpgradeInfo> upgradeInfoList) {
         String baseTerminalId = "unvalidId";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI;
 
         TerminalSystemUpgradeInfo info1 = buildUpgradeInfo(baseTerminalId, terminalType);
         info1.setState(CbbSystemUpgradeStateEnums.UPGRADING);

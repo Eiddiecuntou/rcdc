@@ -33,7 +33,7 @@ public class CollectLogResponseSPIImpl implements CbbDispatcherHandlerSPI {
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
-        Assert.notNull(request.getData(), "data不能为null");
+        Assert.hasText(request.getData(), "data不能为null");
         CbbShineMessageResponse<TerminalLogName> response = MessageUtils.parse(request.getData(), TerminalLogName.class);
         if (Constants.SUCCESS == response.getCode()) {
             collectLogCacheManager.updateState(request.getTerminalId(), CollectLogStateEnums.DONE, response.getContent().getLogName());

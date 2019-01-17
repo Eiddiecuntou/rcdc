@@ -98,4 +98,3 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return basicInfo;
     }
 }
-

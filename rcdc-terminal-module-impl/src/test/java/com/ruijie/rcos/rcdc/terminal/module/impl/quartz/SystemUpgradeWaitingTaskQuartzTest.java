@@ -181,7 +181,7 @@ public class SystemUpgradeWaitingTaskQuartzTest {
         upgradePackage.setId(UUID.randomUUID());
         upgradePackage.setPackageVersion("version");
         upgradePackage.setImgName("packageName");
-        upgradePackage.setPackageType(TerminalPlatformEnums.VDI_LINUX_HARDWARE);
+        upgradePackage.setPackageType(TerminalPlatformEnums.VDI);
         upgradePackage.setUploadTime(new Date());
         return upgradePackage;
     }
@@ -190,7 +190,7 @@ public class SystemUpgradeWaitingTaskQuartzTest {
         List<SystemUpgradeTask> taskList = new ArrayList<>();
 
         String baseTerminalId = "id";
-        TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI_LINUX_HARDWARE;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI;
         for (int i = 0; i < 5; i++) {
             SystemUpgradeTask task = buildUpgradingTask(baseTerminalId + i, terminalType);
             taskList.add(task);

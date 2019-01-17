@@ -11,53 +11,16 @@ import org.springframework.util.Assert;
  * @author Jarman
  */
 public enum TerminalPlatformEnums {
-    
+
+    /**
+     * VDI
+     */
     VDI,
 
     /**
-     * VDI Linux硬终端
+     * IDV
      */
-    VDI_LINUX_HARDWARE,
-
-    /**
-     * VDI Android硬终端
-     */
-    VDI_ANDROID_HARDWARE,
-
-    /**
-     * VDI Window硬终端
-     */
-    VDI_WINDOW_HARDWARE,
-
-    /**
-     * IDV Linux硬终端
-     */
-    IDV_LINUX_HARDWARE,
-
-    /**
-     * VDI Linux软终端
-     */
-    VDI_LINUX_SOFTWARE,
-
-    /**
-     * VDI Android软终端
-     */
-    VDI_ANDROID_SOFTWARE,
-
-    /**
-     * VDI Window软终端
-     */
-    VDI_WINDOW_SOFTWARE,
-
-    /**
-     * VDI ios软终端
-     */
-    VDI_IOS_SOFTWARE,
-
-    /**
-     * VDI macos软终端
-     */
-    VDI_MACOS_SOFTWARE,
+    IDV,
 
     /**
      * 其他终端,需要注意此类终端，给出提示信息

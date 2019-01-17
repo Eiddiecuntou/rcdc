@@ -127,7 +127,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private void moveUpgradePackage(String fileName, String filePath, TerminalPlatformEnums packageType)
             throws BusinessException {
         File out = null;
-        if (packageType == TerminalPlatformEnums.VDI_LINUX_HARDWARE) {
+        if (packageType == TerminalPlatformEnums.VDI) {
             out = new File(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI + fileName);
         } else {
             LOGGER.info("暂不支持的升级类型");

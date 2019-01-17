@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,7 +76,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         getTerminalAdminPassword();
         globalParameterAPI.updateParameter(Constants.RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY, password);
 
-        // 向在线终端发送新管理员密码
+        //向在线终端发送新管理员密码
         sendNewPwdToOnlineTerminal(password);
     }
 
@@ -128,13 +129,10 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     public void collectLog(final String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
         CollectLogCache collectLogCache = collectLogCacheManager.getCache(terminalId);
-        if (collectLogCache == null) {
-            collectLogCache = collectLogCacheManager.addCache(terminalId);
-        }
-        // 正在收集中,不允许重复执行
         if (CollectLogStateEnums.DOING == collectLogCache.getState()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_DOING);
         }
+        collectLogCacheManager.addCache(terminalId);
 
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.COLLECT_TERMINAL_LOG.getName(), "");

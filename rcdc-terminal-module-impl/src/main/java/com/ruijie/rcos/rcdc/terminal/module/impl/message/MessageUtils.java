@@ -32,14 +32,14 @@ public class MessageUtils {
      * @param <T>  消息对应的实体类
      * @return 返回消息对象
      */
-    public static <T> CbbShineMessageResponse parse(Object data, @Nullable Class<T> clz) {
+    public static <T> CbbShineMessageResponse parse(String data, @Nullable Class<T> clz) {
         Assert.notNull(data, "data不能为null");
-        Assert.hasText(data.toString(), "data不能为空");
+        Assert.hasText(data, "data不能为空");
         CbbShineMessageResponse<T> response;
         try {
-            response = JSON.parseObject(data.toString(), CbbShineMessageResponse.class);
+            response = JSON.parseObject(data, CbbShineMessageResponse.class);
         } catch (Exception e) {
-            throw new IllegalArgumentException("报文数据格式转换错误；data:[" + data.toString() + "]", e);
+            throw new IllegalArgumentException("报文数据格式转换错误；data:[" + data + "]", e);
         }
         if (clz == null) {
             LOGGER.info("Class<T>参数未传；data:{}", data);
