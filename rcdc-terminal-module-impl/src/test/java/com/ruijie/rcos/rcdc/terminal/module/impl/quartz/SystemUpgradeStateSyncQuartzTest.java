@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -104,7 +104,7 @@ public class SystemUpgradeStateSyncQuartzTest {
     private List<SystemUpgradeTask> getMockedUpgradingTask() {
         List<SystemUpgradeTask> upgradeTaskList = new ArrayList<>();
         String baseTerminalId = "id";
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV_LINUX_HARDWARE;
         for (int i = 0; i < 11; i++) {
             SystemUpgradeTask task = buildUpgradingTask(baseTerminalId + i, terminalType);
             upgradeTaskList.add(task);
@@ -113,10 +113,10 @@ public class SystemUpgradeStateSyncQuartzTest {
         return upgradeTaskList;
     }
 
-    private SystemUpgradeTask buildUpgradingTask(String terminalId, CbbTerminalTypeEnums terminalType) {
+    private SystemUpgradeTask buildUpgradingTask(String terminalId, TerminalPlatformEnums terminalType) {
         SystemUpgradeTask task = new SystemUpgradeTask();
         task.setTerminalId(terminalId);
-        task.setTerminalType(terminalType);
+        task.setPlatform(terminalType);
         task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(true);
         task.setStartTime(System.currentTimeMillis() - 50000);
@@ -128,7 +128,7 @@ public class SystemUpgradeStateSyncQuartzTest {
     private List<TerminalSystemUpgradeInfo> getMockedUpgradeInfoList() {
         List<TerminalSystemUpgradeInfo> upgradeInfoList = new ArrayList<>();
         String baseTerminalId = "id";
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI_LINUX_HARDWARE;
         for (int i = 0; i < 10; i++) {
             TerminalSystemUpgradeInfo info = buildUpgradeInfo(baseTerminalId + i, terminalType);
             info.setLastUpdateTime(System.currentTimeMillis() - 3000);
@@ -153,7 +153,7 @@ public class SystemUpgradeStateSyncQuartzTest {
 
     private void buildUnvalidUpgradeInfo(List<TerminalSystemUpgradeInfo> upgradeInfoList) {
         String baseTerminalId = "unvalidId";
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI_LINUX_HARDWARE;
 
         TerminalSystemUpgradeInfo info1 = buildUpgradeInfo(baseTerminalId, terminalType);
         info1.setState(CbbSystemUpgradeStateEnums.UPGRADING);
@@ -166,15 +166,15 @@ public class SystemUpgradeStateSyncQuartzTest {
         TerminalSystemUpgradeInfo info4 = buildUpgradeInfo(baseTerminalId, terminalType);
         info4.setLastUpdateTime(System.currentTimeMillis());
         info4.setState(CbbSystemUpgradeStateEnums.UPGRADING);
-        info4.setTerminalType(null);
+        info4.setPlatform(null);
         upgradeInfoList.add(info4);
     }
 
 
-    private TerminalSystemUpgradeInfo buildUpgradeInfo(String terminalId, CbbTerminalTypeEnums terminalType) {
+    private TerminalSystemUpgradeInfo buildUpgradeInfo(String terminalId, TerminalPlatformEnums terminalType) {
         TerminalSystemUpgradeInfo info = new TerminalSystemUpgradeInfo();
         info.setTerminalId(terminalId);
-        info.setTerminalType(terminalType);
+        info.setPlatform(terminalType);
         info.setExternalVersion("ExternalVersion");
         info.setInternalVersion("InternalVersion");
 

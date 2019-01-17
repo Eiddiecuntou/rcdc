@@ -11,7 +11,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -55,28 +55,28 @@ public class SystemUpgradeTaskManager {
      * @return 添加的任务
      * @throws BusinessException 业务异常
      */
-    public SystemUpgradeTask addTask(String terminalId, CbbTerminalTypeEnums terminalType) throws BusinessException {
+    public SystemUpgradeTask addTask(String terminalId, TerminalPlatformEnums platform) throws BusinessException {
         Assert.hasText(terminalId, "terminalId can not be empty");
-        Assert.notNull(terminalType, "terminalType can not be null");
+        Assert.notNull(platform, "terminalType can not be null");
 
         // 队列中已经有升级任务
         SystemUpgradeTask systemUpgradeTask = TASK_MAP.get(terminalId);
         if (systemUpgradeTask != null) {
-            LOGGER.debug("system upgrade task has exist, terminalId[{}], terminalType[{}]", terminalId, terminalType);
+            LOGGER.debug("system upgrade task has exist, terminalId[{}], terminalType[{}]", terminalId, platform);
             return systemUpgradeTask;
         }
 
-        SystemUpgradeTask task = buildSystemUpgradeTask(terminalId, terminalType);
+        SystemUpgradeTask task = buildSystemUpgradeTask(terminalId, platform);
         synchronized (TASK_MAP) {
             if (TASK_MAP.size() >= TASK_MAP_MAX_NUM) {
                 LOGGER.debug("system upgrade task map exceed limit number, terminalId[{}], terminalType[{}]",
-                        terminalId, terminalType);
+                        terminalId, platform);
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_NUM_EXCEED_LIMIT);
             }
             int count = countUpgradingNum();
             if (count >= UPGRADING_MAX_NUM) {
                 LOGGER.debug("system upgrade task doing number exceed limit number, terminalId[{}], terminalType[{}]",
-                        terminalId, terminalType);
+                        terminalId, platform);
                 task.setState(CbbSystemUpgradeStateEnums.WAIT);
             }
             TASK_MAP.put(terminalId, task);
@@ -84,10 +84,10 @@ public class SystemUpgradeTaskManager {
         return task;
     }
 
-    private SystemUpgradeTask buildSystemUpgradeTask(String terminalId, CbbTerminalTypeEnums terminalType) {
+    private SystemUpgradeTask buildSystemUpgradeTask(String terminalId, TerminalPlatformEnums platform) {
         SystemUpgradeTask task = new SystemUpgradeTask();
         task.setTerminalId(terminalId);
-        task.setTerminalType(terminalType);
+        task.setPlatform(platform);
         long currentTime = System.currentTimeMillis();
         task.setStartTime(currentTime);
         task.setTimeStamp(currentTime);

@@ -26,7 +26,7 @@ public enum CbbTerminalComponentUpgradeResultEnums {
     START(2),
     
     /**
-     * 升级失败
+     * 升级未就绪
      */
     PREPARING(3);
     

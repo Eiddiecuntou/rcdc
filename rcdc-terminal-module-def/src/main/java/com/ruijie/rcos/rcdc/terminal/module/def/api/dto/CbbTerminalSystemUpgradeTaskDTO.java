@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * 
@@ -38,7 +38,7 @@ public class CbbTerminalSystemUpgradeTaskDTO {
     /**
      * 终端类型
      */
-    private CbbTerminalTypeEnums terminalType;
+    private TerminalPlatformEnums platform;
 
     public String getTerminalId() {
         return terminalId;
@@ -72,12 +72,12 @@ public class CbbTerminalSystemUpgradeTaskDTO {
         this.state = state;
     }
 
-    public CbbTerminalTypeEnums getTerminalType() {
-        return terminalType;
+    public TerminalPlatformEnums getPlatform() {
+        return platform;
     }
 
-    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
+    public void setPlatform(TerminalPlatformEnums platform) {
+        this.platform = platform;
     }
 
 }

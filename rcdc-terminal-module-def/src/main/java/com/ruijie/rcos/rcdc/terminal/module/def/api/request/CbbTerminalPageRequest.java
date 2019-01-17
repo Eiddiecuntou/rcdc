@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageRequest;
 
 /**
@@ -17,7 +17,7 @@ public class CbbTerminalPageRequest extends DefaultPageRequest {
     /**
      * 终端类型  idv vdi
      */
-    private CbbTerminalTypeEnums terminalType;
+    private TerminalPlatformEnums platform;
     
     /**
      * 终端系统版本
@@ -25,12 +25,12 @@ public class CbbTerminalPageRequest extends DefaultPageRequest {
     private String terminalSystemVersion;
 
 
-    public CbbTerminalTypeEnums getTerminalType() {
-        return terminalType;
+    public TerminalPlatformEnums getPlatform() {
+        return platform;
     }
 
-    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
+    public void setPlatform(TerminalPlatformEnums platform) {
+        this.platform = platform;
     }
 
     public String getTerminalSystemVersion() {

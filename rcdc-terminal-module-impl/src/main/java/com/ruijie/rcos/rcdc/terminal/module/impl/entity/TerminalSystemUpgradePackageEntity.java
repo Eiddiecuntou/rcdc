@@ -1,9 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
-import javax.persistence.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import java.util.Date;
 import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * Description: 终端系统升级包实体类
@@ -31,7 +38,7 @@ public class TerminalSystemUpgradePackageEntity {
      * 包类型，VDI ISO、IDV ISO、OTA
      */
     @Enumerated(EnumType.STRING)
-    private CbbTerminalTypeEnums packageType;
+    private TerminalPlatformEnums packageType;
 
     /**
      * 上传时间
@@ -68,12 +75,12 @@ public class TerminalSystemUpgradePackageEntity {
     }
 
 
-    public CbbTerminalTypeEnums getPackageType() {
+    public TerminalPlatformEnums getPackageType() {
         return packageType;
     }
 
 
-    public void setPackageType(CbbTerminalTypeEnums packageType) {
+    public void setPackageType(TerminalPlatformEnums packageType) {
         this.packageType = packageType;
     }
 

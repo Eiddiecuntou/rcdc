@@ -44,6 +44,7 @@ public enum UpgradeFileTypeEnums {
      */
     public static boolean contains(final String fileType) {
         Assert.hasText(fileType, "fileType can not be empty");
+        
         for (UpgradeFileTypeEnums typeEnum : UpgradeFileTypeEnums.values()) {
             if (typeEnum.getFileType().equals(fileType)) {
                 return true;

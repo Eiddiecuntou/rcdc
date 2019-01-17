@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * 
@@ -25,8 +25,8 @@ public class ComponentUpdateListCacheManager {
      */
     public static boolean isUpdate = false;
 
-
-    private static final Map<CbbTerminalTypeEnums, CbbTerminalComponentUpdateListDTO> UPDATE_LIST_CACHE_MAP =
+    
+    private static final Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> UPDATE_LIST_CACHE_MAP =
             new ConcurrentHashMap<>();
 
     /**
@@ -34,11 +34,11 @@ public class ComponentUpdateListCacheManager {
      *
      * @param terminalType 终端类型
      */
-    public void addCache(CbbTerminalTypeEnums terminalType, CbbTerminalComponentUpdateListDTO updatelist) {
-        Assert.notNull(terminalType, "terminalType can not be null");
+    public void addCache(TerminalPlatformEnums platform, CbbTerminalComponentUpdateListDTO updatelist) {
+        Assert.notNull(platform, "platform can not be null");
         Assert.notNull(updatelist, "updatelist can not be null");
 
-        UPDATE_LIST_CACHE_MAP.put(terminalType, updatelist);
+        UPDATE_LIST_CACHE_MAP.put(platform, updatelist);
     }
 
     /**
@@ -46,10 +46,10 @@ public class ComponentUpdateListCacheManager {
      *
      * @param terminalType 终端类型
      */
-    public void removeCache(CbbTerminalTypeEnums terminalType) {
-        Assert.notNull(terminalType, "terminalType can not be null");
+    public void removeCache(TerminalPlatformEnums platform) {
+        Assert.notNull(platform, "platform can not be null");
 
-        UPDATE_LIST_CACHE_MAP.remove(terminalType);
+        UPDATE_LIST_CACHE_MAP.remove(platform);
     }
 
     /**
@@ -58,10 +58,10 @@ public class ComponentUpdateListCacheManager {
      * @param terminalType 终端类型
      * @return 返回对应缓存对象
      */
-    public CbbTerminalComponentUpdateListDTO getCache(CbbTerminalTypeEnums terminalType) {
-        Assert.notNull(terminalType, "terminalType can not be null");
+    public CbbTerminalComponentUpdateListDTO getCache(TerminalPlatformEnums platform) {
+        Assert.notNull(platform, "platform can not be null");
 
-        return UPDATE_LIST_CACHE_MAP.get(terminalType);
+        return UPDATE_LIST_CACHE_MAP.get(platform);
     }
 
     /**
@@ -69,7 +69,7 @@ public class ComponentUpdateListCacheManager {
      *
      * @return 返回集合对象
      */
-    public Map<CbbTerminalTypeEnums, CbbTerminalComponentUpdateListDTO> getUpdateListCaches() {
+    public Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> getUpdateListCaches() {
         return UPDATE_LIST_CACHE_MAP;
     }
 

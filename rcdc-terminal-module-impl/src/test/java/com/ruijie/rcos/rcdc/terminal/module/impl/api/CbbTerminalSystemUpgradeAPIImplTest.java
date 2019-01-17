@@ -9,10 +9,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.util.FileCopyUtils;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -92,7 +92,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             private TerminalUpgradeVersionFileInfo getVersionInfo() {
                 TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
                 versionInfo.setImgName("package");
-                versionInfo.setPackageType(CbbTerminalTypeEnums.IDV);
+                versionInfo.setPackageType(TerminalPlatformEnums.IDV_LINUX_HARDWARE);
                 versionInfo.setVersion("interVer");
                 return versionInfo;
             }
@@ -225,12 +225,12 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testListSystemUpgradePackage() throws BusinessException {
         CbbTerminalSystemUpgradePackageListRequest request = new CbbTerminalSystemUpgradePackageListRequest();
-        request.setTerminalType(CbbTerminalTypeEnums.IDV);
+        request.setPaltform(TerminalPlatformEnums.IDV_LINUX_HARDWARE);
         List<TerminalSystemUpgradePackageEntity> packageList = buildPackageList();
 
         new Expectations() {
             {
-                termianlSystemUpgradePackageDAO.findByPackageType((CbbTerminalTypeEnums) any);
+                termianlSystemUpgradePackageDAO.findByPackageType((TerminalPlatformEnums) any);
                 result = packageList;
             }
         };
@@ -239,7 +239,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         new Verifications() {
             {
-                termianlSystemUpgradePackageDAO.findByPackageType((CbbTerminalTypeEnums) any);
+                termianlSystemUpgradePackageDAO.findByPackageType((TerminalPlatformEnums) any);
                 times = 1;
             }
         };
@@ -249,11 +249,11 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testListSystemUpgradePackageFindEmpty() throws BusinessException {
         CbbTerminalSystemUpgradePackageListRequest request = new CbbTerminalSystemUpgradePackageListRequest();
-        request.setTerminalType(CbbTerminalTypeEnums.ALL);
+        request.setPaltform(TerminalPlatformEnums.ALL);
 
         new Expectations() {
             {
-                termianlSystemUpgradePackageDAO.findByPackageType((CbbTerminalTypeEnums) any);
+                termianlSystemUpgradePackageDAO.findByPackageType((TerminalPlatformEnums) any);
                 result = Collections.emptyList();
             }
         };
@@ -262,7 +262,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         new Verifications() {
             {
-                termianlSystemUpgradePackageDAO.findByPackageType((CbbTerminalTypeEnums) any);
+                termianlSystemUpgradePackageDAO.findByPackageType((TerminalPlatformEnums) any);
                 times = 1;
             }
         };
@@ -272,14 +272,14 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testAddSystemUpgradeTask() throws BusinessException {
 
         CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
-        request.setTerminalType(CbbTerminalTypeEnums.VDI);
+        request.setPlatform(TerminalPlatformEnums.VDI_LINUX_HARDWARE);
         request.setTerminalId("11");
         TerminalSystemUpgradePackageEntity entity = new TerminalSystemUpgradePackageEntity();
         TerminalEntity terminal = new TerminalEntity();
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 result = entity;
                 
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);

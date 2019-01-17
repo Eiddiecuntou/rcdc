@@ -7,8 +7,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAP
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.Localelanguage;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.BuildShineResponseMessageUtils;
 import com.ruijie.rcos.sk.base.i18n.SkyEngineLocaleHolder;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -31,7 +31,7 @@ public class GetI18nLangHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             Locale locale = SkyEngineLocaleHolder.getInstance().getLocale();
             Localelanguage localeLanguage = new Localelanguage();
             localeLanguage.setLang(locale.getLanguage());
-            CbbResponseShineMessage responseMessage = BuildShineResponseMessageUtils.buildResponseMessage(request, localeLanguage);
+            CbbResponseShineMessage responseMessage = MessageUtils.buildResponseMessage(request, localeLanguage);
             messageHandlerAPI.response(responseMessage);
         } catch (Exception e) {
             LOGGER.error("终端获取国际化语言消息应答失败", e);

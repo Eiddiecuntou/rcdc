@@ -91,12 +91,6 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
             }
             //应答心跳报文
             sender.response(new Message(Constants.SYSTEM_TYPE, ReceiveTerminalEvent.HEARTBEAT, null));
-            
-            //for test
-            Session session = sender.getSession();
-            session.setAttribute(TERMINAL_BIND_KEY, "58:69:6c:7f:d3:b0");
-            sessionManager.bindSession("58:69:6c:7f:d3:b0", session);
-            
             return;
         }
         if (ReceiveTerminalEvent.CHECK_UPGRADE.equals(message.getAction())) {

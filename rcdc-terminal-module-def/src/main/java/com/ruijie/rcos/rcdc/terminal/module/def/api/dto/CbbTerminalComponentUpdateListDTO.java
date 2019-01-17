@@ -31,7 +31,7 @@ public class CbbTerminalComponentUpdateListDTO {
         this.baseVersion = baseVersion;
         this.componentSize = componentSize;
     }
-
+    
     public String getVersion() {
         return version;
     }

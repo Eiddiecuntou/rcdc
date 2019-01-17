@@ -1,7 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,5 +58,25 @@ public class MessageUtils {
         }
         response.setContent(t);
         return response;
+    }
+    
+    /**
+     * 构造shine应答消息
+     * 
+     * @param request 请求参数
+     * @param content 响应内容
+     * @return shine应答消息
+     */
+    public static CbbResponseShineMessage buildResponseMessage(CbbDispatcherRequest request, Object content) {
+        Assert.notNull(request, "request can not be null");
+        
+        CbbResponseShineMessage responseMessage = new CbbResponseShineMessage();
+        responseMessage.setAction(request.getDispatcherKey());
+        responseMessage.setRequestId(request.getRequestId());
+        responseMessage.setTerminalId(request.getTerminalId());
+        responseMessage.setCode(Constants.SUCCESS);
+        responseMessage.setContent(content);
+        
+        return responseMessage;
     }
 }

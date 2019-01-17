@@ -1,8 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
-import java.util.Date;
 import java.util.UUID;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * 
@@ -23,7 +22,7 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
     /**
      * 包类型，VDI ISO、IDV ISO、OTA
      */
-    private CbbTerminalTypeEnums packageType;
+    private TerminalPlatformEnums packageType;
     
     private String origin;
     
@@ -45,11 +44,11 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
         this.name = name;
     }
 
-    public CbbTerminalTypeEnums getPackageType() {
+    public TerminalPlatformEnums getPackageType() {
         return packageType;
     }
 
-    public void setPackageType(CbbTerminalTypeEnums packageType) {
+    public void setPackageType(TerminalPlatformEnums packageType) {
         this.packageType = packageType;
     }
 

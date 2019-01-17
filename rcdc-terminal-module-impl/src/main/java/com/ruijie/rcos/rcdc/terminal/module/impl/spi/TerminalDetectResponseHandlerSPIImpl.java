@@ -18,7 +18,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  * @author Jarman
  */
 @DispatcherImplemetion(ReceiveTerminalEvent.TERMINAL_DETECT)
-public class TerminalDetectResponseHandlerImpl implements CbbDispatcherHandlerSPI {
+public class TerminalDetectResponseHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired
     private TerminalDetectService detectService;

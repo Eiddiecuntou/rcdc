@@ -25,7 +25,7 @@ import mockit.integration.junit4.JMockit;
 public class TerminalDetectResponseHandlerImplTest {
 
     @Tested
-    private TerminalDetectResponseHandlerImpl responseHandler;
+    private TerminalDetectResponseHandlerSPIImpl responseHandler;
 
     @Injectable
     private TerminalDetectService detectService;

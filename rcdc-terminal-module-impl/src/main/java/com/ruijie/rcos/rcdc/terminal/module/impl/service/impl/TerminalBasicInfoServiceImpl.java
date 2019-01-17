@@ -48,7 +48,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
         Message message = new Message(Constants.SYSTEM_TYPE,
-                SendTerminalEventEnums.MODIFY_TERMINAL_NETWORK_CONFIG.getName(), terminalName);
+                SendTerminalEventEnums.MODIFY_TERMINAL_NAME.getName(), terminalName);
         sender.request(message);
     }
 

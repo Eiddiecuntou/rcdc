@@ -6,7 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAP
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalPassword;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -31,26 +31,14 @@ public class SyncTerminalPasswordHandlerSPIImpl implements CbbDispatcherHandlerS
         LOGGER.debug("=====终端同步管理员密码报文===={}", request.getData());
         try {
             String password = terminalOperatorService.getTerminalPassword();
-            CbbResponseShineMessage<TerminalPassword> responseMessage = buildResponseMessage(request, password);
+            TerminalPassword terminalPassword = new TerminalPassword();
+            terminalPassword.setPassword(password);
+            CbbResponseShineMessage<TerminalPassword> responseMessage = MessageUtils.buildResponseMessage(request, terminalPassword);
             messageHandlerAPI.response(responseMessage);
         } catch (Exception e) {
             LOGGER.error("终端同步管理员密码消息应答失败", e);
         }
 
-    }
-
-    private CbbResponseShineMessage<TerminalPassword> buildResponseMessage(CbbDispatcherRequest request, String password) {
-        CbbResponseShineMessage<TerminalPassword> responseMessage = new CbbResponseShineMessage<>();
-        responseMessage.setAction(request.getDispatcherKey());
-        responseMessage.setRequestId(request.getRequestId());
-        responseMessage.setTerminalId(request.getTerminalId());
-        responseMessage.setCode(Constants.SUCCESS);
-
-        TerminalPassword terminalPwd = new TerminalPassword();
-        terminalPwd.setPassword(password);
-        responseMessage.setContent(terminalPwd);
-
-        return responseMessage;
     }
 
 }

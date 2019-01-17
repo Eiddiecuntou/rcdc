@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
+import java.util.Iterator;
+import java.util.UUID;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -14,6 +17,14 @@ import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.DetectPageWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.StartBatDetectWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.TerminalDetectListContentVO;
+import com.ruijie.rcos.sk.base.batch.AbstractBatchTaskHandler;
+import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
+import com.ruijie.rcos.sk.base.batch.BatchTaskFinishResult;
+import com.ruijie.rcos.sk.base.batch.BatchTaskItem;
+import com.ruijie.rcos.sk.base.batch.BatchTaskItemResult;
+import com.ruijie.rcos.sk.base.batch.BatchTaskStatus;
+import com.ruijie.rcos.sk.base.batch.DefaultBatchTaskFinishResult;
+import com.ruijie.rcos.sk.base.batch.DefaultBatchTaskItem;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.validation.EnableCustomValidate;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
@@ -29,7 +40,7 @@ import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
  * @author nt
  */
 @Controller
-@RequestMapping("/terminal/detect")
+@RequestMapping("/cbb/terminal/detect")
 @EnableCustomValidate(enable = false)
 public class TerminalDetectController {
 
@@ -39,40 +50,33 @@ public class TerminalDetectController {
     /**
      * 批量开启终端检测
      *
-     * @param request        请求参数
-     * @param optLogRecorder 日志记录
+     * @param request 请求参数
+     * @param optLogRecorder 日志记录对象
+     * @param builder 批量任务处理对象
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
     @RequestMapping(value = "start")
-    public DefaultWebResponse startDetect(StartBatDetectWebRequest request, ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+    public DefaultWebResponse startDetect(StartBatDetectWebRequest request, ProgrammaticOptLogRecorder optLogRecorder,
+            BatchTaskBuilder builder) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         Assert.notNull(optLogRecorder, "optLogRecorder can not be null");
+        Assert.notNull(builder, "builder can not be null");
 
         String[] idArr = request.getIdArr();
-        for (String id : idArr) {
-            startDetectAddOptLog(optLogRecorder, id);
-        }
+        UUID cbbIdArr = getCbbTerminalId(idArr);
+        final Iterator<DefaultBatchTaskItem> iterator = Stream.of(cbbIdArr)
+                .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("终端检测").build()).iterator();
+        // StartDetectBatchtaskHandler handler = new StartDetectBatchtaskHandler(operatorAPI, iterator, builder);
+//        for (String id : idArr) {
+//            startDetectAddOptLog(optLogRecorder, id);
+//        }
         return DefaultWebResponse.Builder.success();
     }
 
-    /**
-     * 开始终端检测并记录操作日志
-     *
-     * @param optLogRecorder
-     * @param terminalId
-     * @throws BusinessException
-     */
-    private void startDetectAddOptLog(ProgrammaticOptLogRecorder optLogRecorder, String terminalId) throws BusinessException {
-        CbbTerminalDetectRequest detectReq = new CbbTerminalDetectRequest(terminalId);
-        try {
-            operatorAPI.detect(detectReq);
-            // 添加检测成功日志
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, terminalId);
-        } catch (BusinessException ex) {
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, terminalId, ex.getI18nMessage());
-            throw ex;
-        }
+    private UUID getCbbTerminalId(String[] idArr) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
@@ -104,4 +108,64 @@ public class TerminalDetectController {
         return DefaultWebResponse.Builder.success(contentVO);
     }
 
+    protected class StartDetectBatchtaskHandler extends AbstractBatchTaskHandler {
+
+        private final ProgrammaticOptLogRecorder optLogRecorder;
+
+        private final CbbTerminalOperatorAPI operatorAPI;
+
+        protected StartDetectBatchtaskHandler(CbbTerminalOperatorAPI operatorAPI,
+                Iterator<? extends BatchTaskItem> iterator, ProgrammaticOptLogRecorder optLogRecorder) {
+            super(iterator);
+            this.operatorAPI = operatorAPI;
+            this.optLogRecorder = optLogRecorder;
+        }
+
+        @Override
+        public BatchTaskFinishResult onFinish(int successCount, int failCount) {
+            String[] argArr = new String[] {String.valueOf(successCount), String.valueOf(failCount)};
+            BatchTaskStatus status = BatchTaskStatus.SUCCESS;
+            if (failCount == 0) {
+                return buildBatchTaskFinishResult(status, argArr);
+            }
+            if (successCount == 0) {
+                status = BatchTaskStatus.FAILURE;
+            } else {
+                status = BatchTaskStatus.PARTIAL_SUCCESS;
+            }
+            return buildBatchTaskFinishResult(status, argArr);
+        }
+
+        private BatchTaskFinishResult buildBatchTaskFinishResult(BatchTaskStatus status, String[] argArr) {
+            return DefaultBatchTaskFinishResult.builder().batchTaskStatus(status)
+                    .msgKey(BusinessKey.RCDC_RCO_TERMINAL_DETECT_BATCH_TASK_RESULT).msgArgs(argArr).build();
+        }
+
+        @Override
+        public BatchTaskItemResult processItem(BatchTaskItem taskItem) throws BusinessException {
+            Assert.notNull(taskItem, "taskItem can not be null");
+            return startDetectAddOptLog(taskItem.getItemID());
+        }
+        
+        /**
+         * 开始终端检测并记录操作日志
+         *
+         * @param optLogRecorder
+         * @param terminalId
+         * @throws BusinessException
+         */
+        private BatchTaskItemResult startDetectAddOptLog(UUID cbbTerminalId)
+                throws BusinessException {
+            CbbTerminalDetectRequest detectReq = new CbbTerminalDetectRequest(cbbTerminalId);
+            return null;
+//            try {
+//                operatorAPI.detect(detectReq);
+//                // 添加检测成功日志
+//                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, terminalId);
+//            } catch (BusinessException ex) {
+//                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, terminalId, ex.getI18nMessage());
+//            }
+        }
+
+    }
 }

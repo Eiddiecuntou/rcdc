@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradeTaskDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbBaseListResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.CreateTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.DeleteTerminalSystemUpgradeRequest;
@@ -68,6 +68,7 @@ public class TerminalSystemUpgradeController {
                     file.getFileName());
         } catch (BusinessException ex) {
             // 上传文件处理失败
+            LOGGER.error("upload terminal system package fail, file name is [{}]", file.getFileName());
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
                     file.getFileName(), ex.getI18nMessage());
             throw ex;
@@ -89,7 +90,7 @@ public class TerminalSystemUpgradeController {
         Assert.notNull(listRequest, "listRequest can not be null");
 
         CbbTerminalSystemUpgradePackageListRequest request = new CbbTerminalSystemUpgradePackageListRequest();
-        request.setTerminalType(listRequest.getTerminalType());
+        request.setPaltform(listRequest.getPlatform());
         CbbBaseListResponse<CbbTerminalSystemUpgradePackageInfoDTO> resp =
                 cbbTerminalUpgradeAPI.listSystemUpgradePackage(request);
         return DefaultWebResponse.Builder.success(resp);
@@ -112,20 +113,20 @@ public class TerminalSystemUpgradeController {
 
 
         // TODO 批处理框架
-        CbbTerminalTypeEnums terminalType = request.getTerminalType();
+        TerminalPlatformEnums platform = request.getPlatform();
         for (String terminalId : request.getTerminalIdArr()) {
-            addUpgradeTaskAddOptLog(terminalId, terminalType, optLogRecorder);
+            addUpgradeTaskAddOptLog(terminalId, platform, optLogRecorder);
         }
 
         return DefaultWebResponse.Builder.success();
     }
 
 
-    private void addUpgradeTaskAddOptLog(String terminalId, CbbTerminalTypeEnums terminalType,
+    private void addUpgradeTaskAddOptLog(String terminalId, TerminalPlatformEnums platform,
             ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         CbbAddTerminalSystemUpgradeTaskRequest addRequest = new CbbAddTerminalSystemUpgradeTaskRequest();
         addRequest.setTerminalId(terminalId);
-        addRequest.setTerminalType(terminalType);
+        addRequest.setPlatform(platform);
         try {
             cbbTerminalUpgradeAPI.addSystemUpgradeTask(addRequest);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_SUCCESS_LOG, terminalId);

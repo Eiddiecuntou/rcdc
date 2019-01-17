@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 
@@ -28,7 +28,7 @@ public interface TerminalSystemUpgradePackageDAO
      * @param packageType 升级包类型
      * @return 返回系统升级包信息
      */
-    TerminalSystemUpgradePackageEntity findFirstByPackageType(CbbTerminalTypeEnums packageType);
+    TerminalSystemUpgradePackageEntity findFirstByPackageType(TerminalPlatformEnums packageType);
 
 
     /**
@@ -38,7 +38,7 @@ public interface TerminalSystemUpgradePackageDAO
      * @param packageType 升级包类型
      * @return 返回系统升级包信息
      */
-    List<TerminalSystemUpgradePackageEntity> findByPackageType(CbbTerminalTypeEnums packageType);
+    List<TerminalSystemUpgradePackageEntity> findByPackageType(TerminalPlatformEnums packageType);
 
 
     /**
@@ -55,7 +55,7 @@ public interface TerminalSystemUpgradePackageDAO
     @Query("update TerminalSystemUpgradePackageEntity set packageVersion=:packageVersion "
             + ",imgName=:imgName,version = version + 1 where packageType=:packageType and version=:version")
     int modifyTerminalUpgradePackageVersion(@Param("imgName") String imgName,
-            @Param("packageType") CbbTerminalTypeEnums packageType, @Param("packageVersion") String packageVersion,
+            @Param("packageType") TerminalPlatformEnums packageType, @Param("packageVersion") String packageVersion,
             @Param("version") int version);
 
 }

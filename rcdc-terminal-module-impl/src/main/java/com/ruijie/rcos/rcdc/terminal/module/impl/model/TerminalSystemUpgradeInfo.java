@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * 
@@ -22,7 +22,7 @@ public class TerminalSystemUpgradeInfo {
     /**
      * 终端类型
      */
-    private CbbTerminalTypeEnums terminalType;
+    private TerminalPlatformEnums platform;
     
     /**
      * 升级状态
@@ -84,19 +84,19 @@ public class TerminalSystemUpgradeInfo {
         this.lastUpdateTime = lastUpdateTime;
     }
 
-    public CbbTerminalTypeEnums getTerminalType() {
-        return terminalType;
+    public TerminalPlatformEnums getPlatform() {
+        return platform;
     }
 
-    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
+    public void setPlatform(TerminalPlatformEnums platform) {
+        this.platform = platform;
     }
 
     @Override
     public String toString() {
-        return "TerminalSystemUpgradeInfo [terminalId=" + terminalId + ", terminalType=" + terminalType + ", state="
-                + state + ", internalVersion=" + internalVersion + ", externalVersion=" + externalVersion
-                + ", lastUpdateTime=" + lastUpdateTime + "]";
+        return "TerminalSystemUpgradeInfo [terminalId=" + terminalId + ", platform=" + platform + ", state=" + state
+                + ", internalVersion=" + internalVersion + ", externalVersion=" + externalVersion + ", lastUpdateTime="
+                + lastUpdateTime + "]";
     }
     
 }

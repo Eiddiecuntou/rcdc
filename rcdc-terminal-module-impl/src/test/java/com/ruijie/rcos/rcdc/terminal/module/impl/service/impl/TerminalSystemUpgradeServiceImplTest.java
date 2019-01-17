@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.callback.CbbTerminalSystemUpgradeRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -67,10 +67,10 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 result = upgradePackage;
 
-                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (CbbTerminalTypeEnums) any,
+                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (TerminalPlatformEnums) any,
                         anyString, anyInt);
                 result = 1;
             }
@@ -81,10 +81,10 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Verifications() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 times = 1;
 
-                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (CbbTerminalTypeEnums) any,
+                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (TerminalPlatformEnums) any,
                         anyString, anyInt);
                 times = 1;
             }
@@ -122,10 +122,10 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 result = upgradePackage;
 
-                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (CbbTerminalTypeEnums) any,
+                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (TerminalPlatformEnums) any,
                         anyString, anyInt);
                 result = 0;
             }
@@ -152,7 +152,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 result = null;
             }
         };
@@ -180,7 +180,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 result = null;
 
                 termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
@@ -192,7 +192,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Verifications() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 times = 1;
 
                 termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
@@ -215,7 +215,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 result = upgradePackage;
             }
         };
@@ -350,7 +350,7 @@ public class TerminalSystemUpgradeServiceImplTest {
 
     private TerminalUpgradeVersionFileInfo buildUpgradePackageVersion() {
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
-        versionInfo.setPackageType(CbbTerminalTypeEnums.VDI);
+        versionInfo.setPackageType(TerminalPlatformEnums.VDI_LINUX_HARDWARE);
         versionInfo.setVersion("version");
         versionInfo.setImgName("imgname");
         return versionInfo;
@@ -362,7 +362,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         upgradePackage.setId(UUID.randomUUID());
         upgradePackage.setPackageVersion("internalVersion");
         upgradePackage.setImgName("packageName");
-        upgradePackage.setPackageType(CbbTerminalTypeEnums.VDI);
+        upgradePackage.setPackageType(TerminalPlatformEnums.VDI_LINUX_HARDWARE);
         upgradePackage.setUploadTime(new Date());
         return upgradePackage;
     }

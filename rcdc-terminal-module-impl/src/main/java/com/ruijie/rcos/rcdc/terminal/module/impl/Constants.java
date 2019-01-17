@@ -98,9 +98,9 @@ public interface Constants {
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION = "version";
 
     /**
-     * 终端组件升级包路径 TODO
+     * 终端组件升级包路径 
      */
-    String TERMINAL_COMPONENT_UPGRADE_PACKAGE_PATH = "";
+    String TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH = "/opt/upgrade/app/terminal_component";
 
     /**
      * 终端组件升级包updatelist文件名

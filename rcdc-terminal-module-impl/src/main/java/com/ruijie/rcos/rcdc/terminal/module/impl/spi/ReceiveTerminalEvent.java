@@ -22,7 +22,7 @@ public interface ReceiveTerminalEvent {
     /**
      * 上传终端检测消息
      */
-    String TERMINAL_DETECT = "detect";
+    String TERMINAL_DETECT = "detect_terminal";
 
     /**
      * 上传USB 信息
@@ -43,4 +43,5 @@ public interface ReceiveTerminalEvent {
      * 获取国际化语言
      */
     String GET_I18N_LANG = "get_i18n_lang";
+    
 }

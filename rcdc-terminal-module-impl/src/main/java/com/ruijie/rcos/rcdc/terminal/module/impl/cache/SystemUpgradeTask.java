@@ -1,8 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import org.springframework.core.Ordered;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * 
@@ -39,7 +38,7 @@ public class SystemUpgradeTask {
     /**
      * 终端类型
      */
-    private CbbTerminalTypeEnums terminalType;
+    private TerminalPlatformEnums platform;
 
     /**
      * 心跳时间
@@ -84,12 +83,12 @@ public class SystemUpgradeTask {
         this.state = state;
     }
 
-    public CbbTerminalTypeEnums getTerminalType() {
-        return terminalType;
+    public TerminalPlatformEnums getPlatform() {
+        return platform;
     }
 
-    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
+    public void setPlatform(TerminalPlatformEnums platform) {
+        this.platform = platform;
     }
 
     public Boolean getIsSend() {
@@ -111,8 +110,8 @@ public class SystemUpgradeTask {
     @Override
     public String toString() {
         return "SystemUpgradeTask [terminalId=" + terminalId + ", terminalName=" + terminalName + ", startTime="
-                + startTime + ", state=" + state + ", terminalType=" + terminalType + ", timeStamp=" + timeStamp
-                + ", isSend=" + isSend + "]";
+                + startTime + ", state=" + state + ", platform=" + platform + ", timeStamp=" + timeStamp + ", isSend="
+                + isSend + "]";
     }
 
 }

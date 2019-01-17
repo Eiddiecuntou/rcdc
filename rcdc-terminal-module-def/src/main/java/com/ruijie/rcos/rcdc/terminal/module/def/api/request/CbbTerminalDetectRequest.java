@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import java.util.UUID;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -13,24 +14,19 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  */
 public class CbbTerminalDetectRequest implements Request {
    
-    @NotBlank
-    private String terminalId;
+    @NotNull
+    private UUID cbbTerminalId;
     
-    
-
-    public CbbTerminalDetectRequest() {
+    public CbbTerminalDetectRequest(UUID cbbTerminalId) {
+        this.cbbTerminalId = cbbTerminalId;
     }
 
-    public CbbTerminalDetectRequest(String terminalId) {
-        this.terminalId = terminalId;
+    public UUID getCbbTerminalId() {
+        return cbbTerminalId;
     }
 
-    public String getTerminalId() {
-        return terminalId;
-    }
-
-    public void setTerminalId(String terminalId) {
-        this.terminalId = terminalId;
+    public void setCbbTerminalId(UUID cbbTerminalId) {
+        this.cbbTerminalId = cbbTerminalId;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
@@ -26,15 +26,15 @@ public class CbbAddTerminalSystemUpgradeTaskRequest implements Request {
      * 终端类型
      */
     @NotNull
-    private CbbTerminalTypeEnums terminalType;
+    private TerminalPlatformEnums platform;
     
 
     public CbbAddTerminalSystemUpgradeTaskRequest() {
     }
 
-    public CbbAddTerminalSystemUpgradeTaskRequest(String terminalId, CbbTerminalTypeEnums terminalType) {
+    public CbbAddTerminalSystemUpgradeTaskRequest(String terminalId, TerminalPlatformEnums platform) {
         this.terminalId = terminalId;
-        this.terminalType = terminalType;
+        this.platform = platform;
     }
 
     public String getTerminalId() {
@@ -44,13 +44,15 @@ public class CbbAddTerminalSystemUpgradeTaskRequest implements Request {
     public void setTerminalId(String terminalId) {
         this.terminalId = terminalId;
     }
-
-    public CbbTerminalTypeEnums getTerminalType() {
-        return terminalType;
+    
+    public TerminalPlatformEnums getPlatform() {
+        return platform;
     }
 
-    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
+    public void setPlatform(TerminalPlatformEnums platform) {
+        this.platform = platform;
     }
+
+
 
 }

@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class TerminalUpgradeVersionFileInfo {
     /**
      * 更新包类型
      */
-    private CbbTerminalTypeEnums packageType;
+    private TerminalPlatformEnums packageType;
 
     public String getImgName() {
         return imgName;
@@ -44,11 +44,11 @@ public class TerminalUpgradeVersionFileInfo {
         this.version = version;
     }
 
-    public CbbTerminalTypeEnums getPackageType() {
+    public TerminalPlatformEnums getPackageType() {
         return packageType;
     }
 
-    public void setPackageType(CbbTerminalTypeEnums packageType) {
+    public void setPackageType(TerminalPlatformEnums packageType) {
         this.packageType = packageType;
     }
 

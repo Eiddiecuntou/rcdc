@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 
 /**
@@ -16,9 +16,9 @@ public interface TerminalComponentUpgradeService {
 
     /**
      * 获取终端组件升级版本信息
-     * @param rainUpgradeVersion 终端组件版本
-     * @param terminalType 终端类型
+     * @param rainOsVersion 终端组件版本
+     * @param platform 终端平台类型
      * @return 组件升级版本信息
      */
-    TerminalVersionResultDTO getVersion(String rainUpgradeVersion, CbbTerminalTypeEnums terminalType);
+    TerminalVersionResultDTO getVersion(String rainOsVersion, TerminalPlatformEnums platform);
 }

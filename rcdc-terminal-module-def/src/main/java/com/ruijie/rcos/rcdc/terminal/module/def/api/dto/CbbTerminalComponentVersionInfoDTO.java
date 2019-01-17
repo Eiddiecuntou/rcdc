@@ -17,7 +17,7 @@ public class CbbTerminalComponentVersionInfoDTO {
     /**
      * 组件支持类型 idv&vdi 以&分隔
      */
-    private String terminalType;
+    private String platform;
     
     /**
      * 组件文件MD5
@@ -80,12 +80,12 @@ public class CbbTerminalComponentVersionInfoDTO {
         this.version = version;
     }
 
-    public String getTerminalType() {
-        return terminalType;
+    public String getPlatform() {
+        return platform;
     }
 
-    public void setTerminalType(String terminalType) {
-        this.terminalType = terminalType;
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
     public String getMd5() {

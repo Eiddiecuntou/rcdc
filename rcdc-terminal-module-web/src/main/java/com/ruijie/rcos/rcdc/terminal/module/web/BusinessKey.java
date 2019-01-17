@@ -63,5 +63,7 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_SUCCESS_LOG = "rcdc_terminal_delete_system_upgrade_success_log";
 
+    String RCDC_RCO_TERMINAL_DETECT_BATCH_TASK_RESULT = "rcdc_rco_terminal_detect_batch_task_result";
+
 
 }

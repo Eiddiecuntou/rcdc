@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import org.springframework.lang.Nullable;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -16,17 +16,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 public class CbbTerminalSystemUpgradePackageListRequest implements Request {
 
     /**
-     * 终端类型
+     * 终端平台类型
      */
     @Nullable
-    private CbbTerminalTypeEnums terminalType;
+    private TerminalPlatformEnums paltform;
 
-    public CbbTerminalTypeEnums getTerminalType() {
-        return terminalType;
+    public TerminalPlatformEnums getPaltform() {
+        return paltform;
     }
 
-    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
+    public void setPaltform(TerminalPlatformEnums paltform) {
+        this.paltform = paltform;
     }
 
 }

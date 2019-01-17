@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -60,7 +59,7 @@ public class SystemUpgradeWaitingTaskQuartzTest {
                 result = taskList;
 
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 result = upgradePackage;
 
                 terminalSystemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
@@ -92,7 +91,7 @@ public class SystemUpgradeWaitingTaskQuartzTest {
                 result = taskList;
 
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 result = upgradePackage;
 
                 terminalSystemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
@@ -128,7 +127,7 @@ public class SystemUpgradeWaitingTaskQuartzTest {
                 result = startTaskList;
 
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 result = null;
 
                 taskManager.modifyTaskState(anyString, (CbbSystemUpgradeStateEnums) any);
@@ -170,7 +169,7 @@ public class SystemUpgradeWaitingTaskQuartzTest {
                 times = 1;
 
                 termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((CbbTerminalTypeEnums) any);
+                        .findFirstByPackageType((TerminalPlatformEnums) any);
                 times = 0;
             }
         };
@@ -182,7 +181,7 @@ public class SystemUpgradeWaitingTaskQuartzTest {
         upgradePackage.setId(UUID.randomUUID());
         upgradePackage.setPackageVersion("version");
         upgradePackage.setImgName("packageName");
-        upgradePackage.setPackageType(CbbTerminalTypeEnums.VDI);
+        upgradePackage.setPackageType(TerminalPlatformEnums.VDI_LINUX_HARDWARE);
         upgradePackage.setUploadTime(new Date());
         return upgradePackage;
     }
@@ -191,7 +190,7 @@ public class SystemUpgradeWaitingTaskQuartzTest {
         List<SystemUpgradeTask> taskList = new ArrayList<>();
 
         String baseTerminalId = "id";
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI;
+        TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI_LINUX_HARDWARE;
         for (int i = 0; i < 5; i++) {
             SystemUpgradeTask task = buildUpgradingTask(baseTerminalId + i, terminalType);
             taskList.add(task);
@@ -199,10 +198,10 @@ public class SystemUpgradeWaitingTaskQuartzTest {
         return taskList;
     }
     
-    private SystemUpgradeTask buildUpgradingTask(String terminalId, CbbTerminalTypeEnums terminalType) {
+    private SystemUpgradeTask buildUpgradingTask(String terminalId, TerminalPlatformEnums terminalType) {
         SystemUpgradeTask task = new SystemUpgradeTask();
         task.setTerminalId(terminalId);
-        task.setTerminalType(terminalType);
+        task.setPlatform(terminalType);
         task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(true);
         task.setStartTime(System.currentTimeMillis() - 50000);

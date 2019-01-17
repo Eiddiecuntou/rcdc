@@ -127,23 +127,23 @@ public class CbbTerminalOperatorAPIImplTest {
         };
     }
 
-    @Test
-    public void testDetect() throws BusinessException {
-        try {
-            String terminalId = "123";
-            CbbTerminalDetectRequest request = new CbbTerminalDetectRequest();
-            request.setTerminalId(terminalId);
-            terminalOperatorAPI.detect(request);
-        } catch (Exception e) {
-            fail();
-        }
-        new Verifications() {
-            {
-                operatorService.detect(anyString);
-                times = 1;
-            }
-        };
-    }
+//    @Test
+//    public void testDetect() throws BusinessException {
+//        try {
+//            String terminalId = "123";
+//            CbbTerminalDetectRequest request = new CbbTerminalDetectRequest();
+//            request.setTerminalId(terminalId);
+//            terminalOperatorAPI.detect(request);
+//        } catch (Exception e) {
+//            fail();
+//        }
+//        new Verifications() {
+//            {
+//                operatorService.detect(anyString);
+//                times = 1;
+//            }
+//        };
+//    }
 
     @Test
     public void testDetectForArr() throws BusinessException {

@@ -22,23 +22,17 @@ public class CmdExecuteUtil {
      * @throws BusinessException 业务异常
      */
     public static void executeCmd(String cmd) throws BusinessException {
-
         Assert.notNull(cmd, "cmd 不能为空");
 
-        boolean isSuccess = false;
-
+        int ret = 0;
         try {
             Process exec = Runtime.getRuntime().exec(cmd);
-            int ret = exec.waitFor();
-            if (ret == 0) {
-                isSuccess = true;
-            }
-
+            ret = exec.waitFor();
         } catch (Exception e) {
             throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL , e);
         }
 
-        if (!isSuccess) {
+        if (ret != 0) {
             throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
         }
 
