@@ -128,7 +128,8 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     public void collectLog(final String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
         CollectLogCache collectLogCache = collectLogCacheManager.getCache(terminalId);
-        if (CollectLogStateEnums.DOING == collectLogCache.getState()) {
+        if (collectLogCache != null && CollectLogStateEnums.DOING == collectLogCache.getState()) {
+            LOGGER.debug("终端[{}]正在收集日志中，不允许重复收集", terminalId);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_DOING);
         }
         collectLogCacheManager.addCache(terminalId);
