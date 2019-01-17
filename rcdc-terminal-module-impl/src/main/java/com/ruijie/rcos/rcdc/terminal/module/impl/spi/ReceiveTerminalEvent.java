@@ -33,14 +33,19 @@ public interface ReceiveTerminalEvent {
      * 心跳报文
      */
     String HEARTBEAT = "heartBeat";
-    
+
     /**
      * 同步终端管理员密码
      */
     String SYNC_TERMINAL_PASSWORD = "sync_terminal_password";
-    
+
     /**
      * 获取国际化语言
      */
     String GET_I18N_LANG = "get_i18n_lang";
+
+    /**
+     * 连接关闭
+     */
+    String CONNECT_CLOSE = "connect_close";
 }
