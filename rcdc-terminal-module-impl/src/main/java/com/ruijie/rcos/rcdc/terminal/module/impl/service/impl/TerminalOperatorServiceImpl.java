@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
  */
 @Service
 public class TerminalOperatorServiceImpl implements TerminalOperatorService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalOperatorServiceImpl.class);
 
     @Autowired
@@ -47,13 +48,13 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     @Autowired
     private CollectLogCacheManager collectLogCacheManager;
-    
+
     @Autowired
     private TerminalDetectService terminalDetectService;
-    
+
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
-    
+
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
 
@@ -72,10 +73,10 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     @Override
     public void changePassword(String password) throws BusinessException {
         Assert.hasText(password, "password 不能为空");
-        
+
         getTerminalAdminPassword();
         globalParameterAPI.updateParameter(Constants.RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY, password);
-        
+
         //向在线终端发送新管理员密码
         sendNewPwdToOnlineTerminal(password);
     }
@@ -90,18 +91,18 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         if (StringUtils.isBlank(adminPwd)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_ADMIN_PWD_RECORD_NOT_EXIST);
         }
-        
+
         return adminPwd;
     }
-    
+
     private void sendNewPwdToOnlineTerminal(String password) {
         LOGGER.debug("向在线终端发送管理员密码改变通知");
-        List<TerminalEntity> onlineTerminalList =  terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);
+        List<TerminalEntity> onlineTerminalList = terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);
         if (CollectionUtils.isEmpty(onlineTerminalList)) {
             LOGGER.debug("无在线终端");
             return;
         }
-        for(TerminalEntity terminalEntity : onlineTerminalList) {
+        for (TerminalEntity terminalEntity : onlineTerminalList) {
             ChangeTerminalPasswordRequest request = new ChangeTerminalPasswordRequest(password);
             String terminalId = terminalEntity.getTerminalId();
             try {
@@ -109,7 +110,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             } catch (BusinessException e) {
                 LOGGER.error("send new password to terminal failed, terminalId[{}], password[{}]", terminalId, password);
             }
-        } 
+        }
     }
 
     private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data)
@@ -127,13 +128,10 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     public void collectLog(final String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
         CollectLogCache collectLogCache = collectLogCacheManager.getCache(terminalId);
-        if (collectLogCache == null) {
-            collectLogCache = collectLogCacheManager.addCache(terminalId);
-        }
-        // 正在收集中,不允许重复执行
         if (CollectLogStateEnums.DOING == collectLogCache.getState()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_DOING);
         }
+        collectLogCacheManager.addCache(terminalId);
 
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.COLLECT_TERMINAL_LOG.getName(), "");
@@ -152,7 +150,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     @Override
     public void detect(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
-        
+
         // 当天是否含有该终端检测记录，若有且检测已完成，重新开始检测，正在检测则忽略
         TerminalDetectionEntity detection = terminalDetectService.findInCurrentDate(terminalId);
         if (detection == null) {
