@@ -100,7 +100,6 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         if (sender == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
-        //TODO
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.UPGRADE_TERMINAL_SYSTEM.getName(),
                 upgradeMsg);
         sender.asyncRequest(message, new AsyncRequestCallBack(terminalId, callback));

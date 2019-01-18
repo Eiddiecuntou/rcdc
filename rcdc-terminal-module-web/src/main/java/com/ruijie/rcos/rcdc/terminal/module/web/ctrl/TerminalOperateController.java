@@ -133,7 +133,7 @@ public class TerminalOperateController {
     }
 
     /**
-     * 修改终端管理员密码
+     * 收集日志
      * 
      * @param request 请求参数
      * @return 请求结果

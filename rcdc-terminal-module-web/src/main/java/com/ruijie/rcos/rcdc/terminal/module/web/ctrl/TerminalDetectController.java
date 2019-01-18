@@ -57,14 +57,6 @@ public class TerminalDetectController {
     @Autowired
     private CbbTerminalBasicInfoAPI basicInfoAPI;
 
-    @RequestMapping(value = "test")
-    public DefaultWebResponse test(StartBatDetectWebRequest request) throws BusinessException {
-        CbbTerminalDetectRequest detectReq =
-                new CbbTerminalDetectRequest(UUID.fromString("390de078-cefe-499e-9525-74bec6210ad9"));
-        operatorAPI.detect(detectReq);
-        return DefaultWebResponse.Builder.success();
-    }
-
     /**
      * 批量开启终端检测
      *
