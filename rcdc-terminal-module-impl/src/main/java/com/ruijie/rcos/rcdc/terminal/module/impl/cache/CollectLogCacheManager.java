@@ -1,12 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
+import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import java.util.concurrent.TimeUnit;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 
 /**
  * Description: 缓存收集日志过程的状态，

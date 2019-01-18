@@ -1,13 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -17,12 +17,12 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
+import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -60,6 +60,12 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
+    
+    /**
+     * 终端通知处理线程池,分配1个线程数
+     */
+    private static final SkyengineScheduledThreadPoolExecutor NOTICE_HANDLER_THREAD_POOL
+            = new SkyengineScheduledThreadPoolExecutor(1, TerminalOperatorServiceImpl.class.getName());
 
     @Override
     public void shutdown(String terminalId) throws BusinessException {
@@ -81,7 +87,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         globalParameterAPI.updateParameter(Constants.RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY, password);
 
         //向在线终端发送新管理员密码
-        sendNewPwdToOnlineTerminal(password);
+        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewPwdToOnlineTerminal(password));
     }
 
     @Override
@@ -106,6 +112,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             LOGGER.debug("无在线终端");
             return;
         }
+        
         for (TerminalEntity terminalEntity : onlineTerminalList) {
             ChangeTerminalPasswordRequest request = new ChangeTerminalPasswordRequest(password);
             String terminalId = terminalEntity.getTerminalId();
@@ -116,17 +123,6 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
                         password);
             }
         }
-    }
-
-    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data)
-            throws BusinessException {
-        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
-        if (sender == null) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
-        }
-
-        Message message = new Message(Constants.SYSTEM_TYPE, terminalEvent.getName(), data);
-        sender.request(message);
     }
 
     @Override
@@ -140,10 +136,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         collectLogCacheManager.addCache(terminalId);
 
         try {
-            DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
-            Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.COLLECT_TERMINAL_LOG.getName(), "");
-            // 发消息给shine，执行日志收集
-            sender.request(message);
+            operateTerminal(terminalId, SendTerminalEventEnums.COLLECT_TERMINAL_LOG, "");
         } catch (BusinessException e) {
             collectLogCacheManager.removeCache(terminalId);
             throw e;
@@ -184,13 +177,22 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         String terminalId = detection.getTerminalId();
         LOGGER.debug("send detect request, terminalId[{}]", terminalId);
         try {
-            DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
-            Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.DETECT_TERMINAL.getName(), "");
-            sender.request(message);
+            operateTerminal(terminalId, SendTerminalEventEnums.DETECT_TERMINAL, "");
         } catch (BusinessException e) {
             //发送消息异常，将检测记录设置为失败
             detection.setDetectState(DetectStateEnums.ERROR);
             terminalDetectionDAO.save(detection);
         }
+    }
+    
+    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data)
+            throws BusinessException {
+        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
+        if (sender == null) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
+        }
+
+        Message message = new Message(Constants.SYSTEM_TYPE, terminalEvent.getName(), data);
+        sender.request(message);
     }
 }

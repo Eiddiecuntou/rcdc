@@ -9,6 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.CloseTerminalBatchTaskHandler;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalIdMappingUtils;
@@ -146,6 +147,25 @@ public class TerminalOperateController {
         CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest();
         idRequest.setTerminalId(request.getTerminalId());
         terminalOperatorAPI.collectLog(idRequest);
+
+        return DefaultWebResponse.Builder.success();
+    }
+    
+    /**
+     * 获取终端收集日志状态
+     * 
+     * @param request 请求参数
+     * @return 请求结果
+     * @throws BusinessException 业务异常
+     */
+    @RequestMapping(value = "getCollectLogStatus")
+    public DefaultWebResponse getCollectLogStatus(TerminalIdWebRequest request) throws BusinessException {
+        Assert.notNull(request, "request不能为null");
+
+        CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest();
+        idRequest.setTerminalId(request.getTerminalId());
+        //TODO
+//        CbbTerminalCollectLogStatusResponse response = terminalOperatorAPI.getCollectLogStatus(idRequest);
 
         return DefaultWebResponse.Builder.success();
     }

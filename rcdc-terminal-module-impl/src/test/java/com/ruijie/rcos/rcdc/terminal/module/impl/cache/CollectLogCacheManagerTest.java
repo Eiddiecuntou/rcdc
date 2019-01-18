@@ -1,16 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import com.google.common.cache.Cache;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
-import mockit.*;
-import mockit.integration.junit4.JMockit;
+import static org.junit.Assert.fail;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Map;
-
-import static org.junit.Assert.fail;
+import com.google.common.cache.Cache;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import mockit.Deencapsulation;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
+import mockit.integration.junit4.JMockit;
 
 /**
  * Description: Function Description

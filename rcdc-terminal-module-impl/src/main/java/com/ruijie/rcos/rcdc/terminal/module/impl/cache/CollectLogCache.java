@@ -1,8 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
-
-import java.time.Instant;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 
 /**
  * Description: 收集日志缓存对象
