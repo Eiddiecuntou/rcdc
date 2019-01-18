@@ -14,14 +14,15 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Description: 批量关闭终端任务处理器
+ * 
+ * Description: 批量重启终端任务处理器
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年1月18日
- *
- * @author jarman
+ * 
+ * @author nt
  */
-public class CloseTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
+public class RestartTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
 
     private ProgrammaticOptLogRecorder optLogRecorder;
 
@@ -29,7 +30,7 @@ public class CloseTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
 
     private Map<UUID, String> idMap;
 
-    public CloseTerminalBatchTaskHandler(CbbTerminalOperatorAPI terminalOperatorAPI, Map<UUID, String> idMap,
+    public RestartTerminalBatchTaskHandler(CbbTerminalOperatorAPI terminalOperatorAPI, Map<UUID, String> idMap,
                                          Iterator<? extends BatchTaskItem> iterator, ProgrammaticOptLogRecorder optLogRecorder) {
         super(iterator);
         this.optLogRecorder = optLogRecorder;
@@ -43,13 +44,12 @@ public class CloseTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
         String terminalId = idMap.get(taskItem.getItemID());
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId(terminalId);
-        terminalOperatorAPI.shutdown(request);
-        
+        terminalOperatorAPI.restart(request);
         CbbTerminalBasicInfoResponse baiscInfoResp = terminalOperatorAPI.getTerminalBaiscInfo(request);
         String terminalName = baiscInfoResp.getTerminalName();
-        optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CLOSE_SUCCESS_LOG, terminalName, terminalId);
+        optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_RESTART_SUCCESS_LOG, terminalName, terminalId);
         return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
-                .msgKey(BusinessKey.RCDC_TERMINAL_CLOSE_RESULT_SUCCESS)
+                .msgKey(BusinessKey.RCDC_TERMINAL_RESTART_RESULT_SUCCESS)
                 .msgArgs(new String[]{terminalName, terminalId})
                 .build();
     }
@@ -60,15 +60,15 @@ public class CloseTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
         Assert.notNull(e, "exception is not null");
         if (e instanceof BusinessException) {
             BusinessException ex = (BusinessException) e;
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CLOSE_FAIL_LOG, ex.getI18nMessage());
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_RESTART_FAIL_LOG, ex.getI18nMessage());
         } else {
-            throw new IllegalStateException("关闭终端异常，terminalId为[" + item.getItemID() + "]", e);
+            throw new IllegalStateException("重启终端异常，terminalId为[" + item.getItemID() + "]", e);
         }
     }
 
 
     @Override
     public BatchTaskFinishResult onFinish(int successCount, int failCount) {
-        return buildDefaultFinishResult(successCount, failCount, BusinessKey.RCDC_TERMINAL_CLOSE_RESULT);
+        return buildDefaultFinishResult(successCount, failCount, BusinessKey.RCDC_TERMINAL_RESTART_RESULT);
     }
 }

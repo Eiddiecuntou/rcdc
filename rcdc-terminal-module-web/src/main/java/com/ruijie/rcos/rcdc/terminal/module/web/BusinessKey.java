@@ -52,6 +52,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_SUCCESS_LOG = "rcdc_terminal_delete_system_upgrade_success_log";
     
     /**
+     * 终端检测名称
+     */
+    String RCDC_TERMINAL_DETECT_ITEM_NAME = "rcdc_terminal_detect_item_name";
+    
+    /**
      * 终端检测批量任务名
      */
     String RCDC_TERMINAL_DETECT_BATCH_TASK_NAME = "rcdc_terminal_detect_batch_task_name";
@@ -82,14 +87,10 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_CHANGE_PWD_SUCCESS_LOG = "rcdc_terminal_change_pwd_success_log";
 
-    /**
-     * 修改终端管理密码失败日志
-     */
+    /**关闭终端失败日志*/
     String RCDC_TERMINAL_CLOSE_FAIL_LOG = "rcdc_terminal_close_fail_log";
 
-    /**
-     * 批量修改终端管理员密码
-     */
+    /**批量关闭终端结果*/
     String RCDC_TERMINAL_CLOSE_RESULT = "rcdc_terminal_close_result";
 
     /**关闭终端成功日志*/
@@ -103,4 +104,22 @@ public interface BusinessKey {
 
     /**批量关闭终端任务描述*/
     String RCDC_TERMINAL_ClOSE_TASK_DESC = "rcdc_terminal_close_task_desc";
+
+    /**批量重启终端任务结果*/
+    String RCDC_TERMINAL_RESTART_RESULT = "rcdc_terminal_restart_result";
+    
+    /**重启终端失败日志*/
+    String RCDC_TERMINAL_RESTART_FAIL_LOG = "rcdc_terminal_restart_fail_log";
+
+    /**重启终端成功日志*/
+    String RCDC_TERMINAL_RESTART_SUCCESS_LOG = "rcdc_terminal_restart_success_log";
+
+    /**重启终端成功结果*/
+    String RCDC_TERMINAL_RESTART_RESULT_SUCCESS = "rcdc_terminal_restart_result_success";
+
+    /**批量重启终端任务名称*/
+    String RCDC_TERMINAL_RESTART_TASK_NAME = "rcdc_terminal_restart_task_name";
+
+    /**批量重启终端任务描述*/
+    String RCDC_TERMINAL_RESTART_TASK_DESC = "rcdc_terminal_restart_task_desc";
 }

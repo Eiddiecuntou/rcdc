@@ -1,24 +1,23 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdArrRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalIdResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalUuidArrResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalIdMappingUtils;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.DetectPageWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.StartBatDetectWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.TerminalDetectListContentVO;
@@ -28,8 +27,6 @@ import com.ruijie.rcos.sk.base.batch.BatchTaskFinishResult;
 import com.ruijie.rcos.sk.base.batch.BatchTaskItem;
 import com.ruijie.rcos.sk.base.batch.BatchTaskItemResult;
 import com.ruijie.rcos.sk.base.batch.BatchTaskItemStatus;
-import com.ruijie.rcos.sk.base.batch.BatchTaskStatus;
-import com.ruijie.rcos.sk.base.batch.DefaultBatchTaskFinishResult;
 import com.ruijie.rcos.sk.base.batch.DefaultBatchTaskItem;
 import com.ruijie.rcos.sk.base.batch.DefaultBatchTaskItemResult;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -54,9 +51,6 @@ public class TerminalDetectController {
     @Autowired
     private CbbTerminalOperatorAPI operatorAPI;
 
-    @Autowired
-    private CbbTerminalBasicInfoAPI basicInfoAPI;
-
     /**
      * 批量开启终端检测
      *
@@ -73,23 +67,17 @@ public class TerminalDetectController {
         Assert.notNull(optLogRecorder, "optLogRecorder can not be null");
         Assert.notNull(builder, "builder can not be null");
 
-        String[] idArr = request.getIdArr();
-        UUID[] cbbIdArr = getCbbTerminalId(idArr);
-        final Iterator<DefaultBatchTaskItem> iterator = Stream.of(cbbIdArr)
-                .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("终端检测").build()).iterator();
+        String[] terminalIdArr = request.getIdArr();
+        Map<UUID, String> idMap = TerminalIdMappingUtils.mapping(terminalIdArr);
+        UUID[] idArr = TerminalIdMappingUtils.extractUUID(idMap);
+        final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr)
+                .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName(BusinessKey.RCDC_TERMINAL_DETECT_ITEM_NAME, new String[] {}).build()).iterator();
 
-        StartDetectBatchtaskHandler handler = new StartDetectBatchtaskHandler(operatorAPI, iterator, optLogRecorder);
+        StartDetectBatchtaskHandler handler = new StartDetectBatchtaskHandler(idMap, operatorAPI, iterator, optLogRecorder);
         builder.setTaskName(BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_NAME)
                 .setTaskDesc(BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_DESC).registerHandler(handler).start();
 
         return DefaultWebResponse.Builder.success();
-    }
-
-    private UUID[] getCbbTerminalId(String[] idArr) throws BusinessException {
-        CbbTerminalIdArrRequest request = new CbbTerminalIdArrRequest();
-        request.setTerminalIdArr(idArr);
-        CbbTerminalUuidArrResponse response = basicInfoAPI.getCbbTerminalUUID(request);
-        return response.getTerminalUUIDArr();
     }
 
     /**
@@ -135,41 +123,34 @@ public class TerminalDetectController {
         private final ProgrammaticOptLogRecorder optLogRecorder;
 
         private final CbbTerminalOperatorAPI operatorAPI;
+        
+        private Map<UUID, String> idMap;
 
-        protected StartDetectBatchtaskHandler(CbbTerminalOperatorAPI operatorAPI,
+        protected StartDetectBatchtaskHandler(Map<UUID, String> idMap, CbbTerminalOperatorAPI operatorAPI,
                 Iterator<? extends BatchTaskItem> iterator, ProgrammaticOptLogRecorder optLogRecorder) {
             super(iterator);
+            this.idMap = idMap;
             this.operatorAPI = operatorAPI;
             this.optLogRecorder = optLogRecorder;
         }
 
         @Override
         public BatchTaskFinishResult onFinish(int successCount, int failCount) {
-            String[] argArr = new String[] {String.valueOf(successCount), String.valueOf(failCount)};
-            BatchTaskStatus status = BatchTaskStatus.SUCCESS;
-            if (failCount == 0) {
-                return buildBatchTaskFinishResult(status, argArr);
-            }
-            if (successCount == 0) {
-                status = BatchTaskStatus.FAILURE;
-            } else {
-                status = BatchTaskStatus.PARTIAL_SUCCESS;
-            }
-            return buildBatchTaskFinishResult(status, argArr);
-        }
-
-        private BatchTaskFinishResult buildBatchTaskFinishResult(BatchTaskStatus status, String[] argArr) {
-            return DefaultBatchTaskFinishResult.builder().batchTaskStatus(status)
-                    .msgKey(BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_RESULT).msgArgs(argArr).build();
+            return buildDefaultFinishResult(successCount, failCount, BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_RESULT);
         }
 
         @Override
         public BatchTaskItemResult processItem(BatchTaskItem taskItem) throws BusinessException {
             Assert.notNull(taskItem, "taskItem can not be null");
-
-            String terminalId = startDetectAddOptLog(taskItem.getItemID());
+            
+            String terminalId = idMap.get(taskItem.getItemID());
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            CbbTerminalBasicInfoResponse baiscInfoResp = operatorAPI.getTerminalBaiscInfo(request);
+            String terminalName = baiscInfoResp.getTerminalName();
+            startDetectAddOptLog(terminalId, terminalName);
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
-                    .msgKey(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG).msgArgs(new String[] {terminalId})
+                    .msgKey(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG).msgArgs(new String[] {terminalId, terminalName})
                     .build();
         }
 
@@ -180,13 +161,11 @@ public class TerminalDetectController {
          * @param terminalId
          * @throws BusinessException
          */
-        private String startDetectAddOptLog(UUID terminalUUID) throws BusinessException {
-            CbbTerminalDetectRequest detectReq = new CbbTerminalDetectRequest(terminalUUID);
+        private void startDetectAddOptLog(String terminalId, String terminalName) throws BusinessException {
+            CbbTerminalDetectRequest detectReq = new CbbTerminalDetectRequest(terminalId);
             try {
-                CbbTerminalIdResponse detectResponse = operatorAPI.detect(detectReq);
-                String terminalId = detectResponse.getTerminalId();
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, terminalId);
-                return terminalId;
+                operatorAPI.detect(detectReq);
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, terminalId, terminalName);
             } catch (BusinessException ex) {
                 optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, ex.getI18nMessage());
                 throw ex;

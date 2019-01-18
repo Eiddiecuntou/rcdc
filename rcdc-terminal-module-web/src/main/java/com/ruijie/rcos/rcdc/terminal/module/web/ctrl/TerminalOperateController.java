@@ -139,8 +139,8 @@ public class TerminalOperateController {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    @RequestMapping(value = "getLog")
-    public DefaultWebResponse getLog(TerminalIdWebRequest request) throws BusinessException {
+    @RequestMapping(value = "collectLog")
+    public DefaultWebResponse collectLog(TerminalIdWebRequest request) throws BusinessException {
         Assert.notNull(request, "request不能为null");
 
         CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest();
@@ -149,5 +149,5 @@ public class TerminalOperateController {
 
         return DefaultWebResponse.Builder.success();
     }
-
+    
 }

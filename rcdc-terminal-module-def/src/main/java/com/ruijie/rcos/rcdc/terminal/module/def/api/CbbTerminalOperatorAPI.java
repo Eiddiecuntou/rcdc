@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
@@ -69,11 +70,11 @@ public interface CbbTerminalOperatorAPI {
      * 终端检测
      *
      * @param request 终端检测请求参数对象
-     * @return 返回终端id
+     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalIdResponse detect(CbbTerminalDetectRequest request) throws BusinessException;
+    DefaultResponse detect(CbbTerminalDetectRequest request) throws BusinessException;
 
     /**
      * 批量终端检测
@@ -113,5 +114,15 @@ public interface CbbTerminalOperatorAPI {
      */
     @NoRollback
     CbbDetectResultResponse getDetectResult(CbbTerminalDetectResultRequest request);
+    
+    /**
+     * 获取终端基本信息
+     * 
+     * @param request id请求参数
+     * @return 终端基本信息
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbTerminalBasicInfoResponse getTerminalBaiscInfo(CbbTerminalIdRequest request) throws BusinessException;
     
 }

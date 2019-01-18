@@ -60,12 +60,4 @@ public interface CbbTerminalBasicInfoAPI {
     @NoRollback
     DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException;
 
-    /**
-     * 获取终端uuid
-     * @param request 请求参数
-     * @return 终端uuid数组
-     */
-    @NoRollback
-    CbbTerminalUuidArrResponse getCbbTerminalUUID(CbbTerminalIdArrRequest request) throws BusinessException;
-
 }

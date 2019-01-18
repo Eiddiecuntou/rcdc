@@ -15,18 +15,18 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 public class CbbTerminalDetectRequest implements Request {
    
     @NotNull
-    private UUID cbbTerminalId;
+    private String terminalId;
     
-    public CbbTerminalDetectRequest(UUID cbbTerminalId) {
-        this.cbbTerminalId = cbbTerminalId;
+    public CbbTerminalDetectRequest(String terminalId) {
+        this.terminalId = terminalId;
     }
 
-    public UUID getCbbTerminalId() {
-        return cbbTerminalId;
+    public String getTerminalId() {
+        return terminalId;
     }
 
-    public void setCbbTerminalId(UUID cbbTerminalId) {
-        this.cbbTerminalId = cbbTerminalId;
+    public void setTerminalId(String terminalId) {
+        this.terminalId = terminalId;
     }
 
 }

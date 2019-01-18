@@ -1,15 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
@@ -19,7 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectReq
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalIdResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -28,6 +27,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -55,6 +55,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
+    
+    @Autowired
+    private CbbTerminalBasicInfoAPI basicInfoAPI;
     
     @Autowired
     private CollectLogCacheManager collectLogCacheManager;
@@ -94,19 +97,12 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public CbbTerminalIdResponse detect(CbbTerminalDetectRequest request) throws BusinessException {
+    public DefaultResponse detect(CbbTerminalDetectRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         
-        UUID cbbTerminalId = request.getCbbTerminalId();
-        Optional<TerminalEntity> terminalOpt = terminalBasicInfoDAO.findById(cbbTerminalId);
-        if (!terminalOpt.isPresent()) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
-        }
-        String terminalId = terminalOpt.get().getTerminalId();
+        String terminalId = request.getTerminalId();
         operatorService.detect(terminalId);
-        CbbTerminalIdResponse response = new CbbTerminalIdResponse();
-        response.setTerminalId(terminalId);
-        return response;
+        return DefaultResponse.Builder.success();
     }
 
     @Override
@@ -165,7 +161,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
      * 构建空列表返回参数
      * 
      * @param total 总数
-     * @return
+     * @return 空列表响应
      */
     private DefaultPageResponse<CbbTerminalDetectDTO> buildEmptyResponse(long total) {
         DefaultPageResponse<CbbTerminalDetectDTO> emptyResp = new DefaultPageResponse<CbbTerminalDetectDTO>();
@@ -185,4 +181,11 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         return resp;
     }
 
+    @Override
+    public CbbTerminalBasicInfoResponse getTerminalBaiscInfo(CbbTerminalIdRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        
+        return basicInfoAPI.findBasicInfoByTerminalId(request);
+    }
+    
 }
