@@ -1,15 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalResetEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.ComponentUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
@@ -29,77 +25,45 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
 
     @Autowired
     private ComponentUpdateListCacheManager cacheManager;
+    
 
     @Override
     public TerminalVersionResultDTO getVersion(String rainOsVersion, TerminalPlatformEnums platform) {
         Assert.hasText(rainOsVersion, "rainOsVersion can not be blank");
         Assert.notNull(platform, "platform can not be null");
 
-        // for test
-        CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
-        updatelist.setBaseVersion("10.0.0.0");
-        updatelist.setComponentSize(2);
-        updatelist.setLimitVersion("9.0.0.1");
-        updatelist.setVersion("10.0.0.1");
-        updatelist.setComponentList(buildComponentList());
+
+         CbbTerminalComponentUpdateListDTO updatelist = cacheManager.getCache(platform);
+         String version = updatelist.getVersion();
+         CbbTerminalComponentUpdateListDTO updatelistDTO = new CbbTerminalComponentUpdateListDTO(
+         version, updatelist.getBaseVersion(), updatelist.getComponentSize());
+         // 判断终端类型升级包是否存在或是否含有组件信息
+         if(updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
+         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
+         new CbbTerminalComponentUpdateListDTO());
+         }
         
-        return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
-                updatelist);
-
-
-        // CbbTerminalComponentUpdateListDTO updatelist = cacheManager.getCache(platform);
-        // String version = updatelist.getVersion();
-        // CbbTerminalComponentUpdateListDTO updatelistDTO = new CbbTerminalComponentUpdateListDTO(
-        // version, updatelist.getBaseVersion(), updatelist.getComponentSize());
-        // // 判断终端类型升级包是否存在或是否含有组件信息
-        // if(updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
-        // return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
-        // new CbbTerminalComponentUpdateListDTO());
-        // }
-        //
-        // // 根据版本号对比，版本相同，不升级； 不同则根据平台类型筛选出组件信息，无组件信息则不支持升级，有则返回升级信息
-        // if (rainOsVersion.equals(version)) {
-        // // 版本相同，不升级 0
-        // return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
-        // updatelistDTO);
-        // }
-        //
-        // // 最低支持版本判断
-        // if(compareVersion(updatelist.getLimitVersion(), rainOsVersion)) {
-        // return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
-        // updatelistDTO);
-        // }
-        //
-        // // 判断updatelist是否处于更新中，若处于更新中，则为未就绪状态
-        // // TODO 在ip变更spi中需将isupdate设置为更新中状态
-        // if (ComponentUpdateListCacheManager.isUpdate) {
-        // return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(),
-        // updatelistDTO);
-        // }
-        //
-        // return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), updatelist);
-    }
-
-    private List<CbbTerminalComponentVersionInfoDTO> buildComponentList() {
-        List<CbbTerminalComponentVersionInfoDTO> componentList = new ArrayList<>();
-        for(int i = 0; i < 2; i ++) {
-            CbbTerminalComponentVersionInfoDTO component = new CbbTerminalComponentVersionInfoDTO();
-            component.setName("component-"+i);
-            component.setMd5("md5-xxxx");
-            component.setCompletePackageName("componentPackageName-" + i);
-            component.setCompleteTorrentUrl("CompleteTorrentUrl-" + i);
-            component.setCompleteTorrentMd5("completeTorrentMd5-" + i);
-            component.setIncrementalPackageName("incrementalPackageName-" + i);
-            component.setIncrementalPackageMd5("md5-yyyyyy");
-            component.setIncrementalTorrentUrl("incrementalTorrentUrl-" + i);
-            component.setIncrementalTorrentMd5("incrementalTorrentMd5-" + i);
-            component.setRestartFlag(CbbTerminalResetEnums.LATER);
-            component.setPlatform("VDI");
-            component.setVersion("10.0.0." + i);
-            componentList.add(component);
-        }
+         // 根据版本号对比，版本相同，不升级； 不同则根据平台类型筛选出组件信息，无组件信息则不支持升级，有则返回升级信息
+         if (rainOsVersion.equals(version)) {
+         // 版本相同，不升级 0
+         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
+         updatelistDTO);
+         }
         
-        return componentList;
+         // 最低支持版本判断
+         if(compareVersion(updatelist.getLimitVersion(), rainOsVersion)) {
+         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
+         updatelistDTO);
+         }
+        
+         // 判断updatelist是否处于更新中，若处于更新中，则为未就绪状态
+         // TODO 在ip变更spi中需将isupdate设置为更新中状态
+         if (ComponentUpdateListCacheManager.isUpdate) {
+         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(),
+         updatelistDTO);
+         }
+        
+         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), updatelist);
     }
 
     /**

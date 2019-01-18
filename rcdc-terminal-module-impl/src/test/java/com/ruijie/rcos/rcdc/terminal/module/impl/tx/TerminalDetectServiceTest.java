@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -45,18 +46,15 @@ public class TerminalDetectServiceTest {
         String terminalId = "123";
 
         try {
-            TerminalDetectResponse detectResult = new TerminalDetectResponse();
-            TerminalDetectResponse.DetectResult result = new TerminalDetectResponse.DetectResult();
+            TerminalDetectResult result = new TerminalDetectResult();
             result.setBandwidth(12.3);
             result.setAccessInternet(1);
             result.setIpConflict(1);
             result.setIpConflictMac("123");
             result.setDelay(233);
             result.setPacketLossRate(233.2);
-            detectResult.setErrorCode(StateEnums.SUCCESS);
-            detectResult.setResult(result);
 
-            detectService.updateTerminalDetect(terminalId, detectResult);
+            detectService.updateTerminalDetect(terminalId, result);
         } catch (Exception e) {
             fail();
         }

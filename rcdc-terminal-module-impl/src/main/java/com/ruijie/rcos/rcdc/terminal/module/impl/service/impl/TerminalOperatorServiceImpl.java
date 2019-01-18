@@ -14,6 +14,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
@@ -50,6 +51,9 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     @Autowired
     private TerminalDetectService terminalDetectService;
+    
+    @Autowired
+    private TerminalDetectionDAO terminalDetectionDAO;
 
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
@@ -135,10 +139,15 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         }
         collectLogCacheManager.addCache(terminalId);
 
-        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
-        Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.COLLECT_TERMINAL_LOG.getName(), "");
-        // 发消息给shine，执行日志收集
-        sender.request(message);
+        try {
+            DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
+            Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.COLLECT_TERMINAL_LOG.getName(), "");
+            // 发消息给shine，执行日志收集
+            sender.request(message);
+        } catch (BusinessException e) {
+            collectLogCacheManager.removeCache(terminalId);
+            throw e;
+        }
     }
 
     @Override
@@ -156,8 +165,8 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         // 当天是否含有该终端检测记录，若有且检测已完成，重新开始检测，正在检测则忽略
         TerminalDetectionEntity detection = terminalDetectService.findInCurrentDate(terminalId);
         if (detection == null) {
-            terminalDetectService.save(terminalId);
-            sendDetectRequest(terminalId);
+            detection = terminalDetectService.save(terminalId);
+            sendDetectRequest(detection);
             return;
         }
 
@@ -167,13 +176,21 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
         // 删除原记录，重新添加检测记录
         terminalDetectService.delete(detection.getId());
-        terminalDetectService.save(terminalId);
-        sendDetectRequest(terminalId);
+        detection = terminalDetectService.save(terminalId);
+        sendDetectRequest(detection);
     }
 
-    private void sendDetectRequest(String terminalId) throws BusinessException {
-        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
-        Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.DETECT_TERMINAL.getName(), "");
-        sender.request(message);
+    private void sendDetectRequest(TerminalDetectionEntity detection) throws BusinessException {
+        String terminalId = detection.getTerminalId();
+        LOGGER.debug("send detect request, terminalId[{}]", terminalId);
+        try {
+            DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
+            Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.DETECT_TERMINAL.getName(), "");
+            sender.request(message);
+        } catch (BusinessException e) {
+            //发送消息异常，将检测记录设置为失败
+            detection.setDetectState(DetectStateEnums.ERROR);
+            terminalDetectionDAO.save(detection);
+        }
     }
 }

@@ -22,7 +22,7 @@ public interface ReceiveTerminalEvent {
     /**
      * 上传终端检测消息
      */
-    String TERMINAL_DETECT = "detect_terminal";
+    String TERMINAL_DETECT = "detect";
 
     /**
      * 上传USB 信息
@@ -48,4 +48,9 @@ public interface ReceiveTerminalEvent {
      * 连接关闭
      */
     String CONNECT_CLOSE = "connect_close";
+    
+    /**
+     * 连接关闭
+     */
+    String SYSTEM_UPGRADE = "upgrade_system";
 }

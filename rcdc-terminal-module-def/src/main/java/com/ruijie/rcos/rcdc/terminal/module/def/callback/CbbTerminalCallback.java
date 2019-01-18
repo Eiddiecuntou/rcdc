@@ -18,7 +18,7 @@ public interface CbbTerminalCallback extends Callback {
      *
      * @param msg 消息对象
      */
-    void success(CbbShineMessageResponse msg);
+    void success(String terminalId, CbbShineMessageResponse msg);
 
     /**
      * 请求超时

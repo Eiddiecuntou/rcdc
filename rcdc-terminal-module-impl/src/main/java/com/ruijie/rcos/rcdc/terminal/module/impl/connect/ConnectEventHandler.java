@@ -67,9 +67,19 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("接收到的报文：action:{};data:{}", message.getAction(), String.valueOf(message.getData()));
         }
+        
+      //for test
+        sender.getSession().setAttribute(TERMINAL_BIND_KEY, "58:69:6c:7f:d3:b0");
+        sessionManager.bindSession("58:69:6c:7f:d3:b0", sender.getSession());
+        
         //检查session是否已绑定终端，未绑定且不是第一个报文则不处理报文
         if (!hasBindSession(sender.getSession(), message.getAction())) {
             LOGGER.debug("终端未绑定session，不处理报文。action：{};data:{}", message.getAction(), String.valueOf(message.getData()));
+           
+            //for test
+            Session session = sender.getSession();
+            session.setAttribute(TERMINAL_BIND_KEY, "58:69:6c:7f:d3:b0");
+            sessionManager.bindSession("58:69:6c:7f:d3:b0", session);
             return;
         }
         //处理第一个报文，获取terminal绑定终端
@@ -78,6 +88,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
             //绑定终端
             bindSession(sender, message.getData());
         }
+        
         //消息分发
         dispatchMessage(sender, message);
     }

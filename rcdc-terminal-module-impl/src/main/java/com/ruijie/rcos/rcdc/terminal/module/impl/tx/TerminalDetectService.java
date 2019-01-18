@@ -24,6 +24,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectItemStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.TerminalDateUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -46,6 +47,8 @@ public class TerminalDetectService {
 
     @Autowired
     private TerminalDetectionDAO detectionDAO;
+    
+    private static final String DETECT_FAIL_DEFAULT_MSG = "检测失败";
 
     /**
      * 更新基础信息表和检测表，存在事务
@@ -53,10 +56,10 @@ public class TerminalDetectService {
      * @param terminalId 终端id
      * @param detectResult 检测结果数据对象
      */
-    public void updateTerminalDetect(String terminalId, TerminalDetectResponse detectResult) {
+    public void updateTerminalDetect(String terminalId, TerminalDetectResult detectResult) {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(detectResult, "TerminalDetectResult不能为null");
-        TerminalDetectResponse.DetectResult result = detectResult.getResult();
+        
         // 获取检测记录
         List<TerminalDetectionEntity> entityList = detectionDAO.findByTerminalIdAndDetectState(terminalId, DetectStateEnums.CHECKING);
         if (CollectionUtils.isEmpty(entityList)) {
@@ -65,18 +68,13 @@ public class TerminalDetectService {
         }
 
         for (TerminalDetectionEntity entity : entityList) {
-            if (StateEnums.FAILURE == detectResult.getErrorCode()) {
-                // 检测失败
-                detectFailure(entity);
-                return;
-            }
             // 更新检测记录
-            detectSuccess(result, entity);
+            detectSuccess(detectResult, entity);
         }
 
     }
 
-    private void detectSuccess(TerminalDetectResponse.DetectResult result, TerminalDetectionEntity entity) {
+    private void detectSuccess(TerminalDetectResult result, TerminalDetectionEntity entity) {
         entity.setBandwidth(result.getBandwidth());
         entity.setAccessInternet(result.getAccessInternet());
         entity.setPacketLossRate(result.getPacketLossRate());
@@ -87,10 +85,26 @@ public class TerminalDetectService {
         detectionDAO.save(entity);
     }
 
-    private void detectFailure(TerminalDetectionEntity entity) {
-        entity.setDetectState(DetectStateEnums.ERROR);
-        entity.setDetectFailMsg("");
-        detectionDAO.save(entity);
+    /**
+     * 检测失败
+     * @param terminalId
+     */
+    public void detectFailure(String terminalId) {
+        Assert.hasText(terminalId, "terminalId不能为空");
+        
+        List<TerminalDetectionEntity> entityList = detectionDAO.findByTerminalIdAndDetectState(terminalId, DetectStateEnums.CHECKING);
+        if (CollectionUtils.isEmpty(entityList)) {
+            LOGGER.debug("no checking detection record, terminal id[{}]", terminalId);
+            return;
+        }
+
+        for (TerminalDetectionEntity entity : entityList) {
+            // 更新检测状态
+            entity.setDetectState(DetectStateEnums.ERROR);
+            entity.setDetectFailMsg(DETECT_FAIL_DEFAULT_MSG);
+            detectionDAO.save(entity);
+        }
+       
     }
 
     /**
@@ -98,7 +112,7 @@ public class TerminalDetectService {
      * 
      * @param terminalId 终端id
      */
-    public void save(String terminalId) {
+    public TerminalDetectionEntity save(String terminalId) {
         Assert.hasText(terminalId, "terminalId can not be null");
 
         TerminalDetectionEntity entity = new TerminalDetectionEntity();
@@ -107,6 +121,7 @@ public class TerminalDetectService {
         entity.setDetectTime(now);
         entity.setDetectState(DetectStateEnums.CHECKING);
         detectionDAO.save(entity);
+        return entity;
     }
 
     /**

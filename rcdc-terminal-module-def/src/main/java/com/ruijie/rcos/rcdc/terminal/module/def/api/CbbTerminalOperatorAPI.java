@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectReq
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalIdResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
@@ -68,11 +69,11 @@ public interface CbbTerminalOperatorAPI {
      * 终端检测
      *
      * @param request 终端检测请求参数对象
-     * @return 返回成功失败
+     * @return 返回终端id
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse detect(CbbTerminalDetectRequest request) throws BusinessException;
+    CbbTerminalIdResponse detect(CbbTerminalDetectRequest request) throws BusinessException;
 
     /**
      * 批量终端检测

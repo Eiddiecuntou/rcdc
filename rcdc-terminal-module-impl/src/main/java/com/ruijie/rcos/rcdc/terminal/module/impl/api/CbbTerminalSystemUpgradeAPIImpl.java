@@ -281,17 +281,19 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // 非在线状态的终端不进行刷机
         if (!CbbTerminalStateEnums.ONLINE.equals(terminal.getState())) {
             LOGGER.info("terminal offline, can not upgrade system");
-            return;
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
 
         // 运行虚机的终端不进行刷机
         if (isRunningVirtualMachine()) {
             LOGGER.info("terminal is running virtual machine, can not upgrade system");
-            return;
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_IS_RUNNING_VIRTHAL_MACHINE);
         }
 
-        // TODO FIXME 终端类型有差异 添加进任务队列中
-        SystemUpgradeTask upgradeTask = systemUpgradeTaskManager.addTask(terminal.getTerminalId(), null);
+        // 添加进任务队列中
+        SystemUpgradeTask upgradeTask = systemUpgradeTaskManager.addTask(terminal.getTerminalId(), terminal.getPlatform());
+        upgradeTask.setIsSend(false);
+        upgradeTask.setState(CbbSystemUpgradeStateEnums.UPGRADING);
 
         // 开启NFS服务
         NfsServiceUtil.startService();
@@ -303,7 +305,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             TerminalSystemUpgradeMsg upgradeMsg =
                     new TerminalSystemUpgradeMsg(upgradePackage.getImgName(), upgradePackage.getPackageVersion());
             try {
-                terminalSystemUpgradeService.systemUpgrade(terminal.getId().toString(), upgradeMsg);
+                terminalSystemUpgradeService.systemUpgrade(terminal.getTerminalId(), upgradeMsg);
                 upgradeTask.setIsSend(true);
                 LOGGER.debug("send terminal system upgrade message success");
             } catch (Exception e) {

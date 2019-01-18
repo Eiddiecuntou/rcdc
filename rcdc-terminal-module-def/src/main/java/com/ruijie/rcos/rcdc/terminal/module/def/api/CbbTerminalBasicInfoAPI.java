@@ -1,9 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdArrRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalUuidArrResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
@@ -57,5 +59,13 @@ public interface CbbTerminalBasicInfoAPI {
      */
     @NoRollback
     DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException;
+
+    /**
+     * 获取终端uuid
+     * @param request 请求参数
+     * @return 终端uuid数组
+     */
+    @NoRollback
+    CbbTerminalUuidArrResponse getCbbTerminalUUID(CbbTerminalIdArrRequest request) throws BusinessException;
 
 }

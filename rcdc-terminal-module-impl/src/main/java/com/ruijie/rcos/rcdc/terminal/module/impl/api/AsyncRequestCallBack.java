@@ -24,6 +24,8 @@ public class AsyncRequestCallBack extends AbstractRequestCallback {
 
     public AsyncRequestCallBack(String terminalId, CbbTerminalCallback callback) {
         Assert.hasText(terminalId, "terminalId不能为空");
+        Assert.notNull(callback, "callback不能为空");
+        
         this.terminalId = terminalId;
         this.callback = callback;
     }
@@ -37,7 +39,7 @@ public class AsyncRequestCallBack extends AbstractRequestCallback {
             throw new IllegalArgumentException("执行syncRequest方法后shine返回的应答消息不能为空。data:" + data);
         }
         CbbShineMessageResponse cbbShineMessageResponse = JSON.parseObject(data.toString(), CbbShineMessageResponse.class);
-        callback.success(cbbShineMessageResponse);
+        callback.success(terminalId, cbbShineMessageResponse);
     }
 
     @Override

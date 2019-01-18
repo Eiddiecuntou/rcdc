@@ -1,10 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdArrRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalUuidArrResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -14,10 +23,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.util.Assert;
 
 /**
  * Description: 终端基本信息维护
@@ -101,10 +106,32 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     }
 
     private Integer getVersion(String terminalId) throws BusinessException {
+        TerminalEntity basicInfoEntity = getTerminalEntity(terminalId);
+        return basicInfoEntity.getVersion();
+    }
+
+
+    @Override
+    public CbbTerminalUuidArrResponse getCbbTerminalUUID(CbbTerminalIdArrRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        
+        String[] terminalIdArr = request.getTerminalIdArr();
+        List<UUID> uuidList = new ArrayList<>();
+        for(String terminalId : terminalIdArr) {
+            TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+            uuidList.add(basicInfoEntity.getId());
+        }
+        CbbTerminalUuidArrResponse response = new CbbTerminalUuidArrResponse();
+        response.setTerminalUUIDArr(uuidList.toArray(new UUID[uuidList.size()]));
+        
+        return response;
+    }
+    
+    private TerminalEntity getTerminalEntity(String terminalId) throws BusinessException {
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
-        return basicInfoEntity.getVersion();
+        return basicInfoEntity;
     }
 }

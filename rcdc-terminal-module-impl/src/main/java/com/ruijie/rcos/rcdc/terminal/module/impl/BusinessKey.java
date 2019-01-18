@@ -123,5 +123,9 @@ public interface BusinessKey {
      * 文件操作失败
      */
     String RCDC_FILE_OPERATE_FAIL = "rcdc_file_operate_fail";
-    
+
+    /**
+     * 终端正在运行虚机
+     */
+    String RCDC_TERMINAL_IS_RUNNING_VIRTHAL_MACHINE = "rcdc_terminal_is_running_virthal_machine";
 }

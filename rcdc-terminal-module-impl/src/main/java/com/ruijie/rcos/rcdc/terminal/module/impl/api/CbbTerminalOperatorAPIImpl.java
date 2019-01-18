@@ -19,6 +19,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectReq
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalIdResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -27,7 +28,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -94,17 +94,19 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public DefaultResponse detect(CbbTerminalDetectRequest request) throws BusinessException {
+    public CbbTerminalIdResponse detect(CbbTerminalDetectRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         
         UUID cbbTerminalId = request.getCbbTerminalId();
         Optional<TerminalEntity> terminalOpt = terminalBasicInfoDAO.findById(cbbTerminalId);
         if (!terminalOpt.isPresent()) {
-            //TODO
-            return null;
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
-        operatorService.detect(terminalOpt.get().getTerminalId());
-        return DefaultResponse.Builder.success();
+        String terminalId = terminalOpt.get().getTerminalId();
+        operatorService.detect(terminalId);
+        CbbTerminalIdResponse response = new CbbTerminalIdResponse();
+        response.setTerminalId(terminalId);
+        return response;
     }
 
     @Override

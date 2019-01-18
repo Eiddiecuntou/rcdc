@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.callback.AsyncRequestCallBack;
+import com.ruijie.rcos.rcdc.terminal.module.impl.api.AsyncRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.callback.CbbTerminalSystemUpgradeRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -95,12 +95,12 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     public void systemUpgrade(String terminalId, TerminalSystemUpgradeMsg upgradeMsg) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(upgradeMsg, "systemUpgradeMsg 不能为空");
-
+        
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
-
+        //TODO
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.UPGRADE_TERMINAL_SYSTEM.getName(),
                 upgradeMsg);
         sender.asyncRequest(message, new AsyncRequestCallBack(terminalId, callback));

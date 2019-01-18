@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import mockit.Injectable;
 import mockit.Tested;
@@ -48,7 +49,7 @@ public class TerminalDetectResponseHandlerImplTest {
 
         new Verifications() {
             {
-                detectService.updateTerminalDetect(anyString, (TerminalDetectResponse) any);
+                detectService.updateTerminalDetect(anyString, (TerminalDetectResult) any);
                 times = 1;
             }
         };
