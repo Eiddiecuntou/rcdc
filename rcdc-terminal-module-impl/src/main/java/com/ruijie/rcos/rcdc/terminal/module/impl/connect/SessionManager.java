@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,28 +38,30 @@ public class SessionManager {
      * 绑定终端连接Session
      *
      * @param terminalId 终端id
-     * @param session 要绑定的Session
+     * @param session    要绑定的Session
      */
     public void bindSession(String terminalId, Session session) {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(session, "Session 不能为null");
         SESSION_MAP.put(terminalId, session);
-        LOGGER.info("绑定终端session，terminalId={}",terminalId);
+        LOGGER.info("绑定终端session，terminalId={}", terminalId);
     }
 
     /**
      * 移除Session
+     *
      * @param terminalId 终端id
      */
     public void removeSession(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
         SESSION_MAP.remove(terminalId);
-        LOGGER.info("移除终端session，terminalId={}",terminalId);
+        LOGGER.info("移除终端session，terminalId={}", terminalId);
 
     }
 
     /**
      * 获取终端Session
+     *
      * @param terminalId 终端id
      * @return 返回Session
      */
@@ -69,6 +73,7 @@ public class SessionManager {
 
     /**
      * 获取连接通道的发送对象
+     *
      * @param terminalId 终端id
      * @return 返回封装的通道对象
      * @throws BusinessException 业务异常
@@ -77,10 +82,23 @@ public class SessionManager {
         Assert.hasText(terminalId, "terminalId不能为空");
         Session session = getSession(terminalId);
         if (session == null) {
-            LOGGER.error("获取终端session失败，terminalId:{}",terminalId);
+            LOGGER.error("获取终端session失败，terminalId:{}", terminalId);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
         return new DefaultRequestMessageSender(session);
     }
 
+    /**
+     * 获取在线终端id
+     *
+     * @return 返回在线终端id列表
+     */
+    public List<String> getOnlineTerminalId() {
+        List<String> terminalIdList = new ArrayList<>();
+        SESSION_MAP.forEach((k, v) ->
+                terminalIdList.add(k)
+        );
+        LOGGER.debug("当前在线终端数量:{}", SESSION_MAP.size());
+        return terminalIdList;
+    }
 }
