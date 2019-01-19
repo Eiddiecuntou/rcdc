@@ -70,7 +70,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
 
         //检查session是否已绑定终端，未绑定且不是第一个报文则不处理报文
         if (!hasBindSession(sender.getSession(), message.getAction())) {
-            LOGGER.debug("终端未绑定session，不处理报文。action：{};data:{}", message.getAction(), String.valueOf(message.getData()));
+            LOGGER.warn("终端未绑定session，不处理报文。action：{};data:{}", message.getAction(), String.valueOf(message.getData()));
             return;
         }
         //处理第一个报文，获取terminalId绑定终端
