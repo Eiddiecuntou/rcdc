@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
@@ -13,7 +14,7 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
-@DispatcherImplemetion(ReceiveTerminalEvent.SYNC_TERMINAL_PASSWORD)
+@DispatcherImplemetion(ShineAction.SYNC_TERMINAL_PASSWORD)
 public class SyncTerminalPasswordHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncTerminalPasswordHandlerSPIImpl.class);

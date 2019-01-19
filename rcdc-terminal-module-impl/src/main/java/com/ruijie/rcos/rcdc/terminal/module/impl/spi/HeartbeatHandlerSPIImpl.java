@@ -4,6 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAP
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineResponseCode;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -19,7 +20,7 @@ import org.springframework.util.Assert;
  *
  * @author Jarman
  */
-@DispatcherImplemetion(ReceiveTerminalEvent.HEARTBEAT)
+@DispatcherImplemetion(ShineAction.HEARTBEAT)
 public class HeartbeatHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatHandlerSPIImpl.class);
@@ -32,7 +33,7 @@ public class HeartbeatHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request, "CbbDispatcherRequest不能为null");
         LOGGER.debug("收到心跳报文，terminalId={}", request.getTerminalId());
         CbbResponseShineMessage shineMessage = new CbbResponseShineMessage();
-        shineMessage.setAction(ReceiveTerminalEvent.HEARTBEAT);
+        shineMessage.setAction(ShineAction.HEARTBEAT);
         shineMessage.setTerminalId(request.getTerminalId());
         shineMessage.setRequestId(request.getRequestId());
         shineMessage.setCode(ShineResponseCode.SUCCESS);

@@ -1,13 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalLogName;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
@@ -19,7 +18,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  *
  * @author Jarman
  */
-@DispatcherImplemetion(ReceiveTerminalEvent.TERMINAL_DETECT)
+@DispatcherImplemetion(ShineAction.TERMINAL_DETECT)
 public class TerminalDetectResponseHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired

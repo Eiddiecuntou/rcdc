@@ -3,8 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
 import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -67,19 +67,19 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("接收到的报文：action:{};data:{}", message.getAction(), String.valueOf(message.getData()));
         }
-        
+
         //检查session是否已绑定终端，未绑定且不是第一个报文则不处理报文
         if (!hasBindSession(sender.getSession(), message.getAction())) {
             LOGGER.debug("终端未绑定session，不处理报文。action：{};data:{}", message.getAction(), String.valueOf(message.getData()));
             return;
         }
-        //处理第一个报文，获取terminal绑定终端
-        if (ReceiveTerminalEvent.CHECK_UPGRADE.equals(message.getAction())) {
-            LOGGER.debug("开始处理第一个报文[{}]", ReceiveTerminalEvent.CHECK_UPGRADE);
+        //处理第一个报文，获取terminalId绑定终端
+        if (ShineAction.CHECK_UPGRADE.equals(message.getAction())) {
+            LOGGER.debug("开始处理第一个报文[{}]", ShineAction.CHECK_UPGRADE);
             //绑定终端
             bindSession(sender, message.getData());
         }
-        
+
         //消息分发
         dispatchMessage(sender, message);
     }
@@ -126,7 +126,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
 
     private boolean hasBindSession(Session session, String action) {
         Assert.notNull(session, "Session为null,连接异常");
-        if (ReceiveTerminalEvent.CHECK_UPGRADE.equals(action)) {
+        if (ShineAction.CHECK_UPGRADE.equals(action)) {
             //报文为第一个报文（升级检查）不做session绑定判断
             return true;
         }
@@ -150,7 +150,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         LOGGER.debug("terminalId[{}]连接关闭", terminalId);
         //发送连接关闭事件
         CbbDispatcherRequest request = new CbbDispatcherRequest();
-        request.setDispatcherKey(ReceiveTerminalEvent.CONNECT_CLOSE);
+        request.setDispatcherKey(ShineAction.CONNECT_CLOSE);
         request.setTerminalId(terminalId);
         cbbDispatcherHandlerSPI.dispatch(request);
     }

@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
@@ -79,7 +79,7 @@ public class ConnectEventHandlerTest {
             }
         };
 
-        String action = ReceiveTerminalEvent.CHECK_UPGRADE;
+        String action = ShineAction.CHECK_UPGRADE;
         ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
         basicInfo.setTerminalId(terminalId);
         String data = JSON.toJSONString(basicInfo);
@@ -121,7 +121,7 @@ public class ConnectEventHandlerTest {
         };
 
         try {
-            String action = ReceiveTerminalEvent.COLLECT_TERMINAL_LOG_FINISH;
+            String action = ShineAction.COLLECT_TERMINAL_LOG_FINISH;
             ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
             basicInfo.setTerminalId(terminalId);
             String data = JSON.toJSONString(basicInfo);

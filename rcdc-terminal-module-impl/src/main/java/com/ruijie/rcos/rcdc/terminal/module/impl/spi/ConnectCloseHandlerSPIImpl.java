@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  *
  * @author Jarman
  */
-@DispatcherImplemetion(ReceiveTerminalEvent.CONNECT_CLOSE)
+@DispatcherImplemetion(ShineAction.CONNECT_CLOSE)
 public class ConnectCloseHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectCloseHandlerSPIImpl.class);

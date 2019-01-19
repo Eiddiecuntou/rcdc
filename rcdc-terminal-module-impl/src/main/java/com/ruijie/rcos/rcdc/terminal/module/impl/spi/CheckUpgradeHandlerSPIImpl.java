@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 
 import java.util.Date;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -32,7 +34,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  *
  * @author Jarman
  */
-@DispatcherImplemetion(ReceiveTerminalEvent.CHECK_UPGRADE)
+@DispatcherImplemetion(ShineAction.CHECK_UPGRADE)
 public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired
