@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>rcdc-terminal-module-impl</artifactId>
-    <name>终端管理组件实现工程</name>
+    <name>rcdc-terminal-module-impl</name>
     <dependencies>
         <dependency>
             <groupId>com.ruijie.rcos.rcdc.terminal.module</groupId>
