@@ -46,7 +46,7 @@ public class AsyncRequestCallBackTest {
 
         new Verifications() {
             {
-                callback.success((CbbShineMessageResponse) any);
+                callback.success(anyString, (CbbShineMessageResponse) any);
                 times = 1;
             }
         };
@@ -69,7 +69,7 @@ public class AsyncRequestCallBackTest {
 
         new Verifications() {
             {
-                callback.timeout();
+                callback.timeout("123");
                 times = 1;
             }
         };

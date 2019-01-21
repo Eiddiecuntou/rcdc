@@ -11,10 +11,9 @@ import org.springframework.lang.Nullable;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018/10/24
  *
- * @param <T> 分发的业务数据对象
  * @author Jarman
  */
-public class CbbDispatcherRequest<T> implements Request {
+public class CbbDispatcherRequest implements Request {
 
     @NotBlank
     @DispatcherKey
@@ -27,7 +26,7 @@ public class CbbDispatcherRequest<T> implements Request {
     private String requestId;
 
     @Nullable
-    private T data;
+    private String data;
 
     public String getDispatcherKey() {
         return dispatcherKey;
@@ -53,11 +52,12 @@ public class CbbDispatcherRequest<T> implements Request {
         this.requestId = requestId;
     }
 
-    public T getData() {
+    @Nullable
+    public String getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public void setData(@Nullable String data) {
         this.data = data;
     }
 }

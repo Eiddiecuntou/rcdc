@@ -4,14 +4,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -41,6 +44,16 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Injectable
     private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
 
+    @Injectable
+    private TerminalComponentUpgradeService componentUpgradeService;
+    
+    @Injectable
+    private TerminalDetectionDAO terminalDetectionDAO;
+
+
+    /**
+     * 测试检查组件升级- 更新终端信息
+     */
     @Test
     public void testDispatchUpdateTerminalBasicInfo() {
         String terminalId = "123";
@@ -73,7 +86,9 @@ public class CheckUpgradeHandlerSPIImplTest {
         }
     }
 
-
+    /**
+     * 测试检查组件升级-添加终端信息
+     */
     @Test
     public void testDispatchAddTerminalBasicInfo() {
         String terminalId = "123";

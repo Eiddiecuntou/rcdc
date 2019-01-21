@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -7,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeHostNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -14,9 +18,6 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 /**
  * Description: Function Description
@@ -47,8 +48,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         if (sender == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
+        ChangeHostNameRequest changeRequest = new ChangeHostNameRequest(terminalName);
         Message message = new Message(Constants.SYSTEM_TYPE,
-                SendTerminalEventEnums.MODIFY_TERMINAL_NETWORK_CONFIG.getName(), terminalName);
+                SendTerminalEventEnums.MODIFY_TERMINAL_NAME.getName(), changeRequest);
         sender.request(message);
     }
 

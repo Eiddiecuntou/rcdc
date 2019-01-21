@@ -4,29 +4,28 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
@@ -65,7 +64,14 @@ public class CbbTerminalOperatorAPIImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
+    
+    @Injectable
+    private CbbTerminalBasicInfoAPI basicInfoAPI;
 
+    /**
+     * 测试关机
+     * @throws BusinessException 业务异常
+     */
     @Test
     public void testShutdown() throws BusinessException {
 
@@ -111,27 +117,10 @@ public class CbbTerminalOperatorAPIImplTest {
         };
     }
 
-    @Test
-    public void testChangePassword() throws BusinessException {
-        try {
-            String terminalId = "123";
-            String password = "adf";
-            CbbChangePasswordRequest request = new CbbChangePasswordRequest();
-            request.setTerminalId(terminalId);
-            request.setPassword(password);
-            terminalOperatorAPI.changePassword(request);
-        } catch (Exception e) {
-            fail();
-        }
-        new Verifications() {
-            {
-                operatorService.changePassword(anyString, anyString);
-                times = 1;
-            }
-        };
-
-    }
-
+    /**
+     * 测试收集日志
+     * @throws BusinessException 业务异常
+     */
     @Test
     public void testCollectLog() throws BusinessException {
         try {
@@ -150,24 +139,28 @@ public class CbbTerminalOperatorAPIImplTest {
         };
     }
 
-    @Test
-    public void testDetect() throws BusinessException {
-        try {
-            String terminalId = "123";
-            CbbTerminalDetectRequest request = new CbbTerminalDetectRequest();
-            request.setTerminalId(terminalId);
-            terminalOperatorAPI.detect(request);
-        } catch (Exception e) {
-            fail();
-        }
-        new Verifications() {
-            {
-                operatorService.detect(anyString);
-                times = 1;
-            }
-        };
-    }
+//    @Test
+//    public void testDetect() throws BusinessException {
+//        try {
+//            String terminalId = "123";
+//            CbbTerminalDetectRequest request = new CbbTerminalDetectRequest();
+//            request.setTerminalId(terminalId);
+//            terminalOperatorAPI.detect(request);
+//        } catch (Exception e) {
+//            fail();
+//        }
+//        new Verifications() {
+//            {
+//                operatorService.detect(anyString);
+//                times = 1;
+//            }
+//        };
+//    }
 
+    /**
+     * 测试批量检测
+     * @throws BusinessException 业务异常
+     */
     @Test
     public void testDetectForArr() throws BusinessException {
         String[] terminalIdArr = {"1", "2", "3"};
@@ -182,6 +175,9 @@ public class CbbTerminalOperatorAPIImplTest {
         }
     }
 
+    /**
+     *  测试获取终端日志名称为空
+     */
     @Test
     public void testGetTerminalLogNameIsNull() {
         new Expectations() {
@@ -200,6 +196,9 @@ public class CbbTerminalOperatorAPIImplTest {
         }
     }
 
+    /**
+     * 测试获取终端日志状态为失败
+     */
     @Test
     public void testGetTerminalLogNameStateIsFailure() {
         CollectLogCache cache = new CollectLogCache();
@@ -220,6 +219,9 @@ public class CbbTerminalOperatorAPIImplTest {
         }
     }
 
+    /**
+     * 测试获取终端日志名称
+     */
     @Test
     public void testGetTerminalLogName() {
         String logName = "shine.zip";

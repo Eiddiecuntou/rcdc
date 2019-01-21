@@ -42,9 +42,6 @@ public class ShineTerminalBasicInfo {
     private String productType;
 
     @Enumerated(EnumType.STRING)
-    private TerminalPlatformEnums terminalType;
-
-    @Enumerated(EnumType.STRING)
     private CbbNetworkModeEnums networkAccessMode;
 
     private String serialNumber;
@@ -162,14 +159,6 @@ public class ShineTerminalBasicInfo {
 
     public void setProductType(String productType) {
         this.productType = productType;
-    }
-
-    public TerminalPlatformEnums getTerminalType() {
-        return terminalType;
-    }
-
-    public void setTerminalType(TerminalPlatformEnums terminalType) {
-        this.terminalType = terminalType;
     }
 
     public CbbNetworkModeEnums getNetworkAccessMode() {

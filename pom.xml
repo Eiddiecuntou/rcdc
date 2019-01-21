@@ -11,7 +11,7 @@
     <groupId>com.ruijie.rcos.rcdc.terminal.module</groupId>
     <artifactId>rcdc-terminal-module</artifactId>
     <packaging>pom</packaging>
-    <name>终端管理组件构建pom</name>
+    <name>rcdc-terminal-module</name>
     <modules>
         <module>rcdc-terminal-module-def</module>
         <module>rcdc-terminal-module-impl</module>

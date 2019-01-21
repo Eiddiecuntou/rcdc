@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.ReceiveTerminalEvent;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
@@ -64,6 +64,8 @@ public class ConnectEventHandlerTest {
 
     /**
      * 测试第一个报文正常执行逻辑过程
+     * @param session session连接
+     * @throws InterruptedException 异常
      */
     @Test
     public void testOnReceiveFirstMessageNormal(@Mocked Session session) throws InterruptedException {
@@ -79,7 +81,7 @@ public class ConnectEventHandlerTest {
             }
         };
 
-        String action = ReceiveTerminalEvent.CHECK_UPGRADE;
+        String action = ShineAction.CHECK_UPGRADE;
         ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
         basicInfo.setTerminalId(terminalId);
         String data = JSON.toJSONString(basicInfo);
@@ -107,6 +109,8 @@ public class ConnectEventHandlerTest {
 
     /**
      * 测试不是第一个报文执行逻辑过程
+     * @param session session连接
+     * @throws InterruptedException 异常
      */
     @Test
     public void testOnReceiveNotFirstMessage(@Mocked Session session) throws InterruptedException {
@@ -121,7 +125,7 @@ public class ConnectEventHandlerTest {
         };
 
         try {
-            String action = ReceiveTerminalEvent.COLLECT_TERMINAL_LOG_FINISH;
+            String action = ShineAction.COLLECT_TERMINAL_LOG_FINISH;
             ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
             basicInfo.setTerminalId(terminalId);
             String data = JSON.toJSONString(basicInfo);
@@ -144,6 +148,9 @@ public class ConnectEventHandlerTest {
         }
     }
 
+    /**
+     * 测试连接成功-参数为空
+     */
     @Test
     public void testOnConnectSuccessParamIsNull() {
         try {
@@ -153,6 +160,11 @@ public class ConnectEventHandlerTest {
         }
     }
 
+    /**
+     * 测试连接关闭 
+     * @param session session连接
+     * @throws InterruptedException 异常
+     */
     @Test
     public void testOnConnectClosed(@Mocked Session session) throws InterruptedException {
         new Expectations() {
@@ -161,7 +173,6 @@ public class ConnectEventHandlerTest {
                 result = null;
                 session.getAttribute(anyString);
                 result = "123";
-                collectLogCacheManager.removeCache(anyString);
             }
         };
 
@@ -180,6 +191,9 @@ public class ConnectEventHandlerTest {
 
     }
 
+    /**
+     * 测试异常捕获
+     */
     @Test
     public void testExceptionCaught() {
         try {

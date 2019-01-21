@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import java.util.UUID;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -13,14 +14,9 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  */
 public class CbbTerminalDetectRequest implements Request {
    
-    @NotBlank
+    @NotNull
     private String terminalId;
     
-    
-
-    public CbbTerminalDetectRequest() {
-    }
-
     public CbbTerminalDetectRequest(String terminalId) {
         this.terminalId = terminalId;
     }

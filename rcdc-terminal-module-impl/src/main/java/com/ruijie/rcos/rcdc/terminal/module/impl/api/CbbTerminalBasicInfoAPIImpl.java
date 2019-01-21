@@ -1,5 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -14,10 +18,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.util.Assert;
 
 /**
  * Description: 终端基本信息维护
@@ -65,7 +65,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     public DefaultResponse modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalNameRequest不能为null");
         String terminalId = request.getTerminalId();
-        //不管不是不在线状态，都可修改终端名称
+        //不管是不是在线状态，都可修改终端名称
         int version = getVersion(terminalId);
         int effectRow = basicInfoDAO.modifyTerminalName(terminalId, version, request.getTerminalName());
         if (effectRow == 0) {
@@ -101,10 +101,15 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     }
 
     private Integer getVersion(String terminalId) throws BusinessException {
+        TerminalEntity basicInfoEntity = getTerminalEntity(terminalId);
+        return basicInfoEntity.getVersion();
+    }
+
+    private TerminalEntity getTerminalEntity(String terminalId) throws BusinessException {
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
-        return basicInfoEntity.getVersion();
+        return basicInfoEntity;
     }
 }

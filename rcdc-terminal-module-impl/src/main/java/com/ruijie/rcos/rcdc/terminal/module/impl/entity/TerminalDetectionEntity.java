@@ -55,7 +55,7 @@ public class TerminalDetectionEntity {
     /**
      * 网络时延
      */
-    private Double networkDelay;
+    private Integer networkDelay;
 
     /**
      * 检测时间
@@ -90,9 +90,10 @@ public class TerminalDetectionEntity {
         detectDTO.setDelay(networkDelay);
         detectDTO.setIpConflict(ipConflict);
         detectDTO.setPacketLossRate(packetLossRate);
+        detectDTO.setDetectTime(detectTime);
         CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();;
-        state.setState(detectState.getName());
-        state.setMessage(detectFailMsg);
+        state.setState(detectState.name());
+        state.setMessage(detectState.getName());
     }
 
     public UUID getId() {
@@ -167,11 +168,11 @@ public class TerminalDetectionEntity {
         this.detectTime = detectTime;
     }
 
-    public Double getNetworkDelay() {
+    public Integer getNetworkDelay() {
         return networkDelay;
     }
 
-    public void setNetworkDelay(Double networkDelay) {
+    public void setNetworkDelay(Integer networkDelay) {
         this.networkDelay = networkDelay;
     }
 

@@ -10,6 +10,7 @@
 
 	<Loggers>
 		<logger name="com.ruijie.rcos.sk.base.concorrent.executor.AbstractSkyengineTask" level="warn"></logger>
+		<logger name="com.ruijie.rcos.sk.modulekit.tx.task.DtxPreventMissingTask" level="warn"></logger>
 		<Root level="debug">
 			<AppenderRef ref="Console" />
 		</Root>

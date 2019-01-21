@@ -1,16 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import com.google.common.cache.Cache;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
-import mockit.*;
-import mockit.integration.junit4.JMockit;
+import static org.junit.Assert.fail;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Map;
-
-import static org.junit.Assert.fail;
+import com.google.common.cache.Cache;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import mockit.Deencapsulation;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
+import mockit.integration.junit4.JMockit;
 
 /**
  * Description: Function Description
@@ -26,6 +26,9 @@ public class CollectLogCacheManagerTest {
     @Tested
     private CollectLogCacheManager cacheManager;
 
+    /**
+     * 测试添加收集日志缓存
+     */
     @Test
     public void testAddCache() {
         Cache<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
@@ -41,6 +44,9 @@ public class CollectLogCacheManagerTest {
         caches.invalidateAll();
     }
 
+    /**
+     * 测试移除收集日志缓存
+     */
     @Test
     public void testRemoveCache() {
         Cache<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
@@ -55,6 +61,9 @@ public class CollectLogCacheManagerTest {
         Assert.assertEquals(caches.size(), 0);
     }
 
+    /**
+     * 测试更新收集日志状态
+     */
     @Test
     public void testUpdateState() {
 
@@ -73,6 +82,9 @@ public class CollectLogCacheManagerTest {
         }
     }
 
+    /**
+     * 测试更新收集日志状态
+     */
     @Test
     public void testUpdateState2() {
         String terminalId = "123";
@@ -89,6 +101,9 @@ public class CollectLogCacheManagerTest {
         }
     }
 
+    /**
+     * 测试获取收集日志
+     */
     @Test
     public void testGetCache() {
         try {
@@ -102,6 +117,9 @@ public class CollectLogCacheManagerTest {
         }
     }
 
+    /**
+     * 测试获取收集日志集合
+     */
     @Test
     public void testGetCollectLogCaches() {
         String terminalId = "123";

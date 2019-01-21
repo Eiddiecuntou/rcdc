@@ -2,13 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
 import java.util.List;
 import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
@@ -29,7 +27,16 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @param terminalId 终端id
      * @return 返回终端信息
      */
+
     TerminalEntity findTerminalEntityByTerminalId(String terminalId);
+
+    /**
+     * 获取终端详细基本信息
+     *
+     * @param terminalIdList 终端集合
+     * @return 返回终端信息集合
+     */
+    List<TerminalEntity> findByTerminalIdIn(List<String> terminalIdList);
 
     /**
      * 根据状态查询终端列表
@@ -52,22 +59,22 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     /**
      * 修改终端名称
      *
-     * @param terminalId   终端id
-     * @param version      数据版本号
+     * @param terminalId 终端id
+     * @param version 数据版本号
      * @param terminalName 终端名称
      * @return 返回影响行数
      */
     @Modifying
     @Transactional
-    @Query("update TerminalEntity set name=?3,version=version+1 where terminalId=?1 and version=?2")
+    @Query("update TerminalEntity set terminalName=?3,version=version+1 where terminalId=?1 and version=?2")
     int modifyTerminalName(String terminalId, Integer version, String terminalName);
 
     /**
      * 修改终端网络配置
      *
      * @param terminalId 终端id
-     * @param version    数据版本号
-     * @param network    终端网络信息配置
+     * @param version 数据版本号
+     * @param network 终端网络信息配置
      * @return 返回影响行数
      */
     @Modifying
@@ -84,8 +91,8 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * 修改终端状态
      *
      * @param terminalId 终端id
-     * @param version    数据版本号
-     * @param state      终端状态，在线或离线
+     * @param version 数据版本号
+     * @param state 终端状态，在线或离线
      * @return 返回影响行数
      */
     @Modifying

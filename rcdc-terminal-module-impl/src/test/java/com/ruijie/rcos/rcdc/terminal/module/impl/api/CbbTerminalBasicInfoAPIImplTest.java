@@ -1,5 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import java.util.Date;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -11,14 +17,13 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import java.util.Date;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -36,6 +41,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
+    
     @Injectable
     private TerminalBasicInfoService basicInfoService;
 
@@ -118,6 +124,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
     }
 
 
+    /**
+     * 测试删除终端失败
+     */
     @Test
     public void testDeleteSuccess() {
         TerminalEntity entity = new TerminalEntity();
@@ -145,7 +154,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
     }
 
-
+    /**
+     * 测试删除终端-数据不存在
+     */
     @Test
     public void testDeleteNoExistData() {
         new Expectations() {
@@ -179,6 +190,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
     }
 
+    /**
+     * 测试修改终端名称成功
+     */
     @Test
     public void testModifyTerminalNameSuccess() {
         new Expectations() {
@@ -204,6 +218,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
         modifyNameVerifications();
     }
 
+    /**
+     * 测试修改终端名称失败
+     */
     @Test
     public void testModifyTerminalNameFail() {
         new Expectations() {
@@ -242,6 +259,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
     }
 
+    /**
+     * 测试修改终端网络
+     */
     @Test
     public void testModifyTerminalNetworkConfig() {
         new Expectations() {

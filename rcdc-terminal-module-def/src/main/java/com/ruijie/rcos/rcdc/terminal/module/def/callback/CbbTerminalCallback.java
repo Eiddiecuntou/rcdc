@@ -16,14 +16,16 @@ public interface CbbTerminalCallback extends Callback {
     /**
      * 请求成功响应回调方法
      *
+     * @param terminalId 终端id
      * @param msg 消息对象
      */
-    void success(CbbShineMessageResponse msg);
+    void success(String terminalId, CbbShineMessageResponse msg);
 
     /**
      * 请求超时
+     * @param terminalId 终端id
      */
-    void timeout();
+    void timeout(String terminalId);
 
 
 }

@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import mockit.Injectable;
 import mockit.Tested;
@@ -25,7 +26,7 @@ import mockit.integration.junit4.JMockit;
 public class TerminalDetectResponseHandlerImplTest {
 
     @Tested
-    private TerminalDetectResponseHandlerImpl responseHandler;
+    private TerminalDetectResponseHandlerSPIImpl responseHandler;
 
     @Injectable
     private TerminalDetectService detectService;
@@ -48,7 +49,7 @@ public class TerminalDetectResponseHandlerImplTest {
 
         new Verifications() {
             {
-                detectService.updateTerminalDetect(anyString, (TerminalDetectResponse) any);
+                detectService.updateTerminalDetect(anyString, (TerminalDetectResult) any);
                 times = 1;
             }
         };
@@ -62,7 +63,7 @@ public class TerminalDetectResponseHandlerImplTest {
         detectResult.setAccessInternet(1);
         detectResult.setIpConflict(1);
         detectResult.setIpConflictMac("222");
-        detectResult.setDelay(23.22);
+        detectResult.setDelay(23);
         detectResult.setPacketLossRate(22.2);
         response.setResult(detectResult);
         return JSON.toJSONString(detectResult);

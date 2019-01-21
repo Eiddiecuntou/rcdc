@@ -1,32 +1,43 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.util.List;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.util.Assert;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Description: 终端操作实现类
@@ -45,9 +56,12 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Autowired
     private TerminalDetectService detectService;
-    
+
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
+
+    @Autowired
+    private CbbTerminalBasicInfoAPI basicInfoAPI;
 
     @Autowired
     private CollectLogCacheManager collectLogCacheManager;
@@ -73,9 +87,8 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public DefaultResponse changePassword(CbbChangePasswordRequest request) throws BusinessException {
         Assert.notNull(request, "CbbChangePasswordRequest不能为空");
-        Assert.hasText(request.getTerminalId(), "terminalId不能为空");
-        Assert.hasText(request.getPassword(), "password不能为空");
-        operatorService.changePassword(request.getTerminalId(), request.getPassword());
+
+        operatorService.changePassword(request.getPassword());
         return DefaultResponse.Builder.success();
     }
 
@@ -90,7 +103,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public DefaultResponse detect(CbbTerminalDetectRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
-        operatorService.detect(request.getTerminalId());
+
+        String terminalId = request.getTerminalId();
+        operatorService.detect(terminalId);
         return DefaultResponse.Builder.success();
     }
 
@@ -120,13 +135,14 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException {
+    public DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request)
+            throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalDetectionEntity> page = detectService.pageQuery(request);
         if (page.getNumberOfElements() == 0) {
-            LOGGER.debug("detect page query returns 0 element, detect date[{}], page[{}], limit[{}]", request.getDate(), request.getPage(),
-                    request.getLimit());
+            LOGGER.debug("detect page query returns 0 element, detect date[{}], page[{}], limit[{}]", request.getDate(),
+                    request.getPage(), request.getLimit());
             return buildEmptyResponse(page.getTotalElements());
         }
 
@@ -137,7 +153,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             CbbTerminalDetectDTO detectDTO = new CbbTerminalDetectDTO();
             TerminalDetectionEntity detectionEntity = detectionList.get(i);
             detectionEntity.convertTo(detectDTO);
-            TerminalEntity terminalEntity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
+            setThreshold(detectDTO);
+            TerminalEntity terminalEntity =
+                    terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
             detectDTO.setIp(terminalEntity.getIp());
             detectDTO.setTerminalName(terminalEntity.getTerminalName());
             detectDTOArr[i] = detectDTO;
@@ -146,10 +164,27 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         return DefaultPageResponse.Builder.success(page.getSize(), (int) page.getTotalElements(), detectDTOArr);
     }
 
+    @Override
+    public CbbDetectInfoResponse getRecentDetect(CbbTerminalIdRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+
+        CbbTerminalDetectDTO detectInfo = detectService.getRecentDetect(request.getTerminalId());
+        CbbDetectInfoResponse response = new CbbDetectInfoResponse();
+        response.setDetectInfo(detectInfo);
+        return response;
+    }
+
+    private void setThreshold(CbbTerminalDetectDTO detectDTO) {
+        detectDTO.setBandwidthThreshold(Constants.TERMINAL_DETECT_BINDWIDTH_NORM);
+        detectDTO.setPacketLossRateThreshold(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE);
+        detectDTO.setDelayThreshold(Constants.TERMINAL_DETECT_DELAY_NORM);
+    }
+
     /**
      * 构建空列表返回参数
+     * 
      * @param total 总数
-     * @return
+     * @return 空列表响应
      */
     private DefaultPageResponse<CbbTerminalDetectDTO> buildEmptyResponse(long total) {
         DefaultPageResponse<CbbTerminalDetectDTO> emptyResp = new DefaultPageResponse<CbbTerminalDetectDTO>();
@@ -167,6 +202,87 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         CbbDetectResultResponse resp = new CbbDetectResultResponse(result);
         resp.setStatus(Status.SUCCESS);
         return resp;
+    }
+
+    @Override
+    public CbbTerminalBasicInfoResponse getTerminalBaiscInfo(CbbTerminalIdRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+
+        return basicInfoAPI.findBasicInfoByTerminalId(request);
+    }
+
+    @Override
+    public CbbTerminalCollectLogStatusResponse getCollectLog(CbbTerminalIdRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+
+        CollectLogCache cache = getCollectLogCache(request.getTerminalId());
+        CbbTerminalCollectLogStatusResponse response = new CbbTerminalCollectLogStatusResponse();
+        response.setLogName(cache.getLogFileName());
+        response.setState(cache.getState());
+        return response;
+    }
+
+    @Override
+    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalIdRequest request)
+            throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+
+        String terminalId = request.getTerminalId();
+        CollectLogCache cache = getCollectLogCache(terminalId);
+        if (isCollectNotSuccess(cache)) {
+            LOGGER.warn("收集日志缓存中不存在日志文件, 终端id[{}]", terminalId);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
+        }
+
+        String logFileName = cache.getLogFileName();
+        String suffix = getFileSuffix(logFileName);
+        CbbTerminalLogFileInfoResponse response = new CbbTerminalLogFileInfoResponse();
+        response.setLogFilePath(Constants.STORE_TERMINAL_LOG_PATH + logFileName);
+        response.setLogFileName(logFileName);
+        response.setSuffix(suffix);
+
+        return response;
+    }
+
+    private String getFileSuffix(String fileName) {
+        String suffix = "";
+        int lastIndexOf = fileName.lastIndexOf(".");
+        if (lastIndexOf > -1) {
+            suffix = fileName.substring(lastIndexOf + 1);
+        }
+        return suffix;
+    }
+
+    /**
+     * 终端日志收集是否尚未成功
+     * 
+     * @param cache 收集日志缓存
+     * @return
+     */
+    private boolean isCollectNotSuccess(CollectLogCache cache) {
+        if (cache.getState() != CollectLogStateEnums.DONE) {
+            return true;
+        }
+        if (StringUtils.isBlank(cache.getLogFileName())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取日志缓存
+     * 
+     * @param terminalId 终端id
+     * @return 日志收集缓存
+     * @throws BusinessException 业务异常
+     */
+    private CollectLogCache getCollectLogCache(String terminalId) throws BusinessException {
+        CollectLogCache cache = collectLogCacheManager.getCache(terminalId);
+        if (cache == null) {
+            LOGGER.warn("收集日志缓存中不存在日志文件, 终端id[{}]", terminalId);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
+        }
+        return cache;
     }
 
 }

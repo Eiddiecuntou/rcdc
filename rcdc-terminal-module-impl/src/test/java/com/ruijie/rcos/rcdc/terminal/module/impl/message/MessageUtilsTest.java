@@ -17,6 +17,9 @@ import static org.junit.Assert.*;
  */
 public class MessageUtilsTest {
 
+    /**
+     * 测试转换数据Data为空
+     */
     @Test
     public void testParseWithDataIsEmpty() {
         String obj = "";
@@ -27,6 +30,9 @@ public class MessageUtilsTest {
         }
     }
 
+    /**
+     * 测试转换数据Data为空
+     */
     @Test
     public void testParseWithDataIsNull() {
         try {
@@ -36,6 +42,9 @@ public class MessageUtilsTest {
         }
     }
 
+    /**
+     * 测试转换数据DataFormat错误
+     */
     @Test
     public void testParseWithDataFormatError() {
         try {
@@ -46,6 +55,9 @@ public class MessageUtilsTest {
         }
     }
 
+    /**
+     * 测试转换数据class,data为空
+     */
     @Test
     public void testParseWithDataClassIsNull() {
         try {
@@ -59,6 +71,9 @@ public class MessageUtilsTest {
         }
     }
 
+    /**
+     * 测试转换数据class不为空
+     */
     @Test
     public void testParseWithDataClassIsNotNull() {
         try {
@@ -73,6 +88,9 @@ public class MessageUtilsTest {
         }
     }
 
+    /**
+     * 测试转换数据class为null
+     */
     @Test
     public void testParseWithDataAndClassIsNotNull() {
         try {
@@ -87,6 +105,9 @@ public class MessageUtilsTest {
         }
     }
 
+    /**
+     *测试转换数据不为空
+     */
     @Test
     public void testParseWithDataAndClassIsNotNullAndContentIsNotEmpty() {
         try {
@@ -101,6 +122,9 @@ public class MessageUtilsTest {
         }
     }
 
+    /**
+     * 测试转换
+     */
     @Test
     public void testParseNormal() {
         try {
@@ -119,8 +143,18 @@ public class MessageUtilsTest {
         }
     }
 
+    /**
+     * 
+     * Description: Function Description
+     * Copyright: Copyright (c) 2018
+     * Company: Ruijie Co., Ltd.
+     * Create Time: 2019年1月21日
+     * 
+     * @author nt
+     */
     public static class User {
         private int id;
+        
         private String name;
 
         public int getId() {

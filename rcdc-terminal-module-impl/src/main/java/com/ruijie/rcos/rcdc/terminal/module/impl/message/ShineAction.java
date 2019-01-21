@@ -1,14 +1,15 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
+package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 /**
- * Description: 定义接收终端消息事件接口
+ * Description: 与shine的action定义
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2018/11/1
+ * Create Time: 2019/1/19
  *
  * @author Jarman
  */
-public interface ReceiveTerminalEvent {
+public interface ShineAction {
+
     /**
      * 检查升级
      */
@@ -33,4 +34,24 @@ public interface ReceiveTerminalEvent {
      * 心跳报文
      */
     String HEARTBEAT = "heartBeat";
+
+    /**
+     * 同步终端管理员密码
+     */
+    String SYNC_TERMINAL_PASSWORD = "sync_terminal_password";
+
+    /**
+     * 获取国际化语言
+     */
+    String GET_I18N_LANG = "get_i18n_lang";
+
+    /**
+     * 连接关闭
+     */
+    String CONNECT_CLOSE = "connect_close";
+
+    /**
+     * 连接关闭
+     */
+    String SYSTEM_UPGRADE = "upgrade_system";
 }

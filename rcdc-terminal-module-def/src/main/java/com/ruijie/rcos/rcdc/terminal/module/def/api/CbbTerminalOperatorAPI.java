@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
@@ -7,7 +8,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPag
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalIdResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
@@ -105,6 +110,16 @@ public interface CbbTerminalOperatorAPI {
     DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException;
     
     /**
+     * 获取终端最后检测记录
+     * 
+     * @param request 请求参数
+     * @return 检测记录信息
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbDetectInfoResponse getRecentDetect(CbbTerminalIdRequest request) throws BusinessException;
+
+    /**
      * 获取终端检测记录结果
      * 
      * @param request 检测结果请求参数
@@ -112,5 +127,34 @@ public interface CbbTerminalOperatorAPI {
      */
     @NoRollback
     CbbDetectResultResponse getDetectResult(CbbTerminalDetectResultRequest request);
-    
+
+    /**
+     * 获取终端基本信息
+     * 
+     * @param request id请求参数
+     * @return 终端基本信息
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbTerminalBasicInfoResponse getTerminalBaiscInfo(CbbTerminalIdRequest request) throws BusinessException;
+
+    /**
+     * 获取终端收集日志状态
+     * 
+     * @param idRequest id请求参数
+     * @return 终端日志收集状态信息
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbTerminalCollectLogStatusResponse getCollectLog(CbbTerminalIdRequest idRequest) throws BusinessException;
+
+    /**
+     * 获取终端收集日志路径
+     * @param idRequest id请求参数
+     * @return 终端收集日志路径
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalIdRequest idRequest) throws BusinessException;
+
 }

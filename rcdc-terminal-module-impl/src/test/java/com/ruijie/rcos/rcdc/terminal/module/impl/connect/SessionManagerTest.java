@@ -31,6 +31,12 @@ public class SessionManagerTest {
     @Tested
     private SessionManager sessionManager;
 
+    /**
+     * 
+     * 测试绑定终端session
+     * 
+     * @param session 连接会话
+     */
     @Test
     public void testBindSession(@Mocked Session session) {
         String terminalId = "123";
@@ -40,6 +46,12 @@ public class SessionManagerTest {
         sessionMap.clear();
     }
 
+    /**
+     * 
+     * 测试移除session
+     * 
+     * @param session 连接会话
+     */
     @Test
     public void testRemoveSession(@Mocked Session session) {
         String terminalId = "321";
@@ -50,6 +62,11 @@ public class SessionManagerTest {
         sessionMap.clear();
     }
 
+    /**
+     * 测试获取session
+     * 
+     * @param session 连接会话
+     */
     @Test
     public void testGetSession(@Mocked Session session) {
         String terminalId = "123456";
@@ -60,6 +77,11 @@ public class SessionManagerTest {
         sessionMap.clear();
     }
 
+    /**
+     * 测试获取连接通道的发送对象
+     * 
+     * @param session 连接
+     */
     @Test
     public void testGetRequestMessageSenderNormal(@Mocked Session session) {
         String terminalId = "993993";
@@ -75,6 +97,9 @@ public class SessionManagerTest {
         sessionMap.clear();
     }
 
+    /**
+     * 测试获取连接通道的发送对象失败
+     */
     @Test
     public void testGetRequestMessageSenderAbNormal() {
         String terminalId = "993993";
