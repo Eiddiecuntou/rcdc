@@ -13,19 +13,12 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  * 
  * @author nt
  */
-@DispatcherImplemetion("123456")
-public class IpChangeSPIImpl implements CbbDispatcherHandlerSPI{
-
-    /**
-     * TODO ip变更spi还未提供
-     */
-    public void ipChange(String ip) {
-        
-    }
+@DispatcherImplemetion("ipchange")
+public class IpChangeSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
-        // TODO Auto-generated method stub
-        
+        // TODO ip变更spi还未提供
+
     }
 }

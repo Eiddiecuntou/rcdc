@@ -16,7 +16,7 @@ public class CbbSearchTerminalResponse extends DefaultResponse {
 
     private String[] searchResults;
 
-    public CbbSearchTerminalResponse(Long hitCount,String[] searchResults){
+    public CbbSearchTerminalResponse(Long hitCount, String[] searchResults) {
         this.hitCount = hitCount;
         this.searchResults = searchResults;
     }

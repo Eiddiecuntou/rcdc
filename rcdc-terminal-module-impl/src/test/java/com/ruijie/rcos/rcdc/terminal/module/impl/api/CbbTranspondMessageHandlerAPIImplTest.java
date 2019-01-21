@@ -18,11 +18,9 @@ import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DataAccessException;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -49,40 +47,46 @@ public class CbbTranspondMessageHandlerAPIImplTest {
     @Test
     public void testRequest() {
 
-        new Expectations() {{
-            try {
-                sessionManager.getRequestMessageSender(anyString);
-                result = sender;
-            } catch (BusinessException e) {
-                e.printStackTrace();
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                }
             }
-        }};
-        CbbShineMessageRequest request = CbbShineMessageRequest.create("login","223");
+        };
+        CbbShineMessageRequest request = CbbShineMessageRequest.create("login", "223");
         try {
             transpondMessageHandlerAPI.request(request);
         } catch (BusinessException e) {
             fail();
         }
-        new Verifications() {{
-            sender.request((Message) any);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                sender.request((Message) any);
+                times = 1;
+            }
+        };
     }
 
     @Test
     public void testSyncRequestSuccess() throws IOException, InterruptedException, BusinessException {
         String action = "login";
-        Map<String,Object> data = new HashMap<>();
-        data.put("code",100);
-        data.put("content","hello");
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
         BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
-        new Expectations() {{
-            sessionManager.getRequestMessageSender(anyString);
-            result = sender;
-            sender.syncRequest((Message) any);
-            result = baseMessage;
-        }};
-        CbbShineMessageRequest request = CbbShineMessageRequest.create("login","223");
+        new Expectations() {
+            {
+                sessionManager.getRequestMessageSender(anyString);
+                result = sender;
+                sender.syncRequest((Message) any);
+                result = baseMessage;
+            }
+        };
+        CbbShineMessageRequest request = CbbShineMessageRequest.create("login", "223");
         try {
             CbbShineMessageResponse messageResponse = transpondMessageHandlerAPI.syncRequest(request);
             assertEquals(messageResponse.getContent(), "hello");
@@ -93,51 +97,59 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         } catch (IOException e) {
             fail();
         }
-        new Verifications() {{
-            sender.syncRequest((Message) any);
-            times = 1;
+        new Verifications() {
+            {
+                sender.syncRequest((Message) any);
+                times = 1;
 
-        }};
+            }
+        };
     }
 
     @Test
-    public void testAsyncRequest(@Mocked CbbTerminalCallback cbbTerminalCallback) throws BusinessException, IOException,
-            InterruptedException {
-        new Expectations() {{
-            sessionManager.getRequestMessageSender(anyString);
-            result = sender;
-            sender.asyncRequest((Message) any, (RequestCallback) any);
-        }};
+    public void testAsyncRequest(@Mocked CbbTerminalCallback cbbTerminalCallback)
+            throws BusinessException, IOException, InterruptedException {
+        new Expectations() {
+            {
+                sessionManager.getRequestMessageSender(anyString);
+                result = sender;
+                sender.asyncRequest((Message) any, (RequestCallback) any);
+            }
+        };
 
         try {
             String action = "login";
             String terminalId = "123";
-            CbbShineMessageRequest request = CbbShineMessageRequest.create(action,terminalId);
+            CbbShineMessageRequest request = CbbShineMessageRequest.create(action, terminalId);
             transpondMessageHandlerAPI.asyncRequest(request, cbbTerminalCallback);
         } catch (BusinessException e) {
             fail();
         }
 
 
-        new Verifications() {{
-            sender.asyncRequest((Message) any, (RequestCallback) any);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                sender.asyncRequest((Message) any, (RequestCallback) any);
+                times = 1;
+            }
+        };
 
     }
 
     @Test
     public void testResponse(@Mocked Session session, @Mocked DefaultResponseMessageSender sender) {
-        new Expectations() {{
-            sessionManager.getSession(anyString);
-            result = session;
-            sender.response((Message) any);
-        }};
+        new Expectations() {
+            {
+                sessionManager.getSession(anyString);
+                result = session;
+                sender.response((Message) any);
+            }
+        };
         try {
             String action = "login";
             String terminalId = "123";
             String requestId = "333";
-            CbbResponseShineMessage request = CbbResponseShineMessage.create(action,terminalId,requestId);
+            CbbResponseShineMessage request = CbbResponseShineMessage.create(action, terminalId, requestId);
             transpondMessageHandlerAPI.response(request);
         } catch (Exception e) {
             fail();

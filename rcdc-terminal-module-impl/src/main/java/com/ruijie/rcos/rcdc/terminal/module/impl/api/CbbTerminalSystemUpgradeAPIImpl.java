@@ -99,14 +99,14 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // 挂载升级文件，
         mountUpgradePackage(filePath);
         TerminalUpgradeVersionFileInfo versionInfo = null;
-        
+
         try {
             // 读取校验文件内容
             versionInfo = checkVersionFile();
         } catch (Exception e) {
             LOGGER.error("check version file error", e);
             throw e;
-        }finally {
+        } finally {
             // 取消挂载
             umountUpgradePackage(filePath);
         }
@@ -131,7 +131,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             out = new File(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI + fileName);
         } else {
             LOGGER.info("暂不支持的升级类型");
-            //TODO 类型不支持异常
+            // TODO 类型不支持异常
             return;
         }
         File in = new File(filePath);
@@ -144,18 +144,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
     }
-    
-    public static void main(String[] args) {
-        try {
-            File in = new File("E:\\test\\t1");
-            File out = new File("E:\\test\\t3");
-            FileCopyUtils.copy(in, out);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
 
     private boolean checkFileType(String fileName) {
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
@@ -285,7 +273,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
 
         // 添加进任务队列中
-        SystemUpgradeTask upgradeTask = systemUpgradeTaskManager.addTask(terminal.getTerminalId(), terminal.getPlatform());
+        SystemUpgradeTask upgradeTask =
+                systemUpgradeTaskManager.addTask(terminal.getTerminalId(), terminal.getPlatform());
         upgradeTask.setIsSend(false);
         upgradeTask.setState(CbbSystemUpgradeStateEnums.UPGRADING);
 

@@ -14,6 +14,15 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
+/**
+ * 
+ * Description: 终端同步管理员密码SPI
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2019年1月21日
+ * 
+ * @author nt
+ */
 @DispatcherImplemetion(ShineAction.SYNC_TERMINAL_PASSWORD)
 public class SyncTerminalPasswordHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 

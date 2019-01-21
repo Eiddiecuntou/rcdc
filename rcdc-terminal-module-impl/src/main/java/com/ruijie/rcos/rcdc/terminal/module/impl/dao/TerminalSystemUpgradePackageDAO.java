@@ -46,8 +46,9 @@ public interface TerminalSystemUpgradePackageDAO
      * 修改升级包信息
      * 
      * @param packageType 升级包类型
-     * @param internalVersion 内部版本号
-     * @param externalVersion 外部版本号
+     * @param imgName 镜像名称
+     * @param packageVersion 升级包版本号
+     * @param version 版本号
      * @return 修改受影响行数
      */
     @Modifying

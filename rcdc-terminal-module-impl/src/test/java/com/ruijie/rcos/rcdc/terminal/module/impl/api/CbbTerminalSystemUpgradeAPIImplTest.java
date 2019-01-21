@@ -60,8 +60,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
-    
- 
+
+
     /**
      * 测试升级包上传
      * 
@@ -84,7 +84,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         new MockUp<CmdExecuteUtil>() {
             @Mock
-            public void executeCmd(String cmd) {}
+            public void executeCmd(String cmd) {
+                
+            }
         };
 
         new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
@@ -99,7 +101,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         };
         new MockUp<FileOperateUtil>() {
             @Mock
-            public void deleteFile(final String directoryPath, final String exceptFileName) {}
+            public void deleteFile(final String directoryPath, final String exceptFileName) {
+                
+            }
         };
         new MockUp<FileCopyUtils>() {
             @Mock
@@ -267,7 +271,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
     }
-    
+
     @Test
     public void testAddSystemUpgradeTask() throws BusinessException {
 
@@ -278,22 +282,22 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         TerminalEntity terminal = new TerminalEntity();
         new Expectations() {
             {
-                termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((TerminalPlatformEnums) any);
+                termianlSystemUpgradePackageDAO.findFirstByPackageType((TerminalPlatformEnums) any);
                 result = entity;
-                
+
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 result = terminal;
             }
         };
-        
+
         new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
             @Mock
             public void addTask(TerminalSystemUpgradePackageEntity upgradePackage, TerminalEntity terminal) {
+                
             }
 
         };
-        
+
 
         DefaultResponse resp = cbbTerminalSystemUpgradeAPIImpl.addSystemUpgradeTask(request);
         Assert.assertEquals(resp.getStatus(), Response.Status.SUCCESS);

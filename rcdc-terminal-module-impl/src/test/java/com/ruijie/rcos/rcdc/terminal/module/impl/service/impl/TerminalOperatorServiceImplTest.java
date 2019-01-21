@@ -53,14 +53,16 @@ public class TerminalOperatorServiceImplTest {
 
     @Test
     public void testShutdownSuccess() {
-        new Expectations() {{
-            try {
-                sessionManager.getRequestMessageSender(anyString);
-                result = sender;
-            } catch (BusinessException e) {
-                e.printStackTrace();
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                }
             }
-        }};
+        };
         String terminalId = "123";
 
         try {
@@ -69,23 +71,27 @@ public class TerminalOperatorServiceImplTest {
             fail();
         }
 
-        new Verifications() {{
-            Message message;
-            sender.request(message = withCapture());
-            assertEquals(message.getAction(), SendTerminalEventEnums.SHUTDOWN_TERMINAL.getName());
-        }};
+        new Verifications() {
+            {
+                Message message;
+                sender.request(message = withCapture());
+                assertEquals(message.getAction(), SendTerminalEventEnums.SHUTDOWN_TERMINAL.getName());
+            }
+        };
     }
 
     @Test
     public void testRestart() {
-        new Expectations() {{
-            try {
-                sessionManager.getRequestMessageSender(anyString);
-                result = sender;
-            } catch (BusinessException e) {
-                e.printStackTrace();
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+                } catch (BusinessException e) {
+                    e.printStackTrace();
+                }
             }
-        }};
+        };
         String terminalId = "123";
 
         try {
@@ -94,11 +100,13 @@ public class TerminalOperatorServiceImplTest {
             fail();
         }
 
-        new Verifications() {{
-            Message message;
-            sender.request(message = withCapture());
-            assertEquals(message.getAction(), SendTerminalEventEnums.RESTART_TERMINAL.getName());
-        }};
+        new Verifications() {
+            {
+                Message message;
+                sender.request(message = withCapture());
+                assertEquals(message.getAction(), SendTerminalEventEnums.RESTART_TERMINAL.getName());
+            }
+        };
     }
 
     @Test
@@ -106,10 +114,12 @@ public class TerminalOperatorServiceImplTest {
         String terminalId = "12334";
         CollectLogCache collectLogCache = new CollectLogCache();
         collectLogCache.setState(CollectLogStateEnums.DOING);
-        new Expectations() {{
-            collectLogCacheManager.getCache(terminalId);
-            result = collectLogCache;
-        }};
+        new Expectations() {
+            {
+                collectLogCacheManager.getCache(terminalId);
+                result = collectLogCache;
+            }
+        };
 
         try {
             operatorService.collectLog(terminalId);
@@ -123,12 +133,14 @@ public class TerminalOperatorServiceImplTest {
         String terminalId = "123";
         CollectLogCache logCache = new CollectLogCache();
         logCache.setState(CollectLogStateEnums.DOING);
-        new Expectations() {{
-            collectLogCacheManager.getCache(terminalId);
-            result = null;
-            collectLogCacheManager.addCache(terminalId);
-            result = logCache;
-        }};
+        new Expectations() {
+            {
+                collectLogCacheManager.getCache(terminalId);
+                result = null;
+                collectLogCacheManager.addCache(terminalId);
+                result = logCache;
+            }
+        };
 
         try {
             operatorService.collectLog(terminalId);
@@ -141,14 +153,16 @@ public class TerminalOperatorServiceImplTest {
     public void testCollectLogSend() throws BusinessException {
         CollectLogCache logCache = new CollectLogCache();
         logCache.setState(CollectLogStateEnums.DONE);
-        new Expectations() {{
-            collectLogCacheManager.getCache(anyString);
-            result = logCache;
-            sessionManager.getRequestMessageSender(anyString);
-            result = sender;
-            sender.request((Message) any);
+        new Expectations() {
+            {
+                collectLogCacheManager.getCache(anyString);
+                result = logCache;
+                sessionManager.getRequestMessageSender(anyString);
+                result = sender;
+                sender.request((Message) any);
 
-        }};
+            }
+        };
 
         try {
             String terminalId = "123";
@@ -157,10 +171,12 @@ public class TerminalOperatorServiceImplTest {
             fail();
         }
 
-        new Verifications() {{
-            sender.request((Message) any);
-            times = 1;
-        }};
+        new Verifications() {
+            {
+                sender.request((Message) any);
+                times = 1;
+            }
+        };
     }
 
     @Test
@@ -173,9 +189,9 @@ public class TerminalOperatorServiceImplTest {
                 result = new TerminalDetectionEntity();
             }
         };
-        //未完成
+        // 未完成
         operatorService.detect(terminalId);
-        
+
         new Verifications() {
             {
                 terminalDetectService.findInCurrentDate(anyString);

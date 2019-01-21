@@ -49,7 +49,7 @@ public class TerminalSystemUpgradeController {
     /**
      * 上传系统升级文件
      * 
-     * @param uploadRequest 上传文件请求
+     * @param file 上传文件
      * @param optLogRecorder 日志记录
      * @return 上传响应返回
      * @throws BusinessException 业务异常
@@ -145,6 +145,7 @@ public class TerminalSystemUpgradeController {
      * 
      * @param request 移除系统升级请求
      * @param optLogRecorder 日志记录
+     * @param builder 批量任务builder
      * @return 请求响应
      * @throws BusinessException 业务异常
      */

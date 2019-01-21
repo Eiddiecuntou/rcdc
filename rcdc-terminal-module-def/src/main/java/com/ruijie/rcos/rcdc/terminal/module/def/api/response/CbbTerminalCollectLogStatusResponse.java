@@ -12,11 +12,11 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author nt
  */
-public class CbbTerminalCollectLogStatusResponse extends DefaultResponse{
+public class CbbTerminalCollectLogStatusResponse extends DefaultResponse {
 
-    
+
     private CollectLogStateEnums state;
-    
+
     private String logName;
 
     public CollectLogStateEnums getState() {
@@ -34,6 +34,6 @@ public class CbbTerminalCollectLogStatusResponse extends DefaultResponse{
     public void setLogName(String logName) {
         this.logName = logName;
     }
-    
-    
+
+
 }

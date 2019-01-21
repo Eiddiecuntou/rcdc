@@ -51,7 +51,7 @@ public class SystemUpgradeTaskManager {
      * 添加升级任务
      * 
      * @param terminalId 终端id
-     * @param terminalType 终端类型
+     * @param platform 终端平台类型
      * @return 添加的任务
      * @throws BusinessException 业务异常
      */

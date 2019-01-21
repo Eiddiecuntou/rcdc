@@ -19,8 +19,8 @@ public enum CbbDetectDateEnums {
 
     /**
      * 判断日期字符串是否为枚举成员
-     * @param date
-     * @return
+     * @param date 日期字符串
+     * @return 是否为枚举成员
      */
     public static boolean contains(String date) {
         Assert.hasText(date, "platform can not be empty");

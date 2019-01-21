@@ -16,6 +16,15 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
+/**
+ * 
+ * Description: 终端获取国际化信息SPI
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2019年1月21日
+ * 
+ * @author nt
+ */
 @DispatcherImplemetion(ShineAction.GET_I18N_LANG)
 public class GetI18nLangHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     

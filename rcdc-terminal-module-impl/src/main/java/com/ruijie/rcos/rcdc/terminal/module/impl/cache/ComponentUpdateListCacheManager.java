@@ -32,7 +32,8 @@ public class ComponentUpdateListCacheManager {
     /**
      * 添加缓存
      *
-     * @param terminalType 终端类型
+     * @param platform 终端平台类型
+     * @param updatelist 组件更新列表信息
      */
     public void addCache(TerminalPlatformEnums platform, CbbTerminalComponentUpdateListDTO updatelist) {
         Assert.notNull(platform, "platform can not be null");
@@ -44,7 +45,7 @@ public class ComponentUpdateListCacheManager {
     /**
      * 移除缓存
      *
-     * @param terminalType 终端类型
+     * @param platform 终端平台类型
      */
     public void removeCache(TerminalPlatformEnums platform) {
         Assert.notNull(platform, "platform can not be null");
@@ -53,9 +54,9 @@ public class ComponentUpdateListCacheManager {
     }
 
     /**
-     * 获取对应终端类型缓存
+     * 获取对应终端平台类型缓存
      *
-     * @param terminalType 终端类型
+     * @param platform 终端平台类型
      * @return 返回对应缓存对象
      */
     public CbbTerminalComponentUpdateListDTO getCache(TerminalPlatformEnums platform) {

@@ -22,7 +22,7 @@ public class SearchTerminalSpecification implements Specification {
 
     private String keyword;
 
-    public SearchTerminalSpecification(String keyword){
+    public SearchTerminalSpecification(String keyword) {
         this.keyword = keyword;
     }
 

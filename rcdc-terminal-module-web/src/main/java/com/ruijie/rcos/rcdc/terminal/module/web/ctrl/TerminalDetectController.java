@@ -72,10 +72,14 @@ public class TerminalDetectController {
         String[] terminalIdArr = request.getIdArr();
         Map<UUID, String> idMap = TerminalIdMappingUtils.mapping(terminalIdArr);
         UUID[] idArr = TerminalIdMappingUtils.extractUUID(idMap);
-        final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr)
-                .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName(BusinessKey.RCDC_TERMINAL_DETECT_ITEM_NAME, new String[] {}).build()).iterator();
+        final Iterator<DefaultBatchTaskItem> iterator =
+                Stream.of(idArr)
+                        .map(id -> DefaultBatchTaskItem.builder().itemId(id)
+                                .itemName(BusinessKey.RCDC_TERMINAL_DETECT_ITEM_NAME, new String[] {}).build())
+                        .iterator();
 
-        StartDetectBatchtaskHandler handler = new StartDetectBatchtaskHandler(idMap, operatorAPI, iterator, optLogRecorder);
+        StartDetectBatchtaskHandler handler =
+                new StartDetectBatchtaskHandler(idMap, operatorAPI, iterator, optLogRecorder);
         builder.setTaskName(BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_NAME)
                 .setTaskDesc(BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_DESC).registerHandler(handler).start();
 
@@ -93,7 +97,7 @@ public class TerminalDetectController {
     public DefaultWebResponse list(PageWebRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         CbbDetectDateEnums dateParam = checkDateParam(request);
-        
+
         CbbTerminalDetectPageRequest pageRequest = new CbbTerminalDetectPageRequest();
         pageRequest.setLimit(request.getLimit());
         pageRequest.setPage(request.getPage());
@@ -121,12 +125,12 @@ public class TerminalDetectController {
         Assert.notNull(valueArr, "valueArr can not be empty");
         String date = valueArr[0];
         Assert.hasText(date, "date can not be blank");
-        if(!CbbDetectDateEnums.contains(date)) {
+        if (!CbbDetectDateEnums.contains(date)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_DETECT_LIST_DATE_ERROR, date);
         }
         return CbbDetectDateEnums.valueOf(date);
     }
-    
+
     /**
      * 
      * Description: 终端检测批量任务handler
@@ -141,7 +145,7 @@ public class TerminalDetectController {
         private final ProgrammaticOptLogRecorder optLogRecorder;
 
         private final CbbTerminalOperatorAPI operatorAPI;
-        
+
         private Map<UUID, String> idMap;
 
         protected StartDetectBatchtaskHandler(Map<UUID, String> idMap, CbbTerminalOperatorAPI operatorAPI,
@@ -154,13 +158,14 @@ public class TerminalDetectController {
 
         @Override
         public BatchTaskFinishResult onFinish(int successCount, int failCount) {
-            return buildDefaultFinishResult(successCount, failCount, BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_RESULT);
+            return buildDefaultFinishResult(successCount, failCount,
+                    BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_RESULT);
         }
 
         @Override
         public BatchTaskItemResult processItem(BatchTaskItem taskItem) throws BusinessException {
             Assert.notNull(taskItem, "taskItem can not be null");
-            
+
             String terminalId = idMap.get(taskItem.getItemID());
             CbbTerminalIdRequest request = new CbbTerminalIdRequest();
             request.setTerminalId(terminalId);
@@ -168,8 +173,8 @@ public class TerminalDetectController {
             String terminalName = baiscInfoResp.getTerminalName();
             startDetectAddOptLog(terminalId, terminalName);
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
-                    .msgKey(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG).msgArgs(new String[] {terminalId, terminalName})
-                    .build();
+                    .msgKey(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG)
+                    .msgArgs(new String[] {terminalId, terminalName}).build();
         }
 
         /**

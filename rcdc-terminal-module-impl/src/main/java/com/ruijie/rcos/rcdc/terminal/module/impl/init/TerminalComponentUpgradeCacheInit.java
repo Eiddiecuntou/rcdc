@@ -32,7 +32,7 @@ import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalComponentUpgradeCacheInit.class);
-    
+
     private static final String PLATFORM_SPERATOR = "&";
 
     @Autowired
@@ -47,7 +47,7 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
                     Constants.TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH);
             return;
         }
-        
+
         File[] subfiles = upgradeDirectory.listFiles();
         if (subfiles.length == 0) {
             LOGGER.info("no component upgrade file");
@@ -80,28 +80,28 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
     }
 
     private void putInCache(CbbTerminalComponentUpdateListDTO updatelist) {
-        if(updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
+        if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.error("updatelist is null, upgrade file is incorrect");
             return;
         }
-        
+
         // 将终端组件升级updatelist信息按终端类型进行拆分，存入缓存中
         Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = cacheManager.getUpdateListCaches();
         updatelist.getComponentList().forEach(component -> {
             String[] platforms = component.getPlatform().split(PLATFORM_SPERATOR);
-            for(String platformStr : platforms) {
-                if(StringUtils.isBlank(platformStr) || !TerminalPlatformEnums.contains(platformStr)) {
+            for (String platformStr : platforms) {
+                if (StringUtils.isBlank(platformStr) || !TerminalPlatformEnums.contains(platformStr)) {
                     LOGGER.debug("updatelist contains invalid platform[{}]", platformStr);
                     continue;
                 }
                 TerminalPlatformEnums platform = TerminalPlatformEnums.valueOf(platformStr);
                 CbbTerminalComponentUpdateListDTO typeUpdatelist = null;
                 List<CbbTerminalComponentVersionInfoDTO> componentList = null;
-                if(caches.containsKey(platform)) {
+                if (caches.containsKey(platform)) {
                     LOGGER.debug("cache include platform updatelist, platform [{}]", platform);
                     typeUpdatelist = caches.get(platform);
                     componentList = typeUpdatelist.getComponentList();
-                }else {
+                } else {
                     LOGGER.debug("cache not include platform updatelist, platform [{}]", platform);
                     typeUpdatelist = buildNewComponentUpdatelist(updatelist);
                     componentList = new ArrayList<>();
@@ -110,7 +110,7 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
                 typeUpdatelist.setComponentSize(typeUpdatelist.getComponentSize() + 1);
             }
         });
-        
+
     }
 
     private CbbTerminalComponentUpdateListDTO buildNewComponentUpdatelist(

@@ -12,7 +12,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-public class CbbTerminalIdArrRequest implements Request{
+public class CbbTerminalIdArrRequest implements Request {
 
     @NotEmpty
     private String[] terminalIdArr;
@@ -24,5 +24,5 @@ public class CbbTerminalIdArrRequest implements Request{
     public void setTerminalIdArr(String[] terminalIdArr) {
         this.terminalIdArr = terminalIdArr;
     }
-    
+
 }

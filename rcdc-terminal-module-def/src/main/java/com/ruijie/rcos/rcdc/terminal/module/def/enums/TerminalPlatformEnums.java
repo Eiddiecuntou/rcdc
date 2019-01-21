@@ -34,8 +34,8 @@ public enum TerminalPlatformEnums {
     
     /**
      * 判断平台字符串是否为平台枚举成员
-     * @param platform
-     * @return
+     * @param platform 终端平台类型
+     * @return 是否包含
      */
     public static boolean contains(String platform) {
         Assert.hasText(platform, "platform can not be empty");

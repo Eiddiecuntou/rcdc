@@ -31,7 +31,7 @@ public class TerminalSystemUpgradePackageEntity {
     /**
      *镜像名称
      */
-    private String ImgName;
+    private String imgName;
 
 
     /**
@@ -66,12 +66,12 @@ public class TerminalSystemUpgradePackageEntity {
 
 
     public String getImgName() {
-        return ImgName;
+        return imgName;
     }
 
 
     public void setImgName(String imgName) {
-        ImgName = imgName;
+        this.imgName = imgName;
     }
 
 

@@ -73,7 +73,7 @@ public class TerminalDateUtil {
      * 获取指定秒后的时间
      * 
      * @param date 日期
-     * @param day 天数
+     * @param second 秒数
      * @return 日期
      */
     public static Date addSecond(Date date, int second) {

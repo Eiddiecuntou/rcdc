@@ -56,6 +56,8 @@ public class TerminalOperateController {
      * 关闭终端
      *
      * @param request 终端id请求参数对象
+     * @param optLogRecorder 日志记录对象
+     * @param builder 批量任务创建对象
      * @return 返回成功或失败
      * @throws BusinessException 业务异常
      */
@@ -74,8 +76,8 @@ public class TerminalOperateController {
         CloseTerminalBatchTaskHandler handler =
                 new CloseTerminalBatchTaskHandler(this.terminalOperatorAPI, idMap, iterator, optLogRecorder);
 
-        builder.setTaskName(BusinessKey.RCDC_TERMINAL_ClOSE_TASK_NAME, new String[] {})
-                .setTaskDesc(BusinessKey.RCDC_TERMINAL_ClOSE_TASK_DESC, new String[] {}).registerHandler(handler)
+        builder.setTaskName(BusinessKey.RCDC_TERMINAL_CLOSE_TASK_NAME, new String[] {})
+                .setTaskDesc(BusinessKey.RCDC_TERMINAL_CLOSE_TASK_DESC, new String[] {}).registerHandler(handler)
                 .start();
         return DefaultWebResponse.Builder.success();
     }
@@ -84,6 +86,8 @@ public class TerminalOperateController {
      * 批量重启终端
      *
      * @param request 终端id请求参数对象
+     * @param optLogRecorder 日志记录对象
+     * @param builder 批量任务创建对象
      * @return 返回成功或失败
      * @throws BusinessException 业务异常
      */

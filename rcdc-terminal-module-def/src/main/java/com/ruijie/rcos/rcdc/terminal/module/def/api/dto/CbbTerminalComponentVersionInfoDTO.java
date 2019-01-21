@@ -2,6 +2,15 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalResetEnums;
 
+/**
+ * 
+ * Description: 终端组件升级版本信息
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2019年1月21日
+ * 
+ * @author nt
+ */
 public class CbbTerminalComponentVersionInfoDTO {
     
     /**

@@ -27,7 +27,7 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
  */
 @GlobalUniqueBean(value = "systemUpgradeQuartz")
 @Quartz(cron = "0/15 * *  * * ?")
-public class SystemUpgradeWaitingTaskQuartz implements QuartzTask{
+public class SystemUpgradeWaitingTaskQuartz implements QuartzTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeWaitingTaskQuartz.class);
 
@@ -39,7 +39,7 @@ public class SystemUpgradeWaitingTaskQuartz implements QuartzTask{
 
     @Autowired
     private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
-    
+
     @Override
     public void execute() throws Exception {
         LOGGER.debug("start to deal with waiting system upgrade task...");

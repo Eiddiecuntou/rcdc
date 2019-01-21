@@ -59,10 +59,10 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
-    
+
     @Autowired
     private CbbTerminalBasicInfoAPI basicInfoAPI;
-    
+
     @Autowired
     private CollectLogCacheManager collectLogCacheManager;
 
@@ -103,7 +103,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public DefaultResponse detect(CbbTerminalDetectRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
-        
+
         String terminalId = request.getTerminalId();
         operatorService.detect(terminalId);
         return DefaultResponse.Builder.success();
@@ -135,13 +135,14 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException {
+    public DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request)
+            throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalDetectionEntity> page = detectService.pageQuery(request);
         if (page.getNumberOfElements() == 0) {
-            LOGGER.debug("detect page query returns 0 element, detect date[{}], page[{}], limit[{}]", request.getDate(), request.getPage(),
-                    request.getLimit());
+            LOGGER.debug("detect page query returns 0 element, detect date[{}], page[{}], limit[{}]", request.getDate(),
+                    request.getPage(), request.getLimit());
             return buildEmptyResponse(page.getTotalElements());
         }
 
@@ -153,7 +154,8 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             TerminalDetectionEntity detectionEntity = detectionList.get(i);
             detectionEntity.convertTo(detectDTO);
             setThreshold(detectDTO);
-            TerminalEntity terminalEntity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
+            TerminalEntity terminalEntity =
+                    terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
             detectDTO.setIp(terminalEntity.getIp());
             detectDTO.setTerminalName(terminalEntity.getTerminalName());
             detectDTOArr[i] = detectDTO;
@@ -161,11 +163,11 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
         return DefaultPageResponse.Builder.success(page.getSize(), (int) page.getTotalElements(), detectDTOArr);
     }
-    
+
     @Override
     public CbbDetectInfoResponse getRecentDetect(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        
+
         CbbTerminalDetectDTO detectInfo = detectService.getRecentDetect(request.getTerminalId());
         CbbDetectInfoResponse response = new CbbDetectInfoResponse();
         response.setDetectInfo(detectInfo);
@@ -205,15 +207,14 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public CbbTerminalBasicInfoResponse getTerminalBaiscInfo(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        
+
         return basicInfoAPI.findBasicInfoByTerminalId(request);
     }
 
     @Override
-    public CbbTerminalCollectLogStatusResponse getCollectLog(CbbTerminalIdRequest request)
-            throws BusinessException {
+    public CbbTerminalCollectLogStatusResponse getCollectLog(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        
+
         CollectLogCache cache = getCollectLogCache(request.getTerminalId());
         CbbTerminalCollectLogStatusResponse response = new CbbTerminalCollectLogStatusResponse();
         response.setLogName(cache.getLogFileName());
@@ -222,30 +223,31 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalIdRequest request) throws BusinessException {
+    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalIdRequest request)
+            throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        
+
         String terminalId = request.getTerminalId();
         CollectLogCache cache = getCollectLogCache(terminalId);
         if (isCollectNotSuccess(cache)) {
             LOGGER.warn("收集日志缓存中不存在日志文件, 终端id[{}]", terminalId);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
         }
-        
+
         String logFileName = cache.getLogFileName();
         String suffix = getFileSuffix(logFileName);
         CbbTerminalLogFileInfoResponse response = new CbbTerminalLogFileInfoResponse();
         response.setLogFilePath(Constants.STORE_TERMINAL_LOG_PATH + logFileName);
         response.setLogFileName(logFileName);
         response.setSuffix(suffix);
-        
+
         return response;
     }
 
     private String getFileSuffix(String fileName) {
         String suffix = "";
         int lastIndexOf = fileName.lastIndexOf(".");
-        if(lastIndexOf > -1) {
+        if (lastIndexOf > -1) {
             suffix = fileName.substring(lastIndexOf + 1);
         }
         return suffix;
@@ -253,6 +255,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     /**
      * 终端日志收集是否尚未成功
+     * 
      * @param cache 收集日志缓存
      * @return
      */
@@ -260,14 +263,15 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         if (cache.getState() != CollectLogStateEnums.DONE) {
             return true;
         }
-        if(StringUtils.isBlank(cache.getLogFileName())) {
+        if (StringUtils.isBlank(cache.getLogFileName())) {
             return true;
         }
         return false;
     }
-    
+
     /**
      * 获取日志缓存
+     * 
      * @param terminalId 终端id
      * @return 日志收集缓存
      * @throws BusinessException 业务异常
@@ -280,5 +284,5 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         }
         return cache;
     }
-    
+
 }
