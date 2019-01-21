@@ -275,7 +275,7 @@ public class SystemUpgradeTaskManager {
     /**
      * 查询数量是否达到最大数量
      * 
-     * @return 是否超出数量限制 true: 超过,  false: 未超过
+     * @return 是否超出数量限制 true: 超过, false: 未超过
      */
     public boolean checkMaxAddNum() {
         return TASK_MAP_MAX_NUM <= TASK_MAP.size();

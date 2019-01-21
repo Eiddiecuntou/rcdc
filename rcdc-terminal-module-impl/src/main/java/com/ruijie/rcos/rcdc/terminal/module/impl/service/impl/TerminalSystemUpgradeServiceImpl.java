@@ -87,7 +87,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
 
     @Override
     public List<TerminalSystemUpgradeInfo> readSystemUpgradeStateFromFile() {
-        // TODO FIXME 读取升级文件中的升级信息
+        // TODO 读取升级文件中的升级信息，文件路径后福，忠进的描述不一致，待确认
         return null;
     }
 

@@ -48,12 +48,12 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
             return;
         }
 
-        File[] subfiles = upgradeDirectory.listFiles();
-        if (subfiles.length == 0) {
+        File[] subfileArr = upgradeDirectory.listFiles();
+        if (subfileArr.length == 0) {
             LOGGER.info("no component upgrade file");
             return;
         }
-        for (File subFile : subfiles) {
+        for (File subFile : subfileArr) {
             if (subFile.isDirectory()) {
                 LOGGER.warn("sub file is not dictory, the file path is {}", subFile.getAbsolutePath());
                 continue;
@@ -88,8 +88,8 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
         // 将终端组件升级updatelist信息按终端类型进行拆分，存入缓存中
         Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = cacheManager.getUpdateListCaches();
         updatelist.getComponentList().forEach(component -> {
-            String[] platforms = component.getPlatform().split(PLATFORM_SPERATOR);
-            for (String platformStr : platforms) {
+            String[] platformArr = component.getPlatform().split(PLATFORM_SPERATOR);
+            for (String platformStr : platformArr) {
                 if (StringUtils.isBlank(platformStr) || !TerminalPlatformEnums.contains(platformStr)) {
                     LOGGER.debug("updatelist contains invalid platform[{}]", platformStr);
                     continue;

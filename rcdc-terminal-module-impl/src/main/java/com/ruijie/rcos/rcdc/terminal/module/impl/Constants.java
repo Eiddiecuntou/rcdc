@@ -48,9 +48,6 @@ public interface Constants {
     /** 终端管理员密码 */
     String RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY = "terminal_pwd";
 
-    /** 终端管理员密码aes加密key */
-    String RCDC_TERMINAL_ADMIN_PWD_AES_KEY = "";
-
     /**
      * 存放终端系统vdi刷机包路径
      */
@@ -67,9 +64,9 @@ public interface Constants {
     String TERMINAL_UPGRADE_ISO_PATH_OTA = "/opt/upgrade/ota/";
 
     /**
-     * TODO 系统刷机包挂载路径
+     * 系统刷机包挂载路径
      */
-    String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "";
+    String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "/opt/system_img/amount/";
 
     /**
      * TODO 系统刷机包版本文件路径
@@ -77,7 +74,7 @@ public interface Constants {
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH = "";
 
     /**
-     * TODO 系统刷机包镜像文件路径
+     * 系统刷机包镜像文件路径
      */
     String TERMINAL_UPGRADE_ISO_IMG_FILE_PATH = "/home/partimag/";
 
@@ -104,7 +101,7 @@ public interface Constants {
     /**
      * 终端组件升级包路径 
      */
-    String TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH = "/opt/upgrade/app/terminal_component";
+    String TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH = "/opt/upgrade/app/terminal_component/";
 
     /**
      * 终端组件升级包updatelist文件名

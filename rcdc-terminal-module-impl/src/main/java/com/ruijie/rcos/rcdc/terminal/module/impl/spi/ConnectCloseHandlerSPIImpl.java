@@ -35,6 +35,8 @@ public class ConnectCloseHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
+        Assert.notNull(request, "request can not be null");
+        
         LOGGER.debug("连接关闭事件处理，terminal={}", request.getTerminalId());
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
         String terminalId = request.getTerminalId();

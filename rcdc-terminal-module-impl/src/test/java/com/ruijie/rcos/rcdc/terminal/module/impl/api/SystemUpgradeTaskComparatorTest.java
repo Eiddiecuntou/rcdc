@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.util.Date;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
@@ -22,6 +23,9 @@ public class SystemUpgradeTaskComparatorTest {
     @Tested
     private SystemUpgradeTaskComparator comparator;
 
+    /**
+     * 测试比较
+     */
     @Test
     public void testCompare() {
         long curTime = new Date().getTime();
@@ -31,10 +35,14 @@ public class SystemUpgradeTaskComparatorTest {
         SystemUpgradeTask o2 = new SystemUpgradeTask();
         o2.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         o2.setStartTime(curTime - 1);
-        
-        comparator.compare(o1, o2);
+
+        int compare = comparator.compare(o1, o2);
+        Assert.assertEquals(compare, -1);
     }
-    
+
+    /**
+     * 测试比较-第一个参数较小
+     */
     @Test
     public void testCompareStateEqualFirstTimeSmall() {
         long curTime = new Date().getTime();
@@ -44,10 +52,14 @@ public class SystemUpgradeTaskComparatorTest {
         SystemUpgradeTask o2 = new SystemUpgradeTask();
         o2.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         o2.setStartTime(curTime + 1);
-        
-        comparator.compare(o1, o2);
+
+        int compare = comparator.compare(o1, o2);
+        Assert.assertEquals(compare, 1);
     }
 
+    /**
+     * 测试比较-状态不同
+     */
     @Test
     public void testCompareStateNotEqual() {
         long curTime = new Date().getTime();
@@ -57,10 +69,14 @@ public class SystemUpgradeTaskComparatorTest {
         SystemUpgradeTask o2 = new SystemUpgradeTask();
         o2.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         o2.setStartTime(curTime - 1);
-        
-        comparator.compare(o1, o2);
+
+        int compare = comparator.compare(o1, o2);
+        Assert.assertEquals(compare, -1);
     }
-    
+
+    /**
+     * 测试状态不同
+     */
     @Test
     public void testCompareStateNotEqualOther() {
         long curTime = new Date().getTime();
@@ -70,7 +86,9 @@ public class SystemUpgradeTaskComparatorTest {
         SystemUpgradeTask o2 = new SystemUpgradeTask();
         o2.setState(CbbSystemUpgradeStateEnums.WAIT);
         o2.setStartTime(curTime - 1);
-        
-        comparator.compare(o1, o2);
+
+        int compare = comparator.compare(o1, o2);
+
+        Assert.assertEquals(compare, 1);
     }
 }

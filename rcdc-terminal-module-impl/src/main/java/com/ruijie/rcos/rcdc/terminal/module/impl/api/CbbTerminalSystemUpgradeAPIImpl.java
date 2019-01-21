@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.FileCopyUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradeTaskDTO;
@@ -86,6 +85,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         // 判断是否有正在升级中的任务
         if (systemUpgradeTaskManager.countUpgradingNum() > 0) {
+            LOGGER.debug("system upgrade task is running, can not upload file ", fileName);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }
 
@@ -98,8 +98,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         // 挂载升级文件，
         mountUpgradePackage(filePath);
-        TerminalUpgradeVersionFileInfo versionInfo = null;
 
+        TerminalUpgradeVersionFileInfo versionInfo = null;
         try {
             // 读取校验文件内容
             versionInfo = checkVersionFile();
@@ -114,7 +114,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // 将新升级文件移动到目录下
         moveUpgradePackage(fileName, filePath, versionInfo.getPackageType());
 
-        // TODO 考虑下如果文件移动成功，但未入库的话是否会导致bug
         // 更新升级包信息入库
         terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion(versionInfo);
 
@@ -128,21 +127,22 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throws BusinessException {
         File out = null;
         if (packageType == TerminalPlatformEnums.VDI) {
+            LOGGER.debug("升级包类型：{}", TerminalPlatformEnums.VDI.name());
             out = new File(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI + fileName);
         } else {
-            LOGGER.info("暂不支持的升级类型");
-            // TODO 类型不支持异常
+            LOGGER.debug("暂不支持的升级包类型");
             return;
         }
         File in = new File(filePath);
+
         try {
-            // TODO 可以直接rename
-            FileCopyUtils.copy(in, out);
-        } catch (IOException e) {
-            LOGGER.debug("copy upgrade file to target directory fail, fileName : {}, packageType : {}", fileName,
+            in.renameTo(out);
+        } catch (Exception e) {
+            LOGGER.debug("move upgrade file to target directory fail, fileName : {}, packageType : {}", fileName,
                     packageType.name());
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
+
     }
 
     private boolean checkFileType(String fileName) {
@@ -156,17 +156,18 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     private void mountUpgradePackage(final String filePath) throws BusinessException {
-        LOGGER.debug("mount package");
+        LOGGER.debug("mount package, path is [{}]", filePath);
+        // TODO 改为框架提供的ShellCommandRunner
         CmdExecuteUtil.executeCmd(String.format(Constants.SYSTEM_CMD_MOUNT_UPGRADE_ISO, filePath,
                 Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH));
     }
 
     private void umountUpgradePackage(final String filePath) throws BusinessException {
-        LOGGER.debug("umount package");
+        LOGGER.debug("umount package, path is [{}]", filePath);
+        // TODO 改为框架提供的ShellCommandRunner
         CmdExecuteUtil.executeCmd(String.format(Constants.SYSTEM_CMD_UMOUNT_UPGRADE_ISO, filePath,
                 Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH));
     }
-
 
     private TerminalUpgradeVersionFileInfo checkVersionFile() throws BusinessException {
         // 获取升级文件信息
@@ -194,17 +195,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
 
-        // TODO FIXME 获取镜像名称
-        String imgName = "";
-        String imgPath = Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_ISO_IMG_FILE_PATH;
-        File file = new File(imgPath);
-        if (file.isDirectory()) {
-            String[] fileNames = file.list();
-            if (fileNames != null) {
-                imgName = fileNames[0];
-            }
-        }
-
+        // 获取镜像名称
+        String imgName = getImgName();
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
         versionInfo.setPackageType(TerminalPlatformEnums
                 .valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE)));
@@ -213,22 +205,37 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         return versionInfo;
     }
 
+    private String getImgName() throws BusinessException {
+        String imgPath = Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_ISO_IMG_FILE_PATH;
+        File file = new File(imgPath);
+        if (!file.isDirectory()) {
+            LOGGER.debug("system upgrade file incorrect, img direction not exist, file path[{}]", imgPath);
+            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST);
+        }
+        String[] fileNameArr = file.list();
+        if (fileNameArr == null || fileNameArr.length == 0) {
+            LOGGER.debug("system upgrade file incorrect, img file not exist, file path[{}]", imgPath);
+            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST);
+        }
+        return fileNameArr[0];
+    }
+
     @Override
     public CbbBaseListResponse<CbbTerminalSystemUpgradePackageInfoDTO> listSystemUpgradePackage(
             CbbTerminalSystemUpgradePackageListRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        List<TerminalSystemUpgradePackageEntity> packages =
+        List<TerminalSystemUpgradePackageEntity> packageList =
                 terminalSystemUpgradePackageDAO.findByPackageType(request.getPaltform());
-        if (CollectionUtils.isEmpty(packages)) {
+        if (CollectionUtils.isEmpty(packageList)) {
             LOGGER.debug("query terminal system upgrade package info with terminalType[{}] is empty",
                     request.getPaltform());
             return new CbbBaseListResponse<>();
         }
-        CbbTerminalSystemUpgradePackageInfoDTO[] dtoArr = new CbbTerminalSystemUpgradePackageInfoDTO[packages.size()];
-        Stream.iterate(0, i -> i + 1).limit(packages.size()).forEach(i -> {
+        CbbTerminalSystemUpgradePackageInfoDTO[] dtoArr = new CbbTerminalSystemUpgradePackageInfoDTO[packageList.size()];
+        Stream.iterate(0, i -> i + 1).limit(packageList.size()).forEach(i -> {
             CbbTerminalSystemUpgradePackageInfoDTO dto = new CbbTerminalSystemUpgradePackageInfoDTO();
-            PACKAGE_BEAN_COPIER.copy(packages.get(i), dto, null);
+            PACKAGE_BEAN_COPIER.copy(packageList.get(i), dto, null);
             dtoArr[i] = dto;
         });
 
@@ -332,18 +339,18 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     public CbbBaseListResponse<CbbTerminalSystemUpgradeTaskDTO> listTerminalSystemUpgradeTask()
             throws BusinessException {
         // 获取所以升级任务
-        List<SystemUpgradeTask> tasks = systemUpgradeTaskManager.getAllTasks();
-        if (CollectionUtils.isEmpty(tasks)) {
+        List<SystemUpgradeTask> taskList = systemUpgradeTaskManager.getAllTasks();
+        if (CollectionUtils.isEmpty(taskList)) {
             return new CbbBaseListResponse<>();
         }
 
         // 对列表进行排序
-        Collections.sort(tasks, new SystemUpgradeTaskComparator());
-        CbbTerminalSystemUpgradeTaskDTO[] dtoArr = new CbbTerminalSystemUpgradeTaskDTO[tasks.size()];
+        Collections.sort(taskList, new SystemUpgradeTaskComparator());
+        CbbTerminalSystemUpgradeTaskDTO[] dtoArr = new CbbTerminalSystemUpgradeTaskDTO[taskList.size()];
         // 将数据转换成dto输出
-        Stream.iterate(0, i -> i + 1).limit(tasks.size()).forEach(i -> {
+        Stream.iterate(0, i -> i + 1).limit(taskList.size()).forEach(i -> {
             CbbTerminalSystemUpgradeTaskDTO dto = new CbbTerminalSystemUpgradeTaskDTO();
-            TASK_BEAN_COPIER.copy(tasks.get(i), dto, null);
+            TASK_BEAN_COPIER.copy(taskList.get(i), dto, null);
             dtoArr[i] = dto;
         });
 

@@ -34,8 +34,8 @@ public class SearchTerminalSpecification implements Specification {
         List<Predicate> predicateList = new ArrayList<Predicate>();
         predicateList.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + keyword + "%"));
         predicateList.add(criteriaBuilder.like(root.get("ip").as(String.class), "%" + keyword + "%"));
-        Predicate[] predicates = new Predicate[predicateList.size()];
-        query.where(criteriaBuilder.or(predicateList.toArray(predicates)));
+        Predicate[] predicateArr = new Predicate[predicateList.size()];
+        query.where(criteriaBuilder.or(predicateList.toArray(predicateArr)));
         query.orderBy(criteriaBuilder.desc(root.get("create_time")));
 
         return query.getRestriction();

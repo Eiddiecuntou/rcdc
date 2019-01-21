@@ -15,7 +15,7 @@ public class NfsServiceUtil {
      * 开启NFS服务
      */
     public static void startService() {
-        //TODO FIXME 开启nfs服务
+        //TODO 开启nfs服务， 使用框架提供的ShellCommandRunner
         
     }
     
@@ -23,7 +23,7 @@ public class NfsServiceUtil {
      * 关闭NFS服务
      */
     public static void shutDownService() {
-        //TODO FIXME 关闭nfs服务
+        //TODO 关闭nfs服务， 使用框架提供的ShellCommandRunner
     }
 
 }

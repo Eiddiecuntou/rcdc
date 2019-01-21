@@ -5,8 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -35,6 +39,9 @@ public class SystemUpgradeStateSyncQuartz implements QuartzTask {
 
     @Autowired
     private TerminalSystemUpgradeService terminalSystemUpgradeService;
+    
+    @Autowired
+    private TerminalBasicInfoDAO baiscInfoDAO;
 
     @Override
     public void execute() throws Exception {
@@ -72,10 +79,10 @@ public class SystemUpgradeStateSyncQuartz implements QuartzTask {
 
             }
             if (matchInfo == null) {
-                // 无终端升级信息时状态同步
-                LOGGER.debug("start to synchonize task state without upgrade info, terminal id [{}]",
+                // 无终端升级状态信息
+                LOGGER.debug("no upgrade info, terminal id [{}]",
                         task.getTerminalId());
-                synchronizeStateWithoutMatchUpgradeInfo(task);
+                return;
             } else {
                 // 根据终端升级信息状态同步
                 LOGGER.debug("start to synchonize task state with upgrade info, terminal id [{}]",
@@ -86,15 +93,14 @@ public class SystemUpgradeStateSyncQuartz implements QuartzTask {
     }
     
     private void synchronizeStateWithMatchUpgradeInfo(SystemUpgradeTask task, TerminalSystemUpgradeInfo matchInfo) {
-        // TODO FIXME 根据终端升级信息状态同步,还需同数据库中的终端状态进行比对
+        // TODO 根据终端升级信息状态同步,还需同数据库中的终端状态进行比对
+        TerminalEntity terminal = baiscInfoDAO.findTerminalEntityByTerminalId(task.getTerminalId());
+        if (terminal.getState() == CbbTerminalStateEnums.ONLINE) {
+            task.setState(CbbSystemUpgradeStateEnums.SUCCESS);
+            return;
+        }
         task.setState(matchInfo.getState());
-
     }
 
-    private void synchronizeStateWithoutMatchUpgradeInfo(SystemUpgradeTask task) {
-        // TODO FIXME 无终端升级信息时状态同步,判断是否第一次心跳超时,还需同数据库中的终端状态进行比对
-        long lastActiveTime = task.getTimeStamp();
-        
-    }
 
 }

@@ -106,13 +106,13 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     private void sendNewPwdToOnlineTerminal(String password) {
         LOGGER.debug("向在线终端发送管理员密码改变通知");
-        List<String> onlineTerminalId = sessionManager.getOnlineTerminalId();
-        if (CollectionUtils.isEmpty(onlineTerminalId)) {
+        List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
+        if (CollectionUtils.isEmpty(onlineTerminalIdList)) {
             LOGGER.debug("无在线终端");
             return;
         }
         
-        for (String terminalId : onlineTerminalId) {
+        for (String terminalId : onlineTerminalIdList) {
             ChangeTerminalPasswordRequest request = new ChangeTerminalPasswordRequest(password);
             try {
                 operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD, request);

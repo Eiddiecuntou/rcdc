@@ -69,6 +69,7 @@ public class MessageUtils {
      */
     public static CbbResponseShineMessage buildResponseMessage(CbbDispatcherRequest request, Object content) {
         Assert.notNull(request, "request can not be null");
+        Assert.notNull(content, "content can not be null");
         
         CbbResponseShineMessage responseMessage = new CbbResponseShineMessage();
         responseMessage.setAction(request.getDispatcherKey());

@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.util.Comparator;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 
@@ -17,6 +18,9 @@ public class SystemUpgradeTaskComparator implements Comparator<SystemUpgradeTask
 
     @Override
     public int compare(SystemUpgradeTask o1, SystemUpgradeTask o2) {
+        Assert.notNull(o1, "o1 can nu be null");
+        Assert.notNull(o2, "o2 can nu be null");
+        
         if (o1.getState() == o2.getState()) {
             if (o1.getStartTime() < o2.getStartTime()) {
                 return 1;
