@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request;
 
-import com.ruijie.rcos.sk.base.annotation.NotNull;
+import com.ruijie.rcos.sk.base.annotation.NotEmpty;
 import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
 /**
@@ -12,7 +12,8 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
  * @author Jarman
  */
 public class TerminalIdArrWebRequest implements WebRequest {
-    @NotNull
+    
+    @NotEmpty
     private String[] idArr;
 
     public TerminalIdArrWebRequest() {

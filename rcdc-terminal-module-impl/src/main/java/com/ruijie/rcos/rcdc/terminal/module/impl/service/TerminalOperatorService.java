@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -67,5 +68,12 @@ public interface TerminalOperatorService {
      * @throws BusinessException 业务异常
      */
     String getTerminalPassword()throws BusinessException;
+
+    /**
+     * 获取终端收集日志信息
+     * @param terminalId 终端id
+     * @return 终端日志收集信息
+     */
+    CollectLogCache getCollectLog(String terminalId);
 
 }

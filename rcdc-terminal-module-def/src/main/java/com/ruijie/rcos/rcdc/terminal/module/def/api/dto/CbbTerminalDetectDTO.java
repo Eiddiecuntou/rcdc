@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import java.util.Date;
+
 /**
  * 
  * Description: 终端检测记录DTO
@@ -42,6 +44,26 @@ public class CbbTerminalDetectDTO {
      * 网络时延
      */
     private Integer delay;
+    
+    /**
+     * 带宽阈值
+     */
+    private Double bandwidthThreshold;
+    
+    /**
+     * 丢包率阈值
+     */
+    private Double packetLossRateThreshold;
+    
+    /**
+     * 时延阈值
+     */
+    private Integer delayThreshold;
+    
+    /**
+     * 检测时间
+     */
+    private Date detectTime;
 
     /**
      * 检测状态
@@ -171,4 +193,44 @@ public class CbbTerminalDetectDTO {
         this.checkState = checkState;
     }
 
+
+    public Double getBandwidthThreshold() {
+        return bandwidthThreshold;
+    }
+
+
+    public void setBandwidthThreshold(Double bandwidthThreshold) {
+        this.bandwidthThreshold = bandwidthThreshold;
+    }
+
+
+    public Double getPacketLossRateThreshold() {
+        return packetLossRateThreshold;
+    }
+
+
+    public void setPacketLossRateThreshold(Double packetLossRateThreshold) {
+        this.packetLossRateThreshold = packetLossRateThreshold;
+    }
+
+
+    public Integer getDelayThreshold() {
+        return delayThreshold;
+    }
+
+
+    public void setDelayThreshold(Integer delayThreshold) {
+        this.delayThreshold = delayThreshold;
+    }
+
+
+    public Date getDetectTime() {
+        return detectTime;
+    }
+
+
+    public void setDetectTime(Date detectTime) {
+        this.detectTime = detectTime;
+    }
+    
 }

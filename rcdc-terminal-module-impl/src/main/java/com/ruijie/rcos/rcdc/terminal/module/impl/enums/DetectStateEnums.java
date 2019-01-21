@@ -11,11 +11,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
  */
 public enum DetectStateEnums {
 
-    CHECKING("checking"),
+    CHECKING("检测中"),
     
-    SUCCESS("success"),
+    SUCCESS("检测成功"),
     
-    ERROR("error");
+    ERROR("检测失败");
     
     private String name;
     

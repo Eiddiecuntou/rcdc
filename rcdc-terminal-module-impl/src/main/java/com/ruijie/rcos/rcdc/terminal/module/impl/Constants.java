@@ -12,10 +12,14 @@ public interface Constants {
     
     int SUCCESS = 0;
     
-    
 
     String SYSTEM_TYPE = "rcdc";
 
+    /**
+     * 终端管理员密码aes加密key值
+     */
+    String TERMINAL_ADMIN_PASSWORD_AES_KEY = "ADMINPASSWORDKEY";
+    
     /**
      * 系统默认编码
      */

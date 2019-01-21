@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.base.annotation.TextShort;
 import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
 /**
@@ -15,6 +16,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 public class EditAdminPwdWebRequest implements WebRequest {
 
     @NotBlank
+    @TextShort
     private String pwd;
 
     public String getPwd() {

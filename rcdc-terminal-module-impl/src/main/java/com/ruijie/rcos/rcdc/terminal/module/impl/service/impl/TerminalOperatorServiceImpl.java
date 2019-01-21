@@ -23,6 +23,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordR
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -84,10 +85,11 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         Assert.hasText(password, "password 不能为空");
 
         getTerminalAdminPassword();
-        globalParameterAPI.updateParameter(Constants.RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY, password);
+        String encryptPwd = AesUtil.encrypt(password, Constants.TERMINAL_ADMIN_PASSWORD_AES_KEY);
+        globalParameterAPI.updateParameter(Constants.RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY, encryptPwd);
 
         //向在线终端发送新管理员密码
-        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewPwdToOnlineTerminal(password));
+        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewPwdToOnlineTerminal(encryptPwd));
     }
 
     @Override
@@ -106,16 +108,14 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     private void sendNewPwdToOnlineTerminal(String password) {
         LOGGER.debug("向在线终端发送管理员密码改变通知");
-        List<TerminalEntity> onlineTerminalList =
-                terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);
-        if (CollectionUtils.isEmpty(onlineTerminalList)) {
+        List<String> onlineTerminalId = sessionManager.getOnlineTerminalId();
+        if (CollectionUtils.isEmpty(onlineTerminalId)) {
             LOGGER.debug("无在线终端");
             return;
         }
         
-        for (TerminalEntity terminalEntity : onlineTerminalList) {
+        for (String terminalId : onlineTerminalId) {
             ChangeTerminalPasswordRequest request = new ChangeTerminalPasswordRequest(password);
-            String terminalId = terminalEntity.getTerminalId();
             try {
                 operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD, request);
             } catch (BusinessException e) {
@@ -195,4 +195,13 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         Message message = new Message(Constants.SYSTEM_TYPE, terminalEvent.getName(), data);
         sender.request(message);
     }
+
+    @Override
+    public CollectLogCache getCollectLog(String terminalId) {
+        Assert.hasText(terminalId, "terminalId can not be null");
+        
+        CollectLogCache collectLogCache = collectLogCacheManager.getCache(terminalId);
+        return collectLogCache;
+    }
+    
 }

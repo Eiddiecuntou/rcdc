@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
@@ -198,6 +199,19 @@ public class TerminalDetectService {
         result.setChecking(checking);
 
         return result;
+    }
+    
+    public CbbTerminalDetectDTO getRecentDetect(String terminalId) {
+        Assert.hasText(terminalId, "terminalId can not be null");
+        
+        TerminalDetectionEntity recentDetect = detectionDAO.findFirstByTerminalIdOrderByDetectTimeDesc(terminalId);
+        if(recentDetect == null) {
+            // 无终端检测信息
+            return null;
+        }
+        CbbTerminalDetectDTO detectDTO = new CbbTerminalDetectDTO();
+        recentDetect.convertTo(detectDTO);
+        return detectDTO;
     }
 
     /**

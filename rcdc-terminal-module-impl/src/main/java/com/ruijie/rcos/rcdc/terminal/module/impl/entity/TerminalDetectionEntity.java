@@ -90,9 +90,10 @@ public class TerminalDetectionEntity {
         detectDTO.setDelay(networkDelay);
         detectDTO.setIpConflict(ipConflict);
         detectDTO.setPacketLossRate(packetLossRate);
+        detectDTO.setDetectTime(detectTime);
         CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();;
-        state.setState(detectState.getName());
-        state.setMessage(detectFailMsg);
+        state.setState(detectState.name());
+        state.setMessage(detectState.getName());
     }
 
     public UUID getId() {

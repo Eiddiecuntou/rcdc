@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
@@ -18,7 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalIdMappingUtils;
-import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.DetectPageWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.StartBatDetectWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.TerminalDetectListContentVO;
 import com.ruijie.rcos.sk.base.batch.AbstractBatchTaskHandler;
@@ -33,7 +33,9 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.validation.EnableCustomValidate;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
+import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
+import com.ruijie.rcos.sk.webmvc.api.vo.ExactMatch;
 
 /**
  * Description: 终端检测
@@ -88,17 +90,18 @@ public class TerminalDetectController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping(value = "list")
-    public DefaultWebResponse list(DetectPageWebRequest request) throws BusinessException {
+    public DefaultWebResponse list(PageWebRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-
+        CbbDetectDateEnums dateParam = checkDateParam(request);
+        
         CbbTerminalDetectPageRequest pageRequest = new CbbTerminalDetectPageRequest();
-        pageRequest.setDate(request.getDate());
         pageRequest.setLimit(request.getLimit());
         pageRequest.setPage(request.getPage());
+        pageRequest.setDate(dateParam);
         DefaultPageResponse<CbbTerminalDetectDTO> listDetectResp = operatorAPI.listDetect(pageRequest);
 
         CbbTerminalDetectResultRequest resultRequest = new CbbTerminalDetectResultRequest();
-        resultRequest.setDetectDate(request.getDate());
+        resultRequest.setDetectDate(dateParam);
         CbbDetectResultResponse detectResultResp = operatorAPI.getDetectResult(resultRequest);
 
         TerminalDetectListContentVO contentVO = new TerminalDetectListContentVO();
@@ -109,6 +112,21 @@ public class TerminalDetectController {
         return DefaultWebResponse.Builder.success(contentVO);
     }
 
+    private CbbDetectDateEnums checkDateParam(PageWebRequest request) throws BusinessException {
+        ExactMatch[] exactMatchArr = request.getExactMatchArr();
+        Assert.notEmpty(exactMatchArr, "exactMatchArr can not be empty");
+        ExactMatch exactMatch = exactMatchArr[0];
+        Assert.notNull(exactMatch, "exactMatch can not be null");
+        String[] valueArr = exactMatch.getValueArr();
+        Assert.notNull(valueArr, "valueArr can not be empty");
+        String date = valueArr[0];
+        Assert.hasText(date, "date can not be blank");
+        if(!CbbDetectDateEnums.contains(date)) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_DETECT_LIST_DATE_ERROR, date);
+        }
+        return CbbDetectDateEnums.valueOf(date);
+    }
+    
     /**
      * 
      * Description: 终端检测批量任务handler

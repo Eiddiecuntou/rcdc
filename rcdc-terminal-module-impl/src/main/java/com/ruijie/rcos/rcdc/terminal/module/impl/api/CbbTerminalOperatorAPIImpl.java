@@ -18,10 +18,13 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPag
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -147,6 +150,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             CbbTerminalDetectDTO detectDTO = new CbbTerminalDetectDTO();
             TerminalDetectionEntity detectionEntity = detectionList.get(i);
             detectionEntity.convertTo(detectDTO);
+            setThreshold(detectDTO);
             TerminalEntity terminalEntity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
             detectDTO.setIp(terminalEntity.getIp());
             detectDTO.setTerminalName(terminalEntity.getTerminalName());
@@ -154,6 +158,22 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         });
 
         return DefaultPageResponse.Builder.success(page.getSize(), (int) page.getTotalElements(), detectDTOArr);
+    }
+    
+    @Override
+    public CbbDetectInfoResponse getRecentDetect(CbbTerminalIdRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        
+        CbbTerminalDetectDTO detectInfo = detectService.getRecentDetect(request.getTerminalId());
+        CbbDetectInfoResponse response = new CbbDetectInfoResponse();
+        response.setDetectInfo(detectInfo);
+        return response;
+    }
+
+    private void setThreshold(CbbTerminalDetectDTO detectDTO) {
+        detectDTO.setBandwidthThreshold(Constants.TERMINAL_DETECT_BINDWIDTH_NORM);
+        detectDTO.setPacketLossRateThreshold(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE);
+        detectDTO.setDelayThreshold(Constants.TERMINAL_DETECT_DELAY_NORM);
     }
 
     /**
@@ -185,6 +205,18 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         Assert.notNull(request, "request can not be null");
         
         return basicInfoAPI.findBasicInfoByTerminalId(request);
+    }
+
+    @Override
+    public CbbTerminalCollectLogStatusResponse getCollectLog(CbbTerminalIdRequest request)
+            throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        
+        CollectLogCache collectLog = operatorService.getCollectLog(request.getTerminalId());
+        CbbTerminalCollectLogStatusResponse response = new CbbTerminalCollectLogStatusResponse();
+        response.setLogName(collectLog.getLogFileName());
+        response.setState(collectLog.getState());
+        return response;
     }
     
 }

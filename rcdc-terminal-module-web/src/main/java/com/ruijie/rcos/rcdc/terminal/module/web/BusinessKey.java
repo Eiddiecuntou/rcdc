@@ -79,8 +79,12 @@ public interface BusinessKey {
     /**
      * 开启终端检测失败日志
      */
-
     String RCDC_TERMINAL_START_DETECT_FAIL_LOG = "rcdc_terminal_start_detect_fail_log";
+    
+    /**
+     * 终端列表日期参数错误
+     */
+    String RCDC_TERMINAL_DETECT_LIST_DATE_ERROR = "rcdc_terminal_detect_list_date_error";
 
     /**
      * 修改终端管理密码成功日志
