@@ -284,12 +284,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
 
-        // 运行虚机的终端不进行刷机
-        if (isRunningVirtualMachine()) {
-            LOGGER.info("terminal is running virtual machine, can not upgrade system");
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_IS_RUNNING_VIRTHAL_MACHINE);
-        }
-
         // 添加进任务队列中
         SystemUpgradeTask upgradeTask = systemUpgradeTaskManager.addTask(terminal.getTerminalId(), terminal.getPlatform());
         upgradeTask.setIsSend(false);
@@ -315,11 +309,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             }
 
         }
-    }
-
-    private boolean isRunningVirtualMachine() {
-        // TODO FIXME 终端是否在运行虚机
-        return false;
     }
 
     @Override
