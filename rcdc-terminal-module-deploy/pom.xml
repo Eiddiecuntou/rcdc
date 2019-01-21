@@ -48,5 +48,43 @@
 			<artifactId>base-aaa-module-web</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		
+		 <dependency>
+            <groupId>com.ruijie.rcos.rcdc.clouddesktop.module</groupId>
+            <artifactId>rcdc-clouddesktop-module-impl</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.ruijie.rcos.rcdc.user.module</groupId>
+            <artifactId>rcdc-user-module-impl</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+		
+		<dependency>
+            <groupId>com.ruijie.rcos.rcdc.rco.module</groupId>
+            <artifactId>rcdc-rco-module-web</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ruijie.rcos.rcdc.rco.module</groupId>
+            <artifactId>rcdc-rco-module-impl</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+		  <groupId>com.ruijie.rcos.base.alarm.module</groupId>
+		  <artifactId>base-alarm-module-impl</artifactId>
+		  <version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>com.ruijie.rcos.base.alarm.module</groupId>
+            <artifactId>base-alarm-module-web</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
 	</dependencies>
 </project>

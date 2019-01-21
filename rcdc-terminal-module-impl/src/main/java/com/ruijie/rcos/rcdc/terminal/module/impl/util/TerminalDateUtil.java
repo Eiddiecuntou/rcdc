@@ -34,7 +34,7 @@ public class TerminalDateUtil {
     }
 
     /**
-     * 得到day的终止时间点.
+     * 得到日期的终止时间点.
      * 
      * @param date 日期
      * @return 终止时间
@@ -66,6 +66,22 @@ public class TerminalDateUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_MONTH, day);
+        return calendar.getTime();
+    }
+    
+    /**
+     * 获取指定秒后的时间
+     * 
+     * @param date 日期
+     * @param day 天数
+     * @return 日期
+     */
+    public static Date addSecond(Date date, int second) {
+        Assert.notNull(date, "date can not be null");
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.SECOND, second);
         return calendar.getTime();
     }
 

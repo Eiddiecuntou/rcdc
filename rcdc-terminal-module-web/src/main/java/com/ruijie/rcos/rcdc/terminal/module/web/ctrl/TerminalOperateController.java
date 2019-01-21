@@ -1,5 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -8,8 +16,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.CloseTerminalBatchTaskHandler;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.RestartTerminalBatchTaskHandler;
@@ -23,11 +31,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.validation.EnableCustomValidate;
 import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Stream;
+import com.ruijie.rcos.sk.webmvc.api.response.DownloadWebResponse;
 
 /**
  * Description: Function Description
@@ -56,21 +60,23 @@ public class TerminalOperateController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping(value = "shutdown")
-    public DefaultWebResponse shutdownTerminal(TerminalIdArrWebRequest request, ProgrammaticOptLogRecorder optLogRecorder,
-                                               BatchTaskBuilder builder) throws BusinessException {
+    public DefaultWebResponse shutdownTerminal(TerminalIdArrWebRequest request,
+            ProgrammaticOptLogRecorder optLogRecorder, BatchTaskBuilder builder) throws BusinessException {
         Assert.notNull(request, "TerminalIdArrWebRequest不能为null");
         Assert.notNull(optLogRecorder, "optLogRecorder不能为null");
         Assert.notNull(builder, "builder不能为null");
-        
+
         String[] terminalIdArr = request.getIdArr();
         Map<UUID, String> idMap = TerminalIdMappingUtils.mapping(terminalIdArr);
         UUID[] idArr = TerminalIdMappingUtils.extractUUID(idMap);
-        final Iterator<DefaultBatchTaskItem> iterator =
-                Stream.of(idArr).map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("关闭终端").build()).iterator();
-        CloseTerminalBatchTaskHandler handler = new CloseTerminalBatchTaskHandler(this.terminalOperatorAPI, idMap, iterator, optLogRecorder);
+        final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr)
+                .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("关闭终端").build()).iterator();
+        CloseTerminalBatchTaskHandler handler =
+                new CloseTerminalBatchTaskHandler(this.terminalOperatorAPI, idMap, iterator, optLogRecorder);
 
-        builder.setTaskName(BusinessKey.RCDC_TERMINAL_ClOSE_TASK_NAME, new String[]{}).setTaskDesc(BusinessKey.RCDC_TERMINAL_ClOSE_TASK_DESC, new String[]{})
-                .registerHandler(handler).start();
+        builder.setTaskName(BusinessKey.RCDC_TERMINAL_ClOSE_TASK_NAME, new String[] {})
+                .setTaskDesc(BusinessKey.RCDC_TERMINAL_ClOSE_TASK_DESC, new String[] {}).registerHandler(handler)
+                .start();
         return DefaultWebResponse.Builder.success();
     }
 
@@ -82,28 +88,30 @@ public class TerminalOperateController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping(value = "restart")
-    public DefaultWebResponse restartTerminal(TerminalIdArrWebRequest request, ProgrammaticOptLogRecorder optLogRecorder,
-            BatchTaskBuilder builder) throws BusinessException {
+    public DefaultWebResponse restartTerminal(TerminalIdArrWebRequest request,
+            ProgrammaticOptLogRecorder optLogRecorder, BatchTaskBuilder builder) throws BusinessException {
         Assert.notNull(request, "TerminalIdWebRequest不能为null");
         Assert.notNull(optLogRecorder, "optLogRecorder不能为null");
         Assert.notNull(builder, "builder不能为null");
-        
+
         String[] terminalIdArr = request.getIdArr();
         Map<UUID, String> idMap = TerminalIdMappingUtils.mapping(terminalIdArr);
         UUID[] idArr = TerminalIdMappingUtils.extractUUID(idMap);
-        final Iterator<DefaultBatchTaskItem> iterator =
-                Stream.of(idArr).map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("重启终端").build()).iterator();
-        RestartTerminalBatchTaskHandler handler = new RestartTerminalBatchTaskHandler(this.terminalOperatorAPI, idMap, iterator, optLogRecorder);
+        final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr)
+                .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("重启终端").build()).iterator();
+        RestartTerminalBatchTaskHandler handler =
+                new RestartTerminalBatchTaskHandler(this.terminalOperatorAPI, idMap, iterator, optLogRecorder);
 
-        builder.setTaskName(BusinessKey.RCDC_TERMINAL_RESTART_TASK_NAME, new String[]{}).setTaskDesc(BusinessKey.RCDC_TERMINAL_RESTART_TASK_DESC, new String[]{})
-                .registerHandler(handler).start();
+        builder.setTaskName(BusinessKey.RCDC_TERMINAL_RESTART_TASK_NAME, new String[] {})
+                .setTaskDesc(BusinessKey.RCDC_TERMINAL_RESTART_TASK_DESC, new String[] {}).registerHandler(handler)
+                .start();
         return DefaultWebResponse.Builder.success();
     }
 
     /**
      * 修改终端管理员密码
      *
-     * @param request        请求参数
+     * @param request 请求参数
      * @param optLogRecorder 日志记录对象
      * @return 请求结果
      * @throws BusinessException 业务异常
@@ -144,7 +152,7 @@ public class TerminalOperateController {
 
         return DefaultWebResponse.Builder.success();
     }
-    
+
     /**
      * 获取终端收集日志状态
      * 
@@ -156,12 +164,39 @@ public class TerminalOperateController {
     public DefaultWebResponse getCollectLogStatus(TerminalIdWebRequest request) throws BusinessException {
         Assert.notNull(request, "request不能为null");
 
-        CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest();
-        idRequest.setTerminalId(request.getTerminalId());
-        //TODO 前端交互未确定
-        CbbTerminalCollectLogStatusResponse response = terminalOperatorAPI.getCollectLog(idRequest);
+        CbbTerminalCollectLogStatusResponse response = getCollectLogById(request);
 
         return DefaultWebResponse.Builder.success(response);
     }
-    
+
+    /**
+     * 下载终端收集日志状态
+     * 
+     * @param request 请求参数
+     * @return 请求结果
+     * @throws BusinessException 业务异常
+     * @throws IOException io异常
+     */
+    @RequestMapping(value = "downloadLog")
+    public DownloadWebResponse downloadLog(TerminalIdWebRequest request) throws BusinessException, IOException {
+        Assert.notNull(request, "request不能为null");
+
+        CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest();
+        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(idRequest);
+
+        InputStream inputStream = new FileInputStream(new File(response.getLogFilePath()));
+        DownloadWebResponse.Builder builder = new DownloadWebResponse.Builder();
+
+        return builder.setInputStream(inputStream, (long) inputStream.available())
+                .setName(response.getLogFileName(), response.getSuffix()).build();
+    }
+
+    private CbbTerminalCollectLogStatusResponse getCollectLogById(TerminalIdWebRequest request)
+            throws BusinessException {
+        CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest();
+        idRequest.setTerminalId(request.getTerminalId());
+        CbbTerminalCollectLogStatusResponse response = terminalOperatorAPI.getCollectLog(idRequest);
+        return response;
+    }
+
 }

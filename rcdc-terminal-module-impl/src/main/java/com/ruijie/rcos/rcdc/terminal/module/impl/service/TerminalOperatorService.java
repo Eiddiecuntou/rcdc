@@ -69,11 +69,4 @@ public interface TerminalOperatorService {
      */
     String getTerminalPassword()throws BusinessException;
 
-    /**
-     * 获取终端收集日志信息
-     * @param terminalId 终端id
-     * @return 终端日志收集信息
-     */
-    CollectLogCache getCollectLog(String terminalId);
-
 }

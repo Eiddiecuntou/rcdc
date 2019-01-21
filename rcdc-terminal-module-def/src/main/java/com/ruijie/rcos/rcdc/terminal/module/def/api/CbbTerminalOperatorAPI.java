@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoRespon
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalIdResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
@@ -140,11 +141,20 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 获取终端收集日志状态
      * 
-     * @param idRequest
-     * @return
-     * @throws BusinessException
+     * @param idRequest id请求参数
+     * @return 终端日志收集状态信息
+     * @throws BusinessException 业务异常
      */
     @NoRollback
     CbbTerminalCollectLogStatusResponse getCollectLog(CbbTerminalIdRequest idRequest) throws BusinessException;
+
+    /**
+     * 获取终端收集日志路径
+     * @param idRequest id请求参数
+     * @return 终端收集日志路径
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalIdRequest idRequest) throws BusinessException;
 
 }

@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.util.List;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -212,11 +214,71 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
         
-        CollectLogCache collectLog = operatorService.getCollectLog(request.getTerminalId());
+        CollectLogCache cache = getCollectLogCache(request.getTerminalId());
         CbbTerminalCollectLogStatusResponse response = new CbbTerminalCollectLogStatusResponse();
-        response.setLogName(collectLog.getLogFileName());
-        response.setState(collectLog.getState());
+        response.setLogName(cache.getLogFileName());
+        response.setState(cache.getState());
         return response;
+    }
+
+    @Override
+    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalIdRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        
+        String terminalId = request.getTerminalId();
+        CollectLogCache cache = getCollectLogCache(terminalId);
+        if (isCollectNotSuccess(cache)) {
+            LOGGER.warn("收集日志缓存中不存在日志文件, 终端id[{}]", terminalId);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
+        }
+        
+        String logFileName = cache.getLogFileName();
+        String suffix = getFileSuffix(logFileName);
+        CbbTerminalLogFileInfoResponse response = new CbbTerminalLogFileInfoResponse();
+        response.setLogFilePath(Constants.STORE_TERMINAL_LOG_PATH + logFileName);
+        response.setLogFileName(logFileName);
+        response.setSuffix(suffix);
+        
+        return response;
+    }
+
+    private String getFileSuffix(String fileName) {
+        String suffix = "";
+        int lastIndexOf = fileName.lastIndexOf(".");
+        if(lastIndexOf > -1) {
+            suffix = fileName.substring(lastIndexOf + 1);
+        }
+        return suffix;
+    }
+
+    /**
+     * 终端日志收集是否尚未成功
+     * @param cache 收集日志缓存
+     * @return
+     */
+    private boolean isCollectNotSuccess(CollectLogCache cache) {
+        if (cache.getState() != CollectLogStateEnums.DONE) {
+            return true;
+        }
+        if(StringUtils.isBlank(cache.getLogFileName())) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * 获取日志缓存
+     * @param terminalId 终端id
+     * @return 日志收集缓存
+     * @throws BusinessException 业务异常
+     */
+    private CollectLogCache getCollectLogCache(String terminalId) throws BusinessException {
+        CollectLogCache cache = collectLogCacheManager.getCache(terminalId);
+        if (cache == null) {
+            LOGGER.warn("收集日志缓存中不存在日志文件, 终端id[{}]", terminalId);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
+        }
+        return cache;
     }
     
 }

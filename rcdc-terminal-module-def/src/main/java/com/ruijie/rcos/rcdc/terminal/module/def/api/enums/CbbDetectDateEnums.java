@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
 
 import org.springframework.util.Assert;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * 

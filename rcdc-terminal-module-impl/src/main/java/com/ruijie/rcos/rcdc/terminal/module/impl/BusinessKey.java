@@ -125,7 +125,8 @@ public interface BusinessKey {
     String RCDC_FILE_OPERATE_FAIL = "rcdc_file_operate_fail";
 
     /**
-     * 终端正在运行虚机
+     * 收集终端日志记录不存在
      */
-    String RCDC_TERMINAL_IS_RUNNING_VIRTHAL_MACHINE = "rcdc_terminal_is_running_virthal_machine";
+    String RCDC_TERMINAL_COLLECT_LOG_CACHE_NOT_EXIST = "rcdc_terminal_collect_log_cache_not_exist";
+
 }

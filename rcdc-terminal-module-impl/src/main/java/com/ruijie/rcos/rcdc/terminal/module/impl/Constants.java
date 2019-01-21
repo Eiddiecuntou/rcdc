@@ -111,4 +111,9 @@ public interface Constants {
      */
     String TERMINAL_COMPONET_UPDATE_LIST_FILE_NAME = "update.list";
 
+    /**
+     * 终端检测超时时间（单位:秒）
+     */
+    int TERMINAL_DETECT_TIMEOUT = 120;
+
 }
