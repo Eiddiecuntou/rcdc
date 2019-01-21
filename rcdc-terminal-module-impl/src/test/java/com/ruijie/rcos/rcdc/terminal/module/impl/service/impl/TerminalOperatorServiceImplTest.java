@@ -4,18 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -50,7 +53,16 @@ public class TerminalOperatorServiceImplTest {
 
     @Injectable
     private TerminalDetectService terminalDetectService;
+    
+    @Injectable
+    private GlobalParameterAPI globalParameterAPI;
+    
+    @Injectable
+    private TerminalDetectionDAO terminalDetectionDAO;
 
+    /**
+     * 测试关机成功
+     */
     @Test
     public void testShutdownSuccess() {
         new Expectations() {
@@ -59,7 +71,7 @@ public class TerminalOperatorServiceImplTest {
                     sessionManager.getRequestMessageSender(anyString);
                     result = sender;
                 } catch (BusinessException e) {
-                    e.printStackTrace();
+                    result = sender;
                 }
             }
         };
@@ -80,6 +92,9 @@ public class TerminalOperatorServiceImplTest {
         };
     }
 
+    /**
+     *测试重启
+     */
     @Test
     public void testRestart() {
         new Expectations() {
@@ -88,7 +103,7 @@ public class TerminalOperatorServiceImplTest {
                     sessionManager.getRequestMessageSender(anyString);
                     result = sender;
                 } catch (BusinessException e) {
-                    e.printStackTrace();
+                    result = sender;
                 }
             }
         };
@@ -109,6 +124,9 @@ public class TerminalOperatorServiceImplTest {
         };
     }
 
+    /**
+     * 测试收集日志-状态为正在进行中
+     */
     @Test
     public void testCollectLogIsDoing() {
         String terminalId = "12334";
@@ -128,6 +146,9 @@ public class TerminalOperatorServiceImplTest {
         }
     }
 
+    /**
+     * 测试收集日志不存在并且状态为正在进行
+     */
     @Test
     public void testCollectLogNoExistsAndIsDoing() {
         String terminalId = "123";
@@ -149,6 +170,10 @@ public class TerminalOperatorServiceImplTest {
         }
     }
 
+    /**
+     * 测试发送收集日志
+     * @throws BusinessException 业务异常
+     */
     @Test
     public void testCollectLogSend() throws BusinessException {
         CollectLogCache logCache = new CollectLogCache();
@@ -179,6 +204,10 @@ public class TerminalOperatorServiceImplTest {
         };
     }
 
+    /**
+     * 测试检测
+     * @throws BusinessException 业务异常
+     */
     @Test
     public void testDetect() throws BusinessException {
         String terminalId = "123";

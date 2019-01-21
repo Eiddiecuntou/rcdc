@@ -174,36 +174,6 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     }
 
-
-    /**
-     * 测试升级包上传文件文件属性MD5为空
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testUploadUpgradeFileMD5CheckFail() throws BusinessException {
-
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileMD5("md5");
-        request.setFileName("aaa.iso");
-        request.setFilePath("/usr/data");
-
-        new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
-            @Mock
-            public boolean isComplete(String md5) {
-                return false;
-            }
-        };
-
-        try {
-            cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(request);
-            fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_COMPLETE_CHECK_FAIL, e.getKey());
-        }
-
-    }
-
     /**
      * 测试升级包上传文件文件属性为空
      * 
@@ -226,6 +196,10 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     }
 
+    /**
+     * 测试获取系统升级包列表
+     * @throws BusinessException 业务异常
+     */ 
     @Test
     public void testListSystemUpgradePackage() throws BusinessException {
         CbbTerminalSystemUpgradePackageListRequest request = new CbbTerminalSystemUpgradePackageListRequest();
@@ -250,6 +224,10 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     }
 
+    /**
+     * 测试获取升级包列表为空
+     * @throws BusinessException 业务异常
+     */
     @Test
     public void testListSystemUpgradePackageFindEmpty() throws BusinessException {
         CbbTerminalSystemUpgradePackageListRequest request = new CbbTerminalSystemUpgradePackageListRequest();
@@ -272,6 +250,10 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         };
     }
 
+    /**
+     * 测试添加系统升级任务
+     * @throws BusinessException 业务异常
+     */
     @Test
     public void testAddSystemUpgradeTask() throws BusinessException {
 

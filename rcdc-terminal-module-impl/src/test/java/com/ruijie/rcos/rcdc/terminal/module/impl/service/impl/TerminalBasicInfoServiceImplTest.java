@@ -37,19 +37,23 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private SessionManager sessionManager;
+    
     @Injectable
     private DefaultRequestMessageSender sender;
 
+    /**
+     * 测试修改终端名称成功
+     */
     @Test
     public void testModifyTerminalNameSuccess() {
         new Expectations() {
             {
                 try {
                     sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
                 } catch (BusinessException e) {
-                    e.printStackTrace();
+                    result = sender;
                 }
-                result = sender;
             }
         };
         String terminalId = "123";
@@ -68,16 +72,20 @@ public class TerminalBasicInfoServiceImplTest {
         };
     }
 
+    /**
+     * 测试修改终端失败
+     */
     @Test
     public void testModifyTerminalNameFail() {
         new Expectations() {
             {
                 try {
                     sessionManager.getRequestMessageSender(anyString);
+                    result = null;
                 } catch (BusinessException e) {
-                    e.printStackTrace();
+                    result = null;
                 }
-                result = null;
+                
             }
         };
         String terminalId = "123";
@@ -90,6 +98,9 @@ public class TerminalBasicInfoServiceImplTest {
         }
     }
 
+    /**
+     * 测试修改终端网络成功
+     */
     @Test
     public void testModifyTerminalNetworkConfigSuccess() {
         new Expectations() {
@@ -98,7 +109,7 @@ public class TerminalBasicInfoServiceImplTest {
                     sessionManager.getRequestMessageSender(anyString);
                     result = sender;
                 } catch (BusinessException e) {
-                    e.printStackTrace();
+                    result = sender;
                 }
             }
         };
@@ -128,6 +139,9 @@ public class TerminalBasicInfoServiceImplTest {
         };
     }
 
+    /**
+     * 测试修改终端网络失败
+     */
     @Test
     public void testModifyTerminalNetworkConfigFail() {
         new Expectations() {
@@ -136,7 +150,7 @@ public class TerminalBasicInfoServiceImplTest {
                     sessionManager.getRequestMessageSender(anyString);
                     result = null;
                 } catch (BusinessException e) {
-                    e.printStackTrace();
+                    result = null;
                 }
             }
         };

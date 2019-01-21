@@ -64,6 +64,8 @@ public class ConnectEventHandlerTest {
 
     /**
      * 测试第一个报文正常执行逻辑过程
+     * @param session session连接
+     * @throws InterruptedException 异常
      */
     @Test
     public void testOnReceiveFirstMessageNormal(@Mocked Session session) throws InterruptedException {
@@ -107,6 +109,8 @@ public class ConnectEventHandlerTest {
 
     /**
      * 测试不是第一个报文执行逻辑过程
+     * @param session session连接
+     * @throws InterruptedException 异常
      */
     @Test
     public void testOnReceiveNotFirstMessage(@Mocked Session session) throws InterruptedException {
@@ -144,6 +148,9 @@ public class ConnectEventHandlerTest {
         }
     }
 
+    /**
+     * 测试连接成功-参数为空
+     */
     @Test
     public void testOnConnectSuccessParamIsNull() {
         try {
@@ -153,6 +160,11 @@ public class ConnectEventHandlerTest {
         }
     }
 
+    /**
+     * 测试连接关闭 
+     * @param session session连接
+     * @throws InterruptedException 异常
+     */
     @Test
     public void testOnConnectClosed(@Mocked Session session) throws InterruptedException {
         new Expectations() {
@@ -161,7 +173,6 @@ public class ConnectEventHandlerTest {
                 result = null;
                 session.getAttribute(anyString);
                 result = "123";
-                collectLogCacheManager.removeCache(anyString);
             }
         };
 
@@ -180,6 +191,9 @@ public class ConnectEventHandlerTest {
 
     }
 
+    /**
+     * 测试异常捕获
+     */
     @Test
     public void testExceptionCaught() {
         try {

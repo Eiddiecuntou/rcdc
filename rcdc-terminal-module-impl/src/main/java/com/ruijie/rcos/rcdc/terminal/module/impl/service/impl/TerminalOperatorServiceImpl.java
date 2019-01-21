@@ -55,9 +55,6 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     private TerminalDetectionDAO terminalDetectionDAO;
 
     @Autowired
-    private TerminalBasicInfoDAO terminalBasicInfoDAO;
-
-    @Autowired
     private GlobalParameterAPI globalParameterAPI;
     
     /**

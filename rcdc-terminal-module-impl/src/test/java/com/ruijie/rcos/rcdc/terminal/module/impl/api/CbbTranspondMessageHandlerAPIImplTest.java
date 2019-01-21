@@ -1,5 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
@@ -13,16 +20,12 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultResponseMessageSender;
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mocked;
+import mockit.Tested;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.dao.DataAccessException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -39,11 +42,16 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     @Injectable
     private SessionManager sessionManager;
+    
     @Injectable
     private DefaultRequestMessageSender sender;
+    
     @Injectable
     private RequestCallback requestCallback;
 
+    /**
+     * 测试异步请求
+     */
     @Test
     public void testRequest() {
 
@@ -53,7 +61,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
                     sessionManager.getRequestMessageSender(anyString);
                     result = sender;
                 } catch (BusinessException e) {
-                    e.printStackTrace();
+                    result = sender;
                 }
             }
         };
@@ -71,6 +79,12 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         };
     }
 
+    /**
+     * 测试同步发送成功
+     * @throws IOException io异常
+     * @throws InterruptedException 中断异常
+     * @throws BusinessException 业务异常
+     */
     @Test
     public void testSyncRequestSuccess() throws IOException, InterruptedException, BusinessException {
         String action = "login";
@@ -106,6 +120,13 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         };
     }
 
+    /**
+     * 测试异步请求
+     * @param cbbTerminalCallback 回调
+     * @throws BusinessException 业务异常
+     * @throws IOException io异常
+     * @throws InterruptedException 中断异常
+     */
     @Test
     public void testAsyncRequest(@Mocked CbbTerminalCallback cbbTerminalCallback)
             throws BusinessException, IOException, InterruptedException {
@@ -136,6 +157,11 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     }
 
+    /**
+     * 测试终端响应
+     * @param session session
+     * @param sender 发送对象
+     */
     @Test
     public void testResponse(@Mocked Session session, @Mocked DefaultResponseMessageSender sender) {
         new Expectations() {
