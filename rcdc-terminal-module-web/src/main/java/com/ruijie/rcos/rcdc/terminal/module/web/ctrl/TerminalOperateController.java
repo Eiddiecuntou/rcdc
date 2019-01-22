@@ -164,8 +164,8 @@ public class TerminalOperateController {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    @RequestMapping(value = "getCollectLogStatus")
-    public DefaultWebResponse getCollectLogStatus(TerminalIdWebRequest request) throws BusinessException {
+    @RequestMapping(value = "getCollectLog")
+    public DefaultWebResponse getCollectLog(TerminalIdWebRequest request) throws BusinessException {
         Assert.notNull(request, "request不能为null");
 
         CbbTerminalCollectLogStatusResponse response = getCollectLogById(request);
