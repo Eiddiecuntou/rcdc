@@ -29,7 +29,7 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
  * @author nt
  */
 @GlobalUniqueBean("upgradeStateSyncQuartz")
-@Quartz(cron = "0/10 * *  * * ?")
+@Quartz(cron = "0/10 * *  * * ?", name = "系统刷机状态同步定时任务")
 public class SystemUpgradeStateSyncQuartz implements QuartzTask {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeStateSyncQuartz.class);

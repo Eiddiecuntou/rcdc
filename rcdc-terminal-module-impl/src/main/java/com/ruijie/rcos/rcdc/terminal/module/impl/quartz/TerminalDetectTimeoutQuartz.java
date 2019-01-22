@@ -25,7 +25,7 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
  * @author nt
  */
 @GlobalUniqueBean("detectTimeoutQuartz")
-@Quartz(cron = "0/10 * * * * ?")
+@Quartz(cron = "0/10 * * * * ?", name = "终端检测超时处理定时任务")
 public class TerminalDetectTimeoutQuartz implements QuartzTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectTimeoutQuartz.class);
