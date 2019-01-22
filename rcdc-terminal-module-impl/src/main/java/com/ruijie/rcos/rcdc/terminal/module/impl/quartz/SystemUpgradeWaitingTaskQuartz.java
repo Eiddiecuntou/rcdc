@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -26,7 +27,7 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
  * @author nt
  */
 @GlobalUniqueBean(value = "systemUpgradeQuartz")
-@Quartz(cron = "0/15 * *  * * ?")
+@Quartz(cron = "0/15 * *  * * ?", msgKey = "rcdc_terminal_quartz_deal_system_upgrade_waiting_task")
 public class SystemUpgradeWaitingTaskQuartz implements QuartzTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeWaitingTaskQuartz.class);

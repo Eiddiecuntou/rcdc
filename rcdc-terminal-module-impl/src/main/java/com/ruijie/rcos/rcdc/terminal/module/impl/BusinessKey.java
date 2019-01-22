@@ -128,5 +128,20 @@ public interface BusinessKey {
      * 收集终端日志记录不存在
      */
     String RCDC_TERMINAL_COLLECT_LOG_CACHE_NOT_EXIST = "rcdc_terminal_collect_log_cache_not_exist";
+    
+    /**
+     * 系统终端刷机状态同步定时任务
+     */
+    String RCDC_TERMINAL_QUARTZ_SYSTEM_UPGRADE_STATE_SYNC = "rcdc_terminal_quartz_system_upgrade_state_sync";
+    
+    /**
+     * 系统刷机队列等待处理任务定时任务
+     */
+    String RCDC_TERMINAL_QUARTZ_DEAL_SYSTEM_UPGRADE_WAITING_TASK = "rcdc_terminal_quartz_deal_system_upgrade_waiting_task";
+    
+    /**
+     * 终端检测超时处理定时任务
+     */
+    String RCDC_TERMINAL_QUARTZ_DETECT_TIME_OUT = "rcdc_terminal_quartz_detect_time_out";
 
 }
