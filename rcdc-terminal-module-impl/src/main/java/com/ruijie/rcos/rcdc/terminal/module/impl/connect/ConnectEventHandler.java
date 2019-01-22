@@ -3,12 +3,14 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.Session;
+import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.RequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.ResponseMessageSender;
@@ -66,6 +68,11 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         //打印接收到的报文debug日志
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("接收到的报文：action:{};data:{}", message.getAction(), String.valueOf(message.getData()));
+        }
+        //收到心跳报文，直接应答
+        if (ShineAction.HEARTBEAT.equals(message.getAction())) {
+            sender.response(new Message(Constants.SYSTEM_TYPE, ShineAction.HEARTBEAT, null));
+            return;
         }
 
         //检查session是否已绑定终端，未绑定且不是第一个报文则不处理报文
