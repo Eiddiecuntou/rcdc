@@ -98,7 +98,7 @@ public class SessionManager {
         SESSION_MAP.forEach((k, v) ->
                 terminalIdList.add(k)
         );
-        LOGGER.debug("当前在线终端数量:{}", SESSION_MAP.size());
+        LOGGER.debug("当前在线终端数量:{},返回的终端在线数量：{}", SESSION_MAP.size(), terminalIdList.size());
         return terminalIdList;
     }
 }
