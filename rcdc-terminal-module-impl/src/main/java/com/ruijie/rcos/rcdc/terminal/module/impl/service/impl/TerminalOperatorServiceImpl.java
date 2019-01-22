@@ -130,12 +130,12 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         }
         collectLogCacheManager.addCache(terminalId);
 
-//        try {
-//            operateTerminal(terminalId, SendTerminalEventEnums.COLLECT_TERMINAL_LOG, "");
-//        } catch (BusinessException e) {
-//            collectLogCacheManager.removeCache(terminalId);
-//            throw e;
-//        }
+        try {
+            operateTerminal(terminalId, SendTerminalEventEnums.COLLECT_TERMINAL_LOG, "");
+        } catch (BusinessException e) {
+            collectLogCacheManager.removeCache(terminalId);
+            throw e;
+        }
     }
 
     @Override
