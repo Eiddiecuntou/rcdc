@@ -14,6 +14,8 @@ public interface Constants {
     
 
     String SYSTEM_TYPE = "rcdc";
+    
+    String TERMINAL_COMPONENT_UPGRADE_DIRECTION_NAME = "origin";
 
     /**
      * 终端管理员密码aes加密key值

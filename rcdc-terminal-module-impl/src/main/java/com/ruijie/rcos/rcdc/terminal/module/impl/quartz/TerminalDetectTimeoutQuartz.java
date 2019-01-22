@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
@@ -25,7 +26,7 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
  * @author nt
  */
 @GlobalUniqueBean("detectTimeoutQuartz")
-@Quartz(cron = "0/10 * * * * ?", name = "终端检测超时处理定时任务")
+@Quartz(cron = "0/10 * * * * ?", name = BusinessKey.RCDC_TERMINAL_QUARTZ_DETECT_TIME_OUT)
 public class TerminalDetectTimeoutQuartz implements QuartzTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectTimeoutQuartz.class);
