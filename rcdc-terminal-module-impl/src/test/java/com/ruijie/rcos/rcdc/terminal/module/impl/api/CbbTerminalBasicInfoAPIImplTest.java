@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Date;
 import org.junit.Assert;
@@ -17,6 +18,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
@@ -217,6 +219,60 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
         modifyNameVerifications();
     }
+    
+    /**
+     * 测试修改终端名称失败，TerminalEntity为空
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testModifyTerminalNameTerminalEntityIsNull() throws BusinessException {
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = null;
+            }
+        };
+        try {
+            CbbTerminalNameRequest request = new CbbTerminalNameRequest();
+            request.setTerminalId("123");
+            terminalBasicInfoAPI.modifyTerminalName(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL, e.getKey());
+        }
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId("123");
+                times = 1;
+            }
+        };
+    }
+    
+    /**
+     * 测试修改终端名称失败，ModifyTerminalName有BusinessException
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testModifyTerminalNameModifyTerminalNameHasBusinessException() throws BusinessException {
+        new Expectations() {
+            {
+                basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
+                result = 1;
+                basicInfoService.modifyTerminalName(anyString, anyString);
+                result = new BusinessException("key");
+            }
+        };
+        
+        try {
+            CbbTerminalNameRequest request = new CbbTerminalNameRequest();
+            request.setTerminalId("123");
+            terminalBasicInfoAPI.modifyTerminalName(request);
+        } catch (BusinessException e) {
+            fail();
+        }
+        
+        modifyNameVerifications();
+    }
 
     /**
      * 测试修改终端名称失败
@@ -238,6 +294,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
             CbbTerminalNameRequest request = new CbbTerminalNameRequest();
             request.setTerminalId("123");
             terminalBasicInfoAPI.modifyTerminalName(request);
+            fail();
         } catch (BusinessException e) {
             assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
@@ -308,5 +365,44 @@ public class CbbTerminalBasicInfoAPIImplTest {
                 times = 1;
             }
         };
+    }
+    
+    /**
+     * 测试修改终端网络，参数为空
+     * @throws Exception 异常
+     */
+    @Test
+    public void testModifyTerminalNetworkConfigArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalBasicInfoAPI.modifyTerminalNetworkConfig(null),
+                "TerminalNetworkRequest不能为null");
+        assertTrue(true);
+    }
+    
+    /**
+     * 测试修改终端网络失败
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testModifyTerminalNetworkConfigFail() throws BusinessException {
+        new Expectations() {
+            {
+                basicInfoDAO.modifyTerminalNetworkConfig(anyString, anyInt, (CbbTerminalNetworkRequest) any);
+                result = 0;
+            }
+        };
+        CbbTerminalNetworkRequest request = new CbbTerminalNetworkRequest();
+        String terminalId = "123";
+        String gateway = "gateway";
+        request.setTerminalId(terminalId);
+        request.setGateway(gateway);
+        request.setGetDnsMode(CbbGetNetworkModeEnums.AUTO);
+        request.setGetIpMode(CbbGetNetworkModeEnums.MANUAL);
+        try {
+
+            terminalBasicInfoAPI.modifyTerminalNetworkConfig(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL, e.getKey());
+        }
     }
 }

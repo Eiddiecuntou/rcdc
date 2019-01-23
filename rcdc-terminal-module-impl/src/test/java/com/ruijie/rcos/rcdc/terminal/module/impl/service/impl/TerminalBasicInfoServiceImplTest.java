@@ -2,14 +2,18 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import mockit.Expectations;
@@ -168,7 +172,72 @@ public class TerminalBasicInfoServiceImplTest {
         }
     }
 
-
+    /**
+     * 测试modifyTerminalState，参数为空
+     * @throws Exception 异常
+     */
+    @Test
+    public void testModifyTerminalStateArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalState("", CbbTerminalStateEnums.OFFLINE),
+                "terminalId 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalState("123", null),
+                "CbbTerminalStateEnums 不能为空");
+        assertTrue(true);
+    }
+    
+    /**
+     * 测试modifyTerminalState，一次修改成功
+     */
+    @Test
+    public void testModifyTerminalStateIsSuccess() {
+        String terminalId = "123";
+        TerminalEntity basicInfoEntity = new TerminalEntity();
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = basicInfoEntity;
+                basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), CbbTerminalStateEnums.OFFLINE);
+                result = 1;
+            }
+        };
+        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
+        
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 1;
+                basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), CbbTerminalStateEnums.OFFLINE);
+                times = 1;
+            }
+        };
+    }
+    
+    /**
+     * 测试modifyTerminalState，修改失败
+     */
+    @Test
+    public void testModifyTerminalStateIsFail() {
+        String terminalId = "123";
+        TerminalEntity basicInfoEntity = new TerminalEntity();
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                returns(null, basicInfoEntity);
+                basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), CbbTerminalStateEnums.OFFLINE);
+                result = 0;
+            }
+        };
+        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
+        
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 4;
+                basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), CbbTerminalStateEnums.OFFLINE);
+                times = 3;
+            }
+        };
+    }
 
 }
 

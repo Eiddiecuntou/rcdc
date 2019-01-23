@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+
 /**
  * 
  * Description: 终端检测状态枚举
@@ -11,11 +13,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
  */
 public enum DetectStateEnums {
 
-    CHECKING("检测中"),
+    CHECKING(BusinessKey.RCDC_TERMINAL_DETECT_STATE_CHECKING),
     
-    SUCCESS("检测成功"),
+    SUCCESS(BusinessKey.RCDC_TERMINAL_DETECT_STATE_SUCCESS),
     
-    ERROR("检测失败");
+    ERROR(BusinessKey.RCDC_TERMINAL_DETECT_STATE_ERROR);
     
     private String name;
     

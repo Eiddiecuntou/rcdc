@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -29,7 +30,7 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
  * @author nt
  */
 @GlobalUniqueBean("upgradeStateSyncQuartz")
-@Quartz(cron = "0/10 * *  * * ?", msgKey = "rcdc_terminal_quartz_system_upgrade_state_sync")
+@Quartz(cron = "0/10 * *  * * ?", msgKey = BusinessKey.RCDC_TERMINAL_QUARTZ_SYSTEM_UPGRADE_STATE_SYNC)
 public class SystemUpgradeStateSyncQuartz implements QuartzTask {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeStateSyncQuartz.class);

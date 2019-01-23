@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResp
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
@@ -119,6 +121,42 @@ public class CbbTranspondMessageHandlerAPIImplTest {
             }
         };
     }
+    
+    /**
+     * 测试同步发送,参数为空
+     * @throws Exception 异常
+     */
+    @Test
+    public void testSyncRequestArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> transpondMessageHandlerAPI.syncRequest(null), "request参数不能为空");
+        assertTrue(true);
+    }
+    
+    /**
+     * 测试同步发送失败
+     * @throws BusinessException 异常
+     * @throws InterruptedException 异常
+     * @throws IOException 异常
+     */
+    @Test
+    public void testSyncRequestFail() throws IOException, InterruptedException, BusinessException {
+        BaseMessage baseMessage = new BaseMessage("ss", null);
+        new Expectations() {
+            {
+                sessionManager.getRequestMessageSender(anyString);
+                result = sender;
+                sender.syncRequest((Message) any);
+                result = baseMessage;
+            }
+        };
+        CbbShineMessageRequest request = CbbShineMessageRequest.create("login", "223");
+        try {
+            transpondMessageHandlerAPI.syncRequest(request);
+            fail();
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("执行syncRequest方法后shine返回的应答消息不能为空。data:"));
+        }
+    }
 
     /**
      * 测试异步请求
@@ -156,6 +194,16 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         };
 
     }
+    
+    /**
+     * 测试终端响应,参数为空
+     * @throws Exception 异常
+     */
+    @Test
+    public void testResponseArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> transpondMessageHandlerAPI.response(null), "CbbResponseShineMessage不能为null");
+        assertTrue(true);
+    }
 
     /**
      * 测试终端响应
@@ -181,5 +229,30 @@ public class CbbTranspondMessageHandlerAPIImplTest {
             fail();
         }
 
+    }
+    
+    /**
+     * 测试终端响应失败
+     * @param sender 发送对象
+     */
+    @Test
+    public void testResponseFail(@Mocked DefaultResponseMessageSender sender) {
+        new Expectations() {
+            {
+                sessionManager.getSession(anyString);
+                result = null;
+            }
+        };
+        try {
+            String action = "login";
+            String terminalId = "123";
+            String requestId = "333";
+            CbbResponseShineMessage request = CbbResponseShineMessage.create(action, terminalId, requestId);
+            transpondMessageHandlerAPI.response(request);
+            fail();
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("终端处于离线状态，消息无法发出;terminal:"));
+        }
+        
     }
 }

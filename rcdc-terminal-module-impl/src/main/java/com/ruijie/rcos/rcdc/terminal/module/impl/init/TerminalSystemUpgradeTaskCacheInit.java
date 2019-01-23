@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
+import org.springframework.stereotype.Service;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 
 /**
@@ -11,6 +12,7 @@ import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
  * 
  * @author nt
  */
+@Service
 public class TerminalSystemUpgradeTaskCacheInit implements SafetySingletonInitializer {
 
     @Override

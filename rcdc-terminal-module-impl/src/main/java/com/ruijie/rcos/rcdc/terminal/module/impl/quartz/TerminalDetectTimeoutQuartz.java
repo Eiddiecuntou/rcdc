@@ -26,7 +26,7 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
  * @author nt
  */
 @GlobalUniqueBean("detectTimeoutQuartz")
-@Quartz(cron = "0/10 * * * * ?", msgKey = "rcdc_terminal_quartz_detect_time_out")
+@Quartz(cron = "0/10 * * * * ?", msgKey = BusinessKey.RCDC_TERMINAL_QUARTZ_DETECT_TIME_OUT)
 public class TerminalDetectTimeoutQuartz implements QuartzTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectTimeoutQuartz.class);
@@ -40,9 +40,9 @@ public class TerminalDetectTimeoutQuartz implements QuartzTask {
         // 将正在检测中的超时2分钟的记录设为失败状态
         Date now = new Date();
         int timeoutSecond = Constants.TERMINAL_DETECT_TIMEOUT;
-        Date date = TerminalDateUtil.addDay(now, -timeoutSecond);
+        Date date = TerminalDateUtil.addSecond(now, -timeoutSecond);
         List<TerminalDetectionEntity> timeoutDetectList =
-                detectionDAO.findByDetectStateAndDetectTimeLessThan(DetectStateEnums.CHECKING, date);
+                detectionDAO.findByDetectStateAndDetectTimeBefore(DetectStateEnums.CHECKING, date);
         if (CollectionUtils.isEmpty(timeoutDetectList)) {
             LOGGER.debug("no timeout detection");
             return;

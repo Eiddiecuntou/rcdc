@@ -27,7 +27,7 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
  * @author nt
  */
 @GlobalUniqueBean(value = "systemUpgradeQuartz")
-@Quartz(cron = "0/15 * *  * * ?", msgKey = "rcdc_terminal_quartz_deal_system_upgrade_waiting_task")
+@Quartz(cron = "0/15 * *  * * ?", msgKey = BusinessKey.RCDC_TERMINAL_QUARTZ_DEAL_SYSTEM_UPGRADE_WAITING_TASK)
 public class SystemUpgradeWaitingTaskQuartz implements QuartzTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeWaitingTaskQuartz.class);

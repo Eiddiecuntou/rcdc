@@ -143,5 +143,20 @@ public interface BusinessKey {
      * 终端检测超时处理定时任务
      */
     String RCDC_TERMINAL_QUARTZ_DETECT_TIME_OUT = "rcdc_terminal_quartz_detect_time_out";
+    
+    /**
+     * 终端检测状态-检测中
+     */
+    String RCDC_TERMINAL_DETECT_STATE_CHECKING = "rcdc_terminal_detect_state_checking";
+    
+    /**
+     * 终端检测状态-检测成功
+     */
+    String RCDC_TERMINAL_DETECT_STATE_SUCCESS = "rcdc_terminal_detect_state_success";
+    
+    /**
+     * 终端检测状态-检测失败
+     */
+    String RCDC_TERMINAL_DETECT_STATE_ERROR = "rcdc_terminal_detect_state_error";
 
 }

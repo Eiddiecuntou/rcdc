@@ -64,7 +64,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
         TerminalVersionResultDTO versionResult =
-                componentUpgradeService.getVersion(basicInfo.getRainOsVersion(), basicInfo.getPlatform());
+                componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(), basicInfo.getPlatform());
         CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, versionResult);
         try {
             LOGGER.debug("response check upgrade : {}", cbbShineMessageRequest.toString());
@@ -91,7 +91,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         basicInfoDAO.save(basicInfoEntity);
         // 通知其他组件终端为在线状态
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.ONLINE, terminalId);
-//        terminalEventNoticeSPI.notify(noticeRequest);
+        terminalEventNoticeSPI.notify(noticeRequest);
     }
 
     private ShineTerminalBasicInfo convertJsondata(CbbDispatcherRequest request) {
