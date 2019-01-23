@@ -75,7 +75,9 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
                 LOGGER.error("read updatelist file error", e);
             }
         }
-        LOGGER.debug("cache json : " + JSON.toJSONString(cacheManager.getUpdateListCaches()));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("cache json : " + JSON.toJSONString(cacheManager.getUpdateListCaches()));
+        }
         LOGGER.debug("finish init updatelist...");
     }
 
@@ -90,8 +92,10 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
             LOGGER.debug("updatelist is null, upgrade file is incorrect");
             return;
         }
-
-        LOGGER.debug("updatelist : " + JSON.toJSONString(updatelist));
+        
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("updatelist : " + JSON.toJSONString(updatelist));
+        }
         // 将终端组件升级updatelist信息按终端类型进行拆分，存入缓存中
         Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = cacheManager.getUpdateListCaches();
         for (CbbTerminalComponentVersionInfoDTO component : componentVersionList) {

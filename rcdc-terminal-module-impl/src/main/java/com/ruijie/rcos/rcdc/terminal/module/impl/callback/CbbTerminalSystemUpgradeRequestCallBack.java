@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.callback;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -10,9 +9,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResp
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SystemUpgradeTaskManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.NfsServiceUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -39,7 +35,9 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(msg, "TerminalSystemUpgradeRequest 不能为空");
 
-        LOGGER.debug("system upgrade callback success, msg: {}", JSON.toJSONString(msg));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("system upgrade callback success, msg: {}", JSON.toJSONString(msg));
+        }
         SystemUpgradeResponseResult result =
                 JSON.parseObject(msg.getContent().toString(), SystemUpgradeResponseResult.class);
         // 根据响应信息判断终端是否进行升级，不升级则将升级队列中的任务移除

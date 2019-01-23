@@ -44,7 +44,10 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
                     new CbbTerminalComponentUpdateListDTO());
         }
-        LOGGER.debug("updatelist : {}", JSON.toJSONString(updatelist));
+        
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("updatelist : {}", JSON.toJSONString(updatelist));
+        }
         String version = updatelist.getVersion();
         CbbTerminalComponentUpdateListDTO updatelistDTO = new CbbTerminalComponentUpdateListDTO(version,
                 updatelist.getBaseVersion(), updatelist.getComponentSize());
