@@ -37,12 +37,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
@@ -256,11 +258,11 @@ public class CbbTerminalOperatorAPIImplTest {
 
     /**
      * 测试获取终端检测列表
-     * 
+     * @param resolver mock LocaleI18nResolver
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testListDetect() throws BusinessException {
+    public void testListDetect(@Mocked LocaleI18nResolver resolver) throws BusinessException {
         CbbTerminalDetectPageRequest pageReq = new CbbTerminalDetectPageRequest();
         pageReq.setDate(CbbDetectDateEnums.TODAY);
         pageReq.setLimit(10);
