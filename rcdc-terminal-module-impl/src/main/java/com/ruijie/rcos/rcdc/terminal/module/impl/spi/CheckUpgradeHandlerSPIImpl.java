@@ -91,7 +91,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         basicInfoDAO.save(basicInfoEntity);
         // 通知其他组件终端为在线状态
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.ONLINE, terminalId);
-//        terminalEventNoticeSPI.notify(noticeRequest);
+        terminalEventNoticeSPI.notify(noticeRequest);
     }
 
     private ShineTerminalBasicInfo convertJsondata(CbbDispatcherRequest request) {
