@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -16,6 +17,7 @@ import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
  * 
  * @author nt
  */
+@Service
 public class TerminalDetectInit implements SafetySingletonInitializer {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectInit.class);
