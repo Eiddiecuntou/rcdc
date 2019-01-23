@@ -1,16 +1,21 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
+import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.commkit.base.Session;
+import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
+import com.ruijie.rcos.sk.commkit.base.sender.RequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.ResponseMessageSender;
 import io.netty.channel.ChannelHandlerContext;
 import mockit.*;
@@ -20,6 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -149,14 +156,112 @@ public class ConnectEventHandlerTest {
     }
 
     /**
+     * 测试onReceive，收到心跳报文
+     */
+    @Test
+    public void testOnReceiveHeartBeat() {
+        
+        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
+            @Mock
+            public void execute(Runnable command) {
+                command.run();
+            }
+        };
+        BaseMessage<JSONObject> message = new BaseMessage<JSONObject>("heartBeat", new JSONObject());
+        connectEventHandler.onReceive(sender, message);
+        
+        new Verifications() {
+            {
+                Message message;
+                sender.response(message = withCapture());
+                assertEquals("heartBeat", message.getAction());
+                assertEquals(Constants.SYSTEM_TYPE, message.getSystemType());
+                assertNull(message.getData());
+            }
+        };
+    }
+    
+    /**
+     * 测试onReceive，收到未绑定且不是第一个报文
+     * @param session 连接
+     */
+    @Test
+    public void testOnReceiveNotBandAndFirstMessage(@Mocked Session session) {
+        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
+            @Mock
+            public void execute(Runnable command) {
+                command.run();
+            }
+        };
+        new Expectations() {
+            {
+                sender.getSession();
+                result = session;
+                session.getAttribute(anyString);
+                result = "";
+            }
+        };
+        BaseMessage<JSONObject> message = new BaseMessage<JSONObject>("sasa", new JSONObject());
+        connectEventHandler.onReceive(sender, message);
+        
+        new Verifications() {
+            {
+                sender.response((Message) any);
+                times = 0;
+            }
+        };
+    }
+    
+    /**
+     * 测试onReceive，收到第一个报文
+     * @param session 连接
+     */
+    @Test
+    public void testOnReceiveFirstMessage(@Mocked Session session) {
+        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
+            @Mock
+            public void execute(Runnable command) {
+                command.run();
+            }
+        };
+        new Expectations() {
+            {
+                sender.getSession();
+                result = session;
+            }
+        };
+        BaseMessage<String> message = new BaseMessage<String>("check_upgrade", "sdd");
+        try {
+            connectEventHandler.onReceive(sender, message);
+            fail();
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("接收到的报文格式错误;data:"));
+        }
+    }
+    
+    /**
      * 测试连接成功-参数为空
      */
     @Test
     public void testOnConnectSuccessParamIsNull() {
         try {
             connectEventHandler.onConnectSuccess(null);
+            fail();
         } catch (IllegalArgumentException e) {
             Assert.assertEquals(e.getMessage(), "RequestMessageSender不能为null");
+        }
+    }
+    
+    /**
+     * 测试连接成功
+     * @param requestMessageSender mock requestMessageSender
+     */
+    @Test
+    public void testOnConnectSuccess(@Mocked RequestMessageSender requestMessageSender) {
+        try {
+            connectEventHandler.onConnectSuccess(requestMessageSender);
+        } catch (Exception e) {
+            fail();
         }
     }
 

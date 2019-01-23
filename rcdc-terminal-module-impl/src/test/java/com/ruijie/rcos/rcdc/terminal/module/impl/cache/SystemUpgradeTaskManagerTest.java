@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.Map;
@@ -422,7 +424,38 @@ public class SystemUpgradeTaskManagerTest {
         caches.clear();
     }
 
-
+    /**
+     * 测试checkMaxAddNum，超过最大值
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testCheckMaxAddNumIsTrue() throws BusinessException {
+        Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
+        String baseTerminalId = "bt-";
+        SystemUpgradeTask systemUpgradeTask = new SystemUpgradeTask();
+        for (int i = 0; i < 200; i++) {
+            caches.put(baseTerminalId + i, systemUpgradeTask);
+        }
+        assertTrue(manager.checkMaxAddNum());
+        caches.clear();
+    }
+    
+    /**
+     * 测试checkMaxAddNum，未超过最大值
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testCheckMaxAddNumIsFalse() throws BusinessException {
+        Map<String, SystemUpgradeTask> caches = Deencapsulation.getField(manager, "TASK_MAP");
+        String baseTerminalId = "bt-";
+        SystemUpgradeTask systemUpgradeTask = new SystemUpgradeTask();
+        for (int i = 0; i < 90; i++) {
+            caches.put(baseTerminalId + i, systemUpgradeTask);
+        }
+        assertFalse(manager.checkMaxAddNum());
+        caches.clear();
+    }
+    
     private SystemUpgradeTask buildSystemUpgradeTask(String terminalId, TerminalPlatformEnums terminalType) {
         SystemUpgradeTask task = new SystemUpgradeTask();
         task.setTerminalId(terminalId);

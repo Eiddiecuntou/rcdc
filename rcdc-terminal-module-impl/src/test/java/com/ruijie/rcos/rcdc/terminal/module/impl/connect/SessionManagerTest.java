@@ -1,5 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import java.util.List;
+import java.util.Map;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.Session;
@@ -8,14 +15,6 @@ import mockit.Deencapsulation;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.integration.junit4.JMockit;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Map;
-
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -109,5 +108,20 @@ public class SessionManagerTest {
         } catch (BusinessException e) {
             Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
+    }
+    
+    /**
+     * 测试getOnlineTerminalId
+     * @param session 连接
+     */
+    @Test
+    public void testGetOnlineTerminalId(@Mocked Session session) {
+        String terminalId = "12";
+        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
+        sessionMap.put(terminalId, session);
+        List<String> terminalIdList = sessionManager.getOnlineTerminalId();
+        assertEquals(1, terminalIdList.size());
+        assertEquals("12", terminalIdList.get(0));
+        sessionMap.clear();
     }
 }

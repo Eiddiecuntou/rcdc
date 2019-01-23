@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import com.google.common.cache.Cache;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import mockit.Deencapsulation;
+import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Tested;
@@ -96,6 +97,25 @@ public class CollectLogCacheManagerTest {
             Assert.assertEquals(caches.size(), 1);
             Assert.assertEquals(caches.getIfPresent(terminalId).getState(), CollectLogStateEnums.FAILURE);
 
+        } catch (Exception e) {
+            fail();
+        }
+    }
+    
+    /**
+     * 测试更新收集日志状态,cache为空
+     * @param caches mock Caches
+     */
+    @Test
+    public void testUpdateState2CacheIsNull(@Injectable Cache<String, CollectLogCache> caches) {
+        String terminalId = "2222";
+        try {
+            cacheManager.updateState(terminalId, CollectLogStateEnums.FAILURE, "shine.zip");
+            Cache<String, CollectLogCache> caches1 = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
+            Assert.assertEquals(1, caches1.size());
+            Assert.assertEquals(CollectLogStateEnums.FAILURE, caches1.getIfPresent(terminalId).getState());
+            cacheManager.removeCache(terminalId);
+            
         } catch (Exception e) {
             fail();
         }

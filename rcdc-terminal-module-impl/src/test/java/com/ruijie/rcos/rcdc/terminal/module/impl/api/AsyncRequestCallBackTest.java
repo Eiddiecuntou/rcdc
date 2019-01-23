@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +54,50 @@ public class AsyncRequestCallBackTest {
         };
     }
 
+    /**
+     * 测试回调成功,参数BaseMessage为空
+     */
+    @Test
+    public void testSuccessArgumentBaseMessageIsNull() {
+        try {
+            AsyncRequestCallBack callBack = new AsyncRequestCallBack("123", callback);
+            callBack.success(null);
+            fail();
+        } catch (Exception e) {
+            assertEquals("baseMessage参数不能为空", e.getMessage());
+        }
+    }
+    
+    /**
+     * 测试回调成功,参数Action为空
+     */
+    @Test
+    public void testSuccessArgumentActionIsBlank() {
+        try {
+            AsyncRequestCallBack callBack = new AsyncRequestCallBack("123", callback);
+            BaseMessage baseMessage = new BaseMessage<CbbShineMessageResponse>("", null);
+            callBack.success(baseMessage);
+            fail();
+        } catch (Exception e) {
+            assertEquals("action不能为空", e.getMessage());
+        }
+    }
+    
+    /**
+     * 测试回调成功,IllegalArgumentException
+     */
+    @Test
+    public void testSuccessIllegalArgumentException() {
+        try {
+            AsyncRequestCallBack callBack = new AsyncRequestCallBack("123", callback);
+            BaseMessage baseMessage = new BaseMessage<CbbShineMessageResponse>("action", null);
+            callBack.success(baseMessage);
+            fail();
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("执行syncRequest方法后shine返回的应答消息不能为空。data:"));
+        }
+    }
+    
     /**
      * 测试回调超时
      */
