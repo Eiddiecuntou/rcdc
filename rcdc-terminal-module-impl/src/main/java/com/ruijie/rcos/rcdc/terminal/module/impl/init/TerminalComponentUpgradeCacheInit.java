@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
@@ -29,6 +30,7 @@ import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
  * 
  * @author nt
  */
+@Service
 public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalComponentUpgradeCacheInit.class);
@@ -41,9 +43,10 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
     @Override
     public void safeInit() {
         // 读取服务器上组件升级目录下的updatelist,并将其存入缓存中
+        LOGGER.debug("start init updatelist...");
         File upgradeDirectory = new File(Constants.TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH);
         if (!upgradeDirectory.isDirectory()) {
-            LOGGER.error("linux vdi terminal component upgrade dictory is not exist, the path is {}",
+            LOGGER.debug("linux vdi terminal component upgrade dictory is not exist, the path is {}",
                     Constants.TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH);
             return;
         }
@@ -54,7 +57,7 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
             return;
         }
         for (File subFile : subfileArr) {
-            if (subFile.isDirectory()) {
+            if (!subFile.isDirectory()) {
                 LOGGER.warn("sub file is not dictory, the file path is {}", subFile.getAbsolutePath());
                 continue;
             }
@@ -72,23 +75,32 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
                 LOGGER.error("read updatelist file error", e);
             }
         }
-
+        LOGGER.debug("cache json : " + JSON.toJSONString(cacheManager.getUpdateListCaches()));
+        LOGGER.debug("finish init updatelist...");
     }
 
     private String getUpdatelistFile(File subFile) {
-        return subFile.getAbsolutePath() + File.pathSeparator + Constants.TERMINAL_COMPONET_UPDATE_LIST_FILE_NAME;
+        LOGGER.debug(subFile.getAbsolutePath());
+        return subFile.getAbsolutePath() + Constants.TERMINAL_COMPONET_ORIGIN_UPDATE_LIST_FILE_NAME;
     }
 
     private void putInCache(CbbTerminalComponentUpdateListDTO updatelist) {
-        if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
-            LOGGER.error("updatelist is null, upgrade file is incorrect");
+        List<CbbTerminalComponentVersionInfoDTO> componentVersionList = updatelist.getComponentList();
+        if (updatelist == null || CollectionUtils.isEmpty(componentVersionList)) {
+            LOGGER.debug("updatelist is null, upgrade file is incorrect");
             return;
         }
 
+        LOGGER.debug("updatelist : " + JSON.toJSONString(updatelist));
         // 将终端组件升级updatelist信息按终端类型进行拆分，存入缓存中
         Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = cacheManager.getUpdateListCaches();
-        updatelist.getComponentList().forEach(component -> {
-            String[] platformArr = component.getPlatform().split(PLATFORM_SPERATOR);
+        for (CbbTerminalComponentVersionInfoDTO component : componentVersionList) {
+            String platformArrStr = component.getPlatform();
+            if (StringUtils.isBlank(platformArrStr)) {
+                LOGGER.debug("pllatform info not exist");
+                continue;
+            }
+            String[] platformArr = platformArrStr.split(PLATFORM_SPERATOR);
             for (String platformStr : platformArr) {
                 if (StringUtils.isBlank(platformStr) || !TerminalPlatformEnums.contains(platformStr)) {
                     LOGGER.debug("updatelist contains invalid platform[{}]", platformStr);
@@ -105,12 +117,13 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
                     LOGGER.debug("cache not include platform updatelist, platform [{}]", platform);
                     typeUpdatelist = buildNewComponentUpdatelist(updatelist);
                     componentList = new ArrayList<>();
+                    typeUpdatelist.setComponentList(componentList);
+                    caches.put(platform, typeUpdatelist);
                 }
                 componentList.add(component);
                 typeUpdatelist.setComponentSize(typeUpdatelist.getComponentSize() + 1);
             }
-        });
-
+        }
     }
 
     private CbbTerminalComponentUpdateListDTO buildNewComponentUpdatelist(

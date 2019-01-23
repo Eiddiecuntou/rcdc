@@ -108,7 +108,7 @@ public interface Constants {
     /**
      * 终端组件升级包updatelist文件名
      */
-    String TERMINAL_COMPONET_UPDATE_LIST_FILE_NAME = "update.list";
+    String TERMINAL_COMPONET_ORIGIN_UPDATE_LIST_FILE_NAME = "/origin/update.list";
 
     /**
      * 终端检测超时时间（单位:秒）
