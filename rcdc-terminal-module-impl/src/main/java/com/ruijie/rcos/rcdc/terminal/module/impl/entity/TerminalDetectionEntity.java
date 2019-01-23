@@ -5,7 +5,7 @@ import javax.persistence.*;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
-
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import java.util.Date;
 import java.util.UUID;
 
@@ -74,7 +74,7 @@ public class TerminalDetectionEntity {
     private String detectFailMsg;
 
     @Version
-    private int version;
+    private Integer version;
 
     /**
      *  对象转换
@@ -93,7 +93,7 @@ public class TerminalDetectionEntity {
         detectDTO.setDetectTime(detectTime);
         CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();;
         state.setState(detectState.name());
-        state.setMessage(detectState.getName());
+        state.setMessage(LocaleI18nResolver.resolve(detectState.getName()));
     }
 
     public UUID getId() {
@@ -184,11 +184,11 @@ public class TerminalDetectionEntity {
         this.detectState = detectState;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 
-    public int getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
