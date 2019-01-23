@@ -126,6 +126,6 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
      * @param date 时间
      * @return 检测记录列表
      */
-    List<TerminalDetectionEntity> findByDetectStateAndDetectTimeLessThan(DetectStateEnums state, Date date);
+    List<TerminalDetectionEntity> findByDetectStateAndDetectTimeBefore(DetectStateEnums state, Date date);
 
 }
