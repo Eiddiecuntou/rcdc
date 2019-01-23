@@ -36,6 +36,7 @@ public class TerminalDetectInit implements SafetySingletonInitializer {
         List<TerminalDetectionEntity> checkingList = getCheckingDetectionList();
         if (CollectionUtils.isEmpty(checkingList)) {
             LOGGER.debug("no checking detection");
+            return;
         }
         for (TerminalDetectionEntity checkingEntity : checkingList) {
             checkingEntity.setDetectState(DetectStateEnums.ERROR);
