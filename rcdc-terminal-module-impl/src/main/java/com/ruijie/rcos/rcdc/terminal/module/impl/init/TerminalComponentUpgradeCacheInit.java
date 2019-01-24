@@ -87,12 +87,11 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
     }
 
     private void putInCache(CbbTerminalComponentUpdateListDTO updatelist) {
-        List<CbbTerminalComponentVersionInfoDTO> componentVersionList = updatelist.getComponentList();
-        if (updatelist == null || CollectionUtils.isEmpty(componentVersionList)) {
+        if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist is null, upgrade file is incorrect");
             return;
         }
-        
+        List<CbbTerminalComponentVersionInfoDTO> componentVersionList = updatelist.getComponentList();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("updatelist : " + JSON.toJSONString(updatelist));
         }
