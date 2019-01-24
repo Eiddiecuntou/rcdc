@@ -18,12 +18,14 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordReq
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.CloseTerminalBatchTaskHandler;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.RestartTerminalBatchTaskHandler;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalIdMappingUtils;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.EditAdminPwdWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalIdArrWebRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalIdDownLoadWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalIdWebRequest;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
 import com.ruijie.rcos.sk.base.batch.DefaultBatchTaskItem;
@@ -169,7 +171,6 @@ public class TerminalOperateController {
         Assert.notNull(request, "request不能为null");
 
         CbbTerminalCollectLogStatusResponse response = getCollectLogById(request);
-
         return DefaultWebResponse.Builder.success(response);
     }
 
@@ -182,7 +183,7 @@ public class TerminalOperateController {
      * @throws IOException io异常
      */
     @RequestMapping(value = "downloadLog")
-    public DownloadWebResponse downloadLog(TerminalIdWebRequest request) throws BusinessException, IOException {
+    public DownloadWebResponse downloadLog(TerminalIdDownLoadWebRequest request) throws BusinessException, IOException {
         Assert.notNull(request, "request不能为null");
 
         CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest();

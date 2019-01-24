@@ -18,13 +18,10 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultD
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectItemStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.TerminalDateUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -42,9 +39,6 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 public class TerminalDetectService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectService.class);
-
-    @Autowired
-    private TerminalBasicInfoDAO basicInfoDAO;
 
     @Autowired
     private TerminalDetectionDAO detectionDAO;
@@ -238,7 +232,7 @@ public class TerminalDetectService {
      * @return 检测日期
      */
     private Date getDetectDate(CbbDetectDateEnums detectDate) {
-        Date date = null;
+        Date date;
         switch (detectDate) {
             case TODAY:
                 date = new Date();

@@ -117,24 +117,6 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public CbbTerminalNameResponse getTerminalLogName(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
-        Assert.hasText(request.getTerminalId(), "terminalId不能为空");
-        String terminalId = request.getTerminalId();
-        CollectLogCache cache = collectLogCacheManager.getCache(terminalId);
-        if (cache == null) {
-            LOGGER.warn("收集日志缓存中不存在日志文件");
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
-        }
-        if (cache.getState() == CollectLogStateEnums.FAILURE) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
-        }
-        CbbTerminalNameResponse response = new CbbTerminalNameResponse();
-        response.setTerminalName(cache.getLogFileName());
-        return response;
-    }
-
-    @Override
     public DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");

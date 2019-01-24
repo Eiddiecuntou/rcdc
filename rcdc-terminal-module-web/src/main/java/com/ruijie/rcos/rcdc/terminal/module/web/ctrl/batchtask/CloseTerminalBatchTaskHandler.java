@@ -45,8 +45,8 @@ public class CloseTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
         request.setTerminalId(terminalId);
         terminalOperatorAPI.shutdown(request);
         
-        CbbTerminalBasicInfoResponse baiscInfoResp = terminalOperatorAPI.getTerminalBaiscInfo(request);
-        String terminalName = baiscInfoResp.getTerminalName();
+        CbbTerminalBasicInfoResponse basicInfoResp = terminalOperatorAPI.getTerminalBaiscInfo(request);
+        String terminalName = basicInfoResp.getTerminalName();
         optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CLOSE_SUCCESS_LOG, terminalName, terminalId);
         return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
                 .msgKey(BusinessKey.RCDC_TERMINAL_CLOSE_RESULT_SUCCESS)

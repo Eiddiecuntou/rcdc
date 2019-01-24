@@ -30,7 +30,7 @@ public class TerminalDetectResponseHandlerSPIImpl implements CbbDispatcherHandle
         Assert.hasText(request.getTerminalId(), "terminalId 不能为空");
         Assert.notNull(request.getData(), "报文消息体不能为空");
         
-        String data = (String) request.getData();
+        String data = request.getData();
         TerminalDetectResult result = JSON.parseObject(data, TerminalDetectResult.class);
 
         detectService.updateTerminalDetect(request.getTerminalId(), result);
