@@ -149,24 +149,6 @@ public class CbbTerminalOperatorAPIImplTest {
         };
     }
 
-//    @Test
-//    public void testDetect() throws BusinessException {
-//        try {
-//            String terminalId = "123";
-//            CbbTerminalDetectRequest request = new CbbTerminalDetectRequest();
-//            request.setTerminalId(terminalId);
-//            terminalOperatorAPI.detect(request);
-//        } catch (Exception e) {
-//            fail();
-//        }
-//        new Verifications() {
-//            {
-//                operatorService.detect(anyString);
-//                times = 1;
-//            }
-//        };
-//    }
-
     /**
      * 测试批量检测
      * @throws BusinessException 业务异常
@@ -181,77 +163,6 @@ public class CbbTerminalOperatorAPIImplTest {
             DefaultResponse resp = terminalOperatorAPI.detect(request);
             Assert.assertEquals(Status.SUCCESS, resp.getStatus());
         } catch (Exception e) {
-            fail();
-        }
-    }
-
-    /**
-     *  测试获取终端日志名称为空
-     */
-    @Test
-    public void testGetTerminalLogNameIsNull() {
-        new Expectations() {
-            {
-                collectLogCacheManager.getCache(anyString);
-                result = null;
-            }
-        };
-        String terminalId = "123";
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId(terminalId);
-        try {
-            terminalOperatorAPI.getTerminalLogName(request);
-        } catch (BusinessException e) {
-            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
-        }
-    }
-
-    /**
-     * 测试获取终端日志状态为失败
-     */
-    @Test
-    public void testGetTerminalLogNameStateIsFailure() {
-        CollectLogCache cache = new CollectLogCache();
-        cache.setState(CollectLogStateEnums.FAILURE);
-        new Expectations() {
-            {
-                collectLogCacheManager.getCache(anyString);
-                result = cache;
-            }
-        };
-        String terminalId = "123";
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId(terminalId);
-        try {
-            terminalOperatorAPI.getTerminalLogName(request);
-        } catch (BusinessException e) {
-            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
-        }
-    }
-
-    /**
-     * 测试获取终端日志名称
-     */
-    @Test
-    public void testGetTerminalLogName() {
-        String logName = "shine.zip";
-        CollectLogCache cache = new CollectLogCache();
-        cache.setState(CollectLogStateEnums.DONE);
-        cache.setLogFileName(logName);
-        new Expectations() {
-            {
-                collectLogCacheManager.getCache(anyString);
-                result = cache;
-            }
-        };
-        String terminalId = "123";
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId(terminalId);
-        try {
-            CbbTerminalNameResponse result = terminalOperatorAPI.getTerminalLogName(request);
-            Assert.assertEquals(result.getTerminalName(), logName);
-
-        } catch (BusinessException e) {
             fail();
         }
     }

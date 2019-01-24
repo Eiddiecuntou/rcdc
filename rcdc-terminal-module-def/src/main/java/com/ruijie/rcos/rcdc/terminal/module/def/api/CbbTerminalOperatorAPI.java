@@ -90,16 +90,6 @@ public interface CbbTerminalOperatorAPI {
     DefaultResponse detect(CbbTerminalBatDetectRequest request) throws BusinessException;
 
     /**
-     * 获取终端日志文件名
-     *
-     * @param request 终端id请求参数对象
-     * @return 返回日志文件名
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    CbbTerminalNameResponse getTerminalLogName(CbbTerminalIdRequest request) throws BusinessException;
-
-    /**
      * 获取检测记录分页列表
      * 
      * @param request 分页请求参数

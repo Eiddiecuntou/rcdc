@@ -126,7 +126,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         CollectLogCache collectLogCache = collectLogCacheManager.getCache(terminalId);
         if (collectLogCache != null && CollectLogStateEnums.DOING == collectLogCache.getState()) {
             LOGGER.debug("终端[{}]正在收集日志中，不允许重复收集", terminalId);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_DOING);
+            return;
         }
         collectLogCacheManager.addCache(terminalId);
 
