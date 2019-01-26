@@ -16,7 +16,6 @@
         <module>rcdc-terminal-module-def</module>
         <module>rcdc-terminal-module-impl</module>
         <module>rcdc-terminal-module-web</module>
-        <module>rcdc-terminal-module-deploy</module>
     </modules>
 
     <!--定义依赖包版本号-->
@@ -32,12 +31,5 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jmockit</groupId>
-            <artifactId>jmockit-coverage</artifactId>
-            <version>1.9</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 </project>
