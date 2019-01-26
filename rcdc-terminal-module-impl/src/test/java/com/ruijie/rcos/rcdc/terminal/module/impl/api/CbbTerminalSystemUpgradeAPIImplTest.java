@@ -94,11 +94,58 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         request.setFileName("aaa.iso");
         request.setFilePath("/usr/data");
 
-        new Expectations() {
-            {
-                terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion((TerminalUpgradeVersionFileInfo) any);
+        new MockUp<CmdExecuteUtil>() {
+            @Mock
+            public void executeCmd(String cmd) {
+                
             }
         };
+
+        new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
+            @Mock
+            private TerminalUpgradeVersionFileInfo getVersionInfo() {
+                TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
+                versionInfo.setImgName("package");
+                versionInfo.setPackageType(TerminalPlatformEnums.VDI);
+                versionInfo.setVersion("interVer");
+                return versionInfo;
+            }
+        };
+        new MockUp<FileOperateUtil>() {
+            @Mock
+            public void deleteFile(final String directoryPath, final String exceptFileName) {
+                
+            }
+        };
+        new MockUp<FileCopyUtils>() {
+            @Mock
+            public int copy(File in, File out) {
+                return 10;
+            }
+        };
+        cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(request);
+        new Verifications() {
+            {
+                terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion((TerminalUpgradeVersionFileInfo) any);
+                times = 1;
+            }
+        };
+
+    }
+
+    /**
+     * 测试升级包上传,不支持的升级包
+     * 
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testUploadUpgradeFileNotSupportFile() throws BusinessException {
+
+        // 将文件挂载操作全部mock
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFileMD5("md5");
+        request.setFileName("aaa.iso");
+        request.setFilePath("/usr/data");
 
         new MockUp<CmdExecuteUtil>() {
             @Mock
@@ -138,7 +185,71 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         };
 
     }
-
+    
+    /**
+     * 测试升级包上传,升级包移动失败
+     * 
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testUploadUpgradeFileMoveFail() throws BusinessException {
+        
+        // 将文件挂载操作全部mock
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFileMD5("md5");
+        request.setFileName("aaa.iso");
+        request.setFilePath("/usr/data");
+        
+        new MockUp<CmdExecuteUtil>() {
+            @Mock
+            public void executeCmd(String cmd) {
+                
+            }
+        };
+        
+        new MockUp<CbbTerminalSystemUpgradeAPIImpl>() {
+            @Mock
+            private TerminalUpgradeVersionFileInfo getVersionInfo() {
+                TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
+                versionInfo.setImgName("package");
+                versionInfo.setPackageType(TerminalPlatformEnums.VDI);
+                versionInfo.setVersion("interVer");
+                return versionInfo;
+            }
+        };
+        new MockUp<FileOperateUtil>() {
+            @Mock
+            public void deleteFile(final String directoryPath, final String exceptFileName) {
+                
+            }
+        };
+        new MockUp<FileCopyUtils>() {
+            @Mock
+            public int copy(File in, File out) {
+                return 10;
+            }
+        };
+        new MockUp<File>() {
+            @Mock
+            public boolean renameTo(File dest) throws IOException {
+                throw new IOException();
+            }
+        };
+        try {
+            cbbTerminalSystemUpgradeAPIImpl.uploadUpgradeFile(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
+        }
+        new Verifications() {
+            {
+                terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion((TerminalUpgradeVersionFileInfo) any);
+                times = 0;
+            }
+        };
+        
+    }
+    
     /**
      * 测试升级包上传文件，有正在运行的任务
      * 
