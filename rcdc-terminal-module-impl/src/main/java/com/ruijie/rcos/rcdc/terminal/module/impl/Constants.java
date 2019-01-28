@@ -47,8 +47,12 @@ public interface Constants {
      */
     double TERMINAL_DETECT_PACKET_LOSS_RATE = 0.1;
 
-    /** 终端管理员密码 */
+    /** 终端管理员密码全局参数表key */
     String RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY = "terminal_pwd";
+    
+    
+    /** rcdc服务器密码全局参数表key */
+    String RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY = "rcdc_server_ip";
 
     /**
      * 存放终端系统vdi刷机包路径
