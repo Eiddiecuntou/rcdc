@@ -29,11 +29,11 @@ import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalUpgradeBtServerInit.class);
-    
+
     private static final String INIT_PYTHON_SCRIPT_PATH = "/data/web/rcdc/shell/update.py";
-    
+
     private static final String INIT_COMMAND = "python %s";
-    
+
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
 
@@ -52,7 +52,7 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
             LOGGER.debug("ip not change");
             return;
         }
-        
+
         LOGGER.debug("ip changed, start bt share init");
         executeUpdate();
     }
@@ -67,31 +67,21 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
         } catch (BusinessException e) {
             LOGGER.error("bt share init error", e);
         }
-        
+
         LOGGER.debug("success invoke pythonScript...");
     }
 
-    public static String getLocalIP() {
-        InetAddress addr = null;
-        try {
-            addr = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            LOGGER.error("get localhost address error, {}", e);
-            return "";
-        }
 
-        byte[] ipAddr = addr.getAddress();
-        String ipAddrStr = "";
-        for (int i = 0; i < ipAddr.length; i++) {
-            if (i > 0) {
-                ipAddrStr += ".";
-            }
-            ipAddrStr += ipAddr[i] & 0xFF;
-        }
-        return ipAddrStr;
-    }
-    
-    
+
+    /**
+     * 
+     * Description: Function Description
+     * Copyright: Copyright (c) 2018
+     * Company: Ruijie Co., Ltd.
+     * Create Time: 2019年1月28日
+     * 
+     * @author nt
+     */
     public class BtShareInitReturnValueResolver implements ReturnValueResolver<String> {
 
         @Override
@@ -99,16 +89,40 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
             Assert.hasText(command, "command can not be null");
             Assert.notNull(exitValue, "existValue can not be null");
             Assert.hasText(outStr, "outStr can not be null");
-            
-            if(exitValue.intValue() != 0) {
+
+            if (exitValue.intValue() != 0) {
                 LOGGER.error("bt share init python script execute error, exitValue: {}, outStr: {}", exitValue, outStr);
                 throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
             }
-            
+
             globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
             return outStr;
         }
-        
+
     }
 
+    /**
+     * 获取ip
+     * 
+     * @return ip
+     */
+    private static String getLocalIP() {
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            LOGGER.error("get localhost address error, {}", e);
+            throw new RuntimeException("get localhost address error,", e);
+        }
+
+        byte[] ipArr = addr.getAddress();
+        String ipAddrStr = "";
+        for (int i = 0; i < ipArr.length; i++) {
+            if (i > 0) {
+                ipAddrStr += ".";
+            }
+            ipAddrStr += ipArr[i] & 0xFF;
+        }
+        return ipAddrStr;
+    }
 }
