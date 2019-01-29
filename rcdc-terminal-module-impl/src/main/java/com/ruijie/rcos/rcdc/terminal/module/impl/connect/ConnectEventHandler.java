@@ -72,7 +72,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("接收到的报文：action:{};data:{}", message.getAction(), String.valueOf(message.getData()));
         }
-        //收到心跳报文，直接应答
+        // 收到心跳报文，直接应答
         if (ShineAction.HEARTBEAT.equals(message.getAction())) {
             sender.response(new Message(Constants.SYSTEM_TYPE, ShineAction.HEARTBEAT, null));
             return;
@@ -103,14 +103,13 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         request.setDispatcherKey(message.getAction());
         request.setRequestId(sender.getResponseId());
         request.setTerminalId(terminalId);
-        Object data = message.getData();
-        request.setData(data == null ? null : String.valueOf(data));
+        String data = message.getData() == null ? null : String.valueOf(message.getData());
+        request.setData(data);
         try {
-            LOGGER.debug("分发消息， action: {}", message.getAction());
+            LOGGER.debug("分发消息，terminalId:{}; action: {}; data:{}", terminalId, message.getAction(), data);
             cbbDispatcherHandlerSPI.dispatch(request);
         } catch (Exception e) {
-            LOGGER.error("消息分发执行异常;action:" + message.getAction() + ",terminalId:" + terminalId + ",data:"
-                    + message.getData(), e);
+            LOGGER.error("消息分发执行异常;action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + message.getData(), e);
         }
     }
 

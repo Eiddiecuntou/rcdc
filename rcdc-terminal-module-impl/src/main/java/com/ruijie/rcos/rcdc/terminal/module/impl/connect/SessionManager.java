@@ -44,7 +44,7 @@ public class SessionManager {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(session, "Session 不能为null");
         SESSION_MAP.put(terminalId, session);
-        LOGGER.info("绑定终端session，terminalId={}", terminalId);
+        LOGGER.info("绑定终端session，terminalId={};当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
     }
 
     /**
@@ -55,7 +55,7 @@ public class SessionManager {
     public void removeSession(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
         SESSION_MAP.remove(terminalId);
-        LOGGER.info("移除终端session，terminalId={}", terminalId);
+        LOGGER.info("移除终端session，terminalId={};当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
 
     }
 
