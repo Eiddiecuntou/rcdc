@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -34,10 +35,6 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     private static final String INIT_COMMAND = "python %s";
 
-    private static final String SYSTEM_PROPERTITY_OS_NAME = "os.name";
-
-    private static final String SYSTEM_OPERATE_WINDOWS = "windows";
-
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
 
@@ -48,10 +45,10 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
     public void safeInit() {
 
         // 添加操作系统判断，使初始化失败不影响开发阶段的调试
-        String system = System.getProperty(SYSTEM_PROPERTITY_OS_NAME);
-        LOGGER.info("server system : {}", system);
-        if (!StringUtils.isBlank(system) && system.toLowerCase().contains(SYSTEM_OPERATE_WINDOWS)) {
-            LOGGER.info("server start in windows, skip upgrade bt share init...");
+        boolean isDevelop = Enviroment.isDevelop();
+        LOGGER.info("enviroment is develope: {}", isDevelop);
+        if (isDevelop) {
+            LOGGER.info("enviroment is develope, skip upgrade bt share init...");
             return;
         }
 
