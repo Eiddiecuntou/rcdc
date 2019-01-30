@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -36,12 +37,21 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
-    
+
     @Autowired
     private TerminalComponentUpgradeCacheInit upgradeCacheInit;
 
     @Override
     public void safeInit() {
+
+        // 添加操作系统判断，使初始化失败不影响开发阶段的调试
+        boolean isDevelop = Enviroment.isDevelop();
+        LOGGER.info("enviroment is develope: {}", isDevelop);
+        if (isDevelop) {
+            LOGGER.info("enviroment is develope, skip upgrade bt share init...");
+            return;
+        }
+
         // bt服务初始化，判断ip是否变更，如果变化则进行bt服务的初始化操作
         LOGGER.info("start upgrade bt share init...");
         String currentIp = getLocalIP();
@@ -54,7 +64,7 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
         if (ip.equals(currentIp)) {
             LOGGER.info("ip not change");
-            //更新缓存中的updatelist
+            // 更新缓存中的updatelist
             upgradeCacheInit.safeInit();
             return;
         }
@@ -101,9 +111,9 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
                 throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
             }
 
-            //更新数据库中的服务器ip
+            // 更新数据库中的服务器ip
             globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
-            //更新缓存中的updatelist
+            // 更新缓存中的updatelist
             upgradeCacheInit.safeInit();
             return outStr;
         }

@@ -1,131 +1,101 @@
 /**终端表*/
-create table t_cbb_terminal
+CREATE TABLE t_cbb_terminal
 (
-  id                   uuid        not null
-    constraint t_rcdc_terminal_basic_info_pkey
-    primary key,
-  terminal_name        varchar(32),
-  terminal_id          varchar(64) not null,
-  mac_addr             varchar(64),
-  ip                   varchar(64),
-  subnet_mask          varchar(64),
-  gateway              varchar(64),
-  main_dns             varchar(64),
-  second_dns           varchar(64),
-  get_ip_mode          varchar(32),
-  get_dns_mode         varchar(32),
-  product_type         varchar(32),
-  terminal_type        varchar(32),
-  serial_number        varchar(64),
-  cpu_type             varchar(64),
-  memory_size          integer,
-  disk_size            integer,
-  terminal_os_type     varchar(32),
-  terminal_os_version  varchar(32),
-  rain_os_version      varchar(32),
-  rain_upgrade_version varchar(32),
-  hardware_version     varchar(32),
-  network_access_mode  varchar(32),
-  create_time          timestamp,
-  last_online_time     timestamp,
-  last_offline_time    timestamp,
-  version              integer default 1,
-  state                varchar(64) not null,
-  platform             varchar(64)
+  id                   UUID        NOT NULL
+    CONSTRAINT t_cbb_terminal_pkey
+    PRIMARY KEY,
+  terminal_name        VARCHAR(32),
+  terminal_id          VARCHAR(32) NOT NULL,
+  mac_addr             VARCHAR(64),
+  ip                   VARCHAR(64),
+  subnet_mask          VARCHAR(64),
+  gateway              VARCHAR(64),
+  main_dns             VARCHAR(64),
+  second_dns           VARCHAR(64),
+  get_ip_mode          VARCHAR(32),
+  get_dns_mode         VARCHAR(32),
+  product_type         VARCHAR(32),
+  terminal_type        VARCHAR(32),
+  serial_number        VARCHAR(64),
+  cpu_type             VARCHAR(64),
+  memory_size          BIGINT,
+  disk_size            BIGINT,
+  terminal_os_type     VARCHAR(32),
+  terminal_os_version  VARCHAR(32),
+  rain_os_version      VARCHAR(32),
+  rain_upgrade_version VARCHAR(32),
+  hardware_version     VARCHAR(32),
+  network_access_mode  VARCHAR(32),
+  create_time          TIMESTAMP(6),
+  last_online_time     TIMESTAMP(6),
+  last_offline_time    TIMESTAMP(6),
+  version              INTEGER DEFAULT 1,
+  state                VARCHAR(64) NOT NULL,
+  platform             VARCHAR(64)
 );
 
-comment on table t_cbb_terminal
-is '终端基本信息表';
+CREATE UNIQUE INDEX t_rcdc_terminal_basic_info_terminal_id_uindex
+  ON t_cbb_terminal (terminal_id);
 
-comment on column t_cbb_terminal.terminal_name
-is '终端名称';
+COMMENT ON TABLE t_cbb_terminal IS '终端基本信息表';
 
-comment on column t_cbb_terminal.terminal_id
-is '终端唯一标识,由终端主动上报，约定为第一张网卡的mac地址';
+COMMENT ON COLUMN t_cbb_terminal.terminal_name IS '终端名称';
 
-comment on column t_cbb_terminal.mac_addr
-is '终端mac地址，多个以逗号分隔';
+COMMENT ON COLUMN t_cbb_terminal.terminal_id IS '终端唯一标识,由终端主动上报，约定为第一张网卡的mac地址';
 
-comment on column t_cbb_terminal.ip
-is '终端ip地址';
+COMMENT ON COLUMN t_cbb_terminal.mac_addr IS '终端mac地址，多个以逗号分隔';
 
-comment on column t_cbb_terminal.subnet_mask
-is '子网掩码';
+COMMENT ON COLUMN t_cbb_terminal.ip IS '终端ip地址';
 
-comment on column t_cbb_terminal.gateway
-is '网关';
+COMMENT ON COLUMN t_cbb_terminal.subnet_mask IS '子网掩码';
 
-comment on column t_cbb_terminal.main_dns
-is '首先DNS';
+COMMENT ON COLUMN t_cbb_terminal.gateway IS '网关';
 
-comment on column t_cbb_terminal.second_dns
-is '备选dns';
+COMMENT ON COLUMN t_cbb_terminal.main_dns IS '首先DNS';
 
-comment on column t_cbb_terminal.get_ip_mode
-is '获取ip方式，0自动获取，1手动填入';
+COMMENT ON COLUMN t_cbb_terminal.second_dns IS '备选dns';
 
-comment on column t_cbb_terminal.get_dns_mode
-is '获取dns方式，0自动获取，1手动填写';
+COMMENT ON COLUMN t_cbb_terminal.get_ip_mode IS '获取ip方式，0自动获取，1手动填入';
 
-comment on column t_cbb_terminal.product_type
-is '产品型号:Rain100S,Rain200V2...';
+COMMENT ON COLUMN t_cbb_terminal.get_dns_mode IS '获取dns方式，0自动获取，1手动填写';
 
-comment on column t_cbb_terminal.terminal_type
-is '终端类型：idv，vdi';
+COMMENT ON COLUMN t_cbb_terminal.product_type IS '产品型号:Rain100S,Rain200V2...';
 
-comment on column t_cbb_terminal.serial_number
-is '产品序列号';
+COMMENT ON COLUMN t_cbb_terminal.terminal_type IS '终端类型：idv，vdi';
 
-comment on column t_cbb_terminal.cpu_type
-is 'cup型号';
+COMMENT ON COLUMN t_cbb_terminal.serial_number IS '产品序列号';
 
-comment on column t_cbb_terminal.memory_size
-is '内存大小，单位M';
+COMMENT ON COLUMN t_cbb_terminal.cpu_type IS 'cup型号';
 
-comment on column t_cbb_terminal.disk_size
-is '磁盘大小，单位M';
+COMMENT ON COLUMN t_cbb_terminal.memory_size IS '内存大小，单位kb';
 
-comment on column t_cbb_terminal.terminal_os_type
-is '终端操作系统类型，Android、Linux。。。';
+COMMENT ON COLUMN t_cbb_terminal.disk_size IS '磁盘大小，单位kb';
 
-comment on column t_cbb_terminal.terminal_os_version
-is '终端操作系统版本';
+COMMENT ON COLUMN t_cbb_terminal.terminal_os_type IS '终端操作系统类型，Android、Linux。。。';
 
-comment on column t_cbb_terminal.rain_os_version
-is '终端系统版本号';
+COMMENT ON COLUMN t_cbb_terminal.terminal_os_version IS '终端操作系统版本';
 
-comment on column t_cbb_terminal.rain_upgrade_version
-is '软件版本号，指组件升级包的版本号';
+COMMENT ON COLUMN t_cbb_terminal.rain_os_version IS '终端系统版本号';
 
-comment on column t_cbb_terminal.hardware_version
-is '硬件版本号';
+COMMENT ON COLUMN t_cbb_terminal.rain_upgrade_version IS '软件版本号，指组件升级包的版本号';
 
-comment on column t_cbb_terminal.network_access_mode
-is '网络接入方式:无线接入，有线接入';
+COMMENT ON COLUMN t_cbb_terminal.hardware_version IS '硬件版本号';
 
-comment on column t_cbb_terminal.create_time
-is '数据创建时间';
+COMMENT ON COLUMN t_cbb_terminal.network_access_mode IS '网络接入方式:无线接入，有线接入';
 
-comment on column t_cbb_terminal.last_online_time
-is '终端最近接入的时间点';
+COMMENT ON COLUMN t_cbb_terminal.create_time IS '数据创建时间';
 
-comment on column t_cbb_terminal.last_offline_time
-is '终端最近一次离线的时间点';
+COMMENT ON COLUMN t_cbb_terminal.last_online_time IS '终端最近接入的时间点';
 
-comment on column t_cbb_terminal.version
-is '版本号，实现乐观锁';
+COMMENT ON COLUMN t_cbb_terminal.last_offline_time IS '终端最近一次离线的时间点';
 
-comment on column t_cbb_terminal.state
-is '终端状态：离线，在线 升级中';
+COMMENT ON COLUMN t_cbb_terminal.version IS '版本号，实现乐观锁';
 
-comment on column t_cbb_terminal.platform
-is '平台';
+COMMENT ON COLUMN t_cbb_terminal.state IS '终端状态：离线，在线 升级中';
 
-alter table t_cbb_terminal
-  owner to postgres;
+COMMENT ON COLUMN t_cbb_terminal.platform IS '平台';
 
-create unique index t_rcdc_terminal_basic_info_terminal_id_uindex
-  on t_cbb_terminal (terminal_id);
+
 
 /**终端检测表*/
 create table t_cbb_terminal_detection

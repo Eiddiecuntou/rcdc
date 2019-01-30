@@ -54,6 +54,15 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     public DefaultResponse delete(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
         String terminalId = request.getTerminalId();
+        // 在线终端不允许删除
+        boolean isOnline = basicInfoService.isTerminalOnline(terminalId);
+        if (isOnline) {
+            CbbTerminalBasicInfoResponse basicInfo = findBasicInfoByTerminalId(new CbbTerminalIdRequest(terminalId));
+            String terminalName = basicInfo.getTerminalName();
+            String macAddr = basicInfo.getMacAddr();
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[] {terminalName, macAddr});
+        }
+        
         int effectRow = basicInfoDAO.deleteByTerminalId(terminalId);
         if (effectRow == 0) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);

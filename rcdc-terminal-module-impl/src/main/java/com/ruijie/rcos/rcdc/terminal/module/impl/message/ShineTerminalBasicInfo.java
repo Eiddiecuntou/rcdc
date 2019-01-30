@@ -48,9 +48,9 @@ public class ShineTerminalBasicInfo {
 
     private String cpuType;
 
-    private Integer memorySize;
+    private Long memorySize;
 
-    private Integer diskSize;
+    private Long diskSize;
 
     private String terminalOsType;
 
@@ -185,19 +185,19 @@ public class ShineTerminalBasicInfo {
         this.cpuType = cpuType;
     }
 
-    public Integer getMemorySize() {
+    public Long getMemorySize() {
         return memorySize;
     }
 
-    public void setMemorySize(Integer memorySize) {
+    public void setMemorySize(Long memorySize) {
         this.memorySize = memorySize;
     }
 
-    public Integer getDiskSize() {
+    public Long getDiskSize() {
         return diskSize;
     }
 
-    public void setDiskSize(Integer diskSize) {
+    public void setDiskSize(Long diskSize) {
         this.diskSize = diskSize;
     }
 
@@ -240,4 +240,6 @@ public class ShineTerminalBasicInfo {
     public void setHardwareVersion(String hardwareVersion) {
         this.hardwareVersion = hardwareVersion;
     }
+
+
 }

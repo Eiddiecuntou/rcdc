@@ -31,6 +31,15 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     TerminalEntity findTerminalEntityByTerminalId(String terminalId);
 
     /**
+     * 根据terminalId获取terminalName
+     *
+     * @param terminalId 终端id
+     * @return 返回终端名称
+     */
+    @Query("select terminalName from TerminalEntity where terminalId=?1")
+    String getTerminalNameByTerminalId(String terminalId);
+
+    /**
      * 获取终端详细基本信息
      *
      * @param terminalIdList 终端集合
@@ -79,13 +88,11 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      */
     @Modifying
     @Transactional
-    @Query("update TerminalEntity " +
-            "set ip=:#{#network.ip},gateway=:#{#network.gateway},mainDns=:#{network.mainDns}," +
-            "secondDns=:#{network.secondDns},getIpMode=:#{network.getIpMode.ordinal}," +
-            "getDnsMode=:#{network.getDnsMode.ordinal},version=:version+1 " +
-            "where terminalId=:terminalId and version=:version")
+    @Query("update TerminalEntity " + "set ip=:#{#network.ip},gateway=:#{#network.gateway},mainDns=:#{network.mainDns},"
+            + "secondDns=:#{network.secondDns},getIpMode=:#{network.getIpMode.ordinal},"
+            + "getDnsMode=:#{network.getDnsMode.ordinal},version=:version+1 " + "where terminalId=:terminalId and version=:version")
     int modifyTerminalNetworkConfig(@Param("terminalId") String terminalId, @Param("version") Integer version,
-                                    @Param("network") CbbTerminalNetworkRequest network);
+            @Param("network") CbbTerminalNetworkRequest network);
 
     /**
      * 修改终端状态

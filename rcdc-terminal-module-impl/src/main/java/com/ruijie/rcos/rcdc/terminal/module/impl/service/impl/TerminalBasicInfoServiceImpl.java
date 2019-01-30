@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.sk.commkit.base.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -94,5 +95,12 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean isTerminalOnline(String terminalId) {
+        Assert.hasText(terminalId,"terminalId can not empty");
+        Session session = sessionManager.getSession(terminalId);
+        return session == null ? false : true;
     }
 }
