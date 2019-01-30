@@ -38,4 +38,12 @@ public interface TerminalBasicInfoService {
      * @throws BusinessException 业务异常
      */
     void modifyTerminalState(String terminalId, CbbTerminalStateEnums state);
+
+    /**
+     * 判断终端是否在
+     * 
+     * @param terminalId 终端id
+     * @return true 在线，false 离线
+     */
+    boolean isTerminalOnline(String terminalId);
 }

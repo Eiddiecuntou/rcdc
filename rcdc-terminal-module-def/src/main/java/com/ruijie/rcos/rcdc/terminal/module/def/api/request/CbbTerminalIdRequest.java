@@ -16,6 +16,13 @@ public class CbbTerminalIdRequest implements Request {
     @NotBlank
     private String terminalId;
 
+    public CbbTerminalIdRequest() {
+    }
+
+    public CbbTerminalIdRequest(String terminalId) {
+        this.terminalId = terminalId;
+    }
+
     public String getTerminalId() {
         return terminalId;
     }
