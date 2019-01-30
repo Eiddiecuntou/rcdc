@@ -184,6 +184,7 @@ public class TerminalOperateController {
         Assert.notNull(request, "request不能为null");
 
         CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest();
+        idRequest.setTerminalId(request.getTerminalId());
         CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(idRequest);
 
         InputStream inputStream = new FileInputStream(new File(response.getLogFilePath()));
