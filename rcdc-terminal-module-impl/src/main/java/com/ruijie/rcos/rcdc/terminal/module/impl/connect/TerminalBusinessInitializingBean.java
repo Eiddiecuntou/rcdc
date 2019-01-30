@@ -43,7 +43,7 @@ public class TerminalBusinessInitializingBean implements InitializingBean {
             LOGGER.debug("没有需要初始化的终端状态");
             return;
         }
-        LOGGER.debug("存在异常关机导致终端状态不一致的情况，总共有{}台终端状态需要初始化", terminalList.size());
+        LOGGER.warn("存在异常关机导致终端状态不一致的情况，总共有{}台终端状态需要初始化", terminalList.size());
         terminalList.forEach(item ->
                 terminalBasicInfoDAO.modifyTerminalState(item.getTerminalId(), item.getVersion(), CbbTerminalStateEnums.OFFLINE)
         );

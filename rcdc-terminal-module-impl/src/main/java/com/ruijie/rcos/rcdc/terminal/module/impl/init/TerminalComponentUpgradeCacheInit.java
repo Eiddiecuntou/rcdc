@@ -19,7 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.cache.ComponentUpdateListCacheM
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 
 /**
  * 
@@ -31,7 +30,7 @@ import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
  * @author nt
  */
 @Service
-public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitializer {
+public class TerminalComponentUpgradeCacheInit {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalComponentUpgradeCacheInit.class);
 
@@ -39,11 +38,13 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
 
     @Autowired
     private ComponentUpdateListCacheManager cacheManager;
-
-    @Override
+    
+    /**
+     * 更新组件升级缓存
+     */
     public void safeInit() {
         // 读取服务器上组件升级目录下的updatelist,并将其存入缓存中
-        LOGGER.debug("start init updatelist...");
+        LOGGER.info("start init updatelist...");
         File upgradeDirectory = new File(Constants.TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH);
         if (!upgradeDirectory.isDirectory()) {
             LOGGER.debug("linux vdi terminal component upgrade dictory is not exist, the path is {}",
@@ -78,7 +79,7 @@ public class TerminalComponentUpgradeCacheInit implements SafetySingletonInitial
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("cache json : " + JSON.toJSONString(cacheManager.getUpdateListCaches()));
         }
-        LOGGER.debug("finish init updatelist...");
+        LOGGER.info("finish init updatelist...");
     }
 
     private String getUpdatelistFile(File subFile) {

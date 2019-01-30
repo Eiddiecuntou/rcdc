@@ -18,6 +18,17 @@ from Consts import RJ_EXCEPTION_COMMON_ERROR_CODE, ZIP_SUFFIX
 
 FILE_SPERATOR = "/"
 
+LOGGER_PATH = "/var/log/rcdc";
+
+LOGGER_FILE_PATH = "/var/log/rcdc/upgradeLog.log" 
+
+'''
+    创建文件夹
+'''
+def createDirectoty(dirPath):  
+    if not os.path.exists(dirPath):
+        os.makedirs(dirPath, 0755)
+
 def getLogger():
     reload(sys)
     sys.setdefaultencoding('gbk')  # @UndefinedVariable
@@ -30,11 +41,13 @@ def getLogger():
     console.setFormatter(formatter)
     logger.addHandler(console)
     #将日志写入文件
-    filehandler = logging.FileHandler("/opt/upgrade/update_python/upgradeLog.log")
+    logPath = "/var/log/rcdc"
+    if not os.path.exists(LOGGER_PATH):
+        createDirectoty(LOGGER_PATH)
+    filehandler = logging.FileHandler(LOGGER_FILE_PATH)
     filehandler.setLevel(logging.INFO)
     filehandler.setFormatter(formatter)
     logger.addHandler(filehandler)
-#     logger.info(u'你好，张三The program begin to run...')
     return logger
 
 #日志
@@ -47,13 +60,6 @@ class RJUpgradeException(Exception):
         self.code = code
         self.msg = msg
     
-    
-'''
-    创建文件夹
-'''
-def createDirectoty(dirPath):  
-    if not os.path.exists(dirPath):
-        os.makedirs(dirPath)
     
 '''
         执行脚本指令
