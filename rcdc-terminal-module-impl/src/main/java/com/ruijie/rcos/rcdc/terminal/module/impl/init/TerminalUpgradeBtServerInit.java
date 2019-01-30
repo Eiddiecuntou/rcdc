@@ -34,47 +34,60 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     private static final String INIT_COMMAND = "python %s";
 
+    private static final String SYSTEM_PROPERTITY_OS_NAME = "os.name";
+
+    private static final String SYSTEM_OPERATE_WINDOWS = "windows";
+
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
-    
+
     @Autowired
     private TerminalComponentUpgradeCacheInit upgradeCacheInit;
 
     @Override
     public void safeInit() {
+
+        // 添加操作系统判断，使初始化失败不影响开发阶段的调试
+        String system = System.getProperty(SYSTEM_PROPERTITY_OS_NAME);
+        LOGGER.info("server system : {}", system);
+        if (!StringUtils.isBlank(system) && system.toLowerCase().contains(SYSTEM_OPERATE_WINDOWS)) {
+            LOGGER.info("server start in windows, skip upgrade bt share init...");
+            return;
+        }
+
         // bt服务初始化，判断ip是否变更，如果变化则进行bt服务的初始化操作
-//        LOGGER.info("start upgrade bt share init...");
-//        String currentIp = getLocalIP();
-//        String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
-//        if (StringUtils.isBlank(ip)) {
-//            LOGGER.info("ip parameter not exist, start bt share init");
-//            executeUpdate();
-//            return;
-//        }
-//
-//        if (ip.equals(currentIp)) {
-//            LOGGER.info("ip not change");
-//            //更新缓存中的updatelist
-//            upgradeCacheInit.safeInit();
-//            return;
-//        }
-//
-//        LOGGER.info("ip changed, start bt share init");
-//        executeUpdate();
+        LOGGER.info("start upgrade bt share init...");
+        String currentIp = getLocalIP();
+        String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+        if (StringUtils.isBlank(ip)) {
+            LOGGER.info("ip parameter not exist, start bt share init");
+            executeUpdate();
+            return;
+        }
+
+        if (ip.equals(currentIp)) {
+            LOGGER.info("ip not change");
+            // 更新缓存中的updatelist
+            upgradeCacheInit.safeInit();
+            return;
+        }
+
+        LOGGER.info("ip changed, start bt share init");
+        executeUpdate();
     }
 
     private void executeUpdate() {
-//        LOGGER.info("start invoke pythonScript...");
-//        ShellCommandRunner runner = new ShellCommandRunner();
-//        runner.setCommand(String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH));
-//        try {
-//            String outStr = runner.execute(new BtShareInitReturnValueResolver());
-//            LOGGER.debug("out String is :{}", outStr);
-//        } catch (BusinessException e) {
-//            LOGGER.error("bt share init error", e);
-//        }
-//
-//        LOGGER.info("success invoke pythonScript...");
+        LOGGER.info("start invoke pythonScript...");
+        ShellCommandRunner runner = new ShellCommandRunner();
+        runner.setCommand(String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH));
+        try {
+            String outStr = runner.execute(new BtShareInitReturnValueResolver());
+            LOGGER.debug("out String is :{}", outStr);
+        } catch (BusinessException e) {
+            LOGGER.error("bt share init error", e);
+        }
+
+        LOGGER.info("success invoke pythonScript...");
     }
 
 
@@ -88,50 +101,50 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
      * 
      * @author nt
      */
-//    public class BtShareInitReturnValueResolver implements ReturnValueResolver<String> {
-//
-//        @Override
-//        public String resolve(String command, Integer exitValue, String outStr) throws BusinessException {
-//            Assert.hasText(command, "command can not be null");
-//            Assert.notNull(exitValue, "existValue can not be null");
-//            Assert.hasText(outStr, "outStr can not be null");
-//
-//            if (exitValue.intValue() != 0) {
-//                LOGGER.error("bt share init python script execute error, exitValue: {}, outStr: {}", exitValue, outStr);
-//                throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
-//            }
-//
-//            //更新数据库中的服务器ip
-//            globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
-//            //更新缓存中的updatelist
-//            upgradeCacheInit.safeInit();
-//            return outStr;
-//        }
-//
-//    }
+    public class BtShareInitReturnValueResolver implements ReturnValueResolver<String> {
+
+        @Override
+        public String resolve(String command, Integer exitValue, String outStr) throws BusinessException {
+            Assert.hasText(command, "command can not be null");
+            Assert.notNull(exitValue, "existValue can not be null");
+            Assert.hasText(outStr, "outStr can not be null");
+
+            if (exitValue.intValue() != 0) {
+                LOGGER.error("bt share init python script execute error, exitValue: {}, outStr: {}", exitValue, outStr);
+                throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
+            }
+
+            // 更新数据库中的服务器ip
+            globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
+            // 更新缓存中的updatelist
+            upgradeCacheInit.safeInit();
+            return outStr;
+        }
+
+    }
 
     /**
      * 获取ip
      * 
      * @return ip
      */
-//    private static String getLocalIP() {
-//        InetAddress addr = null;
-//        try {
-//            addr = InetAddress.getLocalHost();
-//        } catch (UnknownHostException e) {
-//            LOGGER.error("get localhost address error, {}", e);
-//            throw new RuntimeException("get localhost address error,", e);
-//        }
-//
-//        byte[] ipArr = addr.getAddress();
-//        String ipAddrStr = "";
-//        for (int i = 0; i < ipArr.length; i++) {
-//            if (i > 0) {
-//                ipAddrStr += ".";
-//            }
-//            ipAddrStr += ipArr[i] & 0xFF;
-//        }
-//        return ipAddrStr;
-//    }
+    private static String getLocalIP() {
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            LOGGER.error("get localhost address error, {}", e);
+            throw new RuntimeException("get localhost address error,", e);
+        }
+
+        byte[] ipArr = addr.getAddress();
+        String ipAddrStr = "";
+        for (int i = 0; i < ipArr.length; i++) {
+            if (i > 0) {
+                ipAddrStr += ".";
+            }
+            ipAddrStr += ipArr[i] & 0xFF;
+        }
+        return ipAddrStr;
+    }
 }
