@@ -54,6 +54,8 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
         if (ip.equals(currentIp)) {
             LOGGER.info("ip not change");
+            //更新缓存中的updatelist
+            upgradeCacheInit.safeInit();
             return;
         }
 
