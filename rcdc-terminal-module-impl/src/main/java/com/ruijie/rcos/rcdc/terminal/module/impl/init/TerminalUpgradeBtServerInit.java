@@ -36,29 +36,33 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
+    
+    @Autowired
+    private TerminalComponentUpgradeCacheInit upgradeCacheInit;
 
     @Override
     public void safeInit() {
         // bt服务初始化，判断ip是否变更，如果变化则进行bt服务的初始化操作
+        LOGGER.info("start upgrade bt share init...");
         String currentIp = getLocalIP();
         String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
         if (StringUtils.isBlank(ip)) {
-            LOGGER.debug("ip parameter not exist, start bt share init");
+            LOGGER.info("ip parameter not exist, start bt share init");
             executeUpdate();
             return;
         }
 
         if (ip.equals(currentIp)) {
-            LOGGER.debug("ip not change");
+            LOGGER.info("ip not change");
             return;
         }
 
-        LOGGER.debug("ip changed, start bt share init");
+        LOGGER.info("ip changed, start bt share init");
         executeUpdate();
     }
 
     private void executeUpdate() {
-        LOGGER.debug("start invoke pythonScript...");
+        LOGGER.info("start invoke pythonScript...");
         ShellCommandRunner runner = new ShellCommandRunner();
         runner.setCommand(String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH));
         try {
@@ -68,7 +72,7 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
             LOGGER.error("bt share init error", e);
         }
 
-        LOGGER.debug("success invoke pythonScript...");
+        LOGGER.info("success invoke pythonScript...");
     }
 
 
@@ -95,7 +99,10 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
                 throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
             }
 
+            //更新数据库中的服务器ip
             globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
+            //更新缓存中的updatelist
+            upgradeCacheInit.safeInit();
             return outStr;
         }
 

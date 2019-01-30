@@ -38,6 +38,9 @@ from Consts import *
 # 日志
 logger = getLogger()
 
+#设置umask
+os.umask(022)
+
 # 路径
 tempPath = "/opt/upgrade/app/"
 installPath = "/opt/upgrade/app/terminal_component/terminal_vdi_linux"
