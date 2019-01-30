@@ -60,7 +60,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
             CbbTerminalBasicInfoResponse basicInfo = findBasicInfoByTerminalId(new CbbTerminalIdRequest(terminalId));
             String terminalName = basicInfo.getTerminalName();
             String macAddr = basicInfo.getMacAddr();
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ON_LINE_CANNOT_DELETE, new String[] {terminalName, macAddr});
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[] {terminalName, macAddr});
         }
         
         int effectRow = basicInfoDAO.deleteByTerminalId(terminalId);
