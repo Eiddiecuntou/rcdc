@@ -64,10 +64,12 @@ public class TerminalComponentUpgradeServiceImplTest {
                 returns(null, updatelist);
             }
         };
+        ComponentUpdateListCacheManager.isUpdate = false;
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("123", TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), terminalVersionResultDTO.getResult().intValue());
         TerminalVersionResultDTO terminalVersionResultDTO1 = serviceImpl.getVersion("123", TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), terminalVersionResultDTO1.getResult().intValue());
+        ComponentUpdateListCacheManager.isUpdate = true;
     }
     
     /**
@@ -88,8 +90,10 @@ public class TerminalComponentUpgradeServiceImplTest {
                 result = updatelist;
             }
         };
+        ComponentUpdateListCacheManager.isUpdate = false;
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.1.0.1", TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), terminalVersionResultDTO.getResult().intValue());
+        ComponentUpdateListCacheManager.isUpdate = true;
     }
     
     /**
@@ -111,8 +115,10 @@ public class TerminalComponentUpgradeServiceImplTest {
                 result = updatelist;
             }
         };
+        ComponentUpdateListCacheManager.isUpdate = false;
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("111", TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(), terminalVersionResultDTO.getResult().intValue());
+        ComponentUpdateListCacheManager.isUpdate = true;
     }
     
     /**
@@ -134,8 +140,10 @@ public class TerminalComponentUpgradeServiceImplTest {
                 result = updatelist;
             }
         };
+        ComponentUpdateListCacheManager.isUpdate = false;
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.0.0.1", TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), terminalVersionResultDTO.getResult().intValue());
+        ComponentUpdateListCacheManager.isUpdate = true;
     }
     
     /**
@@ -151,16 +159,9 @@ public class TerminalComponentUpgradeServiceImplTest {
         updatelist.setComponentSize(1);
         updatelist.setBaseVersion("1.0.2.1");
         updatelist.setLimitVersion("1.0.1.1");
-        new Expectations() {
-            {
-                cacheManager.getCache(TerminalPlatformEnums.VDI);
-                result = updatelist;
-            }
-        };
-        ComponentUpdateListCacheManager.isUpdate = true;
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.0.1.1", TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), terminalVersionResultDTO.getResult().intValue());
-        ComponentUpdateListCacheManager.isUpdate = false;
+        
     }
 
 }

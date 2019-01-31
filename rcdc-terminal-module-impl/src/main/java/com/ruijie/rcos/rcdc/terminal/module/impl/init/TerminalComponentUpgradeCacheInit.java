@@ -45,6 +45,7 @@ public class TerminalComponentUpgradeCacheInit {
     public void safeInit() {
         // 读取服务器上组件升级目录下的updatelist,并将其存入缓存中
         LOGGER.info("start init updatelist...");
+        
         File upgradeDirectory = new File(Constants.TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH);
         if (!upgradeDirectory.isDirectory()) {
             LOGGER.debug("linux vdi terminal component upgrade dictory is not exist, the path is {}",
@@ -79,6 +80,9 @@ public class TerminalComponentUpgradeCacheInit {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("cache json : " + JSON.toJSONString(cacheManager.getUpdateListCaches()));
         }
+        
+        //完成初始化后将updatelist缓存状态更新为false
+        ComponentUpdateListCacheManager.isUpdate = false;
         LOGGER.info("finish init updatelist...");
     }
 

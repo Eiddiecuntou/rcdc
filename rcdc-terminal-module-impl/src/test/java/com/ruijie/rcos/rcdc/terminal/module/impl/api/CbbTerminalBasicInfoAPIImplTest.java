@@ -7,6 +7,7 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -17,6 +18,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.Expectations;
@@ -46,6 +48,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
     
     @Injectable
     private TerminalBasicInfoService basicInfoService;
+    
+    @Injectable
+    private TerminalBasicInfoServiceTx terminalBasicInfoServiceTx;
 
     /**
      * 查找不到数据
@@ -128,15 +133,15 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     /**
      * 测试删除终端失败
+     * @throws BusinessException 
      */
     @Test
-    public void testDeleteSuccess() {
+    public void testDeleteSuccess() throws BusinessException {
         TerminalEntity entity = new TerminalEntity();
         entity.setVersion(1);
         new Expectations() {
             {
-                basicInfoDAO.deleteByTerminalId(anyString);
-                result = 1;
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
             }
         };
 
@@ -150,7 +155,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
         new Verifications() {
             {
-                basicInfoDAO.deleteByTerminalId(anyString);
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
                 times = 1;
             }
         };
@@ -158,15 +163,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     /**
      * 测试删除终端-数据不存在
+     * @throws BusinessException 
      */
     @Test
-    public void testDeleteNoExistData() {
-        new Expectations() {
-            {
-                basicInfoDAO.deleteByTerminalId(anyString);
-                result = 0;
-            }
-        };
+    public void testDeleteNoExistData() throws BusinessException {
 
         new MockUp<CbbTerminalBasicInfoAPIImpl>() {
             @Mock
@@ -179,14 +179,13 @@ public class CbbTerminalBasicInfoAPIImplTest {
         request.setTerminalId("123");
         try {
             terminalBasicInfoAPI.delete(request);
+        } catch (Exception e) {
             fail();
-        } catch (BusinessException e) {
-            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
 
         new Verifications() {
             {
-                basicInfoDAO.deleteByTerminalId(anyString);
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
                 times = 1;
             }
         };

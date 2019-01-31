@@ -23,7 +23,7 @@ public class ComponentUpdateListCacheManager {
     /**
      * updatelist更新状态
      */
-    public static boolean isUpdate = false;
+    public static boolean isUpdate = true;
 
     
     private static final Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> UPDATE_LIST_CACHE_MAP =

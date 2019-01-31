@@ -23,7 +23,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoRespon
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -131,6 +130,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         List<TerminalDetectionEntity> detectionList = page.getContent();
         int size = detectionList.size();
         CbbTerminalDetectDTO[] detectDTOArr = new CbbTerminalDetectDTO[size];
+        
         Stream.iterate(0, i -> i + 1).limit(size).forEach(i -> {
             CbbTerminalDetectDTO detectDTO = new CbbTerminalDetectDTO();
             TerminalDetectionEntity detectionEntity = detectionList.get(i);
@@ -138,8 +138,10 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             setThreshold(detectDTO);
             TerminalEntity terminalEntity =
                     terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
-            detectDTO.setIp(terminalEntity.getIp());
-            detectDTO.setTerminalName(terminalEntity.getTerminalName());
+            if (terminalEntity != null) {
+                detectDTO.setIp(terminalEntity.getIp());
+                detectDTO.setTerminalName(terminalEntity.getTerminalName());
+            }
             detectDTOArr[i] = detectDTO;
         });
 
