@@ -128,4 +128,11 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
      */
     List<TerminalDetectionEntity> findByDetectStateAndDetectTimeBefore(DetectStateEnums state, Date date);
 
+    /**
+     * 删除终端检测记录
+     * @param terminalId 终端id
+     * @return 删除影响行数
+     */
+    int deleteByTerminalId(String terminalId);
+
 }

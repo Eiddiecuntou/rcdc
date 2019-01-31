@@ -37,6 +37,14 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         Assert.hasText(rainUpgradeVersion, "rainOsVersion can not be blank");
         Assert.notNull(platform, "platform can not be null");
 
+        LOGGER.info("upgrade platform : {}, version : {}", platform, rainUpgradeVersion);
+        // 判断updatelist是否处于更新中，若处于更新中，则为未就绪状态
+        if (ComponentUpdateListCacheManager.isUpdate) {
+            LOGGER.debug("component is preparing, return preparing");
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(),
+                    new CbbTerminalComponentUpdateListDTO());
+        }
+
         CbbTerminalComponentUpdateListDTO updatelist = cacheManager.getCache(platform);
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
@@ -44,7 +52,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
                     new CbbTerminalComponentUpdateListDTO());
         }
-        
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("updatelist : {}", JSON.toJSONString(updatelist));
         }
@@ -65,14 +73,6 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         if (terminalVersion != 0 && compareVersion(updatelist.getLimitVersion(), rainUpgradeVersion)) {
             LOGGER.debug("limit version is big, return not support");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
-                    updatelistDTO);
-        }
-
-        // 判断updatelist是否处于更新中，若处于更新中，则为未就绪状态
-        // TODO 在ip变更spi中需将isupdate设置为更新中状态
-        if (ComponentUpdateListCacheManager.isUpdate) {
-            LOGGER.debug("component is preparing, return preparing");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(),
                     updatelistDTO);
         }
 
