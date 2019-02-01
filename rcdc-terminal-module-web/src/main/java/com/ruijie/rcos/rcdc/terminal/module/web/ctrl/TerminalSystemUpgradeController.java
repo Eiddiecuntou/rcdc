@@ -1,5 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -7,18 +11,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradeTaskDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbBaseListResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.DeleteTerminalUpgradeBatchTaskHandler;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalIdMappingUtils;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalUpgradeBatchTaskHandler;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalUpgradeBatchTaskItem;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.CreateTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.DeleteTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradePackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.request.ListTerminalSystemUpgradeRequest;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
+import com.ruijie.rcos.sk.base.batch.DefaultBatchTaskItem;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -107,36 +114,26 @@ public class TerminalSystemUpgradeController {
      */
     @RequestMapping("create")
     public DefaultWebResponse create(CreateTerminalSystemUpgradeRequest request,
-            ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+            ProgrammaticOptLogRecorder optLogRecorder, BatchTaskBuilder builder) throws BusinessException {
         Assert.notNull(request, "CreateTerminalSystemUpgradeRequest can not be null");
         Assert.notNull(optLogRecorder, "optLogRecorder can not be null");
+        Assert.notNull(builder, "builder不能为null");
 
-
-        // TODO 批处理框架
+        String[] terminalIdArr = request.getTerminalIdArr();
         TerminalPlatformEnums platform = request.getPlatform();
-        for (String terminalId : request.getTerminalIdArr()) {
-            addUpgradeTaskAddOptLog(terminalId, platform, optLogRecorder);
-        }
+        Map<UUID, String> idMap = TerminalIdMappingUtils.mapping(terminalIdArr);
+        UUID[] idArr = TerminalIdMappingUtils.extractUUID(idMap);
+        final Iterator<TerminalUpgradeBatchTaskItem> iterator =
+                Stream.of(idArr).map(id -> new TerminalUpgradeBatchTaskItem(id, BusinessKey.RCDC_TERMINAL_UPGRADE_ITEM_NAME, platform)).iterator();
+        TerminalUpgradeBatchTaskHandler handler =
+                new TerminalUpgradeBatchTaskHandler(this.cbbTerminalUpgradeAPI, idMap, iterator, optLogRecorder);
+
+        builder.setTaskName(BusinessKey.RCDC_TERMINAL_UPGRADE_TASK_NAME, new String[] {})
+                .setTaskDesc(BusinessKey.RCDC_TERMINAL_UPGRADE_TASK_DESC, new String[] {}) //
+                .registerHandler(handler) //
+                .start();
 
         return DefaultWebResponse.Builder.success();
-    }
-
-
-    private void addUpgradeTaskAddOptLog(String terminalId, TerminalPlatformEnums platform,
-            ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
-        CbbAddTerminalSystemUpgradeTaskRequest addRequest = new CbbAddTerminalSystemUpgradeTaskRequest();
-        addRequest.setTerminalId(terminalId);
-        addRequest.setPlatform(platform);
-        try {
-            cbbTerminalUpgradeAPI.addSystemUpgradeTask(addRequest);
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_SUCCESS_LOG, terminalId);
-        } catch (BusinessException ex) {
-            // 添加升级失败
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG, terminalId,
-                    ex.getI18nMessage());
-            throw ex;
-        }
-
     }
 
     /**
@@ -157,28 +154,23 @@ public class TerminalSystemUpgradeController {
         Assert.notNull(builder, "builder can not be null");
 
         LOGGER.warn("start remove system upgrade task...");
-        final String[] idArr = request.getIdArr();
 
-        for (String terminalId : request.getIdArr()) {
-            deleteAddOptLog(terminalId, optLogRecorder);
-        }
+        String[] terminalIdArr = request.getIdArr();
+        Map<UUID, String> idMap = TerminalIdMappingUtils.mapping(terminalIdArr);
+        UUID[] idArr = TerminalIdMappingUtils.extractUUID(idMap);
+
+        final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr)
+                .map(id -> DefaultBatchTaskItem.builder().itemId(id).itemName("删除终端升级").build()).iterator();
+        DeleteTerminalUpgradeBatchTaskHandler handler =
+                new DeleteTerminalUpgradeBatchTaskHandler(this.cbbTerminalUpgradeAPI, idMap, iterator, optLogRecorder);
+
+        builder.setTaskName(BusinessKey.RCDC_TERMINAL_DELETE_UPGRADE_TASK_NAME, new String[] {})
+                .setTaskDesc(BusinessKey.RCDC_TERMINAL_DELETE_UPGRADE_TASK_DESC, new String[] {}) //
+                .registerHandler(handler) //
+                .start();
+
         LOGGER.warn("finish remove system upgrade task");
         return DefaultWebResponse.Builder.success();
-    }
-
-    private void deleteAddOptLog(String terminalId, ProgrammaticOptLogRecorder optLogRecorder)
-            throws BusinessException {
-        CbbRemoveTerminalSystemUpgradeTaskRequest removeRequest = new CbbRemoveTerminalSystemUpgradeTaskRequest();
-        removeRequest.setTerminalId(terminalId);
-        try {
-            cbbTerminalUpgradeAPI.removeTerminalSystemUpgradeTask(removeRequest);
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_SUCCESS_LOG, terminalId);
-        } catch (BusinessException ex) {
-            // 批量删除升级失败
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG, terminalId,
-                    ex.getI18nMessage());
-            throw ex;
-        }
     }
 
     /**

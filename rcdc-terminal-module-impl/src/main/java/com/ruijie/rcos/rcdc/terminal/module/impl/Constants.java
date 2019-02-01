@@ -75,14 +75,24 @@ public interface Constants {
     String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "/opt/system_img/amount/";
 
     /**
-     * TODO 系统刷机包版本文件路径
+     * 系统刷机包版本文件路径
      */
-    String TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH = "";
+    String TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH = "/home/partimag/rainos-img";
 
     /**
      * 系统刷机包镜像文件路径
      */
     String TERMINAL_UPGRADE_ISO_IMG_FILE_PATH = "/home/partimag/";
+    
+    /**
+     * 系统刷机开始状态文件路径
+     */
+    String TERMINAL_UPGRADE_START_SATTUS_FILE_PATH = "/opt/pxeuser/mac_begin/";
+    
+    /**
+     * 系统刷机包镜像文件路径
+     */
+    String TERMINAL_UPGRADE_END_SATTUS_FILE_PATH = "/opt/pxeuser/mac_end/";
 
     /**
      * 系统镜像挂载指令
@@ -118,5 +128,10 @@ public interface Constants {
      * 终端检测超时时间（单位:秒）
      */
     int TERMINAL_DETECT_TIMEOUT = 120;
+    
+    /**
+     * 文件后缀名分隔符
+     */
+    String FILE_SUFFIX_DOT = ".";
 
 }

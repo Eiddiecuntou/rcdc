@@ -1,9 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import org.springframework.util.Assert;
+import com.google.common.io.PatternFilenameFilter;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
 /**
  * 
@@ -15,7 +20,8 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
  * @author nt
  */
 public class FileOperateUtil {
-
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileOperateUtil.class);
 
     /**
      * 
@@ -88,30 +94,32 @@ public class FileOperateUtil {
             throws BusinessException {
         File packageDir = checkAndGetDirectory(directoryPath);
 
-        String[] childrenArr = packageDir.list();
+        File[] childrenArr = packageDir.listFiles();
         if (childrenArr == null || childrenArr.length == 0) {
+            LOGGER.debug("path [{}] no sub file", directoryPath);
             return;
         }
         
-        File subFile = null;
-        for (String sub : childrenArr) {
+        for (File subFile : childrenArr) {
             // 排除外的文件不删除
-            if (sub.equals(exceptFileName)) {
+            String fileName = subFile.getName();
+            if (fileName.equals(exceptFileName)) {
+                LOGGER.debug("skip except file[{}]", exceptFileName);
                 continue;
             }
 
-            subFile = new File(sub);
+            boolean isDelete = false;
             if (subFile.isFile()) {
-                try {
-                    // TODO 删除用国祥提供的工具类
-                    subFile.delete();
-                } catch (Exception e) {
-                    throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
-                }
+                LOGGER.debug("delete file[{}]", fileName);
+                SkyengineFile skFile = new SkyengineFile(subFile);
+                isDelete = skFile.delete();
+            }
+            if (!isDelete) {
+                throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL);
             }
         }
     }
-
+    
     private static File checkAndGetDirectory(final String directoryPath) throws BusinessException {
         File packageDir = new File(directoryPath);
         if (!packageDir.exists() || !packageDir.isDirectory()) {

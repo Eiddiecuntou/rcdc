@@ -40,15 +40,9 @@ public class ModelBeanTest {
         tester.runTest();
         TerminalSystemUpgradeInfo upgradeInfo = new TerminalSystemUpgradeInfo();
         upgradeInfo.setTerminalId("1");
-        upgradeInfo.setExternalVersion("1.0.1");
-        upgradeInfo.setInternalVersion("1.0.0");
-        upgradeInfo.setPlatform(TerminalPlatformEnums.VDI);
         upgradeInfo.setState(CbbSystemUpgradeStateEnums.SUCCESS);
-        upgradeInfo.setLastUpdateTime(1000L);
         
-        String string = "TerminalSystemUpgradeInfo [terminalId=1, platform=" + TerminalPlatformEnums.VDI.toString() + ", state=" 
-                + CbbSystemUpgradeStateEnums.SUCCESS.toString() + ", internalVersion=1.0.0, externalVersion=1.0.1,"
-                + " lastUpdateTime=" + 1000 + "]";
+        String string = "TerminalSystemUpgradeInfo [terminalId=1, state=" + CbbSystemUpgradeStateEnums.SUCCESS + "]";
         assertEquals(string, upgradeInfo.toString());
     }
     

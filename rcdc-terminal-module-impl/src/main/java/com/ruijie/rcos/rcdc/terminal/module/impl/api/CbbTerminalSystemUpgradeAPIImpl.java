@@ -43,6 +43,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.NfsServiceUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
@@ -157,16 +158,34 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     private void mountUpgradePackage(final String filePath) throws BusinessException {
         LOGGER.debug("mount package, path is [{}]", filePath);
-        // TODO 改为框架提供的ShellCommandRunner
-        CmdExecuteUtil.executeCmd(String.format(Constants.SYSTEM_CMD_MOUNT_UPGRADE_ISO, filePath,
-                Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH));
+        String mountCmd = String.format(Constants.SYSTEM_CMD_MOUNT_UPGRADE_ISO, filePath,
+                Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
+
+        LOGGER.info("mount package, cmd : {}", mountCmd);
+        runShellCommand(mountCmd);
+        LOGGER.info("mount package success");
     }
 
     private void umountUpgradePackage(final String filePath) throws BusinessException {
         LOGGER.debug("umount package, path is [{}]", filePath);
-        // TODO 改为框架提供的ShellCommandRunner
-        CmdExecuteUtil.executeCmd(String.format(Constants.SYSTEM_CMD_UMOUNT_UPGRADE_ISO, filePath,
-                Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH));
+        String umountCmd = String.format(Constants.SYSTEM_CMD_UMOUNT_UPGRADE_ISO, filePath,
+                Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
+
+        LOGGER.info("umount package, cmd : {}", umountCmd);
+        runShellCommand(umountCmd);
+        LOGGER.info("umount package success");
+    }
+
+    private void runShellCommand(String cmd) throws BusinessException {
+        ShellCommandRunner runner = new ShellCommandRunner();
+        runner.setCommand(cmd);
+        try {
+            String outStr = runner.execute();
+            LOGGER.debug("out String is :{}", outStr);
+        } catch (BusinessException e) {
+            LOGGER.error("shell command execute error", e);
+            throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e);
+        }
     }
 
     private TerminalUpgradeVersionFileInfo checkVersionFile() throws BusinessException {
@@ -232,7 +251,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
                     request.getPaltform());
             return new CbbBaseListResponse<>();
         }
-        CbbTerminalSystemUpgradePackageInfoDTO[] dtoArr = new CbbTerminalSystemUpgradePackageInfoDTO[packageList.size()];
+        CbbTerminalSystemUpgradePackageInfoDTO[] dtoArr =
+                new CbbTerminalSystemUpgradePackageInfoDTO[packageList.size()];
         Stream.iterate(0, i -> i + 1).limit(packageList.size()).forEach(i -> {
             CbbTerminalSystemUpgradePackageInfoDTO dto = new CbbTerminalSystemUpgradePackageInfoDTO();
             PACKAGE_BEAN_COPIER.copy(packageList.get(i), dto, null);

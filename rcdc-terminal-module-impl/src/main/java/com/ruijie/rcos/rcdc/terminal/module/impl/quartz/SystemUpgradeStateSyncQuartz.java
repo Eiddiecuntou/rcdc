@@ -14,6 +14,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.quartz.Quartz;
@@ -32,7 +33,7 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
 @GlobalUniqueBean("upgradeStateSyncQuartz")
 @Quartz(cron = "0/10 * *  * * ?", msgKey = BusinessKey.RCDC_TERMINAL_QUARTZ_SYSTEM_UPGRADE_STATE_SYNC)
 public class SystemUpgradeStateSyncQuartz implements QuartzTask {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeStateSyncQuartz.class);
 
     @Autowired
@@ -40,29 +41,31 @@ public class SystemUpgradeStateSyncQuartz implements QuartzTask {
 
     @Autowired
     private TerminalSystemUpgradeService terminalSystemUpgradeService;
-    
-    @Autowired
-    private TerminalBasicInfoDAO baiscInfoDAO;
+
 
     @Override
     public void execute() throws Exception {
         LOGGER.debug("start to synchronize system upgrade state...");
-        syncState();
+        try {
+            syncState();
+        } catch (BusinessException e) {
+            LOGGER.error("synchronize system upgrade state error", e);
+        }
         LOGGER.debug("finish synchronize system upgrade state");
     }
 
-    private void syncState() {
-     // 获取缓存中的升级中的任务
+    private void syncState() throws BusinessException {
+        // 获取缓存中的升级中的任务
         List<SystemUpgradeTask> upgradingTaskList = taskManager.getUpgradingTask();
+        if (CollectionUtils.isEmpty(upgradingTaskList)) {
+            LOGGER.info("no upgrading task in cache");
+            return;
+        }
         // 获取文件系统中的升级信息
         List<TerminalSystemUpgradeInfo> systemUpgradeInfoList =
                 terminalSystemUpgradeService.readSystemUpgradeStateFromFile();
         if (systemUpgradeInfoList == null) {
-            LOGGER.info("upgrade info in file is null");
-            systemUpgradeInfoList = Collections.emptyList();
-        }
-        if (CollectionUtils.isEmpty(upgradingTaskList)) {
-            LOGGER.info("no upgrading task in cache");
+            LOGGER.info("upgrade info in directory is null");
             return;
         }
 
@@ -77,31 +80,18 @@ public class SystemUpgradeStateSyncQuartz implements QuartzTask {
                     iterator.remove();
                     break;
                 }
-
             }
             if (matchInfo == null) {
                 // 无终端升级状态信息
-                LOGGER.debug("no upgrade info, terminal id [{}]",
-                        task.getTerminalId());
-                return;
-            } else {
-                // 根据终端升级信息状态同步
-                LOGGER.debug("start to synchonize task state with upgrade info, terminal id [{}]",
-                        task.getTerminalId());
-                synchronizeStateWithMatchUpgradeInfo(task, matchInfo);
+                LOGGER.debug("no upgrade info, terminal id [{}]", task.getTerminalId());
+                continue;
             }
-        }
-    }
-    
-    private void synchronizeStateWithMatchUpgradeInfo(SystemUpgradeTask task, TerminalSystemUpgradeInfo matchInfo) {
-        // TODO 根据终端升级信息状态同步,还需同数据库中的终端状态进行比对
-        TerminalEntity terminal = baiscInfoDAO.findTerminalEntityByTerminalId(task.getTerminalId());
-        if (terminal.getState() == CbbTerminalStateEnums.ONLINE) {
-            task.setState(CbbSystemUpgradeStateEnums.SUCCESS);
-            return;
-        }
-        task.setState(matchInfo.getState());
-    }
 
+            // 根据终端升级信息状态同步
+            LOGGER.debug("start to synchonize task state with upgrade info, terminal id [{}]", task.getTerminalId());
+            // 同步终端升级信息状态
+            task.setState(matchInfo.getState());
+        }
+    }
 
 }

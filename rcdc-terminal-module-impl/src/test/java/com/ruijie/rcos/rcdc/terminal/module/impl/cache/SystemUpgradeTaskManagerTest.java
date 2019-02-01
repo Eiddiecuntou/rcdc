@@ -100,12 +100,11 @@ public class SystemUpgradeTaskManagerTest {
 
         String terminalId = "id";
         TerminalPlatformEnums terminalType = TerminalPlatformEnums.IDV;
-        SystemUpgradeTask addTask = manager.addTask(terminalId, terminalType);
+        manager.addTask(terminalId, terminalType);
         Assert.assertEquals(1, manager.getTaskMap().size());
 
-        SystemUpgradeTask removeTask = manager.removeTaskByTerminalId(terminalId);
+        manager.removeTaskByTerminalId(terminalId);
         Assert.assertEquals(0, manager.getTaskMap().size());
-        Assert.assertTrue(addTask == removeTask);
         caches.clear();
     }
 
@@ -461,7 +460,6 @@ public class SystemUpgradeTaskManagerTest {
         task.setTerminalId(terminalId);
         task.setPlatform(terminalType);
         task.setStartTime(System.currentTimeMillis());
-        task.setTimeStamp(System.currentTimeMillis());
         task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(false);
         return task;

@@ -125,7 +125,6 @@ public class SystemUpgradeStateSyncQuartzTest {
         task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(true);
         task.setStartTime(System.currentTimeMillis() - 50000);
-        task.setTimeStamp(System.currentTimeMillis() - 10000);
 
         return task;
     }
@@ -136,7 +135,6 @@ public class SystemUpgradeStateSyncQuartzTest {
         TerminalPlatformEnums terminalType = TerminalPlatformEnums.VDI;
         for (int i = 0; i < 10; i++) {
             TerminalSystemUpgradeInfo info = buildUpgradeInfo(baseTerminalId + i, terminalType);
-            info.setLastUpdateTime(System.currentTimeMillis() - 3000);
             if (i % 2 == 0) {
                 info.setState(CbbSystemUpgradeStateEnums.UPGRADING);
             } else {
@@ -146,7 +144,6 @@ public class SystemUpgradeStateSyncQuartzTest {
         }
 
         TerminalSystemUpgradeInfo notIncacheInfo = buildUpgradeInfo(baseTerminalId + 12, terminalType);
-        notIncacheInfo.setLastUpdateTime(System.currentTimeMillis() - 3000);
         notIncacheInfo.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         upgradeInfoList.add(notIncacheInfo);
 
@@ -165,13 +162,10 @@ public class SystemUpgradeStateSyncQuartzTest {
         upgradeInfoList.add(info1);
 
         TerminalSystemUpgradeInfo info2 = buildUpgradeInfo(baseTerminalId, terminalType);
-        info2.setLastUpdateTime(System.currentTimeMillis());
         upgradeInfoList.add(info2);
 
         TerminalSystemUpgradeInfo info4 = buildUpgradeInfo(baseTerminalId, terminalType);
-        info4.setLastUpdateTime(System.currentTimeMillis());
         info4.setState(CbbSystemUpgradeStateEnums.UPGRADING);
-        info4.setPlatform(null);
         upgradeInfoList.add(info4);
     }
 
@@ -179,9 +173,6 @@ public class SystemUpgradeStateSyncQuartzTest {
     private TerminalSystemUpgradeInfo buildUpgradeInfo(String terminalId, TerminalPlatformEnums terminalType) {
         TerminalSystemUpgradeInfo info = new TerminalSystemUpgradeInfo();
         info.setTerminalId(terminalId);
-        info.setPlatform(terminalType);
-        info.setExternalVersion("ExternalVersion");
-        info.setInternalVersion("InternalVersion");
 
         return info;
     }

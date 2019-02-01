@@ -231,9 +231,10 @@ public class TerminalSystemUpgradeServiceImplTest {
 
     /**
      * 测试从文件中读取系统升级状态信息
+     * @throws BusinessException 
      */
     @Test
-    public void testReadSystemUpgradeStateFromFile() {
+    public void testReadSystemUpgradeStateFromFile() throws BusinessException {
 
         List<TerminalSystemUpgradeInfo> stateInfoList = terminalSystemUpgradeService.readSystemUpgradeStateFromFile();
         Assert.assertEquals(null, stateInfoList);

@@ -41,11 +41,6 @@ public class SystemUpgradeTask {
     private TerminalPlatformEnums platform;
 
     /**
-     * 心跳时间
-     */
-    private Long timeStamp;
-
-    /**
      * 是否发送升级指令
      */
     private Boolean isSend;
@@ -99,19 +94,10 @@ public class SystemUpgradeTask {
         this.isSend = isSend;
     }
 
-    public Long getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(Long timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
     @Override
     public String toString() {
         return "SystemUpgradeTask [terminalId=" + terminalId + ", terminalName=" + terminalName + ", startTime="
-                + startTime + ", state=" + state + ", platform=" + platform + ", timeStamp=" + timeStamp + ", isSend="
-                + isSend + "]";
+                + startTime + ", state=" + state + ", platform=" + platform + ", isSend=" + isSend + "]";
     }
 
 }
