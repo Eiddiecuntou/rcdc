@@ -69,7 +69,6 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         }
 
         // 判断updatelist是否处于更新中，若处于更新中，则为未就绪状态
-        // TODO 在ip变更spi中需将isupdate设置为更新中状态
         if (ComponentUpdateListCacheManager.isUpdate) {
             LOGGER.debug("component is preparing, return preparing");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(),

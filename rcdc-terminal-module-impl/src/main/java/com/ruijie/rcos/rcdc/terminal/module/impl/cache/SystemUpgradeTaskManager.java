@@ -3,13 +3,19 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -34,7 +40,8 @@ public class SystemUpgradeTaskManager {
     /**
      * 升级任务集合
      */
-    private static final Map<String, SystemUpgradeTask> TASK_MAP = new LinkedHashMap<>();
+    private static final Cache<String, SystemUpgradeTask> TASK_CACHE = CacheBuilder.newBuilder().maximumSize(150)
+            .expireAfterWrite(2, TimeUnit.HOURS).removalListener(new TimeoutListener()).build();
 
     /**
      * 最大同时刷机数
@@ -60,15 +67,15 @@ public class SystemUpgradeTaskManager {
         Assert.notNull(platform, "terminalType can not be null");
 
         // 队列中已经有升级任务
-        SystemUpgradeTask systemUpgradeTask = TASK_MAP.get(terminalId);
+        SystemUpgradeTask systemUpgradeTask = TASK_CACHE.getIfPresent(terminalId);
         if (systemUpgradeTask != null) {
             LOGGER.debug("system upgrade task has exist, terminalId[{}], terminalType[{}]", terminalId, platform);
             return systemUpgradeTask;
         }
 
         SystemUpgradeTask task = buildSystemUpgradeTask(terminalId, platform);
-        synchronized (TASK_MAP) {
-            if (TASK_MAP.size() >= TASK_MAP_MAX_NUM) {
+        synchronized (TASK_CACHE) {
+            if (TASK_CACHE.size() >= TASK_MAP_MAX_NUM) {
                 LOGGER.debug("system upgrade task map exceed limit number, terminalId[{}], terminalType[{}]",
                         terminalId, platform);
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_NUM_EXCEED_LIMIT);
@@ -79,7 +86,7 @@ public class SystemUpgradeTaskManager {
                         terminalId, platform);
                 task.setState(CbbSystemUpgradeStateEnums.WAIT);
             }
-            TASK_MAP.put(terminalId, task);
+            TASK_CACHE.put(terminalId, task);
         }
         return task;
     }
@@ -90,7 +97,6 @@ public class SystemUpgradeTaskManager {
         task.setPlatform(platform);
         long currentTime = System.currentTimeMillis();
         task.setStartTime(currentTime);
-        task.setTimeStamp(currentTime);
         task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(false);
         return task;
@@ -102,9 +108,9 @@ public class SystemUpgradeTaskManager {
      * @param terminalId 终端id
      * @return 移除的升级任务
      */
-    public SystemUpgradeTask removeTaskByTerminalId(String terminalId) {
+    public void removeTaskByTerminalId(String terminalId) {
         Assert.hasLength(terminalId, "terminalId 不能为空");
-        return TASK_MAP.remove(terminalId);
+        TASK_CACHE.invalidate(terminalId);
     }
 
     /**
@@ -118,7 +124,7 @@ public class SystemUpgradeTaskManager {
         Assert.hasLength(terminalId, "terminalId 不能为空");
         Assert.notNull(state, "systemUpgradeState 不能为空");
 
-        SystemUpgradeTask task = TASK_MAP.get(terminalId);
+        SystemUpgradeTask task = TASK_CACHE.getIfPresent(terminalId);
         if (task != null) {
             LOGGER.debug("task is not null; terminal id[{}]", task.getTerminalId());
             task.setState(state);
@@ -134,7 +140,7 @@ public class SystemUpgradeTaskManager {
      */
     public SystemUpgradeTask getTaskByTerminalId(String terminalId) {
         Assert.hasLength(terminalId, "terminalId 不能为空");
-        return TASK_MAP.get(terminalId);
+        return TASK_CACHE.getIfPresent(terminalId);
     }
 
     /**
@@ -144,7 +150,12 @@ public class SystemUpgradeTaskManager {
      */
     public int countUpgradingNum() {
         int count = 0;
-        Set<Entry<String, SystemUpgradeTask>> entrySet = TASK_MAP.entrySet();
+        ConcurrentMap<String, SystemUpgradeTask> taskMap = TASK_CACHE.asMap();
+        if (CollectionUtils.isEmpty(taskMap)) {
+            LOGGER.debug("no task in cache");
+            return 0;
+        }
+        Set<Entry<String, SystemUpgradeTask>> entrySet = taskMap.entrySet();
         for (Iterator<Entry<String, SystemUpgradeTask>> it = entrySet.iterator(); it.hasNext();) {
             SystemUpgradeTask task = it.next().getValue();
             if (task.getState() == CbbSystemUpgradeStateEnums.UPGRADING) {
@@ -162,7 +173,7 @@ public class SystemUpgradeTaskManager {
      * @return 升级任务队列缓存
      */
     public Map<String, SystemUpgradeTask> getTaskMap() {
-        return TASK_MAP;
+        return TASK_CACHE.asMap();
     }
 
 
@@ -173,7 +184,8 @@ public class SystemUpgradeTaskManager {
      */
     public List<SystemUpgradeTask> getUpgradingTask() {
         List<SystemUpgradeTask> upgradingTaskList = new ArrayList<>();
-        for (Iterator<Entry<String, SystemUpgradeTask>> it = TASK_MAP.entrySet().iterator(); it.hasNext();) {
+        ConcurrentMap<String, SystemUpgradeTask> taskMap = TASK_CACHE.asMap();
+        for (Iterator<Entry<String, SystemUpgradeTask>> it = taskMap.entrySet().iterator(); it.hasNext();) {
             SystemUpgradeTask task = it.next().getValue();
             if (task.getState() == CbbSystemUpgradeStateEnums.UPGRADING) {
                 LOGGER.debug("task is doing; terminal id[{}]", task.getTerminalId());
@@ -191,7 +203,8 @@ public class SystemUpgradeTaskManager {
      */
     public List<SystemUpgradeTask> getAllTasks() {
         List<SystemUpgradeTask> upgradeTaskList = new ArrayList<>();
-        for (Iterator<Entry<String, SystemUpgradeTask>> it = TASK_MAP.entrySet().iterator(); it.hasNext();) {
+        ConcurrentMap<String, SystemUpgradeTask> taskMap = TASK_CACHE.asMap();
+        for (Iterator<Entry<String, SystemUpgradeTask>> it = taskMap.entrySet().iterator(); it.hasNext();) {
             upgradeTaskList.add(it.next().getValue());
         }
         return upgradeTaskList;
@@ -212,7 +225,8 @@ public class SystemUpgradeTaskManager {
         }
 
         List<SystemUpgradeTask> startTaskList = new ArrayList<>();
-        for (Iterator<Entry<String, SystemUpgradeTask>> it = TASK_MAP.entrySet().iterator(); it.hasNext();) {
+        ConcurrentMap<String, SystemUpgradeTask> taskMap = TASK_CACHE.asMap();
+        for (Iterator<Entry<String, SystemUpgradeTask>> it = taskMap.entrySet().iterator(); it.hasNext();) {
             if (count <= 0) {
                 LOGGER.debug("system upgrade task doing number exceed limit number, stop to start task");
                 break;
@@ -259,7 +273,7 @@ public class SystemUpgradeTaskManager {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_STATE_INCORRECT);
         }
 
-        synchronized (TASK_MAP) {
+        synchronized (TASK_CACHE) {
             int count = countUpgradingNum();
             if (count >= UPGRADING_MAX_NUM) {
                 LOGGER.debug("system upgrade task doing number exceed limit number, terminal id[{}]",
@@ -278,6 +292,29 @@ public class SystemUpgradeTaskManager {
      * @return 是否超出数量限制 true: 超过, false: 未超过
      */
     public boolean checkMaxAddNum() {
-        return TASK_MAP_MAX_NUM <= TASK_MAP.size();
+        return TASK_MAP_MAX_NUM <= TASK_CACHE.size();
+    }
+    
+    /**
+     * 
+     * Description: 刷机任务超时监听器
+     * Copyright: Copyright (c) 2018
+     * Company: Ruijie Co., Ltd.
+     * Create Time: 2019年2月1日
+     * 
+     * @author nt
+     */
+    protected static class TimeoutListener implements RemovalListener<String, SystemUpgradeTask>{
+
+        @Override
+        public void onRemoval(RemovalNotification<String, SystemUpgradeTask> notification) {
+            Assert.notNull(notification, "notification can not be null");
+
+            String key = notification.getKey();
+            SystemUpgradeTask task = notification.getValue();
+            task.setState(CbbSystemUpgradeStateEnums.FAIL);
+            TASK_CACHE.put(key, task);
+        }
+        
     }
 }

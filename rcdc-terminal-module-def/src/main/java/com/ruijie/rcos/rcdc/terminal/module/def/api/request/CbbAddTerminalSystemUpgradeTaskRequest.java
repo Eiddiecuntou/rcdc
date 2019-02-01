@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
@@ -33,6 +34,9 @@ public class CbbAddTerminalSystemUpgradeTaskRequest implements Request {
     }
 
     public CbbAddTerminalSystemUpgradeTaskRequest(String terminalId, TerminalPlatformEnums platform) {
+        Assert.hasText(terminalId, "terminalId can not be blank");
+        Assert.notNull(platform, "terminalId can not be null");
+        
         this.terminalId = terminalId;
         this.platform = platform;
     }

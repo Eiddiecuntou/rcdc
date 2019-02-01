@@ -205,7 +205,6 @@ public class SystemUpgradeWaitingTaskQuartzTest {
         task.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         task.setIsSend(true);
         task.setStartTime(System.currentTimeMillis() - 50000);
-        task.setTimeStamp(System.currentTimeMillis() - 10000);
 
         return task;
     }

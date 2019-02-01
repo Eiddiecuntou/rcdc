@@ -52,6 +52,9 @@ public class TerminalSystemUpgradeControllerTest {
     @Injectable
     private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
     
+    @Mocked
+    private BatchTaskBuilder builder;
+    
     /**
      * 测试uploadPackage，参数为空
      * @param optLogRecorder mock日志记录对象
@@ -171,9 +174,9 @@ public class TerminalSystemUpgradeControllerTest {
      */
     @Test
     public void testCreateArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder) throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.create(null, optLogRecorder), 
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.create(null, optLogRecorder, builder), 
                 "CreateTerminalSystemUpgradeRequest can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.create(new CreateTerminalSystemUpgradeRequest(), null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.create(new CreateTerminalSystemUpgradeRequest(), null, builder),
                 "optLogRecorder can not be null");
         assertTrue(true);
     }
@@ -202,7 +205,7 @@ public class TerminalSystemUpgradeControllerTest {
             }
         };
         try {
-            controller.create(request, optLogRecorder);
+            controller.create(request, optLogRecorder, builder);
             fail();
         } catch (BusinessException e) {
             assertEquals("key", e.getKey());
@@ -211,9 +214,9 @@ public class TerminalSystemUpgradeControllerTest {
             {
                 cbbTerminalUpgradeAPI.addSystemUpgradeTask((CbbAddTerminalSystemUpgradeTaskRequest) any);
                 times = 1;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG, "1", "message");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG, "1", "message");
                 times = 1;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_SUCCESS_LOG, "1");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_SUCCESS_LOG, "1");
                 times = 0;
             }
         };
@@ -230,7 +233,7 @@ public class TerminalSystemUpgradeControllerTest {
         String[] terminalIdArr = new String[1];
         terminalIdArr[0] = "1";
         request.setTerminalIdArr(terminalIdArr);
-        DefaultWebResponse response = controller.create(request, optLogRecorder);
+        DefaultWebResponse response = controller.create(request, optLogRecorder, builder);
         assertEquals(Status.SUCCESS, response.getStatus());
         new Verifications() {
             {
@@ -238,7 +241,7 @@ public class TerminalSystemUpgradeControllerTest {
                 times = 1;
                 optLogRecorder.saveOptLog(anyString, anyString, anyString);
                 times = 0;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_SUCCESS_LOG, "1");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_SUCCESS_LOG, "1");
                 times = 1;
             }
         };
@@ -295,9 +298,9 @@ public class TerminalSystemUpgradeControllerTest {
             {
                 cbbTerminalUpgradeAPI.removeTerminalSystemUpgradeTask((CbbRemoveTerminalSystemUpgradeTaskRequest) any);
                 times = 1;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_SUCCESS_LOG, "1");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_UPGRADE_SUCCESS_LOG, "1");
                 times = 0;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG, "1", "message");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_UPGRADE_FAIL_LOG, "1", "message");
                 times = 1;
             }
         };
@@ -322,7 +325,7 @@ public class TerminalSystemUpgradeControllerTest {
             {
                 cbbTerminalUpgradeAPI.removeTerminalSystemUpgradeTask((CbbRemoveTerminalSystemUpgradeTaskRequest) any);
                 times = 1;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_SUCCESS_LOG, "1");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_DELETE_UPGRADE_SUCCESS_LOG, "1");
                 times = 1;
                 optLogRecorder.saveOptLog(anyString, anyString, anyString);
                 times = 0;

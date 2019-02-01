@@ -65,7 +65,7 @@ public class SystemUpgradeWaitingTaskQuartz implements QuartzTask {
                     termianlSystemUpgradePackageDAO.findFirstByPackageType(task.getPlatform());
             if (upgradePackage == null) {
                 LOGGER.info("终端类型[" + task.getPlatform() + "]升级包不存在");
-                taskManager.modifyTaskState(task.getTerminalId(), CbbSystemUpgradeStateEnums.WAIT);
+                taskManager.modifyTaskState(task.getTerminalId(), CbbSystemUpgradeStateEnums.FAIL);
                 continue;
             }
             TerminalSystemUpgradeMsg upgradeMsg =

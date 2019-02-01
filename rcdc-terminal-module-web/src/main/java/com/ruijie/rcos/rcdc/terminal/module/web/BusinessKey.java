@@ -32,28 +32,76 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG =
             "rcdc_terminal_system_upgrade_package_upload_fail_log";
+    
+    
+    
+    /**
+     * 批量终端升级任务项名称
+     */
+    String RCDC_TERMINAL_UPGRADE_ITEM_NAME =  "rcdc_terminal_upgrade_item_name";
+    
+    /**
+     * 批量终端升级任务名称
+     */
+    String RCDC_TERMINAL_UPGRADE_TASK_NAME =  "rcdc_terminal_upgrade_task_name";
+    
+    /**
+     * 批量终端升级任务描述
+     */
+    String RCDC_TERMINAL_UPGRADE_TASK_DESC =  "rcdc_terminal_upgrade_task_desc";
+    
+    
+    /**
+     * 批量终端系统升级任务成功日志
+     */
+    String RCDC_TERMINAL_CREATE_UPGRADE_TASK_SUCCESS_LOG =
+            "rcdc_terminal_create_upgrade_task_success_log";
 
     /**
-     * 创建终端系统升级任务成功日志
+     * 批量终端系统升级任务失败日志
      */
-    String RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_SUCCESS_LOG =
-            "rcdc_terminal_create_system_upgrade_task_success_log";
-
+    String RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG = "rcdc_terminal_create_upgrade_task_fail_log";
+    
     /**
-     * 创建终端系统升级任务失败日志
+     * 批量终端系统升级任务结果
      */
-    String RCDC_TERMINAL_CREATE_SYSTEM_UPGRADE_TASK_FAIL_LOG = "rcdc_terminal_create_system_upgrade_task_fail_log";
-
+    String RCDC_TERMINAL_UPGRADE_RESULT = "rcdc_terminal_upgrade_result";
+    
     /**
-     * 移除终端升级任务失败日志
+     * 批量终端系统升级任务成功
      */
-    String RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_FAIL_LOG = "rcdc_terminal_delete_system_upgrade_fail_log";
-
+    String RCDC_TERMINAL_UPGRADE_RESULT_SUCCESS = "rcdc_terminal_upgrade_result_success";
+    
     /**
-     * 移除终端升级任务成功日志
+     * 批量删除终端升级任务名称
      */
-    String RCDC_TERMINAL_DELETE_SYSTEM_UPGRADE_SUCCESS_LOG = "rcdc_terminal_delete_system_upgrade_success_log";
-
+    String RCDC_TERMINAL_DELETE_UPGRADE_TASK_NAME = "rcdc_terminal_delete_upgrade_task_name";
+    
+    /**
+     * 批量删除终端升级任务描述
+     */
+    String RCDC_TERMINAL_DELETE_UPGRADE_TASK_DESC = "rcdc_terminal_delete_upgrade_task_desc";
+    
+    /**
+     * 批量删除终端升级任务成功结果
+     */
+    String RCDC_TERMINAL_DELETE_UPGRADE_RESULT_SUCCESS = "rcdc_terminal_delete_upgrade_result_success";
+    
+    /**
+     * 批量删除终端升级任务结果
+     */
+    String RCDC_TERMINAL_DELETE_UPGRADE_RESULT = "rcdc_terminal_delete_upgrade_result";
+    
+    /**
+     * 批量删除终端升级任务失败日志
+     */
+    String RCDC_TERMINAL_DELETE_UPGRADE_FAIL_LOG = "rcdc_terminal_delete_system_upgrade_fail_log";
+    
+    /**
+     * 批量删除终端升级任务成功日志
+     */
+    String RCDC_TERMINAL_DELETE_UPGRADE_SUCCESS_LOG = "rcdc_terminal_delete_upgrade_success_log";
+    
     /**
      * 终端检测名称
      */
