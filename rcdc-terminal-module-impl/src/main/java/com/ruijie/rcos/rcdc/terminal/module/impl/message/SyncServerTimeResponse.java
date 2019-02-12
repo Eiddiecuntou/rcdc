@@ -30,6 +30,9 @@ public class SyncServerTimeResponse {
         this.content = content;
     }
 
+    /**
+     * 消息体
+     */
     static class Content {
         private Long serverTime;
 
@@ -42,6 +45,10 @@ public class SyncServerTimeResponse {
         }
     }
 
+    /**
+     * 构建消息对象
+     * @return 返回SyncServerTimeResponse
+     */
     public static SyncServerTimeResponse build() {
         SyncServerTimeResponse response = new SyncServerTimeResponse();
         response.setCode(ShineResponseCode.SUCCESS);

@@ -1,16 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import java.util.List;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
 /**
  * Description: 初始化业务
@@ -28,6 +30,9 @@ public class TerminalBusinessInitializingBean implements InitializingBean {
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
+    @Autowired
+    private TerminalBasicInfoService terminalBasicInfoService;
+
     @Override
     public void afterPropertiesSet() throws Exception {
         initTerminalState();
@@ -44,9 +49,7 @@ public class TerminalBusinessInitializingBean implements InitializingBean {
             return;
         }
         LOGGER.warn("存在异常关机导致终端状态不一致的情况，总共有{}台终端状态需要初始化", terminalList.size());
-        terminalList.forEach(item ->
-                terminalBasicInfoDAO.modifyTerminalState(item.getTerminalId(), item.getVersion(), CbbTerminalStateEnums.OFFLINE)
-        );
+        terminalList.forEach(item -> terminalBasicInfoService.modifyTerminalStateToOffline(item.getTerminalId()));
     }
 }
 

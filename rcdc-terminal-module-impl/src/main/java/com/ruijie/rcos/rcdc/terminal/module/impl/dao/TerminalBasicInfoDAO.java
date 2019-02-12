@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.Modifying;
@@ -95,16 +96,17 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
             @Param("network") CbbTerminalNetworkRequest network);
 
     /**
-     * 修改终端状态
+     * 修改终端状态为离线状态
      *
+     * @param state 终端状态，在线或离线
+     * @param lastOfflineTime 最后离线时间
      * @param terminalId 终端id
      * @param version 数据版本号
-     * @param state 终端状态，在线或离线
      * @return 返回影响行数
      */
     @Modifying
     @Transactional
-    @Query("update TerminalEntity set state=:state,version=version+1 where terminalId=:terminalId and version=:version")
-    int modifyTerminalState(@Param("terminalId") String terminalId, @Param("version") Integer version, @Param("state") CbbTerminalStateEnums state);
+    @Query("update TerminalEntity set state=?1,lastOfflineTime=?2,version=version+1 where terminalId=?3 and version=?4")
+    int modifyTerminalStateOffline(CbbTerminalStateEnums state, Date lastOfflineTime, String terminalId, Integer version);
 
 }

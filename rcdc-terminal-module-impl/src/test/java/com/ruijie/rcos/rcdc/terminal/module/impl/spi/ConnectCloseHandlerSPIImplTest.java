@@ -58,7 +58,7 @@ public class ConnectCloseHandlerSPIImplTest {
         
         new Verifications() {
             {
-                basicInfoService.modifyTerminalState("123", CbbTerminalStateEnums.OFFLINE);
+                basicInfoService.modifyTerminalStateToOffline("123");
                 times = 1;
                 CbbNoticeRequest cbbNoticeRequest;
                 terminalEventNoticeSPI.notify(cbbNoticeRequest = withCapture());

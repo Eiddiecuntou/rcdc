@@ -2,7 +2,10 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -31,7 +34,11 @@ public class TerminalBusinessInitializingBeanTest {
     
     @Injectable
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
-    
+
+    @Injectable
+    private TerminalBasicInfoService terminalBasicInfoService;
+
+
     /**
      * 测试afterPropertiesSet,terminalList为空
      * @throws Exception 异常
@@ -47,7 +54,7 @@ public class TerminalBusinessInitializingBeanTest {
         initializingBean.afterPropertiesSet();
         new Verifications() {
             {
-                terminalBasicInfoDAO.modifyTerminalState(anyString, anyInt, CbbTerminalStateEnums.OFFLINE);
+                terminalBasicInfoService.modifyTerminalStateToOffline(anyString);
                 times = 0;
             }
         };
@@ -73,7 +80,7 @@ public class TerminalBusinessInitializingBeanTest {
         initializingBean.afterPropertiesSet();
         new Verifications() {
             {
-                terminalBasicInfoDAO.modifyTerminalState(anyString, anyInt, CbbTerminalStateEnums.OFFLINE);
+                terminalBasicInfoService.modifyTerminalStateToOffline(anyString);
                 times = 2;
             }
         };
