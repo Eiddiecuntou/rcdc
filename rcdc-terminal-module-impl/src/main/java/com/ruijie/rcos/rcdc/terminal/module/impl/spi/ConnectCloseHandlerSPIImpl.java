@@ -38,7 +38,7 @@ public class ConnectCloseHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request, "request can not be null");
         String terminalId = request.getTerminalId();
         LOGGER.debug("连接关闭事件处理，terminal={}",terminalId);
-        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
+        basicInfoService.modifyTerminalStateToOffline(terminalId);
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.OFFLINE, terminalId);
         terminalEventNoticeSPI.notify(noticeRequest);
     }

@@ -20,6 +20,8 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 
+import java.util.Date;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018
@@ -71,27 +73,26 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     @Override
-    public void modifyTerminalState(String terminalId, CbbTerminalStateEnums state) {
+    public void modifyTerminalStateToOffline(String terminalId) {
         Assert.hasText(terminalId, "terminalId 不能为空");
-        Assert.notNull(state, "CbbTerminalStateEnums 不能为空");
-        boolean isSuccess = updateTerminalState(terminalId, state);
+        boolean isSuccess = updateTerminalStateToOffline(terminalId);
         int count = 0;
         //失败，尝试3次
         while (!isSuccess && count++ < FAIL_TRY_COUNT) {
-            LOGGER.error("开始第{}次修改终端状态，terminalId=[{}],需要修改状态为：[{}]", count, terminalId, state.name());
-            isSuccess = updateTerminalState(terminalId, state);
+            LOGGER.error("开始第{}次修改终端状态，terminalId=[{}],需要修改状态为：[{}]", count, terminalId, CbbTerminalStateEnums.OFFLINE.name());
+            isSuccess = updateTerminalStateToOffline(terminalId);
         }
     }
 
-    private boolean updateTerminalState(String terminalId, CbbTerminalStateEnums state) {
+    private boolean updateTerminalStateToOffline(String terminalId) {
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             LOGGER.error("不存在terminalId=[{}]的终端", terminalId);
             return false;
         }
-        int effectRow = basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), state);
+        int effectRow = basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, new Date(), terminalId, basicInfoEntity.getVersion());
         if (effectRow == 0) {
-            LOGGER.error("修改终端状态失败(updateTerminalState)，terminalId=[{}],需要修改状态为：[{}]", terminalId, state.name());
+            LOGGER.error("修改终端状态失败(updateTerminalStateToOffline)，terminalId=[{}],需要修改状态为：[{}]", terminalId, CbbTerminalStateEnums.OFFLINE.name());
             return false;
         }
         return true;
