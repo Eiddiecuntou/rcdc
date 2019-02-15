@@ -67,9 +67,9 @@ COMMENT ON COLUMN t_cbb_terminal.serial_number IS '产品序列号';
 
 COMMENT ON COLUMN t_cbb_terminal.cpu_type IS 'cup型号';
 
-COMMENT ON COLUMN t_cbb_terminal.memory_size IS '内存大小，单位kb';
+COMMENT ON COLUMN t_cbb_terminal.memory_size IS '内存大小，单位B';
 
-COMMENT ON COLUMN t_cbb_terminal.disk_size IS '磁盘大小，单位kb';
+COMMENT ON COLUMN t_cbb_terminal.disk_size IS '磁盘大小，单位B';
 
 COMMENT ON COLUMN t_cbb_terminal.terminal_os_type IS '终端操作系统类型，Android、Linux。。。';
 
