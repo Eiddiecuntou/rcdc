@@ -165,7 +165,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         Assert.notNull(session, "session 不能为null");
         String terminalId = getTerminalIdFromSession(session);
         // 移除Session绑定
-        sessionManager.removeSession(terminalId);
+        sessionManager.removeSession(terminalId,session);
         LOGGER.debug("terminalId[{}]连接关闭", terminalId);
         // 发送连接关闭事件
         CbbDispatcherRequest request = new CbbDispatcherRequest();
