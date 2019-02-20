@@ -56,7 +56,7 @@ public class SessionManagerTest {
         String terminalId = "321";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
         sessionMap.put(terminalId, session);
-        sessionManager.removeSession(terminalId);
+        sessionManager.removeSession(terminalId,session);
         Assert.assertEquals(0, sessionMap.size());
         sessionMap.clear();
     }

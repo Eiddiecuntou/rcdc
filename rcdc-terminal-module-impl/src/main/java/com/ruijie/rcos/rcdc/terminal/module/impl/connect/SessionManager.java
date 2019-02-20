@@ -38,7 +38,7 @@ public class SessionManager {
      * 绑定终端连接Session
      *
      * @param terminalId 终端id
-     * @param session    要绑定的Session
+     * @param session 要绑定的Session
      */
     public void bindSession(String terminalId, Session session) {
         Assert.hasText(terminalId, "terminalId不能为空");
@@ -48,15 +48,22 @@ public class SessionManager {
     }
 
     /**
-     * 移除Session
+     * 移除终端绑定的Session
      *
      * @param terminalId 终端id
+     * @param session 绑定的Session
+     * @return true 移除成功
      */
-    public void removeSession(String terminalId) {
+    public boolean removeSession(String terminalId, Session session) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        SESSION_MAP.remove(terminalId);
-        LOGGER.info("移除终端session，terminalId={};当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
-
+        Assert.notNull(session, "session can not null");
+        boolean isSuccess = SESSION_MAP.remove(terminalId, session);
+        if (isSuccess) {
+            LOGGER.info("移除终端session，terminalId={};当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
+            return true;
+        }
+        LOGGER.info("关闭前一次连接的session，不移除当前绑定的terminalId={}的session;当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
+        return false;
     }
 
     /**
@@ -95,10 +102,9 @@ public class SessionManager {
      */
     public List<String> getOnlineTerminalId() {
         List<String> terminalIdList = new ArrayList<>();
-        SESSION_MAP.forEach((k, v) ->
-                terminalIdList.add(k)
-        );
+        SESSION_MAP.forEach((k, v) -> terminalIdList.add(k));
         LOGGER.debug("当前在线终端数量:{},返回的终端在线数量：{}", SESSION_MAP.size(), terminalIdList.size());
         return terminalIdList;
     }
+
 }

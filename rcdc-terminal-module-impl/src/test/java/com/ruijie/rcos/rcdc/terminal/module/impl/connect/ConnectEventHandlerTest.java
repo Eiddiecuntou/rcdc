@@ -282,8 +282,8 @@ public class ConnectEventHandlerTest {
     public void testOnConnectClosed(@Mocked Session session) throws InterruptedException {
         new Expectations() {
             {
-                sessionManager.removeSession(anyString);
-                result = null;
+                sessionManager.removeSession(anyString, (Session) any);
+                result = true;
                 session.getAttribute(anyString);
                 result = "123";
             }
@@ -294,7 +294,7 @@ public class ConnectEventHandlerTest {
         try {
             new Verifications() {
                 {
-                    sessionManager.removeSession(anyString);
+                    sessionManager.removeSession(anyString, (Session) any);
                     times = 1;
                 }
             };
