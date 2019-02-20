@@ -165,13 +165,16 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         Assert.notNull(session, "session 不能为null");
         String terminalId = getTerminalIdFromSession(session);
         // 移除Session绑定
-        sessionManager.removeSession(terminalId,session);
-        LOGGER.debug("terminalId[{}]连接关闭", terminalId);
-        // 发送连接关闭事件
-        CbbDispatcherRequest request = new CbbDispatcherRequest();
-        request.setDispatcherKey(ShineAction.CONNECT_CLOSE);
-        request.setTerminalId(terminalId);
-        cbbDispatcherHandlerSPI.dispatch(request);
+        boolean isSuccess = sessionManager.removeSession(terminalId, session);
+        LOGGER.info("terminalId[{}]连接关闭", terminalId);
+        // 发送连接关闭事件，只对当前的连接发送关闭通知
+        if (isSuccess) {
+            LOGGER.info("发送终端[{}]连接关闭消息", terminalId);
+            CbbDispatcherRequest request = new CbbDispatcherRequest();
+            request.setDispatcherKey(ShineAction.CONNECT_CLOSE);
+            request.setTerminalId(terminalId);
+            cbbDispatcherHandlerSPI.dispatch(request);
+        }
     }
 
     private String getTerminalIdFromSession(Session session) {

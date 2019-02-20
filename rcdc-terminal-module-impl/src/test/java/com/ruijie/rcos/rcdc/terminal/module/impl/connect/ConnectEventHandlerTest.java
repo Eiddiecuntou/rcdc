@@ -283,7 +283,7 @@ public class ConnectEventHandlerTest {
         new Expectations() {
             {
                 sessionManager.removeSession(anyString, (Session) any);
-                result = null;
+                result = true;
                 session.getAttribute(anyString);
                 result = "123";
             }

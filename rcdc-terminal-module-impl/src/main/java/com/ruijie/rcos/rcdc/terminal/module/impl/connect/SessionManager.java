@@ -52,16 +52,18 @@ public class SessionManager {
      *
      * @param terminalId 终端id
      * @param session 绑定的Session
+     * @return true 移除成功
      */
-    public void removeSession(String terminalId, Session session) {
+    public boolean removeSession(String terminalId, Session session) {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(session, "session can not null");
         boolean isSuccess = SESSION_MAP.remove(terminalId, session);
         if (isSuccess) {
             LOGGER.info("移除终端session，terminalId={};当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
-            return;
+            return true;
         }
         LOGGER.info("关闭前一次连接的session，不移除当前绑定的terminalId={}的session;当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
+        return false;
     }
 
     /**
