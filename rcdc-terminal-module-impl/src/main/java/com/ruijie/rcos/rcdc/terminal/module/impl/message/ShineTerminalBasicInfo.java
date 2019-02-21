@@ -50,7 +50,7 @@ public class ShineTerminalBasicInfo {
 
     private Integer memorySize;
 
-    private Integer diskSize;
+    private Long diskSize;
 
     private String terminalOsType;
 
@@ -193,11 +193,11 @@ public class ShineTerminalBasicInfo {
         this.memorySize = memorySize;
     }
 
-    public Integer getDiskSize() {
+    public Long getDiskSize() {
         return diskSize;
     }
 
-    public void setDiskSize(Integer diskSize) {
+    public void setDiskSize(Long diskSize) {
         this.diskSize = diskSize;
     }
 

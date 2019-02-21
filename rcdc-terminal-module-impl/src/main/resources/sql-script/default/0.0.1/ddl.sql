@@ -189,7 +189,11 @@ CREATE TABLE t_cbb_sys_upgrade_package (
   "package_type" varchar(32) COLLATE "pg_catalog"."default",
   "upload_time" timestamp(6),
   "package_version" varchar(64) COLLATE "pg_catalog"."default",
-  "version" int4 NOT NULL DEFAULT 0
+  "version" int4 NOT NULL DEFAULT 0,
+  "origin" varchar(32) COLLATE "pg_catalog"."default",
+  "distribution_mode" varchar(32) COLLATE "pg_catalog"."default",
+  "package_name" varchar(128) COLLATE "pg_catalog"."default",
+  "file_path" varchar(128) COLLATE "pg_catalog"."default"
 );
 
 COMMENT ON COLUMN t_cbb_sys_upgrade_package.img_name IS '升级包名称';
@@ -197,6 +201,50 @@ COMMENT ON COLUMN t_cbb_sys_upgrade_package.package_type IS '升级包类型，�
 COMMENT ON COLUMN t_cbb_sys_upgrade_package.upload_time IS '上传时间';
 COMMENT ON COLUMN t_cbb_sys_upgrade_package.package_version IS '升级包版本号';
 COMMENT ON COLUMN t_cbb_sys_upgrade_package.version IS '版本号';
+COMMENT ON COLUMN t_cbb_sys_upgrade_package.origin IS '系统刷机包来源';
+COMMENT ON COLUMN t_cbb_sys_upgrade_package.distribution_mode IS '分发方式';
+COMMENT ON COLUMN t_cbb_sys_upgrade_package.package_name IS '升级包名称';
+COMMENT ON COLUMN t_cbb_sys_upgrade_package.file_path IS '刷机包存放路径';
 COMMENT ON TABLE t_cbb_sys_upgrade_package IS '终端系统升级包表';
 
 ALTER TABLE t_cbb_sys_upgrade_package ADD CONSTRAINT "t_termianl_system_upgrade_package_pkey" PRIMARY KEY ("id");
+
+
+/** 刷机表 */
+CREATE TABLE t_cbb_sys_upgrade (
+  "id" uuid NOT NULL,
+  "upgrade_package_id" uuid NOT NULL,
+  "package_version" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
+  "package_name" varchar(64) COLLATE "pg_catalog"."default",
+  "create_time" timestamp(0) NOT NULL,
+  "state" varchar(32) COLLATE "pg_catalog"."default",
+  "version" int4 DEFAULT 1
+)
+;
+COMMENT ON COLUMN t_cbb_sys_upgrade.upgrade_package_id IS '系统刷机包id';
+COMMENT ON COLUMN t_cbb_sys_upgrade.package_version IS '刷机包版本号';
+COMMENT ON COLUMN t_cbb_sys_upgrade.package_name IS '刷机包镜像名称';
+COMMENT ON COLUMN t_cbb_sys_upgrade.create_time IS '生成时间';
+COMMENT ON COLUMN t_cbb_sys_upgrade.state IS '任务状态';
+COMMENT ON COLUMN t_cbb_sys_upgrade.version IS '版本号，实现乐观锁';
+
+ALTER TABLE t_cbb_sys_upgrade ADD CONSTRAINT "t_cbb_sys_upgrade_pkey" PRIMARY KEY ("id");
+
+CREATE TABLE t_cbb_sys_upgrade_terminal (
+  "id" uuid NOT NULL,
+  "sys_upgrade_id" uuid NOT NULL,
+  "terminal_id" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
+  "start_time" timestamp(0),
+  "state" varchar(32) COLLATE "pg_catalog"."default",
+  "create_time" timestamp(0),
+  "version" int4 DEFAULT 1
+)
+;
+COMMENT ON COLUMN t_cbb_sys_upgrade_terminal.sys_upgrade_id IS '刷机任务id';
+COMMENT ON COLUMN t_cbb_sys_upgrade_terminal.terminal_id IS '刷机终端id';
+COMMENT ON COLUMN t_cbb_sys_upgrade_terminal.start_time IS '开始刷机时间';
+COMMENT ON COLUMN t_cbb_sys_upgrade_terminal.state IS '刷机状态';
+COMMENT ON COLUMN t_cbb_sys_upgrade_terminal.create_time IS '创建时间';
+COMMENT ON COLUMN t_cbb_sys_upgrade_terminal.version IS '版本号，实现乐观锁';
+
+ALTER TABLE t_cbb_sys_upgrade_terminal ADD CONSTRAINT "t_cbb_sys_upgrade_terminal_pkey" PRIMARY KEY ("id");

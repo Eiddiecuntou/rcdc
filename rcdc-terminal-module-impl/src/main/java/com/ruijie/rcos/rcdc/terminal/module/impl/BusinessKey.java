@@ -39,6 +39,11 @@ public interface BusinessKey {
      * 上传系统升级文件类型错误
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR = "rcdc_terminal_system_upgrade_upload_file_type_error";
+    
+    /**
+     * 升级包类型不支持
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT = "rcdc_terminal_system_upgrade_upload_file_package_type_unsupport";
 
     /**
      * 上传系统升级文件失败
@@ -60,6 +65,11 @@ public interface BusinessKey {
      * 上传系统升级文件不正确
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_INCORRECT = "rcdc_terminal_system_upgrade_upload_file_incorrect";
+    
+    /**
+     * 系统升级包正在上传中
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING = "rcdc_terminal_system_upgrade_package_is_uploading";
 
     /**
      * 系统升级包不存在
@@ -84,36 +94,36 @@ public interface BusinessKey {
             "rcdc_terminal_system_upgrade_package_version_file_incorrect";
 
     /**
-     * 系统升级包路径不存在
+     * 系统刷机包路径不存在
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_OPERATE_FAIL =
             "rcdc_terminal_system_upgrade_package_file_operate_fail";
 
     /**
-     * 系统升级任务不存在
+     * 刷机任务不存在
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_NOT_EXIST = "rcdc_terminal_system_upgrade_task_not_exist";
+    
+    /**
+     * 刷机任务已关闭
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_HAS_CLOSED = "rcdc_terminal_system_upgrade_task_has_closed";
+    
+    /**
+     *刷机任务终端已添加
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_EXIST = "rcdc_terminal_system_upgrade_terminal_exist";
+    
+    /**
+     *刷机任务终端已添加
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_NOT_EXIST = "rcdc_terminal_system_upgrade_terminal_not_exist";
 
     /**
      * 系统升级任务正在进行中
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING = "rcdc_terminal_system_upgrade_task_is_running";
 
-    /**
-     * 系统升级任务超出数量限制
-     */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_NUM_EXCEED_LIMIT = "rcdc_terminal_system_upgrade_num_exceed_limit";
-
-    /**
-     * 系统升级中任务超出数量限制
-     */
-    String RCDC_TERMINAL_SYSTEM_UPGRADING_NUM_EXCEED_LIMIT = "rcdc_terminal_system_upgrading_num_exceed_limit";
-
-    /**
-     * 系统升级任务状态异常
-     */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_STATE_INCORRECT = "rcdc_terminal_system_upgrade_task_state_incorrect";
-    
     /**
      * 终端系统升级状态文件目录不存在
      */
@@ -135,16 +145,6 @@ public interface BusinessKey {
     String RCDC_TERMINAL_COLLECT_LOG_CACHE_NOT_EXIST = "rcdc_terminal_collect_log_cache_not_exist";
     
     /**
-     * 系统终端刷机状态同步定时任务
-     */
-    String RCDC_TERMINAL_QUARTZ_SYSTEM_UPGRADE_STATE_SYNC = "rcdc_terminal_quartz_system_upgrade_state_sync";
-    
-    /**
-     * 系统刷机队列等待处理任务定时任务
-     */
-    String RCDC_TERMINAL_QUARTZ_DEAL_SYSTEM_UPGRADE_WAITING_TASK = "rcdc_terminal_quartz_deal_system_upgrade_waiting_task";
-    
-    /**
      * 终端检测超时处理定时任务
      */
     String RCDC_TERMINAL_QUARTZ_DETECT_TIME_OUT = "rcdc_terminal_quartz_detect_time_out";
@@ -163,5 +163,6 @@ public interface BusinessKey {
      * 终端检测状态-检测失败
      */
     String RCDC_TERMINAL_DETECT_STATE_ERROR = "rcdc_terminal_detect_state_error";
+
 
 }

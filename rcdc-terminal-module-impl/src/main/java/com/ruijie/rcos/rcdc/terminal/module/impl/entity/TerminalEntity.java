@@ -59,7 +59,7 @@ public class TerminalEntity {
 
     private Integer memorySize;
 
-    private Integer diskSize;
+    private Long diskSize;
 
     private String terminalOsType;
 
@@ -199,11 +199,11 @@ public class TerminalEntity {
         this.memorySize = memorySize;
     }
 
-    public Integer getDiskSize() {
+    public Long getDiskSize() {
         return diskSize;
     }
 
-    public void setDiskSize(Integer diskSize) {
+    public void setDiskSize(Long diskSize) {
         this.diskSize = diskSize;
     }
 

@@ -1,13 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradeTaskDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRemoveTerminalSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalSystemUpgradePackageListRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbBaseListResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.AddSystemUpgradeTaskResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
@@ -23,60 +25,58 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 public interface CbbTerminalSystemUpgradeAPI {
 
     /**
-     * 
-     * 上传终端系统升级文件
+     * 添加刷机任务
      * 
      * @param request 请求参数
-     * @return 上传文件结果
+     * @return 请求结果
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse uploadUpgradeFile(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException;
-    
-    /**
-     * 
-     * 获取系统升级包列表
-     * 
-     * @param request 请求参数
-     * 
-     * @return 列表查询结果
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    CbbBaseListResponse<CbbTerminalSystemUpgradePackageInfoDTO> listSystemUpgradePackage(
-            CbbTerminalSystemUpgradePackageListRequest request) throws BusinessException;
+    AddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException;
 
     /**
      * 
-     * 添加终端系统升级任务
+     * 添加刷机任务终端
      * 
      * @param request 请求参数
      * @return 添加结果
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse addSystemUpgradeTask(CbbAddTerminalSystemUpgradeTaskRequest request) throws BusinessException;
-
-    /**
-     * 移除终端系统升级任务
-     * 
-     * @param request 请求参数
-     * @return 删除结果
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    DefaultResponse removeTerminalSystemUpgradeTask(CbbRemoveTerminalSystemUpgradeTaskRequest request)
+    CbbTerminalNameResponse addSystemUpgradeTerminal(CbbAddTerminalSystemUpgradeTaskRequest request)
             throws BusinessException;
 
     /**
      * 
-     * 获取终端系统升级任务列表信息
+     * 获取刷机任务列表信息
      * 
-     * @return 任务列表结果
+     * @param request 请求参数
+     * @return 任务列表
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbBaseListResponse<CbbTerminalSystemUpgradeTaskDTO> listTerminalSystemUpgradeTask() throws BusinessException;
+    DefaultPageResponse<CbbSystemUpgradeTaskDTO> listSystemUpgradeTask(PageSearchRequest request)
+            throws BusinessException;
+
+    /**
+     * 获取刷机任务终端列表
+     * 
+     * @param request 请求参数
+     * @return 刷机终端列表
+     */
+    @NoRollback
+    DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> listSystemUpgradeTaskTerminal(
+            PageSearchRequest request);
+
+    /**
+     * 关闭刷机任务
+     * 
+     * @param request 请求参数
+     * @return 请求结果
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    DefaultResponse closeSystemUpgradeTask(CbbCloseSystemUpgradeTaskRequest request) throws BusinessException;
 
 
 }
