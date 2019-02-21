@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import java.util.UUID;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
@@ -23,18 +24,21 @@ public class CbbAddTerminalSystemUpgradeTaskRequest implements Request {
     private String terminalId;
 
     /**
-     * 终端类型
+     * 刷机包id
      */
     @NotNull
-    private TerminalPlatformEnums platform;
+    private UUID upgradeTaskId;
     
 
     public CbbAddTerminalSystemUpgradeTaskRequest() {
     }
 
-    public CbbAddTerminalSystemUpgradeTaskRequest(String terminalId, TerminalPlatformEnums platform) {
+    public CbbAddTerminalSystemUpgradeTaskRequest(String terminalId, UUID upgradeTaskId) {
+        Assert.hasText(terminalId, "terminalId can not be blank");
+        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+        
         this.terminalId = terminalId;
-        this.platform = platform;
+        this.upgradeTaskId = upgradeTaskId;
     }
 
     public String getTerminalId() {
@@ -44,15 +48,13 @@ public class CbbAddTerminalSystemUpgradeTaskRequest implements Request {
     public void setTerminalId(String terminalId) {
         this.terminalId = terminalId;
     }
-    
-    public TerminalPlatformEnums getPlatform() {
-        return platform;
+
+    public UUID getUpgradeTaskId() {
+        return upgradeTaskId;
     }
 
-    public void setPlatform(TerminalPlatformEnums platform) {
-        this.platform = platform;
+    public void setUpgradeTaskId(UUID upgradeTaskId) {
+        this.upgradeTaskId = upgradeTaskId;
     }
-
-
 
 }

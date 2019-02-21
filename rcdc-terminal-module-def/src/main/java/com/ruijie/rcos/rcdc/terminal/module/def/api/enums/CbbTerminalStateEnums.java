@@ -25,8 +25,4 @@ public enum CbbTerminalStateEnums {
      */
     UPGRADING,
     
-    /**
-     * 升级失败
-     */
-    FAIL
 }

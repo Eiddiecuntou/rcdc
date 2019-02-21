@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import org.springframework.util.Assert;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
@@ -29,6 +30,10 @@ public class CbbTerminalUpgradePackageUploadRequest implements Request {
     }
 
     public CbbTerminalUpgradePackageUploadRequest(String filePath, String fileName, String fileMD5) {
+        Assert.hasText(filePath, "filePath can not be blank");
+        Assert.hasText(fileName, "fileName can not be blank");
+        Assert.hasText(fileMD5, "fileMD5 can not be blank");
+        
         this.filePath = filePath;
         this.fileName = fileName;
         this.fileMD5 = fileMD5;

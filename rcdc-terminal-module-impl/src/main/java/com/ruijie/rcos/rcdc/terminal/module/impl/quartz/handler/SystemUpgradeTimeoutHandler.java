@@ -1,0 +1,90 @@
+package com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler;
+
+import java.util.Date;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.TerminalDateUtil;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
+
+/**
+ * 
+ * Description: 刷机中终端超时处理器
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2019年2月21日
+ * 
+ * @author nt
+ */
+@Service
+public class SystemUpgradeTimeoutHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeTimeoutHandler.class);
+
+    /**
+     * 终端刷机超时时间2h
+     */
+    private static final int UPGRADING_TIME_OUT = 2 * 60 * 60;
+
+    @Autowired
+    private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
+
+    /**
+     * 开始处理刷机终端超时
+     * 
+     * @param upgradeTerminalList 刷机终端列表
+     */
+    public void execute(List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList) {
+        Assert.notNull(upgradeTerminalList, "upgradeTerminalList can not be null");
+
+        try {
+            timeout(upgradeTerminalList);
+        } catch (Exception e) {
+            LOGGER.error("处理刷机终端超时异常", e);
+        }
+    }
+
+    /**
+     * 处理刷机超时的终端
+     * 
+     * @param upgradeTerminalList 刷机终端列表
+     */
+    private void timeout(List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList) {
+        LOGGER.info("开始刷机终端超时处理...");
+        int count = 0;
+        for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : upgradeTerminalList) {
+            if (upgradeTerminal.getState() != CbbSystemUpgradeStateEnums.UPGRADING) {
+                LOGGER.debug("刷机终端状态非进行中状态，不进行超时处理");
+                continue;
+            }
+            Date startTime = upgradeTerminal.getStartTime();
+            if (isUpgradeTimeout(startTime)) {
+                LOGGER.debug("超时，设置刷机状态为失败");
+                upgradeTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
+                systemUpgradeTerminalDAO.save(upgradeTerminal);
+                count++;
+            }
+        }
+        LOGGER.info("完成刷机终端超时处理，处理超时终端{}台", count);
+    }
+
+
+
+    /**
+     * 判断是否刷机超时
+     * 
+     * @param startTime 刷机开始时间
+     * @return 是否超时
+     */
+    private boolean isUpgradeTimeout(Date startTime) {
+        Date now = new Date();
+        Date timeoutDate = TerminalDateUtil.addSecond(startTime, UPGRADING_TIME_OUT);
+        return timeoutDate.before(now);
+    }
+
+}
