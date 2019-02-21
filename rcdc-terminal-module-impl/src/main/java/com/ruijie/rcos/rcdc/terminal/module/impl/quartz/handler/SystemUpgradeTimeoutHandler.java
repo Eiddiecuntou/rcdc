@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.TerminalDateUtil;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class SystemUpgradeTimeoutHandler {
     private static final int UPGRADING_TIME_OUT = 2 * 60 * 60;
 
     @Autowired
-    private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
+    private TerminalSystemUpgradeServiceTx systemUpgradeServiceTx;
 
     /**
      * 开始处理刷机终端超时
@@ -53,20 +54,21 @@ public class SystemUpgradeTimeoutHandler {
      * 处理刷机超时的终端
      * 
      * @param upgradeTerminalList 刷机终端列表
+     * @throws BusinessException 业务异常
      */
-    private void timeout(List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList) {
+    private void timeout(List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList) throws BusinessException {
         LOGGER.info("开始刷机终端超时处理...");
         int count = 0;
         for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : upgradeTerminalList) {
             if (upgradeTerminal.getState() != CbbSystemUpgradeStateEnums.UPGRADING) {
-                LOGGER.debug("刷机终端状态非进行中状态，不进行超时处理");
+                LOGGER.info("刷机终端状态非进行中状态，不进行超时处理");
                 continue;
             }
             Date startTime = upgradeTerminal.getStartTime();
             if (isUpgradeTimeout(startTime)) {
-                LOGGER.debug("超时，设置刷机状态为失败");
-                upgradeTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
-                systemUpgradeTerminalDAO.save(upgradeTerminal);
+                LOGGER.info("超时，设置刷机状态为失败");
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal.getSysUpgradeId(),
+                        upgradeTerminal.getTerminalId(), CbbSystemUpgradeStateEnums.FAIL);
                 count++;
             }
         }
