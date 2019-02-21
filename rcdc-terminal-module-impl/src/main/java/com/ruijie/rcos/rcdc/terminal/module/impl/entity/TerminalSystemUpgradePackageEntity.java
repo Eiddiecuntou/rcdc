@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
@@ -28,31 +30,27 @@ public class TerminalSystemUpgradePackageEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    /**
-     *镜像名称
-     */
     private String imgName;
 
+    private String packageName;
 
-    /**
-     * 包类型，VDI ISO、IDV ISO、OTA
-     */
+    private String filePath;
+
     @Enumerated(EnumType.STRING)
     private TerminalPlatformEnums packageType;
 
-    /**
-     * 上传时间
-     */
     private Date uploadTime;
-    
-    /**
-     * 升级包版本号
-     */
+
     private String packageVersion;
-    
-    
+
     @Version
     private int version;
+
+    @Enumerated(EnumType.STRING)
+    private SystemUpgradePackageOriginEnums origin;
+
+    @Enumerated(EnumType.STRING)
+    private SystemUpgradeDistributionModeEnums distributionMode;
 
 
     public UUID getId() {
@@ -72,6 +70,25 @@ public class TerminalSystemUpgradePackageEntity {
 
     public void setImgName(String imgName) {
         this.imgName = imgName;
+    }
+
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
 
@@ -112,6 +129,26 @@ public class TerminalSystemUpgradePackageEntity {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+
+    public SystemUpgradePackageOriginEnums getOrigin() {
+        return origin;
+    }
+
+
+    public void setOrigin(SystemUpgradePackageOriginEnums origin) {
+        this.origin = origin;
+    }
+
+
+    public SystemUpgradeDistributionModeEnums getDistributionMode() {
+        return distributionMode;
+    }
+
+
+    public void setDistributionMode(SystemUpgradeDistributionModeEnums distributionMode) {
+        this.distributionMode = distributionMode;
     }
 
 }

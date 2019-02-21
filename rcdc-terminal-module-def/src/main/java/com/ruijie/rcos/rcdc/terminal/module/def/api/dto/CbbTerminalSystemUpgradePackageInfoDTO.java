@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import java.util.UUID;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
@@ -10,7 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月19日
  * 
- * @author "nt"
+ * @author nt
  */
 public class CbbTerminalSystemUpgradePackageInfoDTO {
     
@@ -18,15 +20,18 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
 
     private String name;
 
-
     /**
-     * 包类型，VDI ISO、IDV ISO、OTA
+     * 刷机包平台类型
      */
     private TerminalPlatformEnums packageType;
     
-    private String origin;
+    private SystemUpgradePackageOriginEnums origin;
     
-    private String distributionMode;
+    private SystemUpgradeDistributionModeEnums distributionMode;
+    
+    private Boolean isUpgrading;
+    
+    private UUID upgradeTaskId;
 
     public UUID getId() {
         return id;
@@ -52,21 +57,36 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
         this.packageType = packageType;
     }
 
-    public String getOrigin() {
+    public SystemUpgradePackageOriginEnums getOrigin() {
         return origin;
     }
 
-    public void setOrigin(String origin) {
+    public void setOrigin(SystemUpgradePackageOriginEnums origin) {
         this.origin = origin;
     }
 
-    public String getDistributionMode() {
+    public SystemUpgradeDistributionModeEnums getDistributionMode() {
         return distributionMode;
     }
 
-    public void setDistributionMode(String distributionMode) {
+    public void setDistributionMode(SystemUpgradeDistributionModeEnums distributionMode) {
         this.distributionMode = distributionMode;
     }
 
-    
+    public Boolean getIsUpgrading() {
+        return isUpgrading;
+    }
+
+    public void setIsUpgrading(Boolean isUpgrading) {
+        this.isUpgrading = isUpgrading;
+    }
+
+    public UUID getUpgradeTaskId() {
+        return upgradeTaskId;
+    }
+
+    public void setUpgradeTaskId(UUID upgradeTaskId) {
+        this.upgradeTaskId = upgradeTaskId;
+    }
+
 }

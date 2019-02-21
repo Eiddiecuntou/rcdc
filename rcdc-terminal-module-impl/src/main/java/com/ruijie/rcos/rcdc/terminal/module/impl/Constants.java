@@ -58,7 +58,12 @@ public interface Constants {
      * 存放终端系统vdi刷机包路径
      */
     String TERMINAL_UPGRADE_ISO_PATH_VDI = "/opt/upgrade/linux_vdi/";
-
+    
+    /**
+     * 刷机时刷机包mount相对路径
+     */
+    String MOUNT_RELATE_DIR = "mount_dir/";
+    
     /**
      * 存放终端系统idv刷机包路径
      */
@@ -72,12 +77,12 @@ public interface Constants {
     /**
      * 系统刷机包挂载路径
      */
-    String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "/opt/system_img/amount/";
+    String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "/opt/upgrade/mount_dir/";
 
     /**
      * 系统刷机包版本文件路径
      */
-    String TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH = "/home/partimag/rainos-img";
+    String TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH = "/home/partimag/rainos-img/version";
 
     /**
      * 系统刷机包镜像文件路径
@@ -102,7 +107,7 @@ public interface Constants {
     /**
      * 系统镜像解除挂载指令
      */
-    String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s %s";
+    String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s";
 
     /**
      * 系统刷机包版本文件属性-包类型
@@ -133,5 +138,15 @@ public interface Constants {
      * 文件后缀名分隔符
      */
     String FILE_SUFFIX_DOT = ".";
+    
+    /**
+     * 终端刷机nfs服务开放目录
+     */
+    String TERMINAL_SYSTEM_UPGRADE_ISO_NFS_DIR = "/opt/pxeuser";
+    
+    /**
+     * 刷机镜像刷机文件存放路径
+     */
+    String ISO_IMG_MOUNT_PATH = "/opt/pxeuser/";
 
 }

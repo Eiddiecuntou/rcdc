@@ -7,15 +7,19 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.callback.CbbTerminalSystemUpgradeRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
@@ -46,200 +50,16 @@ public class TerminalSystemUpgradeServiceImplTest {
     private SessionManager sessionManager;
 
     @Injectable
-    private DefaultRequestMessageSender sender;
+    private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
     @Injectable
-    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+    private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
+    
+    @Injectable
+    private TerminalSystemUpgradeTerminalDAO terminalSystemUpgradeTerminalDAO;
 
     @Injectable
     private CbbTerminalSystemUpgradeRequestCallBack callback;
-
-    /**
-     * 测试修改终端升级包版本信息
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testModifyTerminalUpgradePackageVersion() throws BusinessException {
-        // 构造版本信息,升级包信息
-        TerminalUpgradeVersionFileInfo versionInfo = buildUpgradePackageVersion();
-        TerminalSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
-        new Expectations() {
-            {
-                termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((TerminalPlatformEnums) any);
-                result = upgradePackage;
-
-                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (TerminalPlatformEnums) any,
-                        anyString, anyInt);
-                result = 1;
-            }
-        };
-
-        terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion(versionInfo);
-
-        new Verifications() {
-            {
-                termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((TerminalPlatformEnums) any);
-                times = 1;
-
-                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (TerminalPlatformEnums) any,
-                        anyString, anyInt);
-                times = 1;
-            }
-        };
-    }
-
-
-    /**
-     * 测试修改终端升级包版本信息当版本信息参数为空时
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testModifyTerminalUpgradePackageVersionVersionInfoIsNull() throws BusinessException {
-
-        try {
-            terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion(null);
-            fail();
-        } catch (Exception e) {
-            Assert.assertEquals("terminalUpgradeVersionFileInfo 不能为空", e.getMessage());
-        }
-
-    }
-
-    /**
-     * 测试修改终端升级包版本信息当数据库修改返回0
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testModifyTerminalUpgradePackageVersionDAOReturnZero() throws BusinessException {
-        // 构造版本信息,升级包信息
-        TerminalUpgradeVersionFileInfo versionInfo = buildUpgradePackageVersion();
-        TerminalSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
-        new Expectations() {
-            {
-                termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((TerminalPlatformEnums) any);
-                result = upgradePackage;
-
-                termianlSystemUpgradePackageDAO.modifyTerminalUpgradePackageVersion(anyString, (TerminalPlatformEnums) any,
-                        anyString, anyInt);
-                result = 0;
-            }
-        };
-
-        try {
-            terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion(versionInfo);
-            fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST, e.getKey());
-        }
-
-    }
-
-    /**
-     * 测试修改终端升级包版本信息
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testModifyTerminalUpgradePackageVersionUpgradePackageIsNull() throws BusinessException {
-        // 构造版本信息,升级包信息
-        TerminalUpgradeVersionFileInfo versionInfo = buildUpgradePackageVersion();
-        new Expectations() {
-            {
-                termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((TerminalPlatformEnums) any);
-                result = null;
-            }
-        };
-
-        try {
-            terminalSystemUpgradeService.modifyTerminalUpgradePackageVersion(versionInfo);
-            fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST, e.getKey());
-        }
-
-    }
-
-
-    /**
-     * 测试添加终端升级包
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testAddTerminalUpgradePackage() throws BusinessException {
-        // 构造测试数据
-        TerminalUpgradeVersionFileInfo versionInfo = buildUpgradePackageVersion();
-        // TermianlSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
-        new Expectations() {
-            {
-                termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((TerminalPlatformEnums) any);
-                result = null;
-
-                termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
-            }
-        };
-
-        terminalSystemUpgradeService.addTerminalUpgradePackage(versionInfo);
-
-        new Verifications() {
-            {
-                termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((TerminalPlatformEnums) any);
-                times = 1;
-
-                termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
-                times = 1;
-            }
-        };
-    }
-
-
-    /**
-     * 测试添加终端升级包当升级包已存在时
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testAddTerminalUpgradePackagePackageIsExist() throws BusinessException {
-        // 构造测试数据
-        TerminalUpgradeVersionFileInfo versionInfo = buildUpgradePackageVersion();
-        TerminalSystemUpgradePackageEntity upgradePackage = buildUpgradePackage();
-        new Expectations() {
-            {
-                termianlSystemUpgradePackageDAO
-                        .findFirstByPackageType((TerminalPlatformEnums) any);
-                result = upgradePackage;
-            }
-        };
-
-        try {
-            terminalSystemUpgradeService.addTerminalUpgradePackage(versionInfo);
-            fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_HAS_EXIST, e.getKey());
-        }
-
-    }
-
-    /**
-     * 测试从文件中读取系统升级状态信息
-     * @throws BusinessException 
-     */
-    @Test
-    public void testReadSystemUpgradeStateFromFile() throws BusinessException {
-
-        List<TerminalSystemUpgradeInfo> stateInfoList = terminalSystemUpgradeService.readSystemUpgradeStateFromFile();
-        Assert.assertEquals(null, stateInfoList);
-
-    }
 
     /**
      * 测试发送系统升级指令

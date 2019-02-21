@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -19,18 +20,21 @@ public class NfsServiceUtil {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(NfsServiceUtil.class);
     
-    private static final String NFS_SERVER_START_CMD = "systemctl start nfs";
+    private static final String NFS_SERVER_START_CMD = "exportfs -o rw,no_root_squash,insecure,async *:%s";
     
-    private static final String NFS_SERVER_STOP_CMD = "systemctl stop nfs";
+    private static final String NFS_SERVER_STOP_CMD = "exportfs -u *:%s";
 
     /**
      * 开启NFS服务
      * @throws BusinessException 
      */
     public static void startService() throws BusinessException {
-        LOGGER.info("start nfs server, cmd : {}", NFS_SERVER_START_CMD);
+        
+        String startCmd = String.format(NFS_SERVER_START_CMD, Constants.TERMINAL_SYSTEM_UPGRADE_ISO_NFS_DIR);
+        
+        LOGGER.info("start nfs server, cmd : {}", startCmd);
         ShellCommandRunner runner = new ShellCommandRunner();
-        runner.setCommand(NFS_SERVER_START_CMD);
+        runner.setCommand(startCmd);
         try {
             String outStr = runner.execute();
             LOGGER.debug("out String is :{}", outStr);
@@ -46,9 +50,12 @@ public class NfsServiceUtil {
      * @throws BusinessException 
      */
     public static void shutDownService() throws BusinessException {
-        LOGGER.info("stop nfs server, cmd : {}", NFS_SERVER_STOP_CMD);
+        
+        String stopCmd = String.format(NFS_SERVER_STOP_CMD, Constants.TERMINAL_SYSTEM_UPGRADE_ISO_NFS_DIR);
+        
+        LOGGER.info("stop nfs server, cmd : {}", stopCmd);
         ShellCommandRunner runner = new ShellCommandRunner();
-        runner.setCommand(NFS_SERVER_STOP_CMD);
+        runner.setCommand(stopCmd);
         try {
             String outStr = runner.execute();
             LOGGER.debug("out String is :{}", outStr);

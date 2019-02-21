@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask;
 
 import java.util.UUID;
 import org.springframework.util.Assert;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.batch.BatchTaskItem;
 
 /**
@@ -15,37 +14,35 @@ import com.ruijie.rcos.sk.base.batch.BatchTaskItem;
  * @author nt
  */
 public class TerminalUpgradeBatchTaskItem implements BatchTaskItem {
-    
-    private UUID itemId;
-    
-    private String itemName;
-    
-    private TerminalPlatformEnums platform;
 
-    public TerminalUpgradeBatchTaskItem(UUID itemId, String itemName, TerminalPlatformEnums platform) {
+    private UUID itemId;
+
+    private String itemName;
+
+    private UUID upgradeTaskId;
+
+    public TerminalUpgradeBatchTaskItem(UUID itemId, String itemName, UUID upgradeTaskId) {
         Assert.notNull(itemId, "itemId can not be null");
         Assert.hasText(itemName, "itemName can not be null");
-        Assert.notNull(platform, "platform can not be null");
-        
+        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+
         this.itemId = itemId;
         this.itemName = itemName;
-        this.platform = platform;
+        this.upgradeTaskId = upgradeTaskId;
     }
-
 
     @Override
     public UUID getItemID() {
         return itemId;
     }
 
-
     @Override
     public String getItemName() {
         return itemName;
     }
 
-    public TerminalPlatformEnums getPlatform() {
-        return platform;
+    public UUID getUpgradeTaskId() {
+        return upgradeTaskId;
     }
-    
+
 }
