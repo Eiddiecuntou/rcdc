@@ -62,9 +62,6 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     private TerminalSystemUpgradeTerminalDAO terminalSystemUpgradeTerminalDAO;
 
     @Autowired
-    private TerminalBasicInfoService basicInfoService;
-
-    @Autowired
     private CbbTerminalSystemUpgradeRequestCallBack callback;
 
     @Override
