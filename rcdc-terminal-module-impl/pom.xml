@@ -21,5 +21,10 @@
             <artifactId>sk-commkit-server</artifactId>
             <version>${skyengine.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.ruijie.rcos.base.aaa.module</groupId>
+            <artifactId>base-aaa-module-def</artifactId>
+            <version>${base-aaa-module.version}</version>
+        </dependency>
     </dependencies>
 </project>

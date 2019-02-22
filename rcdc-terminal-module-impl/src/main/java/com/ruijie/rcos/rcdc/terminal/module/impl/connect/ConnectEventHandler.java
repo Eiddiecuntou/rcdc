@@ -1,13 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
+import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
@@ -41,16 +43,14 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
     @Autowired
     private SessionManager sessionManager;
 
+    @Autowired
+    private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
+
     /**
      * 接收报文处理线程池,分配50个线程数
      */
     private static final SkyengineScheduledThreadPoolExecutor MESSAGE_HANDLER_THREAD_POOL =
             new SkyengineScheduledThreadPoolExecutor(50, ConnectEventHandler.class.getName());
-
-    /**
-     * 绑定终端session的key
-     */
-    private static final String TERMINAL_BIND_KEY = "terminal_bind_session_key";
 
     @Override
     public void onReceive(ResponseMessageSender sender, BaseMessage message) {
@@ -114,11 +114,13 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         request.setTerminalId(terminalId);
         String data = message.getData() == null ? null : String.valueOf(message.getData());
         request.setData(data);
+        TerminalInfo terminalInfo = sender.getSession().getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
         try {
-            LOGGER.debug("分发消息，terminalId:{}; action: {}; data:{}", terminalId, message.getAction(), data);
+            LOGGER.info("分发消息，terminalId:{}; action: {}; data:{}; ip:{}", terminalId, message.getAction(), data, terminalInfo.getTerminalIp());
             cbbDispatcherHandlerSPI.dispatch(request);
         } catch (Exception e) {
-            LOGGER.error("消息分发执行异常;action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + message.getData(), e);
+            LOGGER.error("消息分发执行异常;ip:" + terminalInfo.getTerminalIp() + ", action:" + message.getAction() + ",terminalId:" + terminalId + ",data:"
+                    + message.getData(), e);
         }
     }
 
@@ -139,8 +141,13 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         String terminalId = basicInfo.getTerminalId();
         Assert.hasText(terminalId, "绑定终端连接session的terminalId不能为空");
         Session session = sender.getSession();
-        session.setAttribute(TERMINAL_BIND_KEY, terminalId);
+        TerminalInfo terminalInfo = new TerminalInfo(terminalId, basicInfo.getIp());
+        session.setAttribute(ConnectConstants.TERMINAL_BIND_KEY, terminalInfo);
         sessionManager.bindSession(terminalId, session);
+        // 审计日志
+        BaseCreateSystemLogRequest systemLogRequest =
+                new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_SUCCESS_CONNECT_LOG, terminalId, basicInfo.getIp());
+        baseSystemLogMgmtAPI.createSystemLog(systemLogRequest);
     }
 
     private boolean hasBindSession(Session session, String action) {
@@ -149,8 +156,8 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
             // 升级报文不做session绑定判断
             return true;
         }
-        String terminalId = session.getAttribute(TERMINAL_BIND_KEY);
-        return StringUtils.isNotBlank(terminalId);
+        TerminalInfo terminalInfo = session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
+        return terminalInfo != null;
     }
 
     @Override
@@ -166,10 +173,10 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         String terminalId = getTerminalIdFromSession(session);
         // 移除Session绑定
         boolean isSuccess = sessionManager.removeSession(terminalId, session);
-        LOGGER.info("terminalId[{}]连接关闭", terminalId);
         // 发送连接关闭事件，只对当前的连接发送关闭通知
         if (isSuccess) {
-            LOGGER.info("发送终端[{}]连接关闭消息", terminalId);
+            TerminalInfo terminalInfo = session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
+            LOGGER.info("发送终端连接关闭消息,terminalId={}, ip={}", terminalId, terminalInfo.getTerminalIp());
             CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setDispatcherKey(ShineAction.CONNECT_CLOSE);
             request.setTerminalId(terminalId);
@@ -178,9 +185,9 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
     }
 
     private String getTerminalIdFromSession(Session session) {
-        String terminalId = session.getAttribute(TERMINAL_BIND_KEY);
-        Assert.hasText(terminalId, "session 未绑定终端");
-        return terminalId;
+        TerminalInfo terminalInfo = session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
+        Assert.notNull(terminalInfo, "session 未绑定终端");
+        return terminalInfo.getTerminalId();
     }
 
     @Override

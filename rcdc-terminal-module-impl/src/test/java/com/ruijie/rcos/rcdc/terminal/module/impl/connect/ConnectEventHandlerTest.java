@@ -4,6 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
+import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.util.Assert;
@@ -73,6 +77,8 @@ public class ConnectEventHandlerTest {
     @Injectable
     private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
 
+    @Injectable
+    private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
     /**
      * 测试第一个报文正常执行逻辑过程
@@ -82,6 +88,13 @@ public class ConnectEventHandlerTest {
     @Test
     public void testOnReceiveFirstMessageNormal(@Mocked Session session) throws InterruptedException {
         String terminalId = "01-1C-42-F1-2D-45";
+        TerminalInfo info = new TerminalInfo(terminalId,"172.21.12.3");
+        new MockUp<BaseCreateSystemLogRequest>(){
+            @Mock
+            public void $init(String key,String... args){
+
+            }
+        };
         new Expectations() {
             {
                 cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
@@ -89,9 +102,10 @@ public class ConnectEventHandlerTest {
                 sessionManager.bindSession(terminalId, (Session) any);
                 result = null;
                 session.getAttribute(anyString);
-                result = terminalId;
+                result = info;
             }
         };
+
 
         String action = ShineAction.CHECK_UPGRADE;
         ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
@@ -127,15 +141,16 @@ public class ConnectEventHandlerTest {
     @Test
     public void testOnReceiveNotFirstMessage(@Mocked Session session) throws InterruptedException {
         String terminalId = "01-1C-42-F1-2D-45";
+        TerminalInfo info = new TerminalInfo(terminalId,"172.21.12.3");
+
         new Expectations() {
             {
                 cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
                 result = null;
                 session.getAttribute(anyString);
-                result = terminalId;
+                result = info;
             }
         };
-
         try {
             String action = ShineAction.COLLECT_TERMINAL_LOG_FINISH;
             ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
@@ -200,12 +215,14 @@ public class ConnectEventHandlerTest {
                 command.run();
             }
         };
+        TerminalInfo info = new TerminalInfo("123","172.21.12.3");
+
         new Expectations() {
             {
                 sender.getSession();
                 result = session;
                 session.getAttribute(anyString);
-                result = "";
+                result = info;
             }
         };
         BaseMessage<JSONObject> message = new BaseMessage<JSONObject>("sasa", new JSONObject());
@@ -280,12 +297,13 @@ public class ConnectEventHandlerTest {
      */
     @Test
     public void testOnConnectClosed(@Mocked Session session) throws InterruptedException {
+        TerminalInfo info = new TerminalInfo("123","172.21.12.3");
         new Expectations() {
             {
                 sessionManager.removeSession(anyString, (Session) any);
                 result = true;
                 session.getAttribute(anyString);
-                result = "123";
+                result = info;
             }
         };
 

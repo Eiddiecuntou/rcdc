@@ -174,4 +174,8 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_DETECT_STATE_ERROR = "rcdc_terminal_detect_state_error";
 
+    String RCDC_TERMINAL_SUCCESS_CONNECT_LOG = "rcdc_terminal_success_connect_log";
+
+    String RCDC_TERMINAL_CONNECT_CLOSE_LOG = "rcdc_terminal_connect_close_log";
+
 }
