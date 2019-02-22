@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,9 +38,6 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
     @Autowired
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
-
-    @Autowired
-    private TerminalSystemUpgradeService systemUpgradeService;
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
@@ -97,7 +95,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
     public void closeSystemUpgradeTask(UUID upgradeTaskId) throws BusinessException {
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
 
-        final TerminalSystemUpgradeEntity systemUpgradeTask = systemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
+        final TerminalSystemUpgradeEntity systemUpgradeTask = getSystemUpgradeTask(upgradeTaskId);
 
         // 关闭未开始的刷机终端
         final List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList = systemUpgradeTerminalDAO
@@ -113,6 +111,21 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
             systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
             systemUpgradeDAO.save(systemUpgradeTask);
         }
+    }
+
+    /**
+     * 获取刷机任务记录
+     * @param upgradeTaskId 刷机任务id
+     * @return 刷机任务id
+     * @throws BusinessException 业务异常
+     */
+    private TerminalSystemUpgradeEntity getSystemUpgradeTask(UUID upgradeTaskId) throws BusinessException {
+        Optional<TerminalSystemUpgradeEntity> systemUpgradeOpt = systemUpgradeDAO.findById(upgradeTaskId);
+        final TerminalSystemUpgradeEntity upgradeTask = systemUpgradeOpt.orElseGet(null);
+        if (upgradeTask == null) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_NOT_EXIST);
+        }
+        return upgradeTask;
     }
 
     /**
