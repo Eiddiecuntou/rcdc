@@ -113,25 +113,27 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
             SYS_UPGRADE_PACKAGE_UPLOADING.add(packageType);
         }
 
-        // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包
-        boolean hasRunningTask = isExistRunningTask(versionInfo.getPackageType());
-        if (hasRunningTask) {
-            LOGGER.debug("system upgrade task is running, can not upload file ", fileName);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
+        try {
+            // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包
+            boolean hasRunningTask = isExistRunningTask(versionInfo.getPackageType());
+            if (hasRunningTask) {
+                LOGGER.debug("system upgrade task is running, can not upload file ", fileName);
+                throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
+            }
+
+            // 将新升级文件移动到目录下
+            final String packagePath = moveUpgradePackage(fileName, filePath, versionInfo.getPackageType());
+
+            // 更新升级包信息入库
+            versionInfo.setFilePath(packagePath);
+            terminalSystemUpgradePackageService.saveTerminalUpgradePackage(versionInfo);
+
+            // 替换升级文件,清除原升级包目录下旧文件
+            FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI, fileName);
+        } finally {
+            // 完成清除上传标志缓存内记录
+            SYS_UPGRADE_PACKAGE_UPLOADING.remove(versionInfo.getPackageType());
         }
-
-        // 将新升级文件移动到目录下
-        final String packagePath = moveUpgradePackage(fileName, filePath, versionInfo.getPackageType());
-
-        // 更新升级包信息入库
-        versionInfo.setFilePath(packagePath);
-        terminalSystemUpgradePackageService.saveTerminalUpgradePackage(versionInfo);
-
-        // 替换升级文件,清除原升级包目录下旧文件
-        FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI, fileName);
-
-        // 完成清除上传标志缓存内记录
-        SYS_UPGRADE_PACKAGE_UPLOADING.remove(versionInfo.getPackageType());
 
         return DefaultResponse.Builder.success();
     }
