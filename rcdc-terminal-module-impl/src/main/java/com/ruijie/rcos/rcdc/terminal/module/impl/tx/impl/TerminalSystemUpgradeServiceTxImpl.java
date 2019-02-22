@@ -147,9 +147,13 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         Assert.notNull(state, "state can not be blank");
 
         final TerminalSystemUpgradeTerminalEntity upgradeTerminal = getUpgradeTerminalEntity(upgradeTaskId, terminalId);
-        updateUpgradeTerminalState(upgradeTerminal);
+        upgradeTerminal.setState(state);
+        systemUpgradeTerminalDAO.save(upgradeTerminal);
+        
         syncTerminalState(upgradeTerminal);
     }
+    
+    
     
     @Override
     public void startTerminalUpgrade(UUID upgradeTaskId, String terminalId) throws BusinessException {
@@ -188,12 +192,6 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         if (terminalState != null) {
             basicInfoService.modifyTerminalState(upgradeTerminal.getTerminalId(), terminalState);
         }
-    }
-
-    private void updateUpgradeTerminalState(final TerminalSystemUpgradeTerminalEntity upgradeTerminal) {
-        upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UPGRADING);
-        upgradeTerminal.setStartTime(new Date());
-        systemUpgradeTerminalDAO.save(upgradeTerminal);
     }
 
     private TerminalSystemUpgradeTerminalEntity getUpgradeTerminalEntity(UUID upgradeTaskId, String terminalId)
