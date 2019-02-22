@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
+import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -28,6 +31,8 @@ public class SessionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionManager.class);
 
+    @Autowired
+    private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
     /**
      * key 为terminalId,value为Session
@@ -44,7 +49,8 @@ public class SessionManager {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(session, "Session 不能为null");
         SESSION_MAP.put(terminalId, session);
-        LOGGER.info("绑定终端session，terminalId={};当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
+        TerminalInfo terminalInfo = session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
+        LOGGER.info("绑定终端session，terminalId={};ip={}当前在线终端数量为：{}", terminalId, terminalInfo.getTerminalIp(), SESSION_MAP.size());
     }
 
     /**
@@ -58,11 +64,16 @@ public class SessionManager {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(session, "session can not null");
         boolean isSuccess = SESSION_MAP.remove(terminalId, session);
+        TerminalInfo terminalInfo = session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
         if (isSuccess) {
-            LOGGER.info("移除终端session，terminalId={};当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
+            LOGGER.info("移除终端session，terminalId={};ip={},当前在线终端数量为：{}", terminalId, terminalInfo.getTerminalIp(), SESSION_MAP.size());
+            // 审计日志
+            BaseCreateSystemLogRequest systemLogRequest =
+                    new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CONNECT_CLOSE_LOG, terminalId, terminalInfo.getTerminalIp());
+            baseSystemLogMgmtAPI.createSystemLog(systemLogRequest);
             return true;
         }
-        LOGGER.info("关闭前一次连接的session，不移除当前绑定的terminalId={}的session;当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
+        LOGGER.info("关闭前一次连接的session，不移除当前绑定的terminalId={};ip={}的session;当前在线终端数量为：{}", terminalId, terminalInfo.getTerminalIp(), SESSION_MAP.size());
         return false;
     }
 
