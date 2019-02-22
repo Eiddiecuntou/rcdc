@@ -27,6 +27,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
 public class PageQuerySpecification<T> implements Specification<T> {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * 搜索关键字
      */
     private String searchKeyword;

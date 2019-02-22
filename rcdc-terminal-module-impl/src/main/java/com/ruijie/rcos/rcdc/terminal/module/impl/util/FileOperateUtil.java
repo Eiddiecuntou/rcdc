@@ -109,14 +109,9 @@ public class FileOperateUtil {
                 continue;
             }
 
-            boolean isDelete = false;
             if (subFile.isFile()) {
                 LOGGER.debug("delete file[{}]", fileName);
-                SkyengineFile skFile = new SkyengineFile(subFile);
-                isDelete = skFile.delete();
-            }
-            if (!isDelete) {
-                throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL);
+                subFile.delete();
             }
         }
     }
