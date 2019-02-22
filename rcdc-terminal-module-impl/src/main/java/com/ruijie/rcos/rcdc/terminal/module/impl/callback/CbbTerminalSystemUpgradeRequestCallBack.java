@@ -11,6 +11,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResp
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -25,17 +27,20 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
  */
 @Service
 public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallback {
-    
+
     public static final int SUCCESS = 0;
-    
+
     public static final int UNSUPPORTED = -1;
-    
+
     public static final int FAILURE = -99;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalSystemUpgradeRequestCallBack.class);
 
     @Autowired
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
+
+    @Autowired
+    private TerminalSystemUpgradeServiceTx terminalSystemUpgradeServiceTx;
 
     @Override
     public void success(String terminalId, CbbShineMessageResponse msg) {
@@ -45,7 +50,6 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("system upgrade callback success, msg: {}", JSON.toJSONString(msg));
         }
-        LOGGER.info("system upgrade callback success, msg: {}", JSON.toJSONString(msg));
         // 根据响应信息判断终端是否进行升级，不升级则将升级队列中的任务移除
         if (msg.getCode() == SUCCESS) {
             LOGGER.info("terminal start to upgrade system success");
@@ -87,8 +91,12 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
      * @param entity 终端记录对象
      */
     private void setUpgradeTerminalFail(TerminalSystemUpgradeTerminalEntity entity) {
-        entity.setState(CbbSystemUpgradeStateEnums.FAIL);
-        systemUpgradeTerminalDAO.save(entity);
+        try {
+            terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(entity.getSysUpgradeId(),
+                    entity.getTerminalId(), CbbSystemUpgradeStateEnums.FAIL);
+        } catch (BusinessException e) {
+            LOGGER.error("更新刷机终端状态失败", e);
+        }
     }
 
 }
