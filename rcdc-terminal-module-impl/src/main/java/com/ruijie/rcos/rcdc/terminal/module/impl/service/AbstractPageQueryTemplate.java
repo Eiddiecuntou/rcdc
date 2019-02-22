@@ -63,7 +63,7 @@ public abstract class AbstractPageQueryTemplate<T> {
         }
         List<String> searchColumnList = getSearchColumn();
         // 构建specification
-        Specification<T> specification = new PageQuerySpecification(searchKeyword, searchColumnList, matchEqualArr);
+        Specification<T> specification = new PageQuerySpecification<>(searchKeyword, searchColumnList, matchEqualArr);
 
         return find(specification, pageable);
     }

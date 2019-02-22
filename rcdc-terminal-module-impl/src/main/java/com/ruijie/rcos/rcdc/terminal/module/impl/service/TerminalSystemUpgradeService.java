@@ -1,13 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import java.util.UUID;
-import org.springframework.data.domain.Page;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.PageModel;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**

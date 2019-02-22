@@ -51,8 +51,9 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
             LOGGER.debug("system upgrade callback success, msg: {}", JSON.toJSONString(msg));
         }
         // 根据响应信息判断终端是否进行升级，不升级则将升级队列中的任务移除
-        if (msg.getCode() == SUCCESS) {
-            LOGGER.info("terminal start to upgrade system success");
+        final int code = msg.getCode();
+        if (code == SUCCESS) {
+            LOGGER.info("terminal start to upgrade system success, code is {}", code);
         } else {
             LOGGER.info("terminal start to upgrade system failed");
             setUpgradeTaskFailed(terminalId);
