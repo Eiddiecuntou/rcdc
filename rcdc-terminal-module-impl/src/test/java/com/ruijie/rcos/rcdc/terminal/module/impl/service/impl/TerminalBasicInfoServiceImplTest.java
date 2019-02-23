@@ -205,7 +205,7 @@ public class TerminalBasicInfoServiceImplTest {
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                times = 1;
+                times = 2;
                 basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, anyInt);
                 times = 1;
             }
@@ -219,10 +219,11 @@ public class TerminalBasicInfoServiceImplTest {
     public void testModifyTerminalStateIsFail() {
         String terminalId = "123";
         TerminalEntity basicInfoEntity = new TerminalEntity();
+        basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                returns(null, basicInfoEntity);
+                result = basicInfoEntity;
                 basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, anyInt);
                 result = 0;
             }
@@ -232,9 +233,9 @@ public class TerminalBasicInfoServiceImplTest {
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                times = 4;
+                times = 5;
                 basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, basicInfoEntity.getVersion());
-                times = 3;
+                times = 4;
             }
         };
     }

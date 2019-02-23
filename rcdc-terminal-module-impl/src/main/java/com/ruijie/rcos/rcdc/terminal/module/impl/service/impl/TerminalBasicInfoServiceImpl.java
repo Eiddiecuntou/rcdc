@@ -1,9 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.sk.commkit.base.Session;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -17,10 +19,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoServic
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-
-import java.util.Date;
 
 /**
  * Description: Function Description
@@ -75,6 +76,12 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     @Override
     public void modifyTerminalStateToOffline(String terminalId) {
         Assert.hasText(terminalId, "terminalId 不能为空");
+        // 如果当前终端状态为升级中，则不更新为离线状态
+        TerminalEntity entity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        if (CbbTerminalStateEnums.UPGRADING == entity.getState()) {
+            LOGGER.info("当前终端处于升级状态，不做离线状态修改；terminalId={}, ip={}", terminalId, entity.getIp());
+            return;
+        }
         boolean isSuccess = updateTerminalStateToOffline(terminalId);
         int count = 0;
         //失败，尝试3次
