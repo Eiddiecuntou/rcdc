@@ -1,17 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
-import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.util.Assert;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
+import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
@@ -27,14 +25,9 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.RequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.ResponseMessageSender;
+
 import io.netty.channel.ChannelHandlerContext;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -236,35 +229,6 @@ public class ConnectEventHandlerTest {
                 times = 0;
             }
         };
-    }
-
-    /**
-     * 测试onReceive，收到第一个报文
-     * 
-     * @param session 连接
-     */
-    @Test
-    public void testOnReceiveFirstMessage(@Mocked Session session) {
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
-        new Expectations() {
-            {
-                sender.getSession();
-                result = session;
-            }
-        };
-        BaseMessage<String> message = new BaseMessage<String>("check_upgrade", "sdd");
-        try {
-            connectEventHandler.onReceive(sender, message);
-            fail();
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains("接收到的报文格式错误;data:"));
-        }
     }
 
     /**

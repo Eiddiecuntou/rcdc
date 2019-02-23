@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
+import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineThreadPoolExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -23,6 +25,8 @@ import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.RequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.ResponseMessageSender;
 import com.ruijie.rcos.sk.commkit.server.AbstractServerMessageHandler;
+
+import java.util.concurrent.ExecutorService;
 
 /**
  * Description: 连接事件处理器
@@ -49,8 +53,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
     /**
      * 接收报文处理线程池,分配50个线程数
      */
-    private static final SkyengineScheduledThreadPoolExecutor MESSAGE_HANDLER_THREAD_POOL =
-            new SkyengineScheduledThreadPoolExecutor(50, ConnectEventHandler.class.getName());
+    private static final ExecutorService MESSAGE_HANDLER_THREAD_POOL = SkyengineExecutors.newFixedThreadPool("messageHandleThread", 50);
 
     @Override
     public void onReceive(ResponseMessageSender sender, BaseMessage message) {
