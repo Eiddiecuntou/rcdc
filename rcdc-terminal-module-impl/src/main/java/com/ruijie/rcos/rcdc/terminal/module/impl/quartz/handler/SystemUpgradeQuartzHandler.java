@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,7 +54,7 @@ public class SystemUpgradeQuartzHandler implements Runnable {
     public void run() {
         LOGGER.debug("开始处理终端系统刷机定时任务...");
         try {
-            
+
             dealAllUpgradingTask();
         } catch (BusinessException e) {
             LOGGER.error("处理终端系统刷机定时任务异常", e);
@@ -65,9 +68,10 @@ public class SystemUpgradeQuartzHandler implements Runnable {
      * @throws BusinessException 业务异常
      */
     private void dealAllUpgradingTask() throws BusinessException {
-
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
+            CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
         List<TerminalSystemUpgradeEntity> upgradeTaskList =
-                systemUpgradeDAO.findByStateOrderByCreateTimeAsc(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
         if (CollectionUtils.isEmpty(upgradeTaskList)) {
             LOGGER.info("无正在进行中的刷机任务");
             return;
@@ -96,7 +100,7 @@ public class SystemUpgradeQuartzHandler implements Runnable {
         startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());
 
         // 判断刷机终端是否全部处于最终态，是则将刷机任务设为完成状态
-        checkUpgradeTaskFinish(upgradeTask, upgradeTerminalList);
+        checkUpgradeTaskFinish(upgradeTask);
     }
 
     /**
@@ -106,8 +110,11 @@ public class SystemUpgradeQuartzHandler implements Runnable {
      * @param upgradeTerminalList 刷机终端列表
      * @throws BusinessException 业务异常
      */
-    private void checkUpgradeTaskFinish(TerminalSystemUpgradeEntity upgradeTask,
-            List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList) throws BusinessException {
+    private void checkUpgradeTaskFinish(TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
+        // 重新获取刷机终端列表，防止在定时任务执行过程中有刷机终端追加进入任务
+        List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList =
+                systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
+
         for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : upgradeTerminalList) {
             if (isProgressState(upgradeTerminal.getState())) {
                 LOGGER.debug("存在非最终态的刷机终端，刷机任务未完成");

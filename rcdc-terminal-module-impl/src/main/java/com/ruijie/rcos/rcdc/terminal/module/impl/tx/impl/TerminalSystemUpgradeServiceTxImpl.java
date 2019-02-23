@@ -40,7 +40,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
-
+    
     @Override
     public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr) {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
@@ -103,13 +103,9 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
             closeWaitTerminal(waitUpgradeTerminal);
         }
 
-        int count = systemUpgradeTerminalDAO.countBySysUpgradeIdAndState(upgradeTaskId,
-                CbbSystemUpgradeStateEnums.UPGRADING);
-        if (count == 0) {
-            // 关闭刷机任务
-            systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
-            systemUpgradeDAO.save(systemUpgradeTask);
-        }
+        // 将刷机任务设置为关闭中状态
+        systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+        systemUpgradeDAO.save(systemUpgradeTask);
     }
 
     /**

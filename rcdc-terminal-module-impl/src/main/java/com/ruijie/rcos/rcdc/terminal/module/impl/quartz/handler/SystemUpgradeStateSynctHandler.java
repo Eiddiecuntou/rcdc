@@ -55,11 +55,11 @@ public class SystemUpgradeStateSynctHandler {
      * @throws BusinessException 业务异常
      */
     private void syncState(List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList) throws BusinessException {
-        LOGGER.info("开始刷机终端状态同步处理...");
+        LOGGER.info("开始刷机终端成功状态同步处理...");
         int count = 0;
         // 获取文件系统中的升级信息
         List<TerminalSystemUpgradeInfo> systemUpgradeInfoList =
-                systemUpgradePackageService.readSystemUpgradeStateFromFile();
+                systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
         if (systemUpgradeInfoList == null) {
             LOGGER.debug("无终端刷机状态信息");
             return;
@@ -86,12 +86,11 @@ public class SystemUpgradeStateSynctHandler {
 
             // 更新刷机终端状态信息
             LOGGER.debug("更新刷机终端[{}]状态信息为：{}", terminalId, matchInfo.getState());
-
             systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal.getSysUpgradeId(), terminalId,
                     matchInfo.getState());
             count++;
         }
 
-        LOGGER.info("完成刷机终端状态同步处理，处理终端{}台", count);
+        LOGGER.info("完成刷机终端成功状态同步处理，处理成功刷机终端{}台", count);
     }
 }

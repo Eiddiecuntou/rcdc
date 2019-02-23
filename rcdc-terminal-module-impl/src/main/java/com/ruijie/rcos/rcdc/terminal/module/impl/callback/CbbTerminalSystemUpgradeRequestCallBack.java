@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.callback;
 
 import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -52,28 +53,21 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
         }
         // 根据响应信息判断终端是否进行升级，不升级则将升级队列中的任务移除
         final int code = msg.getCode();
-        if (code == SUCCESS) {
-            LOGGER.info("terminal start to upgrade system success, code is {}", code);
+        LOGGER.info("terminal start to upgrade system result, code is {}", code);
+        if (code == UNSUPPORTED) {
+            LOGGER.info(" start to upgrade system is unsupport");
+            modifySystemUpgradeState(terminalId, CbbSystemUpgradeStateEnums.UNSUPPORTED);
         } else {
-            LOGGER.info("terminal start to upgrade system failed");
-            setUpgradeTaskFailed(terminalId);
+            LOGGER.info("terminal start to upgrade system is support");      
         }
     }
 
-    @Override
-    public void timeout(String terminalId) {
-        Assert.hasLength(terminalId, "terminalId 不能为空");
-
-        LOGGER.info("system upgrade callback timeout");
-        setUpgradeTaskFailed(terminalId);
-    }
-
     /**
-     * 将刷机终端状态设为失败
-     * 
+     * 修改刷机终端状态
      * @param terminalId 终端id
+     * @param state 终端状态
      */
-    private void setUpgradeTaskFailed(String terminalId) {
+    private void modifySystemUpgradeState(String terminalId, CbbSystemUpgradeStateEnums state) {
         List<TerminalSystemUpgradeTerminalEntity> upgradingTerminalList =
                 systemUpgradeTerminalDAO.findByTerminalIdAndState(terminalId, CbbSystemUpgradeStateEnums.UPGRADING);
         if (CollectionUtils.isEmpty(upgradingTerminalList)) {
@@ -82,22 +76,31 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
         }
 
         for (TerminalSystemUpgradeTerminalEntity entity : upgradingTerminalList) {
-            setUpgradeTerminalFail(entity);
+            updateUpgradeTerminalState(entity.getSysUpgradeId(), terminalId, state);
         }
+
+
     }
 
     /**
-     * 修改终端刷机记录状态为失败
-     * 
-     * @param entity 终端记录对象
+     * 更新刷机终端状态
+     * @param sysUpgradeId 刷机任务id
+     * @param terminalId 终端id
+     * @param state 状态
      */
-    private void setUpgradeTerminalFail(TerminalSystemUpgradeTerminalEntity entity) {
+    private void updateUpgradeTerminalState(UUID sysUpgradeId, String terminalId, CbbSystemUpgradeStateEnums state) {
         try {
-            terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(entity.getSysUpgradeId(),
-                    entity.getTerminalId(), CbbSystemUpgradeStateEnums.FAIL);
+            terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(sysUpgradeId, terminalId, state);
         } catch (BusinessException e) {
-            LOGGER.error("更新刷机终端状态失败", e);
+            LOGGER.error("修改刷机终端状态失败", e);
         }
+    }
+
+    @Override
+    public void timeout(String terminalId) {
+        Assert.hasLength(terminalId, "terminalId 不能为空");
+        
+        //do nothing
     }
 
 }

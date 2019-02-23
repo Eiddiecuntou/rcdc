@@ -20,9 +20,19 @@ public interface TerminalSystemUpgradeDAO extends SkyEngineJpaRepository<Termina
     /**
      * 根据任务状态查询升级任务列表
      * 
-     * @param state 任务状态
+     * @param stateList 任务状态列表
      * @return 任务列表
      */
-    List<TerminalSystemUpgradeEntity> findByStateOrderByCreateTimeAsc(CbbSystemUpgradeTaskStateEnums state);
+    List<TerminalSystemUpgradeEntity> findByStateInOrderByCreateTimeAsc(List<CbbSystemUpgradeTaskStateEnums> stateList);
+
+    /**
+     * 根据任务状态查询升级任务列表
+     * 
+     * @param upgradePackageId 刷机包id
+     * @param stateList 任务状态列表
+     * @return 任务列表
+     */
+    List<TerminalSystemUpgradeEntity> findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(UUID upgradePackageId,
+            List<CbbSystemUpgradeTaskStateEnums> stateList);
 
 }

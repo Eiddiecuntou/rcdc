@@ -95,7 +95,7 @@ public interface Constants {
     String TERMINAL_UPGRADE_START_SATTUS_FILE_PATH = "/opt/pxeuser/mac_begin/";
     
     /**
-     * 系统刷机包镜像文件路径
+     * 系统刷机成功状态文件路径
      */
     String TERMINAL_UPGRADE_END_SATTUS_FILE_PATH = "/opt/pxeuser/mac_end/";
 

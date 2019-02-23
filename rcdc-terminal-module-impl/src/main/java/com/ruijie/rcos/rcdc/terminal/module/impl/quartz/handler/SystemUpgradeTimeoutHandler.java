@@ -65,28 +65,14 @@ public class SystemUpgradeTimeoutHandler {
                 continue;
             }
             Date startTime = upgradeTerminal.getStartTime();
-            if (isUpgradeTimeout(startTime)) {
+            if (TerminalDateUtil.isTimeout(startTime, UPGRADING_TIME_OUT)) {
                 LOGGER.info("超时，设置刷机状态为失败");
                 systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal.getSysUpgradeId(),
                         upgradeTerminal.getTerminalId(), CbbSystemUpgradeStateEnums.FAIL);
                 count++;
             }
         }
-        LOGGER.info("完成刷机终端超时处理，处理超时终端{}台", count);
-    }
-
-
-
-    /**
-     * 判断是否刷机超时
-     * 
-     * @param startTime 刷机开始时间
-     * @return 是否超时
-     */
-    private boolean isUpgradeTimeout(Date startTime) {
-        Date now = new Date();
-        Date timeoutDate = TerminalDateUtil.addSecond(startTime, UPGRADING_TIME_OUT);
-        return timeoutDate.before(now);
+        LOGGER.info("完成刷机终端超时处理，处理刷机超时终端{}台", count);
     }
 
 }
