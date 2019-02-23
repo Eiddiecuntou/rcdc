@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.callback.CbbTerminalSystemUpgradeRequestCallBack;
@@ -16,6 +17,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
@@ -46,16 +48,14 @@ public class TerminalSystemUpgradeServiceImplTest {
     private SessionManager sessionManager;
 
     @Injectable
-    private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
-
-    @Injectable
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
-    
-    @Injectable
-    private TerminalSystemUpgradeTerminalDAO terminalSystemUpgradeTerminalDAO;
 
     @Injectable
     private CbbTerminalSystemUpgradeRequestCallBack callback;
+
+    @Injectable
+    private SystemUpgradeFileClearHandler upgradeFileClearHandler;
+
 
     /**
      * 测试发送系统升级指令
