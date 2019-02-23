@@ -84,5 +84,19 @@ public class TerminalDateUtil {
         calendar.add(Calendar.SECOND, second);
         return calendar.getTime();
     }
+    
+    /**
+     * 判断时间是否超时
+     * @param date 时间
+     * @param timeoutSecond 超时时间
+     * @return 是否超时
+     */
+    public static boolean isTimeout(Date date, int timeoutSecond) {
+        Assert.notNull(date, "date can not be null");
+        
+        Date now = new Date();
+        Date timeoutDate = addSecond(date, timeoutSecond);
+        return timeoutDate.before(now);
+    }
 
 }

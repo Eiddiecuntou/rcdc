@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.Map;
-
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
@@ -45,7 +44,7 @@ public class SessionManagerTest {
     public void testBindSession(@Mocked Session session) {
         String terminalId = "123";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
-        TerminalInfo info = new TerminalInfo("123","172.21.12.3");
+        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
         new Expectations() {
             {
                 session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
@@ -69,21 +68,21 @@ public class SessionManagerTest {
     public void testRemoveSession(@Mocked Session session) {
         String terminalId = "321";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
-        TerminalInfo info = new TerminalInfo("123","172.21.12.3");
+        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
         new Expectations() {
             {
                 session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
                 result = info;
             }
         };
-        new MockUp<BaseCreateSystemLogRequest>(){
+        new MockUp<BaseCreateSystemLogRequest>() {
             @Mock
-            public void $init(String key,String... args){
+            public void $init(String key, String... args) {
 
             }
         };
         sessionMap.put(terminalId, session);
-        sessionManager.removeSession(terminalId,session);
+        sessionManager.removeSession(terminalId, session);
         Assert.assertEquals(0, sessionMap.size());
         sessionMap.clear();
     }
@@ -136,9 +135,10 @@ public class SessionManagerTest {
             Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
     }
-    
+
     /**
      * 测试getOnlineTerminalId
+     * 
      * @param session 连接
      */
     @Test

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -29,6 +30,14 @@ public interface TerminalBasicInfoService {
      */
     void modifyTerminalNetworkConfig(String terminalId, ShineNetworkConfig shineNetworkConfig) throws BusinessException;
 
+    /**
+     * 修改终端状态
+     *
+     * @param terminalId 终端id
+     * @param state 终端状态
+     */
+    void modifyTerminalState(String terminalId, CbbTerminalStateEnums state);
+    
     /**
      * 修改终端状态为离线状态
      *

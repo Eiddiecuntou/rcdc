@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -82,16 +81,17 @@ public class ConnectEventHandlerTest {
 
     /**
      * 测试第一个报文正常执行逻辑过程
+     * 
      * @param session session连接
      * @throws InterruptedException 异常
      */
     @Test
     public void testOnReceiveFirstMessageNormal(@Mocked Session session) throws InterruptedException {
         String terminalId = "01-1C-42-F1-2D-45";
-        TerminalInfo info = new TerminalInfo(terminalId,"172.21.12.3");
-        new MockUp<BaseCreateSystemLogRequest>(){
+        TerminalInfo info = new TerminalInfo(terminalId, "172.21.12.3");
+        new MockUp<BaseCreateSystemLogRequest>() {
             @Mock
-            public void $init(String key,String... args){
+            public void $init(String key, String... args) {
 
             }
         };
@@ -135,13 +135,14 @@ public class ConnectEventHandlerTest {
 
     /**
      * 测试不是第一个报文执行逻辑过程
+     * 
      * @param session session连接
      * @throws InterruptedException 异常
      */
     @Test
     public void testOnReceiveNotFirstMessage(@Mocked Session session) throws InterruptedException {
         String terminalId = "01-1C-42-F1-2D-45";
-        TerminalInfo info = new TerminalInfo(terminalId,"172.21.12.3");
+        TerminalInfo info = new TerminalInfo(terminalId, "172.21.12.3");
 
         new Expectations() {
             {
@@ -180,7 +181,7 @@ public class ConnectEventHandlerTest {
      */
     @Test
     public void testOnReceiveHeartBeat() {
-        
+
         new MockUp<SkyengineScheduledThreadPoolExecutor>() {
             @Mock
             public void execute(Runnable command) {
@@ -190,7 +191,7 @@ public class ConnectEventHandlerTest {
         };
         BaseMessage<JSONObject> message = new BaseMessage<JSONObject>("heartBeat", new JSONObject());
         connectEventHandler.onReceive(sender, message);
-        
+
         new Verifications() {
             {
                 Message message;
@@ -201,9 +202,10 @@ public class ConnectEventHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试onReceive，收到未绑定且不是第一个报文
+     * 
      * @param session 连接
      */
     @Test
@@ -215,7 +217,7 @@ public class ConnectEventHandlerTest {
                 command.run();
             }
         };
-        TerminalInfo info = new TerminalInfo("123","172.21.12.3");
+        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
 
         new Expectations() {
             {
@@ -227,7 +229,7 @@ public class ConnectEventHandlerTest {
         };
         BaseMessage<JSONObject> message = new BaseMessage<JSONObject>("sasa", new JSONObject());
         connectEventHandler.onReceive(sender, message);
-        
+
         new Verifications() {
             {
                 sender.response((Message) any);
@@ -235,9 +237,10 @@ public class ConnectEventHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试onReceive，收到第一个报文
+     * 
      * @param session 连接
      */
     @Test
@@ -263,7 +266,7 @@ public class ConnectEventHandlerTest {
             assertTrue(e.getMessage().contains("接收到的报文格式错误;data:"));
         }
     }
-    
+
     /**
      * 测试连接成功-参数为空
      */
@@ -276,9 +279,10 @@ public class ConnectEventHandlerTest {
             assertEquals(e.getMessage(), "RequestMessageSender不能为null");
         }
     }
-    
+
     /**
      * 测试连接成功
+     * 
      * @param requestMessageSender mock requestMessageSender
      */
     @Test
@@ -291,13 +295,14 @@ public class ConnectEventHandlerTest {
     }
 
     /**
-     * 测试连接关闭 
+     * 测试连接关闭
+     * 
      * @param session session连接
      * @throws InterruptedException 异常
      */
     @Test
     public void testOnConnectClosed(@Mocked Session session) throws InterruptedException {
-        TerminalInfo info = new TerminalInfo("123","172.21.12.3");
+        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
         new Expectations() {
             {
                 sessionManager.removeSession(anyString, (Session) any);

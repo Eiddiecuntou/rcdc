@@ -1,9 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
 /**
  * 
@@ -16,6 +20,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
  */
 public class FileOperateUtil {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileOperateUtil.class);
 
     /**
      * 
@@ -25,7 +30,8 @@ public class FileOperateUtil {
      * @param exceptFileName 不删除的文件名
      * @throws BusinessException 业务异常
      */
-    public static void deleteFile(final String directoryPath, final String exceptFileName) throws BusinessException {
+    public static void emptyDirectory(final String directoryPath, final String exceptFileName)
+            throws BusinessException {
 
         Assert.hasLength(directoryPath, "directoryPath 不能为空");
         Assert.hasLength(exceptFileName, "exceptFileName 不能为空");
@@ -40,7 +46,7 @@ public class FileOperateUtil {
      * @param directoryPath 文件夹目录
      * @throws BusinessException 业务异常
      */
-    public static void deleteFile(final String directoryPath) throws BusinessException {
+    public static void emptyDirectory(final String directoryPath) throws BusinessException {
 
         Assert.hasLength(directoryPath, "directoryPath 不能为空");
 
@@ -62,7 +68,7 @@ public class FileOperateUtil {
         Assert.hasLength(fileName, "fileName 不能为空");
         Assert.hasLength(filePath, "filePath 不能为空");
         Assert.hasLength(destPath, "destPath 不能为空");
-        
+
         File file = new File(filePath);
         if (!file.exists()) {
             throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST);
@@ -88,28 +94,116 @@ public class FileOperateUtil {
             throws BusinessException {
         File packageDir = checkAndGetDirectory(directoryPath);
 
-        String[] childrenArr = packageDir.list();
+        File[] childrenArr = packageDir.listFiles();
         if (childrenArr == null || childrenArr.length == 0) {
+            LOGGER.debug("path [{}] no sub file", directoryPath);
             return;
         }
-        
-        File subFile = null;
-        for (String sub : childrenArr) {
+
+        for (File subFile : childrenArr) {
             // 排除外的文件不删除
-            if (sub.equals(exceptFileName)) {
+            String fileName = subFile.getName();
+            if (fileName.equals(exceptFileName)) {
+                LOGGER.debug("skip except file[{}]", exceptFileName);
                 continue;
             }
 
-            subFile = new File(sub);
             if (subFile.isFile()) {
-                try {
-                    // TODO 删除用国祥提供的工具类
-                    subFile.delete();
-                } catch (Exception e) {
-                    throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
-                }
+                LOGGER.debug("delete file[{}]", fileName);
+                subFile.delete();
             }
         }
+    }
+
+    /**
+     * 复制单个文件
+     * 
+     * @param sourcePath 要复制的文件名
+     * @param destPath 目标文件名
+     */
+    public static void copyfile(String sourcePath, String destPath) {
+        Assert.notNull(sourcePath, "sourcePath can not be null");
+        Assert.notNull(destPath, "destPath can not be null");
+
+        int hasRead = 0;
+        File oldFile = new File(sourcePath);
+        if (oldFile.exists()) {
+            try (FileInputStream fis = new FileInputStream(oldFile);
+                    FileOutputStream fos = new FileOutputStream(destPath);) {
+                byte[] bufferArr = new byte[1024];
+                // 当文件没有读到结尾
+                while ((hasRead = fis.read(bufferArr)) != -1) {
+                    fos.write(bufferArr, 0, hasRead);// 写文件
+                }
+                fis.close();
+            } catch (Exception e) {
+                LOGGER.error("复制单个文件操作出错！", e);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param sourcePath 要复制的文件夹路径
+     * @param destPath 目标文件夹路径
+     * @throws BusinessException 业务异常
+     */
+    public static void directoryCopy(String sourcePath, String destPath) throws BusinessException {
+        Assert.notNull(sourcePath, "sourcePath can not be null");
+        Assert.notNull(destPath, "destPath can not be null");
+
+        File sourceFile = new File(sourcePath);
+        File destFile = new File(destPath);
+        LOGGER.info("sourcePath : {}, destPath :{}", sourcePath, destPath);
+        if (!sourceFile.isDirectory()) {
+            LOGGER.info("sourcePath exist : {}", sourceFile.exists());
+            LOGGER.info("sourcePath is File : {}", sourceFile.isFile());
+            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST);
+        }
+        if (!destFile.isDirectory()) {
+            destFile.mkdir();
+        }
+
+        // listFiles能够获取当前文件夹下的所有文件和文件夹
+        File[] fileArr = sourceFile.listFiles();
+        for (int i = 0; i < fileArr.length; i++) {
+            if (fileArr[i].isDirectory()) {
+                File dirNew = new File(destPath + File.separator + fileArr[i].getName());
+                dirNew.mkdir();// 在目标文件夹中创建文件夹
+                // 递归
+                directoryCopy(sourcePath + File.separator + fileArr[i].getName(),
+                        destPath + File.separator + fileArr[i].getName());
+            } else {
+                String filePath = destPath + File.separator + fileArr[i].getName();
+                copyfile(fileArr[i].getAbsolutePath(), filePath);
+            }
+
+        }
+    }
+
+    /**
+     * 先根遍历序递归删除文件夹
+     *
+     * @param deleteFile 要被删除的文件或者目录
+     * @return 删除成功返回true, 否则返回false
+     */
+    public static boolean deleteFile(File deleteFile) {
+        Assert.notNull(deleteFile, "deleteFile can not be null");
+
+        // 如果dir对应的文件不存在，则退出
+        if (!deleteFile.exists()) {
+            return false;
+        }
+
+        if (deleteFile.isFile()) {
+            return deleteFile.delete();
+        } else {
+            for (File file : deleteFile.listFiles()) {
+                deleteFile(file);
+            }
+        }
+
+        return deleteFile.delete();
     }
 
     private static File checkAndGetDirectory(final String directoryPath) throws BusinessException {

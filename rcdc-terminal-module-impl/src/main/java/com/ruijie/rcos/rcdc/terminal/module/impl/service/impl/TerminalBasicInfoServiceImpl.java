@@ -53,14 +53,12 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
         ChangeHostNameRequest changeRequest = new ChangeHostNameRequest(terminalName);
-        Message message = new Message(Constants.SYSTEM_TYPE,
-                SendTerminalEventEnums.MODIFY_TERMINAL_NAME.getName(), changeRequest);
+        Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.MODIFY_TERMINAL_NAME.getName(), changeRequest);
         sender.request(message);
     }
 
     @Override
-    public void modifyTerminalNetworkConfig(String terminalId, ShineNetworkConfig shineNetworkConfig)
-            throws BusinessException {
+    public void modifyTerminalNetworkConfig(String terminalId, ShineNetworkConfig shineNetworkConfig) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(shineNetworkConfig, "ShineNetworkConfig 不能为null");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
@@ -68,9 +66,16 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
 
-        Message message = new Message(Constants.SYSTEM_TYPE,
-                SendTerminalEventEnums.MODIFY_TERMINAL_NETWORK_CONFIG.getName(), shineNetworkConfig);
+        Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.MODIFY_TERMINAL_NETWORK_CONFIG.getName(), shineNetworkConfig);
         sender.request(message);
+    }
+
+    @Override
+    public void modifyTerminalState(String terminalId, CbbTerminalStateEnums state) {
+        Assert.hasText(terminalId, "terminalId 不能为空");
+        Assert.notNull(state, "state 不能为空");
+
+        tryUpdateTerminalState(terminalId, state);
     }
 
     @Override
@@ -82,24 +87,28 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             LOGGER.info("当前终端处于升级状态，不做离线状态修改；terminalId={}, ip={}", terminalId, entity.getIp());
             return;
         }
-        boolean isSuccess = updateTerminalStateToOffline(terminalId);
+        tryUpdateTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
+    }
+
+    private void tryUpdateTerminalState(String terminalId, CbbTerminalStateEnums state) {
+        boolean isSuccess = updateTerminalState(terminalId, state);
         int count = 0;
-        //失败，尝试3次
+        // 失败，尝试3次
         while (!isSuccess && count++ < FAIL_TRY_COUNT) {
-            LOGGER.error("开始第{}次修改终端状态，terminalId=[{}],需要修改状态为：[{}]", count, terminalId, CbbTerminalStateEnums.OFFLINE.name());
-            isSuccess = updateTerminalStateToOffline(terminalId);
+            LOGGER.error("开始第{}次修改终端状态，terminalId=[{}],需要修改状态为：[{}]", count, terminalId, state.name());
+            isSuccess = updateTerminalState(terminalId, state);
         }
     }
 
-    private boolean updateTerminalStateToOffline(String terminalId) {
+    private boolean updateTerminalState(String terminalId, CbbTerminalStateEnums state) {
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             LOGGER.error("不存在terminalId=[{}]的终端", terminalId);
             return false;
         }
-        int effectRow = basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, new Date(), terminalId, basicInfoEntity.getVersion());
+        int effectRow = basicInfoDAO.modifyTerminalStateOffline(state, new Date(), terminalId, basicInfoEntity.getVersion());
         if (effectRow == 0) {
-            LOGGER.error("修改终端状态失败(updateTerminalStateToOffline)，terminalId=[{}],需要修改状态为：[{}]", terminalId, CbbTerminalStateEnums.OFFLINE.name());
+            LOGGER.error("修改终端状态(updateTerminalState)，terminalId=[{}],需要修改状态为：[{}]", terminalId, state.name());
             return false;
         }
         return true;
@@ -107,7 +116,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     @Override
     public boolean isTerminalOnline(String terminalId) {
-        Assert.hasText(terminalId,"terminalId can not empty");
+        Assert.hasText(terminalId, "terminalId can not empty");
         Session session = sessionManager.getSession(terminalId);
         return session == null ? false : true;
     }
