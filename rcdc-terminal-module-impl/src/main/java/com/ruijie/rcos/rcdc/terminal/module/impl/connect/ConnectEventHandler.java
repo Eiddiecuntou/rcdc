@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
-import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -16,7 +16,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.SyncServerTimeResponse;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.Session;
@@ -25,8 +25,6 @@ import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.RequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.ResponseMessageSender;
 import com.ruijie.rcos.sk.commkit.server.AbstractServerMessageHandler;
-
-import java.util.concurrent.ExecutorService;
 
 /**
  * Description: 连接事件处理器
