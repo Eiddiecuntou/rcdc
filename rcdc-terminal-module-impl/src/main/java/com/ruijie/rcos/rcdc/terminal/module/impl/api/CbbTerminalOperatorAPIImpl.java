@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.util.List;
 import java.util.stream.Stream;
+
+import com.google.common.io.Files;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -219,10 +221,11 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         }
 
         String logFileName = cache.getLogFileName();
+        String logFileNameWithoutExtension = Files.getNameWithoutExtension(logFileName);
         String suffix = getFileSuffix(logFileName);
         CbbTerminalLogFileInfoResponse response = new CbbTerminalLogFileInfoResponse();
         response.setLogFilePath(Constants.STORE_TERMINAL_LOG_PATH + logFileName);
-        response.setLogFileName(logFileName);
+        response.setLogFileName(logFileNameWithoutExtension);
         response.setSuffix(suffix);
 
         return response;
