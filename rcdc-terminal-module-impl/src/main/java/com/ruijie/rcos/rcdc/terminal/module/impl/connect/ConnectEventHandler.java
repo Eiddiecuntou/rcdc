@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import java.util.concurrent.ExecutorService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -14,7 +16,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.SyncServerTimeResponse;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.Session;
@@ -49,8 +51,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
     /**
      * 接收报文处理线程池,分配50个线程数
      */
-    private static final SkyengineScheduledThreadPoolExecutor MESSAGE_HANDLER_THREAD_POOL =
-            new SkyengineScheduledThreadPoolExecutor(50, ConnectEventHandler.class.getName());
+    private static final ExecutorService MESSAGE_HANDLER_THREAD_POOL = SkyengineExecutors.newFixedThreadPool("messageHandleThread", 50);
 
     @Override
     public void onReceive(ResponseMessageSender sender, BaseMessage message) {
