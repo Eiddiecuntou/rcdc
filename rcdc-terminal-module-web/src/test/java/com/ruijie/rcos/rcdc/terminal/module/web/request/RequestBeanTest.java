@@ -4,6 +4,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.AppendTerminalSystemUpgradeWebRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CloseSystemUpgradeTaskWebRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CreateTerminalSystemUpgradeWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.DetectPageWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.EditAdminPwdWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.StartBatDetectWebRequest;
@@ -24,43 +27,33 @@ import mockit.integration.junit4.JMockit;
  */
 @RunWith(JMockit.class)
 public class RequestBeanTest {
-
+    
     /**
-     * 测试AddTerminalSystemUpgradeRequest
+     * 测试AppendTerminalSystemUpgradeWebRequest
      */
     @Test
-    public void testAddTerminalSystemUpgradeRequest() {
-        GetSetTester tester = new GetSetTester(AddTerminalSystemUpgradeRequest.class);
+    public void testAppendTerminalSystemUpgradeWebRequest() {
+        GetSetTester tester = new GetSetTester(AppendTerminalSystemUpgradeWebRequest.class);
         tester.runTest();
         assertTrue(true);
     }
     
+    /**
+     * 测试CloseSystemUpgradeTaskWebRequest
+     */
+    @Test
+    public void testCloseSystemUpgradeTaskWebRequest() {
+        GetSetTester tester = new GetSetTester(CloseSystemUpgradeTaskWebRequest.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
     /**
      * 测试CreateTerminalSystemUpgradeRequest
      */
     @Test
     public void testCreateTerminalSystemUpgradeRequest() {
-        GetSetTester tester = new GetSetTester(CreateTerminalSystemUpgradeRequest.class);
-        tester.runTest();
-        assertTrue(true);
-    }
-    
-    /**
-     * 测试DeleteTerminalSystemUpgradeRequest
-     */
-    @Test
-    public void testDeleteTerminalSystemUpgradeRequest() {
-        GetSetTester tester = new GetSetTester(DeleteTerminalSystemUpgradeRequest.class);
-        tester.runTest();
-        assertTrue(true);
-    }
-    
-    /**
-     * 测试ListTerminalSystemUpgradePackageRequest
-     */
-    @Test
-    public void testListTerminalSystemUpgradePackageRequest() {
-        GetSetTester tester = new GetSetTester(ListTerminalSystemUpgradePackageRequest.class);
+        GetSetTester tester = new GetSetTester(CreateTerminalSystemUpgradeWebRequest.class);
         tester.runTest();
         assertTrue(true);
     }

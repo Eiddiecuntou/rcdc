@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import java.util.List;
+import java.util.UUID;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -18,33 +18,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 public interface TerminalSystemUpgradeService {
 
     /**
-     * 
-     * 修改终端升级版本信息
-     * 
-     * @param versionInfo 升级版本信息
-     * @throws BusinessException 业务异常
-     */
-    void modifyTerminalUpgradePackageVersion(TerminalUpgradeVersionFileInfo versionInfo)
-            throws BusinessException;
-
-    /**
-     * 
-     * 添加终端升级版本信息
-     * 
-     * @param versionInfo 终端升级版本信息
-     * @throws BusinessException 业务异常
-     */
-    void addTerminalUpgradePackage(TerminalUpgradeVersionFileInfo versionInfo)
-            throws BusinessException;
-
-    /**
-     * 读取系统升级状态
-     * 
-     * @return 升级状态信息集合
-     */
-    List<TerminalSystemUpgradeInfo> readSystemUpgradeStateFromFile();
-
-    /**
      * 系统升级
      * 
      * @param terminalId 终端id
@@ -53,4 +26,36 @@ public interface TerminalSystemUpgradeService {
      */
     void systemUpgrade(String terminalId, TerminalSystemUpgradeMsg upgradeMsg) throws BusinessException;
 
+    /**
+     * 更新刷机任务状态
+     * 
+     * @param systemUpgradeId 刷机任务id
+     * @param state 状态
+     * @throws BusinessException 业务异常
+     */
+    void modifySystemUpgradeState(UUID systemUpgradeId, CbbSystemUpgradeTaskStateEnums state) throws BusinessException;
+
+    /**
+     * 判断是否存在刷机任务处于进行状态
+     * 
+     * @return 判断结果
+     */
+    boolean hasSystemUpgradeInProgress();
+    
+    /**
+     * 判断刷机包是否存在刷机任务处于进行状态
+     * 
+     * @param upgradePackageId 刷机包id
+     * @return 判断结果
+     */
+    boolean hasSystemUpgradeInProgress(UUID upgradePackageId);
+
+    /**
+     * 获取刷机任务
+     * @param systemUpgradeId 刷机任务id
+     * @return 刷机任务实体对象
+     * @throws BusinessException 业务异常
+     */
+    TerminalSystemUpgradeEntity getSystemUpgradeTask(UUID systemUpgradeId) throws BusinessException;
+    
 }

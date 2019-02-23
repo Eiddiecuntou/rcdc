@@ -10,23 +10,15 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
  */
 public enum CbbSystemUpgradeStateEnums {
     
-    /**
-     * 更新成功
-     */
-    SUCCESS,
-    
-    /**
-     * 正在更新中
-     */
-    UPGRADING,
-    
-    /**
-     * 等待更新中
-     */
     WAIT,
     
-    /**
-     * 更新失败
-     */
-    FAIL
+    UPGRADING,
+    
+    SUCCESS,
+    
+    FAIL,
+    
+    UNDO,
+    
+    UNSUPPORTED
 }

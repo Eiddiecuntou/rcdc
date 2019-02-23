@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * 
@@ -20,29 +19,9 @@ public class TerminalSystemUpgradeInfo {
     private String terminalId;
     
     /**
-     * 终端类型
-     */
-    private TerminalPlatformEnums platform;
-    
-    /**
      * 升级状态
      */
     private CbbSystemUpgradeStateEnums state;
-    
-    /**
-     * 内部版本号
-     */
-    private String internalVersion;
-    
-    /**
-     * 外部版本号
-     */
-    private String externalVersion;
-    
-    /**
-     * 最后一次更新时间
-     */
-    private Long lastUpdateTime;
 
     public String getTerminalId() {
         return terminalId;
@@ -60,43 +39,9 @@ public class TerminalSystemUpgradeInfo {
         this.state = state;
     }
 
-    public String getInternalVersion() {
-        return internalVersion;
-    }
-
-    public void setInternalVersion(String internalVersion) {
-        this.internalVersion = internalVersion;
-    }
-
-    public String getExternalVersion() {
-        return externalVersion;
-    }
-
-    public void setExternalVersion(String externalVersion) {
-        this.externalVersion = externalVersion;
-    }
-
-    public Long getLastUpdateTime() {
-        return lastUpdateTime;
-    }
-
-    public void setLastUpdateTime(Long lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
-    }
-
-    public TerminalPlatformEnums getPlatform() {
-        return platform;
-    }
-
-    public void setPlatform(TerminalPlatformEnums platform) {
-        this.platform = platform;
-    }
-
     @Override
     public String toString() {
-        return "TerminalSystemUpgradeInfo [terminalId=" + terminalId + ", platform=" + platform + ", state=" + state
-                + ", internalVersion=" + internalVersion + ", externalVersion=" + externalVersion + ", lastUpdateTime="
-                + lastUpdateTime + "]";
+        return "TerminalSystemUpgradeInfo [terminalId=" + terminalId + ", state=" + state + "]";
     }
-    
+
 }

@@ -38,14 +38,14 @@ public class TerminalComponentUpgradeCacheInit {
 
     @Autowired
     private ComponentUpdateListCacheManager cacheManager;
-    
+
     /**
      * 更新组件升级缓存
      */
     public void safeInit() {
         // 读取服务器上组件升级目录下的updatelist,并将其存入缓存中
         LOGGER.info("start init updatelist...");
-        
+
         File upgradeDirectory = new File(Constants.TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH);
         if (!upgradeDirectory.isDirectory()) {
             LOGGER.debug("linux vdi terminal component upgrade dictory is not exist, the path is {}",
@@ -80,8 +80,8 @@ public class TerminalComponentUpgradeCacheInit {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("cache json : " + JSON.toJSONString(cacheManager.getUpdateListCaches()));
         }
-        
-        //完成初始化后将updatelist缓存状态更新为false
+
+        // 完成初始化后将updatelist缓存状态更新为false
         ComponentUpdateListCacheManager.isUpdate = false;
         LOGGER.info("finish init updatelist...");
     }
@@ -108,29 +108,43 @@ public class TerminalComponentUpgradeCacheInit {
                 LOGGER.debug("pllatform info not exist");
                 continue;
             }
-            String[] platformArr = platformArrStr.split(PLATFORM_SPERATOR);
-            for (String platformStr : platformArr) {
-                if (StringUtils.isBlank(platformStr) || !TerminalPlatformEnums.contains(platformStr)) {
-                    LOGGER.debug("updatelist contains invalid platform[{}]", platformStr);
-                    continue;
-                }
-                TerminalPlatformEnums platform = TerminalPlatformEnums.valueOf(platformStr);
-                CbbTerminalComponentUpdateListDTO typeUpdatelist = null;
-                List<CbbTerminalComponentVersionInfoDTO> componentList = null;
-                if (caches.containsKey(platform)) {
-                    LOGGER.debug("cache include platform updatelist, platform [{}]", platform);
-                    typeUpdatelist = caches.get(platform);
-                    componentList = typeUpdatelist.getComponentList();
-                } else {
-                    LOGGER.debug("cache not include platform updatelist, platform [{}]", platform);
-                    typeUpdatelist = buildNewComponentUpdatelist(updatelist);
-                    componentList = new ArrayList<>();
-                    typeUpdatelist.setComponentList(componentList);
-                    caches.put(platform, typeUpdatelist);
-                }
-                componentList.add(component);
-                typeUpdatelist.setComponentSize(typeUpdatelist.getComponentSize() + 1);
+            setComponentInfoToCache(updatelist, caches, component, platformArrStr);
+        }
+    }
+
+    /**
+     * 将组件信息存入缓存中
+     * 
+     * @param updatelist 升级信息列表
+     * @param caches 升级信息缓存
+     * @param component 组件信息
+     * @param platformArrStr 平台类型字符串
+     */
+    private void setComponentInfoToCache(CbbTerminalComponentUpdateListDTO updatelist,
+            Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches,
+            CbbTerminalComponentVersionInfoDTO component, String platformArrStr) {
+        String[] platformArr = platformArrStr.split(PLATFORM_SPERATOR);
+        for (String platformStr : platformArr) {
+            if (StringUtils.isBlank(platformStr) || !TerminalPlatformEnums.contains(platformStr)) {
+                LOGGER.debug("updatelist contains invalid platform[{}]", platformStr);
+                continue;
             }
+            TerminalPlatformEnums platform = TerminalPlatformEnums.valueOf(platformStr);
+            CbbTerminalComponentUpdateListDTO typeUpdatelist = null;
+            List<CbbTerminalComponentVersionInfoDTO> componentList = null;
+            if (caches.containsKey(platform)) {
+                LOGGER.debug("cache include platform updatelist, platform [{}]", platform);
+                typeUpdatelist = caches.get(platform);
+                componentList = typeUpdatelist.getComponentList();
+            } else {
+                LOGGER.debug("cache not include platform updatelist, platform [{}]", platform);
+                typeUpdatelist = buildNewComponentUpdatelist(updatelist);
+                componentList = new ArrayList<>();
+                typeUpdatelist.setComponentList(componentList);
+                caches.put(platform, typeUpdatelist);
+            }
+            componentList.add(component);
+            typeUpdatelist.setComponentSize(typeUpdatelist.getComponentSize() + 1);
         }
     }
 
