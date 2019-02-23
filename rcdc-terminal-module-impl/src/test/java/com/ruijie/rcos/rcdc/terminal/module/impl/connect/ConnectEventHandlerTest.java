@@ -197,41 +197,6 @@ public class ConnectEventHandlerTest {
     }
 
     /**
-     * 测试onReceive，收到未绑定且不是第一个报文
-     * 
-     * @param session 连接
-     */
-    @Test
-    public void testOnReceiveNotBandAndFirstMessage(@Mocked Session session) {
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
-        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
-
-        new Expectations() {
-            {
-                sender.getSession();
-                result = session;
-                session.getAttribute(anyString);
-                result = info;
-            }
-        };
-        BaseMessage<JSONObject> message = new BaseMessage<JSONObject>("sasa", new JSONObject());
-        connectEventHandler.onReceive(sender, message);
-
-        new Verifications() {
-            {
-                sender.response((Message) any);
-                times = 0;
-            }
-        };
-    }
-
-    /**
      * 测试连接成功-参数为空
      */
     @Test
