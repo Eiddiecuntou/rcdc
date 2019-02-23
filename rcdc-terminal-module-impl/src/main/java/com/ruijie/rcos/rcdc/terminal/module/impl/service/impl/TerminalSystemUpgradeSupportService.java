@@ -1,7 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.SystemUpgradeQuartzHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.NfsServiceUtil;
+import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
 import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -44,10 +47,9 @@ public class TerminalSystemUpgradeSupportService {
     private static ScheduledFuture<?> SUPPORT_SERVICE_FUTURE = null;
 
     private static final SkyengineScheduledThreadPoolExecutor SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL =
-            new SkyengineScheduledThreadPoolExecutor(2, "终端刷机定时任务");
+            new SkyengineScheduledThreadPoolExecutor(2, "SYSTEM_UPGRADE_SCHEDULED_THREAD");
 
-    private static final SkyengineScheduledThreadPoolExecutor CLOSE_SERVICE_THREAD_POOL =
-            new SkyengineScheduledThreadPoolExecutor(1, "停止刷机服务线程池");
+    private static final ExecutorService CLOSE_SERVICE_THREAD_POOL = SkyengineExecutors.newFixedThreadPool("CLOSE_SERVICE_THREAD", 1);
 
     @Autowired
     private SystemUpgradeQuartzHandler systemUpgradeQuartzHandler;
@@ -214,8 +216,10 @@ public class TerminalSystemUpgradeSupportService {
         }
 
         private boolean closeSupportService() throws BusinessException {
+            List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
+                CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
             List<TerminalSystemUpgradeEntity> upgradeTaskList =
-                    systemUpgradeDAO.findByStateOrderByCreateTimeAsc(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+                    systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
             if (CollectionUtils.isEmpty(upgradeTaskList)) {
                 LOGGER.info("无正在进行中的刷机任务");
                 // 确认关闭nfs服务，关闭定时任务

@@ -72,12 +72,22 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
     }
 
     @Override
-    public List<TerminalSystemUpgradeInfo> readSystemUpgradeStateFromFile() throws BusinessException {
+    public List<TerminalSystemUpgradeInfo> readSystemUpgradeSuccessStateFromFile() throws BusinessException {
+        return getStatusFromFile(Constants.TERMINAL_UPGRADE_END_SATTUS_FILE_PATH, CbbSystemUpgradeStateEnums.SUCCESS);
+    }
+    
+    @Override
+    public List<TerminalSystemUpgradeInfo> readSystemUpgradeStartStateFromFile() throws BusinessException {
+        return getStatusFromFile(Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH, CbbSystemUpgradeStateEnums.UPGRADING);
+    }
+
+    private List<TerminalSystemUpgradeInfo> getStatusFromFile(String fileDir, CbbSystemUpgradeStateEnums state)
+            throws BusinessException {
         // 读取升级成功文件夹，通过文件名称获取mac即终端id
-        File upgradeSuccessDir = new File(Constants.TERMINAL_UPGRADE_END_SATTUS_FILE_PATH);
+        File upgradeSuccessDir = new File(fileDir);
         if (!upgradeSuccessDir.isDirectory()) {
-            LOGGER.error("terminal upgrade success status directory not exist, file path: {}",
-                    Constants.TERMINAL_UPGRADE_END_SATTUS_FILE_PATH);
+            LOGGER.error("terminal upgrade status directory not exist, file path: {}",
+                    fileDir);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_SUCCESS_STATUS_DIRECTORY_NOT_EXIST);
         }
 
@@ -87,10 +97,9 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
             String fileNameWithoutSuffix = getFileNameWithoutSuffix(fileName);
             TerminalSystemUpgradeInfo upgradeInfo = new TerminalSystemUpgradeInfo();
             upgradeInfo.setTerminalId(fileNameWithoutSuffix);
-            upgradeInfo.setState(CbbSystemUpgradeStateEnums.SUCCESS);
+            upgradeInfo.setState(state);
             upgradeInfoList.add(upgradeInfo);
         }
-
         return upgradeInfoList;
     }
 

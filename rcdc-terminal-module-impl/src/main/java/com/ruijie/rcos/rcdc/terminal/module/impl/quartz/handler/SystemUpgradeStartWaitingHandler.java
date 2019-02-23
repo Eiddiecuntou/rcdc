@@ -92,7 +92,7 @@ public class SystemUpgradeStartWaitingHandler {
             }
         }
 
-        LOGGER.info("完成开始等待中的终端刷机处理，处理终端{}台", count);
+        LOGGER.info("完成开始等待中的终端刷机处理，处理开始等待中的终端{}台", count);
     }
 
     private boolean startTerminalUpgrade(int upgradingNum, TerminalSystemUpgradeTerminalEntity upgradeTerminal,

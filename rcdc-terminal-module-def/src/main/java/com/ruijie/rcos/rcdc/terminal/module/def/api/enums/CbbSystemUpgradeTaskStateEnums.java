@@ -13,5 +13,7 @@ public enum CbbSystemUpgradeTaskStateEnums {
 
     UPGRADING,
 
+    CLOSING,
+    
     FINISH
 }

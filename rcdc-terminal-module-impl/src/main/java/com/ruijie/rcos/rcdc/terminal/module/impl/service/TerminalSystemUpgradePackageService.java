@@ -28,12 +28,20 @@ public interface TerminalSystemUpgradePackageService {
     void saveTerminalUpgradePackage(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException;
 
     /**
-     * 读取系统升级状态
+     * 读取终端刷机成功状态
      * 
      * @return 升级状态信息集合
      * @throws BusinessException 业务异常
      */
-    List<TerminalSystemUpgradeInfo> readSystemUpgradeStateFromFile() throws BusinessException;
+    List<TerminalSystemUpgradeInfo> readSystemUpgradeSuccessStateFromFile() throws BusinessException;
+    
+    /**
+     * 读取终端刷机开始状态
+     * 
+     * @return 升级状态信息集合
+     * @throws BusinessException 业务异常
+     */
+    List<TerminalSystemUpgradeInfo> readSystemUpgradeStartStateFromFile() throws BusinessException;
     
     /**
      * 获取刷机包

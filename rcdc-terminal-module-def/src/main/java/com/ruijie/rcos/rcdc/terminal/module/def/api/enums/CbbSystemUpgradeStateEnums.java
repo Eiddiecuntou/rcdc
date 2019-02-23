@@ -18,5 +18,7 @@ public enum CbbSystemUpgradeStateEnums {
     
     FAIL,
     
-    UNDO
+    UNDO,
+    
+    UNSUPPORTED
 }
