@@ -164,7 +164,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     private void checkUpgradeTaskState(TerminalSystemUpgradeEntity upgradeTaskEntity) throws BusinessException {
-        if (upgradeTaskEntity.getState() == CbbSystemUpgradeTaskStateEnums.FINISH) {
+        if (upgradeTaskEntity.getState() != CbbSystemUpgradeTaskStateEnums.UPGRADING) {
             LOGGER.error("system upgrade task is finish, id is : {}", upgradeTaskEntity.getId());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_HAS_CLOSED);
         }
