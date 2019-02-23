@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -332,12 +331,12 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-                CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
-            final List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO
-                    .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
+            CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+        final List<TerminalSystemUpgradeEntity> upgradingTaskList =
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
         // 同一时间只存在一个正在刷机中的任务
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
-            //无升级中的任务
+            // 无升级中的任务
             return null;
         }
         return upgradingTaskList.get(0);
