@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
@@ -44,6 +45,9 @@ public class SystemUpgradeFileClearHandler {
      * @throws BusinessException 业务异常
      */
     public void clear(UUID upgradeTaskId, UUID upgradePackageId) throws BusinessException {
+        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+        Assert.notNull(upgradePackageId, "upgradePackageId can not be null");
+        
         deleteStatusFile(upgradeTaskId);
         deleteUpgradeImg(upgradePackageId);
     }

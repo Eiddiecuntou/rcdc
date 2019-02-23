@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -17,6 +18,7 @@ import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
@@ -329,11 +331,15 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
-        TerminalSystemUpgradeEntity exampleEntity = new TerminalSystemUpgradeEntity();
-        exampleEntity.setUpgradePackageId(packageId);
-        exampleEntity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
-        final List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO.findAll(Example.of(exampleEntity));
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
+                CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+            final List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO
+                    .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
         // 同一时间只存在一个正在刷机中的任务
+        if (CollectionUtils.isEmpty(upgradingTaskList)) {
+            //无升级中的任务
+            return null;
+        }
         return upgradingTaskList.get(0);
     }
 

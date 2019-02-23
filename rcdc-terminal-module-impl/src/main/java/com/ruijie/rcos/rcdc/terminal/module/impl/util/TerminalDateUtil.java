@@ -92,6 +92,8 @@ public class TerminalDateUtil {
      * @return 是否超时
      */
     public static boolean isTimeout(Date date, int timeoutSecond) {
+        Assert.notNull(date, "date can not be null");
+        
         Date now = new Date();
         Date timeoutDate = addSecond(date, timeoutSecond);
         return timeoutDate.before(now);
