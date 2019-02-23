@@ -538,7 +538,7 @@ public class CbbTerminalOperatorAPIImplTest {
         };
         CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
         assertEquals("/opt/ftp/terminal/log/logFileName.log", response.getLogFilePath());
-        assertEquals("logFileName.log", response.getLogFileName());
+        assertEquals("logFileName", response.getLogFileName());
         assertEquals("log", response.getSuffix());
     }
 }
