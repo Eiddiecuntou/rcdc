@@ -61,6 +61,8 @@ public class SystemUpgradeStartConfirmHandler {
      */
     private void startConfirm(List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList) throws BusinessException {
         LOGGER.info("开启刷机终端开始刷机状态同步处理...");
+        List<TerminalSystemUpgradeTerminalEntity> terminalList = new ArrayList<>();
+        terminalList.addAll(upgradeTerminalList);
         int count = 0;
         // 获取文件系统中的正在升级中的终端信息
         List<TerminalSystemUpgradeInfo> systemUpgradeInfoList =
@@ -69,12 +71,12 @@ public class SystemUpgradeStartConfirmHandler {
             systemUpgradeInfoList = new ArrayList<>();
         }
 
-        for (Iterator<TerminalSystemUpgradeTerminalEntity> iterator = upgradeTerminalList.iterator(); iterator
+        for (Iterator<TerminalSystemUpgradeTerminalEntity> iterator = terminalList.iterator(); iterator
                 .hasNext();) {
             TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
                     (TerminalSystemUpgradeTerminalEntity) iterator.next();
             if (upgradeTerminalEntity.getState() != CbbSystemUpgradeStateEnums.UPGRADING) {
-                LOGGER.info("非进行中的刷机终端不做开始刷机状态判断");
+                LOGGER.debug("非进行中的刷机终端不做开始刷机状态判断");
                 iterator.remove();
                 break;
             }
@@ -89,7 +91,7 @@ public class SystemUpgradeStartConfirmHandler {
             }
         }
 
-        for (TerminalSystemUpgradeTerminalEntity noStartInfoTerminal : upgradeTerminalList) {
+        for (TerminalSystemUpgradeTerminalEntity noStartInfoTerminal : terminalList) {
             final boolean isTimeout =
                     TerminalDateUtil.isTimeout(noStartInfoTerminal.getStartTime(), START_CONFIRM_TIME_OUT);
             if (isTimeout) {

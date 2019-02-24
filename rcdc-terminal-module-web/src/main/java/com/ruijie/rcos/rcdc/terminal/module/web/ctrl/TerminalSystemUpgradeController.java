@@ -277,10 +277,10 @@ public class TerminalSystemUpgradeController {
             }
         }
     }
-
+    
     /**
      * 
-     * 获取刷机任务终端列表
+     * 关闭刷机任务终端
      * 
      * @param request 请求参数
      * @return 请求响应

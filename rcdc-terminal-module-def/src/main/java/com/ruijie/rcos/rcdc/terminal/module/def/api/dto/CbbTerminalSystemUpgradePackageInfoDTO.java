@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import java.util.Date;
 import java.util.UUID;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
@@ -32,6 +33,8 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
     private Boolean isUpgrading;
     
     private UUID upgradeTaskId;
+    
+    private Date uploadTime;
 
     public UUID getId() {
         return id;
