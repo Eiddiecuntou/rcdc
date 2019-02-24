@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
@@ -77,6 +78,14 @@ public interface CbbTerminalSystemUpgradeAPI {
      */
     @NoRollback
     DefaultResponse closeSystemUpgradeTask(CbbCloseSystemUpgradeTaskRequest request) throws BusinessException;
+
+    /**
+     * 终端可刷机的列表
+     * @param request请求参数 
+     * @return 终端列表
+     */
+    @NoRollback
+    DefaultPageResponse<TerminalListDTO> listUpgradeableTerminal(PageSearchRequest apiRequest);
 
 
 }

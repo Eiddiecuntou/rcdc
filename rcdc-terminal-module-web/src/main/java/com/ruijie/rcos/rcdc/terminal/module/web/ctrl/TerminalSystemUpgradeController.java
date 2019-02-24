@@ -15,6 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
@@ -295,5 +296,23 @@ public class TerminalSystemUpgradeController {
         cbbTerminalUpgradeAPI.closeSystemUpgradeTask(cbbRequest);
 
         return DefaultWebResponse.Builder.success();
+    }
+    
+    /**
+     * 
+     * 关闭刷机任务终端
+     * 
+     * @param request 请求参数
+     * @return 请求响应
+     * @throws BusinessException 业务异常
+     */
+    @RequestMapping(value = "/basicInfo/terminal/list")
+    public DefaultWebResponse listTerminalBasicInfo(PageWebRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+
+        PageSearchRequest apiRequest = new PageSearchRequest(request);
+        DefaultPageResponse<TerminalListDTO> pageResp = cbbTerminalUpgradeAPI.listUpgradeableTerminal(apiRequest);
+
+        return DefaultWebResponse.Builder.success(pageResp);
     }
 }
