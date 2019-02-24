@@ -57,17 +57,18 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
         if (code == UNSUPPORTED) {
             LOGGER.info(" start to upgrade system is unsupport");
             modifySystemUpgradeState(terminalId, CbbSystemUpgradeStateEnums.UNSUPPORTED);
-        } 
-        if (code == FAILURE){
+        }
+        if (code == FAILURE) {
             LOGGER.info(" start to upgrade system is fail");
             modifySystemUpgradeState(terminalId, CbbSystemUpgradeStateEnums.FAIL);
         }
-        
-        LOGGER.info("terminal start to upgrade system is support");      
+
+        LOGGER.info("terminal start to upgrade system is support");
     }
 
     /**
      * 修改刷机终端状态
+     * 
      * @param terminalId 终端id
      * @param state 终端状态
      */
@@ -88,6 +89,7 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
 
     /**
      * 更新刷机终端状态
+     * 
      * @param sysUpgradeId 刷机任务id
      * @param terminalId 终端id
      * @param state 状态
@@ -103,8 +105,8 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
     @Override
     public void timeout(String terminalId) {
         Assert.hasLength(terminalId, "terminalId 不能为空");
-        
-        //do nothing
+
+        // do nothing
     }
 
 }
