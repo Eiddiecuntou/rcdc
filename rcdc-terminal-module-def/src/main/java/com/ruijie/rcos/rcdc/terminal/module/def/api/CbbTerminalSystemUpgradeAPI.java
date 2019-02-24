@@ -81,7 +81,7 @@ public interface CbbTerminalSystemUpgradeAPI {
 
     /**
      * 终端可刷机的列表
-     * @param request请求参数 
+     * @param apiRequest 请求参数
      * @return 终端列表
      */
     @NoRollback
