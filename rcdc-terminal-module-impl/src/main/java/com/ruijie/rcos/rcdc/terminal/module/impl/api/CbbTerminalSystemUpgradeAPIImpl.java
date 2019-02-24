@@ -13,6 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
@@ -32,9 +33,11 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.ViewUpgradeableTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeTerminalListService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QueryUpgradeableTerminalListService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -88,6 +91,9 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     @Autowired
     private CbbTerminalSystemUpgradePackageAPI systemUpgradePackageAPI;
+
+    @Autowired
+    private QueryUpgradeableTerminalListService queryUpgradeableTerminalListDAO;
 
     @Override
     public AddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request)
@@ -257,6 +263,36 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getUpgradeTaskId());
         return DefaultResponse.Builder.success();
+    }
+
+    @Override
+    public DefaultPageResponse<TerminalListDTO> listUpgradeableTerminal(PageSearchRequest request) {
+        Assert.notNull(request, "request can not be null");
+
+        // TODO request参数中的packageId可获取刷机包，解析平台类型，过滤终端
+        request.setMatchEqualArr(null);
+        Page<ViewUpgradeableTerminalEntity> terminalListPage =
+            queryUpgradeableTerminalListDAO.pageQuery(request, ViewUpgradeableTerminalEntity.class);
+        // 将列表转换为dto输出
+        final int numberOfElements = terminalListPage.getNumberOfElements();
+        final List<ViewUpgradeableTerminalEntity> taskList = terminalListPage.getContent();
+        TerminalListDTO[] dtoArr = new TerminalListDTO[numberOfElements];
+        Stream.iterate(0, i -> i + 1).limit(numberOfElements).forEach(i -> {
+            TerminalListDTO dto = new TerminalListDTO();
+            fillTerminalListDTO(dto, taskList.get(i));
+            dtoArr[i] = dto;
+        });
+
+        return DefaultPageResponse.Builder.success(terminalListPage.getSize(), (int) terminalListPage.getTotalElements(), dtoArr);
+    }
+
+    private void fillTerminalListDTO(TerminalListDTO dto, ViewUpgradeableTerminalEntity viewEntity) {
+        dto.setId(viewEntity.getTerminalId());
+        dto.setTerminalName(viewEntity.getTerminalName());
+        dto.setIp(viewEntity.getIp());
+        dto.setMac(viewEntity.getMacAddr());
+        dto.setProductType(viewEntity.getProductType());
+        dto.setTerminalState(viewEntity.getState());
     }
 
 }

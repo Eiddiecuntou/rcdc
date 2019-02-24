@@ -95,7 +95,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
 
         final TerminalSystemUpgradeEntity systemUpgradeTask = getSystemUpgradeTask(upgradeTaskId);
-
+        
         // 关闭未开始的刷机终端
         final List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList = systemUpgradeTerminalDAO
                 .findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.WAIT);
@@ -103,9 +103,11 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
             closeWaitTerminal(waitUpgradeTerminal);
         }
 
-        // 将刷机任务设置为关闭中状态
-        systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
-        systemUpgradeDAO.save(systemUpgradeTask);
+        // 将进行中的刷机任务设置为关闭中状态
+        if (systemUpgradeTask.getState() == CbbSystemUpgradeTaskStateEnums.UPGRADING) {
+            systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+            systemUpgradeDAO.save(systemUpgradeTask);
+        }
     }
 
     /**
