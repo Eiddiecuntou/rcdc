@@ -130,7 +130,7 @@ public class TerminalOperateController {
         changePwdRequest.setPassword(pwd);
         try {
             terminalOperatorAPI.changePassword(changePwdRequest);
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CHANGE_PWD_SUCCESS_LOG, pwd);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CHANGE_PWD_SUCCESS_LOG);
         } catch (BusinessException e) {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CLOSE_FAIL_LOG, pwd, e.getI18nMessage());
             throw e;
