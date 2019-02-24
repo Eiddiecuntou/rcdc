@@ -215,10 +215,8 @@ public class TerminalOperateControllerTest {
                 terminalOperatorAPI.changePassword(changePwdRequest = withCapture());
                 times = 1;
                 assertEquals(request.getPwd(), changePwdRequest.getPassword());
-                optLogRecorder.saveOptLog(anyString, anyString);
+                optLogRecorder.saveOptLog(anyString);
                 times = 1;
-                optLogRecorder.saveOptLog(anyString, anyString, anyString);
-                times = 0;
             }
         };
     }
