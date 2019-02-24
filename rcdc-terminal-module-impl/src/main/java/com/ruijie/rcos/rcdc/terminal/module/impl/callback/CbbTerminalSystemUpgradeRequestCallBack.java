@@ -57,9 +57,13 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
         if (code == UNSUPPORTED) {
             LOGGER.info(" start to upgrade system is unsupport");
             modifySystemUpgradeState(terminalId, CbbSystemUpgradeStateEnums.UNSUPPORTED);
-        } else {
-            LOGGER.info("terminal start to upgrade system is support");      
+        } 
+        if (code == FAILURE){
+            LOGGER.info(" start to upgrade system is fail");
+            modifySystemUpgradeState(terminalId, CbbSystemUpgradeStateEnums.FAIL);
         }
+        
+        LOGGER.info("terminal start to upgrade system is support");      
     }
 
     /**

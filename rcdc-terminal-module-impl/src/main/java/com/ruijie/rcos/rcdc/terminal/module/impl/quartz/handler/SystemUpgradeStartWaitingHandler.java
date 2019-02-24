@@ -61,7 +61,7 @@ public class SystemUpgradeStartWaitingHandler {
         try {
             startWaiting(upgradeTerminalList, upgradePackageId);
         } catch (BusinessException e) {
-            LOGGER.debug("处理刷机终端状态同步失败", e);
+            LOGGER.error("处理刷机终端状态同步失败", e);
         }
     }
 

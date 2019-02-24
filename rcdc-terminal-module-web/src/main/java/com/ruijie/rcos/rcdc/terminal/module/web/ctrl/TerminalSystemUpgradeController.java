@@ -29,6 +29,7 @@ import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalUpgradeBa
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.AppendTerminalSystemUpgradeWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CloseSystemUpgradeTaskWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CreateTerminalSystemUpgradeWebRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.ListTerminalWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.CreateSystemUpgradeTaskContentVO;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -277,10 +278,10 @@ public class TerminalSystemUpgradeController {
             }
         }
     }
-
+    
     /**
      * 
-     * 获取刷机任务终端列表
+     * 关闭刷机任务终端
      * 
      * @param request 请求参数
      * @return 请求响应

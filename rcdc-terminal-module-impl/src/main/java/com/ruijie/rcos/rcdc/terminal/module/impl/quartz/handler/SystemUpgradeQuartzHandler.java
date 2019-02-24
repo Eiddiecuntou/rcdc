@@ -47,6 +47,9 @@ public class SystemUpgradeQuartzHandler implements Runnable {
 
     @Autowired
     private SystemUpgradeTimeoutHandler timeoutHandler;
+    
+    @Autowired
+    private SystemUpgradeStartConfirmHandler confirmHandler;
 
     @Override
     public void run() {
@@ -93,6 +96,7 @@ public class SystemUpgradeQuartzHandler implements Runnable {
     private void dealUpgradingTask(TerminalSystemUpgradeEntity upgradeTask,
             List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList) throws BusinessException {
         // 执行刷机终端处理
+        confirmHandler.execute(upgradeTerminalList);
         stateSyncHandler.execute(upgradeTerminalList);
         timeoutHandler.execute(upgradeTerminalList);
         startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());

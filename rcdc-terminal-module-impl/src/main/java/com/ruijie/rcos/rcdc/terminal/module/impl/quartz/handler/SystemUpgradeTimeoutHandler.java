@@ -61,12 +61,12 @@ public class SystemUpgradeTimeoutHandler {
         int count = 0;
         for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : upgradeTerminalList) {
             if (upgradeTerminal.getState() != CbbSystemUpgradeStateEnums.UPGRADING) {
-                LOGGER.info("刷机终端状态非进行中状态，不进行超时处理");
+                LOGGER.debug("刷机终端状态非进行中状态，不进行超时处理");
                 continue;
             }
             Date startTime = upgradeTerminal.getStartTime();
             if (TerminalDateUtil.isTimeout(startTime, UPGRADING_TIME_OUT)) {
-                LOGGER.info("超时，设置刷机状态为失败");
+                LOGGER.debug("超时，设置刷机状态为失败");
                 systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal.getSysUpgradeId(),
                         upgradeTerminal.getTerminalId(), CbbSystemUpgradeStateEnums.FAIL);
                 count++;
