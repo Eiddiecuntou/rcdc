@@ -29,7 +29,6 @@ import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalUpgradeBa
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.AppendTerminalSystemUpgradeWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CloseSystemUpgradeTaskWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CreateTerminalSystemUpgradeWebRequest;
-import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.ListTerminalWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.CreateSystemUpgradeTaskContentVO;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
