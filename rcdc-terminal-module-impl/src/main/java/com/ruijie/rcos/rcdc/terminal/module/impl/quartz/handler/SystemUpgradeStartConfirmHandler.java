@@ -30,7 +30,7 @@ public class SystemUpgradeStartConfirmHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeStateSynctHandler.class);
 
-    private static final int START_CONFIRM_TIME_OUT = 3 * 60;
+    private static final int START_CONFIRM_TIME_OUT = 5 * 60;
 
     @Autowired
     private TerminalSystemUpgradePackageService systemUpgradePackageService;
@@ -78,7 +78,7 @@ public class SystemUpgradeStartConfirmHandler {
             if (upgradeTerminalEntity.getState() != CbbSystemUpgradeStateEnums.UPGRADING) {
                 LOGGER.debug("非进行中的刷机终端不做开始刷机状态判断");
                 iterator.remove();
-                break;
+                continue;
             }
             // 查找匹配的终端
             String terminalId = upgradeTerminalEntity.getTerminalId();
