@@ -130,9 +130,19 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
 
     /**
      * 删除终端检测记录
+     * 
      * @param terminalId 终端id
      * @return 删除影响行数
      */
     int deleteByTerminalId(String terminalId);
+
+    /**
+     * 获取终端检测记录列表
+     * 
+     * @param startDt 开始时间
+     * @param endDt 结束时间
+     * @return 检测列表
+     */
+    List<TerminalDetectionEntity> findByDetectTimeBetween(Date startDt, Date endDt);
 
 }

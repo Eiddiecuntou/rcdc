@@ -195,6 +195,11 @@ public class TerminalDetectService {
         int delay = detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(
                 Constants.TERMINAL_DETECT_DELAY_NORM, startDt, endDt);
         int checking = detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, startDt, endDt);
+
+        List<TerminalDetectionEntity> detectList = detectionDAO.findByDetectTimeBetween(startDt, endDt);
+        int totalAbnormalNum = getAllAbnormalNum(detectList);
+
+        // 构建检测结果dto
         CbbTerminalDetectResultDTO result = new CbbTerminalDetectResultDTO();
         result.setAccessInternet(accessInternet);
         result.setBandwidth(bandwidth);
@@ -202,8 +207,83 @@ public class TerminalDetectService {
         result.setIpConflict(ipConflict);
         result.setPacketLossRate(packetLossRate);
         result.setChecking(checking);
+        result.setAll(totalAbnormalNum);
 
         return result;
+    }
+
+    /**
+     * 获取总异常终端数
+     * 
+     * @param detectList 检测记录列表
+     * @return 总异常数
+     */
+    private int getAllAbnormalNum(List<TerminalDetectionEntity> detectList) {
+        if (CollectionUtils.isEmpty(detectList)) {
+            return 0;
+        }
+
+        int totalNum = 0;
+        for (TerminalDetectionEntity detectEntity : detectList) {
+            if (isDetectAbnormal(detectEntity)) {
+                totalNum++;
+            }
+        }
+        return totalNum;
+    }
+
+    /**
+     * 判断终端检测记录是否异常
+     * 
+     * @param detectEntity 检测记录
+     * @return 检测结果是否异常
+     */
+    private boolean isDetectAbnormal(TerminalDetectionEntity detectEntity) {
+        if (detectEntity.getDetectState() == DetectStateEnums.CHECKING) {
+            return false;
+        }
+        // ip冲突
+        if (isIpConflict(detectEntity.getIpConflict())) {
+            return true;
+        }
+        // 带宽异常
+        if (isBandWidthAbnormal(detectEntity.getBandwidth())) {
+            return true;
+        }
+        // 网络访问异常
+        if (isAccessInternetAbnormal(detectEntity.getAccessInternet())) {
+            return true;
+        }
+        // 丢包率异常
+        if (isPackageLossRateAbnormal(detectEntity.getPacketLossRate())) {
+            return true;
+        }
+        // 时延异常
+        if (isNetworkDelayAbnormal(detectEntity.getNetworkDelay())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isNetworkDelayAbnormal(Integer networkDelay) {
+        return networkDelay == null || networkDelay > Constants.TERMINAL_DETECT_DELAY_NORM;
+    }
+
+    private boolean isPackageLossRateAbnormal(Double packetLossRate) {
+        return packetLossRate == null || packetLossRate > Constants.TERMINAL_DETECT_PACKET_LOSS_RATE;
+    }
+
+    private boolean isAccessInternetAbnormal(Integer accessInternet) {
+        return accessInternet == null || accessInternet == DetectItemStateEnums.FALSE.getState();
+    }
+
+    private boolean isBandWidthAbnormal(Double bandwidth) {
+        return bandwidth == null || bandwidth < Constants.TERMINAL_DETECT_BINDWIDTH_NORM;
+    }
+
+    private boolean isIpConflict(Integer ipConflict) {
+        return ipConflict == null || ipConflict == DetectItemStateEnums.TRUE.getState();
     }
 
     /**
