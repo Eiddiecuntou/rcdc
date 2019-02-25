@@ -92,4 +92,12 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
         this.upgradeTaskId = upgradeTaskId;
     }
 
+    public Date getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(Date uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+    
 }

@@ -128,7 +128,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         AddSystemUpgradeTaskResponse response = new AddSystemUpgradeTaskResponse();
         response.setUpgradeTaskId(upgradeTaskId);
-        response.setImgName(upgradePackage.getImgName());
+        response.setImgName(upgradePackage.getPackageName());
         return response;
     }
 
