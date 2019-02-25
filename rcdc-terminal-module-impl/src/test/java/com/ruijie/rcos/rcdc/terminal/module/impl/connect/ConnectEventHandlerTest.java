@@ -1,33 +1,32 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.commkit.base.Session;
-import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.RequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.ResponseMessageSender;
-
 import io.netty.channel.ChannelHandlerContext;
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
+import mockit.Tested;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -167,33 +166,6 @@ public class ConnectEventHandlerTest {
         } catch (Exception e) {
             fail();
         }
-    }
-
-    /**
-     * 测试onReceive，收到心跳报文
-     */
-    @Test
-    public void testOnReceiveHeartBeat() {
-
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
-        BaseMessage<JSONObject> message = new BaseMessage<JSONObject>("heartBeat", new JSONObject());
-        connectEventHandler.onReceive(sender, message);
-
-        new Verifications() {
-            {
-                Message message;
-                sender.response(message = withCapture());
-                assertEquals("heartBeat", message.getAction());
-                assertEquals(Constants.SYSTEM_TYPE, message.getSystemType());
-                assertNull(message.getData());
-            }
-        };
     }
 
     /**
