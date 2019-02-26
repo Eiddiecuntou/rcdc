@@ -22,6 +22,8 @@ import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 
+import java.util.Date;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018
@@ -178,10 +180,8 @@ public class TerminalBasicInfoServiceImplTest {
      */
     @Test
     public void testModifyTerminalStateArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalState("", CbbTerminalStateEnums.OFFLINE),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalStateToOffline(""),
                 "terminalId 不能为空");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalState("123", null),
-                "CbbTerminalStateEnums 不能为空");
         assertTrue(true);
     }
     
@@ -196,17 +196,17 @@ public class TerminalBasicInfoServiceImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = basicInfoEntity;
-                basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), CbbTerminalStateEnums.OFFLINE);
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,anyString, anyInt);
                 result = 1;
             }
         };
-        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
+        basicInfoService.modifyTerminalStateToOffline(terminalId);
         
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                times = 1;
-                basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), CbbTerminalStateEnums.OFFLINE);
+                times = 2;
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, anyInt);
                 times = 1;
             }
         };
@@ -219,22 +219,23 @@ public class TerminalBasicInfoServiceImplTest {
     public void testModifyTerminalStateIsFail() {
         String terminalId = "123";
         TerminalEntity basicInfoEntity = new TerminalEntity();
+        basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                returns(null, basicInfoEntity);
-                basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), CbbTerminalStateEnums.OFFLINE);
+                result = basicInfoEntity;
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, anyInt);
                 result = 0;
             }
         };
-        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.OFFLINE);
+        basicInfoService.modifyTerminalStateToOffline(terminalId);
         
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 5;
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, basicInfoEntity.getVersion());
                 times = 4;
-                basicInfoDAO.modifyTerminalState(terminalId, basicInfoEntity.getVersion(), CbbTerminalStateEnums.OFFLINE);
-                times = 3;
             }
         };
     }

@@ -8,17 +8,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.CloseTerminalBatchTaskHandler;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.RestartTerminalBatchTaskHandler;
@@ -50,9 +50,6 @@ public class TerminalOperateController {
 
     @Autowired
     private CbbTerminalOperatorAPI terminalOperatorAPI;
-
-    @Autowired
-    private CbbTerminalBasicInfoAPI basicInfoAPI;
 
     /**
      * 关闭终端
@@ -133,7 +130,7 @@ public class TerminalOperateController {
         changePwdRequest.setPassword(pwd);
         try {
             terminalOperatorAPI.changePassword(changePwdRequest);
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CHANGE_PWD_SUCCESS_LOG, pwd);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CHANGE_PWD_SUCCESS_LOG);
         } catch (BusinessException e) {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CLOSE_FAIL_LOG, pwd, e.getI18nMessage());
             throw e;
@@ -187,6 +184,7 @@ public class TerminalOperateController {
         Assert.notNull(request, "request不能为null");
 
         CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest();
+        idRequest.setTerminalId(request.getTerminalId());
         CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(idRequest);
 
         InputStream inputStream = new FileInputStream(new File(response.getLogFilePath()));

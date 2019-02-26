@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**

@@ -19,15 +19,15 @@ public class TerminalSystemUpgradeMsg {
     /**
      * 版本号
      */
-    private String version;
+    private String isoVersion;
     
     
     public TerminalSystemUpgradeMsg() {
     }
 
-    public TerminalSystemUpgradeMsg(String imgName, String version) {
+    public TerminalSystemUpgradeMsg(String imgName, String isoVersion) {
         this.imgName = imgName;
-        this.version = version;
+        this.isoVersion = isoVersion;
     }
 
     public String getImgName() {
@@ -38,12 +38,17 @@ public class TerminalSystemUpgradeMsg {
         this.imgName = imgName;
     }
 
-    public String getVersion() {
-        return version;
+    public String getIsoVersion() {
+        return isoVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setIsoVersion(String isoVersion) {
+        this.isoVersion = isoVersion;
+    }
+
+    @Override
+    public String toString() {
+        return "TerminalSystemUpgradeMsg [imgName=" + imgName + ", isoVersion=" + isoVersion + "]";
     }
 
 }

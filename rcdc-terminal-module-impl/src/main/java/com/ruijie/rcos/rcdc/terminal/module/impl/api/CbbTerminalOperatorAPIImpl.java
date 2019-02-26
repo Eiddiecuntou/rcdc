@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.util.List;
 import java.util.stream.Stream;
+
+import com.google.common.io.Files;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoRespon
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -131,6 +132,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         List<TerminalDetectionEntity> detectionList = page.getContent();
         int size = detectionList.size();
         CbbTerminalDetectDTO[] detectDTOArr = new CbbTerminalDetectDTO[size];
+        
         Stream.iterate(0, i -> i + 1).limit(size).forEach(i -> {
             CbbTerminalDetectDTO detectDTO = new CbbTerminalDetectDTO();
             TerminalDetectionEntity detectionEntity = detectionList.get(i);
@@ -138,8 +140,10 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             setThreshold(detectDTO);
             TerminalEntity terminalEntity =
                     terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
-            detectDTO.setIp(terminalEntity.getIp());
-            detectDTO.setTerminalName(terminalEntity.getTerminalName());
+            if (terminalEntity != null) {
+                detectDTO.setIp(terminalEntity.getIp());
+                detectDTO.setTerminalName(terminalEntity.getTerminalName());
+            }
             detectDTOArr[i] = detectDTO;
         });
 
@@ -217,10 +221,11 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         }
 
         String logFileName = cache.getLogFileName();
+        String logFileNameWithoutExtension = Files.getNameWithoutExtension(logFileName);
         String suffix = getFileSuffix(logFileName);
         CbbTerminalLogFileInfoResponse response = new CbbTerminalLogFileInfoResponse();
         response.setLogFilePath(Constants.STORE_TERMINAL_LOG_PATH + logFileName);
-        response.setLogFileName(logFileName);
+        response.setLogFileName(logFileNameWithoutExtension);
         response.setSuffix(suffix);
 
         return response;

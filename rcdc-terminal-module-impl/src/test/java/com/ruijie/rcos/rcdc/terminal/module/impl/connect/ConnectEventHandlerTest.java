@@ -1,26 +1,21 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.util.Assert;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
+import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.commkit.base.Session;
-import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.RequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.ResponseMessageSender;
@@ -73,15 +68,25 @@ public class ConnectEventHandlerTest {
     @Injectable
     private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
 
+    @Injectable
+    private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
     /**
      * 测试第一个报文正常执行逻辑过程
+     * 
      * @param session session连接
      * @throws InterruptedException 异常
      */
     @Test
     public void testOnReceiveFirstMessageNormal(@Mocked Session session) throws InterruptedException {
         String terminalId = "01-1C-42-F1-2D-45";
+        TerminalInfo info = new TerminalInfo(terminalId, "172.21.12.3");
+        new MockUp<BaseCreateSystemLogRequest>() {
+            @Mock
+            public void $init(String key, String... args) {
+
+            }
+        };
         new Expectations() {
             {
                 cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
@@ -89,9 +94,10 @@ public class ConnectEventHandlerTest {
                 sessionManager.bindSession(terminalId, (Session) any);
                 result = null;
                 session.getAttribute(anyString);
-                result = terminalId;
+                result = info;
             }
         };
+
 
         String action = ShineAction.CHECK_UPGRADE;
         ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
@@ -121,21 +127,23 @@ public class ConnectEventHandlerTest {
 
     /**
      * 测试不是第一个报文执行逻辑过程
+     * 
      * @param session session连接
      * @throws InterruptedException 异常
      */
     @Test
     public void testOnReceiveNotFirstMessage(@Mocked Session session) throws InterruptedException {
         String terminalId = "01-1C-42-F1-2D-45";
+        TerminalInfo info = new TerminalInfo(terminalId, "172.21.12.3");
+
         new Expectations() {
             {
                 cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
                 result = null;
                 session.getAttribute(anyString);
-                result = terminalId;
+                result = info;
             }
         };
-
         try {
             String action = ShineAction.COLLECT_TERMINAL_LOG_FINISH;
             ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
@@ -161,93 +169,6 @@ public class ConnectEventHandlerTest {
     }
 
     /**
-     * 测试onReceive，收到心跳报文
-     */
-    @Test
-    public void testOnReceiveHeartBeat() {
-        
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
-        BaseMessage<JSONObject> message = new BaseMessage<JSONObject>("heartBeat", new JSONObject());
-        connectEventHandler.onReceive(sender, message);
-        
-        new Verifications() {
-            {
-                Message message;
-                sender.response(message = withCapture());
-                assertEquals("heartBeat", message.getAction());
-                assertEquals(Constants.SYSTEM_TYPE, message.getSystemType());
-                assertNull(message.getData());
-            }
-        };
-    }
-    
-    /**
-     * 测试onReceive，收到未绑定且不是第一个报文
-     * @param session 连接
-     */
-    @Test
-    public void testOnReceiveNotBandAndFirstMessage(@Mocked Session session) {
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
-        new Expectations() {
-            {
-                sender.getSession();
-                result = session;
-                session.getAttribute(anyString);
-                result = "";
-            }
-        };
-        BaseMessage<JSONObject> message = new BaseMessage<JSONObject>("sasa", new JSONObject());
-        connectEventHandler.onReceive(sender, message);
-        
-        new Verifications() {
-            {
-                sender.response((Message) any);
-                times = 0;
-            }
-        };
-    }
-    
-    /**
-     * 测试onReceive，收到第一个报文
-     * @param session 连接
-     */
-    @Test
-    public void testOnReceiveFirstMessage(@Mocked Session session) {
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
-        new Expectations() {
-            {
-                sender.getSession();
-                result = session;
-            }
-        };
-        BaseMessage<String> message = new BaseMessage<String>("check_upgrade", "sdd");
-        try {
-            connectEventHandler.onReceive(sender, message);
-            fail();
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains("接收到的报文格式错误;data:"));
-        }
-    }
-    
-    /**
      * 测试连接成功-参数为空
      */
     @Test
@@ -259,9 +180,10 @@ public class ConnectEventHandlerTest {
             assertEquals(e.getMessage(), "RequestMessageSender不能为null");
         }
     }
-    
+
     /**
      * 测试连接成功
+     * 
      * @param requestMessageSender mock requestMessageSender
      */
     @Test
@@ -274,18 +196,20 @@ public class ConnectEventHandlerTest {
     }
 
     /**
-     * 测试连接关闭 
+     * 测试连接关闭
+     * 
      * @param session session连接
      * @throws InterruptedException 异常
      */
     @Test
     public void testOnConnectClosed(@Mocked Session session) throws InterruptedException {
+        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
         new Expectations() {
             {
-                sessionManager.removeSession(anyString);
-                result = null;
+                sessionManager.removeSession(anyString, (Session) any);
+                result = true;
                 session.getAttribute(anyString);
-                result = "123";
+                result = info;
             }
         };
 
@@ -294,7 +218,7 @@ public class ConnectEventHandlerTest {
         try {
             new Verifications() {
                 {
-                    sessionManager.removeSession(anyString);
+                    sessionManager.removeSession(anyString, (Session) any);
                     times = 1;
                 }
             };

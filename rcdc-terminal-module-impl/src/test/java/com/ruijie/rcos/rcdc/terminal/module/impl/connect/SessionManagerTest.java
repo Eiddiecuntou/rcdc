@@ -4,6 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.Map;
+import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
+import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,9 +15,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import mockit.Deencapsulation;
-import mockit.Mocked;
-import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -30,6 +31,9 @@ public class SessionManagerTest {
     @Tested
     private SessionManager sessionManager;
 
+    @Injectable
+    private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
+
     /**
      * 
      * 测试绑定终端session
@@ -40,6 +44,15 @@ public class SessionManagerTest {
     public void testBindSession(@Mocked Session session) {
         String terminalId = "123";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
+        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
+        new Expectations() {
+            {
+                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
+                result = info;
+
+            }
+        };
+
         sessionManager.bindSession(terminalId, session);
         Assert.assertEquals(1, sessionMap.size());
         sessionMap.clear();
@@ -55,8 +68,21 @@ public class SessionManagerTest {
     public void testRemoveSession(@Mocked Session session) {
         String terminalId = "321";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
+        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
+        new Expectations() {
+            {
+                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
+                result = info;
+            }
+        };
+        new MockUp<BaseCreateSystemLogRequest>() {
+            @Mock
+            public void $init(String key, String... args) {
+
+            }
+        };
         sessionMap.put(terminalId, session);
-        sessionManager.removeSession(terminalId);
+        sessionManager.removeSession(terminalId, session);
         Assert.assertEquals(0, sessionMap.size());
         sessionMap.clear();
     }
@@ -109,9 +135,10 @@ public class SessionManagerTest {
             Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
     }
-    
+
     /**
      * 测试getOnlineTerminalId
+     * 
      * @param session 连接
      */
     @Test

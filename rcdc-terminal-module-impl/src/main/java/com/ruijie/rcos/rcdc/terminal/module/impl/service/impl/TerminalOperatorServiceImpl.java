@@ -1,11 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -50,28 +52,34 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     @Autowired
     private TerminalDetectService terminalDetectService;
-    
+
     @Autowired
     private TerminalDetectionDAO terminalDetectionDAO;
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
-    
+
+    @Autowired
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
+
+
     /**
      * 终端通知处理线程池,分配1个线程数
      */
-    private static final SkyengineScheduledThreadPoolExecutor NOTICE_HANDLER_THREAD_POOL
-            = new SkyengineScheduledThreadPoolExecutor(1, TerminalOperatorServiceImpl.class.getName());
+    private static final SkyengineScheduledThreadPoolExecutor NOTICE_HANDLER_THREAD_POOL =
+            new SkyengineScheduledThreadPoolExecutor(1, TerminalOperatorServiceImpl.class.getName());
 
     @Override
     public void shutdown(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
+        checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN);
         operateTerminal(terminalId, SendTerminalEventEnums.SHUTDOWN_TERMINAL, "");
     }
 
     @Override
     public void restart(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
+        checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_RESTART);
         operateTerminal(terminalId, SendTerminalEventEnums.RESTART_TERMINAL, "");
     }
 
@@ -83,7 +91,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         String encryptPwd = AesUtil.encrypt(password, Constants.TERMINAL_ADMIN_PASSWORD_AES_KEY);
         globalParameterAPI.updateParameter(Constants.RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY, encryptPwd);
 
-        //向在线终端发送新管理员密码
+        // 向在线终端发送新管理员密码
         NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewPwdToOnlineTerminal(encryptPwd));
     }
 
@@ -108,14 +116,13 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             LOGGER.debug("无在线终端");
             return;
         }
-        
+
         for (String terminalId : onlineTerminalIdList) {
             ChangeTerminalPasswordRequest request = new ChangeTerminalPasswordRequest(password);
             try {
                 operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD, request);
             } catch (BusinessException e) {
-                LOGGER.error("send new password to terminal failed, terminalId[{}], password[{}]", terminalId,
-                        password);
+                LOGGER.error("send new password to terminal failed, terminalId[{}], password[{}]", terminalId, password);
             }
         }
     }
@@ -123,6 +130,8 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     @Override
     public void collectLog(final String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
+        checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_COLLECT_LOG);
+
         CollectLogCache collectLogCache = collectLogCacheManager.getCache(terminalId);
         if (collectLogCache != null && CollectLogStateEnums.DOING == collectLogCache.getState()) {
             LOGGER.debug("终端[{}]正在收集日志中，不允许重复收集", terminalId);
@@ -149,6 +158,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     @Override
     public void detect(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
+        checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_DETECT);
 
         // 当天是否含有该终端检测记录，若有且检测已完成，重新开始检测，正在检测则忽略
         TerminalDetectionEntity detection = terminalDetectService.findInCurrentDate(terminalId);
@@ -174,21 +184,30 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         try {
             operateTerminal(terminalId, SendTerminalEventEnums.DETECT_TERMINAL, "");
         } catch (BusinessException e) {
-            //发送消息异常，将检测记录设置为失败
+            // 发送消息异常，将检测记录设置为失败
             detection.setDetectState(DetectStateEnums.ERROR);
             terminalDetectionDAO.save(detection);
         }
     }
-    
-    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data)
-            throws BusinessException {
+
+    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data) throws BusinessException {
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
-
         Message message = new Message(Constants.SYSTEM_TYPE, terminalEvent.getName(), data);
         sender.request(message);
+    }
+
+    private void checkAllowOperate(String terminalId, String businessKey) throws BusinessException {
+        boolean isOnline = sessionManager.getSession(terminalId) == null ? false : true;
+        if (isOnline) {
+            // 在线状态允许操作
+            return;
+        }
+        String terminalName = terminalBasicInfoDAO.getTerminalNameByTerminalId(terminalId);
+        LOGGER.warn("终端[{}({})]离线,不允许操作", terminalName, terminalId);
+        throw new BusinessException(businessKey, new String[] {terminalName, terminalId});
     }
 
 }

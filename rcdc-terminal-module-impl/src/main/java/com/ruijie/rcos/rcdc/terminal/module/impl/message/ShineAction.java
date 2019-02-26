@@ -54,4 +54,9 @@ public interface ShineAction {
      * 连接关闭
      */
     String SYSTEM_UPGRADE = "upgrade_system";
+
+    /**
+     * 同步服务器时间
+     */
+    String SYNC_SERVER_TIME = "sync_server_time";
 }

@@ -23,6 +23,8 @@ public class CbbTerminalDetectResultDTO {
 
     private int checking; 
     
+    private int all;
+    
     public int getIpConflict() {
         return ipConflict;
     }
@@ -69,6 +71,14 @@ public class CbbTerminalDetectResultDTO {
 
     public void setChecking(int checking) {
         this.checking = checking;
+    }
+
+    public int getAll() {
+        return all;
+    }
+
+    public void setAll(int all) {
+        this.all = all;
     }
     
 }

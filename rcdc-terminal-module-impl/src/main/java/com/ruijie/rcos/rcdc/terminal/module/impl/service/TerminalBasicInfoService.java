@@ -34,8 +34,22 @@ public interface TerminalBasicInfoService {
      * 修改终端状态
      *
      * @param terminalId 终端id
-     * @param state 终端状态，在线或离线
-     * @throws BusinessException 业务异常
+     * @param state 终端状态
      */
     void modifyTerminalState(String terminalId, CbbTerminalStateEnums state);
+    
+    /**
+     * 修改终端状态为离线状态
+     *
+     * @param terminalId 终端id
+     */
+    void modifyTerminalStateToOffline(String terminalId);
+
+    /**
+     * 判断终端是否在
+     * 
+     * @param terminalId 终端id
+     * @return true 在线，false 离线
+     */
+    boolean isTerminalOnline(String terminalId);
 }
