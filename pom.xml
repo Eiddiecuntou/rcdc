@@ -6,7 +6,7 @@
         <artifactId>sk-root-api</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.0-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ruijie.rcos.rcdc.terminal.module</groupId>
     <artifactId>rcdc-terminal-module</artifactId>
@@ -19,8 +19,8 @@
     </modules>
     
     <properties>
-    	<base-aaa-module.version>0.0.1-SNAPSHOT</base-aaa-module.version>
-    	<base-sysmanage-module.version>0.0.1-SNAPSHOT</base-sysmanage-module.version>
+    	<base-aaa-module.version>0.0.0-SNAPSHOT</base-aaa-module.version>
+    	<base-sysmanage-module.version>0.0.0-SNAPSHOT</base-sysmanage-module.version>
     </properties>
 
     <!--定义依赖包版本号-->
