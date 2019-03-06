@@ -46,10 +46,10 @@ public class TerminalSystemUpgradeSupportService {
 
     private static ScheduledFuture<?> SUPPORT_SERVICE_FUTURE = null;
 
-    private static final SkyengineScheduledThreadPoolExecutor SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL =
+    private static SkyengineScheduledThreadPoolExecutor SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL =
             new SkyengineScheduledThreadPoolExecutor(2, "SYSTEM_UPGRADE_SCHEDULED_THREAD");
 
-    private static final ExecutorService CLOSE_SERVICE_THREAD_POOL = SkyengineExecutors.newFixedThreadPool("CLOSE_SERVICE_THREAD", 1);
+    private static ExecutorService CLOSE_SERVICE_THREAD_POOL = SkyengineExecutors.newFixedThreadPool("CLOSE_SERVICE_THREAD", 1);
 
     @Autowired
     private SystemUpgradeQuartzHandler systemUpgradeQuartzHandler;
@@ -59,6 +59,7 @@ public class TerminalSystemUpgradeSupportService {
 
     /**
      * 关闭刷机相关支持服务
+     * 
      * @throws BusinessException 业务异常
      */
     public void closeSystemUpgradeService() throws BusinessException {
@@ -217,7 +218,7 @@ public class TerminalSystemUpgradeSupportService {
 
         private boolean closeSupportService() throws BusinessException {
             List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-                CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+                    CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
             List<TerminalSystemUpgradeEntity> upgradeTaskList =
                     systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
             if (CollectionUtils.isEmpty(upgradeTaskList)) {

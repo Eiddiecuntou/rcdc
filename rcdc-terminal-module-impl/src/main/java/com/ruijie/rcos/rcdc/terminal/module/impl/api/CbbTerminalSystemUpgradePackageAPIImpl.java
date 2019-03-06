@@ -258,7 +258,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private TerminalUpgradeVersionFileInfo getVersionInfo() throws BusinessException {
         // 从文件中获取升级文件信息
-        String filePath = Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH;
+        String filePath = getVersionFilePath();
         Properties prop = new Properties();
         try (InputStream in = new FileInputStream(filePath);) {
             prop.load(in);
@@ -278,6 +278,10 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION));
         versionInfo.setImgName(imgName);
         return versionInfo;
+    }
+
+    private String getVersionFilePath() {
+        return Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH;
     }
 
     private String getImgName() throws BusinessException {
@@ -331,7 +335,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-            CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+                CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
         final List<TerminalSystemUpgradeEntity> upgradingTaskList =
                 systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
         // 同一时间只存在一个正在刷机中的任务
