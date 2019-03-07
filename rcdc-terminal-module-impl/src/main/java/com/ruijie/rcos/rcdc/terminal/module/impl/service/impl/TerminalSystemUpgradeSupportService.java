@@ -218,7 +218,7 @@ public class TerminalSystemUpgradeSupportService {
 
         private boolean closeSupportService() throws BusinessException {
             List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-                    CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+                CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
             List<TerminalSystemUpgradeEntity> upgradeTaskList =
                     systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
             if (CollectionUtils.isEmpty(upgradeTaskList)) {

@@ -335,7 +335,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-                CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+            CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
         final List<TerminalSystemUpgradeEntity> upgradingTaskList =
                 systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
         // 同一时间只存在一个正在刷机中的任务
