@@ -94,7 +94,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
     /**
      * 测试closeSystemUpgradeTask，BusinessException
      */
-//    @Test
+    @Test
     public void testCloseSystemUpgradeTaskHasBusinessException() {
         UUID upgradeTaskId = UUID.randomUUID();
         new Expectations() {
