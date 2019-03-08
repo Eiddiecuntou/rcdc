@@ -42,6 +42,8 @@ public abstract class AbstractPageQueryTemplate<T> {
         Assert.notNull(clz, "Class不能为null");
         // 精确匹配字段映射成数据库Entity字段
         request.setMatchEqualArr(mappingField(request.getMatchEqualArr()));
+        // 排序字段映射成数据库Entity字段
+        mappingSortField(request);
         // 检查排序字段和条件查询字段合法性
         checkMatchField(request, clz);
         // 检查默认排序字段是否合法
@@ -68,14 +70,24 @@ public abstract class AbstractPageQueryTemplate<T> {
         return find(specification, pageable);
     }
 
+    private void mappingSortField(PageSearchRequest request) {
+        if (request.getSort() == null) {
+            return;
+        }
+
+        Map<String, String> filedMappingResult = getMappingFieldResult();
+        String sortFieldName = request.getSort().getSortField();
+        if (filedMappingResult.containsKey(sortFieldName)) {
+            request.getSort().setSortField(filedMappingResult.get(sortFieldName));
+        }
+    }
+
     private MatchEqual[] mappingField(MatchEqual[] matchEqualArr) {
         if (ArrayUtils.isEmpty(matchEqualArr)) {
             return new MatchEqual[0];
         }
-        EntityFieldMapper entityFieldMapper = new EntityFieldMapper();
-        mappingField(entityFieldMapper);
+        Map<String, String> filedMappingResult = getMappingFieldResult();
         MatchEqual[] targetMatchEqualArr = new MatchEqual[matchEqualArr.length];
-        Map<String, String> filedMappingResult = entityFieldMapper.getMapper();
         for (int i = 0; i < matchEqualArr.length; i++) {
             MatchEqual matchEqual = matchEqualArr[i];
             String filedName = matchEqual.getName();
@@ -87,6 +99,13 @@ public abstract class AbstractPageQueryTemplate<T> {
             targetMatchEqualArr[i] = matchEqual;
         }
         return targetMatchEqualArr;
+    }
+
+    private Map<String, String> getMappingFieldResult() {
+        EntityFieldMapper entityFieldMapper = new EntityFieldMapper();
+        mappingField(entityFieldMapper);
+        Map<String, String> filedMappingResult = entityFieldMapper.getMapper();
+        return filedMappingResult;
     }
 
     /**
