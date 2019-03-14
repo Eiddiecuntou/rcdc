@@ -10,7 +10,12 @@ package com.ruijie.rcos.rcdc.terminal.module.web;
  */
 public interface BusinessKey {
 
-
+    /** 操作成功 */
+    String RCDC_TERMINAL_MODULE_OPERATE_SUCCESS = "rcdc_terminal_module_operate_success";
+    /** 操作失败 */
+    String RCDC_TERMINAL_MODULE_OPERATE_FAIL = "rcdc_terminal_module_operate_fail";
+    
+    
     /**
      * 下载终端日志成功日志
      */
@@ -119,11 +124,12 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_DETECT_LIST_DATE_ERROR = "rcdc_terminal_detect_list_date_error";
 
-    /**
-     * 修改终端管理密码成功日志
-     */
+    /** 修改终端管理密码成功日志 */
     String RCDC_TERMINAL_CHANGE_PWD_SUCCESS_LOG = "rcdc_terminal_change_pwd_success_log";
+    /** 修改终端管理密码失败日志 */
+    String RCDC_TERMINAL_CHANGE_PWD_FAIL_LOG = "rcdc_terminal_change_pwd_fail_log";
 
+    
     /** 关闭终端失败日志 */
     String RCDC_TERMINAL_CLOSE_FAIL_LOG = "rcdc_terminal_close_fail_log";
 
@@ -142,6 +148,7 @@ public interface BusinessKey {
     /** 批量关闭终端任务描述 */
     String RCDC_TERMINAL_CLOSE_TASK_DESC = "rcdc_terminal_close_task_desc";
 
+    
     /** 批量重启终端任务结果 */
     String RCDC_TERMINAL_RESTART_RESULT = "rcdc_terminal_restart_result";
 

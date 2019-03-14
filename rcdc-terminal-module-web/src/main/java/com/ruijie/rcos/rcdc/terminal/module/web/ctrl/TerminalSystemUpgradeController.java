@@ -85,14 +85,14 @@ public class TerminalSystemUpgradeController {
             cbbTerminalUpgradePackageAPI.uploadUpgradeFile(request);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
                     file.getFileName());
+            return DefaultWebResponse.Builder.success(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_SUCCESS,new String[] {});
         } catch (BusinessException ex) {
             // 上传文件处理失败
-            LOGGER.error("upload terminal system package fail, file name is [{}]", file.getFileName());
+            LOGGER.error("upload terminal system package fail, file name is [{}]", file.getFileName(), ex);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
                     file.getFileName(), ex.getI18nMessage());
-            throw ex;
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL,new String[] {});
         }
-        return DefaultWebResponse.Builder.success();
     }
 
     /**

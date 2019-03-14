@@ -30,6 +30,8 @@ import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalIdWebReques
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
 import com.ruijie.rcos.sk.base.batch.DefaultBatchTaskItem;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.validation.EnableCustomValidate;
 import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
@@ -48,6 +50,8 @@ import com.ruijie.rcos.sk.webmvc.api.response.DownloadWebResponse;
 @EnableCustomValidate(enable = false)
 public class TerminalOperateController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalOperateController.class);
+    
     @Autowired
     private CbbTerminalOperatorAPI terminalOperatorAPI;
 
@@ -131,11 +135,12 @@ public class TerminalOperateController {
         try {
             terminalOperatorAPI.changePassword(changePwdRequest);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CHANGE_PWD_SUCCESS_LOG);
+            return DefaultWebResponse.Builder.success(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_SUCCESS, new String[] {});
         } catch (BusinessException e) {
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CLOSE_FAIL_LOG, pwd, e.getI18nMessage());
-            throw e;
+            LOGGER.error("编辑终端管理员密码失败", e);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CHANGE_PWD_FAIL_LOG, e.getI18nMessage());
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL, new String[] {});
         }
-        return DefaultWebResponse.Builder.success();
     }
 
     /**
