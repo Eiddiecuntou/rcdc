@@ -24,6 +24,7 @@ import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CreateTerminalSyste
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.CreateSystemUpgradeTaskContentVO;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
@@ -84,10 +85,12 @@ public class TerminalSystemUpgradeControllerTest {
      * 测试uploadPackage，上传失败
      * 
      * @param optLogRecorder mock日志记录对象
+     * @param resolver mock对象
      * @throws BusinessException 异常
      */
     @Test
-    public void testUploadPackageFail(@Mocked ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+    public void testUploadPackageFail(@Mocked ProgrammaticOptLogRecorder optLogRecorder, 
+            @Mocked LocaleI18nResolver resolver) throws BusinessException {
         new Expectations() {
             {
                 cbbTerminalUpgradePackageAPI.uploadUpgradeFile((CbbTerminalUpgradePackageUploadRequest) any);
@@ -104,13 +107,8 @@ public class TerminalSystemUpgradeControllerTest {
         file.setFilePath("filePath");
         file.setFileName("fileName");
         file.setFileMD5("fileMD5");
-        try {
-            controller.uploadPackage(file, optLogRecorder);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals("key", e.getKey());
-        }
-
+        DefaultWebResponse response = controller.uploadPackage(file, optLogRecorder);
+        assertEquals(Status.ERROR, response.getStatus());
         new Verifications() {
             {
                 optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
@@ -127,10 +125,12 @@ public class TerminalSystemUpgradeControllerTest {
      * 测试uploadPackage，上传成功
      * 
      * @param optLogRecorder mock日志记录对象
+     * @param resolver mock对象
      * @throws BusinessException 异常
      */
     @Test
-    public void testUploadPackageSuccess(@Mocked ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
+    public void testUploadPackageSuccess(@Mocked ProgrammaticOptLogRecorder optLogRecorder, 
+            @Mocked LocaleI18nResolver resolver) throws BusinessException {
         ChunkUploadFile file = new ChunkUploadFile();
         file.setFilePath("filePath");
         file.setFileName("fileName");

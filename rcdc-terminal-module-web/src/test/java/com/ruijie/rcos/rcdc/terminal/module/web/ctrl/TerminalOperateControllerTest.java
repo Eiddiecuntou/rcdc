@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,6 +22,7 @@ import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalIdDownLoadW
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalIdWebRequest;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
@@ -158,12 +158,13 @@ public class TerminalOperateControllerTest {
     }
     
     /**
-     * 测试changePassword,BusinessException
+     * 测试changePassword,失败
      * @param optLogRecorder mock日志记录对象
+     * @param resolver mock日志记录对象
      * @throws BusinessException 异常
      */
     @Test
-    public void testChangePasswordHasBusinessException(@Mocked ProgrammaticOptLogRecorder optLogRecorder) 
+    public void testChangePasswordFail(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked LocaleI18nResolver resolver) 
             throws BusinessException {
         EditAdminPwdWebRequest request = new EditAdminPwdWebRequest();
         
@@ -180,19 +181,15 @@ public class TerminalOperateControllerTest {
                 return "message";
             }
         };
-        try {
-            controller.changePassword(request, optLogRecorder);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals("key", e.getKey());
-        }
+        DefaultWebResponse response = controller.changePassword(request, optLogRecorder);
+        assertEquals(Status.ERROR, response.getStatus());
         new Verifications() {
             {
                 terminalOperatorAPI.changePassword((CbbChangePasswordRequest) any);
                 times = 1;
-                optLogRecorder.saveOptLog(anyString, anyString);
+                optLogRecorder.saveOptLog(anyString);
                 times = 0;
-                optLogRecorder.saveOptLog(anyString, anyString, anyString);
+                optLogRecorder.saveOptLog(anyString, anyString);
                 times = 1;
             }
         };
@@ -201,10 +198,11 @@ public class TerminalOperateControllerTest {
     /**
      * 测试changePassword,
      * @param optLogRecorder mock日志记录对象
+     * @param resolver mock日志记录对象
      * @throws BusinessException 异常
      */
     @Test
-    public void testChangePassword(@Mocked ProgrammaticOptLogRecorder optLogRecorder) 
+    public void testChangePassword(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked LocaleI18nResolver resolver) 
             throws BusinessException {
         EditAdminPwdWebRequest request = new EditAdminPwdWebRequest();
         DefaultWebResponse response = controller.changePassword(request, optLogRecorder);
