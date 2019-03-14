@@ -69,7 +69,6 @@ public class RestartTerminalBatchTaskHandlerTest {
         RestartTerminalBatchTaskHandler handler = new RestartTerminalBatchTaskHandler(terminalOperatorAPI, idMap, iterator, optLogRecorder);
         BatchTaskItemResult result = handler.processItem(taskItem);
         assertEquals(BatchTaskItemStatus.SUCCESS, result.getItemStatus());
-        assertEquals(BusinessKey.RCDC_TERMINAL_RESTART_RESULT_SUCCESS, result.getMsgKey());
         new Verifications() {
             {
                 terminalOperatorAPI.restart((CbbTerminalIdRequest) any);

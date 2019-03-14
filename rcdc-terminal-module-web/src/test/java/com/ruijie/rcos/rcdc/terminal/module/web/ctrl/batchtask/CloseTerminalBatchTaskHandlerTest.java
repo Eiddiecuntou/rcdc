@@ -67,7 +67,6 @@ public class CloseTerminalBatchTaskHandlerTest {
         CloseTerminalBatchTaskHandler handler = new CloseTerminalBatchTaskHandler(terminalOperatorAPI, idMap, iterator, optLogRecorder);
         BatchTaskItemResult result = handler.processItem(taskItem);
         assertEquals(BatchTaskItemStatus.SUCCESS, result.getItemStatus());
-        assertEquals(BusinessKey.RCDC_TERMINAL_CLOSE_RESULT_SUCCESS, result.getMsgKey());
         new Verifications() {
             {
                 terminalOperatorAPI.shutdown((CbbTerminalIdRequest) any);
