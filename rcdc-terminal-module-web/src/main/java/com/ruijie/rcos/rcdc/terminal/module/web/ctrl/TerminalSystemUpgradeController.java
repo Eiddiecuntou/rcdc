@@ -32,6 +32,7 @@ import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CloseSystemUpgradeT
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CreateTerminalSystemUpgradeWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.CreateSystemUpgradeTaskContentVO;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
+import com.ruijie.rcos.sk.base.batch.BatchTaskSubmitResult;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -186,11 +187,11 @@ public class TerminalSystemUpgradeController {
         AddUpgradeTerminalBatchTaskHandler handler =
                 new AddUpgradeTerminalBatchTaskHandler(this.cbbTerminalUpgradeAPI, idMap, iterator, optLogRecorder);
 
-        builder.setTaskName(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_TASK_NAME, new String[] {})
+        BatchTaskSubmitResult result = builder.setTaskName(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_TASK_NAME, new String[] {})
                 .setTaskDesc(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_TASK_DESC, new String[] {}) //
                 .registerHandler(handler).start();
 
-        return DefaultWebResponse.Builder.success();
+        return DefaultWebResponse.Builder.success(result);
     }
 
     /**

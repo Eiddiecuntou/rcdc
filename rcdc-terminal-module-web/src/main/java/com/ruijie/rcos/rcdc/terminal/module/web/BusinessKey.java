@@ -82,6 +82,13 @@ public interface BusinessKey {
      */
     String RCDC_ADD_UPGRADE_TERMINAL_RESULT_SUCCESS = "rcdc_add_upgrade_terminal_result_success";
 
+    /** 关闭终端升级包[{0}]升级任务成功 */
+    String RCDC_ADD_UPGRADE_TERMINAL_CLOSE_SUCCESS = "rcdc_add_upgrade_terminal_close_success";
+    
+    /** 关闭终端升级包[{0}]升级任务失败，失败原因：{1} */
+    String RCDC_ADD_UPGRADE_TERMINAL_CLOSE_FAIL="rcdc_add_upgrade_terminal_close_fail";
+    
+    
     /**
      * 批量终端系统升级任务成功
      */
