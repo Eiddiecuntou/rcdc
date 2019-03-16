@@ -60,6 +60,8 @@ public class TerminalSystemUpgradeController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeController.class);
 
+    private static final int SYSTEM_UPGRADE_PACKAGE_NAME_MAX_LENGTH = 128;
+
     @Autowired
     private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
 
@@ -80,19 +82,29 @@ public class TerminalSystemUpgradeController {
         Assert.notNull(file, "file can not be null");
         Assert.notNull(optLogRecorder, "optLogRecorder can not be null");
 
+        String fileName = file.getFileName();
+        checkFileName(fileName);
         CbbTerminalUpgradePackageUploadRequest request =
                 new CbbTerminalUpgradePackageUploadRequest(file.getFilePath(), file.getFileName(), file.getFileMD5());
         try {
             cbbTerminalUpgradePackageAPI.uploadUpgradeFile(request);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
                     file.getFileName());
-            return DefaultWebResponse.Builder.success(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_SUCCESS,new String[] {});
+            return DefaultWebResponse.Builder.success(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_SUCCESS,
+                    new String[] {});
         } catch (BusinessException ex) {
             // 上传文件处理失败
             LOGGER.error("upload terminal system package fail, file name is [{}]", file.getFileName(), ex);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
                     file.getFileName(), ex.getI18nMessage());
-            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL,new String[] {});
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL, new String[] {});
+        }
+    }
+
+    private void checkFileName(String fileName) throws BusinessException {
+        if (fileName.length() > SYSTEM_UPGRADE_PACKAGE_NAME_MAX_LENGTH) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FILE_NAME_LENGTH_EXCEED,
+                    String.valueOf(SYSTEM_UPGRADE_PACKAGE_NAME_MAX_LENGTH));
         }
     }
 
@@ -187,9 +199,10 @@ public class TerminalSystemUpgradeController {
         AddUpgradeTerminalBatchTaskHandler handler =
                 new AddUpgradeTerminalBatchTaskHandler(this.cbbTerminalUpgradeAPI, idMap, iterator, optLogRecorder);
 
-        BatchTaskSubmitResult result = builder.setTaskName(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_TASK_NAME, new String[] {})
-                .setTaskDesc(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_TASK_DESC, new String[] {}) //
-                .registerHandler(handler).start();
+        BatchTaskSubmitResult result =
+                builder.setTaskName(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_TASK_NAME, new String[] {})
+                        .setTaskDesc(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_TASK_DESC, new String[] {}) //
+                        .registerHandler(handler).start();
 
         return DefaultWebResponse.Builder.success(result);
     }
@@ -279,7 +292,7 @@ public class TerminalSystemUpgradeController {
             }
         }
     }
-    
+
     /**
      * 
      * 关闭刷机任务终端
@@ -298,7 +311,7 @@ public class TerminalSystemUpgradeController {
 
         return DefaultWebResponse.Builder.success();
     }
-    
+
     /**
      * 
      * 关闭刷机任务终端

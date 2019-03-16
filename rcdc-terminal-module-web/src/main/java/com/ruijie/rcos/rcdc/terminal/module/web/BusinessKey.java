@@ -29,12 +29,20 @@ public interface BusinessKey {
     /**
      * 上传终端系统升级包成功日志
      */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG = "rcdc_terminal_system_upgrade_package_upload_success_log";
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG =
+            "rcdc_terminal_system_upgrade_package_upload_success_log";
 
     /**
      * 上传终端系统升级包失败日志
      */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG = "rcdc_terminal_system_upgrade_package_upload_fail_log";
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG =
+            "rcdc_terminal_system_upgrade_package_upload_fail_log";
+
+    /**
+     * 上传终端系统升级包文件名称长度超出限制
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FILE_NAME_LENGTH_EXCEED =
+            "rcdc_terminal_system_upgrade_package_upload_file_name_length_exceed";
 
 
     /**
@@ -84,11 +92,11 @@ public interface BusinessKey {
 
     /** 关闭终端升级包[{0}]升级任务成功 */
     String RCDC_ADD_UPGRADE_TERMINAL_CLOSE_SUCCESS = "rcdc_add_upgrade_terminal_close_success";
-    
+
     /** 关闭终端升级包[{0}]升级任务失败，失败原因：{1} */
-    String RCDC_ADD_UPGRADE_TERMINAL_CLOSE_FAIL="rcdc_add_upgrade_terminal_close_fail";
-    
-    
+    String RCDC_ADD_UPGRADE_TERMINAL_CLOSE_FAIL = "rcdc_add_upgrade_terminal_close_fail";
+
+
     /**
      * 批量终端系统升级任务成功
      */
@@ -165,7 +173,7 @@ public interface BusinessKey {
 
     /** 关闭命令发送成功 */
     String RCDC_TERMINAL_CLOSE_SEND_SUCCESS = "rcdc_terminal_close_send_success";
-    
+
     /** 关闭命令发送失败 */
     String RCDC_TERMINAL_CLOSE_SEND_FAIL = "rcdc_terminal_close_send_fail";
 
@@ -183,13 +191,13 @@ public interface BusinessKey {
 
     /** 批量重启终端任务描述 */
     String RCDC_TERMINAL_RESTART_TASK_DESC = "rcdc_terminal_restart_task_desc";
-    
+
     /** 发送重启命令给终端 */
     String RCDC_TERMINAL_RESTART_ITEM_NAME = "rcdc_terminal_restart_item_name";
-    
+
     /** 重启命令发送成功 */
-    String RCDC_TERMINAL_RESTART_SEND_SUCCESS= "rcdc_terminal_restart_send_success";
-    
+    String RCDC_TERMINAL_RESTART_SEND_SUCCESS = "rcdc_terminal_restart_send_success";
+
     /** 重启命令发送失败 */
     String RCDC_TERMINAL_RESTART_SEND_FAIL = "rcdc_terminal_restart_send_fail";
 }
