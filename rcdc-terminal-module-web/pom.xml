@@ -5,7 +5,7 @@
     <parent>
         <artifactId>rcdc-terminal-module</artifactId>
         <groupId>com.ruijie.rcos.rcdc.terminal.module</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
