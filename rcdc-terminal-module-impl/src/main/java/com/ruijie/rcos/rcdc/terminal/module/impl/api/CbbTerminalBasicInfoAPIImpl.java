@@ -76,18 +76,18 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     public DefaultResponse modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalNameRequest不能为null");
         String terminalId = request.getTerminalId();
-        //不管是不是在线状态，都可修改终端名称
-        int version = getVersion(terminalId);
-        int effectRow = basicInfoDAO.modifyTerminalName(terminalId, version, request.getTerminalName());
-        if (effectRow == 0) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
-        }
         try {
             basicInfoService.modifyTerminalName(terminalId, request.getTerminalName());
+            //在线情况下方可修改终端名称
+            int version = getVersion(terminalId);
+            int effectRow = basicInfoDAO.modifyTerminalName(terminalId, version, request.getTerminalName());
+            if (effectRow == 0) {
+                throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+            }
         } catch (BusinessException e) {
-            LOGGER.error("修改终端名称状态失败", e);
+            LOGGER.error("修改终端名称状态失败，terminaId:"+terminalId, e);
+            throw e;
         }
-
         return DefaultResponse.Builder.success();
     }
 
