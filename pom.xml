@@ -4,9 +4,9 @@
     <parent>
         <groupId>com.ruijie.rcos.sk.root</groupId>
         <artifactId>sk-root-api</artifactId>
-        <version>2.0.3-RELEASE</version>
+        <version>2.0.4-SNAPSHOT</version>
     </parent>
-    <version>1.0.1-RELEASE</version>
+    <version>1.0.2-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ruijie.rcos.rcdc.terminal.module</groupId>
     <artifactId>rcdc-terminal-module</artifactId>
@@ -19,7 +19,7 @@
     </modules>
     
     <properties>
-    	<base-aaa-module.version>1.0.1-RELEASE</base-aaa-module.version>
+    	<base-aaa-module.version>1.0.2-SNAPSHOT</base-aaa-module.version>
     	<base-sysmanage-module.version>1.0.0-RELEASE</base-sysmanage-module.version>
     </properties>
 
