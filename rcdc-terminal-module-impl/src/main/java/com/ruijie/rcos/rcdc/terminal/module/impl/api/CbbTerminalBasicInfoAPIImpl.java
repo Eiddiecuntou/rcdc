@@ -85,7 +85,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
             }
         } catch (BusinessException e) {
-            LOGGER.error("修改终端名称状态失败，terminaId:"+terminalId, e);
+            LOGGER.error("修改终端名称状态失败，terminaId:" + terminalId, e);
             throw e;
         }
         return DefaultResponse.Builder.success();

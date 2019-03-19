@@ -44,10 +44,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
-    
+
     @Injectable
     private TerminalBasicInfoService basicInfoService;
-    
+
     @Injectable
     private TerminalBasicInfoServiceTx terminalBasicInfoServiceTx;
 
@@ -131,7 +131,8 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     /**
      * 测试删除终端失败,在线终端
-     * @throws BusinessException 
+     * 
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testDeleteFail() throws BusinessException {
@@ -163,7 +164,8 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     /**
      * 测试删除终端
-     * @throws BusinessException 
+     * 
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testDeleteSuccess() throws BusinessException {
@@ -193,7 +195,8 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     /**
      * 测试删除终端-数据不存在
-     * @throws BusinessException 
+     * 
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testDeleteNoExistData() throws BusinessException {
@@ -248,9 +251,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
         modifyNameVerifications();
     }
-    
+
     /**
      * 测试修改终端名称失败，TerminalEntity为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -276,31 +280,36 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试修改终端名称失败，ModifyTerminalName有BusinessException
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testModifyTerminalNameModifyTerminalNameHasBusinessException() throws BusinessException {
         new Expectations() {
             {
-                basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
-                result = 1;
                 basicInfoService.modifyTerminalName(anyString, anyString);
                 result = new BusinessException("key");
             }
         };
-        
+
         try {
             CbbTerminalNameRequest request = new CbbTerminalNameRequest();
             request.setTerminalId("123");
             terminalBasicInfoAPI.modifyTerminalName(request);
-        } catch (BusinessException e) {
             fail();
+        } catch (BusinessException e) {
+            assertEquals("key", e.getKey());
         }
-        
-        modifyNameVerifications();
+
+        new Verifications() {
+            {
+                basicInfoService.modifyTerminalName(anyString, anyString);
+                times = 1;
+            }
+        };
     }
 
     /**
@@ -395,9 +404,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试修改终端网络，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -406,9 +416,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
                 "TerminalNetworkRequest不能为null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试修改终端网络失败
+     * 
      * @throws BusinessException 异常
      */
     @Test
