@@ -67,7 +67,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
             final BaseMessage responseMsg = sender.syncRequest(message);
             upgradeResponseMsgHandler.handle(terminalId, responseMsg);
         } catch (Exception e) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_MESSAGE_SEND_FAIL);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_MESSAGE_SEND_FAIL,e);
         }
     }
 
