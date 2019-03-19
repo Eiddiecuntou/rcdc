@@ -65,13 +65,16 @@ public class AddUpgradeTerminalBatchTaskHandlerTest {
      */
     @Test
     public void testProcessItemFail() throws Exception {
-        BatchTaskItem taskItem = new TerminalUpgradeBatchTaskItem(UUID.randomUUID(), "dsd", UUID.randomUUID());
+        final UUID randomUUID = UUID.randomUUID();
+        BatchTaskItem taskItem = new TerminalUpgradeBatchTaskItem(randomUUID, "dsd", randomUUID);
         AddUpgradeTerminalBatchTaskHandler handler = getHander();
-        
         new Expectations() {
             {
                 cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbAddTerminalSystemUpgradeTaskRequest) any);
                 result = new BusinessException("key");
+                idMap.get(randomUUID);
+                result = "123";
+                
             }
         };
         new MockUp<BusinessException>() {
@@ -87,9 +90,9 @@ public class AddUpgradeTerminalBatchTaskHandlerTest {
             {
                 cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbAddTerminalSystemUpgradeTaskRequest) any);
                 times = 1;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_SUCCESS_LOG, anyString, anyString);
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_SUCCESS_LOG, anyString);
                 times = 0;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_FAIL_LOG, "message");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_FAIL_LOG, "123", "message");
                 times = 1;
             }
         };

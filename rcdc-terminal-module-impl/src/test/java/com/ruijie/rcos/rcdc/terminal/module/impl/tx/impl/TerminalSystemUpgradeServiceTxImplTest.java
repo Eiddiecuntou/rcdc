@@ -147,8 +147,11 @@ public class TerminalSystemUpgradeServiceTxImplTest {
                 systemUpgradeTerminalDAO
                 .findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.WAIT);
                 times = 1;
+                systemUpgradeTerminalDAO
+                .findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.UPGRADING);
+                times = 1;
                 systemUpgradeDAO.save(systemUpgradeTask);
-                times = 0;
+                times = 1;
             }
         };
     }

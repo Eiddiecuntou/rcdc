@@ -1,7 +1,7 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.callback;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import java.util.List;
-import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -9,25 +9,25 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 
 /**
  * 
- * Description: 终端系统升级回调
+ * Description: 终端系统升级响应消息处理类
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2018年11月26日
+ * Create Time: 2019年3月19日
  * 
  * @author nt
  */
 @Service
-public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallback {
+public class TerminalSystemUpgradeResponseMsgHandler {
 
     public static final int SUCCESS = 0;
 
@@ -35,7 +35,7 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
 
     public static final int FAILURE = -99;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalSystemUpgradeRequestCallBack.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeResponseMsgHandler.class);
 
     @Autowired
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
@@ -43,11 +43,23 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
     @Autowired
     private TerminalSystemUpgradeServiceTx terminalSystemUpgradeServiceTx;
 
-    @Override
-    public void success(String terminalId, CbbShineMessageResponse msg) {
+    /**
+     * 处理终端升级响应消息
+     * 
+     * @param terminalId 终端id
+     * @param baseMessage 响应消息
+     * @throws BusinessException 业务异常
+     */
+    public void handle(String terminalId, BaseMessage baseMessage) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
-        Assert.notNull(msg, "TerminalSystemUpgradeRequest 不能为空");
+        Assert.notNull(baseMessage, "baseMessage 不能为空");
 
+        Object data = baseMessage.getData();
+        if (data == null || StringUtils.isBlank(data.toString())) {
+            throw new IllegalArgumentException("执行syncRequest方法后shine返回的应答消息不能为空。data:" + data);
+        }
+        CbbShineMessageResponse msg = JSON.parseObject(data.toString(), CbbShineMessageResponse.class);
+        
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("system upgrade callback success, msg: {}", JSON.toJSONString(msg));
         }
@@ -71,8 +83,9 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
      * 
      * @param terminalId 终端id
      * @param state 终端状态
+     * @throws BusinessException 
      */
-    private void modifySystemUpgradeState(String terminalId, CbbSystemUpgradeStateEnums state) {
+    private void modifySystemUpgradeState(String terminalId, CbbSystemUpgradeStateEnums state) throws BusinessException {
         List<TerminalSystemUpgradeTerminalEntity> upgradingTerminalList =
                 systemUpgradeTerminalDAO.findByTerminalIdAndState(terminalId, CbbSystemUpgradeStateEnums.UPGRADING);
         if (CollectionUtils.isEmpty(upgradingTerminalList)) {
@@ -81,32 +94,7 @@ public class CbbTerminalSystemUpgradeRequestCallBack implements CbbTerminalCallb
         }
 
         for (TerminalSystemUpgradeTerminalEntity entity : upgradingTerminalList) {
-            updateUpgradeTerminalState(entity.getSysUpgradeId(), terminalId, state);
-        }
-
-
-    }
-
-    /**
-     * 更新刷机终端状态
-     * 
-     * @param sysUpgradeId 刷机任务id
-     * @param terminalId 终端id
-     * @param state 状态
-     */
-    private void updateUpgradeTerminalState(UUID sysUpgradeId, String terminalId, CbbSystemUpgradeStateEnums state) {
-        try {
-            terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(sysUpgradeId, terminalId, state);
-        } catch (BusinessException e) {
-            LOGGER.error("修改刷机终端状态失败", e);
+            terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(entity.getSysUpgradeId(), terminalId, state);
         }
     }
-
-    @Override
-    public void timeout(String terminalId) {
-        Assert.hasLength(terminalId, "terminalId 不能为空");
-
-        // do nothing
-    }
-
 }

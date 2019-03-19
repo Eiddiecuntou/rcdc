@@ -47,9 +47,6 @@ public class SystemUpgradeQuartzHandlerTest {
     private SystemUpgradeStateSynctHandler stateSyncHandler;
 
     @Injectable
-    private SystemUpgradeTimeoutHandler timeoutHandler;
-    
-    @Injectable
     private SystemUpgradeStartConfirmHandler confirmHandler;
     
     /**
@@ -182,8 +179,6 @@ public class SystemUpgradeQuartzHandlerTest {
                 times = 1;
                 stateSyncHandler.execute(upgradeTerminalList);
                 times = 1;
-                timeoutHandler.execute(upgradeTerminalList);
-                times = 1;
                 startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());
                 times = 1;
             }
@@ -220,13 +215,11 @@ public class SystemUpgradeQuartzHandlerTest {
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 times = 2;
-                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.FINISH);
+                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.CLOSING);
                 times = 1;
                 confirmHandler.execute((List<TerminalSystemUpgradeTerminalEntity>) any);
                 times = 1;
                 stateSyncHandler.execute(upgradeTerminalList);
-                times = 1;
-                timeoutHandler.execute(upgradeTerminalList);
                 times = 1;
                 startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());
                 times = 1;

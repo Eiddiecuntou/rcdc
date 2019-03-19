@@ -71,73 +71,7 @@ public class CloseTerminalBatchTaskHandlerTest {
             {
                 terminalOperatorAPI.shutdown((CbbTerminalIdRequest) any);
                 times = 1;
-                optLogRecorder.saveOptLog(anyString, anyString, anyString);
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     * 测试afterException,参数为空
-     * @param taskItem mock taskItem
-     * @throws Exception 异常
-     */
-    @Test
-    public void testAfterExceptionArgumentIsNull(@Mocked BatchTaskItem taskItem) throws Exception {
-        Map<UUID, String> idMap = new HashMap<>();
-        CloseTerminalBatchTaskHandler handler = new CloseTerminalBatchTaskHandler(terminalOperatorAPI, idMap, iterator, optLogRecorder);
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.afterException(null, new RuntimeException()), "item is not null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.afterException(taskItem, null), "exception is not null");
-        assertTrue(true);
-    }
-    
-    /**
-     * 测试afterException,不是BusinessException
-     * @param taskItem mock taskItem
-     * @throws Exception 异常
-     */
-    @Test
-    public void testAfterExceptionNotBusinessException(@Mocked BatchTaskItem taskItem) {
-        Map<UUID, String> idMap = new HashMap<>();
-        CloseTerminalBatchTaskHandler handler = new CloseTerminalBatchTaskHandler(terminalOperatorAPI, idMap, iterator, optLogRecorder);
-        try {
-            handler.afterException(taskItem, new RuntimeException());
-            fail();
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains("关闭终端异常，terminalId为"));
-        }
-        new Verifications() {
-            {
                 optLogRecorder.saveOptLog(anyString, anyString);
-                times = 0;
-            }
-        };
-    }
-    
-    /**
-     * 测试afterException,是BusinessException
-     * @param taskItem mock taskItem
-     * @throws Exception 异常
-     */
-    @Test
-    public void testAfterExceptionIsBusinessException(@Mocked BatchTaskItem taskItem) {
-        Map<UUID, String> idMap = new HashMap<>();
-        CloseTerminalBatchTaskHandler handler = new CloseTerminalBatchTaskHandler(terminalOperatorAPI, idMap, iterator, optLogRecorder);
-        
-        new MockUp<BusinessException>() {
-            @Mock
-            public String getI18nMessage() {
-                return "xxxxx";
-            }
-        };
-        try {
-            handler.afterException(taskItem, new BusinessException("key"));
-        } catch (Exception e) {
-            fail();
-        }
-        new Verifications() {
-            {
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CLOSE_FAIL_LOG, "xxxxx");
                 times = 1;
             }
         };

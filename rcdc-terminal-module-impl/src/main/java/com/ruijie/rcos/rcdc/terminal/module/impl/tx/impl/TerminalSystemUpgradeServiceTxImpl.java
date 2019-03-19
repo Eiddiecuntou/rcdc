@@ -102,12 +102,21 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         for (TerminalSystemUpgradeTerminalEntity waitUpgradeTerminal : waitUpgradeTerminalList) {
             closeWaitTerminal(waitUpgradeTerminal);
         }
-
-        // 将进行中的刷机任务设置为关闭中状态
-        if (systemUpgradeTask.getState() == CbbSystemUpgradeTaskStateEnums.UPGRADING) {
-            systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
-            systemUpgradeDAO.save(systemUpgradeTask);
+        // 将升级中的终端设置为失败
+        final List<TerminalSystemUpgradeTerminalEntity> upgradingTerminalList = systemUpgradeTerminalDAO
+                .findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.UPGRADING);
+        for (TerminalSystemUpgradeTerminalEntity upgradingTerminal : upgradingTerminalList) {
+            setUpgradingTerminalToFail(upgradingTerminal);
         }
+
+        // 将进行中的刷机任务设置为完成状态
+        systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+        systemUpgradeDAO.save(systemUpgradeTask);
+    }
+
+    private void setUpgradingTerminalToFail(TerminalSystemUpgradeTerminalEntity upgradingTerminal) throws BusinessException {
+        modifySystemUpgradeTerminalState(upgradingTerminal.getSysUpgradeId(), upgradingTerminal.getTerminalId(),
+                CbbSystemUpgradeStateEnums.FAIL);
     }
 
     /**

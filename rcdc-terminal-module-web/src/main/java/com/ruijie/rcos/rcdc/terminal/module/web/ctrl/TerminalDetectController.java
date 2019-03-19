@@ -76,7 +76,7 @@ public class TerminalDetectController {
             Map<UUID, String> idMap = TerminalIdMappingUtils.mapping(terminalIdArr);
             UUID[] idArr = TerminalIdMappingUtils.extractUUID(idMap);
             final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr).map(
-                    id -> DefaultBatchTaskItem.builder().itemId(id).itemName(BusinessKey.RCDC_TERMINAL_DETECT_ITEM_NAME, new String[] {}).build())
+                id -> DefaultBatchTaskItem.builder().itemId(id).itemName(BusinessKey.RCDC_TERMINAL_DETECT_ITEM_NAME, new String[] {}).build())
                     .iterator();
             StartDetectBatchtaskHandler handler = new StartDetectBatchtaskHandler(idMap, operatorAPI, iterator, optLogRecorder);
             BatchTaskSubmitResult result = builder.setTaskName(BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_NAME)

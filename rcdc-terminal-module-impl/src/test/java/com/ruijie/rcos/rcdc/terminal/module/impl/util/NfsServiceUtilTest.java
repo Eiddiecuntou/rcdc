@@ -4,10 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import mockit.Expectations;
 import mockit.Mocked;
+import mockit.Verifications;
 
 /**
  * 
@@ -22,17 +24,18 @@ public class NfsServiceUtilTest {
 
     @Mocked
     private ShellCommandRunner runner;
-    
+
     /**
      * 测试startService，启动失败
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testStartServiceFail() throws BusinessException {
-        
+
         new Expectations() {
             {
-                runner.execute();
+                runner.execute((SimpleCmdReturnValueResolver) any);
                 result = new BusinessException("key");
             }
         };
@@ -43,9 +46,10 @@ public class NfsServiceUtilTest {
             assertEquals(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e.getKey());
         }
     }
-    
+
     /**
      * 测试startService，启动成功
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -56,30 +60,33 @@ public class NfsServiceUtilTest {
             fail();
         }
     }
-    
+
     /**
      * 测试shutDownService，关闭失败
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testShutDownServiceFail() throws BusinessException {
-        
+
         new Expectations() {
             {
-                runner.execute();
+                runner.execute((SimpleCmdReturnValueResolver) any);
                 result = new BusinessException("key");
             }
         };
-        try {
-            NfsServiceUtil.shutDownService();
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e.getKey());
-        }
+        NfsServiceUtil.shutDownService();
+        new Verifications() {
+            {
+                runner.execute((SimpleCmdReturnValueResolver) any);
+                times = 1;
+            }
+        };
     }
-    
+
     /**
      * 测试shutDownService，关闭成功
+     * 
      * @throws BusinessException 异常
      */
     @Test

@@ -110,7 +110,7 @@ public class TerminalSystemUpgradeSupportService {
 
             // 开启nfs目录服务
             NfsServiceUtil.startService();
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             LOGGER.error("开启刷机相关服务失败。", e);
         }
 
@@ -218,16 +218,32 @@ public class TerminalSystemUpgradeSupportService {
 
         private boolean closeSupportService() throws BusinessException {
             List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-                CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+                CbbSystemUpgradeTaskStateEnums.UPGRADING});
             List<TerminalSystemUpgradeEntity> upgradeTaskList =
                     systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
             if (CollectionUtils.isEmpty(upgradeTaskList)) {
                 LOGGER.info("无正在进行中的刷机任务");
                 // 确认关闭nfs服务，关闭定时任务
                 closeSystemUpgradeService();
+                setClosingTaskToFinish();
                 return true;
             }
             return false;
+        }
+
+        private void setClosingTaskToFinish() {
+            List<CbbSystemUpgradeTaskStateEnums> stateList =
+                    Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.CLOSING});
+            List<TerminalSystemUpgradeEntity> closingTaskList =
+                    systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+            if (CollectionUtils.isEmpty(closingTaskList)) {
+                LOGGER.info("无正在关闭中的刷机任务");
+                return;
+            }
+            for (TerminalSystemUpgradeEntity upgradeEntity : closingTaskList) {
+                upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
+                systemUpgradeDAO.save(upgradeEntity);
+            }
         }
 
     }

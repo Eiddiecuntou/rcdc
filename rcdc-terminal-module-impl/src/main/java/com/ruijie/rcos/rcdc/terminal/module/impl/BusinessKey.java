@@ -113,6 +113,11 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_OPERATE_FAIL =
             "rcdc_terminal_system_upgrade_package_file_operate_fail";
+    
+    /**
+     * 存在进行中的升级任务，不允许删除
+     */
+    String RCDC_TERMINAL_UPGRADE_PACKAGE_HAS_RUNNING_TASK_NOT_ALLOW_DELETE = "rcdc_terminal_upgrade_package_has_running_task_not_allow_delete";
 
     /**
      * 刷机任务不存在
@@ -144,6 +149,21 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_UPGRADE_SUCCESS_STATUS_DIRECTORY_NOT_EXIST = "rcdc_terminal_upgrade_success_status_directory_not_exist";
 
+    /**
+     * 刷机终端状态不可取消
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_CANCEL = "rcdc_terminal_system_upgrade_terminal_state_not_allow_cancel";
+    
+    /**
+     * 刷机终端状态不可重试
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_RETRY = "rcdc_terminal_system_upgrade_terminal_state_not_allow_retry";
+    
+    /**
+     * 终端升级信息发送失败
+     */
+    String RCDC_TERMINAL_UPGRADE_MESSAGE_SEND_FAIL = "rcdc_terminal_upgrade_message_send_fail";
+    
     /**
      * 文件不存在
      */
@@ -182,5 +202,6 @@ public interface BusinessKey {
     String RCDC_TERMINAL_SUCCESS_CONNECT_LOG = "rcdc_terminal_success_connect_log";
 
     String RCDC_TERMINAL_CONNECT_CLOSE_LOG = "rcdc_terminal_connect_close_log";
+
 
 }

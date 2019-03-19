@@ -39,7 +39,7 @@ public class QuerySystemUpgradeTerminalListServiceTest {
     @Test
     public void testGetDefaultDataSort() {
         DefaultDataSort defaultDataSort = service.getDefaultDataSort();
-        assertEquals("createTime", defaultDataSort.getSortField());
+        assertEquals("state", defaultDataSort.getSortField());
         assertEquals(Direction.DESC, defaultDataSort.getDirection());
     }
     

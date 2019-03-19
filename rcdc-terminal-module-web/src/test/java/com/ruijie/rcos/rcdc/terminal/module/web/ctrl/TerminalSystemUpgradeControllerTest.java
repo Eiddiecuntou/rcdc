@@ -9,12 +9,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbGetUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.AddSystemUpgradeTaskResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.AddUpgradeTerminalBatchTaskHandler;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalIdMappingUtils;
@@ -93,7 +97,7 @@ public class TerminalSystemUpgradeControllerTest {
             @Mocked LocaleI18nResolver resolver) throws BusinessException {
         new Expectations() {
             {
-                cbbTerminalUpgradePackageAPI.uploadUpgradeFile((CbbTerminalUpgradePackageUploadRequest) any);
+                cbbTerminalUpgradePackageAPI.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any);
                 result = new BusinessException("key");
             }
         };
@@ -241,7 +245,7 @@ public class TerminalSystemUpgradeControllerTest {
      */
     @Test
     public void testCreateSuccess(@Mocked ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
-        AddSystemUpgradeTaskResponse response = new AddSystemUpgradeTaskResponse();
+        CbbAddSystemUpgradeTaskResponse response = new CbbAddSystemUpgradeTaskResponse();
         UUID upgradeTaskId = UUID.randomUUID();
         response.setUpgradeTaskId(upgradeTaskId);
         new Expectations() {
@@ -396,15 +400,11 @@ public class TerminalSystemUpgradeControllerTest {
     public void testListTerminalMatchEqualArrIsEmpty() throws BusinessException {
         PageWebRequest request = new PageWebRequest();
         
-        DefaultWebResponse webResponse = controller.listTerminal(request);
-        assertEquals(Status.SUCCESS, webResponse.getStatus());
-        
-        new Verifications() {
-            {
-                cbbTerminalUpgradeAPI.listSystemUpgradeTaskTerminal((PageSearchRequest) any);
-                times = 1;
-            }
-        };
+        try {
+            controller.listTerminal(request);
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_COMMON_REQUEST_PARAM_ERROR, e.getKey());
+        }
     }
     
     /**
@@ -423,12 +423,25 @@ public class TerminalSystemUpgradeControllerTest {
         exactMatchArr[0] = exactMatch;
         
         ExactMatch exactMatch1 = new ExactMatch();
-        exactMatch1.setName("sdfsdf");
-        String[] value1Arr = {"UPGRADING"};
-        exactMatch.setValueArr(value1Arr);
+        exactMatch1.setName("upgradeTaskId");
+        String[] value1Arr = {UUID.randomUUID().toString()};
+        exactMatch1.setValueArr(value1Arr);
         exactMatchArr[1] = exactMatch1;
         
         request.setExactMatchArr(exactMatchArr);
+        
+        DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> resp = new DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO>();
+        CbbGetTerminalUpgradeTaskResponse getUpgradeTaskResp = new CbbGetTerminalUpgradeTaskResponse(new CbbSystemUpgradeTaskDTO());
+        new Expectations() {
+            {
+                cbbTerminalUpgradeAPI.listSystemUpgradeTaskTerminal((PageSearchRequest) any);
+                result = resp;
+
+                cbbTerminalUpgradeAPI.getTerminalUpgradeTaskById((CbbGetUpgradeTaskRequest) any);
+                result = getUpgradeTaskResp;
+            }
+        };
+
         DefaultWebResponse webResponse = controller.listTerminal(request);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
         

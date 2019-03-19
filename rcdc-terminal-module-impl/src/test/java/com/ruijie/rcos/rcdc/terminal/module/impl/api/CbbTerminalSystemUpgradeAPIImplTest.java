@@ -20,7 +20,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystem
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.AddSystemUpgradeTaskResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckUploadingResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -211,7 +211,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = upgradeTaskId;
             }
         };
-        AddSystemUpgradeTaskResponse upgradeTaskResponse = upgradeAPIImpl.addSystemUpgradeTask(request);
+        CbbAddSystemUpgradeTaskResponse upgradeTaskResponse = upgradeAPIImpl.addSystemUpgradeTask(request);
         assertEquals(upgradeTaskId, upgradeTaskResponse.getUpgradeTaskId());
         assertEquals(upgradePackageOpt.get().getPackageName(), upgradeTaskResponse.getImgName());
         

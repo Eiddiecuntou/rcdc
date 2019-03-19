@@ -110,7 +110,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testUploadUpgradeFileArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.uploadUpgradeFile(null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.uploadUpgradePackage(null),
                 "request can not be null");
         assertTrue(true);
     }
@@ -124,7 +124,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.ds");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR, e.getKey());
@@ -140,7 +140,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
@@ -162,7 +162,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
@@ -203,7 +203,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e.getKey());
@@ -226,7 +226,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
@@ -260,7 +260,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
@@ -297,7 +297,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
@@ -336,7 +336,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING, e.getKey());
@@ -384,7 +384,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, e.getKey());
@@ -430,7 +430,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT, e.getKey());
@@ -474,10 +474,10 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
-            upgradePackageAPIImpl.uploadUpgradeFile(request);
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e.getKey());
         }
     }
     
@@ -518,7 +518,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
-        DefaultResponse response = upgradePackageAPIImpl.uploadUpgradeFile(request);
+        DefaultResponse response = upgradePackageAPIImpl.uploadUpgradePackage(request);
         assertEquals(Status.SUCCESS, response.getStatus());
         new Verifications() {
             {
@@ -561,8 +561,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 result = 1;
                 page.getTotalElements();
                 result = 1;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageEntity.getId());
-                result = false;
                 
             }
         };
@@ -580,11 +578,9 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 times = 1;
                 page.getTotalElements();
                 times = 1;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageEntity.getId());
-                times = 1;
                 systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(
                         packageEntity.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 0;
+                times = 1;
             }
         };
     }
@@ -615,8 +611,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 result = 1;
                 page.getTotalElements();
                 result = 1;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageEntity.getId());
-                result = true;
                 systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(
                         packageEntity.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradingTaskList;
@@ -634,8 +628,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 page.getSize();
                 times = 1;
                 page.getTotalElements();
-                times = 1;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageEntity.getId());
                 times = 1;
                 systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(
                         packageEntity.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);

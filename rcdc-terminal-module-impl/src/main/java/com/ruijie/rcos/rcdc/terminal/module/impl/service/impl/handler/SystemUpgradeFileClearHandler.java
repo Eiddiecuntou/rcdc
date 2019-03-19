@@ -1,16 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import java.io.File;
-import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -34,9 +30,6 @@ public class SystemUpgradeFileClearHandler {
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
-    @Autowired
-    private TerminalSystemUpgradeTerminalDAO terminalSystemUpgradeTerminalDAO;
-
     /**
      * 刷机任务完成文件清理
      * 
@@ -48,7 +41,7 @@ public class SystemUpgradeFileClearHandler {
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
         Assert.notNull(upgradePackageId, "upgradePackageId can not be null");
         
-        deleteStatusFile(upgradeTaskId);
+        deleteStatusFile();
         deleteUpgradeImg(upgradePackageId);
     }
 
@@ -57,17 +50,9 @@ public class SystemUpgradeFileClearHandler {
      * 
      * @param upgradeTaskId 刷机任务id
      */
-    private void deleteStatusFile(UUID upgradeTaskId) {
-        final List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList =
-                terminalSystemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
-        if (CollectionUtils.isEmpty(upgradeTerminalList)) {
-            LOGGER.debug("刷机任务无刷机终端");
-            return;
-        }
-
-        for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : upgradeTerminalList) {
-            deleteMacNameFile(upgradeTerminal.getTerminalId());
-        }
+    private void deleteStatusFile() {
+        deleteMacNameFile(Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH);
+        deleteMacNameFile(Constants.TERMINAL_UPGRADE_END_SATTUS_FILE_PATH);
     }
 
     /**
@@ -75,17 +60,18 @@ public class SystemUpgradeFileClearHandler {
      * 
      * @param upgradeTerminal
      */
-    private void deleteMacNameFile(String terminalId) {
-        // 删除开始刷机，刷机完成状态的mac名称的文件
-        deleteStatusFile(Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH, terminalId);
-        deleteStatusFile(Constants.TERMINAL_UPGRADE_END_SATTUS_FILE_PATH, terminalId);
-    }
-
-    private void deleteStatusFile(String fileDir, String terminalId) {
-        final String filePath = fileDir + terminalId;
-        File statusFile = new File(filePath);
-        if (statusFile.exists()) {
-            statusFile.delete();
+    private void deleteMacNameFile(String fileDir) {
+        // 删除刷机状态文件夹内的状态文件
+        File statusFileDir = new File(fileDir);
+        if (!statusFileDir.isDirectory()) {
+            LOGGER.error("刷机状态文件夹不存在，路径：{} ", fileDir);
+            return;
+        }
+        final File[] fileArr = statusFileDir.listFiles();
+        for (File statusFile : fileArr) {
+            if (statusFile.isFile()) {
+                statusFile.delete();
+            }
         }
     }
 

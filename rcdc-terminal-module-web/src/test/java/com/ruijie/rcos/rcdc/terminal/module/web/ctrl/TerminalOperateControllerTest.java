@@ -92,8 +92,10 @@ public class TerminalOperateControllerTest {
     public void testShutdownTerminal(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
             @Mocked BatchTaskBuilder builder, @Mocked TerminalIdMappingUtils utils) throws BusinessException {
         TerminalIdArrWebRequest request = new TerminalIdArrWebRequest();
-        UUID[] uuidArr = new UUID[1];
+        request.setIdArr(new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()});
+        UUID[] uuidArr = new UUID[2];
         uuidArr[0] = UUID.randomUUID();
+        uuidArr[1] = UUID.randomUUID();
         new Expectations() {
             {
                 TerminalIdMappingUtils.extractUUID((Map<UUID, String>) any);
@@ -137,8 +139,11 @@ public class TerminalOperateControllerTest {
     public void testRestartTerminal(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked BatchTaskBuilder builder,
             @Mocked TerminalIdMappingUtils utils) throws BusinessException {
         TerminalIdArrWebRequest request = new TerminalIdArrWebRequest();
-        UUID[] uuidArr = new UUID[1];
+        request.setIdArr(new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()});
+        UUID[] uuidArr = new UUID[2];
         uuidArr[0] = UUID.randomUUID();
+        uuidArr[1] = UUID.randomUUID();
+        
         new Expectations() {
             {
                 TerminalIdMappingUtils.extractUUID((Map<UUID, String>) any);

@@ -56,7 +56,7 @@ public class CloseTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
                     .msgKey(BusinessKey.RCDC_TERMINAL_CLOSE_SUCCESS_LOG).msgArgs(new String[] {terminalId}).build();
         } catch (Exception e) {
-            LOGGER.error("关闭终端："+terminalId,e);
+            LOGGER.error("关闭终端：" + terminalId, e);
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
                 optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CLOSE_FAIL_LOG, terminalId, ex.getI18nMessage());

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,12 +14,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.callback.CbbTerminalSystemUpgradeRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeResponseMsgHandler;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
@@ -55,7 +56,7 @@ public class TerminalSystemUpgradeServiceImplTest {
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
 
     @Injectable
-    private CbbTerminalSystemUpgradeRequestCallBack callback;
+    private TerminalSystemUpgradeResponseMsgHandler upgradeResponseMsgHandler;
 
     @Injectable
     private SystemUpgradeFileClearHandler upgradeFileClearHandler;
@@ -67,9 +68,11 @@ public class TerminalSystemUpgradeServiceImplTest {
      * 
      * @param sender 模拟的消息发送对象
      * @throws BusinessException 业务异常
+     * @throws IOException 
+     * @throws InterruptedException 
      */
     @Test
-    public void testSystemUpgrade(@Mocked DefaultRequestMessageSender sender) throws BusinessException {
+    public void testSystemUpgrade(@Mocked DefaultRequestMessageSender sender) throws BusinessException, InterruptedException, IOException {
         String terminalId = "terminalId";
         TerminalSystemUpgradeMsg upgradeMsg = new TerminalSystemUpgradeMsg();
 
@@ -78,7 +81,7 @@ public class TerminalSystemUpgradeServiceImplTest {
                 sessionManager.getRequestMessageSender(anyString);
                 result = sender;
 
-                sender.asyncRequest((Message) any, (RequestCallback) any);
+                sender.syncRequest((Message) any);
 
             }
         };
@@ -90,7 +93,7 @@ public class TerminalSystemUpgradeServiceImplTest {
                 sessionManager.getRequestMessageSender(anyString);
                 times = 1;
 
-                sender.asyncRequest((Message) any, (RequestCallback) any);
+                sender.syncRequest((Message) any);
                 times = 1;
 
             }

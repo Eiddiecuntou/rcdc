@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCancelUpgradeTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.sk.base.batch.AbstractBatchTaskHandler;
 import com.ruijie.rcos.sk.base.batch.BatchTaskFinishResult;
@@ -18,14 +18,14 @@ import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
 
 /**
  * 
- * Description: 批量升级终端任务处理器
+ * Description: 批量取消终端升级任务处理器
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年1月28日
  * 
  * @author nt
  */
-public class AddUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
+public class CancelUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
 
     private ProgrammaticOptLogRecorder optLogRecorder;
 
@@ -33,7 +33,7 @@ public class AddUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHandler
 
     private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
 
-    public AddUpgradeTerminalBatchTaskHandler(CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI,
+    public CancelUpgradeTerminalBatchTaskHandler(CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI,
             Map<UUID, String> idMap, Iterator<? extends BatchTaskItem> iterator,
             ProgrammaticOptLogRecorder optLogRecorder) {
         super(iterator);
@@ -50,29 +50,30 @@ public class AddUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHandler
         String terminalId = idMap.get(upgradeItem.getItemID());
         UUID upgradeTaskId = upgradeItem.getUpgradeTaskId();
 
-        return addUpgradeTaskAddOptLog(terminalId, upgradeTaskId);
+        return cancelUpgradeTerminalAddOptLog(terminalId, upgradeTaskId);
     }
 
-    private BatchTaskItemResult addUpgradeTaskAddOptLog(String terminalId, UUID upgradeTaskId) throws BusinessException {
-        CbbAddTerminalSystemUpgradeTaskRequest addRequest = new CbbAddTerminalSystemUpgradeTaskRequest();
-        addRequest.setTerminalId(terminalId);
-        addRequest.setUpgradeTaskId(upgradeTaskId);
+    private BatchTaskItemResult cancelUpgradeTerminalAddOptLog(String terminalId, UUID upgradeTaskId)
+            throws BusinessException {
+        CbbCancelUpgradeTerminalRequest cancelRequest = new CbbCancelUpgradeTerminalRequest();
+        cancelRequest.setTerminalId(terminalId);
+        cancelRequest.setUpgradeTaskId(upgradeTaskId);
         try {
-            cbbTerminalUpgradeAPI.addSystemUpgradeTerminal(addRequest);
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_SUCCESS_LOG, terminalId);
+            cbbTerminalUpgradeAPI.cancelUpgradeTerminal(cancelRequest);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_SUCCESS_LOG, terminalId);
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
-                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_SUCCESS).msgArgs(new String[] {terminalId})
-                    .build();
+                    .msgKey(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_RESULT_SUCCESS)
+                    .msgArgs(new String[] {terminalId}).build();
         } catch (BusinessException e) {
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_FAIL_LOG, terminalId, e.getI18nMessage());
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_FAIL_LOG, terminalId, e.getI18nMessage());
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.FAILURE)
-                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_FAIL).msgArgs(new String[] {terminalId, e.getI18nMessage()})
-                    .build();
+                    .msgKey(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_RESULT_FAIL)
+                    .msgArgs(new String[] {terminalId, e.getI18nMessage()}).build();
         }
     }
 
     @Override
     public BatchTaskFinishResult onFinish(int successCount, int failCount) {
-        return buildDefaultFinishResult(successCount, failCount, BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT);
+        return buildDefaultFinishResult(successCount, failCount, BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_RESULT);
     }
 }

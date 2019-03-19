@@ -65,18 +65,10 @@ public class SystemUpgradeFileClearHandlerTest {
         UUID upgradeTaskId = UUID.randomUUID();
         UUID upgradePackageId = UUID.randomUUID();
         
-        new Expectations() {
-            {
-                terminalSystemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
-                result = null;
-            }
-        };
         handler.clear(upgradeTaskId, upgradePackageId);
         
         new Verifications() {
             {
-                terminalSystemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
-                times = 1;
                 terminalSystemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
                 FileOperateUtil.deleteFile((File) any);
@@ -115,18 +107,10 @@ public class SystemUpgradeFileClearHandlerTest {
                 return true;
             }
         };
-        new Expectations() {
-            {
-                terminalSystemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
-                result = upgradeTerminalList;
-            }
-        };
         handler.clear(upgradeTaskId, upgradePackageId);
         
         new Verifications() {
             {
-                terminalSystemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
-                times = 1;
                 terminalSystemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
             }
