@@ -36,7 +36,7 @@ public class QuerySystemUpgradeTerminalListService extends AbstractPageQueryTemp
 
     @Override
     protected DefaultDataSort getDefaultDataSort() {
-        return new DefaultDataSort("createTime", Direction.DESC);
+        return new DefaultDataSort("state", Direction.DESC);
     }
 
     @Override

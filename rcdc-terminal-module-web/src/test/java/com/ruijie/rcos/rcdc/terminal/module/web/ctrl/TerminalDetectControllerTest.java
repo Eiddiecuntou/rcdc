@@ -78,8 +78,10 @@ public class TerminalDetectControllerTest {
             @Mocked BatchTaskBuilder builder, 
             @Mocked TerminalIdMappingUtils utils) throws BusinessException {
         StartBatDetectWebRequest request = new StartBatDetectWebRequest();
-        UUID[] uuidArr = new UUID[1];
+        request.setIdArr(new String[] {"1111", "2222"});
+        UUID[] uuidArr = new UUID[2];
         uuidArr[0] = UUID.randomUUID();
+        uuidArr[1] = UUID.randomUUID();
         new Expectations() {
             {
                 TerminalIdMappingUtils.extractUUID((Map<UUID, String>)any);

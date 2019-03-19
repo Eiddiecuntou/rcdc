@@ -267,11 +267,11 @@ public class TerminalDetectService {
     }
 
     private boolean isNetworkDelayAbnormal(Integer networkDelay) {
-        return networkDelay == null || networkDelay > Constants.TERMINAL_DETECT_DELAY_NORM;
+        return networkDelay == null || networkDelay >= Constants.TERMINAL_DETECT_DELAY_NORM;
     }
 
     private boolean isPackageLossRateAbnormal(Double packetLossRate) {
-        return packetLossRate == null || packetLossRate > Constants.TERMINAL_DETECT_PACKET_LOSS_RATE;
+        return packetLossRate == null || packetLossRate >= Constants.TERMINAL_DETECT_PACKET_LOSS_RATE;
     }
 
     private boolean isAccessInternetAbnormal(Integer accessInternet) {
@@ -279,7 +279,7 @@ public class TerminalDetectService {
     }
 
     private boolean isBandWidthAbnormal(Double bandwidth) {
-        return bandwidth == null || bandwidth < Constants.TERMINAL_DETECT_BINDWIDTH_NORM;
+        return bandwidth == null || bandwidth <= Constants.TERMINAL_DETECT_BINDWIDTH_NORM;
     }
 
     private boolean isIpConflict(Integer ipConflict) {

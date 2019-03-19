@@ -16,6 +16,7 @@ import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.sk.base.batch.BatchTaskItem;
 import com.ruijie.rcos.sk.base.batch.BatchTaskItemResult;
 import com.ruijie.rcos.sk.base.batch.BatchTaskItemStatus;
+import com.ruijie.rcos.sk.base.batch.DefaultBatchTaskItem;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
@@ -77,12 +78,10 @@ public class StartDetectBatchtaskHandlerTest {
         assertEquals(BatchTaskItemStatus.SUCCESS, result.getItemStatus());
         assertEquals(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, result.getMsgKey());
         new Verifications() {
-            {
-                terminalOperatorAPI.getTerminalBaiscInfo((CbbTerminalIdRequest) any);
-                times = 1;
+            {                
                 terminalOperatorAPI.detect((CbbTerminalDetectRequest) any);
                 times = 1;
-                optLogRecorder.saveOptLog(anyString, anyString, anyString);
+                optLogRecorder.saveOptLog(anyString, anyString);
                 times = 1;
             }
         };
@@ -90,11 +89,12 @@ public class StartDetectBatchtaskHandlerTest {
     
     /**
      * 测试processItem,检测失败
-     * @param taskItem mock taskItem
      * @throws BusinessException 异常
      */
     @Test
-    public void testProcessItemDetectFail(@Mocked BatchTaskItem taskItem) throws BusinessException {
+    public void testProcessItemDetectFail() throws BusinessException {
+        UUID itemId = UUID.randomUUID();
+        BatchTaskItem taskItem = new DefaultBatchTaskItem(itemId, "sss");
         new Expectations() {
             {
                 terminalOperatorAPI.detect((CbbTerminalDetectRequest) any);
@@ -109,22 +109,17 @@ public class StartDetectBatchtaskHandlerTest {
             }
         };
         Map<UUID, String> idMap = new HashMap<>();
+        idMap.put(itemId, "123");
         TerminalDetectController controller = new TerminalDetectController();
         TerminalDetectController.StartDetectBatchtaskHandler handler = 
                 controller.new StartDetectBatchtaskHandler(idMap, terminalOperatorAPI, iterator, optLogRecorder);
-        try {
-            handler.processItem(taskItem);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals("key", e.getKey());
-        }
+        final BatchTaskItemResult resp = handler.processItem(taskItem);
+        assertEquals(BatchTaskItemStatus.FAILURE, resp.getItemStatus());
         new Verifications() {
             {
-                terminalOperatorAPI.getTerminalBaiscInfo((CbbTerminalIdRequest) any);
-                times = 1;
                 terminalOperatorAPI.detect((CbbTerminalDetectRequest) any);
                 times = 1;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, "message");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, "123", "message");
                 times = 1;
             }
         };

@@ -22,11 +22,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPag
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -44,6 +44,8 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
@@ -449,21 +451,12 @@ public class CbbTerminalOperatorAPIImplTest {
     }
     
     /**
-     * 测试getTerminalLogFileInfo，收集失败
+     * 测试getTerminalLogFileInfo，文件不存在
      */
     @Test
-    public void testGetTerminalLogFileInfoCollectFail() {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId("123");
-        CollectLogCache cache = new CollectLogCache();
-        cache.setLogFileName("logFileName");
-        cache.setState(CollectLogStateEnums.DOING);
-        new Expectations() {
-            {
-                collectLogCacheManager.getCache("123");
-                result = cache;
-            }
-        };
+    public void testGetTerminalLogFileInfoCollectFileNotExist() {
+        CbbTerminalLogNameRequest request = new CbbTerminalLogNameRequest();
+        request.setLogName("123.rar");
         try {
             terminalOperatorAPI.getTerminalLogFileInfo(request);
             fail();
@@ -474,26 +467,22 @@ public class CbbTerminalOperatorAPIImplTest {
     
     /**
      * 测试getTerminalLogFileInfo，收集失败
+     * @throws BusinessException 业务异常
      */
     @Test
-    public void testGetTerminalLogFileInfoCollectFail1() {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId("123");
-        CollectLogCache cache = new CollectLogCache();
-        cache.setLogFileName("");
-        cache.setState(CollectLogStateEnums.DONE);
-        new Expectations() {
-            {
-                collectLogCacheManager.getCache("123");
-                result = cache;
+    public void testGetTerminalLogFileInfoHasSuffix() throws BusinessException {
+        CbbTerminalLogNameRequest request = new CbbTerminalLogNameRequest();
+        request.setLogName("logFileName.rar");
+        new MockUp<CbbTerminalOperatorAPIImpl>() {
+            @Mock
+            private void checkFileExist(String logFilePath) throws BusinessException {
             }
         };
-        try {
-            terminalOperatorAPI.getTerminalLogFileInfo(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST, e.getKey());
-        }
+        
+        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
+        assertEquals("/opt/ftp/terminal/log/logFileName.rar", response.getLogFilePath());
+        assertEquals("logFileName", response.getLogFileName());
+        assertEquals("rar", response.getSuffix());
     }
     
     /**
@@ -502,43 +491,18 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testGetTerminalLogFileInfoNotHasSuffix() throws BusinessException {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId("123");
-        CollectLogCache cache = new CollectLogCache();
-        cache.setLogFileName("logFileName");
-        cache.setState(CollectLogStateEnums.DONE);
-        new Expectations() {
-            {
-                collectLogCacheManager.getCache("123");
-                result = cache;
+        CbbTerminalLogNameRequest request = new CbbTerminalLogNameRequest();
+        request.setLogName("logFileName");
+        new MockUp<CbbTerminalOperatorAPIImpl>() {
+            @Mock
+            private void checkFileExist(String logFilePath) throws BusinessException {
             }
         };
+        
         CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
         assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("", response.getSuffix());
     }
     
-    /**
-     * 测试getTerminalLogFileInfo，日志文件有后缀名
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testGetTerminalLogFileInfoHasSuffix() throws BusinessException {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId("123");
-        CollectLogCache cache = new CollectLogCache();
-        cache.setLogFileName("logFileName.log");
-        cache.setState(CollectLogStateEnums.DONE);
-        new Expectations() {
-            {
-                collectLogCacheManager.getCache("123");
-                result = cache;
-            }
-        };
-        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
-        assertEquals("/opt/ftp/terminal/log/logFileName.log", response.getLogFilePath());
-        assertEquals("logFileName", response.getLogFileName());
-        assertEquals("log", response.getSuffix());
-    }
 }

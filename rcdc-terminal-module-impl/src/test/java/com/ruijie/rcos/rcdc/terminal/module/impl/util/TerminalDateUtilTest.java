@@ -121,5 +121,24 @@ public class TerminalDateUtilTest {
         calendar.add(Calendar.SECOND, 30);
         assertEquals(calendar.getTime(), date1);
     }
+    
 
+    /**
+     * 测试isTimeout,参数为空
+     * @throws Exception 异常
+     */
+    @Test
+    public void testIsTimeoutArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> TerminalDateUtil.isTimeout(null, 30), "date can not be null");
+        assertTrue(true);
+    }
+    
+    /**
+     * 测试isTimeout,
+     */
+    @Test
+    public void testIsTimeout() {
+        Date date = TerminalDateUtil.addSecond(new Date(), -31);
+        assertTrue(TerminalDateUtil.isTimeout(date, 30));
+    }
 }

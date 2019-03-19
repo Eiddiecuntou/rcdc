@@ -69,6 +69,7 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         upgradePackage.setPackageVersion(versionInfo.getVersion());
         upgradePackage.setUploadTime(new Date());
         upgradePackage.setFilePath(versionInfo.getFilePath());
+        upgradePackage.setIsDelete(false);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
     public List<TerminalSystemUpgradeInfo> readSystemUpgradeStartStateFromFile() throws BusinessException {
         return getStatusFromFile(Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH, CbbSystemUpgradeStateEnums.UPGRADING);
     }
-
+    
     private List<TerminalSystemUpgradeInfo> getStatusFromFile(String fileDir, CbbSystemUpgradeStateEnums state)
             throws BusinessException {
         // 读取升级成功文件夹，通过文件名称获取mac即终端id
@@ -111,6 +112,15 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
 
         return fileName.substring(0, index);
     }
+    
+    @Override
+    public void deleteSoft(UUID packageId) throws BusinessException {
+        Assert.notNull(packageId, "packageId can not be null");
+        
+        final TerminalSystemUpgradePackageEntity systemUpgradePackage = getSystemUpgradePackage(packageId);
+        systemUpgradePackage.setIsDelete(true);
+        termianlSystemUpgradePackageDAO.save(systemUpgradePackage);
+    }
 
     @Override
     public TerminalSystemUpgradePackageEntity getSystemUpgradePackage(UUID upgradePackageId) throws BusinessException {
@@ -124,5 +134,6 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         }
         return upgradePackageOpt.get();
     }
+
 
 }

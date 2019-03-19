@@ -1,15 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Stream;
-
-import com.google.common.io.Files;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
+import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
@@ -21,11 +20,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPag
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -132,7 +131,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         List<TerminalDetectionEntity> detectionList = page.getContent();
         int size = detectionList.size();
         CbbTerminalDetectDTO[] detectDTOArr = new CbbTerminalDetectDTO[size];
-        
+
         Stream.iterate(0, i -> i + 1).limit(size).forEach(i -> {
             CbbTerminalDetectDTO detectDTO = new CbbTerminalDetectDTO();
             TerminalDetectionEntity detectionEntity = detectionList.get(i);
@@ -209,26 +208,29 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalIdRequest request)
+    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalLogNameRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        String terminalId = request.getTerminalId();
-        CollectLogCache cache = getCollectLogCache(terminalId);
-        if (isCollectNotSuccess(cache)) {
-            LOGGER.warn("收集日志缓存中不存在日志文件, 终端id[{}]", terminalId);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
-        }
-
-        String logFileName = cache.getLogFileName();
+        String logFileName = request.getLogName();
+        String logFilePath = Constants.STORE_TERMINAL_LOG_PATH + logFileName;
+        checkFileExist(logFilePath);
         String logFileNameWithoutExtension = Files.getNameWithoutExtension(logFileName);
         String suffix = getFileSuffix(logFileName);
         CbbTerminalLogFileInfoResponse response = new CbbTerminalLogFileInfoResponse();
-        response.setLogFilePath(Constants.STORE_TERMINAL_LOG_PATH + logFileName);
+        response.setLogFilePath(logFilePath);
         response.setLogFileName(logFileNameWithoutExtension);
         response.setSuffix(suffix);
 
         return response;
+    }
+
+    private void checkFileExist(String logFilePath) throws BusinessException {
+        File logFile = new File(logFilePath);
+        if (logFile.isFile()) {
+            return;
+        }
+        throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
     }
 
     private String getFileSuffix(String fileName) {
@@ -238,22 +240,6 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             suffix = fileName.substring(lastIndexOf + 1);
         }
         return suffix;
-    }
-
-    /**
-     * 终端日志收集是否尚未成功
-     * 
-     * @param cache 收集日志缓存
-     * @return
-     */
-    private boolean isCollectNotSuccess(CollectLogCache cache) {
-        if (cache.getState() != CollectLogStateEnums.DONE) {
-            return true;
-        }
-        if (StringUtils.isBlank(cache.getLogFileName())) {
-            return true;
-        }
-        return false;
     }
 
     /**

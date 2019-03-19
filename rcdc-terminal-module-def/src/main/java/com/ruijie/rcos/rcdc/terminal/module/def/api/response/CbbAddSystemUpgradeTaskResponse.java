@@ -12,7 +12,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author nt
  */
-public class AddSystemUpgradeTaskResponse extends DefaultResponse {
+public class CbbAddSystemUpgradeTaskResponse extends DefaultResponse {
 
     private UUID upgradeTaskId;
     

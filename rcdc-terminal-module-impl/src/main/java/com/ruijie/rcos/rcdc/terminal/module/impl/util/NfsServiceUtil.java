@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -36,7 +37,7 @@ public class NfsServiceUtil {
         ShellCommandRunner runner = new ShellCommandRunner();
         runner.setCommand(startCmd);
         try {
-            String outStr = runner.execute();
+            String outStr = runner.execute(new SimpleCmdReturnValueResolver());
             LOGGER.debug("out String is :{}", outStr);
         } catch (BusinessException e) {
             LOGGER.error("start nfs server error", e);
@@ -57,13 +58,13 @@ public class NfsServiceUtil {
         ShellCommandRunner runner = new ShellCommandRunner();
         runner.setCommand(stopCmd);
         try {
-            String outStr = runner.execute();
+            String outStr = runner.execute(new SimpleCmdReturnValueResolver());
             LOGGER.debug("out String is :{}", outStr);
-        } catch (BusinessException e) {
+        } catch (Exception e) {
+            // 卸载目录失败
             LOGGER.error("stop nfs server error", e);
-            throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e);
         }
-        LOGGER.info("stop nfs server success");
+        LOGGER.info("stop nfs server finish");
     }
 
 }

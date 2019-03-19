@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.sk.base.batch.AbstractBatchTaskHandler;
 import com.ruijie.rcos.sk.base.batch.BatchTaskFinishResult;
@@ -59,16 +58,15 @@ public class AddUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHandler
         addRequest.setTerminalId(terminalId);
         addRequest.setUpgradeTaskId(upgradeTaskId);
         try {
-            CbbTerminalNameResponse response = cbbTerminalUpgradeAPI.addSystemUpgradeTerminal(addRequest);
-            String terminalName = response.getTerminalName();
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_SUCCESS_LOG, terminalName, terminalId);
+            cbbTerminalUpgradeAPI.addSystemUpgradeTerminal(addRequest);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_SUCCESS_LOG, terminalId);
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
-                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_SUCCESS).msgArgs(new String[] {terminalName})
+                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_SUCCESS).msgArgs(new String[] {terminalId})
                     .build();
         } catch (BusinessException e) {
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_FAIL_LOG, e.getI18nMessage());
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_FAIL_LOG, terminalId, e.getI18nMessage());
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.FAILURE)
-                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_FAIL).msgArgs(new String[] {e.getI18nMessage()})
+                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_FAIL).msgArgs(new String[] {terminalId, e.getI18nMessage()})
                     .build();
         }
     }
