@@ -94,7 +94,8 @@ public class TerminalSystemUpgradeResponseMsgHandler {
         }
 
         for (TerminalSystemUpgradeTerminalEntity entity : upgradingTerminalList) {
-            terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(entity.getSysUpgradeId(), terminalId, state);
+            entity.setState(state);
+            terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(entity);
         }
     }
 }

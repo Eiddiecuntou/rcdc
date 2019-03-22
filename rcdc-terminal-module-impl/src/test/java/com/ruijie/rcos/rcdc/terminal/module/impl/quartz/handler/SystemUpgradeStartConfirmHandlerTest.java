@@ -99,7 +99,7 @@ public class SystemUpgradeStartConfirmHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID) any, anyString, CbbSystemUpgradeStateEnums.FAIL);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -132,7 +132,7 @@ public class SystemUpgradeStartConfirmHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID) any, anyString, CbbSystemUpgradeStateEnums.FAIL);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -171,7 +171,7 @@ public class SystemUpgradeStartConfirmHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID) any, anyString, CbbSystemUpgradeStateEnums.FAIL);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -210,7 +210,7 @@ public class SystemUpgradeStartConfirmHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID) any, anyString, CbbSystemUpgradeStateEnums.FAIL);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 1;
             }
         };

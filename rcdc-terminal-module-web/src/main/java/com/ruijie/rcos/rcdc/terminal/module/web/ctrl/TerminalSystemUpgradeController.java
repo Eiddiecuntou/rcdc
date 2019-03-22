@@ -92,7 +92,7 @@ public class TerminalSystemUpgradeController {
 
     @Autowired
     private CbbTerminalSystemUpgradePackageAPI cbbTerminalUpgradePackageAPI;
-
+    
     /**
      * 上传系统升级文件
      * 
@@ -335,7 +335,41 @@ public class TerminalSystemUpgradeController {
         contentVO.setItemArr(itemArr);
         contentVO.setTotal(total);
         contentVO.setUpgradeTask(upgradeTask);
+        countTerminalNumByState(contentVO, itemArr);
+        
         return contentVO;
+    }
+
+    private void countTerminalNumByState(UpgradeTerminalListContentVO contentVO, CbbSystemUpgradeTaskTerminalDTO[] itemArr) {
+        if (itemArr == null || itemArr.length == 0) {
+            return;
+        }
+        for (CbbSystemUpgradeTaskTerminalDTO upgradeTerminal : itemArr) {
+            upgradeTerminal.getTerminalUpgradeState();
+            switch (upgradeTerminal.getTerminalUpgradeState()) {
+                case WAIT:
+                    contentVO.setWaitNum(contentVO.getWaitNum() + 1);
+                    break;
+                case UPGRADING:
+                    contentVO.setUpgradingNum(contentVO.getUpgradingNum() + 1);
+                    break;
+                case SUCCESS:
+                    contentVO.setSuccessNum(contentVO.getSuccessNum() + 1);
+                    break;
+                case FAIL:
+                    contentVO.setFailNum(contentVO.getFailNum() + 1);
+                    break;
+                case UNSUPPORTED:
+                    contentVO.setUnsupportNum(contentVO.getUnsupportNum() + 1);
+                    break;
+                case UNDO:
+                    contentVO.setUndoNum(contentVO.getUndoNum() + 1);
+                    break;
+                default:
+                    break;
+            }
+        }
+        
     }
 
     private UUID convertListTerminalMatchEqual(PageSearchRequest apiRequest) throws BusinessException {

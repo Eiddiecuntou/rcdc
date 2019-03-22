@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
 import java.util.UUID;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -34,21 +34,18 @@ public interface TerminalSystemUpgradeServiceTx {
     
     /**
      * 开始等待中的终端进行刷机
-     * @param upgradeTaskId 刷机任务id
-     * @param terminalId 终端id
+     * @param upgradeTerminal 刷机终端实体
      * @throws BusinessException 业务异常
      */
-    void startTerminalUpgrade(UUID upgradeTaskId, String terminalId) throws BusinessException;
+    void startTerminalUpgrade(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException;
     
     /**
      * 修改刷机终端状态
      * 
-     * @param upgradeTaskId 刷机任务id
-     * @param terminalId 终端id
-     * @param state 状态
+     * @param upgradeTerminal 刷机终端实体
      * @throws BusinessException 业务异常
      */
-    void modifySystemUpgradeTerminalState(UUID upgradeTaskId, String terminalId, CbbSystemUpgradeStateEnums state) throws BusinessException;
+    void modifySystemUpgradeTerminalState(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException;
 
 
 }

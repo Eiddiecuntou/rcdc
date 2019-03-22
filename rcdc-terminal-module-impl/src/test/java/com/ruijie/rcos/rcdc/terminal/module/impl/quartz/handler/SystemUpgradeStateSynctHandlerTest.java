@@ -67,7 +67,7 @@ public class SystemUpgradeStateSynctHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -92,7 +92,7 @@ public class SystemUpgradeStateSynctHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -118,7 +118,7 @@ public class SystemUpgradeStateSynctHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -146,7 +146,7 @@ public class SystemUpgradeStateSynctHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -178,7 +178,7 @@ public class SystemUpgradeStateSynctHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -210,7 +210,7 @@ public class SystemUpgradeStateSynctHandlerTest {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
                 times = 1;
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 1;
             }
         };

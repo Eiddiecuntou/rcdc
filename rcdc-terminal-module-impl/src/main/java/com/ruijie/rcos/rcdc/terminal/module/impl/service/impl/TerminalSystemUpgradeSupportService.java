@@ -224,8 +224,8 @@ public class TerminalSystemUpgradeSupportService {
             if (CollectionUtils.isEmpty(upgradeTaskList)) {
                 LOGGER.info("无正在进行中的刷机任务");
                 // 确认关闭nfs服务，关闭定时任务
-                closeSystemUpgradeService();
                 setClosingTaskToFinish();
+                closeSystemUpgradeService();
                 return true;
             }
             return false;

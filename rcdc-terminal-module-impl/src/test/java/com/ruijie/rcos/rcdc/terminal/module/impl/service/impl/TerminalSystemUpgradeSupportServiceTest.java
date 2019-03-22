@@ -280,7 +280,7 @@ public class TerminalSystemUpgradeSupportServiceTest {
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 1;
+                times = 2;
             }
         };
     }

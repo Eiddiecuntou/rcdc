@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.junit.Test;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
@@ -48,10 +49,12 @@ public class SystemUpgradeFileClearHandlerTest {
      */
     @Test
     public void testClearArgumentIsNull() throws Exception {
+        TerminalSystemUpgradeEntity packageIdNullEntity = new TerminalSystemUpgradeEntity();
+        packageIdNullEntity.setId(UUID.randomUUID());
         ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear
-                (null, UUID.randomUUID()),"upgradeTaskId can not be null");
+                (null),"systemUpgradeEntity can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear
-                (UUID.randomUUID(), null),"upgradePackageId can not be null");
+                (packageIdNullEntity),"upgradePackageId can not be null");
         assertTrue(true);
     }
     
@@ -62,14 +65,13 @@ public class SystemUpgradeFileClearHandlerTest {
      */
     @Test
     public void testClearNoUpgradeTerminal(@Mocked FileOperateUtil fileOperateUtil) throws BusinessException {
-        UUID upgradeTaskId = UUID.randomUUID();
-        UUID upgradePackageId = UUID.randomUUID();
-        
-        handler.clear(upgradeTaskId, upgradePackageId);
+        TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
+        entity.setUpgradePackageId(UUID.randomUUID());
+        handler.clear(entity);
         
         new Verifications() {
             {
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
+                terminalSystemUpgradePackageService.getSystemUpgradePackage((UUID) any);
                 times = 1;
                 FileOperateUtil.deleteFile((File) any);
                 times = 1;
@@ -84,8 +86,8 @@ public class SystemUpgradeFileClearHandlerTest {
      */
     @Test
     public void testClear(@Mocked FileOperateUtil fileOperateUtil) throws BusinessException {
-        UUID upgradeTaskId = UUID.randomUUID();
-        UUID upgradePackageId = UUID.randomUUID();
+        TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
+        entity.setUpgradePackageId(UUID.randomUUID());
         
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
@@ -107,11 +109,11 @@ public class SystemUpgradeFileClearHandlerTest {
                 return true;
             }
         };
-        handler.clear(upgradeTaskId, upgradePackageId);
+        handler.clear(entity);
         
         new Verifications() {
             {
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
+                terminalSystemUpgradePackageService.getSystemUpgradePackage((UUID) any);
                 times = 1;
             }
         };

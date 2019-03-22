@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
@@ -33,12 +34,12 @@ public class SystemUpgradeFileClearHandler {
     /**
      * 刷机任务完成文件清理
      * 
-     * @param upgradeTaskId 刷机任务id
-     * @param upgradePackageId 刷机包id
+     * @param systemUpgradeEntity 刷机任务实体
      * @throws BusinessException 业务异常
      */
-    public void clear(UUID upgradeTaskId, UUID upgradePackageId) throws BusinessException {
-        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+    public void clear(TerminalSystemUpgradeEntity systemUpgradeEntity) throws BusinessException {
+        Assert.notNull(systemUpgradeEntity, "systemUpgradeEntity can not be null");
+        final UUID upgradePackageId = systemUpgradeEntity.getUpgradePackageId();
         Assert.notNull(upgradePackageId, "upgradePackageId can not be null");
         
         deleteStatusFile();

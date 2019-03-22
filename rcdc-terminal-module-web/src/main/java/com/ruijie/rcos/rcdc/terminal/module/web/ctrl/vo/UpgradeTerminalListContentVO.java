@@ -18,6 +18,18 @@ public class UpgradeTerminalListContentVO {
     
     private long total;
     
+    private int waitNum;
+    
+    private int upgradingNum;
+    
+    private int successNum;
+    
+    private int failNum;
+    
+    private int unsupportNum;
+    
+    private int undoNum;
+    
     private CbbSystemUpgradeTaskDTO upgradeTask;
 
     public CbbSystemUpgradeTaskTerminalDTO[] getItemArr() {
@@ -42,6 +54,54 @@ public class UpgradeTerminalListContentVO {
 
     public void setUpgradeTask(CbbSystemUpgradeTaskDTO upgradeTask) {
         this.upgradeTask = upgradeTask;
+    }
+
+    public int getWaitNum() {
+        return waitNum;
+    }
+
+    public void setWaitNum(int waitNum) {
+        this.waitNum = waitNum;
+    }
+
+    public int getUpgradingNum() {
+        return upgradingNum;
+    }
+
+    public void setUpgradingNum(int upgradingNum) {
+        this.upgradingNum = upgradingNum;
+    }
+
+    public int getSuccessNum() {
+        return successNum;
+    }
+
+    public void setSuccessNum(int successNum) {
+        this.successNum = successNum;
+    }
+
+    public int getFailNum() {
+        return failNum;
+    }
+
+    public void setFailNum(int failNum) {
+        this.failNum = failNum;
+    }
+
+    public int getUnsupportNum() {
+        return unsupportNum;
+    }
+
+    public void setUnsupportNum(int unsupportNum) {
+        this.unsupportNum = unsupportNum;
+    }
+
+    public int getUndoNum() {
+        return undoNum;
+    }
+
+    public void setUndoNum(int undoNum) {
+        this.undoNum = undoNum;
     }
     
 }

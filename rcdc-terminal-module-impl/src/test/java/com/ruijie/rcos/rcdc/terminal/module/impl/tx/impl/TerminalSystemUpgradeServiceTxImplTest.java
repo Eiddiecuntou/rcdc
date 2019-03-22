@@ -119,8 +119,14 @@ public class TerminalSystemUpgradeServiceTxImplTest {
     public void testCloseSystemUpgradeTaskOffNoStartterminal() throws BusinessException {
         UUID upgradeTaskId = UUID.randomUUID();
         TerminalSystemUpgradeEntity systemUpgradeTask = new TerminalSystemUpgradeEntity();
+        systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+        systemUpgradeTask.setId(upgradeTaskId);
+        systemUpgradeTask.setUpgradePackageId(upgradeTaskId);
         List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
+        upgradeTerminal.setSysUpgradeId(upgradeTaskId);
+        upgradeTerminal.setId(upgradeTaskId);
+        upgradeTerminal.setTerminalId("1");
         waitUpgradeTerminalList.add(upgradeTerminal);
         new Expectations() {
             {
@@ -165,9 +171,14 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         UUID upgradeTaskId = UUID.randomUUID();
         TerminalSystemUpgradeEntity systemUpgradeTask = new TerminalSystemUpgradeEntity();
         systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+        systemUpgradeTask.setUpgradePackageId(upgradeTaskId);
+        systemUpgradeTask.setId(upgradeTaskId);
         
         List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
+        upgradeTerminal.setSysUpgradeId(upgradeTaskId);
+        upgradeTerminal.setId(upgradeTaskId);
+        upgradeTerminal.setTerminalId("1");
         waitUpgradeTerminalList.add(upgradeTerminal);
         new Expectations() {
             {
@@ -207,11 +218,19 @@ public class TerminalSystemUpgradeServiceTxImplTest {
     @Test
     public void testModifySystemUpgradeTerminalStateArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.modifySystemUpgradeTerminalState
-                (null, "1", CbbSystemUpgradeStateEnums.UPGRADING), "upgradeTaskId can not be blank");
+                (null), "upgradeTerminal can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.modifySystemUpgradeTerminalState
-                (UUID.randomUUID(), "", CbbSystemUpgradeStateEnums.UPGRADING), "terminalId can not be blank");
+                (new TerminalSystemUpgradeTerminalEntity()), "upgradeTaskId can not be null");
+        
+        TerminalSystemUpgradeTerminalEntity entity = new TerminalSystemUpgradeTerminalEntity();
+        
+        entity.setSysUpgradeId(UUID.randomUUID());
         ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.modifySystemUpgradeTerminalState
-                (UUID.randomUUID(), "1", null), "state can not be blank");
+                (entity), "terminalId can not be blank");
+        
+        entity.setTerminalId("1");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.modifySystemUpgradeTerminalState
+                (entity), "state can not be null");
         assertTrue(true);
     }
     
@@ -223,6 +242,10 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         UUID upgradeTaskId = UUID.randomUUID();
         String terminalId = "1";
         
+        TerminalSystemUpgradeTerminalEntity entity = new TerminalSystemUpgradeTerminalEntity();
+        entity.setSysUpgradeId(upgradeTaskId);
+        entity.setTerminalId(terminalId);
+        entity.setState(CbbSystemUpgradeStateEnums.UNDO);
         new Expectations() {
             {
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeTaskId, terminalId);
@@ -230,7 +253,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
             }
         };
         try {
-            serviceTxImpl.modifySystemUpgradeTerminalState(upgradeTaskId, terminalId, CbbSystemUpgradeStateEnums.UPGRADING);
+            serviceTxImpl.modifySystemUpgradeTerminalState(entity);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_NOT_EXIST, e.getKey());
@@ -253,6 +276,10 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         UUID upgradeTaskId = UUID.randomUUID();
         String terminalId = "1";
         
+        TerminalSystemUpgradeTerminalEntity entity = new TerminalSystemUpgradeTerminalEntity();
+        entity.setSysUpgradeId(upgradeTaskId);
+        entity.setTerminalId(terminalId);
+        entity.setState(CbbSystemUpgradeStateEnums.UNDO);
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         new Expectations() {
             {
@@ -260,7 +287,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
                 result = upgradeTerminal;
             }
         };
-        serviceTxImpl.modifySystemUpgradeTerminalState(upgradeTaskId, terminalId, CbbSystemUpgradeStateEnums.UNDO);
+        serviceTxImpl.modifySystemUpgradeTerminalState(entity);
         
         new Verifications() {
             {
@@ -277,9 +304,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
     @Test
     public void testStartTerminalUpgradeArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.startTerminalUpgrade
-                (null, "1"), "upgradeTaskId can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.startTerminalUpgrade
-                (UUID.randomUUID(), ""), "terminalId can not be null");
+                (null), "upgradeTerminal can not be null");
         assertTrue(true);
     }
     
@@ -292,6 +317,9 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         UUID upgradeTaskId = UUID.randomUUID();
         String terminalId = "1";
         
+        TerminalSystemUpgradeTerminalEntity entity = new TerminalSystemUpgradeTerminalEntity();
+        entity.setSysUpgradeId(upgradeTaskId);
+        entity.setTerminalId(terminalId);
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         new Expectations() {
             {
@@ -299,7 +327,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
                 result = upgradeTerminal;
             }
         };
-        serviceTxImpl.startTerminalUpgrade(upgradeTaskId, terminalId);
+        serviceTxImpl.startTerminalUpgrade(entity);
         
         new Verifications() {
             {

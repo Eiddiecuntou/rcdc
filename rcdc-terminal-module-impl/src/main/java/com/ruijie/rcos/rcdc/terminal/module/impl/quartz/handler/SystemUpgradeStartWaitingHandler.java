@@ -111,18 +111,27 @@ public class SystemUpgradeStartWaitingHandler {
             LOGGER.info("开始向终端[{}]发送刷机指令: {}", terminalId, upgradeMsg.toString());
             systemUpgradeService.systemUpgrade(terminalId, upgradeMsg);
             LOGGER.info("向终端[{}]发送刷机指令成功", terminalId);
+        } catch (TerminalOffLineException te) {
+            LOGGER.info("终端[ " + terminalId + "]离线", te);
+            setTerminalUpgradeFail(upgradeTerminal);
+            return false;
         } catch (BusinessException e) {
             LOGGER.info("向终端[ " + terminalId + "]发送刷机指令失败", e);
             return false;
         }
+        
         modifyTerminalUpgrading(upgradeTerminal);
-
         return true;
+    }
+    
+    private void setTerminalUpgradeFail(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {
+        upgradeTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
+        systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
     }
 
     private void modifyTerminalUpgrading(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {
         // 更新开始刷机时间
-        systemUpgradeServiceTx.startTerminalUpgrade(upgradeTerminal.getSysUpgradeId(), upgradeTerminal.getTerminalId());
+        systemUpgradeServiceTx.startTerminalUpgrade(upgradeTerminal);
     }
 
 }
