@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
@@ -112,27 +111,27 @@ public class SystemUpgradeStartWaitingHandler {
             LOGGER.info("开始向终端[{}]发送刷机指令: {}", terminalId, upgradeMsg.toString());
             systemUpgradeService.systemUpgrade(terminalId, upgradeMsg);
             LOGGER.info("向终端[{}]发送刷机指令成功", terminalId);
+        } catch (TerminalOffLineException te) {
+            LOGGER.info("终端[ " + terminalId + "]离线", te);
+            setTerminalUpgradeFail(upgradeTerminal);
+            return false;
         } catch (BusinessException e) {
             LOGGER.info("向终端[ " + terminalId + "]发送刷机指令失败", e);
-            // 若终端离线，则设为刷机失败
-            if (BusinessKey.RCDC_TERMINAL_OFFLINE.equals(e.getKey())) {
-                setTerminalUpgradeFail(upgradeTerminal.getSysUpgradeId(), terminalId);
-            }
             return false;
         }
+        
         modifyTerminalUpgrading(upgradeTerminal);
-
         return true;
     }
-
-    private void setTerminalUpgradeFail(UUID upgradeTaskId, String terminalId) throws BusinessException {
-        systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTaskId, terminalId,
-                CbbSystemUpgradeStateEnums.FAIL);
+    
+    private void setTerminalUpgradeFail(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {
+        upgradeTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
+        systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
     }
 
     private void modifyTerminalUpgrading(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {
         // 更新开始刷机时间
-        systemUpgradeServiceTx.startTerminalUpgrade(upgradeTerminal.getSysUpgradeId(), upgradeTerminal.getTerminalId());
+        systemUpgradeServiceTx.startTerminalUpgrade(upgradeTerminal);
     }
 
 }

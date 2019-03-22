@@ -86,8 +86,8 @@ public class SystemUpgradeStateSynctHandler {
 
             // 更新刷机终端状态信息
             LOGGER.debug("更新刷机终端[{}]状态信息为：{}", terminalId, matchInfo.getState());
-            systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal.getSysUpgradeId(), terminalId,
-                    matchInfo.getState());
+            upgradeTerminal.setState(matchInfo.getState());
+            systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
             count++;
         }
 

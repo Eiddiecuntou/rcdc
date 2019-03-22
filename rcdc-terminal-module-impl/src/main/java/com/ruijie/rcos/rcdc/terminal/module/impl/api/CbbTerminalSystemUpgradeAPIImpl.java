@@ -384,8 +384,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_CANCEL, terminalId);
         }
         
-        terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal.getSysUpgradeId(), terminalId,
-                CbbSystemUpgradeStateEnums.UNDO);
+        upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UNDO);
+        terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
 
         CbbTerminalNameResponse response = new CbbTerminalNameResponse();
         response.setTerminalName(basicInfoDAO.getTerminalNameByTerminalId(terminalId));
@@ -422,8 +422,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             state = CbbSystemUpgradeStateEnums.UPGRADING;
         }
 
-        terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal.getSysUpgradeId(), terminalId,
-                state);
+        upgradeTerminal.setState(state);
+        terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
     }
 
     private boolean checkTerminalStartUpgrade(String terminalId) {

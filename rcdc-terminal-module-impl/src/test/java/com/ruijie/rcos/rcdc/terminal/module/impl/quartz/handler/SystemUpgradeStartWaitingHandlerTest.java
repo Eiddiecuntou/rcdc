@@ -86,7 +86,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
-                systemUpgradeServiceTx.startTerminalUpgrade((UUID) any, anyString);
+                systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
                 
             }
@@ -118,7 +118,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 0;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
-                systemUpgradeServiceTx.startTerminalUpgrade((UUID) any, anyString);
+                systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
                 
             }
@@ -154,7 +154,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
-                systemUpgradeServiceTx.startTerminalUpgrade((UUID) any, anyString);
+                systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
                 
             }
@@ -191,7 +191,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
-                systemUpgradeServiceTx.startTerminalUpgrade((UUID) any, anyString);
+                systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
                 
             }
@@ -230,7 +230,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 1;
-                systemUpgradeServiceTx.startTerminalUpgrade((UUID) any, anyString);
+                systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
                 
             }
@@ -267,7 +267,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 1;
-                systemUpgradeServiceTx.startTerminalUpgrade((UUID) any, anyString);
+                systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 1;
                 
             }

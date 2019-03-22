@@ -80,9 +80,9 @@ public class SystemUpgradeQuartzHandler implements Runnable {
                     systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
             if (CollectionUtils.isEmpty(upgradeTerminalList)) {
                 LOGGER.debug("刷机任务无刷机终端，关闭刷机任务");
-                // 设置刷机任务为完成状态
-                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(),
-                        CbbSystemUpgradeTaskStateEnums.CLOSING);
+                // 设置刷机任务为关闭状态
+                upgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+                systemUpgradeService.modifySystemUpgradeState(upgradeTask);
                 continue;
             }
 
@@ -120,7 +120,8 @@ public class SystemUpgradeQuartzHandler implements Runnable {
             }
         }
         LOGGER.debug("刷机终端的状态均为成功状态，刷机任务自动完成");
-        systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.CLOSING);
+        upgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+        systemUpgradeService.modifySystemUpgradeState(upgradeTask);
     }
 
     private boolean isUnsuccessState(CbbSystemUpgradeStateEnums state) {

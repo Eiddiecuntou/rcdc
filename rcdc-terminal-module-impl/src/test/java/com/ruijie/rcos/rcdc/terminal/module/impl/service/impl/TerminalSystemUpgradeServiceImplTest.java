@@ -286,10 +286,13 @@ public class TerminalSystemUpgradeServiceImplTest {
      */
     @Test
     public void testModifySystemUpgradeStateArgumentIsNull() throws Exception {
+        TerminalSystemUpgradeEntity idNullEntity = new TerminalSystemUpgradeEntity();
+        TerminalSystemUpgradeEntity idNotNullEntity = new TerminalSystemUpgradeEntity();
+        idNotNullEntity.setId(UUID.randomUUID());
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.modifySystemUpgradeState
-                (null, CbbSystemUpgradeTaskStateEnums.UPGRADING), "systemUpgradeId 不能为空");
+                (idNullEntity), "upgradeTaskId 不能为空");
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.modifySystemUpgradeState
-                (UUID.randomUUID(), null), "state 不能为空");
+                (idNotNullEntity), "state 不能为空");
         assertTrue(true);
     }
     
@@ -302,6 +305,8 @@ public class TerminalSystemUpgradeServiceImplTest {
     public void testModifySystemUpgradeStateIsNotFinish() throws BusinessException {
         UUID systemUpgradeId = UUID.randomUUID();
         TerminalSystemUpgradeEntity systemUpgradeEntity = new TerminalSystemUpgradeEntity();
+        systemUpgradeEntity.setId(systemUpgradeId);
+        systemUpgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         
         new MockUp<TerminalSystemUpgradeServiceImpl>() {
             @Mock
@@ -309,13 +314,13 @@ public class TerminalSystemUpgradeServiceImplTest {
                 return systemUpgradeEntity;
             }
         };
-        terminalSystemUpgradeService.modifySystemUpgradeState(systemUpgradeId, CbbSystemUpgradeTaskStateEnums.UPGRADING);
+        terminalSystemUpgradeService.modifySystemUpgradeState(systemUpgradeEntity);
         
         new Verifications() {
             {
                 terminalSystemUpgradeDAO.save(systemUpgradeEntity);
                 times = 1;
-                upgradeFileClearHandler.clear(systemUpgradeEntity.getId(), systemUpgradeEntity.getUpgradePackageId());
+                upgradeFileClearHandler.clear(systemUpgradeEntity);
                 times = 0;
             }
         };
@@ -330,6 +335,8 @@ public class TerminalSystemUpgradeServiceImplTest {
     public void testModifySystemUpgradeStateIsCLOSING() throws BusinessException {
         UUID systemUpgradeId = UUID.randomUUID();
         TerminalSystemUpgradeEntity systemUpgradeEntity = new TerminalSystemUpgradeEntity();
+        systemUpgradeEntity.setId(systemUpgradeId);
+        systemUpgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
         
         new MockUp<TerminalSystemUpgradeServiceImpl>() {
             @Mock
@@ -337,13 +344,13 @@ public class TerminalSystemUpgradeServiceImplTest {
                 return systemUpgradeEntity;
             }
         };
-        terminalSystemUpgradeService.modifySystemUpgradeState(systemUpgradeId, CbbSystemUpgradeTaskStateEnums.CLOSING);
+        terminalSystemUpgradeService.modifySystemUpgradeState(systemUpgradeEntity);
         
         new Verifications() {
             {
                 terminalSystemUpgradeDAO.save(systemUpgradeEntity);
                 times = 1;
-                upgradeFileClearHandler.clear(systemUpgradeEntity.getId(), systemUpgradeEntity.getUpgradePackageId());
+                upgradeFileClearHandler.clear(systemUpgradeEntity);
                 times = 1;
             }
         };

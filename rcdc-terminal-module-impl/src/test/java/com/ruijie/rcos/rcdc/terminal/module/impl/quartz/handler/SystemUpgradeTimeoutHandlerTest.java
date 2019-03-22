@@ -57,7 +57,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         handler.execute(upgradeTerminalList);
         new Verifications() {
             {
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -77,7 +77,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         handler.execute(upgradeTerminalList);
         new Verifications() {
             {
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };
@@ -103,7 +103,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         handler.execute(upgradeTerminalList);
         new Verifications() {
             {
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 1;
             }
         };
@@ -124,7 +124,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         
         new Expectations() {
             {
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 result = new BusinessException("key");
             }
         };
@@ -136,7 +136,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         handler.execute(upgradeTerminalList);
         new Verifications() {
             {
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 1;
             }
         };
@@ -162,7 +162,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         handler.execute(upgradeTerminalList);
         new Verifications() {
             {
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((UUID)any, anyString, (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
             }
         };

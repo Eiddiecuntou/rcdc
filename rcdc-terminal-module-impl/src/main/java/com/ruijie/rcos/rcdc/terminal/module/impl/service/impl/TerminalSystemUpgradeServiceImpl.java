@@ -16,6 +16,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
+import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.TerminalOffLineException;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeResponseMsgHandler;
@@ -59,7 +60,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
 
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
+            throw new TerminalOffLineException();
         }
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.UPGRADE_TERMINAL_SYSTEM.getName(),
                 upgradeMsg);
@@ -96,18 +97,21 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     }
 
     @Override
-    public void modifySystemUpgradeState(UUID systemUpgradeId, CbbSystemUpgradeTaskStateEnums state)
+    public void modifySystemUpgradeState(TerminalSystemUpgradeEntity upgradeTask)
             throws BusinessException {
-        Assert.notNull(systemUpgradeId, "systemUpgradeId 不能为空");
+        Assert.notNull(upgradeTask, "upgradeTask 不能为空");
+        final UUID upgradeTaskId = upgradeTask.getId();
+        Assert.notNull(upgradeTaskId, "upgradeTaskId 不能为空");
+        final CbbSystemUpgradeTaskStateEnums state = upgradeTask.getState();
         Assert.notNull(state, "state 不能为空");
 
-        TerminalSystemUpgradeEntity systemUpgradeEntity = getSystemUpgradeTask(systemUpgradeId);
+        TerminalSystemUpgradeEntity systemUpgradeEntity = getSystemUpgradeTask(upgradeTaskId);
         systemUpgradeEntity.setState(state);
         terminalSystemUpgradeDAO.save(systemUpgradeEntity);
 
         if (state == CbbSystemUpgradeTaskStateEnums.CLOSING) {
             // 刷机关闭则清理服务端文件
-            upgradeFileClearHandler.clear(systemUpgradeEntity.getId(), systemUpgradeEntity.getUpgradePackageId());
+            upgradeFileClearHandler.clear(systemUpgradeEntity);
         }
     }
 
