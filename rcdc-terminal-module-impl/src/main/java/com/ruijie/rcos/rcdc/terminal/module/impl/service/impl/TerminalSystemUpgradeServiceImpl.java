@@ -105,8 +105,8 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         systemUpgradeEntity.setState(state);
         terminalSystemUpgradeDAO.save(systemUpgradeEntity);
 
-        if (state == CbbSystemUpgradeTaskStateEnums.FINISH) {
-            // 刷机完成清理服务端文件
+        if (state == CbbSystemUpgradeTaskStateEnums.CLOSING) {
+            // 刷机关闭则清理服务端文件
             upgradeFileClearHandler.clear(systemUpgradeEntity.getId(), systemUpgradeEntity.getUpgradePackageId());
         }
     }

@@ -22,7 +22,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeResponseMsgHandler;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import mockit.Expectations;
@@ -328,7 +327,7 @@ public class TerminalSystemUpgradeServiceImplTest {
      * @throws Exception 异常
      */
     @Test
-    public void testModifySystemUpgradeStateIsFinish() throws BusinessException {
+    public void testModifySystemUpgradeStateIsCLOSING() throws BusinessException {
         UUID systemUpgradeId = UUID.randomUUID();
         TerminalSystemUpgradeEntity systemUpgradeEntity = new TerminalSystemUpgradeEntity();
         
@@ -338,7 +337,7 @@ public class TerminalSystemUpgradeServiceImplTest {
                 return systemUpgradeEntity;
             }
         };
-        terminalSystemUpgradeService.modifySystemUpgradeState(systemUpgradeId, CbbSystemUpgradeTaskStateEnums.FINISH);
+        terminalSystemUpgradeService.modifySystemUpgradeState(systemUpgradeId, CbbSystemUpgradeTaskStateEnums.CLOSING);
         
         new Verifications() {
             {

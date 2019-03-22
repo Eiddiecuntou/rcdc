@@ -97,7 +97,7 @@ public class SystemUpgradeQuartzHandlerTest {
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 times = 1;
-                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.FINISH);
+                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.CLOSING);
                 times = 1;
                 confirmHandler.execute((List<TerminalSystemUpgradeTerminalEntity>) any);
                 times = 0;
@@ -120,7 +120,7 @@ public class SystemUpgradeQuartzHandlerTest {
                 result = upgradeTaskList;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 result = null;
-                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.FINISH);
+                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.CLOSING);
                 result = new BusinessException("key");
             }
         };
@@ -132,7 +132,7 @@ public class SystemUpgradeQuartzHandlerTest {
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 times = 1;
-                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.FINISH);
+                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.CLOSING);
                 times = 1;
                 confirmHandler.execute((List<TerminalSystemUpgradeTerminalEntity>) any);
                 times = 0;

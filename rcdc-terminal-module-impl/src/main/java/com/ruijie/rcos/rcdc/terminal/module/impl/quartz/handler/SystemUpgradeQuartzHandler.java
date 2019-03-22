@@ -67,7 +67,7 @@ public class SystemUpgradeQuartzHandler implements Runnable {
      */
     private void dealAllUpgradingTask() throws BusinessException {
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-            CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+            CbbSystemUpgradeTaskStateEnums.UPGRADING});
         List<TerminalSystemUpgradeEntity> upgradeTaskList =
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
         if (CollectionUtils.isEmpty(upgradeTaskList)) {
@@ -82,7 +82,7 @@ public class SystemUpgradeQuartzHandler implements Runnable {
                 LOGGER.debug("刷机任务无刷机终端，关闭刷机任务");
                 // 设置刷机任务为完成状态
                 systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(),
-                        CbbSystemUpgradeTaskStateEnums.FINISH);
+                        CbbSystemUpgradeTaskStateEnums.CLOSING);
                 continue;
             }
 

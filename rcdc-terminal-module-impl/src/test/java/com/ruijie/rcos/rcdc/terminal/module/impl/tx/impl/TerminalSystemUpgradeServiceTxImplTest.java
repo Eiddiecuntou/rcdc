@@ -119,6 +119,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
     public void testCloseSystemUpgradeTaskOffNoStartterminal() throws BusinessException {
         UUID upgradeTaskId = UUID.randomUUID();
         TerminalSystemUpgradeEntity systemUpgradeTask = new TerminalSystemUpgradeEntity();
+        systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         waitUpgradeTerminalList.add(upgradeTerminal);
