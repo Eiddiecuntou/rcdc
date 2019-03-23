@@ -38,7 +38,7 @@ public interface Constants {
     double TERMINAL_DETECT_BINDWIDTH_NORM = 20;
 
     /**
-     * 终端检测延时正常标准值，大于等于50ms为异常
+     * 终端检测延时正常标准值，大于等于20ms为异常
      */
     int TERMINAL_DETECT_DELAY_NORM = 20;
 
