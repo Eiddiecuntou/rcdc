@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +79,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             BeanCopier.create(TerminalSystemUpgradeTerminalEntity.class, CbbSystemUpgradeTaskTerminalDTO.class, false);
     
     private static final String TERMINAL_STATE_FIELD_NAME = "state";
-
+    
     @Autowired
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
 
@@ -300,7 +299,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // TODO request参数中的packageId可获取刷机包，解析平台类型，过滤终端
         setMatchEqualArr(request);
         Page<ViewUpgradeableTerminalEntity> terminalListPage =
-            queryUpgradeableTerminalListDAO.pageQuery(request, ViewUpgradeableTerminalEntity.class);
+                queryUpgradeableTerminalListDAO.pageQuery(request, ViewUpgradeableTerminalEntity.class);
         // 将列表转换为dto输出
         final int numberOfElements = terminalListPage.getNumberOfElements();
         final List<ViewUpgradeableTerminalEntity> taskList = terminalListPage.getContent();
@@ -311,22 +310,16 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             dtoArr[i] = dto;
         });
 
-        return DefaultPageResponse.Builder.success(terminalListPage.getSize(), (int) terminalListPage.getTotalElements(), dtoArr);
+        return DefaultPageResponse.Builder.success(terminalListPage.getSize(),
+                (int) terminalListPage.getTotalElements(), dtoArr);
     }
 
     private void setMatchEqualArr(PageSearchRequest request) {
         // 设置查询终端状态为在线
-        MatchEqual me = new MatchEqual();
-        me.setName(TERMINAL_STATE_FIELD_NAME);
-        me.setValueArr(new CbbTerminalStateEnums[] {CbbTerminalStateEnums.ONLINE});
-        MatchEqual[] matchEqualArr = request.getMatchEqualArr();
-        if (matchEqualArr == null || matchEqualArr.length == 0) {
-            matchEqualArr = new MatchEqual[] {me};
-        } else {
-            final List<MatchEqual> matchEqualList = new ArrayList<>(Arrays.asList(matchEqualArr));
-            matchEqualList.add(me);
-            matchEqualArr = matchEqualList.toArray(new MatchEqual[matchEqualList.size()]);
-        }
+        MatchEqual stateMe = new MatchEqual();
+        stateMe.setName(TERMINAL_STATE_FIELD_NAME);
+        stateMe.setValueArr(new CbbTerminalStateEnums[] {CbbTerminalStateEnums.ONLINE});
+        MatchEqual[] matchEqualArr = new MatchEqual[] {stateMe};
         request.setMatchEqualArr(matchEqualArr);
     }
 
