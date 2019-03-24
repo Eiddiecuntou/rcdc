@@ -86,8 +86,14 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     private boolean hasUpgradingTask(UUID upgradePackageId) {
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
             CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
-        final List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO
-                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = null;
+        if (upgradePackageId == null) {
+            upgradingTaskList = terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+        } else {
+            upgradingTaskList = terminalSystemUpgradeDAO
+                    .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
+        }
+
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
             LOGGER.info("不存在升级中的刷机任务");
             return false;

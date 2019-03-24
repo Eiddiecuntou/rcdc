@@ -18,16 +18,19 @@ import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbDeleteTerminalUpgradePackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradePackageIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckUploadingResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
@@ -45,6 +48,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeSe
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradePackageListService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
@@ -93,6 +97,36 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
         response.setHasLoading(SYS_UPGRADE_PACKAGE_UPLOADING.contains(request.getPlatform()));
         return response;
+    }
+    
+    @Override
+    public CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request)
+            throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+
+        boolean allowUpload = true;
+        List<String> errorList = Lists.newArrayList();
+        boolean hasRunningTask = terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+        if (hasRunningTask) {
+            LOGGER.debug("system upgrade task is running");
+            allowUpload = false;
+            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING,
+                    new String[] {}));
+        }
+
+        // 判断磁盘大小是否满足
+        final boolean isEnough = checkPackageDiskSpaceIsEnough(request.getFileSize());
+        if (!isEnough) {
+            allowUpload = false;
+            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH,
+                    new String[] {}));
+        }
+
+        CbbCheckAllowUploadPackageResponse respone = new CbbCheckAllowUploadPackageResponse();
+        respone.setAllowUpload(allowUpload);
+        respone.setErrorList(errorList);
+
+        return respone;
     }
 
     @Override
@@ -195,6 +229,11 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         to = new File(toPath);
         File from = new File(filePath);
 
+        // 再次校验磁盘空间是否足够
+        final boolean isEnough = checkPackageDiskSpaceIsEnough(from.length());
+        if (!isEnough) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH);
+        }
         try {
             Files.move(from, to);
         } catch (Exception e) {
@@ -205,6 +244,21 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         LOGGER.info("完成移动刷机包");
 
         return toPath;
+    }
+    
+    /**
+     * 检验磁盘空间是否满足升级包上传
+     * @param fileSize 文件大小
+     * @return 磁盘空间是否足够
+     */
+    private boolean checkPackageDiskSpaceIsEnough(Long fileSize) {
+        File packageDir = new File(Constants.TERMINAL_UPGRADE_PACKAGE_PATH); 
+        final long usableSpace = packageDir.getUsableSpace();
+        if (usableSpace >= fileSize) {
+            return true;
+        }
+        
+        return false;
     }
 
     private boolean checkFileType(String fileName) {
@@ -392,5 +446,5 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
                 terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getPackageId());
         return new CbbUpgradePackageNameResponse(systemUpgradePackage.getPackageName());
     }
-    
+
 }

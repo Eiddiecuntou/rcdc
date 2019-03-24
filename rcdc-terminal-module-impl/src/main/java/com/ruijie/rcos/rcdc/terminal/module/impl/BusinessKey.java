@@ -115,6 +115,11 @@ public interface BusinessKey {
             "rcdc_terminal_system_upgrade_package_file_operate_fail";
     
     /**
+     * 系统刷机包磁盘空间不足
+     */
+    String RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH = "rcdc_terminal_upgrade_package_disk_space_not_enough";
+    
+    /**
      * 存在进行中的升级任务，不允许删除
      */
     String RCDC_TERMINAL_UPGRADE_PACKAGE_HAS_RUNNING_TASK_NOT_ALLOW_DELETE = "rcdc_terminal_upgrade_package_has_running_task_not_allow_delete";

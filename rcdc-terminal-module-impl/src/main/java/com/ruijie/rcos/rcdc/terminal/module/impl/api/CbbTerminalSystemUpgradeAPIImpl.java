@@ -396,15 +396,21 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         final TerminalSystemUpgradeTerminalEntity upgradeTerminal =
                 checkUpgradeTerminalExist(upgradeTaskId, terminalId);
         
-        if (upgradeTerminal.getState() != CbbSystemUpgradeStateEnums.FAIL) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_RETRY, terminalId);
-        }
+        checkRetryIsAllowed(upgradeTerminal);
         
         doUpgradeRetry(upgradeTerminal);
         
         CbbTerminalNameResponse response = new CbbTerminalNameResponse();
         response.setTerminalName(basicInfoDAO.getTerminalNameByTerminalId(terminalId));
         return response;
+    }
+
+    private void checkRetryIsAllowed(final TerminalSystemUpgradeTerminalEntity upgradeTerminal)
+            throws BusinessException {
+        final CbbSystemUpgradeStateEnums state = upgradeTerminal.getState();
+        if (state != CbbSystemUpgradeStateEnums.FAIL && state != CbbSystemUpgradeStateEnums.UNDO) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_RETRY, upgradeTerminal.getTerminalId());
+        }
     }
 
     private void doUpgradeRetry(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {
