@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
+import com.google.common.collect.ImmutableMap;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
@@ -21,15 +21,16 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateE
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCancelUpgradeTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbDeleteTerminalUpgradePackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbGetTaskUpgradeTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbGetUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRetryUpgradeTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradePackageIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
@@ -41,10 +42,12 @@ import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalIdMapping
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask.TerminalUpgradeBatchTaskItem;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.AppendTerminalSystemUpgradeWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CancelTerminalSystemUpgradeWebRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CheckPackageAllowUploadWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CloseSystemUpgradeTaskWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CreateTerminalSystemUpgradeWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.DeleteTerminalUpgradePackageWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.RetryTerminalSystemUpgradeWebRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.response.CheckAllowUploadUpgradePackageWebResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.CreateSystemUpgradeTaskContentVO;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.UpgradeTerminalListContentVO;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
@@ -60,6 +63,7 @@ import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
 import com.ruijie.rcos.sk.webmvc.api.request.ChunkUploadFile;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
+import com.ruijie.rcos.sk.webmvc.api.response.WebResponse.Status;
 
 /**
  * 
@@ -131,6 +135,32 @@ public class TerminalSystemUpgradeController {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FILE_NAME_LENGTH_EXCEED,
                     String.valueOf(SYSTEM_UPGRADE_PACKAGE_NAME_MAX_LENGTH));
         }
+    }
+    
+    /**
+     * 上传系统升级文件
+     * 
+     * @param request 请求参数
+     * @return 请求响应
+     * @throws BusinessException 业务异常
+     */
+    @RequestMapping(value = "/package/checkAllowUpload")
+    public CheckAllowUploadUpgradePackageWebResponse checkAllowUploadPackage(CheckPackageAllowUploadWebRequest request)
+            throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+
+        CbbCheckAllowUploadPackageRequest checkRequest = new CbbCheckAllowUploadPackageRequest(request.getFileSize());
+        CbbCheckAllowUploadPackageResponse response =
+                cbbTerminalUpgradePackageAPI.checkAllowUploadPackage(checkRequest);
+
+        CheckAllowUploadUpgradePackageWebResponse webResponse = new CheckAllowUploadUpgradePackageWebResponse();
+        if (response.getAllowUpload()) {
+            webResponse.setStatus(Status.SUCCESS);
+            return webResponse;
+        }
+        webResponse.setStatus(Status.ERROR);
+        webResponse.setContent(ImmutableMap.of("errorArr", response.getErrorList()));
+        return webResponse;
     }
 
     /**
@@ -432,11 +462,7 @@ public class TerminalSystemUpgradeController {
         Assert.notNull(builder, "builder can not be null");
 
         final UUID upgradeTaskId = request.getUpgradeTaskId();
-        String[] terminalIdArr = request.getIsCancelAll() ? getAllWaitUpgradeTerminalByTaskId(upgradeTaskId)
-                : request.getTerminalIdArr();
-        if (terminalIdArr == null || terminalIdArr.length == 0) {
-            throw new BusinessException(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_NONE);
-        }
+        String[] terminalIdArr = request.getTerminalIdArr();
 
         if (terminalIdArr.length == 1) {
             return cancelSingleUpgradeTerminal(terminalIdArr[0], upgradeTaskId, optLogRecorder);
@@ -475,10 +501,6 @@ public class TerminalSystemUpgradeController {
         }
     }
 
-    private String[] getAllWaitUpgradeTerminalByTaskId(UUID upgradeTaskId) {
-        return getUpgradeTerminalByTaskId(upgradeTaskId, CbbSystemUpgradeStateEnums.WAIT);
-    }
-
     /**
      * 重试（失败的升级终端）
      * 
@@ -496,11 +518,7 @@ public class TerminalSystemUpgradeController {
         Assert.notNull(builder, "builder can not be null");
 
         final UUID upgradeTaskId = request.getUpgradeTaskId();
-        String[] terminalIdArr =
-                request.getIsRetryAll() ? getAllFailUpgradeTerminalByTaskId(upgradeTaskId) : request.getTerminalIdArr();
-        if (terminalIdArr == null || terminalIdArr.length == 0) {
-            throw new BusinessException(BusinessKey.RCDC_RETRY_UPGRADE_TERMINAL_NONE);
-        }
+        String[] terminalIdArr = request.getTerminalIdArr();
 
         if (terminalIdArr.length == 1) {
             return retrySingleUpgradeTerminal(terminalIdArr[0], upgradeTaskId, optLogRecorder);
@@ -535,23 +553,6 @@ public class TerminalSystemUpgradeController {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_RETRY_UPGRADE_TERMINAL_FAIL_LOG, terminalId, e.getI18nMessage());
             return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_RETRY_UPGRADE_TERMINAL_FAIL, new String[] {});
         }
-    }
-
-    private String[] getAllFailUpgradeTerminalByTaskId(UUID upgradeTaskId) {
-        return getUpgradeTerminalByTaskId(upgradeTaskId, CbbSystemUpgradeStateEnums.FAIL);
-    }
-
-    private String[] getUpgradeTerminalByTaskId(UUID upgradeTaskId, CbbSystemUpgradeStateEnums state) {
-        CbbGetTaskUpgradeTerminalRequest request = new CbbGetTaskUpgradeTerminalRequest();
-        request.setUpgradeTaskId(upgradeTaskId);
-        request.setTerminalState(state);
-        final List<CbbSystemUpgradeTaskTerminalDTO> upgradeTerminalList =
-                cbbTerminalUpgradeAPI.getUpgradeTerminalByTaskId(request).getUpgradeTerminalList();
-        String[] terminaIdArr = new String[upgradeTerminalList.size()];
-        Stream.iterate(0, i -> i + 1).limit(upgradeTerminalList.size()).forEach(i -> {
-            terminaIdArr[i] = upgradeTerminalList.get(i).getTerminalId();
-        });
-        return terminaIdArr;
     }
 
     /**

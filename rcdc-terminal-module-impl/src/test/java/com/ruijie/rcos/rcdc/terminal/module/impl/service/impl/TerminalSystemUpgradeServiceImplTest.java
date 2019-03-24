@@ -176,8 +176,7 @@ public class TerminalSystemUpgradeServiceImplTest {
     public void testHasSystemUpgradeInProgressIsFalse() {
         new Expectations() {
             {
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = new ArrayList<>();
             }
         };
@@ -185,8 +184,7 @@ public class TerminalSystemUpgradeServiceImplTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
             }
         };
@@ -202,8 +200,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         upgradingTaskList.add(upgradeEntity);
         new Expectations() {
             {
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(null,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradingTaskList;
             }
         };
@@ -211,8 +208,7 @@ public class TerminalSystemUpgradeServiceImplTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(null,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
             }
         };

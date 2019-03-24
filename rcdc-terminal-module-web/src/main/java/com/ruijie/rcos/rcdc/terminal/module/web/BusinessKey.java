@@ -152,12 +152,6 @@ public interface BusinessKey {
     String RCDC_CANCEL_UPGRADE_TERMINAL_FAIL = "rcdc_cancel_upgrade_terminal_fail";
     
     /**
-     * 不存在可取消的升级终端
-     */
-    String RCDC_CANCEL_UPGRADE_TERMINAL_NONE = "rcdc_cancel_upgrade_terminal_none";
-    
-    
-    /**
      * 批量重试终端升级任务项名称
      */
     String RCDC_RETRY_UPGRADE_TERMINAL_ITEM_NAME = "rcdc_retry_upgrade_terminal_item_name";
@@ -207,11 +201,6 @@ public interface BusinessKey {
      * 重试终端系统升级失败（单条）
      */
     String RCDC_RETRY_UPGRADE_TERMINAL_FAIL = "rcdc_retry_upgrade_terminal_fail";
-    
-    /**
-     * 不存在可重试的升级终端
-     */
-    String RCDC_RETRY_UPGRADE_TERMINAL_NONE = "rcdc_retry_upgrade_terminal_none";
     
     /** 关闭终端升级包[{0}]升级任务成功 */
     String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_SUCCESS = "rcdc_upgrade_terminal_task_close_success";

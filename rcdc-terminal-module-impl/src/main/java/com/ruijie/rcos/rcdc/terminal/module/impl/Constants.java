@@ -55,6 +55,11 @@ public interface Constants {
     String RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY = "rcdc_server_ip";
 
     /**
+     * 存在终端系统刷机包的根路径
+     */
+    String TERMINAL_UPGRADE_PACKAGE_PATH = "/opt/upgrade/";
+    
+    /**
      * 存放终端系统vdi刷机包路径
      */
     String TERMINAL_UPGRADE_ISO_PATH_VDI = "/opt/upgrade/linux_vdi/";
