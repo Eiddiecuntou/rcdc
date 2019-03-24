@@ -52,4 +52,12 @@ public interface TerminalSystemUpgradePackageService {
      */
     TerminalSystemUpgradePackageEntity getSystemUpgradePackage(UUID upgradePackageId) throws BusinessException;
 
+    /**
+     * 软删除终端升级包
+     * 
+     * @param packageId 终端升级包id
+     * @throws BusinessException 业务异常
+     */
+    void deleteSoft(UUID packageId) throws BusinessException;
+
 }

@@ -1,9 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.util.Date;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -14,15 +16,15 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-
-import java.util.Date;
 
 /**
  * Description: Function Description
@@ -173,16 +175,43 @@ public class TerminalBasicInfoServiceImplTest {
             assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
     }
-
+    
     /**
      * 测试modifyTerminalState，参数为空
      * @throws Exception 异常
      */
     @Test
     public void testModifyTerminalStateArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalStateToOffline(""),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalState("", CbbTerminalStateEnums.ONLINE),
                 "terminalId 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalState("s", null),
+                "state 不能为空");
         assertTrue(true);
+    }
+    
+    /**
+     * 测试modifyTerminalState，修改失败
+     */
+    @Test
+    public void testModifyTerminalStateIsFail() {
+        String terminalId = "123";
+        TerminalEntity basicInfoEntity = null;
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = basicInfoEntity;
+            }
+        };
+        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.ONLINE);
+        
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 4;
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.ONLINE, (Date) any,terminalId, anyInt);
+                times = 0;
+            }
+        };
     }
     
     /**
@@ -190,6 +219,71 @@ public class TerminalBasicInfoServiceImplTest {
      */
     @Test
     public void testModifyTerminalStateIsSuccess() {
+        String terminalId = "123";
+        TerminalEntity basicInfoEntity = new TerminalEntity();
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = basicInfoEntity;
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.ONLINE, (Date) any,anyString, anyInt);
+                result = 1;
+            }
+        };
+        basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.ONLINE);
+        
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 1;
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.ONLINE, (Date) any,terminalId, anyInt);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试modifyTerminalStateToOffline，参数为空
+     * @throws Exception 异常
+     */
+    @Test
+    public void testModifyTerminalStateToOfflineArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalStateToOffline(""),
+                "terminalId 不能为空");
+        assertTrue(true);
+    }
+    
+
+    /**
+     * 测试modifyTerminalStateToOffline，升级中状态
+     */
+    @Test
+    public void testModifyTerminalStateToOfflineIsUploading() {
+        String terminalId = "123";
+        TerminalEntity basicInfoEntity = new TerminalEntity();
+        basicInfoEntity.setState(CbbTerminalStateEnums.UPGRADING);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = basicInfoEntity;
+            }
+        };
+        basicInfoService.modifyTerminalStateToOffline(terminalId);
+        
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 1;
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, anyInt);
+                times = 0;
+            }
+        };
+    }
+    
+    /**
+     * 测试modifyTerminalStateToOffline，一次修改成功
+     */
+    @Test
+    public void testModifyTerminalStateToOfflineIsSuccess() {
         String terminalId = "123";
         TerminalEntity basicInfoEntity = new TerminalEntity();
         new Expectations() {
@@ -213,10 +307,10 @@ public class TerminalBasicInfoServiceImplTest {
     }
     
     /**
-     * 测试modifyTerminalState，修改失败
+     * 测试modifyTerminalStateToOffline，修改失败
      */
     @Test
-    public void testModifyTerminalStateIsFail() {
+    public void testModifyTerminalStateToOfflineIsFail() {
         String terminalId = "123";
         TerminalEntity basicInfoEntity = new TerminalEntity();
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
@@ -240,5 +334,46 @@ public class TerminalBasicInfoServiceImplTest {
         };
     }
 
+    /**
+     * 测试isTerminalOnline，参数为空
+     * @throws Exception 异常
+     */
+    @Test
+    public void testIsTerminalOnlineArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.isTerminalOnline(""),
+                "terminalId can not empty");
+        assertTrue(true);
+    }
+    
+    /**
+     * 测试isTerminalOnline，离线
+     */
+    @Test
+    public void testIsTerminalOnlineIsOffLine() {
+        Session session = null;
+        
+        new Expectations() {
+            {
+                sessionManager.getSession("123");
+                result = session;
+            }
+        };
+        assertFalse(basicInfoService.isTerminalOnline("123"));
+    }
+    
+    /**
+     * 测试isTerminalOnline，在线
+     * @param session mock对象
+     */
+    @Test
+    public void testIsTerminalOnlineIsOnLine(@Mocked Session session) {
+        new Expectations() {
+            {
+                sessionManager.getSession("123");
+                result = session;
+            }
+        };
+        assertTrue(basicInfoService.isTerminalOnline("123"));
+    }
 }
 

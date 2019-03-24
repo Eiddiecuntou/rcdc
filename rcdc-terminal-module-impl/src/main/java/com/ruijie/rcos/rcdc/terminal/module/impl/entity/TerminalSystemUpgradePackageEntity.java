@@ -45,6 +45,7 @@ public class TerminalSystemUpgradePackageEntity {
 
     @Version
     private int version;
+    
 
     @Enumerated(EnumType.STRING)
     private SystemUpgradePackageOriginEnums origin;
@@ -52,6 +53,7 @@ public class TerminalSystemUpgradePackageEntity {
     @Enumerated(EnumType.STRING)
     private SystemUpgradeDistributionModeEnums distributionMode;
 
+    private Boolean isDelete;
 
     public UUID getId() {
         return id;
@@ -149,6 +151,14 @@ public class TerminalSystemUpgradePackageEntity {
 
     public void setDistributionMode(SystemUpgradeDistributionModeEnums distributionMode) {
         this.distributionMode = distributionMode;
+    }
+
+    public Boolean getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Boolean isDelete) {
+        this.isDelete = isDelete;
     }
 
 }

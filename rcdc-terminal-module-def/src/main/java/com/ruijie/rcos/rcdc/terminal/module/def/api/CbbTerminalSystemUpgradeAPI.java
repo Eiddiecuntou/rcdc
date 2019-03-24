@@ -5,9 +5,15 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerm
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCancelUpgradeTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbGetTaskUpgradeTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbGetUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRetryUpgradeTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.AddSystemUpgradeTaskResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTaskUpgradeTerminalResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
@@ -33,7 +39,8 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    AddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException;
+    CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request)
+            throws BusinessException;
 
     /**
      * 
@@ -66,8 +73,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 刷机终端列表
      */
     @NoRollback
-    DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> listSystemUpgradeTaskTerminal(
-            PageSearchRequest request);
+    DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> listSystemUpgradeTaskTerminal(PageSearchRequest request);
 
     /**
      * 关闭刷机任务
@@ -81,11 +87,51 @@ public interface CbbTerminalSystemUpgradeAPI {
 
     /**
      * 终端可刷机的列表
+     * 
      * @param apiRequest 请求参数
      * @return 终端列表
      */
     @NoRollback
     DefaultPageResponse<TerminalListDTO> listUpgradeableTerminal(PageSearchRequest apiRequest);
 
+    /**
+     * 获取刷机任务终端列表
+     * 
+     * @param request 请求参数
+     * @return 刷机终端信息列表
+     */
+    @NoRollback
+    CbbGetTaskUpgradeTerminalResponse getUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalRequest request);
+
+    /**
+     * 取消刷机终端
+     * 
+     * @param request 请求参数
+     * @return 请求结果
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbTerminalNameResponse cancelUpgradeTerminal(CbbCancelUpgradeTerminalRequest request) throws BusinessException;
+
+    /**
+     * 重试终端刷机
+     * 
+     * @param request 请求参数
+     * @return 请求结果
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbTerminalNameResponse retryUpgradeTerminal(CbbRetryUpgradeTerminalRequest request) throws BusinessException;
+
+    /**
+     * 获取终端刷机任务信息
+     * 
+     * @param request 请求参数
+     * @return 请求结果
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(CbbGetUpgradeTaskRequest request)
+            throws BusinessException;
 
 }

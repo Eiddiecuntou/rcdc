@@ -44,9 +44,6 @@ public class SystemUpgradeQuartzHandler implements Runnable {
 
     @Autowired
     private SystemUpgradeStateSynctHandler stateSyncHandler;
-
-    @Autowired
-    private SystemUpgradeTimeoutHandler timeoutHandler;
     
     @Autowired
     private SystemUpgradeStartConfirmHandler confirmHandler;
@@ -70,7 +67,7 @@ public class SystemUpgradeQuartzHandler implements Runnable {
      */
     private void dealAllUpgradingTask() throws BusinessException {
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-            CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+            CbbSystemUpgradeTaskStateEnums.UPGRADING});
         List<TerminalSystemUpgradeEntity> upgradeTaskList =
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
         if (CollectionUtils.isEmpty(upgradeTaskList)) {
@@ -83,9 +80,9 @@ public class SystemUpgradeQuartzHandler implements Runnable {
                     systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
             if (CollectionUtils.isEmpty(upgradeTerminalList)) {
                 LOGGER.debug("刷机任务无刷机终端，关闭刷机任务");
-                // 设置刷机任务为完成状态
-                systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(),
-                        CbbSystemUpgradeTaskStateEnums.FINISH);
+                // 设置刷机任务为关闭状态
+                upgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+                systemUpgradeService.modifySystemUpgradeState(upgradeTask);
                 continue;
             }
 
@@ -98,37 +95,37 @@ public class SystemUpgradeQuartzHandler implements Runnable {
         // 执行刷机终端处理
         confirmHandler.execute(upgradeTerminalList);
         stateSyncHandler.execute(upgradeTerminalList);
-        timeoutHandler.execute(upgradeTerminalList);
         startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());
 
-        // 判断刷机终端是否全部处于最终态，是则将刷机任务设为完成状态
-        checkUpgradeTaskFinish(upgradeTask);
+        // 判断刷机终端是否全部为成功状态，是则将刷机任务设为完成状态
+        checkUpgradeTaskSuccessFinish(upgradeTask);
     }
 
     /**
-     * 判断刷机任务是否全部处于最终态，是则将刷机任务设为完成状态
+     * 判断刷机任务是否全部处于成功状态，是则将刷机任务设为完成状态
      * 
      * @param upgradeTask 刷机任务
      * @param upgradeTerminalList 刷机终端列表
      * @throws BusinessException 业务异常
      */
-    private void checkUpgradeTaskFinish(TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
+    private void checkUpgradeTaskSuccessFinish(TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
         // 重新获取刷机终端列表，防止在定时任务执行过程中有刷机终端追加进入任务
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList =
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
 
         for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : upgradeTerminalList) {
-            if (isProgressState(upgradeTerminal.getState())) {
-                LOGGER.debug("存在非最终态的刷机终端，刷机任务未完成");
+            if (isUnsuccessState(upgradeTerminal.getState())) {
+                LOGGER.debug("存在非成功状态的刷机终端，刷机任务继续进行");
                 return;
             }
         }
-
-        systemUpgradeService.modifySystemUpgradeState(upgradeTask.getId(), CbbSystemUpgradeTaskStateEnums.FINISH);
+        LOGGER.debug("刷机终端的状态均为成功状态，刷机任务自动完成");
+        upgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+        systemUpgradeService.modifySystemUpgradeState(upgradeTask);
     }
 
-    private boolean isProgressState(CbbSystemUpgradeStateEnums state) {
-        return state == CbbSystemUpgradeStateEnums.WAIT || state == CbbSystemUpgradeStateEnums.UPGRADING;
+    private boolean isUnsuccessState(CbbSystemUpgradeStateEnums state) {
+        return state != CbbSystemUpgradeStateEnums.SUCCESS;
     }
 
 

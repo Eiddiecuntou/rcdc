@@ -40,7 +40,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
-    
+
     @Override
     public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr) {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
@@ -96,29 +96,42 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
         final TerminalSystemUpgradeEntity systemUpgradeTask = getSystemUpgradeTask(upgradeTaskId);
         
+        if (systemUpgradeTask.getState() != CbbSystemUpgradeTaskStateEnums.UPGRADING) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_HAS_CLOSED);
+        }
+
         // 关闭未开始的刷机终端
         final List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList = systemUpgradeTerminalDAO
                 .findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.WAIT);
         for (TerminalSystemUpgradeTerminalEntity waitUpgradeTerminal : waitUpgradeTerminalList) {
             closeWaitTerminal(waitUpgradeTerminal);
         }
-
-        // 将进行中的刷机任务设置为关闭中状态
-        if (systemUpgradeTask.getState() == CbbSystemUpgradeTaskStateEnums.UPGRADING) {
-            systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
-            systemUpgradeDAO.save(systemUpgradeTask);
+        // 将升级中的终端设置为失败
+        final List<TerminalSystemUpgradeTerminalEntity> upgradingTerminalList = systemUpgradeTerminalDAO
+                .findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.UPGRADING);
+        for (TerminalSystemUpgradeTerminalEntity upgradingTerminal : upgradingTerminalList) {
+            setUpgradingTerminalToFail(upgradingTerminal);
         }
+
+        systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+        systemUpgradeDAO.save(systemUpgradeTask);
+    }
+
+    private void setUpgradingTerminalToFail(TerminalSystemUpgradeTerminalEntity upgradingTerminal) throws BusinessException {
+        upgradingTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
+        modifySystemUpgradeTerminalState(upgradingTerminal);
     }
 
     /**
      * 获取刷机任务记录
+     * 
      * @param upgradeTaskId 刷机任务id
      * @return 刷机任务id
      * @throws BusinessException 业务异常
      */
     private TerminalSystemUpgradeEntity getSystemUpgradeTask(UUID upgradeTaskId) throws BusinessException {
         Optional<TerminalSystemUpgradeEntity> systemUpgradeOpt = systemUpgradeDAO.findById(upgradeTaskId);
-        final TerminalSystemUpgradeEntity upgradeTask = systemUpgradeOpt.orElseGet(null);
+        final TerminalSystemUpgradeEntity upgradeTask = systemUpgradeOpt.orElse(null);
         if (upgradeTask == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_NOT_EXIST);
         }
@@ -132,37 +145,43 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
      * @throws BusinessException 业务异常
      */
     private void closeWaitTerminal(TerminalSystemUpgradeTerminalEntity waitUpgradeTerminal) throws BusinessException {
-        modifySystemUpgradeTerminalState(waitUpgradeTerminal.getSysUpgradeId(), waitUpgradeTerminal.getTerminalId(),
-                CbbSystemUpgradeStateEnums.UNDO);
+        waitUpgradeTerminal.setState(CbbSystemUpgradeStateEnums.UNDO);
+        modifySystemUpgradeTerminalState(waitUpgradeTerminal);
     }
 
     @Override
-    public void modifySystemUpgradeTerminalState(UUID upgradeTaskId, String terminalId,
-            CbbSystemUpgradeStateEnums state) throws BusinessException {
-        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be blank");
-        Assert.hasText(terminalId, "terminalId can not be blank");
-        Assert.notNull(state, "state can not be blank");
-
-        final TerminalSystemUpgradeTerminalEntity upgradeTerminal = getUpgradeTerminalEntity(upgradeTaskId, terminalId);
-        upgradeTerminal.setState(state);
-        systemUpgradeTerminalDAO.save(upgradeTerminal);
-        
-        syncTerminalState(upgradeTerminal);
-    }
-    
-    
-    
-    @Override
-    public void startTerminalUpgrade(UUID upgradeTaskId, String terminalId) throws BusinessException {
+    public void modifySystemUpgradeTerminalState(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {
+        Assert.notNull(upgradeTerminal, "upgradeTerminal can not be null");
+        final UUID upgradeTaskId = upgradeTerminal.getSysUpgradeId();
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+        final String terminalId = upgradeTerminal.getTerminalId();
+        Assert.hasText(terminalId, "terminalId can not be blank");
+        final CbbSystemUpgradeStateEnums state = upgradeTerminal.getState();
+        Assert.notNull(state, "state can not be null");
+
+        final TerminalSystemUpgradeTerminalEntity saveEntity = getUpgradeTerminalEntity(upgradeTaskId, terminalId);
+        saveEntity.setState(state);
+        systemUpgradeTerminalDAO.save(saveEntity);
+
+        syncTerminalState(saveEntity);
+    }
+
+
+
+    @Override
+    public void startTerminalUpgrade(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {
+        Assert.notNull(upgradeTerminal, "upgradeTerminal can not be null");
+        final UUID upgradeTaskId = upgradeTerminal.getSysUpgradeId();
+        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+        final String terminalId = upgradeTerminal.getTerminalId();
         Assert.hasText(terminalId, "terminalId can not be null");
-        
-        final TerminalSystemUpgradeTerminalEntity upgradeTerminal = getUpgradeTerminalEntity(upgradeTaskId, terminalId);
-        upgradeTerminal.setStartTime(new Date());
-        upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UPGRADING);
-        systemUpgradeTerminalDAO.save(upgradeTerminal);
-        
-        syncTerminalState(upgradeTerminal);
+
+        final TerminalSystemUpgradeTerminalEntity saveEntity = getUpgradeTerminalEntity(upgradeTaskId, terminalId);
+        saveEntity.setStartTime(new Date());
+        saveEntity.setState(CbbSystemUpgradeStateEnums.UPGRADING);
+        systemUpgradeTerminalDAO.save(saveEntity);
+
+        syncTerminalState(saveEntity);
     }
 
     /**
@@ -186,9 +205,15 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
                 break;
         }
 
-        if (terminalState != null) {
-            basicInfoService.modifyTerminalState(upgradeTerminal.getTerminalId(), terminalState);
+        if (terminalState == null) {
+            return;
         }
+
+        boolean isTerminalOnline = basicInfoService.isTerminalOnline(upgradeTerminal.getTerminalId());
+        if (terminalState == CbbTerminalStateEnums.OFFLINE && isTerminalOnline) {
+            return;
+        }
+        basicInfoService.modifyTerminalState(upgradeTerminal.getTerminalId(), terminalState);
     }
 
     private TerminalSystemUpgradeTerminalEntity getUpgradeTerminalEntity(UUID upgradeTaskId, String terminalId)
@@ -202,6 +227,6 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         return upgradeTerminal;
     }
 
-    
+
 
 }

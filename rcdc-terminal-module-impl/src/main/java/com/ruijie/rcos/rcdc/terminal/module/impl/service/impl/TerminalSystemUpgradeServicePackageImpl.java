@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -69,6 +70,7 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         upgradePackage.setPackageVersion(versionInfo.getVersion());
         upgradePackage.setUploadTime(new Date());
         upgradePackage.setFilePath(versionInfo.getFilePath());
+        upgradePackage.setIsDelete(false);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
     public List<TerminalSystemUpgradeInfo> readSystemUpgradeStartStateFromFile() throws BusinessException {
         return getStatusFromFile(Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH, CbbSystemUpgradeStateEnums.UPGRADING);
     }
-
+    
     private List<TerminalSystemUpgradeInfo> getStatusFromFile(String fileDir, CbbSystemUpgradeStateEnums state)
             throws BusinessException {
         // 读取升级成功文件夹，通过文件名称获取mac即终端id
@@ -111,7 +113,30 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
 
         return fileName.substring(0, index);
     }
+    
+    @Override
+    public void deleteSoft(UUID packageId) throws BusinessException {
+        Assert.notNull(packageId, "packageId can not be null");
+        
+        final TerminalSystemUpgradePackageEntity systemUpgradePackage = getSystemUpgradePackage(packageId);
+        systemUpgradePackage.setIsDelete(true);
+        termianlSystemUpgradePackageDAO.save(systemUpgradePackage);
+        
+        //删除升级包文件
+        deletePackageFile(systemUpgradePackage.getFilePath());
+    }
 
+    private void deletePackageFile(String filePath) {
+        if (StringUtils.isBlank(filePath)) {
+            LOGGER.error("升级包文件路径不存在，文件路径：{}", filePath);
+            return;
+        }
+        File file = new File(filePath);
+        if (file.isFile()) {
+            file.delete();
+        }
+    }
+    
     @Override
     public TerminalSystemUpgradePackageEntity getSystemUpgradePackage(UUID upgradePackageId) throws BusinessException {
         Assert.notNull(upgradePackageId, "upgradePackage");
@@ -124,5 +149,6 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         }
         return upgradePackageOpt.get();
     }
+
 
 }

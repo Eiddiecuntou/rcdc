@@ -11,7 +11,7 @@ import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.DetectPageWebReques
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.EditAdminPwdWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.StartBatDetectWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalIdArrWebRequest;
-import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalIdDownLoadWebRequest;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalLogDownLoadWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalIdWebRequest;
 import com.ruijie.rcos.sk.base.test.GetSetTester;
 import mockit.integration.junit4.JMockit;
@@ -108,7 +108,7 @@ public class RequestBeanTest {
      */
     @Test
     public void testTerminalIdDownLoadWebRequest() {
-        GetSetTester tester = new GetSetTester(TerminalIdDownLoadWebRequest.class);
+        GetSetTester tester = new GetSetTester(TerminalLogDownLoadWebRequest.class);
         tester.runTest();
         assertTrue(true);
     }

@@ -95,8 +95,8 @@ public class SystemUpgradeStartConfirmHandler {
             final boolean isTimeout =
                     TerminalDateUtil.isTimeout(noStartInfoTerminal.getStartTime(), START_CONFIRM_TIME_OUT);
             if (isTimeout) {
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState(noStartInfoTerminal.getSysUpgradeId(),
-                        noStartInfoTerminal.getTerminalId(), CbbSystemUpgradeStateEnums.FAIL);
+                noStartInfoTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
+                systemUpgradeServiceTx.modifySystemUpgradeTerminalState(noStartInfoTerminal);
                 count++;
             }
         }

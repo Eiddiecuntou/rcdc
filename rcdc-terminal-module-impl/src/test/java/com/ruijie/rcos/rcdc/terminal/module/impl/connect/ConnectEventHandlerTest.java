@@ -167,6 +167,130 @@ public class ConnectEventHandlerTest {
             fail();
         }
     }
+    
+    /**
+     * 测试OnReceive，心跳报文
+     * 
+     * @param session session连接
+     * @throws InterruptedException 异常
+     */
+    @Test
+    public void testOnReceiveHeartBeat(@Mocked Session session) throws InterruptedException {
+        String action = ShineAction.HEARTBEAT;
+        BaseMessage baseMessage = new BaseMessage(action, null);
+
+        connectEventHandler.onReceive(sender, baseMessage);
+        Thread.sleep(1000);
+        new Verifications() {
+            {
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
+                times = 0;
+            }
+        };
+    }
+    
+    /**
+     * 测试OnReceive，同步服务器时间报文
+     * 
+     * @param session session连接
+     * @throws InterruptedException 异常
+     */
+    @Test
+    public void testOnReceiveSyncServerTime(@Mocked Session session) throws InterruptedException {
+        String action = ShineAction.SYNC_SERVER_TIME;
+        BaseMessage baseMessage = new BaseMessage(action, null);
+        
+        connectEventHandler.onReceive(sender, baseMessage);
+        Thread.sleep(1000);
+        new Verifications() {
+            {
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
+                times = 0;
+            }
+        };
+    }
+    
+    /**
+     * 测试OnReceive，终端未绑定session
+     * 
+     * @param session session连接
+     * @throws InterruptedException 异常
+     */
+    @Test
+    public void testOnReceiveNoBindSession(@Mocked Session session) throws InterruptedException {
+        new Expectations() {
+            {
+                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
+                result = null;
+            }
+        };
+        String action = ShineAction.TERMINAL_DETECT;
+        BaseMessage baseMessage = new BaseMessage(action, "");
+        
+        connectEventHandler.onReceive(sender, baseMessage);
+        Thread.sleep(1000);
+        new Verifications() {
+            {
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
+                times = 0;
+            }
+        };
+    }
+    
+    /**
+     * 测试OnReceive，绑定session时，数据格式错误
+     * 
+     * @param session session连接
+     * @throws InterruptedException 异常
+     */
+    @Test
+    public void testOnReceiveBindSessionDataFormatError(@Mocked Session session) throws InterruptedException {
+        String action = ShineAction.CHECK_UPGRADE;
+        BaseMessage baseMessage = new BaseMessage(action, "sdsd");
+        
+        connectEventHandler.onReceive(sender, baseMessage);
+        Thread.sleep(1000);
+        new Verifications() {
+            {
+                sessionManager.bindSession(anyString, session);
+                times = 0;
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
+                times = 0;
+            }
+        };
+    }
+    
+    /**
+     * 测试OnReceive，分发消息失败
+     * 
+     * @param session session连接
+     * @throws InterruptedException 异常
+     */
+    @Test
+    public void testOnReceiveDispatchMessageFail(@Mocked Session session) throws InterruptedException {
+        String terminalId = "01-1C-42-F1-2D-45";
+        TerminalInfo info = new TerminalInfo(terminalId, "172.21.12.3");
+        new Expectations() {
+            {
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
+                result = new IllegalArgumentException();
+                session.getAttribute(anyString);
+                result = info;
+            }
+        };
+        
+        String action = ShineAction.TERMINAL_DETECT;
+        BaseMessage baseMessage = new BaseMessage(action, null);
+        
+        connectEventHandler.onReceive(sender, baseMessage);
+        Thread.sleep(1000);
+        new Verifications() {
+            {
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
+                times = 1;
+            }
+        };
+    }
 
     /**
      * 测试连接成功-参数为空
@@ -226,6 +350,36 @@ public class ConnectEventHandlerTest {
             fail();
         }
 
+    }
+
+    /**
+     * 测试连接关闭,移除Session绑定失败
+     * 
+     * @param session session连接
+     * @throws InterruptedException 异常
+     */
+    @Test
+    public void testOnConnectClosedRemoveSessionFail(@Mocked Session session) throws InterruptedException {
+        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
+        new Expectations() {
+            {
+                sessionManager.removeSession(anyString, (Session) any);
+                result = false;
+                session.getAttribute(anyString);
+                result = info;
+            }
+        };
+
+        connectEventHandler.onConnectClosed(session);
+        Thread.sleep(1000);
+        new Verifications() {
+            {
+                sessionManager.removeSession(anyString, (Session) any);
+                times = 1;
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
+                times = 0;
+            }
+        };
     }
 
     /**

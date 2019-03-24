@@ -7,7 +7,6 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -45,10 +44,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
-    
+
     @Injectable
     private TerminalBasicInfoService basicInfoService;
-    
+
     @Injectable
     private TerminalBasicInfoServiceTx terminalBasicInfoServiceTx;
 
@@ -130,10 +129,43 @@ public class CbbTerminalBasicInfoAPIImplTest {
         }
     }
 
+    /**
+     * 测试删除终端失败,在线终端
+     * 
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testDeleteFail() throws BusinessException {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setVersion(1);
+        new Expectations() {
+            {
+                basicInfoService.isTerminalOnline("123");
+                result = true;
+            }
+        };
+
+        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+        request.setTerminalId("123");
+        try {
+            terminalBasicInfoAPI.delete(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, e.getKey());
+        }
+
+        new Verifications() {
+            {
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
+                times = 0;
+            }
+        };
+    }
 
     /**
-     * 测试删除终端失败
-     * @throws BusinessException 
+     * 测试删除终端
+     * 
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testDeleteSuccess() throws BusinessException {
@@ -163,7 +195,8 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     /**
      * 测试删除终端-数据不存在
-     * @throws BusinessException 
+     * 
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testDeleteNoExistData() throws BusinessException {
@@ -218,9 +251,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
         modifyNameVerifications();
     }
-    
+
     /**
      * 测试修改终端名称失败，TerminalEntity为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -246,31 +280,36 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试修改终端名称失败，ModifyTerminalName有BusinessException
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testModifyTerminalNameModifyTerminalNameHasBusinessException() throws BusinessException {
         new Expectations() {
             {
-                basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
-                result = 1;
                 basicInfoService.modifyTerminalName(anyString, anyString);
                 result = new BusinessException("key");
             }
         };
-        
+
         try {
             CbbTerminalNameRequest request = new CbbTerminalNameRequest();
             request.setTerminalId("123");
             terminalBasicInfoAPI.modifyTerminalName(request);
-        } catch (BusinessException e) {
             fail();
+        } catch (BusinessException e) {
+            assertEquals("key", e.getKey());
         }
-        
-        modifyNameVerifications();
+
+        new Verifications() {
+            {
+                basicInfoService.modifyTerminalName(anyString, anyString);
+                times = 1;
+            }
+        };
     }
 
     /**
@@ -365,9 +404,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试修改终端网络，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -376,9 +416,10 @@ public class CbbTerminalBasicInfoAPIImplTest {
                 "TerminalNetworkRequest不能为null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试修改终端网络失败
+     * 
      * @throws BusinessException 异常
      */
     @Test
