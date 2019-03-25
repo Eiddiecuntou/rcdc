@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.Expectations;
@@ -33,6 +35,9 @@ public class TerminalBasicInfoServiceTxImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
+    
+    @Injectable
+    private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
     
     /**
      * 测试deleteTerminal，参数为空
@@ -69,6 +74,8 @@ public class TerminalBasicInfoServiceTxImplTest {
                 times = 1;
                 detectionDAO.deleteByTerminalId("1");
                 times = 0;
+                systemUpgradeTerminalDAO.deleteByTerminalId("1");
+                times = 0;
             }
         };
     }
@@ -91,6 +98,8 @@ public class TerminalBasicInfoServiceTxImplTest {
                 basicInfoDAO.deleteByTerminalId("1");
                 times = 1;
                 detectionDAO.deleteByTerminalId("1");
+                times = 1;
+                systemUpgradeTerminalDAO.deleteByTerminalId("1");
                 times = 1;
             }
         };
