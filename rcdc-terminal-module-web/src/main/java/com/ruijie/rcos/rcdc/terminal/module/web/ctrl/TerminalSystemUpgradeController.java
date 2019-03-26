@@ -1,15 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.google.common.collect.ImmutableMap;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
@@ -20,6 +22,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCancelUpgradeTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
@@ -48,6 +51,7 @@ import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.CreateTerminalSyste
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.DeleteTerminalUpgradePackageWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.RetryTerminalSystemUpgradeWebRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.response.CheckAllowUploadUpgradePackageWebResponse;
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.CheckAllowUploadContentVO;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.CreateSystemUpgradeTaskContentVO;
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.vo.UpgradeTerminalListContentVO;
 import com.ruijie.rcos.sk.base.batch.BatchTaskBuilder;
@@ -90,6 +94,8 @@ public class TerminalSystemUpgradeController {
     private static final String SYSTEM_UPGRADE_UPGRADE_TASK_ID_FIELD_NAME = "upgradeTaskId";
 
     private static final String SYSTEM_UPGRADE_TERMINAL_UPGRADE_STATE_FIELD_NAME = "terminalUpgradeState";
+    
+    private static final String ERROR_MSG_SPERATOR = "，";
 
     @Autowired
     private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
@@ -126,7 +132,7 @@ public class TerminalSystemUpgradeController {
             LOGGER.error("upload terminal system package fail, file name is [{}]", file.getFileName(), ex);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
                     file.getFileName(), ex.getI18nMessage());
-            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL, new String[] {});
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL, new String[] {ex.getI18nMessage()});
         }
     }
 
@@ -154,12 +160,29 @@ public class TerminalSystemUpgradeController {
                 cbbTerminalUpgradePackageAPI.checkAllowUploadPackage(checkRequest);
 
         CheckAllowUploadUpgradePackageWebResponse webResponse = new CheckAllowUploadUpgradePackageWebResponse();
+        webResponse.setStatus(Status.SUCCESS);
         if (response.getAllowUpload()) {
-            webResponse.setStatus(Status.SUCCESS);
-            return webResponse;
+            return buildSuccessResponse(webResponse);
         }
-        webResponse.setStatus(Status.ERROR);
-        webResponse.setContent(ImmutableMap.of("errorArr", response.getErrorList()));
+        
+        return buildErrorResponse(response, webResponse);
+    }
+
+    private CheckAllowUploadUpgradePackageWebResponse buildSuccessResponse(
+            CheckAllowUploadUpgradePackageWebResponse webResponse) {
+        webResponse.setContent(new CheckAllowUploadContentVO(false, null));
+        return webResponse;
+    }
+
+    private CheckAllowUploadUpgradePackageWebResponse buildErrorResponse(CbbCheckAllowUploadPackageResponse response,
+            CheckAllowUploadUpgradePackageWebResponse webResponse) {
+        final List<String> errorList = response.getErrorList();
+        String errorMsg = "";
+        if (!CollectionUtils.isEmpty(errorList)) {
+            errorMsg = LocaleI18nResolver.resolve(BusinessKey.RCDC_PACKAGE_UPLOAD_NOT_ALLOWED, new String[] {})
+                    + StringUtils.join(errorList, ERROR_MSG_SPERATOR);
+        }
+        webResponse.setContent(new CheckAllowUploadContentVO(true, errorMsg));
         return webResponse;
     }
 
@@ -202,33 +225,22 @@ public class TerminalSystemUpgradeController {
     }
 
     private DefaultWebResponse deleteSingleUpgradePackage(UUID packageId, ProgrammaticOptLogRecorder optLogRecorder) {
+        String packageName = packageId.toString();
         try {
+            packageName = getPackageName(packageId);
             CbbDeleteTerminalUpgradePackageRequest deleteRequest =
                     new CbbDeleteTerminalUpgradePackageRequest(packageId);
-            final CbbUpgradePackageNameResponse response =
-                    cbbTerminalUpgradePackageAPI.deleteUpgradePackage(deleteRequest);
+            cbbTerminalUpgradePackageAPI.deleteUpgradePackage(deleteRequest);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_SUCCESS_LOG,
-                    response.getPackageName());
+                    packageName);
             return DefaultWebResponse.Builder.success(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_SUCCESS,
                     new String[] {});
         } catch (BusinessException ex) {
             LOGGER.error("delete terminal system package fail", ex);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_FAIL_LOG,
-                    getPackageName(packageId), ex.getI18nMessage());
+                    packageName, ex.getI18nMessage());
             return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_FAIL,
-                    new String[] {});
-        }
-    }
-
-    private String getPackageName(UUID packageId) {
-        CbbUpgradePackageIdRequest idRequest = new CbbUpgradePackageIdRequest(packageId);
-        try {
-            final CbbUpgradePackageNameResponse response =
-                    cbbTerminalUpgradePackageAPI.getTerminalUpgradePackageName(idRequest);
-            return response.getPackageName();
-        } catch (BusinessException e) {
-            LOGGER.info("获取升级包名称异常", e);
-            return packageId.toString();
+                    new String[] {ex.getI18nMessage()});
         }
     }
 
@@ -267,11 +279,7 @@ public class TerminalSystemUpgradeController {
 
         UUID packageId = request.getPackageId();
         String[] terminalIdArr = request.getTerminalIdArr();
-        UUID upgradeTaskId = createUpgradeTask(packageId, terminalIdArr, optLogRecorder);
-
-        CreateSystemUpgradeTaskContentVO contentVO = new CreateSystemUpgradeTaskContentVO();
-        contentVO.setUpgradeTaskId(upgradeTaskId);
-        return DefaultWebResponse.Builder.success(contentVO);
+        return createUpgradeTask(packageId, terminalIdArr, optLogRecorder);
     }
 
     /**
@@ -282,20 +290,25 @@ public class TerminalSystemUpgradeController {
      * @return 刷机任务id
      * @throws BusinessException 业务异常
      */
-    private UUID createUpgradeTask(UUID packageId, String[] terminalIdArr, ProgrammaticOptLogRecorder optLogRecorder)
+    private DefaultWebResponse createUpgradeTask(UUID packageId, String[] terminalIdArr, ProgrammaticOptLogRecorder optLogRecorder)
             throws BusinessException {
         CbbAddSystemUpgradeTaskRequest addTaskRequest = new CbbAddSystemUpgradeTaskRequest();
         addTaskRequest.setPackageId(packageId);
         addTaskRequest.setTerminalIdArr(terminalIdArr);
         CbbAddSystemUpgradeTaskResponse response;
+        String packageName = packageId.toString();
         try {
+            packageName = getPackageName(packageId);
             response = cbbTerminalUpgradeAPI.addSystemUpgradeTask(addTaskRequest);
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_SUCCESS_LOG, response.getImgName());
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_SUCCESS_LOG, packageName);
+            CreateSystemUpgradeTaskContentVO contentVO = new CreateSystemUpgradeTaskContentVO();
+            contentVO.setUpgradeTaskId(response.getUpgradeTaskId());
+            return DefaultWebResponse.Builder.success(contentVO);
         } catch (BusinessException e) {
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_FAIL_LOG, e.getI18nMessage());
-            throw e;
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_FAIL_LOG, packageName, e.getI18nMessage());
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL, new String[] {e.getI18nMessage()});
         }
-        return response.getUpgradeTaskId();
+        
     }
 
     /**
@@ -497,7 +510,7 @@ public class TerminalSystemUpgradeController {
         } catch (BusinessException e) {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_FAIL_LOG, terminalId,
                     e.getI18nMessage());
-            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_FAIL, new String[] {});
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_FAIL, new String[] {e.getI18nMessage()});
         }
     }
 
@@ -551,7 +564,7 @@ public class TerminalSystemUpgradeController {
             return DefaultWebResponse.Builder.success(BusinessKey.RCDC_RETRY_UPGRADE_TERMINAL_SUCCESS, new String[] {});
         } catch (BusinessException e) {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_RETRY_UPGRADE_TERMINAL_FAIL_LOG, terminalId, e.getI18nMessage());
-            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_RETRY_UPGRADE_TERMINAL_FAIL, new String[] {});
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_RETRY_UPGRADE_TERMINAL_FAIL, new String[] {e.getI18nMessage()});
         }
     }
 
@@ -573,6 +586,11 @@ public class TerminalSystemUpgradeController {
 
         final UUID upgradeTaskId = request.getUpgradeTaskId();
         String[] terminalIdArr = request.getTerminalIdArr();
+        
+        if (terminalIdArr.length == 1) {
+            return appendSingleTerminal(upgradeTaskId, terminalIdArr[0], optLogRecorder);
+        }
+        
         Map<UUID, String> idMap = TerminalIdMappingUtils.mapping(terminalIdArr);
         UUID[] idArr = TerminalIdMappingUtils.extractUUID(idMap);
         final Iterator<TerminalUpgradeBatchTaskItem> iterator = Stream.of(idArr)
@@ -587,6 +605,21 @@ public class TerminalSystemUpgradeController {
                         .registerHandler(handler).start();
 
         return DefaultWebResponse.Builder.success(result);
+    }
+
+    private DefaultWebResponse appendSingleTerminal(UUID upgradeTaskId, String terminalId,
+            ProgrammaticOptLogRecorder optLogRecorder) {
+        CbbAddTerminalSystemUpgradeTaskRequest addRequest = new CbbAddTerminalSystemUpgradeTaskRequest();
+        addRequest.setTerminalId(terminalId);
+        addRequest.setUpgradeTaskId(upgradeTaskId);
+        try {
+            cbbTerminalUpgradeAPI.addSystemUpgradeTerminal(addRequest);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_SUCCESS_LOG, terminalId);
+            return DefaultWebResponse.Builder.success(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_SUCCESS, new String[] {});
+        } catch (BusinessException e) {
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_FAIL_LOG, terminalId, e.getI18nMessage());
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_FAIL, new String[] {e.getI18nMessage()});
+        }
     }
 
     /**
@@ -618,5 +651,18 @@ public class TerminalSystemUpgradeController {
         DefaultPageResponse<TerminalListDTO> pageResp = cbbTerminalUpgradeAPI.listUpgradeableTerminal(apiRequest);
 
         return DefaultWebResponse.Builder.success(pageResp);
+    }
+    
+
+    private String getPackageName(UUID packageId) {
+        CbbUpgradePackageIdRequest idRequest = new CbbUpgradePackageIdRequest(packageId);
+        try {
+            final CbbUpgradePackageNameResponse response =
+                    cbbTerminalUpgradePackageAPI.getTerminalUpgradePackageName(idRequest);
+            return response.getPackageName();
+        } catch (BusinessException e) {
+            LOGGER.info("获取升级包名称异常", e);
+            return packageId.toString();
+        }
     }
 }

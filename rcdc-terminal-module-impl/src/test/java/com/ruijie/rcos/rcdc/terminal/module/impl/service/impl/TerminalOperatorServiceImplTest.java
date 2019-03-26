@@ -26,7 +26,6 @@ import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolE
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
@@ -400,7 +399,12 @@ public class TerminalOperatorServiceImplTest {
                 result = terminalDetectionEntity;
             }
         };
-        operatorService.detect(terminalId);
+        try {
+            operatorService.detect(terminalId);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_IS_DOING, e.getKey());
+        }
         
         new Verifications() {
             {

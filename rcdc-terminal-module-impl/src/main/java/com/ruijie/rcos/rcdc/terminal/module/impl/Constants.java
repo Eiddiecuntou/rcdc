@@ -128,6 +128,11 @@ public interface Constants {
      * 终端组件升级包路径 
      */
     String TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH = "/opt/upgrade/app/terminal_component/";
+    
+    /**
+     * 终端组件升级包路径 
+     */
+    String TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_linux/temp";
 
     /**
      * 终端组件升级包updatelist文件名
