@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,23 +55,38 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
         // bt服务初始化，判断ip是否变更，如果变化则进行bt服务的初始化操作
         LOGGER.info("start upgrade bt share init...");
-        String currentIp = getLocalIP();
-        String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
-        if (StringUtils.isBlank(ip)) {
-            LOGGER.info("ip parameter not exist, start bt share init");
+
+        if (needUpgrade()) {
             executeUpdate();
             return;
         }
 
-        if (ip.equals(currentIp)) {
-            LOGGER.info("ip not change");
-            // 更新缓存中的updatelist
-            upgradeCacheInit.safeInit();
-            return;
+        LOGGER.info("init upgrade ceche");
+        // 更新缓存中的updatelist
+        upgradeCacheInit.safeInit();
+    }
+
+    private boolean needUpgrade() {
+        String currentIp = getLocalIP();
+        String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+
+        if (StringUtils.isBlank(ip)) {
+            //第一次启动时，制作新版本的升级业务
+            return true;
         }
 
-        LOGGER.info("ip changed, start bt share init");
-        executeUpdate();
+        if (!ip.equals(currentIp)) {
+            //服务器ip变更时，bt种子需要重新制作
+            return true;
+        }
+
+        File tempDir = new File(Constants.TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH);
+        if (tempDir.isDirectory()) {
+            //系统补丁包升级后，需要制作新版本的升级业务
+            return true;
+        }
+
+        return false;
     }
 
     private void executeUpdate() {

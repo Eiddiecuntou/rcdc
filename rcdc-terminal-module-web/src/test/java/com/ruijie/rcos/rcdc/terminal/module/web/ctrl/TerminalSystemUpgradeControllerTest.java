@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.web.ctrl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.Test;
@@ -69,6 +68,9 @@ public class TerminalSystemUpgradeControllerTest {
 
     @Mocked
     private BatchTaskBuilder builder;
+    
+    @Mocked
+    private LocaleI18nResolver localeI18nResolver;
 
     /**
      * 测试uploadPackage，参数为空
@@ -220,18 +222,15 @@ public class TerminalSystemUpgradeControllerTest {
             }
         };
         CreateTerminalSystemUpgradeWebRequest request = new CreateTerminalSystemUpgradeWebRequest();
-        try {
-            controller.create(request, optLogRecorder);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals("key", e.getKey());
-        }
+        request.setPackageId(UUID.randomUUID());
+        DefaultWebResponse create = controller.create(request, optLogRecorder);
+        assertEquals(Status.ERROR, create.getStatus());
 
         new Verifications() {
             {
                 optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_SUCCESS_LOG, (String[])any);
                 times = 0;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_FAIL_LOG, "message");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_FAIL_LOG, (String[])any);
                 times = 1;
             }
         };
@@ -256,6 +255,8 @@ public class TerminalSystemUpgradeControllerTest {
         };
         
         CreateTerminalSystemUpgradeWebRequest request = new CreateTerminalSystemUpgradeWebRequest();
+        request.setPackageId(UUID.randomUUID());
+        request.setTerminalIdArr(new String[] {"1111", "222"});
         DefaultWebResponse webResponse = controller.create(request, optLogRecorder);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
         CreateSystemUpgradeTaskContentVO contentVO = (CreateSystemUpgradeTaskContentVO)webResponse.getContent();
@@ -305,6 +306,8 @@ public class TerminalSystemUpgradeControllerTest {
             @Mocked AddUpgradeTerminalBatchTaskHandler handler,
             @Mocked TerminalIdMappingUtils mappingUtils) throws BusinessException {
         AppendTerminalSystemUpgradeWebRequest request = new AppendTerminalSystemUpgradeWebRequest();
+        request.setTerminalIdArr(new String[] {"111", "222"});
+        request.setUpgradeTaskId(UUID.randomUUID());
         DefaultWebResponse webResponse = controller.append(request, optLogRecorder, builder);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
         
