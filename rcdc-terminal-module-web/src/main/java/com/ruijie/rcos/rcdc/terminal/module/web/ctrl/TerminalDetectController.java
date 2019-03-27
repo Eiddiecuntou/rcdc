@@ -93,7 +93,7 @@ public class TerminalDetectController {
             return DefaultWebResponse.Builder.success(BusinessKey.RCDC_TERMINAL_DETECT_SEND_SUCCESS, new String[] {});
         } catch (BusinessException ex) {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, terminalId, ex.getI18nMessage());
-            return DefaultWebResponse.Builder.success(BusinessKey.RCDC_TERMINAL_DETECT_SEND_FAIL, new String[] {ex.getI18nMessage()});
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_DETECT_SEND_FAIL, new String[] {ex.getI18nMessage()});
         }
     }
 

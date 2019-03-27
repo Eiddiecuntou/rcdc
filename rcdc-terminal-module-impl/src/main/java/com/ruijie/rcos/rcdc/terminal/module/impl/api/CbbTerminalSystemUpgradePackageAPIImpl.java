@@ -401,10 +401,10 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         final UUID packageId = packageEntity.getId();
         final TerminalSystemUpgradeEntity upgradingTask = getUpgradingTask(packageId);
         if (upgradingTask == null) {
-            dto.setIsUpgrading(false);
+            dto.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
             return;
         } 
-        dto.setIsUpgrading(true);
+        dto.setState(upgradingTask.getState());
         dto.setUpgradeTaskId(upgradingTask.getId());
     }
 
