@@ -58,8 +58,11 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(upgradeMsg, "systemUpgradeMsg 不能为空");
 
-        DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
-        if (sender == null) {
+        DefaultRequestMessageSender sender;
+        try {
+            sender = sessionManager.getRequestMessageSender(terminalId);
+        } catch (Exception ex) {
+            LOGGER.error("terminal offline, terminaId: " + terminalId, ex);
             throw new TerminalOffLineException();
         }
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.UPGRADE_TERMINAL_SYSTEM.getName(),

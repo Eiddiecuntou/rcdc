@@ -18,6 +18,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
+import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.TerminalOffLineException;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeResponseMsgHandler;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -150,14 +151,14 @@ public class TerminalSystemUpgradeServiceImplTest {
         new Expectations() {
             {
                 sessionManager.getRequestMessageSender(anyString);
-                result = null;
+                result = new Exception();
             }
         };
 
         try {
             terminalSystemUpgradeService.systemUpgrade(terminalId, upgradeMsg);
             fail();
-        } catch (BusinessException e) {
+        } catch (TerminalOffLineException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
         }
 
