@@ -54,7 +54,6 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
-        LOGGER.debug("=====终端升级报文===={}", request.getData());
         Assert.notNull(request, "DispatcherRequest不能为null");
 
         // 保存终端基本信息
@@ -81,7 +80,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         Date now = new Date();
         if (basicInfoEntity == null) {
-            LOGGER.debug("新终端接入,terminalId:[{}]", terminalId);
+            LOGGER.info("新终端接入,terminalId:[{}]", terminalId);
             basicInfoEntity = new TerminalEntity();
             basicInfoEntity.setCreateTime(now);
         }
