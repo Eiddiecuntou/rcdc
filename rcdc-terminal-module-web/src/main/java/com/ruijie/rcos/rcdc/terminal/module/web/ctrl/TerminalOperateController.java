@@ -245,6 +245,7 @@ public class TerminalOperateController {
         Assert.notNull(request, "request不能为null");
 
         CbbTerminalLogNameRequest logRequest = new CbbTerminalLogNameRequest();
+        logRequest.setLogName(request.getLogName());
         CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(logRequest);
 
         InputStream inputStream = new FileInputStream(new File(response.getLogFilePath()));
