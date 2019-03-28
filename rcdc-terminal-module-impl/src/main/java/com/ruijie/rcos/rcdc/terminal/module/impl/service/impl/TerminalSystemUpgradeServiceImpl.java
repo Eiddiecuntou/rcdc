@@ -63,7 +63,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
             sender = sessionManager.getRequestMessageSender(terminalId);
         } catch (Exception ex) {
             LOGGER.error("terminal offline, terminaId: " + terminalId, ex);
-            throw new TerminalOffLineException();
+            throw new TerminalOffLineException(ex);
         }
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.UPGRADE_TERMINAL_SYSTEM.getName(),
                 upgradeMsg);
