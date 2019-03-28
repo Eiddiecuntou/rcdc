@@ -114,7 +114,7 @@ public class SystemUpgradeStartWaitingHandler {
         } catch (TerminalOffLineException te) {
             LOGGER.info("终端[ " + terminalId + "]离线", te);
             setTerminalUpgradeFail(upgradeTerminal);
-            return false;
+            return true;
         } catch (BusinessException e) {
             LOGGER.info("向终端[ " + terminalId + "]发送刷机指令失败", e);
             return false;
