@@ -78,6 +78,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         LOGGER.debug("return start upgrade");
         // 判断是否差异升级
         if (!rainUpgradeVersion.equals(updatelist.getBaseVersion())) {
+            LOGGER.info("非差异升级, 清理差异升级信息");
             clearDifferenceUpgradeInfo(updatelist);
         }
 
@@ -95,6 +96,8 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
             componentInfo.setIncrementalPackageName(null);
             componentInfo.setIncrementalTorrentMd5(null);
             componentInfo.setIncrementalTorrentUrl(null);
+            componentInfo.setBasePackageName(null);
+            componentInfo.setBasePackageMd5(null);
         }
     }
 

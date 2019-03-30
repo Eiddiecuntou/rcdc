@@ -69,6 +69,16 @@ public class CbbTerminalComponentVersionInfoDTO {
     private String incrementalPackageMd5;
     
     /**
+     * 差异升级基线版本包名称
+     */
+    private String basePackageName;
+    
+    /**
+     * 差异升级基线版本包md5值
+     */
+    private String basePackageMd5;
+    
+    /**
      * 重启标识(NOW/LATER/NOT)
      */
     private CbbTerminalResetEnums restartFlag;
@@ -167,6 +177,22 @@ public class CbbTerminalComponentVersionInfoDTO {
 
     public void setRestartFlag(CbbTerminalResetEnums restartFlag) {
         this.restartFlag = restartFlag;
+    }
+
+    public String getBasePackageName() {
+        return basePackageName;
+    }
+
+    public void setBasePackageName(String basePackageName) {
+        this.basePackageName = basePackageName;
+    }
+
+    public String getBasePackageMd5() {
+        return basePackageMd5;
+    }
+
+    public void setBasePackageMd5(String basePackageMd5) {
+        this.basePackageMd5 = basePackageMd5;
     }
 
 }
