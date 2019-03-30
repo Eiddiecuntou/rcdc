@@ -214,13 +214,15 @@ def completeUpdatePackage(originPath, tempDir, newComponentList, oldComponentLis
         oldVersion = None
         oldComponentFileName = None
         if oldComponentList != None:
-            oldVersion, oldComponentFileName = needMakeDiffFile(componentName, newVersion, newComponentMd5, oldComponentList)
+            oldVersion, oldComponentFileName,oldComponentFileMd5 = needMakeDiffFile(componentName, newVersion, newComponentMd5, oldComponentList)
             
         if oldVersion != None:
             logger.info("start make component[%s] vesion[%s] to version[%s] diff file" % (componentName, oldVersion, newVersion))
             patchfileName, md5 = doBsdiff(originPath, tempDir, componentName, componentFileName, oldComponentFileName)
             newComp['incrementalPackageName'] = patchfileName
             newComp['incrementalPackageMd5'] = md5
+            newComp['basePackageName'] = oldComponentFileName
+            newComp['basePackageMd5'] = oldComponentFileMd5
 
 
 def needMakeDiffFile(componentName, newVersion, newComponentMd5, oldComponentList):
@@ -232,14 +234,14 @@ def needMakeDiffFile(componentName, newVersion, newComponentMd5, oldComponentLis
         # 版本不相同则需制作差异包
         oldVersion = oldComp['version']
         if newVersion != oldVersion:
-            return oldVersion,oldComp['completePackageName']
+            return oldVersion,oldComp['completePackageName'],oldComp['md5'] 
         
         #版本相同，MD5不同也需制作差异包
         oldComponentMd5 = oldComp['md5']
         if newComponentMd5 != oldComponentMd5:
-            return oldVersion,oldComp['completePackageName']    
+            return oldVersion,oldComp['completePackageName'],oldComp['md5']    
     
-    return None,None
+    return None,None,None
 
 
 def getFTPRelatePath(torrentPath):
