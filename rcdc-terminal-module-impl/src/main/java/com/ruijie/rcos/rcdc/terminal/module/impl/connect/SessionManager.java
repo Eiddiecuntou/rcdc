@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
-import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -67,10 +66,6 @@ public class SessionManager {
         TerminalInfo terminalInfo = session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
         if (isSuccess) {
             LOGGER.info("移除终端session，terminalId={};ip={},当前在线终端数量为：{}", terminalId, terminalInfo.getTerminalIp(), SESSION_MAP.size());
-            // 审计日志
-            BaseCreateSystemLogRequest systemLogRequest =
-                    new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CONNECT_CLOSE_LOG, terminalId, terminalInfo.getTerminalIp());
-            baseSystemLogMgmtAPI.createSystemLog(systemLogRequest);
             return true;
         }
         LOGGER.info("关闭前一次连接的session，不移除当前绑定的terminalId={};ip={}的session;当前在线终端数量为：{}", terminalId, terminalInfo.getTerminalIp(), SESSION_MAP.size());
