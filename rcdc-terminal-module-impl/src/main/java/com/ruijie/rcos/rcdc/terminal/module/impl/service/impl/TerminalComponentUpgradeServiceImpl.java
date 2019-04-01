@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -75,16 +78,42 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
                     updatelistDTO);
         }
 
+        //深拷贝对象
+        CbbTerminalComponentUpdateListDTO copyUpdateList = deepCopyUpdateList(updatelist);
+        
         LOGGER.debug("return start upgrade");
         // 判断是否差异升级
-        if (!rainUpgradeVersion.equals(updatelist.getBaseVersion())) {
+        if (!rainUpgradeVersion.equals(copyUpdateList.getBaseVersion())) {
             LOGGER.info("非差异升级, 清理差异升级信息");
-            clearDifferenceUpgradeInfo(updatelist);
+            clearDifferenceUpgradeInfo(copyUpdateList);
         }
 
-        return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), updatelist);
+        return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
     }
 
+    private CbbTerminalComponentUpdateListDTO deepCopyUpdateList(CbbTerminalComponentUpdateListDTO updatelist) {
+        CbbTerminalComponentUpdateListDTO copyUpdateList = new CbbTerminalComponentUpdateListDTO();
+        copyUpdateList.setBaseVersion(updatelist.getBaseVersion());
+        copyUpdateList.setComponentSize(updatelist.getComponentSize());
+        copyUpdateList.setLimitVersion(updatelist.getLimitVersion());
+        copyUpdateList.setVersion(updatelist.getVersion());
+        
+        List<CbbTerminalComponentVersionInfoDTO> componentList = new ArrayList<>();
+        final List<CbbTerminalComponentVersionInfoDTO> originComponentList = updatelist.getComponentList();
+        copyUpdateList.setComponentList(componentList);
+        if (CollectionUtils.isEmpty(originComponentList)) {
+            return copyUpdateList;
+        }
+        
+        for (CbbTerminalComponentVersionInfoDTO originComponent : originComponentList) {
+            CbbTerminalComponentVersionInfoDTO component = new CbbTerminalComponentVersionInfoDTO();
+            BeanUtils.copyProperties(originComponent, component);
+            componentList.add(component);
+        }
+        
+        return copyUpdateList;
+    }
+    
     /**
      * 清除差异升级信息
      * 

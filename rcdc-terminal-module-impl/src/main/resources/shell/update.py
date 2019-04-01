@@ -54,6 +54,7 @@ originDirName = "origin"
 tempDirName = "temp"
 baseDirName = "base"
 
+bsdiffCmdPath = "/data/web/bsdiff-4.3/bsdiff"
 
 # 入口函数
 def update():
@@ -66,7 +67,6 @@ def update():
         return "fail"
     except Exception as e:
         logger.error("install failed with exception : %s" % e.message)
-        print e
         return "fail"
      
     return "success"
@@ -293,7 +293,7 @@ def doBsdiff(originPath, tempDir, componentName, componentFileName, oldComponent
     oldfilePath = '%s%s%s%s' % (originPath, RAINOS_UPDATE_FULL_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, oldComponentFileName)
     patchfileName = '%s%s' % (componentName, DIFF_COMPONENT_SUFFIX)
     patchfilePath = '%s%s%s%s' % (tempDir, RAINOS_UPDATE_DIFF_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, patchfileName)
-    shellCmd = "bsdiff %s %s %s" % (oldfilePath, newfilePath, patchfilePath)
+    shellCmd = "%s %s %s %s" % (bsdiffCmdPath, oldfilePath, newfilePath, patchfilePath)
     shellCall(shellCmd)
     md5 = md5sum(patchfilePath)
     return patchfileName, md5
