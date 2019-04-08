@@ -208,10 +208,10 @@ public interface BusinessKey {
     String RCDC_RETRY_UPGRADE_TERMINAL_FAIL = "rcdc_retry_upgrade_terminal_fail";
     
     /** 关闭终端升级包[{0}]升级任务成功 */
-    String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_SUCCESS = "rcdc_upgrade_terminal_task_close_success";
+    String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_SUCCESS_LOG = "rcdc_upgrade_terminal_task_close_success_log";
 
     /** 关闭终端升级包[{0}]升级任务失败，失败原因：{1} */
-    String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_FAIL = "rcdc_upgrade_terminal_task_close_fail";
+    String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_FAIL_LOG = "rcdc_upgrade_terminal_task_close_fail_log";
     
     
     /**

@@ -444,18 +444,33 @@ public class TerminalSystemUpgradeController {
      * 关闭刷机任务
      * 
      * @param request 请求参数
+     * @param optLogRecorder 操作日志记录对象
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
     @RequestMapping(value = "close")
-    public DefaultWebResponse close(CloseSystemUpgradeTaskWebRequest request) throws BusinessException {
+    public DefaultWebResponse close(CloseSystemUpgradeTaskWebRequest request, ProgrammaticOptLogRecorder optLogRecorder)
+            throws BusinessException {
         Assert.notNull(request, "request can not be null");
+        Assert.notNull(optLogRecorder, "optLogRecorder can not be null");
 
+        final UUID upgradeTaskId = request.getUpgradeTaskId();
         CbbCloseSystemUpgradeTaskRequest cbbRequest = new CbbCloseSystemUpgradeTaskRequest();
-        cbbRequest.setUpgradeTaskId(request.getUpgradeTaskId());
-        cbbTerminalUpgradeAPI.closeSystemUpgradeTask(cbbRequest);
-
-        return DefaultWebResponse.Builder.success();
+        cbbRequest.setUpgradeTaskId(upgradeTaskId);
+        CbbGetUpgradeTaskRequest getRequest = new CbbGetUpgradeTaskRequest(upgradeTaskId);
+        String packageName = upgradeTaskId.toString();
+        try {
+            final CbbGetTerminalUpgradeTaskResponse upgradeTaskResp = cbbTerminalUpgradeAPI.getTerminalUpgradeTaskById(getRequest);
+            packageName = upgradeTaskResp.getUpgradeTask().getPackageName();
+            cbbTerminalUpgradeAPI.closeSystemUpgradeTask(cbbRequest);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_UPGRADE_TERMINAL_TASK_CLOSE_SUCCESS_LOG, packageName);
+            return DefaultWebResponse.Builder.success(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_SUCCESS,
+                    new String[] {});
+        } catch (BusinessException e) {
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_UPGRADE_TERMINAL_TASK_CLOSE_FAIL_LOG, packageName,
+                    e.getI18nMessage());
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL, new String[] {e.getI18nMessage()});
+        }
     }
 
     /**

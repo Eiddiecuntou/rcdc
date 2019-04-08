@@ -458,23 +458,28 @@ public class TerminalSystemUpgradeControllerTest {
 
     /**
      * 测试close，参数为空
+     * @param optLogRecorder 操作日志记录对象
      * @throws Exception 异常
      */
     @Test
-    public void testCloseArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.close(null),
+    public void testCloseArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder) throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.close(null, optLogRecorder),
                 "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.close(new CloseSystemUpgradeTaskWebRequest(), null),
+                "optLogRecorder can not be null");
         assertTrue(true);
     }
     
     /**
      * 测试close，
+     * @param optLogRecorder 操作日志记录对象
      * @throws BusinessException 异常
      */
     @Test
-    public void testClose() throws BusinessException {
+    public void testClose(@Mocked ProgrammaticOptLogRecorder optLogRecorder) throws BusinessException {
         CloseSystemUpgradeTaskWebRequest request = new CloseSystemUpgradeTaskWebRequest();
-        DefaultWebResponse webResponse = controller.close(request);
+        request.setUpgradeTaskId(UUID.randomUUID());
+        DefaultWebResponse webResponse = controller.close(request, optLogRecorder);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
         
         new Verifications() {
