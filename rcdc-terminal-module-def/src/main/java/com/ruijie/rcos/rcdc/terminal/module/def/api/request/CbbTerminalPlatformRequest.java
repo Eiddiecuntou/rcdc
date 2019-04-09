@@ -25,5 +25,5 @@ public class CbbTerminalPlatformRequest implements Request {
     public void setPlatform(TerminalPlatformEnums platform) {
         this.platform = platform;
     }
-    
+
 }

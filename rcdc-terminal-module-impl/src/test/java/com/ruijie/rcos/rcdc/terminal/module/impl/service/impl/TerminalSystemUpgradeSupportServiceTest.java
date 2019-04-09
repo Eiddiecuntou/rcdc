@@ -61,17 +61,16 @@ public class TerminalSystemUpgradeSupportServiceTest {
     @Mocked
     private ShellCommandRunner runner;
 
-    @Mocked 
+    @Mocked
     private SkyengineScheduledThreadPoolExecutor executor;
-    
+
     /**
      * 初始化
      */
     @Before
     public void before() {
         ExecutorService executorService = new MockedExecutorService();
-        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "CLOSE_SERVICE_THREAD_POOL",
-                executorService);
+        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "CLOSE_SERVICE_THREAD_POOL", executorService);
     }
 
     /**
@@ -84,12 +83,10 @@ public class TerminalSystemUpgradeSupportServiceTest {
      */
     @Test
     public void testCloseSystemUpgradeServiceAllIsNotNull(@Injectable ScheduledFuture<?> upgradeTaskFuture,
-            @Injectable ScheduledFuture<?> supportServiceFuture, @Mocked NfsServiceUtil nfsServiceUtil)
-            throws BusinessException {
+            @Injectable ScheduledFuture<?> supportServiceFuture, @Mocked NfsServiceUtil nfsServiceUtil) throws BusinessException {
 
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", upgradeTaskFuture);
-        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SUPPORT_SERVICE_FUTURE",
-                supportServiceFuture);
+        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SUPPORT_SERVICE_FUTURE", supportServiceFuture);
         service.closeSystemUpgradeService();
 
         new Verifications() {
@@ -130,8 +127,7 @@ public class TerminalSystemUpgradeSupportServiceTest {
      */
     @Test
     public void testIsTerminalOnlineArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> service.openSystemUpgradeService(null),
-                "packageEntity can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> service.openSystemUpgradeService(null), "packageEntity can not be null");
         assertTrue(true);
     }
 
@@ -145,12 +141,9 @@ public class TerminalSystemUpgradeSupportServiceTest {
      * @throws BusinessException 异常
      */
     @Test
-    public void testIsTerminalOnlineCopyFileFailed(
-            @Mocked NfsServiceUtil nfsServiceUtil,
-            @Mocked SupportServiceQuartzHandler handler,
-            @Injectable ScheduledFuture<?> upgradeTaskFuture,
-            @Injectable ScheduledFuture<?> supportServiceFuture) throws BusinessException {
-        
+    public void testIsTerminalOnlineCopyFileFailed(@Mocked NfsServiceUtil nfsServiceUtil, @Mocked SupportServiceQuartzHandler handler,
+            @Injectable ScheduledFuture<?> upgradeTaskFuture, @Injectable ScheduledFuture<?> supportServiceFuture) throws BusinessException {
+
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", upgradeTaskFuture);
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SUPPORT_SERVICE_FUTURE", supportServiceFuture);
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
@@ -197,9 +190,8 @@ public class TerminalSystemUpgradeSupportServiceTest {
      * @throws BusinessException 异常
      */
     @Test
-    public void testIsTerminalOnline(@Mocked NfsServiceUtil nfsServiceUtil,
-            @Mocked SupportServiceQuartzHandler handler) throws BusinessException {
-        
+    public void testIsTerminalOnline(@Mocked NfsServiceUtil nfsServiceUtil, @Mocked SupportServiceQuartzHandler handler) throws BusinessException {
+
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", null);
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SUPPORT_SERVICE_FUTURE", null);
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
@@ -226,9 +218,10 @@ public class TerminalSystemUpgradeSupportServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试SupportServiceQuartzHandler，无正在进行中的刷机任务
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -243,11 +236,11 @@ public class TerminalSystemUpgradeSupportServiceTest {
         new MockUp<TerminalSystemUpgradeSupportService>() {
             @Mock
             public void closeSystemUpgradeService() {
-                
+
             }
         };
         handler.run();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -255,9 +248,10 @@ public class TerminalSystemUpgradeSupportServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试SupportServiceQuartzHandler，出现异常
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -276,7 +270,7 @@ public class TerminalSystemUpgradeSupportServiceTest {
             }
         };
         handler.run();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -284,9 +278,10 @@ public class TerminalSystemUpgradeSupportServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试SupportServiceQuartzHandler，有正在进行中的刷机任务
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -301,7 +296,7 @@ public class TerminalSystemUpgradeSupportServiceTest {
             }
         };
         handler.run();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -309,8 +304,8 @@ public class TerminalSystemUpgradeSupportServiceTest {
             }
         };
     }
-    
-    
+
+
 
     /**
      * 
@@ -383,15 +378,13 @@ public class TerminalSystemUpgradeSupportServiceTest {
         }
 
         @Override
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-                throws InterruptedException {
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
             //
             return null;
         }
 
         @Override
-        public <T> T invokeAny(Collection<? extends Callable<T>> tasks)
-                throws InterruptedException, ExecutionException {
+        public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
             //
             return null;
         }

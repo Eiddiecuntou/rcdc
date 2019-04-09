@@ -13,6 +13,7 @@ public class ChangeTerminalPasswordRequest {
     private String password;
 
     public ChangeTerminalPasswordRequest() {
+        
     }
 
     public ChangeTerminalPasswordRequest(String password) {

@@ -21,7 +21,6 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-
 import java.io.IOException;
 
 /**
@@ -51,8 +50,7 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     }
 
     @Override
-    public CbbShineMessageResponse syncRequest(CbbShineMessageRequest request) throws IOException, InterruptedException,
-            BusinessException {
+    public CbbShineMessageResponse syncRequest(CbbShineMessageRequest request) throws IOException, InterruptedException, BusinessException {
         Assert.notNull(request, "request参数不能为空");
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("接收到syncRequest请求消息：{}", request.toString());

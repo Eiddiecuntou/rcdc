@@ -14,7 +14,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.Expectations;
 import mockit.Mocked;
-import mockit.Verifications;
 
 /**
  * 
@@ -27,15 +26,15 @@ import mockit.Verifications;
  */
 public class PageQuerySpecificationTest {
 
-    @Mocked 
+    @Mocked
     private Root root;
-    
+
     @Mocked
     private CriteriaQuery<?> query;
-    
+
     @Mocked
     private CriteriaBuilder cb;
-    
+
     /**
      * 测试构造器
      */
@@ -49,9 +48,10 @@ public class PageQuerySpecificationTest {
             assertEquals("请指定需要搜索的列名", e.getMessage());
         }
     }
-    
+
     /**
      * 测试toPredicate，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -62,19 +62,18 @@ public class PageQuerySpecificationTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> specification.toPredicate(root, query, null), "CriteriaBuilder不能为null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试toPredicate，查询结果都不为空
+     * 
      * @param likePredicate mock对象
      * @param exactMatchPredicate mock对象
      * @param resultPredicate mock对象
      * @throws Exception 异常
      */
     @Test
-    public void testToPredicateAllNotNull(
-            @Mocked Predicate likePredicate,
-            @Mocked Predicate exactMatchPredicate,
-            @Mocked Predicate resultPredicate) throws Exception {
+    public void testToPredicateAllNotNull(@Mocked Predicate likePredicate, @Mocked Predicate exactMatchPredicate, @Mocked Predicate resultPredicate)
+            throws Exception {
         new Expectations() {
             {
                 cb.and((Predicate[]) any);
@@ -85,23 +84,24 @@ public class PageQuerySpecificationTest {
                 result = resultPredicate;
             }
         };
-        
+
         List<String> searchColumnList = new ArrayList<>();
         searchColumnList.add("sdsd");
-        
+
         MatchEqual[] matchEqualArr = new MatchEqual[1];
         MatchEqual matchEqual = new MatchEqual();
         String[] fieldValueArr = new String[1];
         matchEqual.setValueArr(fieldValueArr);
         matchEqualArr[0] = matchEqual;
-        
+
         PageQuerySpecification<Object> specification = new PageQuerySpecification<>("dfgdf", searchColumnList, matchEqualArr);
-        
+
         assertEquals(resultPredicate, specification.toPredicate(root, query, cb));
     }
-    
+
     /**
      * 测试toPredicate，likePredicate为空
+     * 
      * @param exactMatchPredicate mock对象
      * @throws Exception 异常
      */
@@ -113,23 +113,24 @@ public class PageQuerySpecificationTest {
                 result = exactMatchPredicate;
             }
         };
-        
+
         List<String> searchColumnList = new ArrayList<>();
         searchColumnList.add("sdsd");
-        
+
         MatchEqual[] matchEqualArr = new MatchEqual[1];
         MatchEqual matchEqual = new MatchEqual();
         String[] fieldValueArr = new String[1];
         matchEqual.setValueArr(fieldValueArr);
         matchEqualArr[0] = matchEqual;
-        
+
         PageQuerySpecification<Object> specification = new PageQuerySpecification<>("", searchColumnList, matchEqualArr);
-        
+
         assertEquals(exactMatchPredicate, specification.toPredicate(root, query, cb));
     }
-    
+
     /**
      * 测试toPredicate，exactMatchPredicate为空
+     * 
      * @param likePredicate mock对象
      * @throws Exception 异常
      */
@@ -141,19 +142,20 @@ public class PageQuerySpecificationTest {
                 result = likePredicate;
             }
         };
-        
+
         List<String> searchColumnList = new ArrayList<>();
         searchColumnList.add("sdsd");
-        
+
         MatchEqual[] matchEqualArr = new MatchEqual[0];
-        
+
         PageQuerySpecification<Object> specification = new PageQuerySpecification<>("sds", searchColumnList, matchEqualArr);
-        
+
         assertEquals(likePredicate, specification.toPredicate(root, query, cb));
     }
-    
+
     /**
      * 测试toPredicate，都为空
+     * 
      * @param likePredicate mock对象
      * @throws Exception 异常
      */
@@ -161,11 +163,11 @@ public class PageQuerySpecificationTest {
     public void testToPredicateAllIsNull(@Mocked Predicate likePredicate) throws Exception {
         List<String> searchColumnList = new ArrayList<>();
         searchColumnList.add("sdsd");
-        
+
         MatchEqual[] matchEqualArr = new MatchEqual[0];
-        
+
         PageQuerySpecification<Object> specification = new PageQuerySpecification<>("", searchColumnList, matchEqualArr);
-        
+
         try {
             specification.toPredicate(root, query, cb);
             fail();

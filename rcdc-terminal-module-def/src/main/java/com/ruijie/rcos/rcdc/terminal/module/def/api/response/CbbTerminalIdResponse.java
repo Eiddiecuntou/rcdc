@@ -12,7 +12,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * @author nt
  */
 public class CbbTerminalIdResponse extends DefaultResponse {
-    
+
     private String terminalId;
 
     public String getTerminalId() {

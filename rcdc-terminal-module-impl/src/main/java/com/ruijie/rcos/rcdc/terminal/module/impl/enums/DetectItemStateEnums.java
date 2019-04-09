@@ -12,15 +12,15 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
 public enum DetectItemStateEnums {
 
     TRUE(1),
-    
+
     FALSE(0);
-    
+
     private int state;
-    
+
     DetectItemStateEnums(int state) {
         this.state = state;
     }
-    
+
     public int getState() {
         return state;
     }

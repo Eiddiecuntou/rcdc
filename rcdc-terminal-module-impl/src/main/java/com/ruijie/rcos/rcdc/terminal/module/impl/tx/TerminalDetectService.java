@@ -56,8 +56,7 @@ public class TerminalDetectService {
         Assert.notNull(detectResult, "TerminalDetectResult不能为null");
 
         // 获取检测记录
-        List<TerminalDetectionEntity> entityList =
-                detectionDAO.findByTerminalIdAndDetectState(terminalId, DetectStateEnums.CHECKING);
+        List<TerminalDetectionEntity> entityList = detectionDAO.findByTerminalIdAndDetectState(terminalId, DetectStateEnums.CHECKING);
         if (CollectionUtils.isEmpty(entityList)) {
             LOGGER.debug("no checking detection record, terminal id[{}]", terminalId);
             return;
@@ -89,8 +88,7 @@ public class TerminalDetectService {
     public void detectFailure(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
 
-        List<TerminalDetectionEntity> entityList =
-                detectionDAO.findByTerminalIdAndDetectState(terminalId, DetectStateEnums.CHECKING);
+        List<TerminalDetectionEntity> entityList = detectionDAO.findByTerminalIdAndDetectState(terminalId, DetectStateEnums.CHECKING);
         if (CollectionUtils.isEmpty(entityList)) {
             LOGGER.debug("no checking detection record, terminal id[{}]", terminalId);
             return;
@@ -145,8 +143,7 @@ public class TerminalDetectService {
         Date now = new Date();
         Date startDt = TerminalDateUtil.getDayStart(now);
         Date endDt = TerminalDateUtil.getDayEnd(now);
-        List<TerminalDetectionEntity> detectionList =
-                detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, startDt, endDt);
+        List<TerminalDetectionEntity> detectionList = detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, startDt, endDt);
         if (CollectionUtils.isEmpty(detectionList)) {
             // 当天无记录，返回null
             return null;
@@ -164,8 +161,7 @@ public class TerminalDetectService {
     public Page<TerminalDetectionEntity> pageQuery(CbbTerminalDetectPageRequest request) {
         Assert.notNull(request, "request can not be null");
 
-        Pageable pageable =
-                PageRequest.of(request.getPage(), request.getLimit(), new Sort(Direction.DESC, "detectTime"));
+        Pageable pageable = PageRequest.of(request.getPage(), request.getLimit(), new Sort(Direction.DESC, "detectTime"));
         Specification<TerminalDetectionEntity> spec = new TerminalDetectSpecification(request.getDate());
 
         return detectionDAO.findAll(spec, pageable);
@@ -184,16 +180,12 @@ public class TerminalDetectService {
         Date startDt = TerminalDateUtil.getDayStart(date);
         Date endDt = TerminalDateUtil.getDayEnd(date);
 
-        int ipConflict = detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(),
-                startDt, endDt);
-        int bandwidth = detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(
-                Constants.TERMINAL_DETECT_BINDWIDTH_NORM, startDt, endDt);
-        int accessInternet = detectionDAO
-                .countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), startDt, endDt);
-        int packetLossRate = detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(
-                Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, startDt, endDt);
-        int delay = detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(
-                Constants.TERMINAL_DETECT_DELAY_NORM, startDt, endDt);
+        int ipConflict = detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), startDt, endDt);
+        int bandwidth = detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, startDt, endDt);
+        int accessInternet = detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), startDt, endDt);
+        int packetLossRate =
+                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, startDt, endDt);
+        int delay = detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, startDt, endDt);
         int checking = detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, startDt, endDt);
 
         List<TerminalDetectionEntity> detectList = detectionDAO.findByDetectTimeBetween(startDt, endDt);

@@ -47,6 +47,7 @@ public class SyncServerTimeResponse {
 
     /**
      * 构建消息对象
+     * 
      * @return 返回SyncServerTimeResponse
      */
     public static SyncServerTimeResponse build() {

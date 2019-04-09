@@ -3,9 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import org.junit.Test;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
@@ -30,26 +28,27 @@ public class SystemUpgradeStateSynctHandlerTest {
 
     @Tested
     private SystemUpgradeStateSynctHandler handler;
-    
+
     @Injectable
     private TerminalSystemUpgradePackageService systemUpgradePackageService;
 
     @Injectable
     private TerminalSystemUpgradeServiceTx systemUpgradeServiceTx;
-    
+
     /**
      * 测试execute，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testExecuteArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(null),
-                "upgradeTerminalList can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(null), "upgradeTerminalList can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试execute，readSystemUpgradeSuccessStateFromFile，BusinessException
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -62,7 +61,7 @@ public class SystemUpgradeStateSynctHandlerTest {
         };
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
@@ -72,9 +71,10 @@ public class SystemUpgradeStateSynctHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，systemUpgradeInfoList为null
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -87,7 +87,7 @@ public class SystemUpgradeStateSynctHandlerTest {
         };
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
@@ -97,9 +97,10 @@ public class SystemUpgradeStateSynctHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，upgradeInfoList为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -113,7 +114,7 @@ public class SystemUpgradeStateSynctHandlerTest {
         };
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
@@ -123,9 +124,10 @@ public class SystemUpgradeStateSynctHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，systemUpgradeInfoList为空,无匹配终端升级状态信息
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -141,7 +143,7 @@ public class SystemUpgradeStateSynctHandlerTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
@@ -151,9 +153,10 @@ public class SystemUpgradeStateSynctHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，systemUpgradeInfoList不为空,无匹配终端升级状态信息
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -173,7 +176,7 @@ public class SystemUpgradeStateSynctHandlerTest {
         upgradeTerminal.setTerminalId("2");
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
@@ -183,9 +186,10 @@ public class SystemUpgradeStateSynctHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，systemUpgradeInfoList不为空,有匹配终端升级状态信息
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -205,7 +209,7 @@ public class SystemUpgradeStateSynctHandlerTest {
         upgradeTerminal.setTerminalId("1");
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();

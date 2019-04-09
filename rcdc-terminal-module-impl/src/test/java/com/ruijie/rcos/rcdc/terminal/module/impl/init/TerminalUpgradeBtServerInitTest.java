@@ -34,23 +34,24 @@ public class TerminalUpgradeBtServerInitTest {
 
     @Tested
     private TerminalUpgradeBtServerInit init;
-    
+
     @Injectable
     private GlobalParameterAPI globalParameterAPI;
 
     @Injectable
     private TerminalComponentUpgradeCacheInit upgradeCacheInit;
-    
+
     @Mocked
     private ShellCommandRunner runner;
-    
+
     /**
      * 测试safeInit，开发环境
+     * 
      * @param enviroment mock对象
      */
     @Test
     public void testSafeInitIsDevelop(@Mocked Enviroment enviroment) {
-        
+
         new Expectations() {
             {
                 Enviroment.isDevelop();
@@ -58,7 +59,7 @@ public class TerminalUpgradeBtServerInitTest {
             }
         };
         init.safeInit();
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
@@ -66,16 +67,17 @@ public class TerminalUpgradeBtServerInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit，获取本地ip失败
+     * 
      * @param enviroment mock对象
      * @param inetAddress mock对象
      * @throws UnknownHostException 异常
      */
     @Test
     public void testSafeInitGetLocalAddrFail(@Mocked Enviroment enviroment, @Mocked InetAddress inetAddress) throws UnknownHostException {
-        
+
         new Expectations() {
             {
                 Enviroment.isDevelop();
@@ -90,7 +92,7 @@ public class TerminalUpgradeBtServerInitTest {
         } catch (RuntimeException e) {
             assertEquals("get localhost address error,", e.getMessage());
         }
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
@@ -98,9 +100,10 @@ public class TerminalUpgradeBtServerInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit，ip为空
+     * 
      * @param enviroment mock对象
      * @param inetAddress mock对象
      * @throws UnknownHostException 异常
@@ -127,7 +130,7 @@ public class TerminalUpgradeBtServerInitTest {
         new MockUp<TerminalUpgradeBtServerInit>() {
             @Mock
             public void executeUpdate() {
-                
+
             }
         };
         try {
@@ -136,7 +139,7 @@ public class TerminalUpgradeBtServerInitTest {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
         }
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
@@ -148,9 +151,10 @@ public class TerminalUpgradeBtServerInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit，ip和本地ip一致
+     * 
      * @param enviroment mock对象
      * @param inetAddress mock对象
      * @throws UnknownHostException 异常
@@ -180,7 +184,7 @@ public class TerminalUpgradeBtServerInitTest {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
         }
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
@@ -192,17 +196,18 @@ public class TerminalUpgradeBtServerInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit，ip和本地ip不同,executeUpdate有BusinessException
+     * 
      * @param enviroment mock对象
      * @param inetAddress mock对象
      * @throws UnknownHostException 异常
      * @throws BusinessException 异常
      */
     @Test
-    public void testSafeInitIpDifferentCurrentIpExecuteUpdateHasBusinessException(
-            @Mocked Enviroment enviroment, @Mocked InetAddress inetAddress) throws UnknownHostException, BusinessException {
+    public void testSafeInitIpDifferentCurrentIpExecuteUpdateHasBusinessException(@Mocked Enviroment enviroment, @Mocked InetAddress inetAddress)
+            throws UnknownHostException, BusinessException {
         byte[] ipArr = new byte[4];
         ipArr[0] = -84;
         ipArr[1] = 12;
@@ -228,7 +233,7 @@ public class TerminalUpgradeBtServerInitTest {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
         }
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
@@ -240,9 +245,10 @@ public class TerminalUpgradeBtServerInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit，ip和本地ip不同
+     * 
      * @param enviroment mock对象
      * @param inetAddress mock对象
      * @throws UnknownHostException 异常
@@ -272,7 +278,7 @@ public class TerminalUpgradeBtServerInitTest {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
         }
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
@@ -284,23 +290,21 @@ public class TerminalUpgradeBtServerInitTest {
             }
         };
     }
-    
+
     /**
      * 测试BtShareInitReturnValueResolver的resolve方法,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
         TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
-        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"),
-                "command can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"),
-                "existValue can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""),
-                "outStr can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试BtShareInitReturnValueResolver的resolve方法,exitValue不为0
      */
@@ -314,9 +318,10 @@ public class TerminalUpgradeBtServerInitTest {
             assertEquals(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e.getKey());
         }
     }
-    
+
     /**
      * 测试BtShareInitReturnValueResolver的resolve方法,
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -328,9 +333,9 @@ public class TerminalUpgradeBtServerInitTest {
                 return "192.168.1.2";
             }
         };
-        
+
         resolver.resolve("dsd", 0, "dsd");
-        
+
         new Verifications() {
             {
                 globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, "192.168.1.2");

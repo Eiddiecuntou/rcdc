@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
@@ -32,23 +31,24 @@ public class SystemUpgradeTimeoutHandlerTest {
 
     @Tested
     private SystemUpgradeTimeoutHandler handler;
-    
+
     @Injectable
     private TerminalSystemUpgradeServiceTx systemUpgradeServiceTx;
-    
+
     /**
      * 测试execute，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testExecuteArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(null),
-                "upgradeTerminalList can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(null), "upgradeTerminalList can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试execute，upgradeTerminalList为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -62,9 +62,10 @@ public class SystemUpgradeTimeoutHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，状态不是upgrading
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -73,7 +74,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.SUCCESS);
         upgradeTerminalList.add(upgradeTerminal);
-        
+
         handler.execute(upgradeTerminalList);
         new Verifications() {
             {
@@ -82,9 +83,10 @@ public class SystemUpgradeTimeoutHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，超时
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -99,7 +101,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         upgradeTerminalList.add(upgradeTerminal);
-        
+
         handler.execute(upgradeTerminalList);
         new Verifications() {
             {
@@ -108,9 +110,10 @@ public class SystemUpgradeTimeoutHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，超时,BusinessException
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -121,7 +124,7 @@ public class SystemUpgradeTimeoutHandlerTest {
                 return true;
             }
         };
-        
+
         new Expectations() {
             {
                 systemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
@@ -132,7 +135,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         upgradeTerminalList.add(upgradeTerminal);
-        
+
         handler.execute(upgradeTerminalList);
         new Verifications() {
             {
@@ -141,9 +144,10 @@ public class SystemUpgradeTimeoutHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，未超时
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -158,7 +162,7 @@ public class SystemUpgradeTimeoutHandlerTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         upgradeTerminalList.add(upgradeTerminal);
-        
+
         handler.execute(upgradeTerminalList);
         new Verifications() {
             {

@@ -44,22 +44,22 @@ public class CbbTerminalDetectDTO {
      * 网络时延
      */
     private Integer delay;
-    
+
     /**
      * 带宽阈值
      */
     private Double bandwidthThreshold;
-    
+
     /**
      * 丢包率阈值
      */
     private Double packetLossRateThreshold;
-    
+
     /**
      * 时延阈值
      */
     private Integer delayThreshold;
-    
+
     /**
      * 检测时间
      */
@@ -232,5 +232,5 @@ public class CbbTerminalDetectDTO {
     public void setDetectTime(Date detectTime) {
         this.detectTime = detectTime;
     }
-    
+
 }

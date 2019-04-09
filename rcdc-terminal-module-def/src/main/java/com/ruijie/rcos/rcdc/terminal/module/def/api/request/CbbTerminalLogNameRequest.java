@@ -24,5 +24,5 @@ public class CbbTerminalLogNameRequest implements Request {
     public void setLogName(String logName) {
         this.logName = logName;
     }
-    
+
 }

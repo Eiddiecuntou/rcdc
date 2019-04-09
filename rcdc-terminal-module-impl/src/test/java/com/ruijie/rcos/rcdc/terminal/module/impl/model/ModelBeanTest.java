@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.test.GetSetTester;
 import mockit.integration.junit4.JMockit;
 
@@ -30,7 +29,7 @@ public class ModelBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalSystemUpgradeInfo
      */
@@ -41,11 +40,11 @@ public class ModelBeanTest {
         TerminalSystemUpgradeInfo upgradeInfo = new TerminalSystemUpgradeInfo();
         upgradeInfo.setTerminalId("1");
         upgradeInfo.setState(CbbSystemUpgradeStateEnums.SUCCESS);
-        
+
         String string = "TerminalSystemUpgradeInfo [terminalId=1, state=" + CbbSystemUpgradeStateEnums.SUCCESS + "]";
         assertEquals(string, upgradeInfo.toString());
     }
-    
+
     /**
      * 测试TerminalUpgradeVersionFileInfo
      */
@@ -55,7 +54,7 @@ public class ModelBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalVersionResultDTO
      */

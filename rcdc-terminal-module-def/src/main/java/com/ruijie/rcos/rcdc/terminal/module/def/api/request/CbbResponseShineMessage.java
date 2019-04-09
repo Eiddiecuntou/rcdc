@@ -35,9 +35,9 @@ public class CbbResponseShineMessage<T> implements Request {
     /**
      * 创建应答消息实体
      *
-     * @param action     消息action值
+     * @param action 消息action值
      * @param terminalId 终端id
-     * @param requestId  请求id
+     * @param requestId 请求id
      * @return 消息实体
      */
     public static CbbResponseShineMessage create(String action, String terminalId, String requestId) {
@@ -93,12 +93,7 @@ public class CbbResponseShineMessage<T> implements Request {
 
     @Override
     public String toString() {
-        return "CbbResponseShineMessage{" +
-                "requestId='" + requestId + '\'' +
-                ", code=" + code +
-                ", action='" + action + '\'' +
-                ", terminalId='" + terminalId + '\'' +
-                ", content=" + content +
-                '}';
+        return "CbbResponseShineMessage{" + "requestId='" + requestId + '\'' + ", code=" + code + ", action='" + action + '\'' + ", terminalId='"
+                + terminalId + '\'' + ", content=" + content + '}';
     }
 }

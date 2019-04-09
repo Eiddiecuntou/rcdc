@@ -46,12 +46,13 @@ public class TerminalDetectControllerTest {
 
     @Tested
     private TerminalDetectController controller;
-    
+
     @Injectable
     private CbbTerminalOperatorAPI operatorAPI;
-    
+
     /**
      * 测试startDetect,参数为空
+     * 
      * @param optLogRecorder mock日志记录对象
      * @param builder mock批量任务处理对象
      * @throws Exception 异常
@@ -65,17 +66,17 @@ public class TerminalDetectControllerTest {
                 "builder can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试startDetect,
+     * 
      * @param optLogRecorder mock日志记录对象
      * @param builder mock批量任务处理对象
      * @param utils mock TerminalIdMappingUtils
      * @throws BusinessException 异常
      */
     @Test
-    public void testStartDetect(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
-            @Mocked BatchTaskBuilder builder, 
+    public void testStartDetect(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked BatchTaskBuilder builder,
             @Mocked TerminalIdMappingUtils utils) throws BusinessException {
         StartBatDetectWebRequest request = new StartBatDetectWebRequest();
         request.setIdArr(new String[] {"1111", "2222"});
@@ -84,7 +85,7 @@ public class TerminalDetectControllerTest {
         uuidArr[1] = UUID.randomUUID();
         new Expectations() {
             {
-                TerminalIdMappingUtils.extractUUID((Map<UUID, String>)any);
+                TerminalIdMappingUtils.extractUUID((Map<UUID, String>) any);
                 result = uuidArr;
             }
         };
@@ -94,6 +95,7 @@ public class TerminalDetectControllerTest {
 
     /**
      * 测试list,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -101,9 +103,10 @@ public class TerminalDetectControllerTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> controller.list(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试list,exactMatchArr为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -112,9 +115,10 @@ public class TerminalDetectControllerTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> controller.list(request), "exactMatchArr can not be empty");
         assertTrue(true);
     }
-    
+
     /**
      * 测试list,exactMatch为null
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -124,9 +128,10 @@ public class TerminalDetectControllerTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> controller.list(request), "exactMatch can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试list,valueArr为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -140,7 +145,7 @@ public class TerminalDetectControllerTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> controller.list(request), "date can not be blank");
         assertTrue(true);
     }
-    
+
     /**
      * 测试list,未知日期
      */
@@ -161,9 +166,10 @@ public class TerminalDetectControllerTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_LIST_DATE_ERROR, e.getKey());
         }
     }
-    
+
     /**
      * 测试list,
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -176,7 +182,7 @@ public class TerminalDetectControllerTest {
         exactMatch.setValueArr(valueArr);
         exactMatchArr[0] = exactMatch;
         request.setExactMatchArr(exactMatchArr);
-        
+
         DefaultPageResponse<CbbTerminalDetectDTO> listDetectResp = new DefaultPageResponse<>();
         CbbDetectResultResponse detectResultResp = new CbbDetectResultResponse();
         new Expectations() {

@@ -30,11 +30,12 @@ import mockit.Verifications;
  */
 public class FileOperateUtilTest {
 
-    @Mocked 
+    @Mocked
     private Logger logger;
-    
+
     /**
      * 初始化
+     * 
      * @param <T> 泛型
      */
     @Before
@@ -42,13 +43,13 @@ public class FileOperateUtilTest {
         new MockUp<LoggerFactory>() {
             @Mock
             public Logger getLogger(Class<T> clazz) {
-                // 
+                //
                 return logger;
             }
         };
     }
-    
-    
+
+
     /**
      * 测试emptyDirectory，参数为空
      * 
@@ -56,10 +57,8 @@ public class FileOperateUtilTest {
      */
     @Test
     public void testEmptyDirectoryArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.emptyDirectory("", "dsd"),
-                "directoryPath 不能为空");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.emptyDirectory("sdsd", ""),
-                "exceptFileName 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.emptyDirectory("", "dsd"), "directoryPath 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.emptyDirectory("sdsd", ""), "exceptFileName 不能为空");
         assertTrue(true);
     }
 
@@ -70,13 +69,13 @@ public class FileOperateUtilTest {
     public void testEmptyDirectoryDirectoryPathNotExistAndHasException() {
         String directoryPath = "directoryPath";
         String exceptFileName = "exceptFileName";
-        
+
         new MockUp<File>() {
             @Mock
             public boolean exists() {
                 return false;
             }
-            
+
             @Mock
             public boolean mkdir() {
                 throw new IllegalArgumentException();
@@ -89,7 +88,7 @@ public class FileOperateUtilTest {
             assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
         }
     }
-    
+
     /**
      * 测试emptyDirectory，directoryPath不是目录并且有异常
      */
@@ -97,18 +96,18 @@ public class FileOperateUtilTest {
     public void testEmptyDirectoryDirectoryPathIsNotDirectoryAndHasException() {
         String directoryPath = "directoryPath";
         String exceptFileName = "exceptFileName";
-        
+
         new MockUp<File>() {
             @Mock
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isDirectory() {
                 return false;
             }
-            
+
             @Mock
             public boolean mkdir() throws Exception {
                 throw new IllegalArgumentException();
@@ -121,7 +120,7 @@ public class FileOperateUtilTest {
             assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
         }
     }
-    
+
     /**
      * 测试emptyDirectory，childrenArr为null
      */
@@ -129,26 +128,26 @@ public class FileOperateUtilTest {
     public void testEmptyDirectoryChildrenArrIsNull() {
         String directoryPath = "directoryPath";
         String exceptFileName = "exceptFileName";
-        
+
         new MockUp<File>() {
             @Mock
             public boolean exists() {
                 return false;
             }
-            
+
             @Mock
             public boolean isDirectory() {
                 return false;
             }
-            
+
             @Mock
             public boolean mkdir() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
-                //mock返回值
+                // mock返回值
                 return null;
             }
         };
@@ -158,7 +157,7 @@ public class FileOperateUtilTest {
             fail();
         }
     }
-    
+
     /**
      * 测试emptyDirectory，childrenArr长度为0
      */
@@ -166,18 +165,18 @@ public class FileOperateUtilTest {
     public void testEmptyDirectoryChildrenArrLengthIsZero() {
         String directoryPath = "directoryPath";
         String exceptFileName = "exceptFileName";
-        
+
         new MockUp<File>() {
             @Mock
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 return new File[0];
@@ -189,7 +188,7 @@ public class FileOperateUtilTest {
             fail();
         }
     }
-    
+
     /**
      * 测试emptyDirectory，子文件为排除外的文件
      */
@@ -197,19 +196,19 @@ public class FileOperateUtilTest {
     public void testEmptyDirectoryIsExceptFile() {
         String directoryPath = "directoryPath";
         String exceptFileName = "exceptFileName";
-        
+
         File subFile = new File(exceptFileName);
         new MockUp<File>() {
             @Mock
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[1];
@@ -223,7 +222,7 @@ public class FileOperateUtilTest {
             fail();
         }
     }
-    
+
     /**
      * 测试emptyDirectory，子文件是目录
      */
@@ -231,26 +230,26 @@ public class FileOperateUtilTest {
     public void testEmptyDirectoryNotExceptFileAndIsNotFile() {
         String directoryPath = "directoryPath";
         String exceptFileName = "exceptFileName";
-        
+
         File subFile = new File("sdsd");
         new MockUp<File>() {
             @Mock
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[1];
                 fileArr[0] = subFile;
                 return fileArr;
             }
-            
+
             @Mock
             public boolean isFile() {
                 return false;
@@ -262,7 +261,7 @@ public class FileOperateUtilTest {
             fail();
         }
     }
-    
+
     /**
      * 测试emptyDirectory，
      */
@@ -270,26 +269,26 @@ public class FileOperateUtilTest {
     public void testEmptyDirectoryNotExceptFile() {
         String directoryPath = "directoryPath";
         String exceptFileName = "exceptFileName";
-        
+
         File subFile = new File("sdsd");
         new MockUp<File>() {
             @Mock
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[1];
                 fileArr[0] = subFile;
                 return fileArr;
             }
-            
+
             @Mock
             public boolean isFile() {
                 return true;
@@ -304,16 +303,16 @@ public class FileOperateUtilTest {
 
     /**
      * 测试emptyDirectory0，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testEmptyDirectory0ArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.emptyDirectory(""),
-                "directoryPath 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.emptyDirectory(""), "directoryPath 不能为空");
         assertTrue(true);
     }
-    
-    
+
+
     /**
      * 测试emptyDirectory0，
      */
@@ -323,34 +322,33 @@ public class FileOperateUtilTest {
         new MockUp<FileOperateUtil>() {
             @Mock
             public void deleteFilesInDirectory(final String directoryPath, final String exceptFileName) {
-                
+
             }
         };
-        
+
         try {
             FileOperateUtil.emptyDirectory(directoryPath);
         } catch (Exception e) {
             fail();
         }
     }
-    
+
     /**
      * 测试moveFile，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testMoveFileArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.moveFile("", "sss", "sss"),
-                "fileName 不能为空");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.moveFile("sss", "", "sss"),
-                "filePath 不能为空");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.moveFile("sss", "sss", ""),
-                "destPath 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.moveFile("", "sss", "sss"), "fileName 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.moveFile("sss", "", "sss"), "filePath 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.moveFile("sss", "sss", ""), "destPath 不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试moveFile，文件不存在
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -364,7 +362,7 @@ public class FileOperateUtilTest {
                 return false;
             }
         };
-        
+
         try {
             FileOperateUtil.moveFile(fileName, filePath, destPath);
             fail();
@@ -372,9 +370,10 @@ public class FileOperateUtilTest {
             assertEquals(BusinessKey.RCDC_FILE_NOT_EXIST, e.getKey());
         }
     }
-    
+
     /**
      * 测试moveFile，重命名失败
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -387,18 +386,18 @@ public class FileOperateUtilTest {
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public boolean renameTo(File dest) {
                 return false;
             }
         };
-        
+
         try {
             FileOperateUtil.moveFile(fileName, filePath, destPath);
             fail();
@@ -406,9 +405,10 @@ public class FileOperateUtilTest {
             assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
         }
     }
-    
+
     /**
      * 测试moveFile，重命名出现异常
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -421,18 +421,18 @@ public class FileOperateUtilTest {
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public boolean renameTo(File dest) {
                 throw new IllegalArgumentException();
             }
         };
-        
+
         try {
             FileOperateUtil.moveFile(fileName, filePath, destPath);
             fail();
@@ -440,9 +440,10 @@ public class FileOperateUtilTest {
             assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
         }
     }
-    
+
     /**
      * 测试moveFile，
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -455,18 +456,18 @@ public class FileOperateUtilTest {
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public boolean renameTo(File dest) {
                 return true;
             }
         };
-        
+
         try {
             FileOperateUtil.moveFile(fileName, filePath, destPath);
         } catch (BusinessException e) {
@@ -476,26 +477,26 @@ public class FileOperateUtilTest {
 
     /**
      * 测试copyfile，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testCopyfileArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.copyfile(null, "sss"),
-                "sourcePath can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.copyfile("sss", null),
-                "destPath can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.copyfile(null, "sss"), "sourcePath can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.copyfile("sss", null), "destPath can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试copyfile，旧文件不存在
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testCopyfileOldFileNotExist() {
         String sourcePath = "sourcePath";
         String destPath = "destPath";
-        
+
         new MockUp<File>() {
             @Mock
             public boolean exists() {
@@ -508,16 +509,17 @@ public class FileOperateUtilTest {
             fail();
         }
     }
-    
+
     /**
      * 测试copyfile，出现异常
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testCopyfileHasException() {
         String sourcePath = "sourcePath";
         String destPath = "destPath";
-        
+
         new MockUp<File>() {
             @Mock
             public boolean exists() {
@@ -530,9 +532,10 @@ public class FileOperateUtilTest {
             fail();
         }
     }
-    
+
     /**
      * 测试copyfile
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -540,7 +543,7 @@ public class FileOperateUtilTest {
         String path = FileOperateUtilTest.class.getResource("/").getPath();
         String sourcePath = path + "testCopyFileSourcePath";
         String destPath = path + "testCopyFileDestPath";
-        
+
         new MockUp<File>() {
             @Mock
             public boolean exists() {
@@ -556,17 +559,16 @@ public class FileOperateUtilTest {
 
     /**
      * 测试directoryCopy，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testDirectoryCopyArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.directoryCopy(null, "sss"),
-                "sourcePath can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.directoryCopy("sss", null),
-                "destPath can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.directoryCopy(null, "sss"), "sourcePath can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.directoryCopy("sss", null), "destPath can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试directoryCopy，sourceFile不是目录
      */
@@ -587,16 +589,17 @@ public class FileOperateUtilTest {
             assertEquals(BusinessKey.RCDC_FILE_NOT_EXIST, e.getKey());
         }
     }
-    
+
     /**
      * 测试directoryCopy，sourceFile的子文件不是目录
-     * @throws BusinessException 
+     * 
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testDirectoryCopySourceFileSubFileIsNotDirectory() throws BusinessException {
         String sourcePath = "sourcePath";
         String destPath = "destPath";
-        
+
         File subFile = new File("1");
         new MockUp<File>() {
             @Mock
@@ -608,7 +611,7 @@ public class FileOperateUtilTest {
                 }
                 return false;
             }
-            
+
             @Mock
             public boolean mkdir() {
                 return true;
@@ -621,15 +624,15 @@ public class FileOperateUtilTest {
                 return fileArr;
             }
         };
-        
+
         new MockUp<FileOperateUtil>() {
             @Mock
             public void copyfile(String sourcePath, String destPath) {
-                
+
             }
         };
         FileOperateUtil.directoryCopy(sourcePath, destPath);
-        
+
         new Verifications() {
             {
                 FileOperateUtil.copyfile(anyString, anyString);
@@ -637,17 +640,18 @@ public class FileOperateUtilTest {
             }
         };
     }
-    
+
     /**
      * 测试directoryCopy，sourceFile的子文件是目录
-     * @throws BusinessException 
+     * 
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testDirectoryCopySourceFileSubFileIsDirectory() throws BusinessException {
         String sourcePath = "sourcePath";
         String destPath = "destPath";
         String subPath = "subPath";
-        
+
         File subFile = new File(subPath);
         new MockUp<File>() {
             @Mock
@@ -669,12 +673,12 @@ public class FileOperateUtilTest {
                 }
                 return false;
             }
-            
+
             @Mock
             public boolean mkdir() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles(Invocation invocation) {
                 Assert.notNull(invocation, "invocation can not be null");
@@ -687,15 +691,15 @@ public class FileOperateUtilTest {
                 return new File[0];
             }
         };
-        
+
         new MockUp<FileOperateUtil>() {
             @Mock
             public void copyfile(String sourcePath, String destPath) {
-                
+
             }
         };
         FileOperateUtil.directoryCopy(sourcePath, destPath);
-        
+
         new Verifications() {
             {
                 FileOperateUtil.copyfile(anyString, anyString);
@@ -703,20 +707,21 @@ public class FileOperateUtilTest {
             }
         };
     }
-    
+
     /**
      * 测试deleteFile，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testDeleteFileArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.deleteFile(null),
-                "deleteFile can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.deleteFile(null), "deleteFile can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试deleteFile，删除的文件不存在
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -730,9 +735,10 @@ public class FileOperateUtilTest {
         };
         assertFalse(FileOperateUtil.deleteFile(deleteFile));
     }
-    
+
     /**
      * 测试deleteFile，删除的是文件
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -743,12 +749,12 @@ public class FileOperateUtilTest {
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isFile() {
                 return true;
             }
-            
+
             @Mock
             public boolean delete() {
                 return true;
@@ -756,22 +762,23 @@ public class FileOperateUtilTest {
         };
         assertTrue(FileOperateUtil.deleteFile(deleteFile));
     }
-    
+
     /**
      * 测试deleteFile，删除的是目录
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testDeleteFileIsDirectory() throws Exception {
         File deleteFile = new File("deleteFile");
-        
+
         File subFile = new File("1");
         new MockUp<File>() {
             @Mock
             public boolean exists() {
                 return true;
             }
-            
+
             @Mock
             public boolean isFile(Invocation invocation) {
                 Assert.notNull(invocation, "invocation can not be null");
@@ -781,12 +788,12 @@ public class FileOperateUtilTest {
                 }
                 return true;
             }
-            
+
             @Mock
             public boolean delete() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[1];
@@ -796,6 +803,6 @@ public class FileOperateUtilTest {
         };
         assertTrue(FileOperateUtil.deleteFile(deleteFile));
     }
-    
-    
+
+
 }

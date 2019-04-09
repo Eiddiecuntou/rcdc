@@ -12,7 +12,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
  * @author Jarman
  */
 public class TerminalIdArrWebRequest implements WebRequest {
-    
+
     @NotEmpty
     private String[] idArr;
 

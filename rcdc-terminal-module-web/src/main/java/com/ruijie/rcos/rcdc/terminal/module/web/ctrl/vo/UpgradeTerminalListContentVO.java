@@ -15,21 +15,21 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerm
 public class UpgradeTerminalListContentVO {
 
     private CbbSystemUpgradeTaskTerminalDTO[] itemArr;
-    
+
     private long total;
-    
+
     private int waitNum;
-    
+
     private int upgradingNum;
-    
+
     private int successNum;
-    
+
     private int failNum;
-    
+
     private int unsupportNum;
-    
+
     private int undoNum;
-    
+
     private CbbSystemUpgradeTaskDTO upgradeTask;
 
     public CbbSystemUpgradeTaskTerminalDTO[] getItemArr() {
@@ -103,5 +103,5 @@ public class UpgradeTerminalListContentVO {
     public void setUndoNum(int undoNum) {
         this.undoNum = undoNum;
     }
-    
+
 }

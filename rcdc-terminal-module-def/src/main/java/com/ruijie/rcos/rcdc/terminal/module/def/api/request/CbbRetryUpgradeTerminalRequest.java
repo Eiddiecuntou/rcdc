@@ -15,10 +15,10 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @author nt
  */
 public class CbbRetryUpgradeTerminalRequest implements Request {
-    
+
     @NotNull
     private UUID upgradeTaskId;
-    
+
     @NotBlank
     private String terminalId;
 

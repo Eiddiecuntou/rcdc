@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import javax.persistence.*;
-
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
@@ -77,13 +76,14 @@ public class TerminalDetectionEntity {
     private Integer version;
 
     /**
-     *  对象转换
+     * 对象转换
+     * 
      * @param detectDTO 设值对象
      */
     public void convertTo(CbbTerminalDetectDTO detectDTO) {
         Assert.notNull(detectDTO, "detect dto can not be null");
 
-        //状态信息需确认
+        // 状态信息需确认
         detectDTO.setTerminalId(terminalId);
         detectDTO.setAccessInternet(accessInternet);
         detectDTO.setBandwidth(bandwidth);

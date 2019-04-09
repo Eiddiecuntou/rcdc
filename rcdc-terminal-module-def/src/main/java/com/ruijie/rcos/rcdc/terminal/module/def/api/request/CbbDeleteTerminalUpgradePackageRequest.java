@@ -18,7 +18,7 @@ public class CbbDeleteTerminalUpgradePackageRequest implements Request {
 
     @NotNull
     private UUID packageId;
-    
+
     public CbbDeleteTerminalUpgradePackageRequest(UUID packageId) {
         Assert.notNull(packageId, "packageId can not be null");
         this.packageId = packageId;

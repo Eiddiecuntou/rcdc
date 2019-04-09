@@ -18,6 +18,7 @@ public interface TerminalSystemUpgradeServiceTx {
 
     /**
      * 添加终端刷机任务
+     * 
      * @param upgradePackage 刷机包对象
      * @param terminalIdArr 终端id数组
      * @return 刷机任务id
@@ -26,19 +27,21 @@ public interface TerminalSystemUpgradeServiceTx {
 
     /**
      * 结束刷机任务
+     * 
      * @param upgradeTaskId 刷机任务id
      * @throws BusinessException 业务异常
      */
     void closeSystemUpgradeTask(UUID upgradeTaskId) throws BusinessException;
-    
-    
+
+
     /**
      * 开始等待中的终端进行刷机
+     * 
      * @param upgradeTerminal 刷机终端实体
      * @throws BusinessException 业务异常
      */
     void startTerminalUpgrade(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException;
-    
+
     /**
      * 修改刷机终端状态
      * 

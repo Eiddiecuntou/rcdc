@@ -14,19 +14,19 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 public enum DetectStateEnums {
 
     CHECKING(BusinessKey.RCDC_TERMINAL_DETECT_STATE_CHECKING),
-    
+
     SUCCESS(BusinessKey.RCDC_TERMINAL_DETECT_STATE_SUCCESS),
-    
+
     ERROR(BusinessKey.RCDC_TERMINAL_DETECT_STATE_ERROR);
-    
+
     private String name;
-    
+
     DetectStateEnums(String name) {
         this.name = name;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
 }

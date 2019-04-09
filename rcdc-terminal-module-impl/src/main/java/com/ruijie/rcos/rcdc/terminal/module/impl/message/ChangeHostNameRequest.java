@@ -12,7 +12,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 public class ChangeHostNameRequest {
 
     private String hostName;
-    
+
     public ChangeHostNameRequest(String hostName) {
         this.hostName = hostName;
     }
@@ -24,5 +24,5 @@ public class ChangeHostNameRequest {
     public void setHostName(String hostName) {
         this.hostName = hostName;
     }
-    
+
 }

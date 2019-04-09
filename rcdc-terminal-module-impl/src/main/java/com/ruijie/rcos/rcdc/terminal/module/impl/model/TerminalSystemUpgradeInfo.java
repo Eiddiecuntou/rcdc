@@ -12,12 +12,12 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateE
  * @author nt
  */
 public class TerminalSystemUpgradeInfo {
-    
+
     /**
      * 终端id
      */
     private String terminalId;
-    
+
     /**
      * 升级状态
      */

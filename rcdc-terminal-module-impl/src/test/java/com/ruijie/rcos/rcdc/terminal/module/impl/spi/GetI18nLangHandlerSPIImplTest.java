@@ -29,12 +29,13 @@ public class GetI18nLangHandlerSPIImplTest {
 
     @Tested
     private GetI18nLangHandlerSPIImpl spiImpl;
-    
+
     @Injectable
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
-    
+
     /**
      * 测试dispatch,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -42,9 +43,10 @@ public class GetI18nLangHandlerSPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> spiImpl.dispatch(null), "CbbDispatcherRequest不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试dispatch,
+     * 
      * @param utils mock MessageUtils
      */
     @Test

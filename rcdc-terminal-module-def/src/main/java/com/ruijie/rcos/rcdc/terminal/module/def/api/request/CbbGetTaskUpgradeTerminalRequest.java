@@ -16,10 +16,10 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @author nt
  */
 public class CbbGetTaskUpgradeTerminalRequest implements Request {
-    
+
     @NotNull
     private UUID upgradeTaskId;
-    
+
     @Nullable
     private CbbSystemUpgradeStateEnums terminalState;
 
@@ -38,5 +38,5 @@ public class CbbGetTaskUpgradeTerminalRequest implements Request {
     public void setTerminalState(CbbSystemUpgradeStateEnums terminalState) {
         this.terminalState = terminalState;
     }
-    
+
 }

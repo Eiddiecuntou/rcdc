@@ -45,8 +45,7 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
     public void saveTerminalUpgradePackage(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
         Assert.notNull(versionInfo, "terminalUpgradeVersionFileInfo 不能为空");
 
-        TerminalSystemUpgradePackageEntity upgradePackage =
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
+        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
         if (upgradePackage == null) {
             upgradePackage = new TerminalSystemUpgradePackageEntity();
         }
@@ -54,14 +53,12 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         saveSystemUpgradePackage(upgradePackage, versionInfo);
     }
 
-    private void saveSystemUpgradePackage(TerminalSystemUpgradePackageEntity upgradePackage,
-            TerminalUpgradeVersionFileInfo versionInfo) {
+    private void saveSystemUpgradePackage(TerminalSystemUpgradePackageEntity upgradePackage, TerminalUpgradeVersionFileInfo versionInfo) {
         completeSystemUpgradePackageEntity(upgradePackage, versionInfo);
         termianlSystemUpgradePackageDAO.save(upgradePackage);
     }
 
-    private void completeSystemUpgradePackageEntity(TerminalSystemUpgradePackageEntity upgradePackage,
-            TerminalUpgradeVersionFileInfo versionInfo) {
+    private void completeSystemUpgradePackageEntity(TerminalSystemUpgradePackageEntity upgradePackage, TerminalUpgradeVersionFileInfo versionInfo) {
         upgradePackage.setPackageName(versionInfo.getPackageName());
         upgradePackage.setImgName(versionInfo.getImgName());
         upgradePackage.setOrigin(SystemUpgradePackageOriginEnums.USER_UPLOAD);
@@ -77,19 +74,17 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
     public List<TerminalSystemUpgradeInfo> readSystemUpgradeSuccessStateFromFile() throws BusinessException {
         return getStatusFromFile(Constants.TERMINAL_UPGRADE_END_SATTUS_FILE_PATH, CbbSystemUpgradeStateEnums.SUCCESS);
     }
-    
+
     @Override
     public List<TerminalSystemUpgradeInfo> readSystemUpgradeStartStateFromFile() throws BusinessException {
         return getStatusFromFile(Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH, CbbSystemUpgradeStateEnums.UPGRADING);
     }
-    
-    private List<TerminalSystemUpgradeInfo> getStatusFromFile(String fileDir, CbbSystemUpgradeStateEnums state)
-            throws BusinessException {
+
+    private List<TerminalSystemUpgradeInfo> getStatusFromFile(String fileDir, CbbSystemUpgradeStateEnums state) throws BusinessException {
         // 读取升级成功文件夹，通过文件名称获取mac即终端id
         File upgradeSuccessDir = new File(fileDir);
         if (!upgradeSuccessDir.isDirectory()) {
-            LOGGER.error("terminal upgrade status directory not exist, file path: {}",
-                    fileDir);
+            LOGGER.error("terminal upgrade status directory not exist, file path: {}", fileDir);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_SUCCESS_STATUS_DIRECTORY_NOT_EXIST);
         }
 
@@ -113,16 +108,16 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
 
         return fileName.substring(0, index);
     }
-    
+
     @Override
     public void deleteSoft(UUID packageId) throws BusinessException {
         Assert.notNull(packageId, "packageId can not be null");
-        
+
         final TerminalSystemUpgradePackageEntity systemUpgradePackage = getSystemUpgradePackage(packageId);
         systemUpgradePackage.setIsDelete(true);
         termianlSystemUpgradePackageDAO.save(systemUpgradePackage);
-        
-        //删除升级包文件
+
+        // 删除升级包文件
         deletePackageFile(systemUpgradePackage.getFilePath());
     }
 
@@ -136,13 +131,12 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
             file.delete();
         }
     }
-    
+
     @Override
     public TerminalSystemUpgradePackageEntity getSystemUpgradePackage(UUID upgradePackageId) throws BusinessException {
         Assert.notNull(upgradePackageId, "upgradePackage");
 
-        final Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt =
-                termianlSystemUpgradePackageDAO.findById(upgradePackageId);
+        final Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = termianlSystemUpgradePackageDAO.findById(upgradePackageId);
         if (!upgradePackageOpt.isPresent()) {
             LOGGER.error("刷机包不存在， 刷机包id: {}", upgradePackageId);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);

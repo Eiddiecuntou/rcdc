@@ -43,10 +43,9 @@ public class TerminalSystemUpgradeTaskInit implements SafetySingletonInitializer
     @Override
     public void safeInit() {
         LOGGER.info("开始终端刷机服务初始化...");
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-            CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
-        final List<TerminalSystemUpgradeEntity> upgradingTaskList =
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+        final List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
             LOGGER.info("无进行中的刷机任务");
             return;
@@ -61,8 +60,7 @@ public class TerminalSystemUpgradeTaskInit implements SafetySingletonInitializer
 
     private void startSystemUpgradeSupportService(UUID packageId) {
         try {
-            final TerminalSystemUpgradePackageEntity systemUpgradePackage =
-                    systemUpgradePackageService.getSystemUpgradePackage(packageId);
+            final TerminalSystemUpgradePackageEntity systemUpgradePackage = systemUpgradePackageService.getSystemUpgradePackage(packageId);
             LOGGER.info("存在进行中的终端刷机任务，开启相关刷机服务...");
             systemUpgradeSupportService.openSystemUpgradeService(systemUpgradePackage);
         } catch (BusinessException e) {

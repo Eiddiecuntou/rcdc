@@ -41,7 +41,7 @@ public class SystemUpgradeStartWaitingHandler {
 
     @Autowired
     private TerminalSystemUpgradeService systemUpgradeService;
-    
+
     @Autowired
     private TerminalSystemUpgradeServiceTx systemUpgradeServiceTx;
 
@@ -72,19 +72,16 @@ public class SystemUpgradeStartWaitingHandler {
      * @param upgradePackageId 刷机包id
      * @throws BusinessException 业务异常
      */
-    private void startWaiting(List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList, UUID upgradePackageId)
-            throws BusinessException {
+    private void startWaiting(List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList, UUID upgradePackageId) throws BusinessException {
         LOGGER.info("开始等待中的终端刷机处理...");
         int count = 0;
-        final TerminalSystemUpgradePackageEntity upgradePackage =
-                systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
+        final TerminalSystemUpgradePackageEntity upgradePackage = systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
 
         // 获取正在刷机中的终端数量
         int upgradingNum = systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
 
         // 构造刷机指令信息
-        TerminalSystemUpgradeMsg upgradeMsg =
-                new TerminalSystemUpgradeMsg(upgradePackage.getImgName(), upgradePackage.getPackageVersion());
+        TerminalSystemUpgradeMsg upgradeMsg = new TerminalSystemUpgradeMsg(upgradePackage.getImgName(), upgradePackage.getPackageVersion());
         for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : upgradeTerminalList) {
             if (startTerminalUpgrade(upgradingNum, upgradeTerminal, upgradeMsg)) {
                 upgradingNum++;
@@ -95,8 +92,8 @@ public class SystemUpgradeStartWaitingHandler {
         LOGGER.info("完成开始等待中的终端刷机处理，处理开始等待中的终端{}台", count);
     }
 
-    private boolean startTerminalUpgrade(int upgradingNum, TerminalSystemUpgradeTerminalEntity upgradeTerminal,
-            TerminalSystemUpgradeMsg upgradeMsg) throws BusinessException {
+    private boolean startTerminalUpgrade(int upgradingNum, TerminalSystemUpgradeTerminalEntity upgradeTerminal, TerminalSystemUpgradeMsg upgradeMsg)
+            throws BusinessException {
         if (upgradingNum >= UPGRADING_MAX_NUM) {
             return false;
         }
@@ -119,11 +116,11 @@ public class SystemUpgradeStartWaitingHandler {
             LOGGER.info("向终端[ " + terminalId + "]发送刷机指令失败", e);
             return false;
         }
-        
+
         modifyTerminalUpgrading(upgradeTerminal);
         return true;
     }
-    
+
     private void setTerminalUpgradeFail(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
         systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);

@@ -66,10 +66,10 @@ public class TerminalOperatorServiceImplTest {
 
     @Injectable
     private TerminalDetectService terminalDetectService;
-    
+
     @Injectable
     private GlobalParameterAPI globalParameterAPI;
-    
+
     @Injectable
     private TerminalDetectionDAO terminalDetectionDAO;
 
@@ -104,14 +104,14 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试关机,离线终端关机失败
      */
     @Test
     public void testShutdownOfflineFail() {
         String terminalId = "123";
-        
+
         new Expectations() {
             {
                 sessionManager.getSession(terminalId);
@@ -135,7 +135,7 @@ public class TerminalOperatorServiceImplTest {
 
 
     /**
-     *测试重启
+     * 测试重启
      */
     @Test
     public void testRestart() {
@@ -214,6 +214,7 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试发送收集日志
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
@@ -245,9 +246,10 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试发送收集日志,DefaultRequestMessageSender为空
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
@@ -264,7 +266,7 @@ public class TerminalOperatorServiceImplTest {
                 result = null;
             }
         };
-        
+
         try {
             String terminalId = "123";
             operatorService.collectLog(terminalId);
@@ -272,7 +274,7 @@ public class TerminalOperatorServiceImplTest {
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
         }
-        
+
         new Verifications() {
             {
                 collectLogCacheManager.removeCache("123");
@@ -280,21 +282,23 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试检测,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testDetect0ArgumentIsNull() throws Exception {
-        //测试参数为空
+        // 测试参数为空
         String[] terminalIdArr = new String[0];
         ThrowExceptionTester.throwIllegalArgumentException(() -> operatorService.detect(terminalIdArr), "terminalIdArr大小不能为0");
         assertTrue(true);
     }
-    
+
     /**
      * 测试检测
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -314,7 +318,7 @@ public class TerminalOperatorServiceImplTest {
             {
                 terminalDetectService.findInCurrentDate(anyString);
                 times = 1;
-                terminalDetectionDAO.save((TerminalDetectionEntity)any);
+                terminalDetectionDAO.save((TerminalDetectionEntity) any);
                 times = 0;
             }
         };
@@ -322,6 +326,7 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试检测
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
@@ -341,14 +346,15 @@ public class TerminalOperatorServiceImplTest {
             {
                 terminalDetectService.findInCurrentDate(anyString);
                 times = 1;
-                terminalDetectionDAO.save((TerminalDetectionEntity)any);
+                terminalDetectionDAO.save((TerminalDetectionEntity) any);
                 times = 0;
             }
         };
     }
-    
+
     /**
      * 测试检测,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -357,15 +363,16 @@ public class TerminalOperatorServiceImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> operatorService.detect(terminalId), "terminalId不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试检测,TerminalDetectionEntity is null
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
     public void testDetectTerminalDetectionEntityIsNull() throws BusinessException {
         String terminalId = "123";
-        
+
         new Expectations() {
             {
                 terminalDetectService.findInCurrentDate(anyString);
@@ -373,7 +380,7 @@ public class TerminalOperatorServiceImplTest {
             }
         };
         operatorService.detect(terminalId);
-        
+
         new Verifications() {
             {
                 terminalDetectService.findInCurrentDate(anyString);
@@ -383,9 +390,10 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试检测,正在检测
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
@@ -405,7 +413,7 @@ public class TerminalOperatorServiceImplTest {
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_IS_DOING, e.getKey());
         }
-        
+
         new Verifications() {
             {
                 terminalDetectService.findInCurrentDate(anyString);
@@ -415,10 +423,11 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
-    
+
 
     /**
      * 测试检测,结果发送失败
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
@@ -440,7 +449,7 @@ public class TerminalOperatorServiceImplTest {
             {
                 terminalDetectService.findInCurrentDate(anyString);
                 times = 1;
-                terminalDetectionDAO.save((TerminalDetectionEntity)any);
+                terminalDetectionDAO.save((TerminalDetectionEntity) any);
                 times = 1;
             }
         };
@@ -448,6 +457,7 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试changePassword，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -455,9 +465,10 @@ public class TerminalOperatorServiceImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> operatorService.changePassword(null), "password 不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试changePassword，onlineTerminalIdList为空
+     * 
      * @param aesUtil mock aesUtil
      * @throws BusinessException 异常
      */
@@ -483,7 +494,7 @@ public class TerminalOperatorServiceImplTest {
             }
         };
         operatorService.changePassword(password);
-        
+
         new Verifications() {
             {
                 globalParameterAPI.updateParameter(Constants.RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY, encryptPwd);
@@ -497,9 +508,10 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试changePassword，管理员密码为空
+     * 
      * @param aesUtil mock aesUtil
      * @throws BusinessException 异常
      */
@@ -522,6 +534,7 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试changePassword，DefaultRequestMessageSender为空
+     * 
      * @param aesUtil mock aesUtil
      * @throws BusinessException 异常
      */
@@ -564,9 +577,10 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试changePassword，DefaultRequestMessageSender为空
+     * 
      * @param aesUtil mock aesUtil
      * @throws BusinessException 异常
      */
@@ -611,9 +625,10 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试getTerminalPassword
+     * 
      * @throws BusinessException 异常
      */
     @Test

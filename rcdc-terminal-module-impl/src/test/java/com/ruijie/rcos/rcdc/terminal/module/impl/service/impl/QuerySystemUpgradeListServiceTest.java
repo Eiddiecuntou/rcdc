@@ -29,10 +29,10 @@ public class QuerySystemUpgradeListServiceTest {
 
     @Tested
     private QuerySystemUpgradeListService service;
-    
+
     @Injectable
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
-    
+
     /**
      * 测试getDefaultDataSort
      */
@@ -42,15 +42,16 @@ public class QuerySystemUpgradeListServiceTest {
         assertEquals("createTime", defaultDataSort.getSortField());
         assertEquals(Direction.DESC, defaultDataSort.getDirection());
     }
-    
+
     /**
      * 测试mappingField
+     * 
      * @param entityFieldMapper mock对象
      */
     @Test
     public void testMappingField(@Mocked EntityFieldMapper entityFieldMapper) {
         service.mappingField(entityFieldMapper);
-        
+
         new Verifications() {
             {
                 entityFieldMapper.mapping("packageId", "upgradePackageId");
@@ -60,16 +61,17 @@ public class QuerySystemUpgradeListServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试find，specification为null
+     * 
      * @param pageable mock对象
      * @param page mock对象
      */
     @Test
     public void testFindSpecificationIsNull(@Mocked Pageable pageable, @Mocked Page<TerminalSystemUpgradeEntity> page) {
         Specification<TerminalSystemUpgradeEntity> specification = null;
-        
+
         new Expectations() {
             {
                 terminalSystemUpgradeDAO.findAll(specification, pageable);
@@ -86,17 +88,18 @@ public class QuerySystemUpgradeListServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试find
+     * 
      * @param specification mock对象
      * @param pageable mock对象
      * @param page mock对象
      */
     @Test
-    public void testFind(@Mocked Specification<TerminalSystemUpgradeEntity> specification,
-            @Mocked Pageable pageable, @Mocked Page<TerminalSystemUpgradeEntity> page) {
-        
+    public void testFind(@Mocked Specification<TerminalSystemUpgradeEntity> specification, @Mocked Pageable pageable,
+            @Mocked Page<TerminalSystemUpgradeEntity> page) {
+
         new Expectations() {
             {
                 terminalSystemUpgradeDAO.findAll(specification, pageable);

@@ -52,7 +52,7 @@ public class CollectLogCacheManager {
      * 更新缓存
      *
      * @param terminalId 终端id
-     * @param state      缓存转态
+     * @param state 缓存转态
      */
     public void updateState(String terminalId, CollectLogStateEnums state) {
         Assert.hasText(terminalId, "terminalId不能为空");
@@ -63,8 +63,8 @@ public class CollectLogCacheManager {
     /**
      * 更新缓存
      *
-     * @param terminalId  终端id
-     * @param state       终端状态
+     * @param terminalId 终端id
+     * @param state 终端状态
      * @param logFileName 日志上传成功后记录日志文件名称
      */
     public void updateState(String terminalId, CollectLogStateEnums state, String logFileName) {

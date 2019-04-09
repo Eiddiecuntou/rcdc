@@ -42,10 +42,10 @@ public class TerminalComponentUpgradeCacheInitTest {
 
     @Tested
     private TerminalComponentUpgradeCacheInit init;
-    
+
     @Injectable
     private ComponentUpdateListCacheManager cacheManager;
-    
+
     /**
      * 测试safeInit,upgradeDirectory不是目录
      */
@@ -65,7 +65,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit,subfileArr为空
      */
@@ -76,7 +76,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 return new File[0];
@@ -90,7 +90,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit,subFile不是目录
      */
@@ -107,7 +107,7 @@ public class TerminalComponentUpgradeCacheInitTest {
                 }
                 return false;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[2];
@@ -124,7 +124,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit,updateListFile不是文件
      */
@@ -135,7 +135,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[2];
@@ -143,7 +143,7 @@ public class TerminalComponentUpgradeCacheInitTest {
                 fileArr[1] = new File("/2");
                 return fileArr;
             }
-            
+
             @Mock
             public boolean isFile() {
                 return false;
@@ -157,9 +157,10 @@ public class TerminalComponentUpgradeCacheInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit,IOException
+     * 
      * @param utils mock FileUtils
      * @throws IOException 异常
      */
@@ -170,7 +171,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[2];
@@ -178,16 +179,16 @@ public class TerminalComponentUpgradeCacheInitTest {
                 fileArr[1] = new File("/2");
                 return fileArr;
             }
-            
+
             @Mock
             public boolean isFile() {
                 return true;
             }
         };
-        
+
         new Expectations() {
             {
-                FileUtils.readFileToString((File)any, Charset.forName("UTF-8"));
+                FileUtils.readFileToString((File) any, Charset.forName("UTF-8"));
                 result = new IOException();
             }
         };
@@ -199,9 +200,10 @@ public class TerminalComponentUpgradeCacheInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit,componentVersionList为空
+     * 
      * @param utils mock FileUtils
      * @throws IOException 异常
      */
@@ -212,7 +214,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[2];
@@ -220,7 +222,7 @@ public class TerminalComponentUpgradeCacheInitTest {
                 fileArr[1] = new File("/2");
                 return fileArr;
             }
-            
+
             @Mock
             public boolean isFile() {
                 return true;
@@ -231,7 +233,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         String updatelistStr = JSONObject.toJSONString(dto);
         new Expectations() {
             {
-                FileUtils.readFileToString((File)any, Charset.forName("UTF-8"));
+                FileUtils.readFileToString((File) any, Charset.forName("UTF-8"));
                 result = updatelistStr;
             }
         };
@@ -246,6 +248,7 @@ public class TerminalComponentUpgradeCacheInitTest {
 
     /**
      * 测试safeInit,platformArrStr为空
+     * 
      * @param utils mock FileUtils
      * @throws IOException 异常
      */
@@ -256,7 +259,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[2];
@@ -264,7 +267,7 @@ public class TerminalComponentUpgradeCacheInitTest {
                 fileArr[1] = new File("/2");
                 return fileArr;
             }
-            
+
             @Mock
             public boolean isFile() {
                 return true;
@@ -277,7 +280,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         String updatelistStr = JSONObject.toJSONString(dto);
         new Expectations() {
             {
-                FileUtils.readFileToString((File)any, Charset.forName("UTF-8"));
+                FileUtils.readFileToString((File) any, Charset.forName("UTF-8"));
                 result = updatelistStr;
             }
         };
@@ -289,9 +292,10 @@ public class TerminalComponentUpgradeCacheInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit,platformStr为空或非法平台信息
+     * 
      * @param utils mock FileUtils
      * @throws IOException 异常
      */
@@ -302,7 +306,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[2];
@@ -310,7 +314,7 @@ public class TerminalComponentUpgradeCacheInitTest {
                 fileArr[1] = new File("/2");
                 return fileArr;
             }
-            
+
             @Mock
             public boolean isFile() {
                 return true;
@@ -325,7 +329,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         String updatelistStr = JSONObject.toJSONString(dto);
         new Expectations() {
             {
-                FileUtils.readFileToString((File)any, Charset.forName("UTF-8"));
+                FileUtils.readFileToString((File) any, Charset.forName("UTF-8"));
                 result = updatelistStr;
             }
         };
@@ -337,9 +341,10 @@ public class TerminalComponentUpgradeCacheInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit,
+     * 
      * @param utils mock FileUtils
      * @throws IOException 异常
      */
@@ -350,7 +355,7 @@ public class TerminalComponentUpgradeCacheInitTest {
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[2];
@@ -358,7 +363,7 @@ public class TerminalComponentUpgradeCacheInitTest {
                 fileArr[1] = new File("/2");
                 return fileArr;
             }
-            
+
             @Mock
             public boolean isFile() {
                 return true;
@@ -374,7 +379,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = new HashMap<>();
         new Expectations() {
             {
-                FileUtils.readFileToString((File)any, Charset.forName("UTF-8"));
+                FileUtils.readFileToString((File) any, Charset.forName("UTF-8"));
                 result = updatelistStr;
                 cacheManager.getUpdateListCaches();
                 result = caches;

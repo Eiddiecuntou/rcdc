@@ -19,17 +19,17 @@ public enum CbbTerminalComponentUpgradeResultEnums {
      * 不支持升级
      */
     NOT_SUPPORT(1),
-    
+
     /**
      * 开始升级
      */
     START(2),
-    
+
     /**
      * 升级未就绪
      */
     PREPARING(3);
-    
+
     private int result;
 
     CbbTerminalComponentUpgradeResultEnums(int result) {
@@ -39,5 +39,5 @@ public enum CbbTerminalComponentUpgradeResultEnums {
     public int getResult() {
         return result;
     }
-    
+
 }
