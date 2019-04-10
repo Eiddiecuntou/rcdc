@@ -21,16 +21,6 @@ public interface BusinessKey {
     String RCDC_COMMON_REQUEST_PARAM_ERROR = "rcdc_common_request_param_error";
     
     /**
-     * 下载终端日志成功日志
-     */
-    String RCDC_TERMINAL_DOWNLOAD_TERMINAL_LOG_SUCCESS_LOG = "rcdc_terminal_download_terminal_log_success_log";
-
-    /**
-     * 下载终端日志失败日志
-     */
-    String RCDC_TERMINAL_DOWNLOAD_TERMINAL_LOG_FAIL_LOG = "rcdc_terminal_download_terminal_log_fail_log";
-
-    /**
      * 上传终端系统升级包成功日志
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG =
@@ -47,6 +37,11 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FILE_NAME_LENGTH_EXCEED =
             "rcdc_terminal_system_upgrade_package_upload_file_name_length_exceed";
+    
+    /**
+     * 上传升级包校验未通过
+     */
+    String RCDC_PACKAGE_UPLOAD_NOT_ALLOWED = "rcdc_package_upload_not_allowed";
 
 
     /**
@@ -98,6 +93,16 @@ public interface BusinessKey {
      * 批量追加终端系统升级任务项失败
      */
     String RCDC_ADD_UPGRADE_TERMINAL_RESULT_FAIL = "rcdc_add_upgrade_terminal_result_fail";
+    
+    /**
+     * 追加单条终端升级成功
+     */
+    String RCDC_ADD_UPGRADE_TERMINAL_SUCCESS = "rcdc_add_upgrade_terminal_success";
+    
+    /**
+     * 追加单条终端升级失败
+     */
+    String RCDC_ADD_UPGRADE_TERMINAL_FAIL = "rcdc_add_upgrade_terminal_fail";
     
     
     
@@ -152,12 +157,6 @@ public interface BusinessKey {
     String RCDC_CANCEL_UPGRADE_TERMINAL_FAIL = "rcdc_cancel_upgrade_terminal_fail";
     
     /**
-     * 不存在可取消的升级终端
-     */
-    String RCDC_CANCEL_UPGRADE_TERMINAL_NONE = "rcdc_cancel_upgrade_terminal_none";
-    
-    
-    /**
      * 批量重试终端升级任务项名称
      */
     String RCDC_RETRY_UPGRADE_TERMINAL_ITEM_NAME = "rcdc_retry_upgrade_terminal_item_name";
@@ -207,11 +206,6 @@ public interface BusinessKey {
      * 重试终端系统升级失败（单条）
      */
     String RCDC_RETRY_UPGRADE_TERMINAL_FAIL = "rcdc_retry_upgrade_terminal_fail";
-    
-    /**
-     * 不存在可重试的升级终端
-     */
-    String RCDC_RETRY_UPGRADE_TERMINAL_NONE = "rcdc_retry_upgrade_terminal_none";
     
     /** 关闭终端升级包[{0}]升级任务成功 */
     String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_SUCCESS = "rcdc_upgrade_terminal_task_close_success";

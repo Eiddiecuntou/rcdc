@@ -169,7 +169,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         }
 
         if (detection.getDetectState() == DetectStateEnums.CHECKING) {
-            return;
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_DETECT_IS_DOING);
         }
 
         // 删除原记录，重新添加检测记录

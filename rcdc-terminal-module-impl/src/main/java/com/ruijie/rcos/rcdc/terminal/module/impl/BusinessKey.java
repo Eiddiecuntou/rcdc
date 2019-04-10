@@ -115,6 +115,11 @@ public interface BusinessKey {
             "rcdc_terminal_system_upgrade_package_file_operate_fail";
     
     /**
+     * 系统刷机包磁盘空间不足
+     */
+    String RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH = "rcdc_terminal_upgrade_package_disk_space_not_enough";
+    
+    /**
      * 存在进行中的升级任务，不允许删除
      */
     String RCDC_TERMINAL_UPGRADE_PACKAGE_HAS_RUNNING_TASK_NOT_ALLOW_DELETE = "rcdc_terminal_upgrade_package_has_running_task_not_allow_delete";
@@ -198,6 +203,11 @@ public interface BusinessKey {
      * 终端检测状态-检测失败
      */
     String RCDC_TERMINAL_DETECT_STATE_ERROR = "rcdc_terminal_detect_state_error";
+    
+    /**
+     * 终端检测正在进行中
+     */
+    String RCDC_TERMINAL_DETECT_IS_DOING = "rcdc_terminal_detect_is_doing";
 
     String RCDC_TERMINAL_SUCCESS_CONNECT_LOG = "rcdc_terminal_success_connect_log";
 

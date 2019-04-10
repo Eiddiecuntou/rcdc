@@ -54,6 +54,7 @@ originDirName = "origin"
 tempDirName = "temp"
 baseDirName = "base"
 
+bsdiffCmdPath = "/data/web/bsdiff-4.3/bsdiff"
 
 # 入口函数
 def update():
@@ -66,7 +67,6 @@ def update():
         return "fail"
     except Exception as e:
         logger.error("install failed with exception : %s" % e.message)
-        print e
         return "fail"
      
     return "success"
@@ -205,6 +205,7 @@ def completeUpdatePackage(originPath, tempDir, newComponentList, oldComponentLis
     # 差异包制作，调用shell命令，服务器系统要装bsdiff, 生成差异包指令 bsdiff oldfile newfile patchfile
     for newComp in newComponentList:
         newVersion = newComp['version']
+        newComponentMd5 = newComp['md5']
         componentName = newComp['name']
 
         componentFileName = newComp['completePackageName']
@@ -213,28 +214,34 @@ def completeUpdatePackage(originPath, tempDir, newComponentList, oldComponentLis
         oldVersion = None
         oldComponentFileName = None
         if oldComponentList != None:
-            oldVersion, oldComponentFileName = needMakeDiffFile(componentName, newVersion, oldComponentList)
+            oldVersion, oldComponentFileName,oldComponentFileMd5 = needMakeDiffFile(componentName, newVersion, newComponentMd5, oldComponentList)
             
         if oldVersion != None:
             logger.info("start make component[%s] vesion[%s] to version[%s] diff file" % (componentName, oldVersion, newVersion))
             patchfileName, md5 = doBsdiff(originPath, tempDir, componentName, componentFileName, oldComponentFileName)
             newComp['incrementalPackageName'] = patchfileName
             newComp['incrementalPackageMd5'] = md5
+            newComp['basePackageName'] = oldComponentFileName
+            newComp['basePackageMd5'] = oldComponentFileMd5
 
 
-def needMakeDiffFile(componentName, newVersion, oldComponentList):
+def needMakeDiffFile(componentName, newVersion, newComponentMd5, oldComponentList):
     for oldComp in oldComponentList:
         # 组件名不同跳过
         if componentName != oldComp['name']:
             continue
-        # 版本相同则跳过
+        
+        # 版本不相同则需制作差异包
         oldVersion = oldComp['version']
-        if newVersion == oldVersion:
-            continue                
-        # 开始制作差异包
-        return oldVersion,oldComp['completePackageName']
+        if newVersion != oldVersion:
+            return oldVersion,oldComp['completePackageName'],oldComp['md5'] 
+        
+        #版本相同，MD5不同也需制作差异包
+        oldComponentMd5 = oldComp['md5']
+        if newComponentMd5 != oldComponentMd5:
+            return oldVersion,oldComp['completePackageName'],oldComp['md5']    
     
-    return None,None
+    return None,None,None
 
 
 def getFTPRelatePath(torrentPath):
@@ -286,7 +293,7 @@ def doBsdiff(originPath, tempDir, componentName, componentFileName, oldComponent
     oldfilePath = '%s%s%s%s' % (originPath, RAINOS_UPDATE_FULL_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, oldComponentFileName)
     patchfileName = '%s%s' % (componentName, DIFF_COMPONENT_SUFFIX)
     patchfilePath = '%s%s%s%s' % (tempDir, RAINOS_UPDATE_DIFF_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, patchfileName)
-    shellCmd = "bsdiff %s %s %s" % (oldfilePath, newfilePath, patchfilePath)
+    shellCmd = "%s %s %s %s" % (bsdiffCmdPath, oldfilePath, newfilePath, patchfilePath)
     shellCall(shellCmd)
     md5 = md5sum(patchfilePath)
     return patchfileName, md5

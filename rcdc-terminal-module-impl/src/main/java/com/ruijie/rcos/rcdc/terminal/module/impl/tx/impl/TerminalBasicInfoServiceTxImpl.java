@@ -6,6 +6,7 @@ import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -31,6 +32,9 @@ public class TerminalBasicInfoServiceTxImpl implements TerminalBasicInfoServiceT
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
+    
+    @Autowired
+    private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
 
     @Override
     public void deleteTerminal(String terminalId) throws BusinessException {
@@ -39,6 +43,7 @@ public class TerminalBasicInfoServiceTxImpl implements TerminalBasicInfoServiceT
         LOGGER.warn("delete terminal basic info and detection info, terminalId[{}]", terminalId);
         deleteTerminalInfo(terminalId);
         deleteTerminalDetection(terminalId);
+        deleteTerminalUpgradeRecord(terminalId);
     }
 
     private void deleteTerminalInfo(String terminalId) throws BusinessException {
@@ -53,6 +58,11 @@ public class TerminalBasicInfoServiceTxImpl implements TerminalBasicInfoServiceT
     private void deleteTerminalDetection(String terminalId) {
         LOGGER.warn("delete terminal detection info, terminalId[{}]", terminalId);
         detectionDAO.deleteByTerminalId(terminalId);
+    }
+    
+    private void deleteTerminalUpgradeRecord(String terminalId) {
+        LOGGER.warn("delete terminal upgrade info, terminalId[{}]", terminalId);
+        systemUpgradeTerminalDAO.deleteByTerminalId(terminalId);
     }
 
 }

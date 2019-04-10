@@ -72,4 +72,12 @@ public interface TerminalSystemUpgradeTerminalDAO
     List<TerminalSystemUpgradeTerminalEntity> findByTerminalIdAndState(String terminalId,
             CbbSystemUpgradeStateEnums state);
 
+    /**
+     * 删除终端刷机记录
+     * 
+     * @param terminalId 终端id
+     * @return 删除记录数
+     */
+    int deleteByTerminalId(String terminalId);
+
 }

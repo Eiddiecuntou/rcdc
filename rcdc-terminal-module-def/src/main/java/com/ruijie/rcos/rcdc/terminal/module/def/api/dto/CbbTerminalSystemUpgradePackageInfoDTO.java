@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import java.util.Date;
 import java.util.UUID;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
@@ -30,7 +31,7 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
     
     private SystemUpgradeDistributionModeEnums distributionMode;
     
-    private Boolean isUpgrading;
+    private CbbSystemUpgradeTaskStateEnums state;
     
     private UUID upgradeTaskId;
     
@@ -76,12 +77,12 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
         this.distributionMode = distributionMode;
     }
 
-    public Boolean getIsUpgrading() {
-        return isUpgrading;
+    public CbbSystemUpgradeTaskStateEnums getState() {
+        return state;
     }
 
-    public void setIsUpgrading(Boolean isUpgrading) {
-        this.isUpgrading = isUpgrading;
+    public void setState(CbbSystemUpgradeTaskStateEnums state) {
+        this.state = state;
     }
 
     public UUID getUpgradeTaskId() {

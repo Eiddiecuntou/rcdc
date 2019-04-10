@@ -421,9 +421,10 @@ public class CbbTerminalOperatorAPIImplTest {
     
     /**
      * 测试getCollectLog，CollectLogCache为空
+     * @throws BusinessException 
      */
     @Test
-    public void testGetCollectLogCollectLogCacheIsNull() {
+    public void testGetCollectLogCollectLogCacheIsNull() throws BusinessException {
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         request.setTerminalId("123");
         new Expectations() {
@@ -432,12 +433,10 @@ public class CbbTerminalOperatorAPIImplTest {
                 result = null;
             }
         };
-        try {
-            terminalOperatorAPI.getCollectLog(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST, e.getKey());
-        }
+
+        CbbTerminalCollectLogStatusResponse collectLog = terminalOperatorAPI.getCollectLog(request);
+        assertEquals(CollectLogStateEnums.FAILURE, collectLog.getState());
+    
     }
 
     /**

@@ -25,6 +25,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoRespon
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -252,8 +253,8 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     private CollectLogCache getCollectLogCache(String terminalId) throws BusinessException {
         CollectLogCache cache = collectLogCacheManager.getCache(terminalId);
         if (cache == null) {
-            LOGGER.warn("收集日志缓存中不存在日志文件, 终端id[{}]", terminalId);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
+            // 日志不存在，构造失败状态信息
+            cache = new CollectLogCache(CollectLogStateEnums.FAILURE);
         }
         return cache;
     }

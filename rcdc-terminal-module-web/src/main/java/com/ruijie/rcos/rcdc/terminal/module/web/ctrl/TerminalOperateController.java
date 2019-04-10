@@ -105,7 +105,7 @@ public class TerminalOperateController {
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
                 optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CLOSE_FAIL_LOG, terminalId, ex.getI18nMessage());
-                return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_CLOSE_SEND_FAIL, new String[] {});
+                return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_CLOSE_SEND_FAIL, new String[] {ex.getI18nMessage()});
             } else {
                 throw new IllegalStateException("发送关闭终端命令异常，终端为[" + terminalId + "]", e);
             }
@@ -162,7 +162,7 @@ public class TerminalOperateController {
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
                 optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_RESTART_FAIL_LOG, terminalId, ex.getI18nMessage());
-                return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_RESTART_SEND_FAIL, new String[] {});
+                return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_RESTART_SEND_FAIL, new String[] {ex.getI18nMessage()});
             } else {
                 throw new IllegalStateException("重启终端异常，terminalId为[" + terminalId + "]", e);
             }
@@ -194,7 +194,7 @@ public class TerminalOperateController {
         } catch (BusinessException e) {
             LOGGER.error("编辑终端管理员密码失败", e);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_CHANGE_PWD_FAIL_LOG, e.getI18nMessage());
-            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL, new String[] {});
+            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_MODULE_OPERATE_FAIL, new String[] {e.getI18nMessage()});
         }
     }
 
@@ -245,6 +245,7 @@ public class TerminalOperateController {
         Assert.notNull(request, "request不能为null");
 
         CbbTerminalLogNameRequest logRequest = new CbbTerminalLogNameRequest();
+        logRequest.setLogName(request.getLogName());
         CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(logRequest);
 
         InputStream inputStream = new FileInputStream(new File(response.getLogFilePath()));

@@ -19,8 +19,8 @@ public class TerminalOffLineException extends BusinessException {
      */
     private static final long serialVersionUID = 4403025956187395728L;
 
-    public TerminalOffLineException() {
-        super(BusinessKey.RCDC_TERMINAL_OFFLINE, new String[] {});
+    public TerminalOffLineException(Exception ex) {
+        super(BusinessKey.RCDC_TERMINAL_OFFLINE, ex);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request;
 
 import java.util.UUID;
-import org.springframework.lang.Nullable;
+import com.ruijie.rcos.sk.base.annotation.NotEmpty;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 
@@ -19,7 +19,7 @@ public class CancelTerminalSystemUpgradeWebRequest implements WebRequest {
     /**
      * 终端id数组
      */
-    @Nullable
+    @NotEmpty
     private String[] terminalIdArr;
 
     /**
@@ -27,9 +27,6 @@ public class CancelTerminalSystemUpgradeWebRequest implements WebRequest {
      */
     @NotNull
     private UUID upgradeTaskId;
-
-    @NotNull
-    private Boolean isCancelAll;
 
     public String[] getTerminalIdArr() {
         return terminalIdArr;
@@ -45,14 +42,6 @@ public class CancelTerminalSystemUpgradeWebRequest implements WebRequest {
 
     public void setUpgradeTaskId(UUID upgradeTaskId) {
         this.upgradeTaskId = upgradeTaskId;
-    }
-
-    public Boolean getIsCancelAll() {
-        return isCancelAll;
-    }
-
-    public void setIsCancelAll(Boolean isCancelAll) {
-        this.isCancelAll = isCancelAll;
     }
 
 }
