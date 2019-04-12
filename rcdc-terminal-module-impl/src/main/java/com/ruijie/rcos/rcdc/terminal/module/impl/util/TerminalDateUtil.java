@@ -23,7 +23,7 @@ public class TerminalDateUtil {
      */
     public static Date getDayStart(Date date) {
         Assert.notNull(date, "date can not be null");
-        
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -41,7 +41,7 @@ public class TerminalDateUtil {
      */
     public static Date getDayEnd(Date date) {
         Assert.notNull(date, "date can not be null");
-        
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -62,13 +62,13 @@ public class TerminalDateUtil {
      */
     public static Date addDay(Date date, int day) {
         Assert.notNull(date, "date can not be null");
-        
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_MONTH, day);
         return calendar.getTime();
     }
-    
+
     /**
      * 获取指定秒后的时间
      * 
@@ -78,22 +78,23 @@ public class TerminalDateUtil {
      */
     public static Date addSecond(Date date, int second) {
         Assert.notNull(date, "date can not be null");
-        
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.SECOND, second);
         return calendar.getTime();
     }
-    
+
     /**
      * 判断时间是否超时
+     * 
      * @param date 时间
      * @param timeoutSecond 超时时间
      * @return 是否超时
      */
     public static boolean isTimeout(Date date, int timeoutSecond) {
         Assert.notNull(date, "date can not be null");
-        
+
         Date now = new Date();
         Date timeoutDate = addSecond(date, timeoutSecond);
         return timeoutDate.before(now);

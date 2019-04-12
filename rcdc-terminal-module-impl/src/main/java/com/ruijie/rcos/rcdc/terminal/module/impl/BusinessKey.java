@@ -15,7 +15,7 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_NOT_FOUND_TERMINAL = "rcdc_terminal_not_found_terminal";
 
-    /**终端在线状态不允许删除*/
+    /** 终端在线状态不允许删除 */
     String RCDC_TERMINAL_ONLINE_CANNOT_DELETE = "rcdc_terminal_online_cannot_delete";
 
     /** 终端离线状态不能进行关闭操作 */
@@ -44,7 +44,7 @@ public interface BusinessKey {
      * 不存在日志文件
      */
     String RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST = "rcdc_terminal_collect_log_not_exist";
-    
+
     /**
      * 终端管理员密码记录不存在
      */
@@ -54,7 +54,7 @@ public interface BusinessKey {
      * 上传系统升级文件类型错误
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR = "rcdc_terminal_system_upgrade_upload_file_type_error";
-    
+
     /**
      * 升级包类型不支持
      */
@@ -68,8 +68,7 @@ public interface BusinessKey {
     /**
      * 上传系统升级文件完整性校验失败
      */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_COMPLETE_CHECK_FAIL =
-            "rcdc_terminal_system_upgrade_upload_file_complete_check_fail";
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_COMPLETE_CHECK_FAIL = "rcdc_terminal_system_upgrade_upload_file_complete_check_fail";
 
     /**
      * 系统指令执行失败
@@ -80,7 +79,7 @@ public interface BusinessKey {
      * 上传系统升级文件不正确
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_INCORRECT = "rcdc_terminal_system_upgrade_upload_file_incorrect";
-    
+
     /**
      * 系统升级包正在上传中
      */
@@ -105,20 +104,18 @@ public interface BusinessKey {
     /**
      * 系统升级包版本文件不正确
      */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT =
-            "rcdc_terminal_system_upgrade_package_version_file_incorrect";
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT = "rcdc_terminal_system_upgrade_package_version_file_incorrect";
 
     /**
      * 系统刷机包路径不存在
      */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_OPERATE_FAIL =
-            "rcdc_terminal_system_upgrade_package_file_operate_fail";
-    
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_OPERATE_FAIL = "rcdc_terminal_system_upgrade_package_file_operate_fail";
+
     /**
      * 系统刷机包磁盘空间不足
      */
     String RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH = "rcdc_terminal_upgrade_package_disk_space_not_enough";
-    
+
     /**
      * 存在进行中的升级任务，不允许删除
      */
@@ -128,19 +125,19 @@ public interface BusinessKey {
      * 刷机任务不存在
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_NOT_EXIST = "rcdc_terminal_system_upgrade_task_not_exist";
-    
+
     /**
      * 刷机任务已关闭
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_HAS_CLOSED = "rcdc_terminal_system_upgrade_task_has_closed";
-    
+
     /**
-     *刷机任务终端已添加
+     * 刷机任务终端已添加
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_EXIST = "rcdc_terminal_system_upgrade_terminal_exist";
-    
+
     /**
-     *刷机任务终端已添加
+     * 刷机任务终端已添加
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_NOT_EXIST = "rcdc_terminal_system_upgrade_terminal_not_exist";
 
@@ -158,17 +155,17 @@ public interface BusinessKey {
      * 刷机终端状态不可取消
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_CANCEL = "rcdc_terminal_system_upgrade_terminal_state_not_allow_cancel";
-    
+
     /**
      * 刷机终端状态不可重试
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_RETRY = "rcdc_terminal_system_upgrade_terminal_state_not_allow_retry";
-    
+
     /**
      * 终端升级信息发送失败
      */
     String RCDC_TERMINAL_UPGRADE_MESSAGE_SEND_FAIL = "rcdc_terminal_upgrade_message_send_fail";
-    
+
     /**
      * 文件不存在
      */
@@ -183,27 +180,27 @@ public interface BusinessKey {
      * 收集终端日志记录不存在
      */
     String RCDC_TERMINAL_COLLECT_LOG_CACHE_NOT_EXIST = "rcdc_terminal_collect_log_cache_not_exist";
-    
+
     /**
      * 终端检测超时处理定时任务
      */
     String RCDC_TERMINAL_QUARTZ_DETECT_TIME_OUT = "rcdc_terminal_quartz_detect_time_out";
-    
+
     /**
      * 终端检测状态-检测中
      */
     String RCDC_TERMINAL_DETECT_STATE_CHECKING = "rcdc_terminal_detect_state_checking";
-    
+
     /**
      * 终端检测状态-检测成功
      */
     String RCDC_TERMINAL_DETECT_STATE_SUCCESS = "rcdc_terminal_detect_state_success";
-    
+
     /**
      * 终端检测状态-检测失败
      */
     String RCDC_TERMINAL_DETECT_STATE_ERROR = "rcdc_terminal_detect_state_error";
-    
+
     /**
      * 终端检测正在进行中
      */

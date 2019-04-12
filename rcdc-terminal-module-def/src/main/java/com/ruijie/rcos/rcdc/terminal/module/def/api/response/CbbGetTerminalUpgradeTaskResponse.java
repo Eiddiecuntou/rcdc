@@ -16,7 +16,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 public class CbbGetTerminalUpgradeTaskResponse extends DefaultResponse {
 
     private CbbSystemUpgradeTaskDTO upgradeTask;
-    
+
     public CbbGetTerminalUpgradeTaskResponse(CbbSystemUpgradeTaskDTO upgradeTask) {
         Assert.notNull(upgradeTask, "upgradeTask can not be null");
         this.upgradeTask = upgradeTask;
@@ -29,5 +29,5 @@ public class CbbGetTerminalUpgradeTaskResponse extends DefaultResponse {
     public void setUpgradeTask(CbbSystemUpgradeTaskDTO upgradeTask) {
         this.upgradeTask = upgradeTask;
     }
-    
+
 }

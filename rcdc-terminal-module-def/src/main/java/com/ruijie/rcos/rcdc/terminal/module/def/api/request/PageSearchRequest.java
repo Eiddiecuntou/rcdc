@@ -73,16 +73,16 @@ public class PageSearchRequest extends DefaultPageRequest {
             this.setMatchEqualArr(matchEqualArr);
         }
     }
-    
+
     protected MatchEqual[] exactMatchConvert(ExactMatch[] exactMatchArr) {
-        Assert.notNull(exactMatchArr , "exactMatchArr must not be null");
+        Assert.notNull(exactMatchArr, "exactMatchArr must not be null");
         MatchEqual[] matchEqualArr = new MatchEqual[exactMatchArr.length];
         for (int i = 0; i < exactMatchArr.length; i++) {
             ExactMatch exactMatch = exactMatchArr[i];
             MatchEqual matchEqual = new MatchEqual(exactMatch.getName(), exactMatch.getValueArr());
             matchEqualArr[i] = matchEqual;
         }
-        
+
         return matchEqualArr;
     }
 

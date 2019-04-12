@@ -14,7 +14,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskSt
  * @author nt
  */
 public class CbbSystemUpgradeTaskDTO {
-    
+
     private UUID id;
 
     private String packageVersion;

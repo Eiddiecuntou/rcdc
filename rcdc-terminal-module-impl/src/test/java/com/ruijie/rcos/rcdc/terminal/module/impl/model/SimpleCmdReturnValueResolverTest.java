@@ -22,9 +22,10 @@ public class SimpleCmdReturnValueResolverTest {
 
     @Tested
     private SimpleCmdReturnValueResolver resolver;
-    
+
     /**
      * 测试resolve，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -33,7 +34,7 @@ public class SimpleCmdReturnValueResolverTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("dv", null, "sds"), "exitValue can not be empty");
         assertTrue(true);
     }
-    
+
     /**
      * 测试resolve，exitValue不为0
      */
@@ -46,9 +47,10 @@ public class SimpleCmdReturnValueResolverTest {
             assertEquals(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e.getKey());
         }
     }
-    
+
     /**
      * 测试resolve，
+     * 
      * @throws BusinessException 异常
      */
     @Test

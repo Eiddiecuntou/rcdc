@@ -19,7 +19,7 @@ import mockit.integration.junit4.JMockit;
  */
 @RunWith(JMockit.class)
 public class VOBeanTest {
-    
+
     /**
      * 测试CreateSystemUpgradeTaskContentVO
      */
@@ -29,7 +29,7 @@ public class VOBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalDetectListContentVO
      */

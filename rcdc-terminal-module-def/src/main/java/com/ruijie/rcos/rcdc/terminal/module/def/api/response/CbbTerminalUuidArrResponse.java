@@ -23,5 +23,5 @@ public class CbbTerminalUuidArrResponse extends DefaultResponse {
     public void setTerminalUUIDArr(UUID[] terminalUUIDArr) {
         this.terminalUUIDArr = terminalUUIDArr;
     }
-    
+
 }

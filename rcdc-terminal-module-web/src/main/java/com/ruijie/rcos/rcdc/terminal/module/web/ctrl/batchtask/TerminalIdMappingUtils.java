@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.web.ctrl.batchtask;
 
 import org.springframework.util.Assert;
-
 import java.util.*;
 
 /**

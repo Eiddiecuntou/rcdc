@@ -27,7 +27,7 @@ public class ResponseBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalLogName
      */
@@ -37,7 +37,7 @@ public class ResponseBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalPassword
      */

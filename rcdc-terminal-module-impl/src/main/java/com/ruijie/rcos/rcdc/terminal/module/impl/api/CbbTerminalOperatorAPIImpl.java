@@ -118,14 +118,13 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request)
-            throws BusinessException {
+    public DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalDetectionEntity> page = detectService.pageQuery(request);
         if (page.getNumberOfElements() == 0) {
-            LOGGER.debug("detect page query returns 0 element, detect date[{}], page[{}], limit[{}]", request.getDate(),
-                    request.getPage(), request.getLimit());
+            LOGGER.debug("detect page query returns 0 element, detect date[{}], page[{}], limit[{}]", request.getDate(), request.getPage(),
+                    request.getLimit());
             return buildEmptyResponse(page.getTotalElements());
         }
 
@@ -138,8 +137,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             TerminalDetectionEntity detectionEntity = detectionList.get(i);
             detectionEntity.convertTo(detectDTO);
             setThreshold(detectDTO);
-            TerminalEntity terminalEntity =
-                    terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
+            TerminalEntity terminalEntity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(detectionEntity.getTerminalId());
             if (terminalEntity != null) {
                 detectDTO.setIp(terminalEntity.getIp());
                 detectDTO.setTerminalName(terminalEntity.getTerminalName());
@@ -209,8 +207,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalLogNameRequest request)
-            throws BusinessException {
+    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalLogNameRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         String logFileName = request.getLogName();

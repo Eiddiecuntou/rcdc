@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
 import com.ruijie.rcos.sk.base.batch.BatchTaskItem;
 import com.ruijie.rcos.sk.base.batch.BatchTaskItemResult;
@@ -45,26 +44,28 @@ public class StartDetectBatchtaskHandlerTest {
 
     @Injectable
     private CbbTerminalOperatorAPI terminalOperatorAPI;
-    
+
     @Injectable
     private Iterator<? extends BatchTaskItem> iterator;
-    
+
     /**
      * 测试processItem,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testProcessItemArgumentIsNull() throws Exception {
         Map<UUID, String> idMap = new HashMap<>();
         TerminalDetectController controller = new TerminalDetectController();
-        TerminalDetectController.StartDetectBatchtaskHandler handler = 
+        TerminalDetectController.StartDetectBatchtaskHandler handler =
                 controller.new StartDetectBatchtaskHandler(idMap, terminalOperatorAPI, iterator, optLogRecorder);
         ThrowExceptionTester.throwIllegalArgumentException(() -> handler.processItem(null), "taskItem can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试processItem,
+     * 
      * @param taskItem mock taskItem
      * @throws BusinessException 异常
      */
@@ -72,13 +73,13 @@ public class StartDetectBatchtaskHandlerTest {
     public void testProcessItem(@Mocked BatchTaskItem taskItem) throws BusinessException {
         Map<UUID, String> idMap = new HashMap<>();
         TerminalDetectController controller = new TerminalDetectController();
-        TerminalDetectController.StartDetectBatchtaskHandler handler = 
+        TerminalDetectController.StartDetectBatchtaskHandler handler =
                 controller.new StartDetectBatchtaskHandler(idMap, terminalOperatorAPI, iterator, optLogRecorder);
         BatchTaskItemResult result = handler.processItem(taskItem);
         assertEquals(BatchTaskItemStatus.SUCCESS, result.getItemStatus());
         assertEquals(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, result.getMsgKey());
         new Verifications() {
-            {                
+            {
                 terminalOperatorAPI.detect((CbbTerminalDetectRequest) any);
                 times = 1;
                 optLogRecorder.saveOptLog(anyString, anyString);
@@ -86,9 +87,10 @@ public class StartDetectBatchtaskHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试processItem,检测失败
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -101,7 +103,7 @@ public class StartDetectBatchtaskHandlerTest {
                 result = new BusinessException("key");
             }
         };
-        
+
         new MockUp<BusinessException>() {
             @Mock
             public String getI18nMessage() {
@@ -111,7 +113,7 @@ public class StartDetectBatchtaskHandlerTest {
         Map<UUID, String> idMap = new HashMap<>();
         idMap.put(itemId, "123");
         TerminalDetectController controller = new TerminalDetectController();
-        TerminalDetectController.StartDetectBatchtaskHandler handler = 
+        TerminalDetectController.StartDetectBatchtaskHandler handler =
                 controller.new StartDetectBatchtaskHandler(idMap, terminalOperatorAPI, iterator, optLogRecorder);
         final BatchTaskItemResult resp = handler.processItem(taskItem);
         assertEquals(BatchTaskItemStatus.FAILURE, resp.getItemStatus());
@@ -124,7 +126,7 @@ public class StartDetectBatchtaskHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试onFinish
      */
@@ -132,7 +134,7 @@ public class StartDetectBatchtaskHandlerTest {
     public void testOnFinish() {
         Map<UUID, String> idMap = new HashMap<>();
         TerminalDetectController controller = new TerminalDetectController();
-        TerminalDetectController.StartDetectBatchtaskHandler handler = 
+        TerminalDetectController.StartDetectBatchtaskHandler handler =
                 controller.new StartDetectBatchtaskHandler(idMap, terminalOperatorAPI, iterator, optLogRecorder);
         try {
             handler.onFinish(2, 0);

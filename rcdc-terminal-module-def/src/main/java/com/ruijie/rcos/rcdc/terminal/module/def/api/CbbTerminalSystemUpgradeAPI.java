@@ -39,8 +39,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request)
-            throws BusinessException;
+    CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException;
 
     /**
      * 
@@ -51,8 +50,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalNameResponse addSystemUpgradeTerminal(CbbAddTerminalSystemUpgradeTaskRequest request)
-            throws BusinessException;
+    CbbTerminalNameResponse addSystemUpgradeTerminal(CbbAddTerminalSystemUpgradeTaskRequest request) throws BusinessException;
 
     /**
      * 
@@ -63,8 +61,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultPageResponse<CbbSystemUpgradeTaskDTO> listSystemUpgradeTask(PageSearchRequest request)
-            throws BusinessException;
+    DefaultPageResponse<CbbSystemUpgradeTaskDTO> listSystemUpgradeTask(PageSearchRequest request) throws BusinessException;
 
     /**
      * 获取刷机任务终端列表
@@ -131,7 +128,6 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(CbbGetUpgradeTaskRequest request)
-            throws BusinessException;
+    CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(CbbGetUpgradeTaskRequest request) throws BusinessException;
 
 }

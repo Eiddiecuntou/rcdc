@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 
 import java.util.Date;
-
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +61,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         saveBasicInfo(terminalId, basicInfo);
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        TerminalVersionResultDTO versionResult =
-                componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(), basicInfo.getPlatform());
+        TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(), basicInfo.getPlatform());
         CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, versionResult);
         try {
             LOGGER.debug("response check upgrade : {}", cbbShineMessageRequest.toString());

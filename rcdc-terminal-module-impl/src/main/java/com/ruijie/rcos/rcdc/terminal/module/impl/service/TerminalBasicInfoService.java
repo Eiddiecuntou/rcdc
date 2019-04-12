@@ -16,6 +16,7 @@ public interface TerminalBasicInfoService {
 
     /**
      * 修改终端名称
+     * 
      * @param terminalId 终端id
      * @param terminalName 终端名称
      * @throws BusinessException 业务异常
@@ -24,6 +25,7 @@ public interface TerminalBasicInfoService {
 
     /**
      * 修改终端网络配置
+     * 
      * @param terminalId 终端id
      * @param shineNetworkConfig 终端网络信息配置
      * @throws BusinessException 业务异常
@@ -37,7 +39,7 @@ public interface TerminalBasicInfoService {
      * @param state 终端状态
      */
     void modifyTerminalState(String terminalId, CbbTerminalStateEnums state);
-    
+
     /**
      * 修改终端状态为离线状态
      *

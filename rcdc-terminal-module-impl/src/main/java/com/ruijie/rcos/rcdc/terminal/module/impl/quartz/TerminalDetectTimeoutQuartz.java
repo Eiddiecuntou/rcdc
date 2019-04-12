@@ -41,8 +41,7 @@ public class TerminalDetectTimeoutQuartz implements QuartzTask {
         Date now = new Date();
         int timeoutSecond = Constants.TERMINAL_DETECT_TIMEOUT;
         Date date = TerminalDateUtil.addSecond(now, -timeoutSecond);
-        List<TerminalDetectionEntity> timeoutDetectList =
-                detectionDAO.findByDetectStateAndDetectTimeBefore(DetectStateEnums.CHECKING, date);
+        List<TerminalDetectionEntity> timeoutDetectList = detectionDAO.findByDetectStateAndDetectTimeBefore(DetectStateEnums.CHECKING, date);
         if (CollectionUtils.isEmpty(timeoutDetectList)) {
             LOGGER.debug("no timeout detection");
             return;

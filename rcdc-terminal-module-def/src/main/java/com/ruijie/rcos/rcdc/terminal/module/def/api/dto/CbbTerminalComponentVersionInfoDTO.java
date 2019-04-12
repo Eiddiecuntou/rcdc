@@ -12,72 +12,72 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalResetEnums;
  * @author nt
  */
 public class CbbTerminalComponentVersionInfoDTO {
-    
+
     /**
      * 组件名
      */
     private String name;
-    
+
     /**
      * 组件版本
      */
     private String version;
-    
+
     /**
      * 组件支持类型 idv&vdi 以&分隔
      */
     private String platform;
-    
+
     /**
      * 组件文件MD5
      */
     private String md5;
-    
+
     /**
      * 组件文件名
      */
     private String completePackageName;
-    
+
     /**
      * 差异包文件名
      */
     private String incrementalPackageName;
-    
+
     /**
      * 完整组件文件种子下载路径
      */
     private String completeTorrentUrl;
-    
+
     /**
      * 完整组件文件种子md5
      */
     private String completeTorrentMd5;
-    
+
     /**
      * 差异包文件种子下载路径
      */
     private String incrementalTorrentUrl;
-    
+
     /**
      * 差异包文件种子md5
      */
     private String incrementalTorrentMd5;
-    
+
     /**
      * 差异包文件md5
      */
     private String incrementalPackageMd5;
-    
+
     /**
      * 差异升级基线版本包名称
      */
     private String basePackageName;
-    
+
     /**
      * 差异升级基线版本包md5值
      */
     private String basePackageMd5;
-    
+
     /**
      * 重启标识(NOW/LATER/NOT)
      */

@@ -24,22 +24,22 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskSt
 @Entity
 @Table(name = "t_cbb_sys_upgrade")
 public class TerminalSystemUpgradeEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    
+
     private UUID upgradePackageId;
-    
+
     private String packageVersion;
-    
+
     private String packageName;
-    
+
     private Date createTime;
-    
+
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeTaskStateEnums state;
-    
+
     @Version
     private Integer version;
 
@@ -98,5 +98,5 @@ public class TerminalSystemUpgradeEntity {
     public void setVersion(Integer version) {
         this.version = version;
     }
-    
+
 }

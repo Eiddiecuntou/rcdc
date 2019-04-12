@@ -29,7 +29,7 @@ public class CmdExecuteUtil {
             Process exec = Runtime.getRuntime().exec(cmd);
             ret = exec.waitFor();
         } catch (Exception e) {
-            throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL , e);
+            throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e);
         }
 
         if (ret != 0) {

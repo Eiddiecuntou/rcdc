@@ -28,6 +28,7 @@ public class EntityBeanTest {
 
     /**
      * 测试TerminalDetectionEntity
+     * 
      * @param resolver mock LocaleI18nResolver
      */
     @Test
@@ -35,10 +36,10 @@ public class EntityBeanTest {
         GetSetTester tester = new GetSetTester(TerminalDetectionEntity.class);
         tester.runTest();
         assertTrue(true);
-        
+
         TerminalDetectionEntity entity = new TerminalDetectionEntity();
         entity.setDetectState(DetectStateEnums.SUCCESS);
-        
+
         new Expectations() {
             {
                 LocaleI18nResolver.resolve(DetectStateEnums.SUCCESS.getName());
@@ -57,7 +58,7 @@ public class EntityBeanTest {
         assertEquals(entity.getDetectState().name(), detectDTO.getCheckState().getState());
         assertEquals("msg", detectDTO.getCheckState().getMessage());
     }
-    
+
     /**
      * 测试TerminalEntity
      */
@@ -67,7 +68,7 @@ public class EntityBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalSystemUpgradePackageEntity
      */
@@ -77,7 +78,7 @@ public class EntityBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试ViewUpgradeableTerminalEntity
      */
@@ -87,7 +88,7 @@ public class EntityBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalUpgradeVersionFileInfo
      */
@@ -101,8 +102,8 @@ public class EntityBeanTest {
         info.setPackageName("packageName");
         info.setPackageType(TerminalPlatformEnums.VDI);
         info.setVersion("version");
-        String result = "TerminalUpgradeVersionFileInfo [packageName=packageName, imgName=imgName,"
-                + " version=version, filePath=filePath, packageType=VDI]";
+        String result =
+                "TerminalUpgradeVersionFileInfo [packageName=packageName, imgName=imgName," + " version=version, filePath=filePath, packageType=VDI]";
         assertEquals(result, info.toString());
     }
 }

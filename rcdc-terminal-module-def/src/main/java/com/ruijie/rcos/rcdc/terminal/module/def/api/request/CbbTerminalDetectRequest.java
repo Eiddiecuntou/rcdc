@@ -12,10 +12,10 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @author Jarman
  */
 public class CbbTerminalDetectRequest implements Request {
-   
+
     @NotNull
     private String terminalId;
-    
+
     public CbbTerminalDetectRequest(String terminalId) {
         this.terminalId = terminalId;
     }

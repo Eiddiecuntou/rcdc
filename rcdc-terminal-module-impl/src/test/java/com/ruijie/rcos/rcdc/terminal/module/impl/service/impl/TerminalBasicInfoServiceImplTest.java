@@ -45,7 +45,7 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private SessionManager sessionManager;
-    
+
     @Injectable
     private DefaultRequestMessageSender sender;
 
@@ -93,7 +93,7 @@ public class TerminalBasicInfoServiceImplTest {
                 } catch (BusinessException e) {
                     result = null;
                 }
-                
+
             }
         };
         String terminalId = "123";
@@ -175,20 +175,20 @@ public class TerminalBasicInfoServiceImplTest {
             assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
     }
-    
+
     /**
      * 测试modifyTerminalState，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testModifyTerminalStateArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalState("", CbbTerminalStateEnums.ONLINE),
                 "terminalId 不能为空");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalState("s", null),
-                "state 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalState("s", null), "state 不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试modifyTerminalState，修改失败
      */
@@ -203,17 +203,17 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
         basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.ONLINE);
-        
+
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 4;
-                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.ONLINE, (Date) any,terminalId, anyInt);
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.ONLINE, (Date) any, terminalId, anyInt);
                 times = 0;
             }
         };
     }
-    
+
     /**
      * 测试modifyTerminalState，一次修改成功
      */
@@ -225,17 +225,17 @@ public class TerminalBasicInfoServiceImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = basicInfoEntity;
-                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.ONLINE, (Date) any,anyString, anyInt);
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.ONLINE, (Date) any, anyString, anyInt);
                 result = 1;
             }
         };
         basicInfoService.modifyTerminalState(terminalId, CbbTerminalStateEnums.ONLINE);
-        
+
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
-                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.ONLINE, (Date) any,terminalId, anyInt);
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.ONLINE, (Date) any, terminalId, anyInt);
                 times = 1;
             }
         };
@@ -243,15 +243,15 @@ public class TerminalBasicInfoServiceImplTest {
 
     /**
      * 测试modifyTerminalStateToOffline，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testModifyTerminalStateToOfflineArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalStateToOffline(""),
-                "terminalId 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.modifyTerminalStateToOffline(""), "terminalId 不能为空");
         assertTrue(true);
     }
-    
+
 
     /**
      * 测试modifyTerminalStateToOffline，升级中状态
@@ -268,17 +268,17 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
         basicInfoService.modifyTerminalStateToOffline(terminalId);
-        
+
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
-                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, anyInt);
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, terminalId, anyInt);
                 times = 0;
             }
         };
     }
-    
+
     /**
      * 测试modifyTerminalStateToOffline，一次修改成功
      */
@@ -290,22 +290,22 @@ public class TerminalBasicInfoServiceImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = basicInfoEntity;
-                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,anyString, anyInt);
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, anyString, anyInt);
                 result = 1;
             }
         };
         basicInfoService.modifyTerminalStateToOffline(terminalId);
-        
+
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 2;
-                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, anyInt);
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, terminalId, anyInt);
                 times = 1;
             }
         };
     }
-    
+
     /**
      * 测试modifyTerminalStateToOffline，修改失败
      */
@@ -318,17 +318,17 @@ public class TerminalBasicInfoServiceImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = basicInfoEntity;
-                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, anyInt);
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, terminalId, anyInt);
                 result = 0;
             }
         };
         basicInfoService.modifyTerminalStateToOffline(terminalId);
-        
+
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 5;
-                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any,terminalId, basicInfoEntity.getVersion());
+                basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, terminalId, basicInfoEntity.getVersion());
                 times = 4;
             }
         };
@@ -336,22 +336,22 @@ public class TerminalBasicInfoServiceImplTest {
 
     /**
      * 测试isTerminalOnline，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testIsTerminalOnlineArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.isTerminalOnline(""),
-                "terminalId can not empty");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.isTerminalOnline(""), "terminalId can not empty");
         assertTrue(true);
     }
-    
+
     /**
      * 测试isTerminalOnline，离线
      */
     @Test
     public void testIsTerminalOnlineIsOffLine() {
         Session session = null;
-        
+
         new Expectations() {
             {
                 sessionManager.getSession("123");
@@ -360,9 +360,10 @@ public class TerminalBasicInfoServiceImplTest {
         };
         assertFalse(basicInfoService.isTerminalOnline("123"));
     }
-    
+
     /**
      * 测试isTerminalOnline，在线
+     * 
      * @param session mock对象
      */
     @Test

@@ -14,9 +14,9 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 public class CbbTerminalLogFileInfoResponse extends DefaultResponse {
 
     private String logFilePath;
-    
+
     private String logFileName;
-    
+
     private String suffix;
 
     public String getLogFilePath() {

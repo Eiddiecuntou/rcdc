@@ -12,7 +12,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi.response;
 public class Localelanguage {
 
     private String lang;
-    
+
     public String getLang() {
         return lang;
     }
@@ -20,6 +20,6 @@ public class Localelanguage {
     public void setLang(String lang) {
         this.lang = lang;
     }
-    
-    
+
+
 }

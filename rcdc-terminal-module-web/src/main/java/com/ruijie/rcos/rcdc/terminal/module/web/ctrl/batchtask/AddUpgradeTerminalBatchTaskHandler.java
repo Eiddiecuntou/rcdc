@@ -33,9 +33,8 @@ public class AddUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHandler
 
     private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
 
-    public AddUpgradeTerminalBatchTaskHandler(CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI,
-            Map<UUID, String> idMap, Iterator<? extends BatchTaskItem> iterator,
-            ProgrammaticOptLogRecorder optLogRecorder) {
+    public AddUpgradeTerminalBatchTaskHandler(CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI, Map<UUID, String> idMap,
+            Iterator<? extends BatchTaskItem> iterator, ProgrammaticOptLogRecorder optLogRecorder) {
         super(iterator);
         this.optLogRecorder = optLogRecorder;
         this.idMap = idMap;
@@ -61,13 +60,11 @@ public class AddUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHandler
             cbbTerminalUpgradeAPI.addSystemUpgradeTerminal(addRequest);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_SUCCESS_LOG, terminalId);
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
-                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_SUCCESS).msgArgs(new String[] {terminalId})
-                    .build();
+                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_SUCCESS).msgArgs(new String[] {terminalId}).build();
         } catch (BusinessException e) {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_FAIL_LOG, terminalId, e.getI18nMessage());
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.FAILURE)
-                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_FAIL).msgArgs(new String[] {terminalId, e.getI18nMessage()})
-                    .build();
+                    .msgKey(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_FAIL).msgArgs(new String[] {terminalId, e.getI18nMessage()}).build();
         }
     }
 

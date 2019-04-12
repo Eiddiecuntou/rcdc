@@ -33,24 +33,24 @@ public class TerminalComponentUpgradeServiceImplTest {
 
     @Tested
     private TerminalComponentUpgradeServiceImpl serviceImpl;
-    
-    
+
+
     @Injectable
     private ComponentUpdateListCacheManager cacheManager;
-    
+
     /**
      * 测试getVersion,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testGetVersionArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion("", TerminalPlatformEnums.VDI),
                 "rainOsVersion can not be blank");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion("123", null),
-                "platform can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion("123", null), "platform can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getVersion,updatelist为空
      */
@@ -71,7 +71,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), terminalVersionResultDTO1.getResult().intValue());
         ComponentUpdateListCacheManager.isUpdate = true;
     }
-    
+
     /**
      * 测试getVersion,不升级
      */
@@ -95,7 +95,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), terminalVersionResultDTO.getResult().intValue());
         ComponentUpdateListCacheManager.isUpdate = true;
     }
-    
+
     /**
      * 测试getVersion,非法的版本号
      */
@@ -120,7 +120,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(), terminalVersionResultDTO.getResult().intValue());
         ComponentUpdateListCacheManager.isUpdate = true;
     }
-    
+
     /**
      * 测试getVersion,低于最低支持版本
      */
@@ -145,7 +145,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), terminalVersionResultDTO.getResult().intValue());
         ComponentUpdateListCacheManager.isUpdate = true;
     }
-    
+
     /**
      * 测试getVersion,正处于更新中
      */
@@ -161,7 +161,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         updatelist.setLimitVersion("1.0.1.1");
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.0.1.1", TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), terminalVersionResultDTO.getResult().intValue());
-        
+
     }
 
 }

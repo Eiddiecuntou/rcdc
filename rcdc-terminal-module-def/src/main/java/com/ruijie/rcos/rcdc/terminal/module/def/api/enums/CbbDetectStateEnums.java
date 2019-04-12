@@ -10,7 +10,5 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
  */
 public enum CbbDetectStateEnums {
 
-    SUCCESS,
-    DOING,
-    FAILURE,
+    SUCCESS, DOING, FAILURE,
 }

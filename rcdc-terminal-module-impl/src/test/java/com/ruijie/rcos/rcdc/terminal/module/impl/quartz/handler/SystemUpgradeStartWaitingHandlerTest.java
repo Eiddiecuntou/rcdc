@@ -33,34 +33,34 @@ public class SystemUpgradeStartWaitingHandlerTest {
 
     @Tested
     private SystemUpgradeStartWaitingHandler handler;
-    
+
     @Injectable
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
 
     @Injectable
     private TerminalSystemUpgradeService systemUpgradeService;
-    
+
     @Injectable
     private TerminalSystemUpgradeServiceTx systemUpgradeServiceTx;
 
     @Injectable
     private TerminalSystemUpgradePackageService systemUpgradePackageService;
-    
+
     /**
      * 测试execute，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testExecuteArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(null, UUID.randomUUID()),
-                "upgradeTerminalList can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(new ArrayList<>(), null),
-                "upgradePackageId can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(null, UUID.randomUUID()), "upgradeTerminalList can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(new ArrayList<>(), null), "upgradePackageId can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试execute，开始等待中的刷机终端,upgradeTerminalList为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -77,7 +77,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
         };
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         handler.execute(upgradeTerminalList, upgradePackageId);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
@@ -88,14 +88,15 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 0;
                 systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
-                
+
             }
         };
     }
-    
-    
+
+
     /**
      * 测试execute，开始等待中的刷机终端,getSystemUpgradePackage,BusinessException
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -109,7 +110,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
         };
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         handler.execute(upgradeTerminalList, upgradePackageId);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
@@ -120,13 +121,14 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 0;
                 systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
-                
+
             }
         };
     }
-    
+
     /**
      * 测试execute，开始等待中的刷机终端,超过最大同时刷机数
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -145,7 +147,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList, upgradePackageId);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
@@ -156,13 +158,14 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 0;
                 systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
-                
+
             }
         };
     }
-    
+
     /**
      * 测试execute，开始等待中的刷机终端,不是wait状态的终端
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -182,7 +185,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.SUCCESS);
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList, upgradePackageId);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
@@ -193,13 +196,14 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 0;
                 systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
-                
+
             }
         };
     }
-    
+
     /**
      * 测试execute，开始等待中的刷机终端,系统刷机失败
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -221,7 +225,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.WAIT);
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList, upgradePackageId);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
@@ -232,13 +236,14 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 1;
                 systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 0;
-                
+
             }
         };
     }
-    
+
     /**
      * 测试execute，开始等待中的刷机终端,系统刷机
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -258,7 +263,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.WAIT);
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList, upgradePackageId);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
@@ -269,7 +274,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 times = 1;
                 systemUpgradeServiceTx.startTerminalUpgrade((TerminalSystemUpgradeTerminalEntity) any);
                 times = 1;
-                
+
             }
         };
     }

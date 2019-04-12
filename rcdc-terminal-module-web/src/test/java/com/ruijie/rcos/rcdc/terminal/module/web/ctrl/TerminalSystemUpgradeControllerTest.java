@@ -68,7 +68,7 @@ public class TerminalSystemUpgradeControllerTest {
 
     @Mocked
     private BatchTaskBuilder builder;
-    
+
     @Mocked
     private LocaleI18nResolver localeI18nResolver;
 
@@ -80,8 +80,7 @@ public class TerminalSystemUpgradeControllerTest {
      */
     @Test
     public void testUploadPackageArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder) throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.uploadPackage(null, optLogRecorder),
-                "file can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.uploadPackage(null, optLogRecorder), "file can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> controller.uploadPackage(new ChunkUploadFile(), null),
                 "optLogRecorder can not be null");
         assertTrue(true);
@@ -95,8 +94,8 @@ public class TerminalSystemUpgradeControllerTest {
      * @throws BusinessException 异常
      */
     @Test
-    public void testUploadPackageFail(@Mocked ProgrammaticOptLogRecorder optLogRecorder, 
-            @Mocked LocaleI18nResolver resolver) throws BusinessException {
+    public void testUploadPackageFail(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked LocaleI18nResolver resolver)
+            throws BusinessException {
         new Expectations() {
             {
                 cbbTerminalUpgradePackageAPI.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any);
@@ -117,11 +116,9 @@ public class TerminalSystemUpgradeControllerTest {
         assertEquals(Status.ERROR, response.getStatus());
         new Verifications() {
             {
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
-                        file.getFileName());
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG, file.getFileName());
                 times = 0;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
-                        file.getFileName(), "message");
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG, file.getFileName(), "message");
                 times = 1;
             }
         };
@@ -135,8 +132,8 @@ public class TerminalSystemUpgradeControllerTest {
      * @throws BusinessException 异常
      */
     @Test
-    public void testUploadPackageSuccess(@Mocked ProgrammaticOptLogRecorder optLogRecorder, 
-            @Mocked LocaleI18nResolver resolver) throws BusinessException {
+    public void testUploadPackageSuccess(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked LocaleI18nResolver resolver)
+            throws BusinessException {
         ChunkUploadFile file = new ChunkUploadFile();
         file.setFilePath("filePath");
         file.setFileName("fileName");
@@ -145,11 +142,9 @@ public class TerminalSystemUpgradeControllerTest {
         assertEquals(Status.SUCCESS, response.getStatus());
         new Verifications() {
             {
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG,
-                        file.getFileName());
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG, file.getFileName());
                 times = 1;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG,
-                        file.getFileName(), anyString);
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG, file.getFileName(), anyString);
                 times = 0;
             }
         };
@@ -162,8 +157,7 @@ public class TerminalSystemUpgradeControllerTest {
      */
     @Test
     public void testlistPackageArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.listPackage(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.listPackage(null), "request can not be null");
         assertTrue(true);
     }
 
@@ -194,8 +188,7 @@ public class TerminalSystemUpgradeControllerTest {
      */
     @Test
     public void testCreateArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder) throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.create(null, optLogRecorder),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.create(null, optLogRecorder), "request can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> controller.create(new CreateTerminalSystemUpgradeWebRequest(), null),
                 "optLogRecorder can not be null");
         assertTrue(true);
@@ -228,9 +221,9 @@ public class TerminalSystemUpgradeControllerTest {
 
         new Verifications() {
             {
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_SUCCESS_LOG, (String[])any);
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_SUCCESS_LOG, (String[]) any);
                 times = 0;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_FAIL_LOG, (String[])any);
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_FAIL_LOG, (String[]) any);
                 times = 1;
             }
         };
@@ -253,18 +246,18 @@ public class TerminalSystemUpgradeControllerTest {
                 result = response;
             }
         };
-        
+
         CreateTerminalSystemUpgradeWebRequest request = new CreateTerminalSystemUpgradeWebRequest();
         request.setPackageId(UUID.randomUUID());
         request.setTerminalIdArr(new String[] {"1111", "222"});
         DefaultWebResponse webResponse = controller.create(request, optLogRecorder);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
-        CreateSystemUpgradeTaskContentVO contentVO = (CreateSystemUpgradeTaskContentVO)webResponse.getContent();
+        CreateSystemUpgradeTaskContentVO contentVO = (CreateSystemUpgradeTaskContentVO) webResponse.getContent();
         assertEquals(upgradeTaskId, contentVO.getUpgradeTaskId());
-        
+
         new Verifications() {
             {
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_SUCCESS_LOG, (String[])any);
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_SUCCESS_LOG, (String[]) any);
                 times = 1;
                 optLogRecorder.saveOptLog(BusinessKey.RCDC_CREATE_UPGRADE_TERMINAL_TASK_FAIL_LOG, anyString);
                 times = 0;
@@ -280,17 +273,15 @@ public class TerminalSystemUpgradeControllerTest {
      * @throws Exception 异常
      */
     @Test
-    public void testAppendArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
-            @Mocked BatchTaskBuilder builder) throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.append(null, optLogRecorder, builder),
-                "request can not be null");
+    public void testAppendArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked BatchTaskBuilder builder) throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.append(null, optLogRecorder, builder), "request can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> controller.append(new AppendTerminalSystemUpgradeWebRequest(), null, builder),
                 "optLogRecorder can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> controller.append(new AppendTerminalSystemUpgradeWebRequest(), optLogRecorder, null),
                 "builder can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试append，
      * 
@@ -301,16 +292,14 @@ public class TerminalSystemUpgradeControllerTest {
      * @throws BusinessException 异常
      */
     @Test
-    public void testAppend(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
-            @Mocked BatchTaskBuilder builder,
-            @Mocked AddUpgradeTerminalBatchTaskHandler handler,
-            @Mocked TerminalIdMappingUtils mappingUtils) throws BusinessException {
+    public void testAppend(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked BatchTaskBuilder builder,
+            @Mocked AddUpgradeTerminalBatchTaskHandler handler, @Mocked TerminalIdMappingUtils mappingUtils) throws BusinessException {
         AppendTerminalSystemUpgradeWebRequest request = new AppendTerminalSystemUpgradeWebRequest();
         request.setTerminalIdArr(new String[] {"111", "222"});
         request.setUpgradeTaskId(UUID.randomUUID());
         DefaultWebResponse webResponse = controller.append(request, optLogRecorder, builder);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
-        
+
         new Verifications() {
             {
                 TerminalIdMappingUtils.mapping((String[]) any);
@@ -323,26 +312,27 @@ public class TerminalSystemUpgradeControllerTest {
 
     /**
      * 测试list，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testListArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.list(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.list(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试list，MatchEqualArr为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testListMatchEqualArrIsEmpty() throws BusinessException {
         PageWebRequest request = new PageWebRequest();
-        
+
         DefaultWebResponse webResponse = controller.list(request);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
-        
+
         new Verifications() {
             {
                 cbbTerminalUpgradeAPI.listSystemUpgradeTask((PageSearchRequest) any);
@@ -350,32 +340,33 @@ public class TerminalSystemUpgradeControllerTest {
             }
         };
     }
-    
+
     /**
      * 测试list，MatchEqualArr不为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testListMatchEqualArrNotEmpty() throws BusinessException {
         PageWebRequest request = new PageWebRequest();
-        
+
         ExactMatch[] exactMatchArr = new ExactMatch[2];
         ExactMatch exactMatch = new ExactMatch();
         exactMatch.setName("upgradeTaskState");
         String[] valueArr = {"UPGRADING"};
         exactMatch.setValueArr(valueArr);
         exactMatchArr[0] = exactMatch;
-        
+
         ExactMatch exactMatch1 = new ExactMatch();
         exactMatch1.setName("sdfsdf");
         String[] value1Arr = {"UPGRADING"};
         exactMatch.setValueArr(value1Arr);
         exactMatchArr[1] = exactMatch1;
-        
+
         request.setExactMatchArr(exactMatchArr);
         DefaultWebResponse webResponse = controller.list(request);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
-        
+
         new Verifications() {
             {
                 cbbTerminalUpgradeAPI.listSystemUpgradeTask((PageSearchRequest) any);
@@ -386,53 +377,55 @@ public class TerminalSystemUpgradeControllerTest {
 
     /**
      * 测试listTerminal，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testListTerminalArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.listTerminal(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.listTerminal(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试listTerminal，MatchEqualArr为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testListTerminalMatchEqualArrIsEmpty() throws BusinessException {
         PageWebRequest request = new PageWebRequest();
-        
+
         try {
             controller.listTerminal(request);
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_COMMON_REQUEST_PARAM_ERROR, e.getKey());
         }
     }
-    
+
     /**
      * 测试listTerminal，MatchEqualArr不为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testListTerminalMatchEqualArrNotEmpty() throws BusinessException {
         PageWebRequest request = new PageWebRequest();
-        
+
         ExactMatch[] exactMatchArr = new ExactMatch[2];
         ExactMatch exactMatch = new ExactMatch();
         exactMatch.setName("terminalUpgradeState");
         String[] valueArr = {"UPGRADING"};
         exactMatch.setValueArr(valueArr);
         exactMatchArr[0] = exactMatch;
-        
+
         ExactMatch exactMatch1 = new ExactMatch();
         exactMatch1.setName("upgradeTaskId");
         String[] value1Arr = {UUID.randomUUID().toString()};
         exactMatch1.setValueArr(value1Arr);
         exactMatchArr[1] = exactMatch1;
-        
+
         request.setExactMatchArr(exactMatchArr);
-        
+
         DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> resp = new DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO>();
         CbbGetTerminalUpgradeTaskResponse getUpgradeTaskResp = new CbbGetTerminalUpgradeTaskResponse(new CbbSystemUpgradeTaskDTO());
         new Expectations() {
@@ -447,7 +440,7 @@ public class TerminalSystemUpgradeControllerTest {
 
         DefaultWebResponse webResponse = controller.listTerminal(request);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
-        
+
         new Verifications() {
             {
                 cbbTerminalUpgradeAPI.listSystemUpgradeTaskTerminal((PageSearchRequest) any);
@@ -458,17 +451,18 @@ public class TerminalSystemUpgradeControllerTest {
 
     /**
      * 测试close，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testCloseArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.close(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.close(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试close，
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -476,7 +470,7 @@ public class TerminalSystemUpgradeControllerTest {
         CloseSystemUpgradeTaskWebRequest request = new CloseSystemUpgradeTaskWebRequest();
         DefaultWebResponse webResponse = controller.close(request);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
-        
+
         new Verifications() {
             {
                 cbbTerminalUpgradeAPI.closeSystemUpgradeTask((CbbCloseSystemUpgradeTaskRequest) any);
@@ -484,20 +478,21 @@ public class TerminalSystemUpgradeControllerTest {
             }
         };
     }
-    
+
     /**
      * 测试listTerminalBasicInfo，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testListTerminalBasicInfoArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.listTerminalBasicInfo(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.listTerminalBasicInfo(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试listTerminalBasicInfo，
+     * 
      * @throws BusinessException 异常
      */
     @Test

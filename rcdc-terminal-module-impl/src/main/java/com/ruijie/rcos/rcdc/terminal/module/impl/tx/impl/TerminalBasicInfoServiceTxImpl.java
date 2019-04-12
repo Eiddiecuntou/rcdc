@@ -32,7 +32,7 @@ public class TerminalBasicInfoServiceTxImpl implements TerminalBasicInfoServiceT
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
-    
+
     @Autowired
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
 
@@ -59,7 +59,7 @@ public class TerminalBasicInfoServiceTxImpl implements TerminalBasicInfoServiceT
         LOGGER.warn("delete terminal detection info, terminalId[{}]", terminalId);
         detectionDAO.deleteByTerminalId(terminalId);
     }
-    
+
     private void deleteTerminalUpgradeRecord(String terminalId) {
         LOGGER.warn("delete terminal upgrade info, terminalId[{}]", terminalId);
         systemUpgradeTerminalDAO.deleteByTerminalId(terminalId);

@@ -24,16 +24,17 @@ import mockit.integration.junit4.JMockit;
 public class SearchTerminalSpecificationTest {
 
     private SearchTerminalSpecification specification = new SearchTerminalSpecification("key");
-    
+
     /**
      * 测试toPredicate，参数为空
+     * 
      * @param root mock Root
      * @param query mock CriteriaQuery
      * @param criteriaBuilder mock CriteriaBuilder
      * @throws Exception 异常
      */
     @Test
-    public void testToPredicateArgumentIsNull(@Injectable Root root,@Injectable CriteriaQuery query, @Injectable CriteriaBuilder criteriaBuilder)
+    public void testToPredicateArgumentIsNull(@Injectable Root root, @Injectable CriteriaQuery query, @Injectable CriteriaBuilder criteriaBuilder)
             throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> specification.toPredicate(null, query, criteriaBuilder),
                 "Param [root] must not be null");
@@ -43,15 +44,16 @@ public class SearchTerminalSpecificationTest {
                 "Param [criteriaBuilder] must not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试toPredicate，
+     * 
      * @param root mock Root
      * @param query mock CriteriaQuery
      * @param criteriaBuilder mock CriteriaBuilder
      */
     @Test
-    public void testToPredicate(@Injectable Root root,@Injectable CriteriaQuery query, @Injectable CriteriaBuilder criteriaBuilder) {
+    public void testToPredicate(@Injectable Root root, @Injectable CriteriaQuery query, @Injectable CriteriaBuilder criteriaBuilder) {
         try {
             specification.toPredicate(root, query, criteriaBuilder);
         } catch (Exception e) {

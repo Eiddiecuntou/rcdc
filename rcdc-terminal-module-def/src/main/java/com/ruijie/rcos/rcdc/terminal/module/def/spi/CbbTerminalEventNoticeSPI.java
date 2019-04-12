@@ -16,6 +16,7 @@ public interface CbbTerminalEventNoticeSPI {
 
     /**
      * 消息通知
+     * 
      * @param request 请求参数
      */
     void notify(CbbNoticeRequest request);

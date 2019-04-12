@@ -13,11 +13,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultD
  * @author nt
  */
 public class TerminalDetectListContentVO {
-    
+
     private CbbTerminalDetectDTO[] itemArr;
-    
+
     private long total;
-    
+
     private CbbTerminalDetectResultDTO result;
 
     public CbbTerminalDetectDTO[] getItemArr() {
@@ -43,5 +43,5 @@ public class TerminalDetectListContentVO {
     public void setResult(CbbTerminalDetectResultDTO result) {
         this.result = result;
     }
-    
+
 }

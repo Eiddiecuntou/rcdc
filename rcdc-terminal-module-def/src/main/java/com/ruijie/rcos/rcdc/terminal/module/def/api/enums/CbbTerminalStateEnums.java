@@ -19,10 +19,10 @@ public enum CbbTerminalStateEnums {
      * 在线
      */
     ONLINE,
-    
+
     /**
      * 升级中
      */
     UPGRADING,
-    
+
 }

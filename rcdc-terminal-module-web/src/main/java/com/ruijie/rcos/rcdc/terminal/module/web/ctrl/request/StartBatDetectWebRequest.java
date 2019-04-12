@@ -13,7 +13,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
  * @author nt
  */
 public class StartBatDetectWebRequest implements WebRequest {
-    
+
     @NotEmpty
     private String[] idArr;
 
@@ -24,5 +24,5 @@ public class StartBatDetectWebRequest implements WebRequest {
     public void setIdArr(String[] idArr) {
         this.idArr = idArr;
     }
-    
+
 }

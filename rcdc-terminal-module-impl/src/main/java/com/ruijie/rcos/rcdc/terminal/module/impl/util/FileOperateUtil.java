@@ -30,8 +30,7 @@ public class FileOperateUtil {
      * @param exceptFileName 不删除的文件名
      * @throws BusinessException 业务异常
      */
-    public static void emptyDirectory(final String directoryPath, final String exceptFileName)
-            throws BusinessException {
+    public static void emptyDirectory(final String directoryPath, final String exceptFileName) throws BusinessException {
 
         Assert.hasLength(directoryPath, "directoryPath 不能为空");
         Assert.hasLength(exceptFileName, "exceptFileName 不能为空");
@@ -63,8 +62,7 @@ public class FileOperateUtil {
      * @param destPath 文件路径
      * @throws BusinessException 业务异常
      */
-    public static void moveFile(final String fileName, final String filePath, final String destPath)
-            throws BusinessException {
+    public static void moveFile(final String fileName, final String filePath, final String destPath) throws BusinessException {
         Assert.hasLength(fileName, "fileName 不能为空");
         Assert.hasLength(filePath, "filePath 不能为空");
         Assert.hasLength(destPath, "destPath 不能为空");
@@ -90,8 +88,7 @@ public class FileOperateUtil {
     }
 
 
-    private static void deleteFilesInDirectory(final String directoryPath, final String exceptFileName)
-            throws BusinessException {
+    private static void deleteFilesInDirectory(final String directoryPath, final String exceptFileName) throws BusinessException {
         File packageDir = checkAndGetDirectory(directoryPath);
 
         File[] childrenArr = packageDir.listFiles();
@@ -128,8 +125,7 @@ public class FileOperateUtil {
         int hasRead = 0;
         File oldFile = new File(sourcePath);
         if (oldFile.exists()) {
-            try (FileInputStream fis = new FileInputStream(oldFile);
-                    FileOutputStream fos = new FileOutputStream(destPath);) {
+            try (FileInputStream fis = new FileInputStream(oldFile); FileOutputStream fos = new FileOutputStream(destPath);) {
                 byte[] bufferArr = new byte[1024];
                 // 当文件没有读到结尾
                 while ((hasRead = fis.read(bufferArr)) != -1) {
@@ -171,8 +167,7 @@ public class FileOperateUtil {
                 File dirNew = new File(destPath + File.separator + fileArr[i].getName());
                 dirNew.mkdir();// 在目标文件夹中创建文件夹
                 // 递归
-                directoryCopy(sourcePath + File.separator + fileArr[i].getName(),
-                        destPath + File.separator + fileArr[i].getName());
+                directoryCopy(sourcePath + File.separator + fileArr[i].getName(), destPath + File.separator + fileArr[i].getName());
             } else {
                 String filePath = destPath + File.separator + fileArr[i].getName();
                 copyfile(fileArr[i].getAbsolutePath(), filePath);

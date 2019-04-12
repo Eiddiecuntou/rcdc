@@ -16,15 +16,16 @@ public class TerminalVersionResultDTO {
     private Integer result;
 
     private CbbTerminalComponentUpdateListDTO updatelist;
-    
+
     public TerminalVersionResultDTO() {
+        
     }
 
     public TerminalVersionResultDTO(Integer result, CbbTerminalComponentUpdateListDTO updatelist) {
         this.result = result;
         this.updatelist = updatelist;
     }
-    
+
     public Integer getResult() {
         return result;
     }

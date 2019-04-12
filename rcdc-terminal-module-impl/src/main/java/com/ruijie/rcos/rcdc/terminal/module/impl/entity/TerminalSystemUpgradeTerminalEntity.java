@@ -28,21 +28,21 @@ public class TerminalSystemUpgradeTerminalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    
+
     private UUID sysUpgradeId;
-    
+
     private String terminalId;
-    
+
     private Date startTime;
-    
+
     private Date createTime;
-    
+
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeStateEnums state;
 
     @Version
     private Integer version;
-    
+
     public UUID getId() {
         return id;
     }
@@ -74,7 +74,7 @@ public class TerminalSystemUpgradeTerminalEntity {
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
-    
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -98,5 +98,5 @@ public class TerminalSystemUpgradeTerminalEntity {
     public void setVersion(Integer version) {
         this.version = version;
     }
-    
+
 }

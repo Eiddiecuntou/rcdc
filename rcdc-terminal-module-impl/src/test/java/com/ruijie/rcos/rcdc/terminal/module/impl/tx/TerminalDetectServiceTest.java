@@ -55,10 +55,9 @@ public class TerminalDetectServiceTest {
      */
     @Test
     public void testUpdateBasicInfoAndDetectArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(
-            () -> detectService.updateTerminalDetect("", new TerminalDetectResult()), "terminalId不能为空");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.updateTerminalDetect("123", null),
-            "TerminalDetectResult不能为null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.updateTerminalDetect("", new TerminalDetectResult()),
+                "terminalId不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.updateTerminalDetect("123", null), "TerminalDetectResult不能为null");
         assertTrue(true);
     }
 
@@ -76,17 +75,17 @@ public class TerminalDetectServiceTest {
             }
         };
         detectService.updateTerminalDetect(terminalId, result);
-        
+
         new Verifications() {
             {
                 detectionDAO.findByTerminalIdAndDetectState(terminalId, DetectStateEnums.CHECKING);
                 times = 1;
-                detectionDAO.save((TerminalDetectionEntity)any);
+                detectionDAO.save((TerminalDetectionEntity) any);
                 times = 0;
             }
         };
     }
-    
+
     /**
      * 测试检测信息,
      */
@@ -109,7 +108,7 @@ public class TerminalDetectServiceTest {
             }
         };
         detectService.updateTerminalDetect(terminalId, result);
-        
+
         new Verifications() {
             {
                 detectionDAO.findByTerminalIdAndDetectState(terminalId, DetectStateEnums.CHECKING);
@@ -130,6 +129,7 @@ public class TerminalDetectServiceTest {
 
     /**
      * 测试detectFailure,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -137,7 +137,7 @@ public class TerminalDetectServiceTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.detectFailure(""), "terminalId不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试detectFailure,entityList为空
      */
@@ -155,12 +155,12 @@ public class TerminalDetectServiceTest {
             {
                 detectionDAO.findByTerminalIdAndDetectState(terminalId, DetectStateEnums.CHECKING);
                 times = 1;
-                detectionDAO.save((TerminalDetectionEntity)any);
+                detectionDAO.save((TerminalDetectionEntity) any);
                 times = 0;
             }
         };
     }
-    
+
     /**
      * 测试detectFailure,entityList为空
      */
@@ -191,6 +191,7 @@ public class TerminalDetectServiceTest {
 
     /**
      * 测试save,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -198,7 +199,7 @@ public class TerminalDetectServiceTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.save(""), "terminalId can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试save,
      */
@@ -216,9 +217,10 @@ public class TerminalDetectServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试delete,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -226,7 +228,7 @@ public class TerminalDetectServiceTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.delete(null), "terminal detection id can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试delete,
      */
@@ -241,9 +243,10 @@ public class TerminalDetectServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试findInCurrentDate,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -251,7 +254,7 @@ public class TerminalDetectServiceTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.findInCurrentDate(""), "terminal id can not be blank");
         assertTrue(true);
     }
-    
+
     /**
      * 测试findInCurrentDate,detectionList为空
      */
@@ -260,13 +263,13 @@ public class TerminalDetectServiceTest {
         String terminalId = "123";
         new Expectations() {
             {
-                detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, (Date)any, (Date)any);
+                detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, (Date) any, (Date) any);
                 result = Collections.emptyList();
             }
         };
         assertNull(detectService.findInCurrentDate(terminalId));
     }
-    
+
     /**
      * 测试findInCurrentDate,
      */
@@ -279,7 +282,7 @@ public class TerminalDetectServiceTest {
         detectionList.add(new TerminalDetectionEntity());
         new Expectations() {
             {
-                detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, (Date)any, (Date)any);
+                detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, (Date) any, (Date) any);
                 result = detectionList;
             }
         };
@@ -288,6 +291,7 @@ public class TerminalDetectServiceTest {
 
     /**
      * 测试pageQuery,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -295,26 +299,28 @@ public class TerminalDetectServiceTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.pageQuery(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试pageQuery,
+     * 
      * @param page mock page
      */
     @Test
     public void testPageQuery(@Mocked Page<TerminalDetectionEntity> page) {
         CbbTerminalDetectPageRequest request = new CbbTerminalDetectPageRequest();
-        
+
         new Expectations() {
             {
-                detectionDAO.findAll((TerminalDetectSpecification)any, (Pageable)any);
+                detectionDAO.findAll((TerminalDetectSpecification) any, (Pageable) any);
                 result = page;
             }
         };
         assertEquals(page, detectService.pageQuery(request));
     }
-    
+
     /**
      * 测试getDetectResult,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -322,7 +328,7 @@ public class TerminalDetectServiceTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.getDetectResult(null), "detect date can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getDetectResult,Today
      */
@@ -336,25 +342,25 @@ public class TerminalDetectServiceTest {
         detectionEntity.setPacketLossRate(0.0);
         detectionEntity.setIpConflict(0);
         detectionEntity.setNetworkDelay(2);
-        
-        
+
+
         detectList.add(detectionEntity);
         new Expectations() {
             {
-                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date)any, (Date)any);
+                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date) any, (Date) any);
                 result = 1;
-                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date)any, (Date)any);
+                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date) any, (Date) any);
                 result = 25;
-                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date)any, (Date)any);
+                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date) any, (Date) any);
                 result = 1;
-                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(
-                        Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date)any, (Date)any);
+                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date) any,
+                        (Date) any);
                 result = 30;
-                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date)any, (Date)any);
+                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date) any, (Date) any);
                 result = 23;
-                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date)any, (Date)any);
+                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date) any, (Date) any);
                 result = 2;
-                detectionDAO.findByDetectTimeBetween((Date)any, (Date)any);
+                detectionDAO.findByDetectTimeBetween((Date) any, (Date) any);
                 result = detectList;
             }
         };
@@ -367,7 +373,7 @@ public class TerminalDetectServiceTest {
         assertEquals(2, result.getChecking());
         assertEquals(0, result.getAll());
     }
-    
+
 
     /**
      * 测试getDetectResult,Today,异常列表为空
@@ -375,23 +381,23 @@ public class TerminalDetectServiceTest {
     @Test
     public void testGetDetectResultTodayAbnormalListIsEmpty() {
         List<TerminalDetectionEntity> detectList = new ArrayList<>();
-        
+
         new Expectations() {
             {
-                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date)any, (Date)any);
+                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date) any, (Date) any);
                 result = 1;
-                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date)any, (Date)any);
+                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date) any, (Date) any);
                 result = 25;
-                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date)any, (Date)any);
+                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date) any, (Date) any);
                 result = 1;
-                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(
-                        Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date)any, (Date)any);
+                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date) any,
+                        (Date) any);
                 result = 30;
-                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date)any, (Date)any);
+                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date) any, (Date) any);
                 result = 23;
-                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date)any, (Date)any);
+                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date) any, (Date) any);
                 result = 2;
-                detectionDAO.findByDetectTimeBetween((Date)any, (Date)any);
+                detectionDAO.findByDetectTimeBetween((Date) any, (Date) any);
                 result = detectList;
             }
         };
@@ -404,7 +410,7 @@ public class TerminalDetectServiceTest {
         assertEquals(2, result.getChecking());
         assertEquals(0, result.getAll());
     }
-    
+
     /**
      * 测试getDetectResult,Yesterday
      */
@@ -413,24 +419,24 @@ public class TerminalDetectServiceTest {
         List<TerminalDetectionEntity> detectList = new ArrayList<>();
         TerminalDetectionEntity detectionEntity = new TerminalDetectionEntity();
         detectionEntity.setDetectState(DetectStateEnums.CHECKING);
-        
+
         detectList.add(detectionEntity);
         new Expectations() {
             {
-                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date)any, (Date)any);
+                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date) any, (Date) any);
                 result = 1;
-                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date)any, (Date)any);
+                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date) any, (Date) any);
                 result = 25;
-                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date)any, (Date)any);
+                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date) any, (Date) any);
                 result = 1;
-                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(
-                        Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date)any, (Date)any);
+                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date) any,
+                        (Date) any);
                 result = 30;
-                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date)any, (Date)any);
+                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date) any, (Date) any);
                 result = 23;
-                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date)any, (Date)any);
+                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date) any, (Date) any);
                 result = 2;
-                detectionDAO.findByDetectTimeBetween((Date)any, (Date)any);
+                detectionDAO.findByDetectTimeBetween((Date) any, (Date) any);
                 result = detectList;
             }
         };
@@ -443,7 +449,7 @@ public class TerminalDetectServiceTest {
         assertEquals(2, result.getChecking());
         assertEquals(0, result.getAll());
     }
-    
+
     /**
      * 测试getDetectResult,异常总数
      */
@@ -453,20 +459,20 @@ public class TerminalDetectServiceTest {
         // ip冲突
         TerminalDetectionEntity detectionEntity = new TerminalDetectionEntity();
         detectionEntity.setIpConflict(1);
-        
+
         // 带宽检测异常
         TerminalDetectionEntity detectionEntity1 = new TerminalDetectionEntity();
         detectionEntity1.setDetectState(DetectStateEnums.SUCCESS);
         detectionEntity1.setBandwidth(15.0);
         detectionEntity1.setIpConflict(0);
-        
+
         // 外网连通异常
         TerminalDetectionEntity detectionEntity2 = new TerminalDetectionEntity();
         detectionEntity2.setDetectState(DetectStateEnums.SUCCESS);
         detectionEntity2.setAccessInternet(0);
         detectionEntity2.setBandwidth(50.0);
         detectionEntity2.setIpConflict(0);
-        
+
         // 丢包异常
         TerminalDetectionEntity detectionEntity3 = new TerminalDetectionEntity();
         detectionEntity3.setDetectState(DetectStateEnums.SUCCESS);
@@ -475,7 +481,7 @@ public class TerminalDetectServiceTest {
         detectionEntity3.setPacketLossRate(11.0);
         detectionEntity3.setIpConflict(0);
         detectionEntity3.setNetworkDelay(60);
-        
+
         // 时延异常
         TerminalDetectionEntity detectionEntity4 = new TerminalDetectionEntity();
         detectionEntity4.setDetectState(DetectStateEnums.SUCCESS);
@@ -484,7 +490,7 @@ public class TerminalDetectServiceTest {
         detectionEntity4.setPacketLossRate(0.0);
         detectionEntity4.setIpConflict(0);
         detectionEntity4.setNetworkDelay(60);
-        
+
         detectList.add(detectionEntity);
         detectList.add(detectionEntity1);
         detectList.add(detectionEntity2);
@@ -492,20 +498,20 @@ public class TerminalDetectServiceTest {
         detectList.add(detectionEntity4);
         new Expectations() {
             {
-                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date)any, (Date)any);
+                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date) any, (Date) any);
                 result = 1;
-                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date)any, (Date)any);
+                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date) any, (Date) any);
                 result = 25;
-                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date)any, (Date)any);
+                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date) any, (Date) any);
                 result = 1;
-                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(
-                        Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date)any, (Date)any);
+                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date) any,
+                        (Date) any);
                 result = 30;
-                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date)any, (Date)any);
+                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date) any, (Date) any);
                 result = 23;
-                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date)any, (Date)any);
+                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date) any, (Date) any);
                 result = 2;
-                detectionDAO.findByDetectTimeBetween((Date)any, (Date)any);
+                detectionDAO.findByDetectTimeBetween((Date) any, (Date) any);
                 result = detectList;
             }
         };
@@ -518,9 +524,10 @@ public class TerminalDetectServiceTest {
         assertEquals(2, result.getChecking());
         assertEquals(5, result.getAll());
     }
-    
+
     /**
      * 测试getRecentDetect,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -528,7 +535,7 @@ public class TerminalDetectServiceTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> detectService.getRecentDetect(""), "terminalId can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getRecentDetect,TerminalDetectionEntity为空
      */
@@ -543,9 +550,10 @@ public class TerminalDetectServiceTest {
         };
         assertNull(detectService.getRecentDetect(terminalId));
     }
-    
+
     /**
      * 测试getRecentDetect,
+     * 
      * @param resolver mock LocaleI18nResolver
      */
     @Test

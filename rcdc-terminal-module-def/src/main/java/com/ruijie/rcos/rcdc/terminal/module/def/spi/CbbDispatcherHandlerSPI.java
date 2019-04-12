@@ -17,6 +17,7 @@ public interface CbbDispatcherHandlerSPI {
 
     /**
      * 消息分发方法
+     * 
      * @param request 请求参数对象 请求参数
      */
     void dispatch(CbbDispatcherRequest request);

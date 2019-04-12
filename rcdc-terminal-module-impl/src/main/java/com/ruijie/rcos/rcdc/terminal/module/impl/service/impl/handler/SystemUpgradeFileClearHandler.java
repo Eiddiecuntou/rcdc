@@ -41,7 +41,7 @@ public class SystemUpgradeFileClearHandler {
         Assert.notNull(systemUpgradeEntity, "systemUpgradeEntity can not be null");
         final UUID upgradePackageId = systemUpgradeEntity.getUpgradePackageId();
         Assert.notNull(upgradePackageId, "upgradePackageId can not be null");
-        
+
         deleteStatusFile();
         deleteUpgradeImg(upgradePackageId);
     }
@@ -83,8 +83,7 @@ public class SystemUpgradeFileClearHandler {
      * @throws BusinessException 业务异常
      */
     private void deleteUpgradeImg(UUID packageId) throws BusinessException {
-        TerminalSystemUpgradePackageEntity packageEntity =
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
+        TerminalSystemUpgradePackageEntity packageEntity = terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
         final String imgName = packageEntity.getImgName();
         String upgradeImgFileDir = Constants.ISO_IMG_MOUNT_PATH + imgName;
         FileOperateUtil.deleteFile(new File(upgradeImgFileDir));

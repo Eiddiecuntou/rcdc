@@ -15,7 +15,7 @@ public class TerminalDetectResult {
      * ip冲突结果，如果有冲突则ipConflictMac字段保存冲突的mac地址，否则为空值
      */
     private Integer ipConflict;
-    
+
     /**
      * ip冲突的mac地址，未冲突时为空值
      */
@@ -41,7 +41,7 @@ public class TerminalDetectResult {
      */
     private Integer delay;
 
-    
+
     public Integer getIpConflict() {
         return ipConflict;
     }

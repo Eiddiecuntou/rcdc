@@ -44,7 +44,7 @@ public class SystemUpgradeQuartzHandler implements Runnable {
 
     @Autowired
     private SystemUpgradeStateSynctHandler stateSyncHandler;
-    
+
     @Autowired
     private SystemUpgradeStartConfirmHandler confirmHandler;
 
@@ -66,18 +66,16 @@ public class SystemUpgradeQuartzHandler implements Runnable {
      * @throws BusinessException 业务异常
      */
     private void dealAllUpgradingTask() throws BusinessException {
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-            CbbSystemUpgradeTaskStateEnums.UPGRADING});
-        List<TerminalSystemUpgradeEntity> upgradeTaskList =
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+        List<CbbSystemUpgradeTaskStateEnums> stateList =
+                Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<TerminalSystemUpgradeEntity> upgradeTaskList = systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
         if (CollectionUtils.isEmpty(upgradeTaskList)) {
             LOGGER.info("无正在进行中的刷机任务");
             return;
         }
 
         for (TerminalSystemUpgradeEntity upgradeTask : upgradeTaskList) {
-            List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList =
-                    systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
+            List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
             if (CollectionUtils.isEmpty(upgradeTerminalList)) {
                 LOGGER.debug("刷机任务无刷机终端，关闭刷机任务");
                 // 设置刷机任务为关闭状态
@@ -90,8 +88,8 @@ public class SystemUpgradeQuartzHandler implements Runnable {
         }
     }
 
-    private void dealUpgradingTask(TerminalSystemUpgradeEntity upgradeTask,
-            List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList) throws BusinessException {
+    private void dealUpgradingTask(TerminalSystemUpgradeEntity upgradeTask, List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList)
+            throws BusinessException {
         // 执行刷机终端处理
         confirmHandler.execute(upgradeTerminalList);
         stateSyncHandler.execute(upgradeTerminalList);
@@ -110,8 +108,7 @@ public class SystemUpgradeQuartzHandler implements Runnable {
      */
     private void checkUpgradeTaskSuccessFinish(TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
         // 重新获取刷机终端列表，防止在定时任务执行过程中有刷机终端追加进入任务
-        List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList =
-                systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
+        List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
 
         for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : upgradeTerminalList) {
             if (isUnsuccessState(upgradeTerminal.getState())) {

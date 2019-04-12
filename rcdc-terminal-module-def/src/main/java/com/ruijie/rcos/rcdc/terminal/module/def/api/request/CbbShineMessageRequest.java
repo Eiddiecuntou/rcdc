@@ -33,7 +33,7 @@ public class CbbShineMessageRequest<T> implements Request {
     /**
      * 创建消息实体
      *
-     * @param action     消息action值
+     * @param action 消息action值
      * @param terminalId 终端id
      * @return 消息实体
      */
@@ -72,10 +72,6 @@ public class CbbShineMessageRequest<T> implements Request {
 
     @Override
     public String toString() {
-        return "CbbShineMessageRequest{" +
-                "action='" + action + '\'' +
-                ", terminalId='" + terminalId + '\'' +
-                ", content=" + content +
-                '}';
+        return "CbbShineMessageRequest{" + "action='" + action + '\'' + ", terminalId='" + terminalId + '\'' + ", content=" + content + '}';
     }
 }

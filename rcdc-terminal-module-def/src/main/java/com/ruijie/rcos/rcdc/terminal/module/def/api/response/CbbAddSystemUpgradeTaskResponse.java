@@ -15,7 +15,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 public class CbbAddSystemUpgradeTaskResponse extends DefaultResponse {
 
     private UUID upgradeTaskId;
-    
+
     private String imgName;
 
     public UUID getUpgradeTaskId() {
@@ -33,5 +33,5 @@ public class CbbAddSystemUpgradeTaskResponse extends DefaultResponse {
     public void setImgName(String imgName) {
         this.imgName = imgName;
     }
-    
+
 }

@@ -44,10 +44,10 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     @Injectable
     private SessionManager sessionManager;
-    
+
     @Injectable
     private DefaultRequestMessageSender sender;
-    
+
     @Injectable
     private RequestCallback requestCallback;
 
@@ -83,6 +83,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试同步发送成功
+     * 
      * @throws IOException io异常
      * @throws InterruptedException 中断异常
      * @throws BusinessException 业务异常
@@ -121,9 +122,10 @@ public class CbbTranspondMessageHandlerAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试同步发送,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -131,9 +133,10 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> transpondMessageHandlerAPI.syncRequest(null), "request参数不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试同步发送失败
+     * 
      * @throws BusinessException 异常
      * @throws InterruptedException 异常
      * @throws IOException 异常
@@ -160,14 +163,14 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试异步请求
+     * 
      * @param cbbTerminalCallback 回调
      * @throws BusinessException 业务异常
      * @throws IOException io异常
      * @throws InterruptedException 中断异常
      */
     @Test
-    public void testAsyncRequest(@Mocked CbbTerminalCallback cbbTerminalCallback)
-            throws BusinessException, IOException, InterruptedException {
+    public void testAsyncRequest(@Mocked CbbTerminalCallback cbbTerminalCallback) throws BusinessException, IOException, InterruptedException {
         new Expectations() {
             {
                 sessionManager.getRequestMessageSender(anyString);
@@ -194,9 +197,10 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         };
 
     }
-    
+
     /**
      * 测试终端响应,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -207,6 +211,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试终端响应
+     * 
      * @param session session
      * @param sender 发送对象
      */
@@ -230,9 +235,10 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         }
 
     }
-    
+
     /**
      * 测试终端响应失败
+     * 
      * @param sender 发送对象
      */
     @Test
@@ -253,6 +259,6 @@ public class CbbTranspondMessageHandlerAPIImplTest {
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("终端处于离线状态，消息无法发出;terminal:"));
         }
-        
+
     }
 }

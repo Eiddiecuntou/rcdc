@@ -46,8 +46,7 @@ public class QuerySystemUpgradeListService extends AbstractPageQueryTemplate<Ter
     }
 
     @Override
-    protected Page<TerminalSystemUpgradeEntity> find(Specification<TerminalSystemUpgradeEntity> specification,
-            Pageable pageable) {
+    protected Page<TerminalSystemUpgradeEntity> find(Specification<TerminalSystemUpgradeEntity> specification, Pageable pageable) {
         if (specification == null) {
             terminalSystemUpgradeDAO.findAll(pageable);
         }

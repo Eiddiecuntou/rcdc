@@ -13,14 +13,14 @@ import org.springframework.util.Assert;
  * @author nt
  */
 public class CheckAllowUploadContentVO {
-    
+
     private Boolean hasError;
-    
+
     private String errorMsg;
-    
+
     public CheckAllowUploadContentVO(Boolean hasError, @Nullable String errorMsg) {
         Assert.notNull(hasError, "hasError can not be null");
-        
+
         this.hasError = hasError;
         this.errorMsg = errorMsg;
     }

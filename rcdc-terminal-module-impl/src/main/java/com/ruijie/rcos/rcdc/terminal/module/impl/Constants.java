@@ -9,19 +9,19 @@ package com.ruijie.rcos.rcdc.terminal.module.impl;
  * @author Jarman
  */
 public interface Constants {
-    
+
     int SUCCESS = 0;
-    
+
 
     String SYSTEM_TYPE = "rcdc";
-    
+
     String TERMINAL_COMPONENT_UPGRADE_DIRECTION_NAME = "origin";
 
     /**
      * 终端管理员密码aes加密key值
      */
     String TERMINAL_ADMIN_PASSWORD_AES_KEY = "ADMINPASSWORDKEY";
-    
+
     /**
      * 系统默认编码
      */
@@ -49,8 +49,8 @@ public interface Constants {
 
     /** 终端管理员密码全局参数表key */
     String RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY = "terminal_pwd";
-    
-    
+
+
     /** rcdc服务器密码全局参数表key */
     String RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY = "rcdc_server_ip";
 
@@ -58,17 +58,17 @@ public interface Constants {
      * 存在终端系统刷机包的根路径
      */
     String TERMINAL_UPGRADE_PACKAGE_PATH = "/opt/upgrade/";
-    
+
     /**
      * 存放终端系统vdi刷机包路径
      */
     String TERMINAL_UPGRADE_ISO_PATH_VDI = "/opt/upgrade/linux_vdi/";
-    
+
     /**
      * 刷机时刷机包mount相对路径
      */
     String MOUNT_RELATE_DIR = "mount_dir/";
-    
+
     /**
      * 存放终端系统idv刷机包路径
      */
@@ -93,12 +93,12 @@ public interface Constants {
      * 系统刷机包镜像文件路径
      */
     String TERMINAL_UPGRADE_ISO_IMG_FILE_PATH = "/home/partimag/";
-    
+
     /**
      * 系统刷机开始状态文件路径
      */
     String TERMINAL_UPGRADE_START_SATTUS_FILE_PATH = "/opt/pxeuser/mac_begin/";
-    
+
     /**
      * 系统刷机成功状态文件路径
      */
@@ -125,12 +125,12 @@ public interface Constants {
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION = "version";
 
     /**
-     * 终端组件升级包路径 
+     * 终端组件升级包路径
      */
     String TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH = "/opt/upgrade/app/terminal_component/";
-    
+
     /**
-     * 终端组件升级包路径 
+     * 终端组件升级包路径
      */
     String TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_linux/temp";
 
@@ -143,17 +143,17 @@ public interface Constants {
      * 终端检测超时时间（单位:秒）
      */
     int TERMINAL_DETECT_TIMEOUT = 120;
-    
+
     /**
      * 文件后缀名分隔符
      */
     String FILE_SUFFIX_DOT = ".";
-    
+
     /**
      * 终端刷机nfs服务开放目录
      */
     String TERMINAL_SYSTEM_UPGRADE_ISO_NFS_DIR = "/opt/pxeuser";
-    
+
     /**
      * 刷机镜像刷机文件存放路径
      */

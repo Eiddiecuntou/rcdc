@@ -70,7 +70,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private TerminalSystemUpgradeService terminalSystemUpgradeService;
-    
+
     @Injectable
     private TerminalSystemUpgradeSupportService terminalSystemUpgradeSupportService;
 
@@ -82,38 +82,39 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private QuerySystemUpgradeListService querySystemUpgradeListService;
-    
+
     @Injectable
     private QuerySystemUpgradeTerminalListService querySystemUpgradeTerminalListService;
 
     @Injectable
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
-    
+
     @Injectable
     private CbbTerminalSystemUpgradePackageAPI systemUpgradePackageAPI;
-    
+
     @Injectable
     private QueryUpgradeableTerminalListService queryUpgradeableTerminalListDAO;
 
     /**
      * 测试升级包上传，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testAddSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.addSystemUpgradeTask(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.addSystemUpgradeTask(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试升级包上传，系统升级包不存在
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testAddSystemUpgradeTaskUpgradePackageNotExist() {
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
-        
+
         new Expectations() {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
@@ -127,16 +128,16 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST, e.getKey());
         }
     }
-    
+
     /**
      * 测试升级包上传，升级包正在上传中
      */
     @Test
     public void testAddSystemUpgradeTaskUpgradePackageIsUploading() {
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
-        
+
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
-        
+
         CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
         response.setHasLoading(true);
         new Expectations() {
@@ -154,16 +155,16 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING, e.getKey());
         }
     }
-    
+
     /**
      * 测试升级包上传，已存在进行中的刷机任务
      */
     @Test
     public void testAddSystemUpgradeTaskHasUploadingTask() {
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
-        
+
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
-        
+
         CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
         response.setHasLoading(false);
         new Expectations() {
@@ -183,21 +184,22 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, e.getKey());
         }
     }
-    
+
     /**
      * 测试升级包上传，
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testAddSystemUpgradeTask() throws BusinessException {
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
-        
+
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
         Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = Optional.of(upgradePackageEntity);
-        
+
         CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
         response.setHasLoading(false);
-        
+
         UUID upgradeTaskId = UUID.randomUUID();
         new Expectations() {
             {
@@ -214,7 +216,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         CbbAddSystemUpgradeTaskResponse upgradeTaskResponse = upgradeAPIImpl.addSystemUpgradeTask(request);
         assertEquals(upgradeTaskId, upgradeTaskResponse.getUpgradeTaskId());
         assertEquals(upgradePackageOpt.get().getPackageName(), upgradeTaskResponse.getImgName());
-        
+
         new Verifications() {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
@@ -233,29 +235,29 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试addSystemUpgradeTerminal，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testAddSystemUpgradeTerminalArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.addSystemUpgradeTerminal(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.addSystemUpgradeTerminal(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试addSystemUpgradeTerminal，没有找到对应的终端
      */
     @Test
     public void testAddSystemUpgradeTerminalNotFoundTerminal() {
         CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
-        
+
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
                 result = null;
             }
         };
-        
+
         try {
             upgradeAPIImpl.addSystemUpgradeTerminal(request);
             fail();
@@ -263,15 +265,16 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL, e.getKey());
         }
     }
-    
+
     /**
      * 测试addSystemUpgradeTerminal，刷机任务已关闭
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testAddSystemUpgradeTerminalUploadingTaskHasClose() throws BusinessException {
         CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
-        
+
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
         upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
@@ -283,7 +286,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = upgradeEntity;
             }
         };
-        
+
         try {
             upgradeAPIImpl.addSystemUpgradeTerminal(request);
             fail();
@@ -291,15 +294,16 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_HAS_CLOSED, e.getKey());
         }
     }
-    
+
     /**
      * 测试addSystemUpgradeTerminal，刷机任务终端已添加
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testAddSystemUpgradeTerminalUploadingTerminalExist() throws BusinessException {
         CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
-        
+
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
         upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
@@ -313,7 +317,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = new TerminalSystemUpgradeTerminalEntity();
             }
         };
-        
+
         try {
             upgradeAPIImpl.addSystemUpgradeTerminal(request);
             fail();
@@ -321,15 +325,16 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_EXIST, e.getKey());
         }
     }
-    
+
     /**
      * 测试addSystemUpgradeTerminal，
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testAddSystemUpgradeTerminal() throws BusinessException {
         CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
-        
+
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
         upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
@@ -343,10 +348,10 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = null;
             }
         };
-        
+
         CbbTerminalNameResponse response = upgradeAPIImpl.addSystemUpgradeTerminal(request);
         assertEquals(terminal.getTerminalName(), response.getTerminalName());
-        
+
         new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
@@ -361,17 +366,18 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试listSystemUpgradeTask，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testListSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listSystemUpgradeTask(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listSystemUpgradeTask(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试listSystemUpgradeTask，
+     * 
      * @param upgradeTaskPage mock对象
      * @throws BusinessException 异常
      */
@@ -381,7 +387,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         List<TerminalSystemUpgradeEntity> taskList = new ArrayList<>();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
         taskList.add(upgradeEntity);
-        
+
         new Expectations() {
             {
                 querySystemUpgradeListService.pageQuery(request, TerminalSystemUpgradeEntity.class);
@@ -400,7 +406,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         assertEquals(Status.SUCCESS, response.getStatus());
         assertEquals(upgradeEntity.getState(), response.getItemArr()[0].getUpgradeTaskState());
         assertEquals(upgradeEntity.getId(), response.getItemArr()[0].getId());
-        
+
         new Verifications() {
             {
                 querySystemUpgradeListService.pageQuery(request, TerminalSystemUpgradeEntity.class);
@@ -416,20 +422,21 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试listSystemUpgradeTaskTerminal，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testListSystemUpgradeTaskTerminalArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listSystemUpgradeTaskTerminal(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listSystemUpgradeTaskTerminal(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试listSystemUpgradeTaskTerminal，
+     * 
      * @param upgradeTaskTerminalPage mock对象
      * @throws BusinessException 异常
      */
@@ -439,7 +446,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         List<TerminalSystemUpgradeTerminalEntity> taskList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity entity = new TerminalSystemUpgradeTerminalEntity();
         taskList.add(entity);
-        
+
         new Expectations() {
             {
                 querySystemUpgradeTerminalListService.pageQuery(request, TerminalSystemUpgradeTerminalEntity.class);
@@ -458,7 +465,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         assertEquals(Status.SUCCESS, response.getStatus());
         assertEquals(entity.getState(), response.getItemArr()[0].getTerminalUpgradeState());
         assertEquals(entity.getId(), response.getItemArr()[0].getId());
-        
+
         new Verifications() {
             {
                 querySystemUpgradeTerminalListService.pageQuery(request, TerminalSystemUpgradeTerminalEntity.class);
@@ -476,20 +483,21 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试closeSystemUpgradeTask，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testCloseSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.closeSystemUpgradeTask(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.closeSystemUpgradeTask(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试closeSystemUpgradeTask，
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -504,21 +512,22 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
     }
-    
+
 
     /**
      * 测试listSystemUpgradeTaskTerminal，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testListUpgradeableTerminalArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listUpgradeableTerminal(null),
-                "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listUpgradeableTerminal(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试listSystemUpgradeTaskTerminal，
+     * 
      * @param terminalListPage mock对象
      * @throws BusinessException 异常
      */
@@ -528,7 +537,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         List<ViewUpgradeableTerminalEntity> taskList = new ArrayList<>();
         ViewUpgradeableTerminalEntity entity = new ViewUpgradeableTerminalEntity();
         taskList.add(entity);
-        
+
         new Expectations() {
             {
                 queryUpgradeableTerminalListDAO.pageQuery(request, ViewUpgradeableTerminalEntity.class);
@@ -547,7 +556,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         assertEquals(Status.SUCCESS, response.getStatus());
         assertEquals(entity.getState(), response.getItemArr()[0].getTerminalState());
         assertEquals(entity.getTerminalId(), response.getItemArr()[0].getId());
-        
+
         new Verifications() {
             {
                 queryUpgradeableTerminalListDAO.pageQuery(request, ViewUpgradeableTerminalEntity.class);
