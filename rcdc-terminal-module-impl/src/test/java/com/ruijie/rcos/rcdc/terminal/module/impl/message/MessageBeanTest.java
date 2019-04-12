@@ -29,7 +29,7 @@ public class MessageBeanTest {
         request.setHostName("456");
         assertEquals("456", request.getHostName());
     }
-    
+
     /**
      * 测试ChangeTerminalPasswordRequest
      */
@@ -39,7 +39,7 @@ public class MessageBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试ShineNetworkConfig
      */
@@ -49,7 +49,7 @@ public class MessageBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试ShineTerminalBasicInfo
      */
@@ -59,7 +59,7 @@ public class MessageBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalDetectResponse
      */
@@ -69,7 +69,7 @@ public class MessageBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalDetectResult
      */
@@ -79,7 +79,7 @@ public class MessageBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalSystemUpgradeMsg
      */

@@ -41,12 +41,11 @@ public class QuerySystemUpgradePackageListService extends AbstractPageQueryTempl
 
     @Override
     protected void mappingField(EntityFieldMapper entityFieldMapper) {
-        
+
     }
 
     @Override
-    protected Page<TerminalSystemUpgradePackageEntity> find(Specification<TerminalSystemUpgradePackageEntity> specification,
-            Pageable pageable) {
+    protected Page<TerminalSystemUpgradePackageEntity> find(Specification<TerminalSystemUpgradePackageEntity> specification, Pageable pageable) {
         if (specification == null) {
             systemUpgradePackageDAO.findAll(pageable);
         }

@@ -12,18 +12,19 @@ import java.util.List;
  * @author nt
  */
 public class CbbTerminalComponentUpdateListDTO {
-    
+
     private String version;
-    
+
     private String baseVersion;
-    
+
     private Integer componentSize;
-    
+
     private String limitVersion;
-    
+
     private List<CbbTerminalComponentVersionInfoDTO> componentList;
-    
+
     public CbbTerminalComponentUpdateListDTO() {
+        
     }
 
     public CbbTerminalComponentUpdateListDTO(String version, String baseVersion, Integer componentSize) {
@@ -31,7 +32,7 @@ public class CbbTerminalComponentUpdateListDTO {
         this.baseVersion = baseVersion;
         this.componentSize = componentSize;
     }
-    
+
     public String getVersion() {
         return version;
     }

@@ -9,16 +9,16 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
  * @author nt
  */
 public enum CbbSystemUpgradeStateEnums {
-    
+
     WAIT,
-    
+
     UPGRADING,
-    
+
     SUCCESS,
-    
+
     FAIL,
-    
+
     UNDO,
-    
+
     UNSUPPORTED
 }

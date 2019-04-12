@@ -15,7 +15,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 public class CbbUpgradePackageNameResponse extends DefaultResponse {
 
     private String packageName;
-    
+
     public CbbUpgradePackageNameResponse(String packageName) {
         Assert.hasText(packageName, "packageName can not be empty");
         this.packageName = packageName;
@@ -28,5 +28,5 @@ public class CbbUpgradePackageNameResponse extends DefaultResponse {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
-    
+
 }

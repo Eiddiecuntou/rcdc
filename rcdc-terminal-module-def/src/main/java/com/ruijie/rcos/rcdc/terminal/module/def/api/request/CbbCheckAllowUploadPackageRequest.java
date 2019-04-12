@@ -18,7 +18,7 @@ public class CbbCheckAllowUploadPackageRequest implements Request {
     @NotNull
     @Range(min = "1")
     private Long fileSize;
-    
+
     public CbbCheckAllowUploadPackageRequest(Long fileSize) {
         this.fileSize = fileSize;
     }
@@ -30,5 +30,5 @@ public class CbbCheckAllowUploadPackageRequest implements Request {
     public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
-    
+
 }

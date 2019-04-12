@@ -26,5 +26,5 @@ public class EditAdminPwdWebRequest implements WebRequest {
     public void setPwd(String pwd) {
         this.pwd = pwd;
     }
-    
+
 }

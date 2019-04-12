@@ -15,7 +15,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 public class CbbCheckAllowUploadPackageResponse extends DefaultResponse {
 
     private Boolean allowUpload;
-    
+
     private List<String> errorList;
 
     public Boolean getAllowUpload() {
@@ -33,5 +33,5 @@ public class CbbCheckAllowUploadPackageResponse extends DefaultResponse {
     public void setErrorList(List<String> errorList) {
         this.errorList = errorList;
     }
-    
+
 }

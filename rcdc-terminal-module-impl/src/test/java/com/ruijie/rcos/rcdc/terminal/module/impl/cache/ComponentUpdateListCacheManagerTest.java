@@ -26,20 +26,20 @@ public class ComponentUpdateListCacheManagerTest {
 
     @Tested
     private ComponentUpdateListCacheManager manager;
-    
+
     /**
      * 测试addCache,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testAddCacheArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> manager.addCache(null, new CbbTerminalComponentUpdateListDTO()),
                 "platform can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.addCache(TerminalPlatformEnums.VDI, null),
-                "updatelist can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.addCache(TerminalPlatformEnums.VDI, null), "updatelist can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试addCache,
      */
@@ -55,6 +55,7 @@ public class ComponentUpdateListCacheManagerTest {
 
     /**
      * 测试removeCache,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -62,7 +63,7 @@ public class ComponentUpdateListCacheManagerTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> manager.removeCache(null), "platform can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试removeCache,
      */
@@ -74,9 +75,10 @@ public class ComponentUpdateListCacheManagerTest {
         manager.removeCache(TerminalPlatformEnums.VDI);
         assertEquals(0, caches.size());
     }
-    
+
     /**
      * 测试getCache,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -84,19 +86,19 @@ public class ComponentUpdateListCacheManagerTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> manager.getCache(null), "platform can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getCache,
      */
     @Test
-    public void testGetCache()  {
+    public void testGetCache() {
         CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
         Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
         caches.put(TerminalPlatformEnums.VDI, updatelist);
         assertEquals(updatelist, manager.getCache(TerminalPlatformEnums.VDI));
         caches.remove(TerminalPlatformEnums.VDI);
     }
-    
+
     /**
      * 测试getUpdateListCaches
      */

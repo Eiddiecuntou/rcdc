@@ -81,7 +81,7 @@ public class PageQuerySpecification<T> implements Specification<T> {
      */
     private Predicate buildExactMatchPredicate(Root<T> root, CriteriaBuilder cb) {
         if (ArrayUtils.isEmpty(matchEqualArr)) {
-            //没有设置精确匹配查询条件时返回null
+            // 没有设置精确匹配查询条件时返回null
             return null;
         }
         List<Predicate> predicateList = new ArrayList<>(matchEqualArr.length);
@@ -105,7 +105,7 @@ public class PageQuerySpecification<T> implements Specification<T> {
      */
     private Predicate buildLikePredicate(Root<T> root, CriteriaBuilder cb) {
         if (StringUtils.isBlank(searchKeyword)) {
-            //没有传搜索关键字时返回null
+            // 没有传搜索关键字时返回null
             return null;
         }
         List<Predicate> predicateList = new ArrayList<>(searchColumnList.size());

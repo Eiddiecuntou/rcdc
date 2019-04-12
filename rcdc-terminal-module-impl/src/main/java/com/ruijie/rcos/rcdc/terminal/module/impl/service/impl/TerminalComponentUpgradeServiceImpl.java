@@ -59,8 +59,8 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
             LOGGER.debug("updatelist : {}", JSON.toJSONString(updatelist));
         }
         String version = updatelist.getVersion();
-        CbbTerminalComponentUpdateListDTO updatelistDTO = new CbbTerminalComponentUpdateListDTO(version,
-                updatelist.getBaseVersion(), updatelist.getComponentSize());
+        CbbTerminalComponentUpdateListDTO updatelistDTO =
+                new CbbTerminalComponentUpdateListDTO(version, updatelist.getBaseVersion(), updatelist.getComponentSize());
 
         // 根据版本号对比，版本相同，不升级； 不同则根据平台类型筛选出组件信息，无组件信息则不支持升级，有则返回升级信息
         if (rainUpgradeVersion.equals(version)) {
@@ -74,13 +74,12 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         LOGGER.debug("terminal version is {}", terminalVersion);
         if (terminalVersion != 0 && compareVersion(updatelist.getLimitVersion(), rainUpgradeVersion)) {
             LOGGER.debug("limit version is big, return not support");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
-                    updatelistDTO);
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), updatelistDTO);
         }
 
-        //深拷贝对象
+        // 深拷贝对象
         CbbTerminalComponentUpdateListDTO copyUpdateList = deepCopyUpdateList(updatelist);
-        
+
         LOGGER.debug("return start upgrade");
         // 判断是否差异升级
         if (!rainUpgradeVersion.equals(copyUpdateList.getBaseVersion())) {
@@ -97,23 +96,23 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         copyUpdateList.setComponentSize(updatelist.getComponentSize());
         copyUpdateList.setLimitVersion(updatelist.getLimitVersion());
         copyUpdateList.setVersion(updatelist.getVersion());
-        
+
         List<CbbTerminalComponentVersionInfoDTO> componentList = new ArrayList<>();
         final List<CbbTerminalComponentVersionInfoDTO> originComponentList = updatelist.getComponentList();
         copyUpdateList.setComponentList(componentList);
         if (CollectionUtils.isEmpty(originComponentList)) {
             return copyUpdateList;
         }
-        
+
         for (CbbTerminalComponentVersionInfoDTO originComponent : originComponentList) {
             CbbTerminalComponentVersionInfoDTO component = new CbbTerminalComponentVersionInfoDTO();
             BeanUtils.copyProperties(originComponent, component);
             componentList.add(component);
         }
-        
+
         return copyUpdateList;
     }
-    
+
     /**
      * 清除差异升级信息
      * 
@@ -143,8 +142,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
      * 构建响应结果dto
      */
     private TerminalVersionResultDTO buildResult(CbbTerminalComponentUpgradeResultEnums result, CbbTerminalComponentUpdateListDTO updateListDto) {
-        return new TerminalVersionResultDTO(result.getResult(),
-                updateListDto);
+        return new TerminalVersionResultDTO(result.getResult(), updateListDto);
     }
 
     /**

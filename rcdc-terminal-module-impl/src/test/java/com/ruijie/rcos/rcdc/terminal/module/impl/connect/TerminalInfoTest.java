@@ -24,7 +24,7 @@ public class TerminalInfoTest {
         terminalInfo.setTerminalIp("192.168.1.2");
         assertEquals("sss", terminalInfo.getTerminalId());
         assertEquals("192.168.1.2", terminalInfo.getTerminalIp());
-        
+
         TerminalInfo terminalInfo2 = new TerminalInfo("fff", "11.12.13.12");
         assertEquals("fff", terminalInfo2.getTerminalId());
         assertEquals("11.12.13.12", terminalInfo2.getTerminalIp());

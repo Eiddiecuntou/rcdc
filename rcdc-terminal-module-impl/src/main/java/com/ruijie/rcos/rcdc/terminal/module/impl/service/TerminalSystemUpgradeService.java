@@ -39,7 +39,7 @@ public interface TerminalSystemUpgradeService {
      * @return 判断结果
      */
     boolean hasSystemUpgradeInProgress();
-    
+
     /**
      * 判断刷机包是否存在刷机任务处于进行状态
      * 
@@ -50,10 +50,11 @@ public interface TerminalSystemUpgradeService {
 
     /**
      * 获取刷机任务
+     * 
      * @param systemUpgradeId 刷机任务id
      * @return 刷机任务实体对象
      * @throws BusinessException 业务异常
      */
     TerminalSystemUpgradeEntity getSystemUpgradeTask(UUID systemUpgradeId) throws BusinessException;
-    
+
 }

@@ -34,33 +34,35 @@ import mockit.Verifications;
  */
 public class AddUpgradeTerminalBatchTaskHandlerTest {
 
-    @Mocked 
+    @Mocked
     private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
-    
+
     @Mocked
     private Map<UUID, String> idMap;
-    
+
     @Mocked
     private Iterator<? extends BatchTaskItem> iterator;
-    
+
     @Mocked
     private ProgrammaticOptLogRecorder optLogRecorder;
-    
+
     /**
      * 测试processItem,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testProcessItemArgumentIsNull() throws Exception {
-        
+
         AddUpgradeTerminalBatchTaskHandler handler = getHander();
-        
+
         ThrowExceptionTester.throwIllegalArgumentException(() -> handler.processItem(null), "BatchTaskItem不能为null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试processItem,添加升级终端失败
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -74,7 +76,7 @@ public class AddUpgradeTerminalBatchTaskHandlerTest {
                 result = new BusinessException("key");
                 idMap.get(randomUUID);
                 result = "123";
-                
+
             }
         };
         new MockUp<BusinessException>() {
@@ -97,16 +99,17 @@ public class AddUpgradeTerminalBatchTaskHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试processItem,添加升级终端成功
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testProcessItemSuccess() throws Exception {
         BatchTaskItem taskItem = new TerminalUpgradeBatchTaskItem(UUID.randomUUID(), "dsd", UUID.randomUUID());
         AddUpgradeTerminalBatchTaskHandler handler = getHander();
-        
+
         BatchTaskItemResult result = handler.processItem(taskItem);
         assertEquals(BatchTaskItemStatus.SUCCESS, result.getItemStatus());
         assertEquals(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT_SUCCESS, result.getMsgKey());
@@ -117,7 +120,7 @@ public class AddUpgradeTerminalBatchTaskHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试onFinish
      */
@@ -128,7 +131,7 @@ public class AddUpgradeTerminalBatchTaskHandlerTest {
         assertEquals(BatchTaskStatus.SUCCESS, result.getStatus());
         assertEquals(BusinessKey.RCDC_ADD_UPGRADE_TERMINAL_RESULT, result.getMsgKey());
     }
-    
+
     private AddUpgradeTerminalBatchTaskHandler getHander() {
         return new AddUpgradeTerminalBatchTaskHandler(cbbTerminalUpgradeAPI, idMap, iterator, optLogRecorder);
     }

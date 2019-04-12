@@ -25,9 +25,8 @@ public class ComponentUpdateListCacheManager {
      */
     public static boolean isUpdate = true;
 
-    
-    private static final Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> UPDATE_LIST_CACHE_MAP =
-            new ConcurrentHashMap<>();
+
+    private static final Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> UPDATE_LIST_CACHE_MAP = new ConcurrentHashMap<>();
 
     /**
      * 添加缓存

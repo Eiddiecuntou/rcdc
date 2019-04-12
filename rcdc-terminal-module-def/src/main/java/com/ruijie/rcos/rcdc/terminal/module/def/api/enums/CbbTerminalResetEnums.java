@@ -10,17 +10,17 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
  * @author nt
  */
 public enum CbbTerminalResetEnums {
-    
+
     /**
      * 不重启
      */
     NOT,
-    
+
     /**
      * 稍后重启
      */
     LATER,
-    
+
     /**
      * 立即重启
      */

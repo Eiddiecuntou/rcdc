@@ -12,7 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
  * @author nt
  */
 public class TerminalListDTO {
-    
+
     /**
      * 终端id
      */
@@ -37,7 +37,7 @@ public class TerminalListDTO {
      * 终端状态
      */
     private CbbTerminalStateEnums terminalState;
-    
+
     /**
      * 产品型号
      */

@@ -37,15 +37,14 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
-    
+
     @Autowired
     private TerminalBasicInfoServiceTx terminalBasicInfoServiceTx;
 
     @Override
     public CbbTerminalBasicInfoResponse findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
-        TerminalEntity basicInfoEntity =
-                basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
+        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
@@ -66,9 +65,9 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
             String macAddr = basicInfo.getMacAddr();
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[] {terminalName, macAddr});
         }
-        
+
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
-       
+
         return DefaultResponse.Builder.success();
     }
 
@@ -78,7 +77,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         String terminalId = request.getTerminalId();
         try {
             basicInfoService.modifyTerminalName(terminalId, request.getTerminalName());
-            //在线情况下方可修改终端名称
+            // 在线情况下方可修改终端名称
             int version = getVersion(terminalId);
             int effectRow = basicInfoDAO.modifyTerminalName(terminalId, version, request.getTerminalName());
             if (effectRow == 0) {
@@ -94,7 +93,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     @Override
     public DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalNetworkRequest不能为null");
-        //先发送网络配置消息给shine，后修改数据库
+        // 先发送网络配置消息给shine，后修改数据库
         String terminalId = request.getTerminalId();
         ShineNetworkConfig shineNetworkConfig = new ShineNetworkConfig();
         BeanCopier beanCopier = BeanCopier.create(request.getClass(), shineNetworkConfig.getClass(), false);

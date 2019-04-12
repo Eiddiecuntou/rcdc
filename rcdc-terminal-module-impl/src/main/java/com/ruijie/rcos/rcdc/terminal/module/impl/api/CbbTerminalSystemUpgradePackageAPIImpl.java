@@ -68,8 +68,8 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalSystemUpgradePackageAPIImpl.class);
 
-    private static final BeanCopier PACKAGE_BEAN_COPIER = BeanCopier.create(TerminalSystemUpgradePackageEntity.class,
-            CbbTerminalSystemUpgradePackageInfoDTO.class, false);
+    private static final BeanCopier PACKAGE_BEAN_COPIER =
+            BeanCopier.create(TerminalSystemUpgradePackageEntity.class, CbbTerminalSystemUpgradePackageInfoDTO.class, false);
 
     private static final Set<TerminalPlatformEnums> SYS_UPGRADE_PACKAGE_UPLOADING = new HashSet<>();
 
@@ -98,10 +98,9 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         response.setHasLoading(SYS_UPGRADE_PACKAGE_UPLOADING.contains(request.getPlatform()));
         return response;
     }
-    
+
     @Override
-    public CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request)
-            throws BusinessException {
+    public CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         boolean allowUpload = true;
@@ -110,16 +109,14 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         if (hasRunningTask) {
             LOGGER.debug("system upgrade task is running");
             allowUpload = false;
-            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING,
-                    new String[] {}));
+            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, new String[] {}));
         }
 
         // 判断磁盘大小是否满足
         final boolean isEnough = checkPackageDiskSpaceIsEnough(request.getFileSize());
         if (!isEnough) {
             allowUpload = false;
-            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH,
-                    new String[] {}));
+            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[] {}));
         }
 
         CbbCheckAllowUploadPackageResponse respone = new CbbCheckAllowUploadPackageResponse();
@@ -162,8 +159,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
             // 将新升级文件移动到目录下
             String storePackageName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
-            final String packagePath =
-                    moveUpgradePackage(fileName, storePackageName, filePath, versionInfo.getPackageType());
+            final String packagePath = moveUpgradePackage(fileName, storePackageName, filePath, versionInfo.getPackageType());
             // 更新升级包信息入库
             versionInfo.setFilePath(packagePath);
             terminalSystemUpgradePackageService.saveTerminalUpgradePackage(versionInfo);
@@ -178,8 +174,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalUpgradeVersionFileInfo getPackageVersionInfo(final String fileName, final String filePath)
-            throws BusinessException {
+    private TerminalUpgradeVersionFileInfo getPackageVersionInfo(final String fileName, final String filePath) throws BusinessException {
         // 挂载升级包文件
         mountUpgradePackage(filePath);
 
@@ -206,8 +201,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
      * @return
      */
     private boolean isExistRunningTask(TerminalPlatformEnums packageType) {
-        TerminalSystemUpgradePackageEntity upgradePackage =
-                terminalSystemUpgradePackageDAO.findFirstByPackageType(packageType);
+        TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(packageType);
         if (upgradePackage == null) {
             return false;
         }
@@ -215,14 +209,13 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         return terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
     }
 
-    private String moveUpgradePackage(String fileName, String storePackageName, String filePath,
-            TerminalPlatformEnums packageType) throws BusinessException {
+    private String moveUpgradePackage(String fileName, String storePackageName, String filePath, TerminalPlatformEnums packageType)
+            throws BusinessException {
         File to = null;
         LOGGER.debug("升级包类型：{}", packageType.name());
         if (packageType != TerminalPlatformEnums.VDI) {
             LOGGER.debug("暂不支持的升级包类型：{}", packageType);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT,
-                    packageType.name());
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT, packageType.name());
         }
         LOGGER.info("开始移动刷机包[{}]到路径[{}]", fileName, Constants.TERMINAL_UPGRADE_ISO_PATH_VDI);
         final String toPath = Constants.TERMINAL_UPGRADE_ISO_PATH_VDI + storePackageName;
@@ -237,27 +230,27 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         try {
             Files.move(from, to);
         } catch (Exception e) {
-            LOGGER.debug("move upgrade file to target directory fail, fileName : {}, packageType : {}", fileName,
-                    packageType.name());
+            LOGGER.debug("move upgrade file to target directory fail, fileName : {}, packageType : {}", fileName, packageType.name());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e);
         }
         LOGGER.info("完成移动刷机包");
 
         return toPath;
     }
-    
+
     /**
      * 检验磁盘空间是否满足升级包上传
+     * 
      * @param fileSize 文件大小
      * @return 磁盘空间是否足够
      */
     private boolean checkPackageDiskSpaceIsEnough(Long fileSize) {
-        File packageDir = new File(Constants.TERMINAL_UPGRADE_PACKAGE_PATH); 
+        File packageDir = new File(Constants.TERMINAL_UPGRADE_PACKAGE_PATH);
         final long usableSpace = packageDir.getUsableSpace();
         if (usableSpace >= fileSize) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -273,8 +266,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private void mountUpgradePackage(final String filePath) throws BusinessException {
         LOGGER.debug("mount package, path is [{}]", filePath);
-        String mountCmd = String.format(Constants.SYSTEM_CMD_MOUNT_UPGRADE_ISO, filePath,
-                Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
+        String mountCmd = String.format(Constants.SYSTEM_CMD_MOUNT_UPGRADE_ISO, filePath, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
 
         LOGGER.info("mount package, cmd : {}", mountCmd);
         runShellCommand(mountCmd);
@@ -283,8 +275,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private void umountUpgradePackage() throws BusinessException {
         LOGGER.debug("umount package, path is [{}]", Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
-        String umountCmd =
-                String.format(Constants.SYSTEM_CMD_UMOUNT_UPGRADE_ISO, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
+        String umountCmd = String.format(Constants.SYSTEM_CMD_UMOUNT_UPGRADE_ISO, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
 
         LOGGER.info("umount package, cmd : {}", umountCmd);
         runShellCommand(umountCmd);
@@ -306,8 +297,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private TerminalUpgradeVersionFileInfo checkVersionFile() throws BusinessException {
         // 获取升级文件信息
         TerminalUpgradeVersionFileInfo verInfo = getVersionInfo();
-        if (verInfo.getPackageType() == null || StringUtils.isBlank(verInfo.getImgName())
-                || StringUtils.isBlank(verInfo.getVersion())) {
+        if (verInfo.getPackageType() == null || StringUtils.isBlank(verInfo.getImgName()) || StringUtils.isBlank(verInfo.getVersion())) {
             LOGGER.debug("version file info error: {}", verInfo.toString());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT);
         }
@@ -332,8 +322,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         // 获取镜像名称
         String imgName = getImgName();
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
-        versionInfo.setPackageType(TerminalPlatformEnums
-                .valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE)));
+        versionInfo.setPackageType(TerminalPlatformEnums.valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE)));
         versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION));
         versionInfo.setImgName(imgName);
         return versionInfo;
@@ -359,18 +348,16 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     @Override
-    public DefaultPageResponse<CbbTerminalSystemUpgradePackageInfoDTO> listSystemUpgradePackage(
-            PageSearchRequest request) throws BusinessException {
+    public DefaultPageResponse<CbbTerminalSystemUpgradePackageInfoDTO> listSystemUpgradePackage(PageSearchRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        //添加软删除条件
+        // 添加软删除条件
         addIsDeleteMatchEqual(request);
         final Page<TerminalSystemUpgradePackageEntity> page =
                 querySystemUpgradePackageListService.pageQuery(request, TerminalSystemUpgradePackageEntity.class);
-        
+
         List<TerminalSystemUpgradePackageEntity> packageList = page.getContent();
-        CbbTerminalSystemUpgradePackageInfoDTO[] dtoArr =
-                new CbbTerminalSystemUpgradePackageInfoDTO[packageList.size()];
+        CbbTerminalSystemUpgradePackageInfoDTO[] dtoArr = new CbbTerminalSystemUpgradePackageInfoDTO[packageList.size()];
         Stream.iterate(0, i -> i + 1).limit(packageList.size()).forEach(i -> {
             CbbTerminalSystemUpgradePackageInfoDTO dto = new CbbTerminalSystemUpgradePackageInfoDTO();
             final TerminalSystemUpgradePackageEntity packageEntity = packageList.get(i);
@@ -396,21 +383,20 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         request.setMatchEqualArr(matchEqualList.toArray(new MatchEqual[matchEqualList.size()]));
     }
 
-    private void completeUpgradingTaskInfo(CbbTerminalSystemUpgradePackageInfoDTO dto,
-            final TerminalSystemUpgradePackageEntity packageEntity) {
+    private void completeUpgradingTaskInfo(CbbTerminalSystemUpgradePackageInfoDTO dto, final TerminalSystemUpgradePackageEntity packageEntity) {
         final UUID packageId = packageEntity.getId();
         final TerminalSystemUpgradeEntity upgradingTask = getUpgradingTask(packageId);
         if (upgradingTask == null) {
             dto.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
             return;
-        } 
+        }
         dto.setState(upgradingTask.getState());
         dto.setUpgradeTaskId(upgradingTask.getId());
     }
 
     private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-            CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
         final List<TerminalSystemUpgradeEntity> upgradingTaskList =
                 systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
@@ -422,24 +408,22 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     @Override
-    public CbbUpgradePackageNameResponse deleteUpgradePackage(CbbDeleteTerminalUpgradePackageRequest request)
-            throws BusinessException {
+    public CbbUpgradePackageNameResponse deleteUpgradePackage(CbbDeleteTerminalUpgradePackageRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        
+
         final UUID packageId = request.getPackageId();
         final TerminalSystemUpgradePackageEntity systemUpgradePackage = terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
         if (terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageId)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_HAS_RUNNING_TASK_NOT_ALLOW_DELETE);
         }
-        
+
         terminalSystemUpgradePackageService.deleteSoft(packageId);
-        
+
         return new CbbUpgradePackageNameResponse(systemUpgradePackage.getPackageName());
     }
 
     @Override
-    public CbbUpgradePackageNameResponse getTerminalUpgradePackageName(CbbUpgradePackageIdRequest request)
-            throws BusinessException {
+    public CbbUpgradePackageNameResponse getTerminalUpgradePackageName(CbbUpgradePackageIdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         final TerminalSystemUpgradePackageEntity systemUpgradePackage =

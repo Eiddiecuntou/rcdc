@@ -33,9 +33,8 @@ public class CancelUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHand
 
     private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
 
-    public CancelUpgradeTerminalBatchTaskHandler(CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI,
-            Map<UUID, String> idMap, Iterator<? extends BatchTaskItem> iterator,
-            ProgrammaticOptLogRecorder optLogRecorder) {
+    public CancelUpgradeTerminalBatchTaskHandler(CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI, Map<UUID, String> idMap,
+            Iterator<? extends BatchTaskItem> iterator, ProgrammaticOptLogRecorder optLogRecorder) {
         super(iterator);
         this.optLogRecorder = optLogRecorder;
         this.idMap = idMap;
@@ -53,8 +52,7 @@ public class CancelUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHand
         return cancelUpgradeTerminalAddOptLog(terminalId, upgradeTaskId);
     }
 
-    private BatchTaskItemResult cancelUpgradeTerminalAddOptLog(String terminalId, UUID upgradeTaskId)
-            throws BusinessException {
+    private BatchTaskItemResult cancelUpgradeTerminalAddOptLog(String terminalId, UUID upgradeTaskId) throws BusinessException {
         CbbCancelUpgradeTerminalRequest cancelRequest = new CbbCancelUpgradeTerminalRequest();
         cancelRequest.setTerminalId(terminalId);
         cancelRequest.setUpgradeTaskId(upgradeTaskId);
@@ -62,13 +60,11 @@ public class CancelUpgradeTerminalBatchTaskHandler extends AbstractBatchTaskHand
             cbbTerminalUpgradeAPI.cancelUpgradeTerminal(cancelRequest);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_SUCCESS_LOG, terminalId);
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
-                    .msgKey(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_RESULT_SUCCESS)
-                    .msgArgs(new String[] {terminalId}).build();
+                    .msgKey(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_RESULT_SUCCESS).msgArgs(new String[] {terminalId}).build();
         } catch (BusinessException e) {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_FAIL_LOG, terminalId, e.getI18nMessage());
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.FAILURE)
-                    .msgKey(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_RESULT_FAIL)
-                    .msgArgs(new String[] {terminalId, e.getI18nMessage()}).build();
+                    .msgKey(BusinessKey.RCDC_CANCEL_UPGRADE_TERMINAL_RESULT_FAIL).msgArgs(new String[] {terminalId, e.getI18nMessage()}).build();
         }
     }
 

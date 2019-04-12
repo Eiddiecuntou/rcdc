@@ -12,9 +12,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 public class PageModel {
 
     private int page;
-    
+
     private int limit;
-    
+
     public PageModel(int page, int limit) {
         this.page = page;
         this.limit = limit;
@@ -35,5 +35,5 @@ public class PageModel {
     public void setLimit(int limit) {
         this.limit = limit;
     }
-    
+
 }

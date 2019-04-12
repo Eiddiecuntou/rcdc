@@ -10,7 +10,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
  */
 public enum CbbGetNetworkModeEnums {
 
-    AUTO,
-    MANUAL
+    AUTO, MANUAL
 
 }

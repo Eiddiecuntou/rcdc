@@ -18,7 +18,7 @@ public class CbbGetUpgradeTaskRequest implements Request {
 
     @NotNull
     private UUID upgradeTaskId;
-    
+
     public CbbGetUpgradeTaskRequest(UUID upgradeTaskId) {
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
         this.upgradeTaskId = upgradeTaskId;
@@ -31,5 +31,5 @@ public class CbbGetUpgradeTaskRequest implements Request {
     public void setUpgradeTaskId(UUID upgradeTaskId) {
         this.upgradeTaskId = upgradeTaskId;
     }
-    
+
 }

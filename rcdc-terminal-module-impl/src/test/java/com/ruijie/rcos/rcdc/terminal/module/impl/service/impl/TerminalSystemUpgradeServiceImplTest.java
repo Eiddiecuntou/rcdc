@@ -68,8 +68,8 @@ public class TerminalSystemUpgradeServiceImplTest {
      * 
      * @param sender 模拟的消息发送对象
      * @throws BusinessException 业务异常
-     * @throws IOException 
-     * @throws InterruptedException 
+     * @throws IOException io异常
+     * @throws InterruptedException 异常
      */
     @Test
     public void testSystemUpgrade(@Mocked DefaultRequestMessageSender sender) throws BusinessException, InterruptedException, IOException {
@@ -214,15 +214,16 @@ public class TerminalSystemUpgradeServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试hasSystemUpgradeInProgress0，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testHasSystemUpgradeInProgress0ArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.hasSystemUpgradeInProgress
-                (null), "upgradePackageId can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.hasSystemUpgradeInProgress(null),
+                "upgradePackageId can not be null");
         assertTrue(true);
     }
 
@@ -276,9 +277,10 @@ public class TerminalSystemUpgradeServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试modifySystemUpgradeState，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -286,15 +288,16 @@ public class TerminalSystemUpgradeServiceImplTest {
         TerminalSystemUpgradeEntity idNullEntity = new TerminalSystemUpgradeEntity();
         TerminalSystemUpgradeEntity idNotNullEntity = new TerminalSystemUpgradeEntity();
         idNotNullEntity.setId(UUID.randomUUID());
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.modifySystemUpgradeState
-                (idNullEntity), "upgradeTaskId 不能为空");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.modifySystemUpgradeState
-                (idNotNullEntity), "state 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.modifySystemUpgradeState(idNullEntity),
+                "upgradeTaskId 不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.modifySystemUpgradeState(idNotNullEntity),
+                "state 不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试modifySystemUpgradeState，状态为非finish状态
+     * 
      * @throws BusinessException 异常
      * @throws Exception 异常
      */
@@ -304,7 +307,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         TerminalSystemUpgradeEntity systemUpgradeEntity = new TerminalSystemUpgradeEntity();
         systemUpgradeEntity.setId(systemUpgradeId);
         systemUpgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
-        
+
         new MockUp<TerminalSystemUpgradeServiceImpl>() {
             @Mock
             public TerminalSystemUpgradeEntity getSystemUpgradeTask(UUID systemUpgradeId) {
@@ -312,7 +315,7 @@ public class TerminalSystemUpgradeServiceImplTest {
             }
         };
         terminalSystemUpgradeService.modifySystemUpgradeState(systemUpgradeEntity);
-        
+
         new Verifications() {
             {
                 terminalSystemUpgradeDAO.save(systemUpgradeEntity);
@@ -322,9 +325,10 @@ public class TerminalSystemUpgradeServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试modifySystemUpgradeState，状态为finish状态
+     * 
      * @throws BusinessException 异常
      * @throws Exception 异常
      */
@@ -334,7 +338,7 @@ public class TerminalSystemUpgradeServiceImplTest {
         TerminalSystemUpgradeEntity systemUpgradeEntity = new TerminalSystemUpgradeEntity();
         systemUpgradeEntity.setId(systemUpgradeId);
         systemUpgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
-        
+
         new MockUp<TerminalSystemUpgradeServiceImpl>() {
             @Mock
             public TerminalSystemUpgradeEntity getSystemUpgradeTask(UUID systemUpgradeId) {
@@ -342,7 +346,7 @@ public class TerminalSystemUpgradeServiceImplTest {
             }
         };
         terminalSystemUpgradeService.modifySystemUpgradeState(systemUpgradeEntity);
-        
+
         new Verifications() {
             {
                 terminalSystemUpgradeDAO.save(systemUpgradeEntity);
@@ -352,25 +356,26 @@ public class TerminalSystemUpgradeServiceImplTest {
             }
         };
     }
-    
+
     /**
      * 测试getSystemUpgradeTask，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testGetSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.getSystemUpgradeTask
-                (null), "systemUpgradeId can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalSystemUpgradeService.getSystemUpgradeTask(null),
+                "systemUpgradeId can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getSystemUpgradeTask，BusinessException
      */
     @Test
     public void testGetSystemUpgradeTaskHasBusinessException() {
         UUID systemUpgradeId = UUID.randomUUID();
-        
+
         new Expectations() {
             {
                 terminalSystemUpgradeDAO.findById(systemUpgradeId);
@@ -384,9 +389,10 @@ public class TerminalSystemUpgradeServiceImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_NOT_EXIST, e.getKey());
         }
     }
-    
+
     /**
      * 测试getSystemUpgradeTask，
+     * 
      * @throws BusinessException 异常
      */
     @Test

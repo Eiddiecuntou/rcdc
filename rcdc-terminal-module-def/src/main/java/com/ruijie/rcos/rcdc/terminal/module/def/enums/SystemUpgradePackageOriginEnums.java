@@ -12,5 +12,5 @@ package com.ruijie.rcos.rcdc.terminal.module.def.enums;
 public enum SystemUpgradePackageOriginEnums {
 
     USER_UPLOAD
-    
+
 }

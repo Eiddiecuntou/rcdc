@@ -1,11 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
-import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
+import static org.junit.Assert.fail;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 
 /**
  * Description: Function Description
@@ -106,7 +105,7 @@ public class MessageUtilsTest {
     }
 
     /**
-     *测试转换数据不为空
+     * 测试转换数据不为空
      */
     @Test
     public void testParseWithDataAndClassIsNotNullAndContentIsNotEmpty() {
@@ -137,7 +136,7 @@ public class MessageUtilsTest {
             String json = JSON.toJSONString(response);
             CbbShineMessageResponse result = MessageUtils.parse(json, User.class);
             Assert.assertEquals(response.getCode(), result.getCode());
-            Assert.assertEquals(response.getContent().name,user.getName());
+            Assert.assertEquals(response.getContent().name, user.getName());
         } catch (Exception e) {
             fail();
         }
@@ -154,7 +153,7 @@ public class MessageUtilsTest {
      */
     public static class User {
         private int id;
-        
+
         private String name;
 
         public int getId() {

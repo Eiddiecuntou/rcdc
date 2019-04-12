@@ -25,6 +25,7 @@ public class TerminalIdMappingUtilsTest {
 
     /**
      * 测试mapping，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -33,7 +34,7 @@ public class TerminalIdMappingUtilsTest {
         ThrowExceptionTester.throwIllegalStateException(() -> TerminalIdMappingUtils.mapping(new String[0]), "terminalIdArr大小不能为0");
         assertTrue(true);
     }
-    
+
     /**
      * 测试mapping，
      */
@@ -50,6 +51,7 @@ public class TerminalIdMappingUtilsTest {
 
     /**
      * 测试extractUUID，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -57,7 +59,7 @@ public class TerminalIdMappingUtilsTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> TerminalIdMappingUtils.extractUUID(null), "idMap不能为null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试extractUUID，参数为空
      */

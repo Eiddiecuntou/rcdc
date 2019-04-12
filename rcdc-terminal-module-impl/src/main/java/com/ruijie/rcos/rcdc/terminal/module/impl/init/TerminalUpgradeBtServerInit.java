@@ -71,18 +71,18 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
         String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
 
         if (StringUtils.isBlank(ip)) {
-            //第一次启动时，制作新版本的升级业务
+            // 第一次启动时，制作新版本的升级业务
             return true;
         }
 
         if (!ip.equals(currentIp)) {
-            //服务器ip变更时，bt种子需要重新制作
+            // 服务器ip变更时，bt种子需要重新制作
             return true;
         }
 
         File tempDir = new File(Constants.TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH);
         if (tempDir.isDirectory()) {
-            //系统补丁包升级后，需要制作新版本的升级业务
+            // 系统补丁包升级后，需要制作新版本的升级业务
             return true;
         }
 

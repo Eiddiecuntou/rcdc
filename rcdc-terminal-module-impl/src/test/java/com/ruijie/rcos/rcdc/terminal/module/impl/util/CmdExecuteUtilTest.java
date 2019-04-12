@@ -26,6 +26,7 @@ public class CmdExecuteUtilTest {
 
     /**
      * 测试executeCmd，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -33,7 +34,7 @@ public class CmdExecuteUtilTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> CmdExecuteUtil.executeCmd(null), "cmd 不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试executeCmd，出现异常
      */
@@ -52,9 +53,10 @@ public class CmdExecuteUtilTest {
             assertEquals(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e.getKey());
         }
     }
-    
+
     /**
      * 测试executeCmd，返回值不等于0
+     * 
      * @param exec mock对象
      * @throws InterruptedException 异常
      */
@@ -66,7 +68,7 @@ public class CmdExecuteUtilTest {
                 return exec;
             }
         };
-        
+
         new Expectations() {
             {
                 exec.waitFor();
@@ -80,9 +82,10 @@ public class CmdExecuteUtilTest {
             assertEquals(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e.getKey());
         }
     }
-    
+
     /**
      * 测试executeCmd，
+     * 
      * @param exec mock对象
      * @throws InterruptedException 异常
      */
@@ -94,7 +97,7 @@ public class CmdExecuteUtilTest {
                 return exec;
             }
         };
-        
+
         new Expectations() {
             {
                 exec.waitFor();

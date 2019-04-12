@@ -25,5 +25,5 @@ public class CloseSystemUpgradeTaskWebRequest implements WebRequest {
     public void setUpgradeTaskId(UUID upgradeTaskId) {
         this.upgradeTaskId = upgradeTaskId;
     }
-    
+
 }

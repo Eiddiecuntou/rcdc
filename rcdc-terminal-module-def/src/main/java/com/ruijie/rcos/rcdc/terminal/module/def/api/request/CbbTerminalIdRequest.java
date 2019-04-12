@@ -17,6 +17,7 @@ public class CbbTerminalIdRequest implements Request {
     private String terminalId;
 
     public CbbTerminalIdRequest() {
+        
     }
 
     public CbbTerminalIdRequest(String terminalId) {

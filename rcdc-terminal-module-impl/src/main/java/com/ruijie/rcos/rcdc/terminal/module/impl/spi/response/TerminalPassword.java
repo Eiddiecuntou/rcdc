@@ -20,6 +20,6 @@ public class TerminalPassword {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
+
+
 }

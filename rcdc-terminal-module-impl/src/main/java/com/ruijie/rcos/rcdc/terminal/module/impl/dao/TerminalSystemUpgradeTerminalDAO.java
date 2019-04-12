@@ -15,8 +15,7 @@ import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
  * 
  * @author nt
  */
-public interface TerminalSystemUpgradeTerminalDAO
-        extends SkyEngineJpaRepository<TerminalSystemUpgradeTerminalEntity, UUID> {
+public interface TerminalSystemUpgradeTerminalDAO extends SkyEngineJpaRepository<TerminalSystemUpgradeTerminalEntity, UUID> {
 
     /**
      * 查询刷机任务的终端列表
@@ -42,8 +41,7 @@ public interface TerminalSystemUpgradeTerminalDAO
      * @param state 刷机终端状态
      * @return 刷机任务终端列表
      */
-    List<TerminalSystemUpgradeTerminalEntity> findBySysUpgradeIdAndState(UUID sysUpgradeId,
-            CbbSystemUpgradeStateEnums state);
+    List<TerminalSystemUpgradeTerminalEntity> findBySysUpgradeIdAndState(UUID sysUpgradeId, CbbSystemUpgradeStateEnums state);
 
     /**
      * 根据刷机状态统计刷机数量
@@ -69,8 +67,7 @@ public interface TerminalSystemUpgradeTerminalDAO
      * @param state 刷机状态
      * @return 刷机终端记录
      */
-    List<TerminalSystemUpgradeTerminalEntity> findByTerminalIdAndState(String terminalId,
-            CbbSystemUpgradeStateEnums state);
+    List<TerminalSystemUpgradeTerminalEntity> findByTerminalIdAndState(String terminalId, CbbSystemUpgradeStateEnums state);
 
     /**
      * 删除终端刷机记录

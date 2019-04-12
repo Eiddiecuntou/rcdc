@@ -12,15 +12,15 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
  * @author nt
  */
 public class TerminalUpgradeVersionFileInfo {
-    
+
     private String packageName;
-    
+
     private String imgName;
-    
+
     private String version;
-    
+
     private String filePath;
-    
+
     private TerminalPlatformEnums packageType;
 
     public String getImgName() {
@@ -46,7 +46,7 @@ public class TerminalUpgradeVersionFileInfo {
     public void setPackageType(TerminalPlatformEnums packageType) {
         this.packageType = packageType;
     }
-    
+
     public String getPackageName() {
         return packageName;
     }
@@ -54,7 +54,7 @@ public class TerminalUpgradeVersionFileInfo {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
-    
+
     public String getFilePath() {
         return filePath;
     }
@@ -65,8 +65,8 @@ public class TerminalUpgradeVersionFileInfo {
 
     @Override
     public String toString() {
-        return "TerminalUpgradeVersionFileInfo [packageName=" + packageName + ", imgName=" + imgName + ", version="
-                + version + ", filePath=" + filePath + ", packageType=" + packageType + "]";
+        return "TerminalUpgradeVersionFileInfo [packageName=" + packageName + ", imgName=" + imgName + ", version=" + version + ", filePath="
+                + filePath + ", packageType=" + packageType + "]";
     }
-   
+
 }

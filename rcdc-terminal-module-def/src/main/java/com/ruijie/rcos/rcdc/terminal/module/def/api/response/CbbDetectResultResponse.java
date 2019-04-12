@@ -15,10 +15,11 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 public class CbbDetectResultResponse extends DefaultResponse {
 
     private CbbTerminalDetectResultDTO result;
-    
-    
+
+
 
     public CbbDetectResultResponse() {
+        
     }
 
     public CbbDetectResultResponse(CbbTerminalDetectResultDTO result) {
@@ -32,5 +33,5 @@ public class CbbDetectResultResponse extends DefaultResponse {
     public void setResult(CbbTerminalDetectResultDTO result) {
         this.result = result;
     }
-    
+
 }

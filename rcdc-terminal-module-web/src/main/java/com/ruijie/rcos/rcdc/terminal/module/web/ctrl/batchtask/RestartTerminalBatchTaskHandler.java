@@ -60,9 +60,9 @@ public class RestartTerminalBatchTaskHandler extends AbstractBatchTaskHandler {
             LOGGER.error("重启终端失败：" + terminalId, e);
             if (e instanceof BusinessException) {
                 BusinessException ex = (BusinessException) e;
-                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_RESTART_FAIL_LOG,terminalId, ex.getI18nMessage());
+                optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_RESTART_FAIL_LOG, terminalId, ex.getI18nMessage());
                 return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.FAILURE)
-                        .msgKey(BusinessKey.RCDC_TERMINAL_RESTART_FAIL_LOG).msgArgs(new String[] {terminalId,ex.getI18nMessage()}).build();
+                        .msgKey(BusinessKey.RCDC_TERMINAL_RESTART_FAIL_LOG).msgArgs(new String[] {terminalId, ex.getI18nMessage()}).build();
             } else {
                 throw new IllegalStateException("重启终端异常，terminalId为[" + terminalId + "]", e);
             }

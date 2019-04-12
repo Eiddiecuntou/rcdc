@@ -36,12 +36,13 @@ public class TerminalSystemUpgradeServicePackageImplTest {
 
     @Tested
     private TerminalSystemUpgradeServicePackageImpl servicePackageImpl;
-    
+
     @Injectable
     private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
-    
+
     /**
      * 测试saveTerminalUpgradePackage，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -50,9 +51,10 @@ public class TerminalSystemUpgradeServicePackageImplTest {
                 "terminalUpgradeVersionFileInfo 不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试saveTerminalUpgradePackage，upgradePackage为空
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -65,19 +67,20 @@ public class TerminalSystemUpgradeServicePackageImplTest {
             }
         };
         servicePackageImpl.saveTerminalUpgradePackage(versionInfo);
-        
+
         new Verifications() {
             {
                 termianlSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
                 times = 1;
-                termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity)any);
+                termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
                 times = 1;
             }
         };
     }
-    
+
     /**
      * 测试saveTerminalUpgradePackage
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -102,7 +105,7 @@ public class TerminalSystemUpgradeServicePackageImplTest {
             }
         };
     }
-    
+
     /**
      * 测试readSystemUpgradeSuccessStateFromFile，目录不存在
      */
@@ -121,9 +124,10 @@ public class TerminalSystemUpgradeServicePackageImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_SUCCESS_STATUS_DIRECTORY_NOT_EXIST, e.getKey());
         }
     }
-    
+
     /**
      * 测试readSystemUpgradeSuccessStateFromFile，
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -133,7 +137,7 @@ public class TerminalSystemUpgradeServicePackageImplTest {
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public String[] list() {
                 String[] stringArr = new String[2];
@@ -148,7 +152,7 @@ public class TerminalSystemUpgradeServicePackageImplTest {
         assertEquals("gggg", upgradeInfoList.get(1).getTerminalId());
         assertEquals(CbbSystemUpgradeStateEnums.SUCCESS, upgradeInfoList.get(1).getState());
     }
-    
+
     /**
      * 测试readSystemUpgradeStartStateFromFile，目录不存在
      */
@@ -167,9 +171,10 @@ public class TerminalSystemUpgradeServicePackageImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_SUCCESS_STATUS_DIRECTORY_NOT_EXIST, e.getKey());
         }
     }
-    
+
     /**
      * 测试readSystemUpgradeStartStateFromFile，
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -179,7 +184,7 @@ public class TerminalSystemUpgradeServicePackageImplTest {
             public boolean isDirectory() {
                 return true;
             }
-            
+
             @Mock
             public String[] list() {
                 String[] stringArr = new String[2];
@@ -197,15 +202,15 @@ public class TerminalSystemUpgradeServicePackageImplTest {
 
     /**
      * 测试getSystemUpgradePackage，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testGetSystemUpgradePackageArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> servicePackageImpl.getSystemUpgradePackage(null),
-                "upgradePackage");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> servicePackageImpl.getSystemUpgradePackage(null), "upgradePackage");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getSystemUpgradePackage，upgradePackageOpt为空
      */
@@ -225,9 +230,10 @@ public class TerminalSystemUpgradeServicePackageImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST, e.getKey());
         }
     }
-    
+
     /**
      * 测试getSystemUpgradePackage，
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -241,7 +247,7 @@ public class TerminalSystemUpgradeServicePackageImplTest {
             }
         };
         assertEquals(upgradePackageOpt.get(), servicePackageImpl.getSystemUpgradePackage(upgradePackageId));
-        
+
         new Verifications() {
             {
                 termianlSystemUpgradePackageDAO.findById(upgradePackageId);

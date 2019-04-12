@@ -17,7 +17,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
  * @author nt
  */
 public class CbbTerminalSystemUpgradePackageInfoDTO {
-    
+
     private UUID id;
 
     private String name;
@@ -26,15 +26,15 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
      * 刷机包平台类型
      */
     private TerminalPlatformEnums packageType;
-    
+
     private SystemUpgradePackageOriginEnums origin;
-    
+
     private SystemUpgradeDistributionModeEnums distributionMode;
-    
+
     private CbbSystemUpgradeTaskStateEnums state;
-    
+
     private UUID upgradeTaskId;
-    
+
     private Date uploadTime;
 
     public UUID getId() {
@@ -100,5 +100,5 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
     public void setUploadTime(Date uploadTime) {
         this.uploadTime = uploadTime;
     }
-    
+
 }

@@ -45,8 +45,7 @@ public class QueryUpgradeableTerminalListService extends AbstractPageQueryTempla
     }
 
     @Override
-    protected Page<ViewUpgradeableTerminalEntity> find(Specification<ViewUpgradeableTerminalEntity> specification,
-            Pageable pageable) {
+    protected Page<ViewUpgradeableTerminalEntity> find(Specification<ViewUpgradeableTerminalEntity> specification, Pageable pageable) {
         if (specification == null) {
             upgradeableTerminalDAO.findAll(pageable);
         }

@@ -18,7 +18,7 @@ public class CbbCancelUpgradeTerminalRequest implements Request {
 
     @NotNull
     private UUID upgradeTaskId;
-    
+
     @NotBlank
     private String terminalId;
 

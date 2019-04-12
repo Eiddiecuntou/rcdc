@@ -22,5 +22,5 @@ public class CreateSystemUpgradeTaskContentVO {
     public void setUpgradeTaskId(UUID upgradeTaskId) {
         this.upgradeTaskId = upgradeTaskId;
     }
-    
+
 }

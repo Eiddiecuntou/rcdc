@@ -46,8 +46,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbUpgradePackageNameResponse deleteUpgradePackage(CbbDeleteTerminalUpgradePackageRequest request)
-            throws BusinessException;
+    CbbUpgradePackageNameResponse deleteUpgradePackage(CbbDeleteTerminalUpgradePackageRequest request) throws BusinessException;
 
     /**
      * 
@@ -69,8 +68,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultPageResponse<CbbTerminalSystemUpgradePackageInfoDTO> listSystemUpgradePackage(PageSearchRequest request)
-            throws BusinessException;
+    DefaultPageResponse<CbbTerminalSystemUpgradePackageInfoDTO> listSystemUpgradePackage(PageSearchRequest request) throws BusinessException;
 
     /**
      * 获取终端升级包名称
@@ -84,6 +82,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
 
     /**
      * 校验升级包是否允许上传
+     * 
      * @param request 请求参数
      * @return 请求响应
      * @throws BusinessException 业务异常

@@ -67,15 +67,13 @@ public class TerminalOperateControllerTest {
      * @throws Exception 异常
      */
     @Test
-    public void testShutdownTerminalArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
-            @Mocked BatchTaskBuilder builder) throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(
-            () -> controller.shutdownTerminal(null, optLogRecorder, builder), "TerminalIdArrWebRequest不能为null");
-        ThrowExceptionTester.throwIllegalArgumentException(
-            () -> controller.shutdownTerminal(new TerminalIdArrWebRequest(), null, builder),
+    public void testShutdownTerminalArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked BatchTaskBuilder builder)
+            throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.shutdownTerminal(null, optLogRecorder, builder),
+                "TerminalIdArrWebRequest不能为null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.shutdownTerminal(new TerminalIdArrWebRequest(), null, builder),
                 "optLogRecorder不能为null");
-        ThrowExceptionTester.throwIllegalArgumentException(
-            () -> controller.shutdownTerminal(new TerminalIdArrWebRequest(), optLogRecorder, null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.shutdownTerminal(new TerminalIdArrWebRequest(), optLogRecorder, null),
                 "builder不能为null");
         assertTrue(true);
     }
@@ -89,8 +87,8 @@ public class TerminalOperateControllerTest {
      * @throws BusinessException 异常
      */
     @Test
-    public void testShutdownTerminal(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
-            @Mocked BatchTaskBuilder builder, @Mocked TerminalIdMappingUtils utils) throws BusinessException {
+    public void testShutdownTerminal(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked BatchTaskBuilder builder,
+            @Mocked TerminalIdMappingUtils utils) throws BusinessException {
         TerminalIdArrWebRequest request = new TerminalIdArrWebRequest();
         request.setIdArr(new String[] {UUID.randomUUID().toString(), UUID.randomUUID().toString()});
         UUID[] uuidArr = new UUID[2];
@@ -114,15 +112,13 @@ public class TerminalOperateControllerTest {
      * @throws Exception 异常
      */
     @Test
-    public void testRestartTerminalArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
-            @Mocked BatchTaskBuilder builder) throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(
-            () -> controller.restartTerminal(null, optLogRecorder, builder), "TerminalIdWebRequest不能为null");
-        ThrowExceptionTester.throwIllegalArgumentException(
-            () -> controller.restartTerminal(new TerminalIdArrWebRequest(), null, builder),
+    public void testRestartTerminalArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked BatchTaskBuilder builder)
+            throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.restartTerminal(null, optLogRecorder, builder),
+                "TerminalIdWebRequest不能为null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.restartTerminal(new TerminalIdArrWebRequest(), null, builder),
                 "optLogRecorder不能为null");
-        ThrowExceptionTester.throwIllegalArgumentException(
-            () -> controller.restartTerminal(new TerminalIdArrWebRequest(), optLogRecorder, null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.restartTerminal(new TerminalIdArrWebRequest(), optLogRecorder, null),
                 "builder不能为null");
         assertTrue(true);
     }
@@ -143,7 +139,7 @@ public class TerminalOperateControllerTest {
         UUID[] uuidArr = new UUID[2];
         uuidArr[0] = UUID.randomUUID();
         uuidArr[1] = UUID.randomUUID();
-        
+
         new Expectations() {
             {
                 TerminalIdMappingUtils.extractUUID((Map<UUID, String>) any);
@@ -162,10 +158,9 @@ public class TerminalOperateControllerTest {
      */
     @Test
     public void testChangePasswordArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder) throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.changePassword(null, optLogRecorder),
-                "request不能为null");
-        ThrowExceptionTester.throwIllegalArgumentException(
-            () -> controller.changePassword(new EditAdminPwdWebRequest(), null), "optLogRecorder不能为null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.changePassword(null, optLogRecorder), "request不能为null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.changePassword(new EditAdminPwdWebRequest(), null),
+                "optLogRecorder不能为null");
         assertTrue(true);
     }
 
@@ -177,8 +172,8 @@ public class TerminalOperateControllerTest {
      * @throws BusinessException 异常
      */
     @Test
-    public void testChangePasswordFail(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
-            @Mocked LocaleI18nResolver resolver) throws BusinessException {
+    public void testChangePasswordFail(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked LocaleI18nResolver resolver)
+            throws BusinessException {
         EditAdminPwdWebRequest request = new EditAdminPwdWebRequest();
 
         new Expectations() {
@@ -216,8 +211,7 @@ public class TerminalOperateControllerTest {
      * @throws BusinessException 异常
      */
     @Test
-    public void testChangePassword(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
-            @Mocked LocaleI18nResolver resolver) throws BusinessException {
+    public void testChangePassword(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked LocaleI18nResolver resolver) throws BusinessException {
         EditAdminPwdWebRequest request = new EditAdminPwdWebRequest();
         DefaultWebResponse response = controller.changePassword(request, optLogRecorder);
         assertEquals(Status.SUCCESS, response.getStatus());

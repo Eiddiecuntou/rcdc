@@ -1,11 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import java.util.concurrent.ExecutorService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;

@@ -29,10 +29,10 @@ public class QuerySystemUpgradeTerminalListServiceTest {
 
     @Tested
     private QuerySystemUpgradeTerminalListService service;
-    
+
     @Injectable
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
-    
+
     /**
      * 测试getDefaultDataSort
      */
@@ -42,15 +42,16 @@ public class QuerySystemUpgradeTerminalListServiceTest {
         assertEquals("state", defaultDataSort.getSortField());
         assertEquals(Direction.DESC, defaultDataSort.getDirection());
     }
-    
+
     /**
      * 测试mappingField
+     * 
      * @param entityFieldMapper mock对象
      */
     @Test
     public void testMappingField(@Mocked EntityFieldMapper entityFieldMapper) {
         service.mappingField(entityFieldMapper);
-        
+
         new Verifications() {
             {
                 entityFieldMapper.mapping("terminalUpgradeState", "state");
@@ -60,16 +61,17 @@ public class QuerySystemUpgradeTerminalListServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试find，specification为null
+     * 
      * @param pageable mock对象
      * @param page mock对象
      */
     @Test
     public void testFindSpecificationIsNull(@Mocked Pageable pageable, @Mocked Page<TerminalSystemUpgradeTerminalEntity> page) {
         Specification<TerminalSystemUpgradeTerminalEntity> specification = null;
-        
+
         new Expectations() {
             {
                 systemUpgradeTerminalDAO.findAll(specification, pageable);
@@ -86,17 +88,18 @@ public class QuerySystemUpgradeTerminalListServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试find
+     * 
      * @param specification mock对象
      * @param pageable mock对象
      * @param page mock对象
      */
     @Test
-    public void testFind(@Mocked Specification<TerminalSystemUpgradeTerminalEntity> specification,
-            @Mocked Pageable pageable, @Mocked Page<TerminalSystemUpgradeTerminalEntity> page) {
-        
+    public void testFind(@Mocked Specification<TerminalSystemUpgradeTerminalEntity> specification, @Mocked Pageable pageable,
+            @Mocked Page<TerminalSystemUpgradeTerminalEntity> page) {
+
         new Expectations() {
             {
                 systemUpgradeTerminalDAO.findAll(specification, pageable);

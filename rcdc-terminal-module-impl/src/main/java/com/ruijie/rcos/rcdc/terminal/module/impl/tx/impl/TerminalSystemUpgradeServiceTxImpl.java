@@ -95,20 +95,20 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
 
         final TerminalSystemUpgradeEntity systemUpgradeTask = getSystemUpgradeTask(upgradeTaskId);
-        
+
         if (systemUpgradeTask.getState() != CbbSystemUpgradeTaskStateEnums.UPGRADING) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_HAS_CLOSED);
         }
 
         // 关闭未开始的刷机终端
-        final List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList = systemUpgradeTerminalDAO
-                .findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.WAIT);
+        final List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList =
+                systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.WAIT);
         for (TerminalSystemUpgradeTerminalEntity waitUpgradeTerminal : waitUpgradeTerminalList) {
             closeWaitTerminal(waitUpgradeTerminal);
         }
         // 将升级中的终端设置为失败
-        final List<TerminalSystemUpgradeTerminalEntity> upgradingTerminalList = systemUpgradeTerminalDAO
-                .findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.UPGRADING);
+        final List<TerminalSystemUpgradeTerminalEntity> upgradingTerminalList =
+                systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.UPGRADING);
         for (TerminalSystemUpgradeTerminalEntity upgradingTerminal : upgradingTerminalList) {
             setUpgradingTerminalToFail(upgradingTerminal);
         }
@@ -216,8 +216,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         basicInfoService.modifyTerminalState(upgradeTerminal.getTerminalId(), terminalState);
     }
 
-    private TerminalSystemUpgradeTerminalEntity getUpgradeTerminalEntity(UUID upgradeTaskId, String terminalId)
-            throws BusinessException {
+    private TerminalSystemUpgradeTerminalEntity getUpgradeTerminalEntity(UUID upgradeTaskId, String terminalId) throws BusinessException {
         final TerminalSystemUpgradeTerminalEntity upgradeTerminal =
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeTaskId, terminalId);
 

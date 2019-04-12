@@ -20,9 +20,10 @@ public class EntityFieldMapperTest {
 
     @Tested
     private EntityFieldMapper mapper;
-    
+
     /**
      * 测试mapping，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -31,7 +32,7 @@ public class EntityFieldMapperTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> mapper.mapping("sd", ""), "entityField不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试mapping
      */

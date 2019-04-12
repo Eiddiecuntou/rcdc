@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
-
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 

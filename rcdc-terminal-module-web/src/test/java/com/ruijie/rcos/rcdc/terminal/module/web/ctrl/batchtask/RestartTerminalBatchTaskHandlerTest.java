@@ -39,12 +39,13 @@ public class RestartTerminalBatchTaskHandlerTest {
 
     @Injectable
     private CbbTerminalOperatorAPI terminalOperatorAPI;
-    
+
     @Injectable
     private Iterator<? extends BatchTaskItem> iterator;
-    
+
     /**
      * 测试processItem,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -54,9 +55,10 @@ public class RestartTerminalBatchTaskHandlerTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> handler.processItem(null), "BatchTaskItem不能为null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试processItem,参数为空
+     * 
      * @param taskItem mock taskItem
      * @throws BusinessException 异常
      */
@@ -75,7 +77,7 @@ public class RestartTerminalBatchTaskHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试onFinish
      */

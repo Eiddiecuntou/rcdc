@@ -28,8 +28,8 @@ public class MessageUtils {
      * shine应答消息解析
      *
      * @param data 待解析的消息
-     * @param clz  消息对应的类
-     * @param <T>  消息对应的实体类
+     * @param clz 消息对应的类
+     * @param <T> 消息对应的实体类
      * @return 返回消息对象
      */
     public static <T> CbbShineMessageResponse parse(String data, @Nullable Class<T> clz) {
@@ -59,7 +59,7 @@ public class MessageUtils {
         response.setContent(t);
         return response;
     }
-    
+
     /**
      * 构造shine应答消息
      * 
@@ -70,14 +70,14 @@ public class MessageUtils {
     public static CbbResponseShineMessage buildResponseMessage(CbbDispatcherRequest request, Object content) {
         Assert.notNull(request, "request can not be null");
         Assert.notNull(content, "content can not be null");
-        
+
         CbbResponseShineMessage responseMessage = new CbbResponseShineMessage();
         responseMessage.setAction(request.getDispatcherKey());
         responseMessage.setRequestId(request.getRequestId());
         responseMessage.setTerminalId(request.getTerminalId());
         responseMessage.setCode(Constants.SUCCESS);
         responseMessage.setContent(content);
-        
+
         return responseMessage;
     }
 }

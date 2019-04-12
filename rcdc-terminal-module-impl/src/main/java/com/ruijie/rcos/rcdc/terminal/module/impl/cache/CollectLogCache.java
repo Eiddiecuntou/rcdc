@@ -13,6 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
 public class CollectLogCache {
 
     public CollectLogCache() {
+        
     }
 
     public CollectLogCache(CollectLogStateEnums state) {

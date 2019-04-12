@@ -28,10 +28,10 @@ public class QuerySystemUpgradePackageListServiceTest {
 
     @Tested
     private QuerySystemUpgradePackageListService service;
-    
+
     @Injectable
     private TerminalSystemUpgradePackageDAO systemUpgradePackageDAO;
-    
+
     /**
      * 测试getDefaultDataSort
      */
@@ -41,16 +41,17 @@ public class QuerySystemUpgradePackageListServiceTest {
         assertEquals("uploadTime", defaultDataSort.getSortField());
         assertEquals(Direction.DESC, defaultDataSort.getDirection());
     }
-    
+
     /**
      * 测试find，specification为null
+     * 
      * @param pageable mock对象
      * @param page mock对象
      */
     @Test
     public void testFindSpecificationIsNull(@Mocked Pageable pageable, @Mocked Page<TerminalSystemUpgradePackageEntity> page) {
         Specification<TerminalSystemUpgradePackageEntity> specification = null;
-        
+
         new Expectations() {
             {
                 systemUpgradePackageDAO.findAll(specification, pageable);
@@ -67,17 +68,18 @@ public class QuerySystemUpgradePackageListServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试find
+     * 
      * @param specification mock对象
      * @param pageable mock对象
      * @param page mock对象
      */
     @Test
-    public void testFind(@Mocked Specification<TerminalSystemUpgradePackageEntity> specification,
-            @Mocked Pageable pageable, @Mocked Page<TerminalSystemUpgradePackageEntity> page) {
-        
+    public void testFind(@Mocked Specification<TerminalSystemUpgradePackageEntity> specification, @Mocked Pageable pageable,
+            @Mocked Page<TerminalSystemUpgradePackageEntity> page) {
+
         new Expectations() {
             {
                 systemUpgradePackageDAO.findAll(specification, pageable);

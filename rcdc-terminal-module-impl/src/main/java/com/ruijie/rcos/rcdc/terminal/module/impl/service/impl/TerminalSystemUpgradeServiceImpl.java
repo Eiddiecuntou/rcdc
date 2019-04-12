@@ -65,13 +65,12 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
             LOGGER.error("terminal offline, terminaId: " + terminalId, ex);
             throw new TerminalOffLineException(ex);
         }
-        Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.UPGRADE_TERMINAL_SYSTEM.getName(),
-                upgradeMsg);
+        Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.UPGRADE_TERMINAL_SYSTEM.getName(), upgradeMsg);
         try {
             final BaseMessage responseMsg = sender.syncRequest(message);
             upgradeResponseMsgHandler.handle(terminalId, responseMsg);
         } catch (Exception e) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_MESSAGE_SEND_FAIL,e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_MESSAGE_SEND_FAIL, e);
         }
     }
 
@@ -87,14 +86,13 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     }
 
     private boolean hasUpgradingTask(UUID upgradePackageId) {
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-            CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
         List<TerminalSystemUpgradeEntity> upgradingTaskList = null;
         if (upgradePackageId == null) {
             upgradingTaskList = terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
         } else {
-            upgradingTaskList = terminalSystemUpgradeDAO
-                    .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
+            upgradingTaskList = terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
         }
 
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
@@ -106,8 +104,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     }
 
     @Override
-    public void modifySystemUpgradeState(TerminalSystemUpgradeEntity upgradeTask)
-            throws BusinessException {
+    public void modifySystemUpgradeState(TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
         Assert.notNull(upgradeTask, "upgradeTask 不能为空");
         final UUID upgradeTaskId = upgradeTask.getId();
         Assert.notNull(upgradeTaskId, "upgradeTaskId 不能为空");

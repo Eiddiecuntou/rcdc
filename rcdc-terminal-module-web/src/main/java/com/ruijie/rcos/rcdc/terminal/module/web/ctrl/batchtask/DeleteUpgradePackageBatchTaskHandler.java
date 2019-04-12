@@ -47,31 +47,26 @@ public class DeleteUpgradePackageBatchTaskHandler extends AbstractBatchTaskHandl
     public BatchTaskItemResult processItem(BatchTaskItem taskItem) throws BusinessException {
         Assert.notNull(taskItem, "taskItem不能为null");
 
-        CbbDeleteTerminalUpgradePackageRequest deleteRequest =
-                new CbbDeleteTerminalUpgradePackageRequest(taskItem.getItemID());
+        CbbDeleteTerminalUpgradePackageRequest deleteRequest = new CbbDeleteTerminalUpgradePackageRequest(taskItem.getItemID());
         try {
-            final CbbUpgradePackageNameResponse response =
-                    terminalUpgradePackageAPI.deleteUpgradePackage(deleteRequest);
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_SUCCESS_LOG,
-                    response.getPackageName());
+            final CbbUpgradePackageNameResponse response = terminalUpgradePackageAPI.deleteUpgradePackage(deleteRequest);
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_SUCCESS_LOG, response.getPackageName());
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.SUCCESS)
-                    .msgKey(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_RESULT_SUCCESS)
-                    .msgArgs(new String[] {response.getPackageName()}).build();
+                    .msgKey(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_RESULT_SUCCESS).msgArgs(new String[] {response.getPackageName()})
+                    .build();
         } catch (BusinessException ex) {
             LOGGER.error("delete terminal system package fail", ex);
-            optLogRecorder.saveOptLog(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_FAIL_LOG,
-                    getPackageName(taskItem.getItemID()), ex.getI18nMessage());
+            optLogRecorder.saveOptLog(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_FAIL_LOG, getPackageName(taskItem.getItemID()),
+                    ex.getI18nMessage());
             return DefaultBatchTaskItemResult.builder().batchTaskItemStatus(BatchTaskItemStatus.FAILURE)
-                    .msgKey(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_RESULT_FAIL)
-                    .msgArgs(new String[] {ex.getI18nMessage()}).build();
+                    .msgKey(BusinessKey.RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_RESULT_FAIL).msgArgs(new String[] {ex.getI18nMessage()}).build();
         }
     }
-    
+
     private String getPackageName(UUID packageId) {
         CbbUpgradePackageIdRequest idRequest = new CbbUpgradePackageIdRequest(packageId);
         try {
-            final CbbUpgradePackageNameResponse response =
-                    terminalUpgradePackageAPI.getTerminalUpgradePackageName(idRequest);
+            final CbbUpgradePackageNameResponse response = terminalUpgradePackageAPI.getTerminalUpgradePackageName(idRequest);
             return response.getPackageName();
         } catch (BusinessException e) {
             LOGGER.info("获取升级包名称异常", e);

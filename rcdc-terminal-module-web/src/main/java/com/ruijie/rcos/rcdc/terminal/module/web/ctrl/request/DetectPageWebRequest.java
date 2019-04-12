@@ -14,7 +14,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
  * @author nt
  */
 public class DetectPageWebRequest extends PageWebRequest {
-    
+
     @NotNull
     private CbbDetectDateEnums date;
 
@@ -25,5 +25,5 @@ public class DetectPageWebRequest extends PageWebRequest {
     public void setDate(CbbDetectDateEnums date) {
         this.date = date;
     }
-    
+
 }
