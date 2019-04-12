@@ -56,6 +56,7 @@ baseDirName = "base"
 
 bsdiffCmdPath = "/data/web/bsdiff-4.3/bsdiff"
 
+
 # 入口函数
 def update():
     try:
@@ -68,7 +69,7 @@ def update():
     except Exception as e:
         logger.error("install failed with exception : %s" % e.message)
         return "fail"
-     
+    
     return "success"
 
 

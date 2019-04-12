@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
-import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
@@ -143,10 +141,6 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         TerminalInfo terminalInfo = new TerminalInfo(terminalId, basicInfo.getIp());
         session.setAttribute(ConnectConstants.TERMINAL_BIND_KEY, terminalInfo);
         sessionManager.bindSession(terminalId, session);
-        // 审计日志
-        BaseCreateSystemLogRequest systemLogRequest =
-                new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_SUCCESS_CONNECT_LOG, terminalId, basicInfo.getIp());
-        baseSystemLogMgmtAPI.createSystemLog(systemLogRequest);
     }
 
     private boolean hasBindSession(Session session, String action) {
