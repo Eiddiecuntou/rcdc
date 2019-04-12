@@ -58,8 +58,7 @@ public class SystemUpgradeStateSynctHandler {
         LOGGER.info("开始刷机终端成功状态同步处理...");
         int count = 0;
         // 获取文件系统中的升级信息
-        List<TerminalSystemUpgradeInfo> systemUpgradeInfoList =
-                systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
+        List<TerminalSystemUpgradeInfo> systemUpgradeInfoList = systemUpgradePackageService.readSystemUpgradeSuccessStateFromFile();
         if (systemUpgradeInfoList == null) {
             LOGGER.debug("无终端刷机状态信息");
             return;

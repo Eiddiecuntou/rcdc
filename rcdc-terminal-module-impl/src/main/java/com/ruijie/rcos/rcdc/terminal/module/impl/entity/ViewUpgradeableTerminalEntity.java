@@ -3,9 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import java.util.Date;
 import java.util.UUID;
-
 import javax.persistence.*;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;

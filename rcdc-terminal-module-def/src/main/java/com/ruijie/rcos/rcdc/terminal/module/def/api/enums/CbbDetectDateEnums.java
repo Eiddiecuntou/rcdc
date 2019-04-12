@@ -19,12 +19,13 @@ public enum CbbDetectDateEnums {
 
     /**
      * 判断日期字符串是否为枚举成员
+     * 
      * @param date 日期字符串
      * @return 是否为枚举成员
      */
     public static boolean contains(String date) {
         Assert.hasText(date, "platform can not be empty");
-        
+
         for (CbbDetectDateEnums dateEnums : CbbDetectDateEnums.values()) {
             if (dateEnums.name().equals(date)) {
                 return true;
@@ -32,5 +33,5 @@ public enum CbbDetectDateEnums {
         }
         return false;
     }
-    
+
 }

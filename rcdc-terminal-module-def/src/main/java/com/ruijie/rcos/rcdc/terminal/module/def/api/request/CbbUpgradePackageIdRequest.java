@@ -18,7 +18,7 @@ public class CbbUpgradePackageIdRequest implements Request {
 
     @NotNull
     private UUID packageId;
-    
+
     public CbbUpgradePackageIdRequest(UUID packageId) {
         Assert.notNull(packageId, "packageId can not be null");
         this.packageId = packageId;
@@ -31,5 +31,5 @@ public class CbbUpgradePackageIdRequest implements Request {
     public void setPackageId(UUID packageId) {
         this.packageId = packageId;
     }
-    
+
 }

@@ -45,7 +45,7 @@ public class TerminalSystemUpgradePackageEntity {
 
     @Version
     private int version;
-    
+
 
     @Enumerated(EnumType.STRING)
     private SystemUpgradePackageOriginEnums origin;

@@ -23,12 +23,12 @@ import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
  */
 @Service
 public class TerminalDetectInit implements SafetySingletonInitializer {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectInit.class);
 
     @Autowired
     private TerminalDetectionDAO detectionDAO;
-    
+
     @Override
     public void safeInit() {
         // 更新所有检测中的记录为检测失败

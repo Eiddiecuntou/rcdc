@@ -101,9 +101,10 @@ public class CollectLogCacheManagerTest {
             fail();
         }
     }
-    
+
     /**
      * 测试更新收集日志状态,cache为空
+     * 
      * @param caches mock Caches
      */
     @Test
@@ -115,7 +116,7 @@ public class CollectLogCacheManagerTest {
             Assert.assertEquals(1, caches1.size());
             Assert.assertEquals(CollectLogStateEnums.FAILURE, caches1.getIfPresent(terminalId).getState());
             cacheManager.removeCache(terminalId);
-            
+
         } catch (Exception e) {
             fail();
         }

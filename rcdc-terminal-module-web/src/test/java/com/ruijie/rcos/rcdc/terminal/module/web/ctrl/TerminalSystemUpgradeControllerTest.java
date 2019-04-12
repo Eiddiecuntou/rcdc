@@ -300,6 +300,7 @@ public class TerminalSystemUpgradeControllerTest {
      * @param mappingUtils mock对象
      * @throws BusinessException 异常
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testAppend(@Mocked ProgrammaticOptLogRecorder optLogRecorder,
             @Mocked BatchTaskBuilder builder,
@@ -505,6 +506,7 @@ public class TerminalSystemUpgradeControllerTest {
      * 测试listTerminalBasicInfo，
      * @throws BusinessException 异常
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testListTerminalBasicInfo() throws BusinessException {
         PageWebRequest request = new PageWebRequest();

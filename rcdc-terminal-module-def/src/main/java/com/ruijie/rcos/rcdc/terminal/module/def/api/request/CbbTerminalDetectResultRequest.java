@@ -14,7 +14,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @author nt
  */
 public class CbbTerminalDetectResultRequest implements Request {
-    
+
     @NotNull
     private CbbDetectDateEnums detectDate;
 
@@ -25,7 +25,7 @@ public class CbbTerminalDetectResultRequest implements Request {
     public void setDetectDate(CbbDetectDateEnums detectDate) {
         this.detectDate = detectDate;
     }
-    
-    
+
+
 
 }

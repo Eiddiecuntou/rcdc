@@ -30,7 +30,7 @@ public class SystemUpgradeQuartzHandlerTest {
 
     @Tested
     private SystemUpgradeQuartzHandler handler;
-    
+
     @Injectable
     private TerminalSystemUpgradeDAO systemUpgradeDAO;
 
@@ -48,7 +48,7 @@ public class SystemUpgradeQuartzHandlerTest {
 
     @Injectable
     private SystemUpgradeStartConfirmHandler confirmHandler;
-    
+
     /**
      * 测试run，无正在进行中的刷机任务
      */
@@ -61,7 +61,7 @@ public class SystemUpgradeQuartzHandlerTest {
             }
         };
         handler.run();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -71,9 +71,10 @@ public class SystemUpgradeQuartzHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试run，刷机任务无刷机终端
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -90,7 +91,7 @@ public class SystemUpgradeQuartzHandlerTest {
             }
         };
         handler.run();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -104,9 +105,10 @@ public class SystemUpgradeQuartzHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试run，刷机任务无刷机终端,BusinessException
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -125,7 +127,7 @@ public class SystemUpgradeQuartzHandlerTest {
             }
         };
         handler.run();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -139,9 +141,10 @@ public class SystemUpgradeQuartzHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试run，刷机任务有刷机终端,存在非最终态的刷机终端
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -149,7 +152,7 @@ public class SystemUpgradeQuartzHandlerTest {
         List<TerminalSystemUpgradeEntity> upgradeTaskList = new ArrayList<>();
         TerminalSystemUpgradeEntity upgradeTask = new TerminalSystemUpgradeEntity();
         upgradeTaskList.add(upgradeTask);
-        
+
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.WAIT);
@@ -166,7 +169,7 @@ public class SystemUpgradeQuartzHandlerTest {
             }
         };
         handler.run();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -184,9 +187,10 @@ public class SystemUpgradeQuartzHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试run，刷机任务有刷机终端,不存在非最终态的刷机终端
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -194,7 +198,7 @@ public class SystemUpgradeQuartzHandlerTest {
         List<TerminalSystemUpgradeEntity> upgradeTaskList = new ArrayList<>();
         TerminalSystemUpgradeEntity upgradeTask = new TerminalSystemUpgradeEntity();
         upgradeTaskList.add(upgradeTask);
-        
+
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.SUCCESS);
@@ -208,7 +212,7 @@ public class SystemUpgradeQuartzHandlerTest {
             }
         };
         handler.run();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);

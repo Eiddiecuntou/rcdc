@@ -14,7 +14,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePa
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Invocation;
 import mockit.Mock;
@@ -33,7 +32,7 @@ import mockit.Verifications;
  * @author ls
  */
 public class SystemUpgradeFileClearHandlerTest {
-    
+
     @Tested
     private SystemUpgradeFileClearHandler handler;
 
@@ -42,25 +41,25 @@ public class SystemUpgradeFileClearHandlerTest {
 
     @Injectable
     private TerminalSystemUpgradeTerminalDAO terminalSystemUpgradeTerminalDAO;
-    
+
     /**
      * 测试clear，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testClearArgumentIsNull() throws Exception {
         TerminalSystemUpgradeEntity packageIdNullEntity = new TerminalSystemUpgradeEntity();
         packageIdNullEntity.setId(UUID.randomUUID());
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear
-                (null),"systemUpgradeEntity can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear
-                (packageIdNullEntity),"upgradePackageId can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear(null), "systemUpgradeEntity can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear(packageIdNullEntity), "upgradePackageId can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试clear，刷机任务无刷机终端
-     * @param fileOperateUtil 
+     * 
+     * @param fileOperateUtil 文件工具类
      * @throws BusinessException 异常
      */
     @Test
@@ -68,7 +67,7 @@ public class SystemUpgradeFileClearHandlerTest {
         TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
         entity.setUpgradePackageId(UUID.randomUUID());
         handler.clear(entity);
-        
+
         new Verifications() {
             {
                 terminalSystemUpgradePackageService.getSystemUpgradePackage((UUID) any);
@@ -78,17 +77,18 @@ public class SystemUpgradeFileClearHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试clear，
-     * @param fileOperateUtil 
+     * 
+     * @param fileOperateUtil 文件工具类
      * @throws BusinessException 异常
      */
     @Test
     public void testClear(@Mocked FileOperateUtil fileOperateUtil) throws BusinessException {
         TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
         entity.setUpgradePackageId(UUID.randomUUID());
-        
+
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setTerminalId("1");
@@ -97,20 +97,20 @@ public class SystemUpgradeFileClearHandlerTest {
             @Mock
             public boolean exists(Invocation invocation) {
                 Assert.notNull(invocation, "invocation can not be null");
-                File file = (File)invocation.getInvokedInstance(); 
+                File file = (File) invocation.getInvokedInstance();
                 if (file.getAbsolutePath().contains("mac_end")) {
                     return true;
                 }
                 return false;
             }
-            
+
             @Mock
             public boolean delete() {
                 return true;
             }
         };
         handler.clear(entity);
-        
+
         new Verifications() {
             {
                 terminalSystemUpgradePackageService.getSystemUpgradePackage((UUID) any);

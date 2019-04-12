@@ -34,7 +34,7 @@ public interface TerminalSystemUpgradePackageService {
      * @throws BusinessException 业务异常
      */
     List<TerminalSystemUpgradeInfo> readSystemUpgradeSuccessStateFromFile() throws BusinessException;
-    
+
     /**
      * 读取终端刷机开始状态
      * 
@@ -42,7 +42,7 @@ public interface TerminalSystemUpgradePackageService {
      * @throws BusinessException 业务异常
      */
     List<TerminalSystemUpgradeInfo> readSystemUpgradeStartStateFromFile() throws BusinessException;
-    
+
     /**
      * 获取刷机包
      * 

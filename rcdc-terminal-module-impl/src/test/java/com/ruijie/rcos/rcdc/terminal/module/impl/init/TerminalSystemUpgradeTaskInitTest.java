@@ -29,7 +29,7 @@ public class TerminalSystemUpgradeTaskInitTest {
 
     @Tested
     private TerminalSystemUpgradeTaskInit init;
-    
+
     @Injectable
     private TerminalSystemUpgradeDAO systemUpgradeDAO;
 
@@ -38,14 +38,15 @@ public class TerminalSystemUpgradeTaskInitTest {
 
     @Injectable
     private TerminalSystemUpgradeSupportService systemUpgradeSupportService;
-    
+
     /**
      * 测试safeInit，无进行中的刷机任务
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testSafeInitNoUpgradingTask() throws BusinessException {
-        
+
         new Expectations() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -53,7 +54,7 @@ public class TerminalSystemUpgradeTaskInitTest {
             }
         };
         init.safeInit();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -65,9 +66,10 @@ public class TerminalSystemUpgradeTaskInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit，有进行中的刷机任务,出现BusinessException
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -75,7 +77,7 @@ public class TerminalSystemUpgradeTaskInitTest {
         List<TerminalSystemUpgradeEntity> arrayList = new ArrayList<>();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
         arrayList.add(upgradeEntity);
-        
+
         new Expectations() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -85,7 +87,7 @@ public class TerminalSystemUpgradeTaskInitTest {
             }
         };
         init.safeInit();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
@@ -97,9 +99,10 @@ public class TerminalSystemUpgradeTaskInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit，有进行中的刷机任务
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -107,7 +110,7 @@ public class TerminalSystemUpgradeTaskInitTest {
         List<TerminalSystemUpgradeEntity> arrayList = new ArrayList<>();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
         arrayList.add(upgradeEntity);
-        
+
         TerminalSystemUpgradePackageEntity systemUpgradePackage = new TerminalSystemUpgradePackageEntity();
         new Expectations() {
             {
@@ -118,7 +121,7 @@ public class TerminalSystemUpgradeTaskInitTest {
             }
         };
         init.safeInit();
-        
+
         new Verifications() {
             {
                 systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);

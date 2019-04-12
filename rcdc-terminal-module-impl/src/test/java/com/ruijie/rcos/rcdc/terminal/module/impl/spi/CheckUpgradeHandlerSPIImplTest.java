@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
@@ -46,7 +45,7 @@ public class CheckUpgradeHandlerSPIImplTest {
 
     @Injectable
     private TerminalComponentUpgradeService componentUpgradeService;
-    
+
     @Injectable
     private TerminalDetectionDAO terminalDetectionDAO;
 

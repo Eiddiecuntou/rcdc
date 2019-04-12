@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
@@ -30,15 +29,16 @@ public class ConnectCloseHandlerSPIImplTest {
 
     @Tested
     private ConnectCloseHandlerSPIImpl spiImpl;
-    
+
     @Injectable
     private TerminalBasicInfoService basicInfoService;
 
     @Injectable
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
-    
+
     /**
      * 测试dispatch,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -46,7 +46,7 @@ public class ConnectCloseHandlerSPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> spiImpl.dispatch(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试dispatch,
      */
@@ -55,7 +55,7 @@ public class ConnectCloseHandlerSPIImplTest {
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setTerminalId("123");
         spiImpl.dispatch(request);
-        
+
         new Verifications() {
             {
                 basicInfoService.modifyTerminalStateToOffline("123");

@@ -32,7 +32,7 @@ public class NettyServerInitTest {
 
     @Tested
     private NettyServerInit init;
-    
+
     @Injectable
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
@@ -41,9 +41,10 @@ public class NettyServerInitTest {
 
     @Injectable
     private ConnectEventHandler connectEventHandler;
-    
+
     /**
      * 测试safeInit，没有需要初始化的终端状态
+     * 
      * @param tcpServer mock对象
      */
     @Test
@@ -62,7 +63,7 @@ public class NettyServerInitTest {
             }
         };
         init.safeInit();
-        
+
         new Verifications() {
             {
                 terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);
@@ -74,9 +75,10 @@ public class NettyServerInitTest {
             }
         };
     }
-    
+
     /**
      * 测试safeInit，有需要初始化的终端状态
+     * 
      * @param tcpServer mock对象
      */
     @Test
@@ -99,7 +101,7 @@ public class NettyServerInitTest {
             }
         };
         init.safeInit();
-        
+
         new Verifications() {
             {
                 terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);

@@ -18,8 +18,7 @@ import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
  *
  * @author Jarman
  */
-public interface TerminalSystemUpgradePackageDAO
-        extends SkyEngineJpaRepository<TerminalSystemUpgradePackageEntity, UUID> {
+public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<TerminalSystemUpgradePackageEntity, UUID> {
 
     /**
      * 
@@ -55,8 +54,7 @@ public interface TerminalSystemUpgradePackageDAO
     @Transactional
     @Query("update TerminalSystemUpgradePackageEntity set packageVersion=:packageVersion "
             + ",imgName=:imgName,version = version + 1 where packageType=:packageType and version=:version")
-    int modifyTerminalUpgradePackageVersion(@Param("imgName") String imgName,
-            @Param("packageType") TerminalPlatformEnums packageType, @Param("packageVersion") String packageVersion,
-            @Param("version") int version);
+    int modifyTerminalUpgradePackageVersion(@Param("imgName") String imgName, @Param("packageType") TerminalPlatformEnums packageType,
+            @Param("packageVersion") String packageVersion, @Param("version") int version);
 
 }

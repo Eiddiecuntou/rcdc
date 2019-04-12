@@ -186,10 +186,10 @@ public class TerminalSystemUpgradeSupportService {
     private void beginSchefuleTask() {
         if (UPGRADE_TASK_FUTURE == null) {
             LOGGER.info("开启定时任务");
-            UPGRADE_TASK_FUTURE = SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(systemUpgradeQuartzHandler,
-                    0, QUARTZ_PERIOD_SECOND, TimeUnit.SECONDS);
-            SUPPORT_SERVICE_FUTURE = SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL
-                    .scheduleAtFixedRate(new SupportServiceQuartzHandler(), 0, QUARTZ_PERIOD_SECOND, TimeUnit.SECONDS);
+            UPGRADE_TASK_FUTURE =
+                    SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(systemUpgradeQuartzHandler, 0, QUARTZ_PERIOD_SECOND, TimeUnit.SECONDS);
+            SUPPORT_SERVICE_FUTURE = SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(new SupportServiceQuartzHandler(), 0,
+                    QUARTZ_PERIOD_SECOND, TimeUnit.SECONDS);
         }
     }
 
@@ -217,10 +217,9 @@ public class TerminalSystemUpgradeSupportService {
         }
 
         private boolean closeSupportService() throws BusinessException {
-            List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {
-                CbbSystemUpgradeTaskStateEnums.UPGRADING});
-            List<TerminalSystemUpgradeEntity> upgradeTaskList =
-                    systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+            List<CbbSystemUpgradeTaskStateEnums> stateList =
+                    Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+            List<TerminalSystemUpgradeEntity> upgradeTaskList = systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
             if (CollectionUtils.isEmpty(upgradeTaskList)) {
                 LOGGER.info("无正在进行中的刷机任务");
                 // 确认关闭nfs服务，关闭定时任务
@@ -234,8 +233,7 @@ public class TerminalSystemUpgradeSupportService {
         private void setClosingTaskToFinish() {
             List<CbbSystemUpgradeTaskStateEnums> stateList =
                     Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.CLOSING});
-            List<TerminalSystemUpgradeEntity> closingTaskList =
-                    systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+            List<TerminalSystemUpgradeEntity> closingTaskList = systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
             if (CollectionUtils.isEmpty(closingTaskList)) {
                 LOGGER.info("无正在关闭中的刷机任务");
                 return;

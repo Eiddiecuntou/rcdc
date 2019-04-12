@@ -33,15 +33,16 @@ public class SyncTerminalPasswordHandlerSPIImplTest {
 
     @Tested
     private SyncTerminalPasswordHandlerSPIImpl spiImpl;
-    
+
     @Injectable
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
 
     @Injectable
     private TerminalOperatorService terminalOperatorService;
-    
+
     /**
      * 测试dispatch,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -49,9 +50,10 @@ public class SyncTerminalPasswordHandlerSPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> spiImpl.dispatch(null), "CbbDispatcherRequest不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试dispatch,
+     * 
      * @param utils mock MessageUtils
      * @throws BusinessException 异常
      */
@@ -79,9 +81,10 @@ public class SyncTerminalPasswordHandlerSPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试dispatch失败
+     * 
      * @throws BusinessException 异常
      */
     @Test

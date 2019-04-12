@@ -12,13 +12,13 @@ import com.ruijie.rcos.sk.webmvc.api.response.WebResponse;
  * @author nt
  */
 public class CheckAllowUploadUpgradePackageWebResponse implements WebResponse {
-    
+
     private Status status;
 
     private String message;
 
     private Object content;
-    
+
     public Status getStatus() {
         return status;
     }

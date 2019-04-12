@@ -14,17 +14,17 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateE
  * @author nt
  */
 public class CbbSystemUpgradeTaskTerminalDTO {
-    
+
     private UUID id;
 
     private String terminalId;
-    
+
     private String terminalName;
-    
-    private String ip;    
+
+    private String ip;
 
     private String mac;
-    
+
     private Date startTime;
 
     private CbbSystemUpgradeStateEnums terminalUpgradeState;
@@ -60,7 +60,7 @@ public class CbbSystemUpgradeTaskTerminalDTO {
     public void setIp(String ip) {
         this.ip = ip;
     }
-    
+
     public String getMac() {
         return mac;
     }

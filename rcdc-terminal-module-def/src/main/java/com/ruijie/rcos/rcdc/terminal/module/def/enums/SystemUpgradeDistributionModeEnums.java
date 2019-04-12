@@ -10,6 +10,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.enums;
  * @author nt
  */
 public enum SystemUpgradeDistributionModeEnums {
-    
+
     FAST_UPGRADE
 }

@@ -7,7 +7,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
-
 import java.io.IOException;
 
 /**
@@ -36,17 +35,16 @@ public interface CbbTranspondMessageHandlerAPI {
      * @param msg 请求消息对象
      * @return 消息对象
      * @throws InterruptedException 线程中断异常
-     * @throws IOException          请求超时
-     * @throws BusinessException    业务异常
+     * @throws IOException 请求超时
+     * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbShineMessageResponse syncRequest(CbbShineMessageRequest msg) throws InterruptedException, IOException,
-            BusinessException;
+    CbbShineMessageResponse syncRequest(CbbShineMessageRequest msg) throws InterruptedException, IOException, BusinessException;
 
     /**
      * 异步发送消息
      *
-     * @param msg             请求消息对象
+     * @param msg 请求消息对象
      * @param requestCallback 请求回调对象
      * @return 返回成功失败状态
      * @throws BusinessException 业务异常

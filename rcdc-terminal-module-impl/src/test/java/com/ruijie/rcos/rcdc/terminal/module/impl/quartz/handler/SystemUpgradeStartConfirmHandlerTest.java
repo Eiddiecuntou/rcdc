@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
@@ -34,26 +33,27 @@ public class SystemUpgradeStartConfirmHandlerTest {
 
     @Tested
     private SystemUpgradeStartConfirmHandler handler;
-    
+
     @Injectable
     private TerminalSystemUpgradePackageService systemUpgradePackageService;
 
     @Injectable
     private TerminalSystemUpgradeServiceTx systemUpgradeServiceTx;
-    
+
     /**
      * 测试execute，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testExecuteArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(null),
-                "upgradeTerminalList can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.execute(null), "upgradeTerminalList can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试execute，systemUpgradeInfoList为null,存在非进行中的刷机终端
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -69,7 +69,7 @@ public class SystemUpgradeStartConfirmHandlerTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
@@ -77,9 +77,10 @@ public class SystemUpgradeStartConfirmHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，获取systemUpgradeInfoList时抛出BusinessException
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -94,7 +95,7 @@ public class SystemUpgradeStartConfirmHandlerTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
@@ -104,9 +105,10 @@ public class SystemUpgradeStartConfirmHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，systemUpgradeInfoList不为null,存在匹配的升级中的终端
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -127,7 +129,7 @@ public class SystemUpgradeStartConfirmHandlerTest {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
@@ -137,9 +139,10 @@ public class SystemUpgradeStartConfirmHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，systemUpgradeInfoList不为null,存在匹配的升级中的终端,no timeout
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -166,7 +169,7 @@ public class SystemUpgradeStartConfirmHandlerTest {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
@@ -176,9 +179,10 @@ public class SystemUpgradeStartConfirmHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试execute，systemUpgradeInfoList不为null,不存在匹配的升级中的终端,timeout
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -205,7 +209,7 @@ public class SystemUpgradeStartConfirmHandlerTest {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UPGRADING);
         upgradeTerminalList.add(upgradeTerminal);
         handler.execute(upgradeTerminalList);
-        
+
         new Verifications() {
             {
                 systemUpgradePackageService.readSystemUpgradeStartStateFromFile();

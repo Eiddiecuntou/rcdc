@@ -19,25 +19,23 @@ public interface BusinessKey {
      * 请求参数异常
      */
     String RCDC_COMMON_REQUEST_PARAM_ERROR = "rcdc_common_request_param_error";
-    
+
     /**
      * 上传终端系统升级包成功日志
      */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG =
-            "rcdc_terminal_system_upgrade_package_upload_success_log";
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_SUCCESS_LOG = "rcdc_terminal_system_upgrade_package_upload_success_log";
 
     /**
      * 上传终端系统升级包失败日志
      */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG =
-            "rcdc_terminal_system_upgrade_package_upload_fail_log";
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FAIL_LOG = "rcdc_terminal_system_upgrade_package_upload_fail_log";
 
     /**
      * 上传终端系统升级包文件名称长度超出限制
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_UPLOAD_FILE_NAME_LENGTH_EXCEED =
             "rcdc_terminal_system_upgrade_package_upload_file_name_length_exceed";
-    
+
     /**
      * 上传升级包校验未通过
      */
@@ -88,24 +86,24 @@ public interface BusinessKey {
      * 批量追加终端系统升级任务成功
      */
     String RCDC_ADD_UPGRADE_TERMINAL_RESULT_SUCCESS = "rcdc_add_upgrade_terminal_result_success";
-    
+
     /**
      * 批量追加终端系统升级任务项失败
      */
     String RCDC_ADD_UPGRADE_TERMINAL_RESULT_FAIL = "rcdc_add_upgrade_terminal_result_fail";
-    
+
     /**
      * 追加单条终端升级成功
      */
     String RCDC_ADD_UPGRADE_TERMINAL_SUCCESS = "rcdc_add_upgrade_terminal_success";
-    
+
     /**
      * 追加单条终端升级失败
      */
     String RCDC_ADD_UPGRADE_TERMINAL_FAIL = "rcdc_add_upgrade_terminal_fail";
-    
-    
-    
+
+
+
     /**
      * 批量取消终端升级任务项名称
      */
@@ -140,22 +138,22 @@ public interface BusinessKey {
      * 批量取消终端系统升级任务项成功
      */
     String RCDC_CANCEL_UPGRADE_TERMINAL_RESULT_SUCCESS = "rcdc_cancel_upgrade_terminal_result_success";
-    
+
     /**
      * 批量取消终端系统升级任务项失败
      */
     String RCDC_CANCEL_UPGRADE_TERMINAL_RESULT_FAIL = "rcdc_cancel_upgrade_terminal_result_fail";
-    
+
     /**
      * 取消终端系统升级成功（单条）
      */
     String RCDC_CANCEL_UPGRADE_TERMINAL_SUCCESS = "rcdc_cancel_upgrade_terminal_success";
-    
+
     /**
      * 取消终端系统升级失败（单条）
      */
     String RCDC_CANCEL_UPGRADE_TERMINAL_FAIL = "rcdc_cancel_upgrade_terminal_fail";
-    
+
     /**
      * 批量重试终端升级任务项名称
      */
@@ -190,30 +188,32 @@ public interface BusinessKey {
      * 批量重试终端系统升级任务项成功
      */
     String RCDC_RETRY_UPGRADE_TERMINAL_RESULT_SUCCESS = "rcdc_retry_upgrade_terminal_result_success";
-    
+
     /**
      * 批量重试终端系统升级任务项失败
      */
     String RCDC_RETRY_UPGRADE_TERMINAL_RESULT_FAIL = "rcdc_retry_upgrade_terminal_result_fail";
-    
-    
+
+
     /**
      * 重试终端系统升级成功（单条）
      */
     String RCDC_RETRY_UPGRADE_TERMINAL_SUCCESS = "rcdc_retry_upgrade_terminal_success";
-    
+
     /**
      * 重试终端系统升级失败（单条）
      */
     String RCDC_RETRY_UPGRADE_TERMINAL_FAIL = "rcdc_retry_upgrade_terminal_fail";
-    
+
     /** 关闭终端升级包[{0}]升级任务成功 */
     String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_SUCCESS_LOG = "rcdc_upgrade_terminal_task_close_success_log";
 
     /** 关闭终端升级包[{0}]升级任务失败，失败原因：{1} */
     String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_FAIL_LOG = "rcdc_upgrade_terminal_task_close_fail_log";
-    
-    
+
+
+    String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_FAIL = "rcdc_upgrade_terminal_task_close_fail";
+
     /**
      * 批量删除终端升级包任务项名称
      */
@@ -248,22 +248,22 @@ public interface BusinessKey {
      * 批量删除终端系统升级包任务项成功
      */
     String RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_RESULT_SUCCESS = "rcdc_delete_terminal_upgrade_package_result_success";
-    
+
     /**
      * 批量删除终端系统升级包任务项失败
      */
     String RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_RESULT_FAIL = "rcdc_delete_terminal_upgrade_package_result_fail";
-    
+
     /**
      * 删除单条终端系统升级包成功
      */
     String RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_SUCCESS = "rcdc_delete_terminal_upgrade_package_success";
-    
+
     /**
      * 删除单条终端系统升级包失败
      */
     String RCDC_DELETE_TERMINAL_UPGRADE_PACKAGE_FAIL = "rcdc_delete_terminal_upgrade_package_fail";
-    
+
 
     /**
      * 终端检测名称

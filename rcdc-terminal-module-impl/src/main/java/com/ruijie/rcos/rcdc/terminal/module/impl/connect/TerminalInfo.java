@@ -15,6 +15,7 @@ public class TerminalInfo {
     private String terminalIp;
 
     public TerminalInfo() {
+        
     }
 
     public TerminalInfo(String terminalId, String terminalIp) {

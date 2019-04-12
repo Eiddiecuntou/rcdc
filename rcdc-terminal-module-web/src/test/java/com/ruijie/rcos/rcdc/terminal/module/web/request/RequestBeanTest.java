@@ -27,7 +27,7 @@ import mockit.integration.junit4.JMockit;
  */
 @RunWith(JMockit.class)
 public class RequestBeanTest {
-    
+
     /**
      * 测试AppendTerminalSystemUpgradeWebRequest
      */
@@ -37,7 +37,7 @@ public class RequestBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试CloseSystemUpgradeTaskWebRequest
      */
@@ -57,9 +57,9 @@ public class RequestBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     // ctrl/reauest包下的实体类
-    
+
     /**
      * 测试DetectPageWebRequest
      */
@@ -69,7 +69,7 @@ public class RequestBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试EditAdminPwdWebRequest
      */
@@ -79,7 +79,7 @@ public class RequestBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试StartBatDetectWebRequest
      */
@@ -89,7 +89,7 @@ public class RequestBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalIdArrWebRequest
      */
@@ -97,12 +97,12 @@ public class RequestBeanTest {
     public void testTerminalIdArrWebRequest() {
         GetSetTester tester = new GetSetTester(TerminalIdArrWebRequest.class);
         tester.runTest();
-        
+
         String[] idArr = new String[1];
         TerminalIdArrWebRequest request = new TerminalIdArrWebRequest(idArr);
         assertArrayEquals(idArr, request.getIdArr());
     }
-    
+
     /**
      * 测试TerminalIdDownLoadWebRequest
      */
@@ -112,7 +112,7 @@ public class RequestBeanTest {
         tester.runTest();
         assertTrue(true);
     }
-    
+
     /**
      * 测试TerminalIdWebRequest
      */

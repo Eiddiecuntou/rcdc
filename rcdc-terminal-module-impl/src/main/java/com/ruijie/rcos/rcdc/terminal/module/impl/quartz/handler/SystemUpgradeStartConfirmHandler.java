@@ -65,16 +65,13 @@ public class SystemUpgradeStartConfirmHandler {
         terminalList.addAll(upgradeTerminalList);
         int count = 0;
         // 获取文件系统中的正在升级中的终端信息
-        List<TerminalSystemUpgradeInfo> systemUpgradeInfoList =
-                systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
+        List<TerminalSystemUpgradeInfo> systemUpgradeInfoList = systemUpgradePackageService.readSystemUpgradeStartStateFromFile();
         if (systemUpgradeInfoList == null) {
             systemUpgradeInfoList = new ArrayList<>();
         }
 
-        for (Iterator<TerminalSystemUpgradeTerminalEntity> iterator = terminalList.iterator(); iterator
-                .hasNext();) {
-            TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
-                    (TerminalSystemUpgradeTerminalEntity) iterator.next();
+        for (Iterator<TerminalSystemUpgradeTerminalEntity> iterator = terminalList.iterator(); iterator.hasNext();) {
+            TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = (TerminalSystemUpgradeTerminalEntity) iterator.next();
             if (upgradeTerminalEntity.getState() != CbbSystemUpgradeStateEnums.UPGRADING) {
                 LOGGER.debug("非进行中的刷机终端不做开始刷机状态判断");
                 iterator.remove();
@@ -92,8 +89,7 @@ public class SystemUpgradeStartConfirmHandler {
         }
 
         for (TerminalSystemUpgradeTerminalEntity noStartInfoTerminal : terminalList) {
-            final boolean isTimeout =
-                    TerminalDateUtil.isTimeout(noStartInfoTerminal.getStartTime(), START_CONFIRM_TIME_OUT);
+            final boolean isTimeout = TerminalDateUtil.isTimeout(noStartInfoTerminal.getStartTime(), START_CONFIRM_TIME_OUT);
             if (isTimeout) {
                 noStartInfoTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
                 systemUpgradeServiceTx.modifySystemUpgradeTerminalState(noStartInfoTerminal);

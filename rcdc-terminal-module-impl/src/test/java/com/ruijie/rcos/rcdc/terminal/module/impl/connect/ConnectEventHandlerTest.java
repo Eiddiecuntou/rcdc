@@ -167,7 +167,7 @@ public class ConnectEventHandlerTest {
             fail();
         }
     }
-    
+
     /**
      * 测试OnReceive，心跳报文
      * 
@@ -188,7 +188,7 @@ public class ConnectEventHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试OnReceive，同步服务器时间报文
      * 
@@ -199,7 +199,7 @@ public class ConnectEventHandlerTest {
     public void testOnReceiveSyncServerTime(@Mocked Session session) throws InterruptedException {
         String action = ShineAction.SYNC_SERVER_TIME;
         BaseMessage baseMessage = new BaseMessage(action, null);
-        
+
         connectEventHandler.onReceive(sender, baseMessage);
         Thread.sleep(1000);
         new Verifications() {
@@ -209,7 +209,7 @@ public class ConnectEventHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试OnReceive，终端未绑定session
      * 
@@ -226,7 +226,7 @@ public class ConnectEventHandlerTest {
         };
         String action = ShineAction.TERMINAL_DETECT;
         BaseMessage baseMessage = new BaseMessage(action, "");
-        
+
         connectEventHandler.onReceive(sender, baseMessage);
         Thread.sleep(1000);
         new Verifications() {
@@ -236,7 +236,7 @@ public class ConnectEventHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试OnReceive，绑定session时，数据格式错误
      * 
@@ -247,7 +247,7 @@ public class ConnectEventHandlerTest {
     public void testOnReceiveBindSessionDataFormatError(@Mocked Session session) throws InterruptedException {
         String action = ShineAction.CHECK_UPGRADE;
         BaseMessage baseMessage = new BaseMessage(action, "sdsd");
-        
+
         connectEventHandler.onReceive(sender, baseMessage);
         Thread.sleep(1000);
         new Verifications() {
@@ -259,7 +259,7 @@ public class ConnectEventHandlerTest {
             }
         };
     }
-    
+
     /**
      * 测试OnReceive，分发消息失败
      * 
@@ -278,10 +278,10 @@ public class ConnectEventHandlerTest {
                 result = info;
             }
         };
-        
+
         String action = ShineAction.TERMINAL_DETECT;
         BaseMessage baseMessage = new BaseMessage(action, null);
-        
+
         connectEventHandler.onReceive(sender, baseMessage);
         Thread.sleep(1000);
         new Verifications() {

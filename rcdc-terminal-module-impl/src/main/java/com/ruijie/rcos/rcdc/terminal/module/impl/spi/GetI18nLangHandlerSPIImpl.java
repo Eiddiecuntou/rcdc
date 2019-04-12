@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import java.util.Locale;
-
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -27,12 +26,12 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  */
 @DispatcherImplemetion(ShineAction.GET_I18N_LANG)
 public class GetI18nLangHandlerSPIImpl implements CbbDispatcherHandlerSPI {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(GetI18nLangHandlerSPIImpl.class);
-    
+
     @Autowired
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
-    
+
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
@@ -47,7 +46,7 @@ public class GetI18nLangHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         } catch (Exception e) {
             LOGGER.error("终端获取国际化语言消息应答失败", e);
         }
-        
+
     }
-    
+
 }

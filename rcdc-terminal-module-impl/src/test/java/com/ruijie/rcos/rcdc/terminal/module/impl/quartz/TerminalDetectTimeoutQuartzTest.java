@@ -30,33 +30,35 @@ public class TerminalDetectTimeoutQuartzTest {
 
     @Tested
     private TerminalDetectTimeoutQuartz quartz;
-    
+
     @Injectable
     private TerminalDetectionDAO detectionDAO;
-    
+
     /**
      * 测试execute,timeoutDetectList为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testExecuteTimeoutDetectListIsEmpty() throws Exception {
         new Expectations() {
             {
-                detectionDAO.findByDetectStateAndDetectTimeBefore(DetectStateEnums.CHECKING, (Date)any);
+                detectionDAO.findByDetectStateAndDetectTimeBefore(DetectStateEnums.CHECKING, (Date) any);
                 result = Collections.emptyList();
             }
         };
         quartz.execute();
         new Verifications() {
             {
-                detectionDAO.save((TerminalDetectionEntity)any);
+                detectionDAO.save((TerminalDetectionEntity) any);
                 times = 0;
             }
         };
     }
-    
+
     /**
      * 测试execute,
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -65,7 +67,7 @@ public class TerminalDetectTimeoutQuartzTest {
         timeoutDetectList.add(new TerminalDetectionEntity());
         new Expectations() {
             {
-                detectionDAO.findByDetectStateAndDetectTimeBefore(DetectStateEnums.CHECKING, (Date)any);
+                detectionDAO.findByDetectStateAndDetectTimeBefore(DetectStateEnums.CHECKING, (Date) any);
                 result = timeoutDetectList;
             }
         };

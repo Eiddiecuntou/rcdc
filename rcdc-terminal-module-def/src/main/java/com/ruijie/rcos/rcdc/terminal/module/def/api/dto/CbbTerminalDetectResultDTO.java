@@ -12,19 +12,19 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 public class CbbTerminalDetectResultDTO {
 
     private int ipConflict;
-    
+
     private int bandwidth;
-    
+
     private int accessInternet;
-    
+
     private int packetLossRate;
-    
+
     private int delay;
 
-    private int checking; 
-    
+    private int checking;
+
     private int all;
-    
+
     public int getIpConflict() {
         return ipConflict;
     }
@@ -80,5 +80,5 @@ public class CbbTerminalDetectResultDTO {
     public void setAll(int all) {
         this.all = all;
     }
-    
+
 }

@@ -16,7 +16,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @author nt
  */
 public class CbbAddTerminalSystemUpgradeTaskRequest implements Request {
-    
+
     /**
      * 终端id
      */
@@ -28,15 +28,16 @@ public class CbbAddTerminalSystemUpgradeTaskRequest implements Request {
      */
     @NotNull
     private UUID upgradeTaskId;
-    
+
 
     public CbbAddTerminalSystemUpgradeTaskRequest() {
+        
     }
 
     public CbbAddTerminalSystemUpgradeTaskRequest(String terminalId, UUID upgradeTaskId) {
         Assert.hasText(terminalId, "terminalId can not be blank");
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
-        
+
         this.terminalId = terminalId;
         this.upgradeTaskId = upgradeTaskId;
     }

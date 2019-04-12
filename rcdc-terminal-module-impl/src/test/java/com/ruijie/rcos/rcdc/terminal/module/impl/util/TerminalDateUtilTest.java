@@ -24,6 +24,7 @@ public class TerminalDateUtilTest {
 
     /**
      * 测试getDayStart,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -31,7 +32,7 @@ public class TerminalDateUtilTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> TerminalDateUtil.getDayStart(null), "date can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getDayStart,
      */
@@ -47,9 +48,10 @@ public class TerminalDateUtilTest {
         assertEquals(0, calendar.get(Calendar.SECOND));
         assertEquals(0, calendar.get(Calendar.MILLISECOND));
     }
-    
+
     /**
      * 测试getDayEnd,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -57,7 +59,7 @@ public class TerminalDateUtilTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> TerminalDateUtil.getDayEnd(null), "date can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getDayEnd,
      */
@@ -73,9 +75,10 @@ public class TerminalDateUtilTest {
         assertEquals(59, calendar.get(Calendar.SECOND));
         assertEquals(999, calendar.get(Calendar.MILLISECOND));
     }
-    
+
     /**
      * 测试addDay,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -83,7 +86,7 @@ public class TerminalDateUtilTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> TerminalDateUtil.addDay(null, 1), "date can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试addDay,
      */
@@ -97,9 +100,10 @@ public class TerminalDateUtilTest {
         calendar.add(Calendar.DAY_OF_MONTH, 2);
         assertEquals(calendar.getTime(), date1);
     }
-    
+
     /**
      * 测试addSecond,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -107,7 +111,7 @@ public class TerminalDateUtilTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> TerminalDateUtil.addSecond(null, 30), "date can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试addSecond,
      */
@@ -121,10 +125,11 @@ public class TerminalDateUtilTest {
         calendar.add(Calendar.SECOND, 30);
         assertEquals(calendar.getTime(), date1);
     }
-    
+
 
     /**
      * 测试isTimeout,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -132,7 +137,7 @@ public class TerminalDateUtilTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> TerminalDateUtil.isTimeout(null, 30), "date can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试isTimeout,
      */

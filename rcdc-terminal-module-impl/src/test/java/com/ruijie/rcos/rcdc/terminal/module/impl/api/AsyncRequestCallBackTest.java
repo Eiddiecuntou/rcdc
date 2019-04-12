@@ -67,7 +67,7 @@ public class AsyncRequestCallBackTest {
             assertEquals("baseMessage参数不能为空", e.getMessage());
         }
     }
-    
+
     /**
      * 测试回调成功,参数Action为空
      */
@@ -82,7 +82,7 @@ public class AsyncRequestCallBackTest {
             assertEquals("action不能为空", e.getMessage());
         }
     }
-    
+
     /**
      * 测试回调成功,IllegalArgumentException
      */
@@ -97,7 +97,7 @@ public class AsyncRequestCallBackTest {
             assertTrue(e.getMessage().contains("执行syncRequest方法后shine返回的应答消息不能为空。data:"));
         }
     }
-    
+
     /**
      * 测试回调超时
      */

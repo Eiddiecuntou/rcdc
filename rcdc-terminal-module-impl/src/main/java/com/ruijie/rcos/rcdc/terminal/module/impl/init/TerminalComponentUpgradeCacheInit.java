@@ -70,8 +70,7 @@ public class TerminalComponentUpgradeCacheInit {
             }
             try {
                 String updatelistStr = FileUtils.readFileToString(updateListFile, Charset.forName("UTF-8"));
-                CbbTerminalComponentUpdateListDTO updatelist =
-                        JSON.parseObject(updatelistStr, CbbTerminalComponentUpdateListDTO.class);
+                CbbTerminalComponentUpdateListDTO updatelist = JSON.parseObject(updatelistStr, CbbTerminalComponentUpdateListDTO.class);
                 putInCache(updatelist);
             } catch (IOException e) {
                 LOGGER.error("read updatelist file error", e);
@@ -121,8 +120,8 @@ public class TerminalComponentUpgradeCacheInit {
      * @param platformArrStr 平台类型字符串
      */
     private void setComponentInfoToCache(CbbTerminalComponentUpdateListDTO updatelist,
-            Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches,
-            CbbTerminalComponentVersionInfoDTO component, String platformArrStr) {
+            Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches, CbbTerminalComponentVersionInfoDTO component,
+            String platformArrStr) {
         String[] platformArr = platformArrStr.split(PLATFORM_SPERATOR);
         for (String platformStr : platformArr) {
             if (StringUtils.isBlank(platformStr) || !TerminalPlatformEnums.contains(platformStr)) {
@@ -148,8 +147,7 @@ public class TerminalComponentUpgradeCacheInit {
         }
     }
 
-    private CbbTerminalComponentUpdateListDTO buildNewComponentUpdatelist(
-            CbbTerminalComponentUpdateListDTO updatelist) {
+    private CbbTerminalComponentUpdateListDTO buildNewComponentUpdatelist(CbbTerminalComponentUpdateListDTO updatelist) {
         CbbTerminalComponentUpdateListDTO newUpdatelist = new CbbTerminalComponentUpdateListDTO();
         newUpdatelist.setVersion(updatelist.getVersion());
         newUpdatelist.setBaseVersion(updatelist.getBaseVersion());

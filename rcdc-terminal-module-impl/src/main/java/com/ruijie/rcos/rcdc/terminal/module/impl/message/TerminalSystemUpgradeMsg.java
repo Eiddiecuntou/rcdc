@@ -10,19 +10,20 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
  * @author nt
  */
 public class TerminalSystemUpgradeMsg {
-    
+
     /**
      * 升级镜像名称
      */
     private String imgName;
-    
+
     /**
      * 版本号
      */
     private String isoVersion;
-    
-    
+
+
     public TerminalSystemUpgradeMsg() {
+        
     }
 
     public TerminalSystemUpgradeMsg(String imgName, String isoVersion) {

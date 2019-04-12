@@ -29,10 +29,10 @@ public class TerminalDetectInitTest {
 
     @Tested
     private TerminalDetectInit init;
-    
+
     @Injectable
     private TerminalDetectionDAO detectionDAO;
-    
+
     /**
      * 测试safeInit,checkingList为空
      */
@@ -40,19 +40,19 @@ public class TerminalDetectInitTest {
     public void testSafeInitCheckingListIsEmpty() {
         new Expectations() {
             {
-                detectionDAO.findAll((Example<TerminalDetectionEntity>)any);
+                detectionDAO.findAll((Example<TerminalDetectionEntity>) any);
                 result = Collections.emptyList();
             }
         };
         init.safeInit();
         new Verifications() {
             {
-                detectionDAO.save((TerminalDetectionEntity)any);
+                detectionDAO.save((TerminalDetectionEntity) any);
                 times = 0;
             }
         };
     }
-    
+
     /**
      * 测试safeInit,checkingList不为空
      */
@@ -63,14 +63,14 @@ public class TerminalDetectInitTest {
         checkingList.add(new TerminalDetectionEntity());
         new Expectations() {
             {
-                detectionDAO.findAll((Example<TerminalDetectionEntity>)any);
+                detectionDAO.findAll((Example<TerminalDetectionEntity>) any);
                 result = checkingList;
             }
         };
         init.safeInit();
         new Verifications() {
             {
-                detectionDAO.save((TerminalDetectionEntity)any);
+                detectionDAO.save((TerminalDetectionEntity) any);
                 times = 2;
             }
         };

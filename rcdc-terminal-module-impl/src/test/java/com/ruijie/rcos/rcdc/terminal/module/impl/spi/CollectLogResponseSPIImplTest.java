@@ -31,12 +31,13 @@ public class CollectLogResponseSPIImplTest {
 
     @Tested
     private CollectLogResponseSPIImpl spiImpl;
-    
+
     @Injectable
     private CollectLogCacheManager collectLogCacheManager;
-    
+
     /**
      * 测试dispatch,参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -46,9 +47,10 @@ public class CollectLogResponseSPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> spiImpl.dispatch(request), "data不能为null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试dispatch,日志上传成功
+     * 
      * @param utils mock MessageUtils
      */
     @Test
@@ -56,7 +58,7 @@ public class CollectLogResponseSPIImplTest {
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setTerminalId("123");
         request.setData("data");
-        
+
         CbbShineMessageResponse<TerminalLogName> response = new CbbShineMessageResponse<TerminalLogName>();
         response.setCode(0);
         response.setContent(new TerminalLogName());
@@ -67,7 +69,7 @@ public class CollectLogResponseSPIImplTest {
             }
         };
         spiImpl.dispatch(request);
-        
+
         new Verifications() {
             {
                 collectLogCacheManager.updateState(request.getTerminalId(), CollectLogStateEnums.DONE, response.getContent().getLogName());
@@ -77,9 +79,10 @@ public class CollectLogResponseSPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试dispatch,日志收集失败
+     * 
      * @param utils mock MessageUtils
      */
     @Test
@@ -87,7 +90,7 @@ public class CollectLogResponseSPIImplTest {
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setTerminalId("123");
         request.setData("data");
-        
+
         CbbShineMessageResponse<TerminalLogName> response = new CbbShineMessageResponse<TerminalLogName>();
         response.setCode(1);
         response.setContent(new TerminalLogName());
@@ -98,7 +101,7 @@ public class CollectLogResponseSPIImplTest {
             }
         };
         spiImpl.dispatch(request);
-        
+
         new Verifications() {
             {
                 collectLogCacheManager.updateState(request.getTerminalId(), CollectLogStateEnums.DONE, response.getContent().getLogName());

@@ -44,7 +44,7 @@ public enum SendTerminalEventEnums {
      * 修改终端网络配置
      */
     MODIFY_TERMINAL_NETWORK_CONFIG("modify_network_config"),
-    
+
     /**
      * 升级终端
      */

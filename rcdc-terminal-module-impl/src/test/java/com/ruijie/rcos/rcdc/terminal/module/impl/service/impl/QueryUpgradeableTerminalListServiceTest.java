@@ -28,10 +28,10 @@ public class QueryUpgradeableTerminalListServiceTest {
 
     @Tested
     private QueryUpgradeableTerminalListService service;
-    
+
     @Injectable
     private UpgradeableTerminalDAO upgradeableTerminalDAO;
-    
+
     /**
      * 测试getDefaultDataSort
      */
@@ -41,16 +41,17 @@ public class QueryUpgradeableTerminalListServiceTest {
         assertEquals("createTime", defaultDataSort.getSortField());
         assertEquals(Direction.DESC, defaultDataSort.getDirection());
     }
-    
+
     /**
      * 测试find，specification为null
+     * 
      * @param pageable mock对象
      * @param page mock对象
      */
     @Test
     public void testFindSpecificationIsNull(@Mocked Pageable pageable, @Mocked Page<ViewUpgradeableTerminalEntity> page) {
         Specification<ViewUpgradeableTerminalEntity> specification = null;
-        
+
         new Expectations() {
             {
                 upgradeableTerminalDAO.findAll(specification, pageable);
@@ -67,17 +68,18 @@ public class QueryUpgradeableTerminalListServiceTest {
             }
         };
     }
-    
+
     /**
      * 测试find
+     * 
      * @param specification mock对象
      * @param pageable mock对象
      * @param page mock对象
      */
     @Test
-    public void testFind(@Mocked Specification<ViewUpgradeableTerminalEntity> specification,
-            @Mocked Pageable pageable, @Mocked Page<ViewUpgradeableTerminalEntity> page) {
-        
+    public void testFind(@Mocked Specification<ViewUpgradeableTerminalEntity> specification, @Mocked Pageable pageable,
+            @Mocked Page<ViewUpgradeableTerminalEntity> page) {
+
         new Expectations() {
             {
                 upgradeableTerminalDAO.findAll(specification, pageable);

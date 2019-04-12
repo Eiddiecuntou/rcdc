@@ -22,7 +22,7 @@ public class PageModelTest {
         PageModel pageModel = new PageModel(1, 1);
         assertEquals(1, pageModel.getPage());
         assertEquals(1, pageModel.getLimit());
-        
+
         pageModel.setLimit(2);
         pageModel.setPage(3);
         assertEquals(3, pageModel.getPage());

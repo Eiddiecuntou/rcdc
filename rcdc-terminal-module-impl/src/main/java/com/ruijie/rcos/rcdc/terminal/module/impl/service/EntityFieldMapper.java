@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import org.springframework.util.Assert;
-
 import java.util.HashMap;
 import java.util.Map;
 

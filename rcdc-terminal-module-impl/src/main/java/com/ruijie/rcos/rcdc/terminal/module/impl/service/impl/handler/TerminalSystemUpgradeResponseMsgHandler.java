@@ -59,7 +59,7 @@ public class TerminalSystemUpgradeResponseMsgHandler {
             throw new IllegalArgumentException("执行syncRequest方法后shine返回的应答消息不能为空。data:" + data);
         }
         CbbShineMessageResponse msg = JSON.parseObject(data.toString(), CbbShineMessageResponse.class);
-        
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("system upgrade callback success, msg: {}", JSON.toJSONString(msg));
         }
@@ -83,7 +83,7 @@ public class TerminalSystemUpgradeResponseMsgHandler {
      * 
      * @param terminalId 终端id
      * @param state 终端状态
-     * @throws BusinessException 
+     * @throws BusinessException
      */
     private void modifySystemUpgradeState(String terminalId, CbbSystemUpgradeStateEnums state) throws BusinessException {
         List<TerminalSystemUpgradeTerminalEntity> upgradingTerminalList =

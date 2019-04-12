@@ -17,21 +17,22 @@ public class CbbTerminalUpgradePackageUploadRequest implements Request {
 
     @NotBlank
     private String filePath;
-    
+
     @NotBlank
     private String fileName;
-    
+
     @NotBlank
     private String fileMD5;
-    
+
     public CbbTerminalUpgradePackageUploadRequest() {
+        
     }
 
     public CbbTerminalUpgradePackageUploadRequest(String filePath, String fileName, String fileMD5) {
         Assert.hasText(filePath, "filePath can not be blank");
         Assert.hasText(fileName, "fileName can not be blank");
         Assert.hasText(fileMD5, "fileMD5 can not be blank");
-        
+
         this.filePath = filePath;
         this.fileName = fileName;
         this.fileMD5 = fileMD5;
@@ -60,5 +61,5 @@ public class CbbTerminalUpgradePackageUploadRequest implements Request {
     public void setFileMD5(String fileMD5) {
         this.fileMD5 = fileMD5;
     }
-    
+
 }

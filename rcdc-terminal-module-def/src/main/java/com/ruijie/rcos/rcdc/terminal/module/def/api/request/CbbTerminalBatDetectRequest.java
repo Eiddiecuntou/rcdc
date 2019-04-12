@@ -12,11 +12,12 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @author Jarman
  */
 public class CbbTerminalBatDetectRequest implements Request {
-    
+
     @NotEmpty
     private String[] terminalIdArr;
-    
+
     public CbbTerminalBatDetectRequest() {
+        
     }
 
     public CbbTerminalBatDetectRequest(String[] terminalIdArr) {

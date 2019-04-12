@@ -15,10 +15,10 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * @author nt
  */
 public class CbbAddSystemUpgradeTaskRequest implements Request {
-    
+
     @NotNull
     private UUID packageId;
-    
+
     @NotEmpty
     private String[] terminalIdArr;
 
@@ -37,5 +37,5 @@ public class CbbAddSystemUpgradeTaskRequest implements Request {
     public void setTerminalIdArr(String[] terminalIdArr) {
         this.terminalIdArr = terminalIdArr;
     }
-    
+
 }

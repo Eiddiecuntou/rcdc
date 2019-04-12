@@ -13,7 +13,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * @author nt
  */
 public class CbbDetectInfoResponse extends DefaultResponse {
-    
+
     private CbbTerminalDetectDTO detectInfo;
 
     public CbbTerminalDetectDTO getDetectInfo() {
@@ -23,5 +23,5 @@ public class CbbDetectInfoResponse extends DefaultResponse {
     public void setDetectInfo(CbbTerminalDetectDTO detectInfo) {
         this.detectInfo = detectInfo;
     }
-    
+
 }

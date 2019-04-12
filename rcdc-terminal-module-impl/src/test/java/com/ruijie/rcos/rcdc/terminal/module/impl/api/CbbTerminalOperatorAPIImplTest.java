@@ -76,12 +76,13 @@ public class CbbTerminalOperatorAPIImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
-    
+
     @Injectable
     private CbbTerminalBasicInfoAPI basicInfoAPI;
 
     /**
      * 测试关机
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
@@ -131,6 +132,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     /**
      * 测试收集日志
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
@@ -153,6 +155,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     /**
      * 测试批量检测
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
@@ -171,6 +174,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     /**
      * 测试获取终端检测列表
+     * 
      * @param resolver mock LocaleI18nResolver
      * @throws BusinessException 业务异常
      */
@@ -275,9 +279,10 @@ public class CbbTerminalOperatorAPIImplTest {
             Assert.assertEquals("request can not be null", e.getMessage());
         }
     }
-    
+
     /**
      * 测试changePassword，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -285,9 +290,10 @@ public class CbbTerminalOperatorAPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.changePassword(null), "CbbChangePasswordRequest不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试changePassword，
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -303,9 +309,10 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试detect，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -314,9 +321,10 @@ public class CbbTerminalOperatorAPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.detect(request), "CbbTerminalIdRequest不能为空");
         assertTrue(true);
     }
-    
+
     /**
      * 测试detect，
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -331,9 +339,10 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试getRecentDetect，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -341,9 +350,10 @@ public class CbbTerminalOperatorAPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getRecentDetect(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getRecentDetect，
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -359,9 +369,10 @@ public class CbbTerminalOperatorAPIImplTest {
         CbbDetectInfoResponse response = terminalOperatorAPI.getRecentDetect(request);
         assertEquals(detectInfo, response.getDetectInfo());
     }
-    
+
     /**
      * 测试getTerminalBaiscInfo，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -369,9 +380,10 @@ public class CbbTerminalOperatorAPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getTerminalBaiscInfo(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getTerminalBaiscInfo，
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -386,9 +398,10 @@ public class CbbTerminalOperatorAPIImplTest {
         };
         assertEquals(response, terminalOperatorAPI.getTerminalBaiscInfo(request));
     }
-    
+
     /**
      * 测试getCollectLog，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -396,9 +409,10 @@ public class CbbTerminalOperatorAPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getCollectLog(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getCollectLog，
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -418,10 +432,11 @@ public class CbbTerminalOperatorAPIImplTest {
         assertEquals("logFileName", response.getLogName());
         assertEquals(CollectLogStateEnums.DONE, response.getState());
     }
-    
+
     /**
      * 测试getCollectLog，CollectLogCache为空
-     * @throws BusinessException 
+     * 
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testGetCollectLogCollectLogCacheIsNull() throws BusinessException {
@@ -436,11 +451,12 @@ public class CbbTerminalOperatorAPIImplTest {
 
         CbbTerminalCollectLogStatusResponse collectLog = terminalOperatorAPI.getCollectLog(request);
         assertEquals(CollectLogStateEnums.FAILURE, collectLog.getState());
-    
+
     }
 
     /**
      * 测试getTerminalLogFileInfo，参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
@@ -448,7 +464,7 @@ public class CbbTerminalOperatorAPIImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getTerminalLogFileInfo(null), "request can not be null");
         assertTrue(true);
     }
-    
+
     /**
      * 测试getTerminalLogFileInfo，文件不存在
      */
@@ -463,9 +479,10 @@ public class CbbTerminalOperatorAPIImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST, e.getKey());
         }
     }
-    
+
     /**
      * 测试getTerminalLogFileInfo，收集失败
+     * 
      * @throws BusinessException 业务异常
      */
     @Test
@@ -475,17 +492,19 @@ public class CbbTerminalOperatorAPIImplTest {
         new MockUp<CbbTerminalOperatorAPIImpl>() {
             @Mock
             private void checkFileExist(String logFilePath) throws BusinessException {
+                
             }
         };
-        
+
         CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
         assertEquals("/opt/ftp/terminal/log/logFileName.rar", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("rar", response.getSuffix());
     }
-    
+
     /**
      * 测试getTerminalLogFileInfo，日志文件没有后缀名
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -495,13 +514,14 @@ public class CbbTerminalOperatorAPIImplTest {
         new MockUp<CbbTerminalOperatorAPIImpl>() {
             @Mock
             private void checkFileExist(String logFilePath) throws BusinessException {
+                
             }
         };
-        
+
         CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
         assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("", response.getSuffix());
     }
-    
+
 }

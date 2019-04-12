@@ -15,10 +15,10 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageRequest;
 public class CbbTerminalPageRequest extends DefaultPageRequest {
 
     /**
-     * 终端类型  idv vdi
+     * 终端类型 idv vdi
      */
     private TerminalPlatformEnums platform;
-    
+
     /**
      * 终端系统版本
      */
@@ -40,5 +40,5 @@ public class CbbTerminalPageRequest extends DefaultPageRequest {
     public void setTerminalSystemVersion(String terminalSystemVersion) {
         this.terminalSystemVersion = terminalSystemVersion;
     }
-    
+
 }
