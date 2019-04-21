@@ -1,12 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.data.domain.Page;
@@ -109,20 +112,43 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     @Autowired
     private QueryUpgradeableTerminalListService queryUpgradeableTerminalListDAO;
 
+    @Autowired
+    private SystemUpgradeFileClearHandler upgradeFileClearHandler;
+
     @Override
     public CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-
         UUID packageId = request.getPackageId();
         Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = terminalSystemUpgradePackageDAO.findById(packageId);
-        if (!upgradePackageOpt.isPresent()) {
+        if (!upgradePackageOpt.isPresent() || upgradePackageOpt.get().getIsDelete()) {
             LOGGER.error("terminal system upgrade package not found, package id is: {}", packageId);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
         }
 
-        // 判断刷机包是否正在上传中
         final TerminalSystemUpgradePackageEntity upgradePackage = upgradePackageOpt.get();
+
+        // 判断刷机包是否允许开启升级任务
+        checkAllowCreateTask(upgradePackage);
+
+        UUID upgradeTaskId = terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackage, request.getTerminalIdArr());
+
+        // 清理终端升级相关文件
+        upgradeFileClearHandler.clear(packageId);
+
+        // 开启刷机相关服务
+        terminalSystemUpgradeSupportService.openSystemUpgradeService(upgradePackage);
+
+        CbbAddSystemUpgradeTaskResponse response = new CbbAddSystemUpgradeTaskResponse();
+        response.setUpgradeTaskId(upgradeTaskId);
+        response.setImgName(upgradePackage.getPackageName());
+        return response;
+    }
+
+    private void checkAllowCreateTask(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
+
+        // 判断刷机包是否正在上传中
+        UUID packageId = upgradePackage.getId();
         isUpgradePackageUploading(upgradePackage.getPackageType());
 
         // 判断是否已存在进行中的刷机任务
@@ -132,15 +158,12 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }
 
-        UUID upgradeTaskId = terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackage, request.getTerminalIdArr());
-
-        // 开启刷机相关服务
-        terminalSystemUpgradeSupportService.openSystemUpgradeService(upgradePackage);
-
-        CbbAddSystemUpgradeTaskResponse response = new CbbAddSystemUpgradeTaskResponse();
-        response.setUpgradeTaskId(upgradeTaskId);
-        response.setImgName(upgradePackage.getPackageName());
-        return response;
+        // 判断升级文件是否存在
+        String filePath = upgradePackage.getFilePath();
+        boolean existsFile = Files.exists(new File(filePath).toPath());
+        if (!existsFile) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_FILE_NOT_EXIST, upgradePackage.getPackageName());
+        }
     }
 
     /**

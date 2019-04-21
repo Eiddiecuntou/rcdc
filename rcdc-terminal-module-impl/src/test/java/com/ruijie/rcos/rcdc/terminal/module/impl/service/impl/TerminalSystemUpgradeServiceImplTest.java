@@ -320,7 +320,7 @@ public class TerminalSystemUpgradeServiceImplTest {
             {
                 terminalSystemUpgradeDAO.save(systemUpgradeEntity);
                 times = 1;
-                upgradeFileClearHandler.clear(systemUpgradeEntity);
+                upgradeFileClearHandler.clear(systemUpgradeEntity.getUpgradePackageId());
                 times = 0;
             }
         };
@@ -351,7 +351,7 @@ public class TerminalSystemUpgradeServiceImplTest {
             {
                 terminalSystemUpgradeDAO.save(systemUpgradeEntity);
                 times = 1;
-                upgradeFileClearHandler.clear(systemUpgradeEntity);
+                upgradeFileClearHandler.clear(systemUpgradeEntity.getUpgradePackageId());
                 times = 1;
             }
         };

@@ -52,7 +52,6 @@ public class SystemUpgradeFileClearHandlerTest {
         TerminalSystemUpgradeEntity packageIdNullEntity = new TerminalSystemUpgradeEntity();
         packageIdNullEntity.setId(UUID.randomUUID());
         ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear(null), "systemUpgradeEntity can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear(packageIdNullEntity), "upgradePackageId can not be null");
         assertTrue(true);
     }
 
@@ -64,9 +63,7 @@ public class SystemUpgradeFileClearHandlerTest {
      */
     @Test
     public void testClearNoUpgradeTerminal(@Mocked FileOperateUtil fileOperateUtil) throws BusinessException {
-        TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
-        entity.setUpgradePackageId(UUID.randomUUID());
-        handler.clear(entity);
+        handler.clear(UUID.randomUUID());
 
         new Verifications() {
             {
@@ -86,8 +83,6 @@ public class SystemUpgradeFileClearHandlerTest {
      */
     @Test
     public void testClear(@Mocked FileOperateUtil fileOperateUtil) throws BusinessException {
-        TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
-        entity.setUpgradePackageId(UUID.randomUUID());
 
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
@@ -109,7 +104,7 @@ public class SystemUpgradeFileClearHandlerTest {
                 return true;
             }
         };
-        handler.clear(entity);
+        handler.clear(UUID.randomUUID());
 
         new Verifications() {
             {
