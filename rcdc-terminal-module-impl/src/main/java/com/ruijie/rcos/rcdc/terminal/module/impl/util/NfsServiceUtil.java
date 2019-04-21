@@ -21,9 +21,9 @@ public class NfsServiceUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NfsServiceUtil.class);
 
-    private static final String NFS_SERVER_START_CMD = "exportfs -o rw,no_root_squash,insecure,async *:%s";
+    private static final String NFS_SERVER_START_CMD = "systemctl start nfs";
 
-    private static final String NFS_SERVER_STOP_CMD = "exportfs -u *:%s";
+    private static final String NFS_SERVER_STOP_CMD = "systemctl stop nfs";
 
     /**
      * 开启NFS服务
