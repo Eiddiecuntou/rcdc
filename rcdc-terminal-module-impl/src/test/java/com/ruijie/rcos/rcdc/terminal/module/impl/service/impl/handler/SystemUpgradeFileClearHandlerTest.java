@@ -49,9 +49,7 @@ public class SystemUpgradeFileClearHandlerTest {
      */
     @Test
     public void testClearArgumentIsNull() throws Exception {
-        TerminalSystemUpgradeEntity packageIdNullEntity = new TerminalSystemUpgradeEntity();
-        packageIdNullEntity.setId(UUID.randomUUID());
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear(null), "systemUpgradeEntity can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.clear(null), "upgradePackageId can not be null");
         assertTrue(true);
     }
 

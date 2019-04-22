@@ -160,8 +160,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         // 判断升级文件是否存在
         String filePath = upgradePackage.getFilePath();
-        boolean existsFile = Files.exists(new File(filePath).toPath());
-        if (!existsFile) {
+        boolean hasExist = Files.exists(new File(filePath).toPath());
+        if (!hasExist) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_FILE_NOT_EXIST, upgradePackage.getPackageName());
         }
     }

@@ -103,7 +103,6 @@ public class SystemUpgradeQuartzHandler implements Runnable {
      * 判断刷机任务是否全部处于成功状态，是则将刷机任务设为完成状态
      * 
      * @param upgradeTask 刷机任务
-     * @param upgradeTerminalList 刷机终端列表
      * @throws BusinessException 业务异常
      */
     private void checkUpgradeTaskSuccessFinish(TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
