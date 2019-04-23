@@ -116,8 +116,8 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
             LOGGER.info("分发消息，terminalId:{}; action: {}; data:{}; ip:{}", terminalId, message.getAction(), data, terminalInfo.getTerminalIp());
             cbbDispatcherHandlerSPI.dispatch(request);
         } catch (Exception e) {
-            LOGGER.error("消息分发执行异常;ip:" + terminalInfo.getTerminalIp() + ", action:" + message.getAction() + ",terminalId:" + terminalId + ",data:"
-                    + message.getData(), e);
+            LOGGER.error("消息分发执行异常;ip:" + terminalInfo.getTerminalIp() + ", action:" + message.getAction()
+                    + ",terminalId:" + terminalId + ",data:" + message.getData(), e);
         }
     }
 

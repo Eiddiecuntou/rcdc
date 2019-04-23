@@ -147,6 +147,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING = "rcdc_terminal_system_upgrade_task_is_running";
 
     /**
+     * 终端系统升级iso文件不存在
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_FILE_NOT_EXIST = "rcdc_terminal_system_upgrade_file_not_exist";
+
+    /**
      * 终端系统升级状态文件目录不存在
      */
     String RCDC_TERMINAL_UPGRADE_SUCCESS_STATUS_DIRECTORY_NOT_EXIST = "rcdc_terminal_upgrade_success_status_directory_not_exist";

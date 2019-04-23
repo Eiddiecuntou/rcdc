@@ -16,7 +16,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 public class CheckPackageAllowUploadWebRequest implements WebRequest {
 
     @NotNull
-    @Range(min = "1")
+    @Range(min = "0")
     private Long fileSize;
 
     public Long getFileSize() {
