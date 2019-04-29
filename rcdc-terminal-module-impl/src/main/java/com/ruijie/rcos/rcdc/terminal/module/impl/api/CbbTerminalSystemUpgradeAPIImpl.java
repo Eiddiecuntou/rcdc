@@ -126,6 +126,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);
         }
 
+        if (request.getTerminalIdArr().length > CbbTerminalSystemUpgradeAPI.MAX_UPGRADE_NUM_PER_TASK) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_NUM_EXCEED_LIMIT,
+                    String.valueOf(CbbTerminalSystemUpgradeAPI.MAX_UPGRADE_NUM_PER_TASK));
+        }
+
         final TerminalSystemUpgradePackageEntity upgradePackage = upgradePackageOpt.get();
 
         // 判断刷机包是否允许开启升级任务
@@ -217,6 +222,13 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_EXIST, terminalEntity.getTerminalName());
         }
 
+        // 校验添加升级终端数量是否超过500限制
+        long upgradeTerminalCount = systemUpgradeTerminalDAO.countBySysUpgradeId(upgradeEntity.getId());
+        if (upgradeTerminalCount >= CbbTerminalSystemUpgradeAPI.MAX_UPGRADE_NUM_PER_TASK) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_NUM_EXCEED_LIMIT,
+                    String.valueOf(CbbTerminalSystemUpgradeAPI.MAX_UPGRADE_NUM_PER_TASK));
+        }
+
         upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setSysUpgradeId(upgradeEntity.getId());
         upgradeTerminal.setTerminalId(terminalEntity.getTerminalId());
@@ -240,10 +252,16 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             final TerminalSystemUpgradeEntity upgradeEntity = taskList.get(i);
             TASK_BEAN_COPIER.copy(upgradeEntity, dto, null);
             dto.setUpgradeTaskState(upgradeEntity.getState());
+            fillUpgradeTaskDTO(dto);
             dtoArr[i] = dto;
         });
 
         return DefaultPageResponse.Builder.success(upgradeTaskPage.getSize(), (int) upgradeTaskPage.getTotalElements(), dtoArr);
+    }
+
+    private void fillUpgradeTaskDTO(CbbSystemUpgradeTaskDTO dto) {
+        dto.setSuccessNum(systemUpgradeTerminalDAO.countBySysUpgradeIdAndState(dto.getId(), //
+                CbbSystemUpgradeStateEnums.SUCCESS));
     }
 
     @Override
@@ -337,6 +355,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         dto.setMac(viewEntity.getMacAddr());
         dto.setProductType(viewEntity.getProductType());
         dto.setTerminalState(viewEntity.getState());
+        dto.setLastUpgradeTime(viewEntity.getLastUpgradeTime());
     }
 
     @Override

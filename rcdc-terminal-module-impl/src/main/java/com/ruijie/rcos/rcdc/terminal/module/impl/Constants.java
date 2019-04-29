@@ -150,11 +150,6 @@ public interface Constants {
     String FILE_SUFFIX_DOT = ".";
 
     /**
-     * 终端刷机nfs服务开放目录
-     */
-    String TERMINAL_SYSTEM_UPGRADE_ISO_NFS_DIR = "/opt/pxeuser";
-
-    /**
      * 刷机镜像刷机文件存放路径
      */
     String ISO_IMG_MOUNT_PATH = "/opt/pxeuser/";

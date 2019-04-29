@@ -4,6 +4,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalDetectPageWebRequest;
+import com.ruijie.rcos.sk.webmvc.api.vo.IdLabelEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -105,18 +108,14 @@ public class TerminalDetectController {
      * @throws BusinessException 业务异常
      */
     @RequestMapping(value = "list")
-    public DefaultWebResponse list(PageWebRequest request) throws BusinessException {
+    public DefaultWebResponse list(TerminalDetectPageWebRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        CbbDetectDateEnums dateParam = checkDateParam(request);
 
-        CbbTerminalDetectPageRequest pageRequest = new CbbTerminalDetectPageRequest();
-        pageRequest.setLimit(request.getLimit());
-        pageRequest.setPage(request.getPage());
-        pageRequest.setDate(dateParam);
+        CbbTerminalDetectPageRequest pageRequest = buildCbbTerminalDetectPageRequest(request);
         DefaultPageResponse<CbbTerminalDetectDTO> listDetectResp = operatorAPI.listDetect(pageRequest);
 
         CbbTerminalDetectResultRequest resultRequest = new CbbTerminalDetectResultRequest();
-        resultRequest.setDetectDate(dateParam);
+        resultRequest.setDetectDate(CbbDetectDateEnums.TODAY);
         CbbDetectResultResponse detectResultResp = operatorAPI.getDetectResult(resultRequest);
 
         TerminalDetectListContentVO contentVO = new TerminalDetectListContentVO();
@@ -127,19 +126,13 @@ public class TerminalDetectController {
         return DefaultWebResponse.Builder.success(contentVO);
     }
 
-    private CbbDetectDateEnums checkDateParam(PageWebRequest request) throws BusinessException {
-        ExactMatch[] exactMatchArr = request.getExactMatchArr();
-        Assert.notEmpty(exactMatchArr, "exactMatchArr can not be empty");
-        ExactMatch exactMatch = exactMatchArr[0];
-        Assert.notNull(exactMatch, "exactMatch can not be null");
-        String[] valueArr = exactMatch.getValueArr();
-        Assert.notNull(valueArr, "valueArr can not be empty");
-        String date = valueArr[0];
-        Assert.hasText(date, "date can not be blank");
-        if (!CbbDetectDateEnums.contains(date)) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_DETECT_LIST_DATE_ERROR, date);
-        }
-        return CbbDetectDateEnums.valueOf(date);
+    private CbbTerminalDetectPageRequest buildCbbTerminalDetectPageRequest(TerminalDetectPageWebRequest request) {
+        CbbTerminalDetectPageRequest pageRequest = new CbbTerminalDetectPageRequest();
+        pageRequest.setLimit(request.getLimit());
+        pageRequest.setPage(request.getPage());
+        pageRequest.setStartTime(request.getStartTime());
+        pageRequest.setEndTime(request.getEndTime());
+        return pageRequest;
     }
 
     /**

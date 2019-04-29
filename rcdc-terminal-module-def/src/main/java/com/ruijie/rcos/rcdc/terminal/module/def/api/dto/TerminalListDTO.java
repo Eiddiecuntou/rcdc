@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 
+import java.util.Date;
+
 /**
  * 
  * Description: 终端列表展示信息
@@ -42,6 +44,8 @@ public class TerminalListDTO {
      * 产品型号
      */
     private String productType;
+
+    private Date lastUpgradeTime;
 
     public String getId() {
         return id;
@@ -91,4 +95,11 @@ public class TerminalListDTO {
         this.productType = productType;
     }
 
+    public Date getLastUpgradeTime() {
+        return lastUpgradeTime;
+    }
+
+    public void setLastUpgradeTime(Date lastUpgradeTime) {
+        this.lastUpgradeTime = lastUpgradeTime;
+    }
 }

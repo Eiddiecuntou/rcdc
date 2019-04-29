@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +37,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -181,7 +182,6 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testListDetect(@Mocked LocaleI18nResolver resolver) throws BusinessException {
         CbbTerminalDetectPageRequest pageReq = new CbbTerminalDetectPageRequest();
-        pageReq.setDate(CbbDetectDateEnums.TODAY);
         pageReq.setLimit(10);
         pageReq.setPage(1);
 
@@ -208,7 +208,6 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testListDetectResultListIsEmpty() throws BusinessException {
         CbbTerminalDetectPageRequest pageReq = new CbbTerminalDetectPageRequest();
-        pageReq.setDate(CbbDetectDateEnums.TODAY);
         pageReq.setLimit(10);
         pageReq.setPage(1);
 
@@ -299,7 +298,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testChangePassword() throws Exception {
         CbbChangePasswordRequest request = new CbbChangePasswordRequest();
-        request.setPassword("password");
+        request.setPassword("password123");
         DefaultResponse response = terminalOperatorAPI.changePassword(request);
         assertEquals(Status.SUCCESS, response.getStatus());
         new Verifications() {
