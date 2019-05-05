@@ -52,7 +52,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist or component is null, return not support");
-            return buildResult(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT, getEmptyUpdateListDTO());
+            return buildResult(CbbTerminalComponentUpgradeResultEnums.ABNORMAL, getEmptyUpdateListDTO());
         }
 
         if (LOGGER.isDebugEnabled()) {

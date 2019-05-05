@@ -34,12 +34,10 @@ public class SystemUpgradeFileClearHandler {
     /**
      * 刷机任务完成文件清理
      * 
-     * @param systemUpgradeEntity 刷机任务实体
+     * @param upgradePackageId 刷机包id
      * @throws BusinessException 业务异常
      */
-    public void clear(TerminalSystemUpgradeEntity systemUpgradeEntity) throws BusinessException {
-        Assert.notNull(systemUpgradeEntity, "systemUpgradeEntity can not be null");
-        final UUID upgradePackageId = systemUpgradeEntity.getUpgradePackageId();
+    public void clear(UUID upgradePackageId) throws BusinessException {
         Assert.notNull(upgradePackageId, "upgradePackageId can not be null");
 
         deleteStatusFile();
@@ -49,7 +47,6 @@ public class SystemUpgradeFileClearHandler {
     /**
      * 清理终端刷机状态文件
      * 
-     * @param upgradeTaskId 刷机任务id
      */
     private void deleteStatusFile() {
         deleteMacNameFile(Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH);
@@ -59,7 +56,7 @@ public class SystemUpgradeFileClearHandler {
     /**
      * 删除状态文件目录下对应以mac为名的状态文件
      * 
-     * @param upgradeTerminal
+     * @param fileDir 文件目录
      */
     private void deleteMacNameFile(String fileDir) {
         // 删除刷机状态文件夹内的状态文件

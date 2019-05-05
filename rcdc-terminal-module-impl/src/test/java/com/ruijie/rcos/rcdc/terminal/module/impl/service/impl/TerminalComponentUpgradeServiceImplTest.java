@@ -66,9 +66,9 @@ public class TerminalComponentUpgradeServiceImplTest {
         };
         ComponentUpdateListCacheManager.isUpdate = false;
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("123", TerminalPlatformEnums.VDI);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), terminalVersionResultDTO.getResult().intValue());
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO.getResult().intValue());
         TerminalVersionResultDTO terminalVersionResultDTO1 = serviceImpl.getVersion("123", TerminalPlatformEnums.VDI);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), terminalVersionResultDTO1.getResult().intValue());
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO1.getResult().intValue());
         ComponentUpdateListCacheManager.isUpdate = true;
     }
 

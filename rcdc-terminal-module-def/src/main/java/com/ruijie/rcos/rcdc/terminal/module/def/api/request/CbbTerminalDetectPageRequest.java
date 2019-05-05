@@ -1,7 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
-import com.ruijie.rcos.sk.base.annotation.NotNull;
+import java.util.Date;
+
+import org.springframework.lang.Nullable;
+
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageRequest;
 
 /**
@@ -15,15 +17,27 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageRequest;
  */
 public class CbbTerminalDetectPageRequest extends DefaultPageRequest {
 
-    @NotNull
-    private CbbDetectDateEnums date;
+    @Nullable
+    private Date startTime;
 
-    public CbbDetectDateEnums getDate() {
-        return date;
+    @Nullable
+    private Date endTime;
+
+    @Nullable
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setDate(CbbDetectDateEnums date) {
-        this.date = date;
+    public void setStartTime(@Nullable Date startTime) {
+        this.startTime = startTime;
     }
 
+    @Nullable
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(@Nullable Date endTime) {
+        this.endTime = endTime;
+    }
 }

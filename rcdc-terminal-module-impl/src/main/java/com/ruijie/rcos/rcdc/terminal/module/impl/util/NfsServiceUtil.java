@@ -21,9 +21,9 @@ public class NfsServiceUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NfsServiceUtil.class);
 
-    private static final String NFS_SERVER_START_CMD = "exportfs -o rw,no_root_squash,insecure,async *:%s";
+    private static final String NFS_SERVER_START_CMD = "systemctl start nfs";
 
-    private static final String NFS_SERVER_STOP_CMD = "exportfs -u *:%s";
+    private static final String NFS_SERVER_STOP_CMD = "systemctl stop nfs";
 
     /**
      * 开启NFS服务
@@ -32,11 +32,9 @@ public class NfsServiceUtil {
      */
     public static void startService() throws BusinessException {
 
-        String startCmd = String.format(NFS_SERVER_START_CMD, Constants.TERMINAL_SYSTEM_UPGRADE_ISO_NFS_DIR);
-
-        LOGGER.info("start nfs server, cmd : {}", startCmd);
+        LOGGER.info("start nfs server, cmd : {}", NFS_SERVER_START_CMD);
         ShellCommandRunner runner = new ShellCommandRunner();
-        runner.setCommand(startCmd);
+        runner.setCommand(NFS_SERVER_START_CMD);
         try {
             String outStr = runner.execute(new SimpleCmdReturnValueResolver());
             LOGGER.debug("out String is :{}", outStr);
@@ -54,11 +52,9 @@ public class NfsServiceUtil {
      */
     public static void shutDownService() throws BusinessException {
 
-        String stopCmd = String.format(NFS_SERVER_STOP_CMD, Constants.TERMINAL_SYSTEM_UPGRADE_ISO_NFS_DIR);
-
-        LOGGER.info("stop nfs server, cmd : {}", stopCmd);
+        LOGGER.info("stop nfs server, cmd : {}", NFS_SERVER_STOP_CMD);
         ShellCommandRunner runner = new ShellCommandRunner();
-        runner.setCommand(stopCmd);
+        runner.setCommand(NFS_SERVER_STOP_CMD);
         try {
             String outStr = runner.execute(new SimpleCmdReturnValueResolver());
             LOGGER.debug("out String is :{}", outStr);

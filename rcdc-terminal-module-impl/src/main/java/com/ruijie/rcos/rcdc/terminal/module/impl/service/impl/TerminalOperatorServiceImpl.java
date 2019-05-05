@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.util.List;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;

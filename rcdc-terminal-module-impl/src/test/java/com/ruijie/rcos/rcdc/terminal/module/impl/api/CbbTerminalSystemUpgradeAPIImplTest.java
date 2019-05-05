@@ -1,25 +1,25 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckUploadingResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
@@ -27,27 +27,17 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.ViewUpgradeableTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeTerminalListService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QueryUpgradeableTerminalListService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -95,6 +85,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Injectable
     private QueryUpgradeableTerminalListService queryUpgradeableTerminalListDAO;
 
+    @Injectable
+    private SystemUpgradeFileClearHandler upgradeFileClearHandler;
+
     /**
      * 测试升级包上传，参数为空
      * 
@@ -135,9 +128,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testAddSystemUpgradeTaskUpgradePackageIsUploading() {
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
-
+        request.setTerminalIdArr(new String[]{"123", "456"});
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
-
+        upgradePackageEntity.setIsDelete(false);
         CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
         response.setHasLoading(true);
         new Expectations() {
@@ -162,9 +155,10 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testAddSystemUpgradeTaskHasUploadingTask() {
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        request.setTerminalIdArr(new String[]{"123", "456"});
 
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
-
+        upgradePackageEntity.setIsDelete(false);
         CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
         response.setHasLoading(false);
         new Expectations() {
@@ -193,8 +187,10 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testAddSystemUpgradeTask() throws BusinessException {
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
-
+        request.setTerminalIdArr(new String[]{"123", "456"});
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
+        upgradePackageEntity.setIsDelete(false);
+        upgradePackageEntity.setFilePath("/opt");
         Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = Optional.of(upgradePackageEntity);
 
         CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
@@ -213,6 +209,14 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = upgradeTaskId;
             }
         };
+
+        new MockUp<Files>() {
+            @Mock
+            public boolean exists(Path path) {
+                return true;
+            }
+        };
+
         CbbAddSystemUpgradeTaskResponse upgradeTaskResponse = upgradeAPIImpl.addSystemUpgradeTask(request);
         assertEquals(upgradeTaskId, upgradeTaskResponse.getUpgradeTaskId());
         assertEquals(upgradePackageOpt.get().getPackageName(), upgradeTaskResponse.getImgName());

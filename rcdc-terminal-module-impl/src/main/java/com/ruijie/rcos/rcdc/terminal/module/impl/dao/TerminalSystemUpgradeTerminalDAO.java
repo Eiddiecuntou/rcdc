@@ -77,4 +77,11 @@ public interface TerminalSystemUpgradeTerminalDAO extends SkyEngineJpaRepository
      */
     int deleteByTerminalId(String terminalId);
 
+    /**
+     * 统计终端升级任务升级终端数量
+     *
+     * @param sysUpgradeId 升级任务id
+     * @return 升级终端数量
+     */
+    int countBySysUpgradeId(UUID sysUpgradeId);
 }

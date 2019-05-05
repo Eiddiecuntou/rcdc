@@ -28,7 +28,12 @@ public enum CbbTerminalComponentUpgradeResultEnums {
     /**
      * 升级未就绪
      */
-    PREPARING(3);
+    PREPARING(3),
+
+    /**
+     * 服务器环境异常
+     */
+    ABNORMAL(-1);
 
     private int result;
 

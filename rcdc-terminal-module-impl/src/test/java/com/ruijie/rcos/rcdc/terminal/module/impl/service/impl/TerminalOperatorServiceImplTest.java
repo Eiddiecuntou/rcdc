@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.util.Assert;
@@ -21,7 +23,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;

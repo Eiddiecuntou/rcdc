@@ -25,6 +25,8 @@ public class CbbSystemUpgradeTaskDTO {
 
     private CbbSystemUpgradeTaskStateEnums upgradeTaskState;
 
+    private Integer successNum;
+
     public UUID getId() {
         return id;
     }
@@ -65,4 +67,11 @@ public class CbbSystemUpgradeTaskDTO {
         this.upgradeTaskState = upgradeTaskState;
     }
 
+    public Integer getSuccessNum() {
+        return successNum;
+    }
+
+    public void setSuccessNum(Integer successNum) {
+        this.successNum = successNum;
+    }
 }

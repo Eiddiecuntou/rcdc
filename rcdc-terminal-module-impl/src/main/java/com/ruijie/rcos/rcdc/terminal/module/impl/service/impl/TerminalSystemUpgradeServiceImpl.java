@@ -117,7 +117,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
 
         if (state == CbbSystemUpgradeTaskStateEnums.CLOSING) {
             // 刷机关闭则清理服务端文件
-            upgradeFileClearHandler.clear(systemUpgradeEntity);
+            upgradeFileClearHandler.clear(systemUpgradeEntity.getUpgradePackageId());
         }
     }
 
