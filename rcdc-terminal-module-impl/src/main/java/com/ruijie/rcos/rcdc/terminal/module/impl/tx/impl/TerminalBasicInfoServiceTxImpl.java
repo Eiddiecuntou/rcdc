@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -8,7 +9,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -25,7 +25,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 @Service
 public class TerminalBasicInfoServiceTxImpl implements TerminalBasicInfoServiceTx {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalBasicInfoServiceTxImpl.class);
 
     @Autowired
     private TerminalDetectionDAO detectionDAO;

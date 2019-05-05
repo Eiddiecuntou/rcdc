@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Map;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalDetectPageWebRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
@@ -105,76 +107,13 @@ public class TerminalDetectControllerTest {
     }
 
     /**
-     * 测试list,exactMatchArr为空
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testListExactMatchArrIsEmpty() throws Exception {
-        PageWebRequest request = new PageWebRequest();
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.list(request), "exactMatchArr can not be empty");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试list,exactMatch为null
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testListExactMatchIsNull() throws Exception {
-        PageWebRequest request = new PageWebRequest();
-        request.setExactMatchArr(new ExactMatch[1]);
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.list(request), "exactMatch can not be null");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试list,valueArr为空
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testListValueArrIsNull() throws Exception {
-        PageWebRequest request = new PageWebRequest();
-        ExactMatch[] exactMatchArr = new ExactMatch[1];
-        ExactMatch exactMatch = new ExactMatch();
-        exactMatch.setValueArr(new String[1]);
-        exactMatchArr[0] = exactMatch;
-        request.setExactMatchArr(exactMatchArr);
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.list(request), "date can not be blank");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试list,未知日期
-     */
-    @Test
-    public void testListNotContainsDate() {
-        PageWebRequest request = new PageWebRequest();
-        ExactMatch[] exactMatchArr = new ExactMatch[1];
-        ExactMatch exactMatch = new ExactMatch();
-        String[] valueArr = new String[1];
-        valueArr[0] = "TOMORROW";
-        exactMatch.setValueArr(valueArr);
-        exactMatchArr[0] = exactMatch;
-        request.setExactMatchArr(exactMatchArr);
-        try {
-            controller.list(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_LIST_DATE_ERROR, e.getKey());
-        }
-    }
-
-    /**
      * 测试list,
      * 
      * @throws BusinessException 异常
      */
     @Test
     public void testList() throws BusinessException {
-        PageWebRequest request = new PageWebRequest();
+        TerminalDetectPageWebRequest request = new TerminalDetectPageWebRequest();
         ExactMatch[] exactMatchArr = new ExactMatch[1];
         ExactMatch exactMatch = new ExactMatch();
         String[] valueArr = new String[1];

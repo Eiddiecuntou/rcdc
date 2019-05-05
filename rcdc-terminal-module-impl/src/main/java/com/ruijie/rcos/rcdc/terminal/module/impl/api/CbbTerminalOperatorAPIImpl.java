@@ -2,7 +2,12 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.io.File;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +39,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalDetectService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
@@ -51,6 +55,8 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalOperatorAPIImpl.class);
+
+    private static final String REGEX_PASSWORD = "^(?=.*[0-9])(?=.*[a-zA-Z])(.{8,16})$";
 
     @Autowired
     private TerminalOperatorService operatorService;
@@ -89,8 +95,16 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     public DefaultResponse changePassword(CbbChangePasswordRequest request) throws BusinessException {
         Assert.notNull(request, "CbbChangePasswordRequest不能为空");
 
+        checkPwdIsLegal(request.getPassword());
         operatorService.changePassword(request.getPassword());
         return DefaultResponse.Builder.success();
+    }
+
+    private void checkPwdIsLegal(String password) throws BusinessException {
+        if (Pattern.matches(REGEX_PASSWORD, password)) {
+            return;
+        }
+        throw new BusinessException(BusinessKey.RCDC_TERMINAL_ADMIN_PWD_ILLEGAL);
     }
 
     @Override
@@ -123,8 +137,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
         Page<TerminalDetectionEntity> page = detectService.pageQuery(request);
         if (page.getNumberOfElements() == 0) {
-            LOGGER.debug("detect page query returns 0 element, detect date[{}], page[{}], limit[{}]", request.getDate(), request.getPage(),
-                    request.getLimit());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("detect page query returns 0 element, param: ", JSON.toJSONString(request));
+            }
             return buildEmptyResponse(page.getTotalElements());
         }
 

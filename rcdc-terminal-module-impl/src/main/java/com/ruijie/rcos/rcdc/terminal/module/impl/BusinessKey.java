@@ -51,6 +51,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_ADMIN_PWD_RECORD_NOT_EXIST = "rcdc_terminal_admin_pwd_record_not_exist";
 
     /**
+     * 终端管理员密码不合法
+     */
+    String RCDC_TERMINAL_ADMIN_PWD_ILLEGAL = "rcdc_terminal_admin_pwd_illegal";
+
+    /**
      * 上传系统升级文件类型错误
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR = "rcdc_terminal_system_upgrade_upload_file_type_error";
@@ -125,6 +130,11 @@ public interface BusinessKey {
      * 刷机任务不存在
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_NOT_EXIST = "rcdc_terminal_system_upgrade_task_not_exist";
+
+    /**
+     * 终端刷机任务终端数量超出限制
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_NUM_EXCEED_LIMIT = "rcdc_terminal_system_upgrade_terminal_num_exceed_limit";
 
     /**
      * 刷机任务已关闭

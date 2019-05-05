@@ -32,6 +32,11 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 public interface CbbTerminalSystemUpgradeAPI {
 
     /**
+     * 单次刷机任务最大刷机终端数量
+     */
+    long MAX_UPGRADE_NUM_PER_TASK = 500;
+
+    /**
      * 添加刷机任务
      * 
      * @param request 请求参数

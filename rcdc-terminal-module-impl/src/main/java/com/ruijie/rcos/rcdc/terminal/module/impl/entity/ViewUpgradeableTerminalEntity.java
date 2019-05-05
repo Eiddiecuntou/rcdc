@@ -84,6 +84,8 @@ public class ViewUpgradeableTerminalEntity {
     @Enumerated(EnumType.STRING)
     private CbbTerminalStateEnums state;
 
+    private Date lastUpgradeTime;
+
     public UUID getId() {
         return id;
     }
@@ -307,5 +309,13 @@ public class ViewUpgradeableTerminalEntity {
 
     public void setState(CbbTerminalStateEnums state) {
         this.state = state;
+    }
+
+    public Date getLastUpgradeTime() {
+        return lastUpgradeTime;
+    }
+
+    public void setLastUpgradeTime(Date lastUpgradeTime) {
+        this.lastUpgradeTime = lastUpgradeTime;
     }
 }
