@@ -59,4 +59,9 @@ public interface ShineAction {
      * 同步服务器时间
      */
     String SYNC_SERVER_TIME = "sync_server_time";
+
+    /**
+     * 请求软件版本信息
+     */
+    String REQUEST_SOFTWARE_VERSION = "request_software_version";
 }

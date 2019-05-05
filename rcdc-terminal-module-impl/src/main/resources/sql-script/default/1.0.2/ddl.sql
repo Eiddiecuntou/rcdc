@@ -3,3 +3,6 @@ ALTER TABLE t_cbb_sys_upgrade alter COLUMN package_name type varchar(128);
 
 /** 添加刷机包表逻辑删除字段 */
 ALTER TABLE t_cbb_sys_upgrade_package ADD COLUMN is_delete bool DEFAULT FALSE;
+
+/** 修改终端检测时延数据类型 */
+ALTER TABLE t_cbb_terminal_detection ALTER COLUMN network_delay TYPE numeric(24,2);

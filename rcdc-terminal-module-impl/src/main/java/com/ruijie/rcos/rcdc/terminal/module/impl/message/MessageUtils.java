@@ -80,4 +80,23 @@ public class MessageUtils {
 
         return responseMessage;
     }
+
+    /**
+     * 构造异常情况shine应答消息
+     *
+     * @param request 请求参数
+     * @return shine应答消息
+     */
+    public static CbbResponseShineMessage buildErrorResponseMessage(CbbDispatcherRequest request) {
+        Assert.notNull(request, "request can not be null");
+
+        CbbResponseShineMessage responseMessage = new CbbResponseShineMessage();
+        responseMessage.setAction(request.getDispatcherKey());
+        responseMessage.setRequestId(request.getRequestId());
+        responseMessage.setTerminalId(request.getTerminalId());
+        responseMessage.setCode(Constants.FAILURE);
+
+        return responseMessage;
+    }
+
 }

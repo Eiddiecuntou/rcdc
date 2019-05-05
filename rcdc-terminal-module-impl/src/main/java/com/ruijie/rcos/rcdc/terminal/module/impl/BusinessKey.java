@@ -199,6 +199,16 @@ public interface BusinessKey {
     /**
      * 终端检测超时处理定时任务
      */
+    String RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG = "rcdc_terminal_quartz_clean_terminal_collect_log";
+
+    /**
+     * 清理终端收集日志文件定时任务系统日志
+     */
+    String RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG = "rcdc_terminal_quartz_clean_terminal_collect_log_system_log";
+
+    /**
+     * 终端检测超时处理定时任务
+     */
     String RCDC_TERMINAL_QUARTZ_DETECT_TIME_OUT = "rcdc_terminal_quartz_detect_time_out";
 
     /**
