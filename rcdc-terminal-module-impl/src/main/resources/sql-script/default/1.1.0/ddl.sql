@@ -1,3 +1,6 @@
+/** 修改终端检测时延数据类型 */
+ALTER TABLE t_cbb_terminal_detection ALTER COLUMN network_delay TYPE numeric(24,2);
+
 DROP VIEW IF EXISTS v_cbb_upgradeable_terminal;
 
 CREATE VIEW v_cbb_upgradeable_terminal
