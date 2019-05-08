@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,13 +20,14 @@ import com.ruijie.rcos.sk.base.quartz.Quartz;
 import com.ruijie.rcos.sk.base.quartz.QuartzTask;
 import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
 
+
 /**
- * 
+ *
  * Description: 终端收集日志文件清理定时任务
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年5月5日
- * 
+ *
  * @author nt
  */
 @GlobalUniqueBean("terminalCollectLogCleanQuartz")
@@ -34,7 +36,7 @@ public class TerminalCollectLogCleanQuartz implements QuartzTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalCollectLogCleanQuartz.class);
 
-    private static final long TERMINAL_LOG_FILE_EXPIRE_TIME = 24 * 60 * 60 * 1000;
+    public static final long TERMINAL_LOG_FILE_EXPIRE_TIME = 24 * 60 * 60 * 1000;
 
     @Autowired
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
@@ -51,6 +53,7 @@ public class TerminalCollectLogCleanQuartz implements QuartzTask {
         File fileDir = new File(Constants.STORE_TERMINAL_LOG_PATH);
         if (!fileDir.isDirectory()) {
             LOGGER.error("终端收集日志文件目录不存在");
+            addFailSystemLog(stopwatch);
             return;
         }
 
@@ -74,10 +77,19 @@ public class TerminalCollectLogCleanQuartz implements QuartzTask {
         LOGGER.info("完成清理终端收集日志文件定时任务, 共删除[{}]个日志文件, 耗时[{}]毫秒", deleteCount, timeMillis);
     }
 
-    private void addSuccessSystemLog(int deleteCount, String timeMillis) {
+    private void addFailSystemLog(Stopwatch stopwatch) {
         BaseCreateSystemLogRequest request =
-                new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG,
-                        String.valueOf(deleteCount), timeMillis);
+                new BaseCreateSystemLogRequest(
+                        BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_FAIL_SYSTEM_LOG, LocaleI18nResolver
+                                .resolve(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_DIRECTORY_NOT_EXIST, new String[] {}),
+                        String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+        baseSystemLogMgmtAPI.createSystemLog(request);
+    }
+
+    private void addSuccessSystemLog(int deleteCount, String timeMillis) {
+        BaseCreateSystemLogRequest request = new BaseCreateSystemLogRequest(
+                BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG,
+                String.valueOf(deleteCount), timeMillis);
         baseSystemLogMgmtAPI.createSystemLog(request);
     }
 

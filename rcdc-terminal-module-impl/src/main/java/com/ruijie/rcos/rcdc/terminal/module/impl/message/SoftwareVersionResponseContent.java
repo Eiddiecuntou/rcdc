@@ -14,25 +14,17 @@ public class SoftwareVersionResponseContent {
 
     private String softwareVersion;
 
+    public SoftwareVersionResponseContent(String softwareVersion) {
+        Assert.hasText(softwareVersion, "softwareVersion can not be null");
+        this.softwareVersion = softwareVersion;
+    }
+
     public String getSoftwareVersion() {
         return softwareVersion;
     }
 
     public void setSoftwareVersion(String softwareVersion) {
         this.softwareVersion = softwareVersion;
-    }
-
-    /**
-     * 构建消息对象
-     * @param softwareVersion 平台系统版本信息
-     * @return 返回SoftwareVersionResponseContent
-     */
-    public static SoftwareVersionResponseContent build(String softwareVersion) {
-        Assert.hasText(softwareVersion, "softwareVersion can not be null");
-
-        SoftwareVersionResponseContent response = new SoftwareVersionResponseContent();
-        response.setSoftwareVersion(softwareVersion);
-        return response;
     }
 
 }

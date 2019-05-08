@@ -1,6 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.base.sysmanage.module.def.api.SystemUpgradeAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.upgrade.BaseObtainSystemReleaseVersionRequest;
@@ -16,8 +19,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 /**
  * Description: 终端同步系统版本
@@ -51,10 +52,13 @@ public class SyncSoftwareVersionHandlerSPIImpl implements CbbDispatcherHandlerSP
         } catch (BusinessException e) {
             LOGGER.error("获取系统版本号异常", e);
             responseError(request);
+            return;
         }
 
-        SoftwareVersionResponseContent softwareVersionResponseContent = SoftwareVersionResponseContent.build(versionResponse.getSystemReleaseVersion());
-        CbbResponseShineMessage responseMessage = MessageUtils.buildResponseMessage(request, softwareVersionResponseContent);
+        SoftwareVersionResponseContent softwareVersionResponseContent =
+                new SoftwareVersionResponseContent(versionResponse.getSystemReleaseVersion());
+        CbbResponseShineMessage responseMessage =
+                MessageUtils.buildResponseMessage(request, softwareVersionResponseContent);
         doResponseMessage(responseMessage);
     }
 
