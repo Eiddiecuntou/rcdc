@@ -54,7 +54,7 @@ public class TerminalDetectionEntity {
     /**
      * 网络时延
      */
-    private Integer networkDelay;
+    private Double networkDelay;
 
     /**
      * 检测时间
@@ -168,11 +168,11 @@ public class TerminalDetectionEntity {
         this.detectTime = detectTime;
     }
 
-    public Integer getNetworkDelay() {
+    public Double getNetworkDelay() {
         return networkDelay;
     }
 
-    public void setNetworkDelay(Integer networkDelay) {
+    public void setNetworkDelay(Double networkDelay) {
         this.networkDelay = networkDelay;
     }
 

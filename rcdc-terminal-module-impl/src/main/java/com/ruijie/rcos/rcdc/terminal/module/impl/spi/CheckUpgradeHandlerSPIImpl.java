@@ -53,7 +53,6 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
-        Assert.notNull(request, "DispatcherRequest不能为null");
 
         // 保存终端基本信息
         String terminalId = request.getTerminalId();
@@ -64,7 +63,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(), basicInfo.getPlatform());
         CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, versionResult);
         try {
-            LOGGER.debug("response check upgrade : {}", cbbShineMessageRequest.toString());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("response check upgrade : {}", JSON.toJSONString(cbbShineMessageRequest));
+            }
             messageHandlerAPI.response(cbbShineMessageRequest);
         } catch (Exception e) {
             LOGGER.error("升级检查消息应答失败", e);

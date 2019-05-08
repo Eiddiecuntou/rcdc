@@ -92,7 +92,7 @@ public class TerminalDetectServiceImplTest {
         result.setAccessInternet(1);
         result.setIpConflict(1);
         result.setIpConflictMac("123");
-        result.setDelay(999);
+        result.setDelay(999.0);
         result.setPacketLossRate(100.0);
         List<TerminalDetectionEntity> entityList = new ArrayList<>();
         entityList.add(new TerminalDetectionEntity());
@@ -336,7 +336,7 @@ public class TerminalDetectServiceImplTest {
         detectionEntity.setBandwidth(50.0);
         detectionEntity.setPacketLossRate(0.0);
         detectionEntity.setIpConflict(0);
-        detectionEntity.setNetworkDelay(2);
+        detectionEntity.setNetworkDelay(2.0);
 
 
         detectList.add(detectionEntity);
@@ -475,7 +475,7 @@ public class TerminalDetectServiceImplTest {
         detectionEntity3.setBandwidth(50.0);
         detectionEntity3.setPacketLossRate(11.0);
         detectionEntity3.setIpConflict(0);
-        detectionEntity3.setNetworkDelay(60);
+        detectionEntity3.setNetworkDelay(60.0);
 
         // 时延异常
         TerminalDetectionEntity detectionEntity4 = new TerminalDetectionEntity();
@@ -484,7 +484,7 @@ public class TerminalDetectServiceImplTest {
         detectionEntity4.setBandwidth(50.0);
         detectionEntity4.setPacketLossRate(0.0);
         detectionEntity4.setIpConflict(0);
-        detectionEntity4.setNetworkDelay(60);
+        detectionEntity4.setNetworkDelay(60.0);
 
         detectList.add(detectionEntity);
         detectList.add(detectionEntity1);

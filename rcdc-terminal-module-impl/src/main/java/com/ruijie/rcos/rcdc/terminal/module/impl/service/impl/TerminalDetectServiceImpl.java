@@ -229,7 +229,7 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         return false;
     }
 
-    private boolean isNetworkDelayAbnormal(Integer networkDelay) {
+    private boolean isNetworkDelayAbnormal(Double networkDelay) {
         return networkDelay == null || networkDelay >= Constants.TERMINAL_DETECT_DELAY_NORM;
     }
 

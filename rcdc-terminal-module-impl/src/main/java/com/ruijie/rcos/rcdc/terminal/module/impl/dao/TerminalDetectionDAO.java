@@ -95,7 +95,7 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
      * @param endDt 结束时间
      * @return 统计数量
      */
-    int countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(int delayNorm, Date startDt, Date endDt);
+    int countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(double delayNorm, Date startDt, Date endDt);
 
     /**
      * 统计时间段内对应检测状态的数量

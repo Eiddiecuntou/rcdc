@@ -43,7 +43,7 @@ public class CbbTerminalDetectDTO {
     /**
      * 网络时延
      */
-    private Integer delay;
+    private Double delay;
 
     /**
      * 带宽阈值
@@ -58,7 +58,7 @@ public class CbbTerminalDetectDTO {
     /**
      * 时延阈值
      */
-    private Integer delayThreshold;
+    private Double delayThreshold;
 
     /**
      * 检测时间
@@ -174,12 +174,12 @@ public class CbbTerminalDetectDTO {
     }
 
 
-    public Integer getDelay() {
+    public Double getDelay() {
         return delay;
     }
 
 
-    public void setDelay(Integer delay) {
+    public void setDelay(Double delay) {
         this.delay = delay;
     }
 
@@ -214,12 +214,12 @@ public class CbbTerminalDetectDTO {
     }
 
 
-    public Integer getDelayThreshold() {
+    public Double getDelayThreshold() {
         return delayThreshold;
     }
 
 
-    public void setDelayThreshold(Integer delayThreshold) {
+    public void setDelayThreshold(Double delayThreshold) {
         this.delayThreshold = delayThreshold;
     }
 
