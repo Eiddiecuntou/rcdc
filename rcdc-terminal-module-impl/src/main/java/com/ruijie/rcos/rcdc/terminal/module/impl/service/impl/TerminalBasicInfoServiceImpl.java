@@ -52,7 +52,13 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         }
         ChangeHostNameRequest changeRequest = new ChangeHostNameRequest(terminalName);
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.MODIFY_TERMINAL_NAME.getName(), changeRequest);
-        sender.request(message);
+        try {
+            sender.syncRequest(message);
+        } catch (Exception e) {
+            LOGGER.error("发送修改终端名称消息给终端[" + terminalId + "]失败", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
+                    new String[] {terminalId});
+        }
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +88,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private SystemUpgradeFileClearHandler upgradeFileClearHandler;
+
+    @Injectable
+    private UpgradeTerminalLockManager lockManager;
 
     /**
      * 测试升级包上传，参数为空

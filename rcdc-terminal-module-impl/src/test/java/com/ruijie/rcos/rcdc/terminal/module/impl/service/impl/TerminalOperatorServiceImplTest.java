@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,7 +80,7 @@ public class TerminalOperatorServiceImplTest {
      * 测试关机成功
      */
     @Test
-    public void testShutdownSuccess() {
+    public void testShutdownSuccess() throws IOException, InterruptedException {
         new Expectations() {
             {
                 try {
@@ -100,7 +102,7 @@ public class TerminalOperatorServiceImplTest {
         new Verifications() {
             {
                 Message message;
-                sender.request(message = withCapture());
+                sender.syncRequest(message = withCapture());
                 assertEquals(message.getAction(), SendTerminalEventEnums.SHUTDOWN_TERMINAL.getName());
             }
         };
@@ -139,7 +141,7 @@ public class TerminalOperatorServiceImplTest {
      * 测试重启
      */
     @Test
-    public void testRestart() {
+    public void testRestart() throws IOException, InterruptedException {
         new Expectations() {
             {
                 try {
@@ -161,7 +163,7 @@ public class TerminalOperatorServiceImplTest {
         new Verifications() {
             {
                 Message message;
-                sender.request(message = withCapture());
+                sender.syncRequest(message = withCapture());
                 assertEquals(message.getAction(), SendTerminalEventEnums.RESTART_TERMINAL.getName());
             }
         };
@@ -219,7 +221,7 @@ public class TerminalOperatorServiceImplTest {
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testCollectLogSend() throws BusinessException {
+    public void testCollectLogSend() throws BusinessException, IOException, InterruptedException {
         CollectLogCache logCache = new CollectLogCache();
         logCache.setState(CollectLogStateEnums.DONE);
         new Expectations() {
@@ -228,7 +230,7 @@ public class TerminalOperatorServiceImplTest {
                 result = logCache;
                 sessionManager.getRequestMessageSender(anyString);
                 result = sender;
-                sender.request((Message) any);
+                sender.syncRequest((Message) any);
 
             }
         };
@@ -242,7 +244,7 @@ public class TerminalOperatorServiceImplTest {
 
         new Verifications() {
             {
-                sender.request((Message) any);
+                sender.syncRequest((Message) any);
                 times = 1;
             }
         };
@@ -393,12 +395,45 @@ public class TerminalOperatorServiceImplTest {
     }
 
     /**
-     * 测试检测,正在检测
+     * 测试检测,正在检测,状态为wait
      * 
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testDetectTerminalDetecting() throws BusinessException {
+    public void testDetectTerminalDetectStateIsWait() throws BusinessException {
+        String terminalId = "123";
+        TerminalDetectionEntity terminalDetectionEntity = new TerminalDetectionEntity();
+        terminalDetectionEntity.setDetectState(DetectStateEnums.WAIT);
+        new Expectations() {
+            {
+                terminalDetectService.findInCurrentDate(anyString);
+                result = terminalDetectionEntity;
+            }
+        };
+        try {
+            operatorService.detect(terminalId);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_IS_DOING, e.getKey());
+        }
+
+        new Verifications() {
+            {
+                terminalDetectService.findInCurrentDate(anyString);
+                times = 1;
+                terminalDetectService.delete((UUID) any);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     * 测试检测,正在检测，状态为checking
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testDetectTerminalDetectStateIsChecking() throws BusinessException {
         String terminalId = "123";
         TerminalDetectionEntity terminalDetectionEntity = new TerminalDetectionEntity();
         terminalDetectionEntity.setDetectState(DetectStateEnums.CHECKING);
@@ -425,7 +460,6 @@ public class TerminalOperatorServiceImplTest {
         };
     }
 
-
     /**
      * 测试检测,结果发送失败
      * 
@@ -439,8 +473,6 @@ public class TerminalOperatorServiceImplTest {
             {
                 terminalDetectService.findInCurrentDate(anyString);
                 result = new TerminalDetectionEntity();
-                sessionManager.getRequestMessageSender(anyString);
-                result = null;
             }
         };
         // 未完成
@@ -450,7 +482,9 @@ public class TerminalOperatorServiceImplTest {
             {
                 terminalDetectService.findInCurrentDate(anyString);
                 times = 1;
-                terminalDetectionDAO.save((TerminalDetectionEntity) any);
+                terminalDetectService.delete((UUID) any);
+                times = 1;
+                terminalDetectService.save(anyString);
                 times = 1;
             }
         };
@@ -586,7 +620,7 @@ public class TerminalOperatorServiceImplTest {
      * @throws BusinessException 异常
      */
     @Test
-    public void testChangePassword(@Mocked AesUtil aesUtil) throws BusinessException {
+    public void testChangePassword(@Mocked AesUtil aesUtil) throws BusinessException, IOException, InterruptedException {
         String password = "123";
         String encryptPwd = "yyy123";
         List<String> onlineTerminalIdList = new ArrayList<>();
@@ -621,7 +655,7 @@ public class TerminalOperatorServiceImplTest {
                 times = 1;
                 sessionManager.getRequestMessageSender(anyString);
                 times = 1;
-                sender.request((Message) any);
+                sender.syncRequest((Message) any);
                 times = 1;
             }
         };

@@ -1,8 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
+import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,8 +124,9 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             ChangeTerminalPasswordRequest request = new ChangeTerminalPasswordRequest(password);
             try {
                 operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD, request);
-            } catch (BusinessException e) {
-                LOGGER.error("send new password to terminal failed, terminalId[{}], password[{}]", terminalId, password);
+            } catch (Exception e) {
+                LOGGER.error("send new password to terminal failed, terminalId[" + terminalId + "], password["
+                        + password + "]", e);
             }
         }
     }
@@ -159,43 +164,63 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         Assert.hasText(terminalId, "terminalId不能为空");
         checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_DETECT);
 
-        // 当天是否含有该终端检测记录，若有且检测已完成，重新开始检测，正在检测则忽略
+        // 当天是否含有该终端检测记录，若有且检测已完成，重新开始检测，正在检测则提示正在检测中
         TerminalDetectionEntity detection = terminalDetectService.findInCurrentDate(terminalId);
         if (detection == null) {
-            detection = terminalDetectService.save(terminalId);
-            sendDetectRequest(detection);
+            terminalDetectService.save(terminalId);
             return;
         }
 
-        if (detection.getDetectState() == DetectStateEnums.CHECKING) {
+        if (detection.getDetectState() == DetectStateEnums.CHECKING
+                || detection.getDetectState() == DetectStateEnums.WAIT) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_DETECT_IS_DOING);
         }
 
         // 删除原记录，重新添加检测记录
         terminalDetectService.delete(detection.getId());
-        detection = terminalDetectService.save(terminalId);
-        sendDetectRequest(detection);
+        terminalDetectService.save(terminalId);
     }
 
-    private void sendDetectRequest(TerminalDetectionEntity detection) throws BusinessException {
+    @Override
+    public void sendDetectRequest(TerminalDetectionEntity detection) throws BusinessException {
+        Assert.notNull(detection, "detect entity can not be null");
         String terminalId = detection.getTerminalId();
-        LOGGER.debug("send detect request, terminalId[{}]", terminalId);
+        Assert.hasText(terminalId, "terminalId can not be empty");
+
+        LOGGER.debug("向终端{}发送检测指令", terminalId);
         try {
             operateTerminal(terminalId, SendTerminalEventEnums.DETECT_TERMINAL, "");
+            //  发送成功后更新记录开始检测时间及状态
+            updateDetectState(detection.getId(), DetectStateEnums.CHECKING);
         } catch (BusinessException e) {
+            LOGGER.error("向终端" + terminalId + "发送检测指令失败", e);
             // 发送消息异常，将检测记录设置为失败
-            detection.setDetectState(DetectStateEnums.ERROR);
-            terminalDetectionDAO.save(detection);
+            updateDetectState(detection.getId(), DetectStateEnums.ERROR);
+            throw e;
         }
     }
 
-    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data) throws BusinessException {
+    private void updateDetectState(UUID id, DetectStateEnums state) {
+        TerminalDetectionEntity updateEntity = terminalDetectionDAO.getOne(id);
+        updateEntity.setDetectTime(new Date());
+        updateEntity.setDetectState(state);
+        terminalDetectionDAO.save(updateEntity);
+    }
+
+    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data)
+            throws BusinessException {
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
         Message message = new Message(Constants.SYSTEM_TYPE, terminalEvent.getName(), data);
-        sender.request(message);
+        try {
+            sender.syncRequest(message);
+        } catch (Exception e) {
+            LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
+                    new String[] {terminalId});
+        }
     }
 
     private void checkAllowOperate(String terminalId, String businessKey) throws BusinessException {

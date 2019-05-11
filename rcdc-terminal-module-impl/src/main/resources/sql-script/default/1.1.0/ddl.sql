@@ -1,6 +1,7 @@
 /** 修改终端检测时延数据类型 */
 ALTER TABLE t_cbb_terminal_detection ALTER COLUMN network_delay TYPE numeric(24,2);
 
+/** 修改可刷机终端视图 */
 DROP VIEW IF EXISTS v_cbb_upgradeable_terminal;
 
 CREATE VIEW v_cbb_upgradeable_terminal
@@ -47,3 +48,6 @@ CREATE VIEW v_cbb_upgradeable_terminal
                        FROM t_cbb_sys_upgrade
                       WHERE ((t_cbb_sys_upgrade.state)::text = 'UPGRADING'::text))))))
       ORDER BY sut_suc.last_upgrade_time NULLS FIRST;
+
+/** 新增终端检测记录创建时间 */
+ALTER TABLE t_cbb_terminal_detection ADD column create_time timestamp(6);

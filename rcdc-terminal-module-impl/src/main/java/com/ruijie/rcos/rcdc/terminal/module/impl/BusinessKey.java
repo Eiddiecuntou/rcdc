@@ -70,20 +70,11 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL = "rcdc_terminal_system_upgrade_upload_file_fail";
 
-    /**
-     * 上传系统升级文件完整性校验失败
-     */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_COMPLETE_CHECK_FAIL = "rcdc_terminal_system_upgrade_upload_file_complete_check_fail";
 
     /**
      * 系统指令执行失败
      */
     String RCDC_SYSTEM_CMD_EXECUTE_FAIL = "rcdc_system_cmd_execute_fail";
-
-    /**
-     * 上传系统升级文件不正确
-     */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_INCORRECT = "rcdc_terminal_system_upgrade_upload_file_incorrect";
 
     /**
      * 系统升级包正在上传中
@@ -97,24 +88,10 @@ public interface BusinessKey {
 
 
     /**
-     * 系统升级包已存在
-     */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_HAS_EXIST = "rcdc_terminal_system_upgrade_package_has_exist";
-
-    /**
-     * 系统升级包路径不存在
-     */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_PATH_NOT_EXIST = "rcdc_terminal_system_upgrade_package_path_not_exist";
-
-    /**
      * 系统升级包版本文件不正确
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT = "rcdc_terminal_system_upgrade_package_version_file_incorrect";
 
-    /**
-     * 系统刷机包路径不存在
-     */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_OPERATE_FAIL = "rcdc_terminal_system_upgrade_package_file_operate_fail";
 
     /**
      * 系统刷机包磁盘空间不足
@@ -192,11 +169,6 @@ public interface BusinessKey {
     String RCDC_FILE_OPERATE_FAIL = "rcdc_file_operate_fail";
 
     /**
-     * 收集终端日志记录不存在
-     */
-    String RCDC_TERMINAL_COLLECT_LOG_CACHE_NOT_EXIST = "rcdc_terminal_collect_log_cache_not_exist";
-
-    /**
      * 终端检测超时处理定时任务
      */
     String RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG = "rcdc_terminal_quartz_clean_terminal_collect_log";
@@ -222,6 +194,16 @@ public interface BusinessKey {
     String RCDC_TERMINAL_QUARTZ_DETECT_TIME_OUT = "rcdc_terminal_quartz_detect_time_out";
 
     /**
+     * 终端检测超时处理定时任务
+     */
+    String RCDC_TERMINAL_QUARTZ_SEND_DETECT_COMMAND = "rcdc_terminal_quartz_send_detect_command";
+
+    /**
+     * 终端检测状态-等待中
+     */
+    String RCDC_TERMINAL_DETECT_STATE_WAIT = "rcdc_terminal_detect_state_wait";
+
+    /**
      * 终端检测状态-检测中
      */
     String RCDC_TERMINAL_DETECT_STATE_CHECKING = "rcdc_terminal_detect_state_checking";
@@ -241,9 +223,24 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_DETECT_IS_DOING = "rcdc_terminal_detect_is_doing";
 
-    String RCDC_TERMINAL_SUCCESS_CONNECT_LOG = "rcdc_terminal_success_connect_log";
+    /**
+     * 终端操作指令发送失败
+     */
+    String RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL = "rcdc_terminal_operate_msg_send_fail";
 
-    String RCDC_TERMINAL_CONNECT_CLOSE_LOG = "rcdc_terminal_connect_close_log";
+    /**
+     * 终端检测指令发送定时任务成功系统日志
+     */
+    String RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_SUCCESS_SYSTEM_LOG = "rcdc_terminal_detect_command_send_quartz_success_system_log";
 
+    /**
+     * 终端检测指令发送定时任务失败系统日志
+     */
+    String RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_FAIL_SYSTEM_LOG = "rcdc_terminal_detect_command_send_quartz_fail_system_log";
+
+    /**
+     *  发送终端检测指令失败
+     */
+    String RCDC_TERMINAL_SEND_DETECT_COMMAND_FAIL = "rcdc_terminal_send_detect_command_fail";
 
 }
