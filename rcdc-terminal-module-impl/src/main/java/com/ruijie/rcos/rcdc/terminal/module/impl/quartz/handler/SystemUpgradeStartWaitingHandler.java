@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler;
 
 import java.util.List;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -34,7 +36,7 @@ public class SystemUpgradeStartWaitingHandler {
     /**
      * 最大同时刷机数
      */
-    private static final int UPGRADING_MAX_NUM = 50;
+    private static final int UPGRADING_MAX_NUM = 60;
 
     @Autowired
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
@@ -47,6 +49,9 @@ public class SystemUpgradeStartWaitingHandler {
 
     @Autowired
     private TerminalSystemUpgradePackageService systemUpgradePackageService;
+
+    @Autowired
+    private UpgradeTerminalLockManager lockManager;
 
     /**
      * 执行处理开始等待中的刷机终端
@@ -98,26 +103,44 @@ public class SystemUpgradeStartWaitingHandler {
             return false;
         }
 
-        if (upgradeTerminal.getState() != CbbSystemUpgradeStateEnums.WAIT) {
+        String terminalId = upgradeTerminal.getTerminalId();
+        boolean isSuccess;
+        try {
+            lockManager.getAndCreateLock(terminalId).lock();
+            isSuccess = checkAndStartUpgrade(upgradeTerminal, upgradeMsg);
+        } finally {
+            lockManager.getAndCreateLock(terminalId).unlock();
+        }
+
+        return isSuccess;
+    }
+
+    private boolean checkAndStartUpgrade(TerminalSystemUpgradeTerminalEntity upgradeTerminal,
+            TerminalSystemUpgradeMsg upgradeMsg) throws BusinessException {
+        // 重新获取终端信息，同步可能的并发操作产生的状态变更
+        TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
+                systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeTerminal.getSysUpgradeId(),
+                        upgradeTerminal.getTerminalId());
+        if (upgradeTerminalEntity.getState() != CbbSystemUpgradeStateEnums.WAIT) {
             return false;
         }
 
         // 下发系统刷机指令
-        String terminalId = upgradeTerminal.getTerminalId();
+        String terminalId = upgradeTerminalEntity.getTerminalId();
         try {
             LOGGER.info("开始向终端[{}]发送刷机指令: {}", terminalId, upgradeMsg.toString());
             systemUpgradeService.systemUpgrade(terminalId, upgradeMsg);
             LOGGER.info("向终端[{}]发送刷机指令成功", terminalId);
         } catch (TerminalOffLineException te) {
             LOGGER.info("终端[ " + terminalId + "]离线", te);
-            setTerminalUpgradeFail(upgradeTerminal);
+            setTerminalUpgradeFail(upgradeTerminalEntity);
             return true;
         } catch (BusinessException e) {
             LOGGER.info("向终端[ " + terminalId + "]发送刷机指令失败", e);
             return false;
         }
 
-        modifyTerminalUpgrading(upgradeTerminal);
+        modifyTerminalUpgrading(upgradeTerminalEntity);
         return true;
     }
 

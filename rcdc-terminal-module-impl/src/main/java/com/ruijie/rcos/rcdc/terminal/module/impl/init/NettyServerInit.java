@@ -1,6 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import java.util.List;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -40,6 +44,9 @@ public class NettyServerInit implements SafetySingletonInitializer {
     @Autowired
     private ConnectEventHandler connectEventHandler;
 
+    @Autowired
+    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
+
     @Override
     public void safeInit() {
         // 初始化终端状态
@@ -66,6 +73,14 @@ public class NettyServerInit implements SafetySingletonInitializer {
             return;
         }
         LOGGER.warn("存在异常关机导致终端状态不一致的情况，总共有{}台终端状态需要初始化", terminalList.size());
-        terminalList.forEach(item -> terminalBasicInfoService.modifyTerminalStateToOffline(item.getTerminalId()));
+        terminalList.forEach(item -> dealTerminalOffline(item));
+
+    }
+
+    private void dealTerminalOffline(TerminalEntity item) {
+        String terminalId = item.getTerminalId();
+        terminalBasicInfoService.modifyTerminalStateToOffline(terminalId);
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.OFFLINE, terminalId);
+        terminalEventNoticeSPI.notify(noticeRequest);
     }
 }

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -51,6 +52,14 @@ public interface TerminalOperatorService {
      * @throws BusinessException 业务异常
      */
     void detect(String terminalId) throws BusinessException;
+
+    /**
+     * 发送终端检测命令
+     *
+     * @param detection 检测记录对象
+     * @throws BusinessException 业务异常
+     */
+    void sendDetectRequest(TerminalDetectionEntity detection) throws BusinessException;
 
     /**
      * 批量终端检测

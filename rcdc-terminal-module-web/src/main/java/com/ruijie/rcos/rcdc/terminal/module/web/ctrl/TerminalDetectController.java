@@ -6,7 +6,6 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import com.ruijie.rcos.rcdc.terminal.module.web.ctrl.request.TerminalDetectPageWebRequest;
-import com.ruijie.rcos.sk.webmvc.api.vo.IdLabelEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -35,9 +34,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.validation.EnableCustomValidate;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.webmvc.api.optlog.ProgrammaticOptLogRecorder;
-import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
-import com.ruijie.rcos.sk.webmvc.api.vo.ExactMatch;
 
 /**
  * Description: 终端检测
@@ -56,47 +53,34 @@ public class TerminalDetectController {
     private CbbTerminalOperatorAPI operatorAPI;
 
     /**
-     * 批量开启终端检测
+     * 发起终端检测
      *
      * @param request 请求参数
      * @param optLogRecorder 日志记录对象
-     * @param builder 批量任务处理对象
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
     @RequestMapping(value = "start")
-    public DefaultWebResponse startDetect(StartBatDetectWebRequest request, ProgrammaticOptLogRecorder optLogRecorder, BatchTaskBuilder builder)
-            throws BusinessException {
+    public DefaultWebResponse startDetect(StartBatDetectWebRequest request, ProgrammaticOptLogRecorder optLogRecorder) {
         Assert.notNull(request, "request can not be null");
         Assert.notNull(optLogRecorder, "optLogRecorder can not be null");
-        Assert.notNull(builder, "builder can not be null");
 
         String[] terminalIdArr = request.getIdArr();
 
-        if (terminalIdArr.length == 1) {
-            return startSingleDetect(terminalIdArr[0], optLogRecorder);
-        } else {
-            Map<UUID, String> idMap = TerminalIdMappingUtils.mapping(terminalIdArr);
-            UUID[] idArr = TerminalIdMappingUtils.extractUUID(idMap);
-            final Iterator<DefaultBatchTaskItem> iterator = Stream.of(idArr).map(
-                id -> DefaultBatchTaskItem.builder().itemId(id).itemName(BusinessKey.RCDC_TERMINAL_DETECT_ITEM_NAME, new String[] {}).build())
-                    .iterator();
-            StartDetectBatchtaskHandler handler = new StartDetectBatchtaskHandler(idMap, operatorAPI, iterator, optLogRecorder);
-            BatchTaskSubmitResult result = builder.setTaskName(BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_NAME)
-                    .setTaskDesc(BusinessKey.RCDC_TERMINAL_DETECT_BATCH_TASK_DESC).registerHandler(handler).start();
-            return DefaultWebResponse.Builder.success(result);
+        for (String terminalId : terminalIdArr) {
+            startSingleDetect(terminalId, optLogRecorder);
         }
+
+        return DefaultWebResponse.Builder.success();
     }
 
-    private DefaultWebResponse startSingleDetect(String terminalId, ProgrammaticOptLogRecorder optLogRecorder) {
+    private void startSingleDetect(String terminalId, ProgrammaticOptLogRecorder optLogRecorder) {
         try {
             CbbTerminalDetectRequest detectReq = new CbbTerminalDetectRequest(terminalId);
             operatorAPI.detect(detectReq);
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_SUCCESS_LOG, terminalId);
-            return DefaultWebResponse.Builder.success(BusinessKey.RCDC_TERMINAL_DETECT_SEND_SUCCESS, new String[] {});
         } catch (BusinessException ex) {
             optLogRecorder.saveOptLog(BusinessKey.RCDC_TERMINAL_START_DETECT_FAIL_LOG, terminalId, ex.getI18nMessage());
-            return DefaultWebResponse.Builder.fail(BusinessKey.RCDC_TERMINAL_DETECT_SEND_FAIL, new String[] {ex.getI18nMessage()});
         }
     }
 

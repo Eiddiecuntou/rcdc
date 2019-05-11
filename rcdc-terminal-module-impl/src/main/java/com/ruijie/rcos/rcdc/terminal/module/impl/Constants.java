@@ -49,6 +49,8 @@ public interface Constants {
      */
     double TERMINAL_DETECT_PACKET_LOSS_RATE = 0.1;
 
+    int TERMINAL_DETECT_ABNORMAL_COMMON_CODE = -1;
+
     /** 终端管理员密码全局参数表key */
     String RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY = "terminal_pwd";
 

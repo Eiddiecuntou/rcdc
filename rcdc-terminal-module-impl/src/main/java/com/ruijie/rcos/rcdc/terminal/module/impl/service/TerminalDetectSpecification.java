@@ -18,7 +18,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
  * Description: 终端检测查询构造条件
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2018年12月28日
+ * Create Time: 2018年1月28日
  * 
  * @author nt
  */
@@ -44,8 +44,8 @@ public class TerminalDetectSpecification implements Specification<TerminalDetect
         Assert.notNull(criteriaBuilder, "criteriaBuilder can not be null");
 
         Predicate predicate = null;
-        if (startTime != null || endTime != null) {
-            predicate = criteriaBuilder.between(root.get("detectTime"), startTime, endTime);
+        if (startTime != null && endTime != null) {
+            predicate = criteriaBuilder.between(root.get("createTime"), startTime, endTime);
         }
         return predicate;
     }

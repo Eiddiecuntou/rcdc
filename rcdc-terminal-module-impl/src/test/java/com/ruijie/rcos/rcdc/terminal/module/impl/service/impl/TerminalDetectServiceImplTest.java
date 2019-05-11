@@ -13,10 +13,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectItemStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectSpecification;
@@ -208,7 +206,7 @@ public class TerminalDetectServiceImplTest {
                 detectionDAO.save(entity = withCapture());
                 times = 1;
                 assertEquals(terminalId, entity.getTerminalId());
-                assertEquals(DetectStateEnums.CHECKING, entity.getDetectState());
+                assertEquals(DetectStateEnums.WAIT, entity.getDetectState());
             }
         };
     }
@@ -258,7 +256,7 @@ public class TerminalDetectServiceImplTest {
         String terminalId = "123";
         new Expectations() {
             {
-                detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, (Date) any, (Date) any);
+                detectionDAO.findByTerminalIdAndCreateTimeBetween(terminalId, (Date) any, (Date) any);
                 result = Collections.emptyList();
             }
         };
@@ -277,7 +275,7 @@ public class TerminalDetectServiceImplTest {
         detectionList.add(new TerminalDetectionEntity());
         new Expectations() {
             {
-                detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, (Date) any, (Date) any);
+                detectionDAO.findByTerminalIdAndCreateTimeBetween(terminalId, (Date) any, (Date) any);
                 result = detectionList;
             }
         };
@@ -342,30 +340,17 @@ public class TerminalDetectServiceImplTest {
         detectList.add(detectionEntity);
         new Expectations() {
             {
-                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date) any, (Date) any);
-                result = 1;
-                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date) any, (Date) any);
-                result = 25;
-                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date) any, (Date) any);
-                result = 1;
-                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date) any,
-                        (Date) any);
-                result = 30;
-                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date) any, (Date) any);
-                result = 23;
-                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date) any, (Date) any);
-                result = 2;
-                detectionDAO.findByDetectTimeBetween((Date) any, (Date) any);
+                detectionDAO.findByCreateTimeBetween((Date) any, (Date) any);
                 result = detectList;
             }
         };
         CbbTerminalDetectResultDTO result = detectService.getDetectResult(CbbDetectDateEnums.TODAY);
-        assertEquals(1, result.getAccessInternet());
-        assertEquals(25, result.getBandwidth());
-        assertEquals(1, result.getIpConflict());
-        assertEquals(30, result.getPacketLossRate());
-        assertEquals(23, result.getDelay());
-        assertEquals(2, result.getChecking());
+        assertEquals(0, result.getAccessInternet());
+        assertEquals(0, result.getBandwidth());
+        assertEquals(0, result.getIpConflict());
+        assertEquals(0, result.getPacketLossRate());
+        assertEquals(0, result.getDelay());
+        assertEquals(0, result.getChecking());
         assertEquals(0, result.getAll());
     }
 
@@ -379,69 +364,17 @@ public class TerminalDetectServiceImplTest {
 
         new Expectations() {
             {
-                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date) any, (Date) any);
-                result = 1;
-                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date) any, (Date) any);
-                result = 25;
-                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date) any, (Date) any);
-                result = 1;
-                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date) any,
-                        (Date) any);
-                result = 30;
-                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date) any, (Date) any);
-                result = 23;
-                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date) any, (Date) any);
-                result = 2;
-                detectionDAO.findByDetectTimeBetween((Date) any, (Date) any);
+                detectionDAO.findByCreateTimeBetween((Date) any, (Date) any);
                 result = detectList;
             }
         };
         CbbTerminalDetectResultDTO result = detectService.getDetectResult(CbbDetectDateEnums.TODAY);
-        assertEquals(1, result.getAccessInternet());
-        assertEquals(25, result.getBandwidth());
-        assertEquals(1, result.getIpConflict());
-        assertEquals(30, result.getPacketLossRate());
-        assertEquals(23, result.getDelay());
-        assertEquals(2, result.getChecking());
-        assertEquals(0, result.getAll());
-    }
-
-    /**
-     * 测试getDetectResult,Yesterday
-     */
-    @Test
-    public void testGetDetectResultYesterday() {
-        List<TerminalDetectionEntity> detectList = new ArrayList<>();
-        TerminalDetectionEntity detectionEntity = new TerminalDetectionEntity();
-        detectionEntity.setDetectState(DetectStateEnums.CHECKING);
-
-        detectList.add(detectionEntity);
-        new Expectations() {
-            {
-                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date) any, (Date) any);
-                result = 1;
-                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date) any, (Date) any);
-                result = 25;
-                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date) any, (Date) any);
-                result = 1;
-                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date) any,
-                        (Date) any);
-                result = 30;
-                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date) any, (Date) any);
-                result = 23;
-                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date) any, (Date) any);
-                result = 2;
-                detectionDAO.findByDetectTimeBetween((Date) any, (Date) any);
-                result = detectList;
-            }
-        };
-        CbbTerminalDetectResultDTO result = detectService.getDetectResult(CbbDetectDateEnums.YESTERDAY);
-        assertEquals(1, result.getAccessInternet());
-        assertEquals(25, result.getBandwidth());
-        assertEquals(1, result.getIpConflict());
-        assertEquals(30, result.getPacketLossRate());
-        assertEquals(23, result.getDelay());
-        assertEquals(2, result.getChecking());
+        assertEquals(0, result.getAccessInternet());
+        assertEquals(0, result.getBandwidth());
+        assertEquals(0, result.getIpConflict());
+        assertEquals(0, result.getPacketLossRate());
+        assertEquals(0, result.getDelay());
+        assertEquals(0, result.getChecking());
         assertEquals(0, result.getAll());
     }
 
@@ -475,7 +408,7 @@ public class TerminalDetectServiceImplTest {
         detectionEntity3.setBandwidth(50.0);
         detectionEntity3.setPacketLossRate(11.0);
         detectionEntity3.setIpConflict(0);
-        detectionEntity3.setNetworkDelay(60.0);
+        detectionEntity3.setNetworkDelay(10.0);
 
         // 时延异常
         TerminalDetectionEntity detectionEntity4 = new TerminalDetectionEntity();
@@ -484,7 +417,7 @@ public class TerminalDetectServiceImplTest {
         detectionEntity4.setBandwidth(50.0);
         detectionEntity4.setPacketLossRate(0.0);
         detectionEntity4.setIpConflict(0);
-        detectionEntity4.setNetworkDelay(60.0);
+        detectionEntity4.setNetworkDelay(20.0);
 
         detectList.add(detectionEntity);
         detectList.add(detectionEntity1);
@@ -493,30 +426,17 @@ public class TerminalDetectServiceImplTest {
         detectList.add(detectionEntity4);
         new Expectations() {
             {
-                detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), (Date) any, (Date) any);
-                result = 1;
-                detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, (Date) any, (Date) any);
-                result = 25;
-                detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), (Date) any, (Date) any);
-                result = 1;
-                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, (Date) any,
-                        (Date) any);
-                result = 30;
-                detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, (Date) any, (Date) any);
-                result = 23;
-                detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, (Date) any, (Date) any);
-                result = 2;
-                detectionDAO.findByDetectTimeBetween((Date) any, (Date) any);
+                detectionDAO.findByCreateTimeBetween((Date) any, (Date) any);
                 result = detectList;
             }
         };
         CbbTerminalDetectResultDTO result = detectService.getDetectResult(CbbDetectDateEnums.YESTERDAY);
-        assertEquals(1, result.getAccessInternet());
-        assertEquals(25, result.getBandwidth());
+        assertEquals(3, result.getAccessInternet());
+        assertEquals(2, result.getBandwidth());
         assertEquals(1, result.getIpConflict());
-        assertEquals(30, result.getPacketLossRate());
-        assertEquals(23, result.getDelay());
-        assertEquals(2, result.getChecking());
+        assertEquals(4, result.getPacketLossRate());
+        assertEquals(4, result.getDelay());
+        assertEquals(0, result.getChecking());
         assertEquals(5, result.getAll());
     }
 

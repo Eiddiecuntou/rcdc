@@ -72,6 +72,8 @@ public class TerminalDetectionEntity {
      */
     private String detectFailMsg;
 
+    private Date createTime;
+
     @Version
     private Integer version;
 
@@ -192,4 +194,11 @@ public class TerminalDetectionEntity {
         return version;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 }

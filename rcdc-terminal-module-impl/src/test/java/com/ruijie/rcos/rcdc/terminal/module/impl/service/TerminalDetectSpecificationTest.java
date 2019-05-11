@@ -85,7 +85,7 @@ public class TerminalDetectSpecificationTest {
 
         new Expectations() {
             {
-                criteriaBuilder.between(root.get("detectTime"), (Date) any, (Date) any);
+                criteriaBuilder.between(root.get("createTime"), (Date) any, (Date) any);
                 result = predicate;
             }
         };

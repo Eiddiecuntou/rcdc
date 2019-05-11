@@ -61,11 +61,9 @@ public class TerminalDetectControllerTest {
      */
     @Test
     public void testStartDetectArgumentIsNull(@Mocked ProgrammaticOptLogRecorder optLogRecorder, @Mocked BatchTaskBuilder builder) throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.startDetect(null, optLogRecorder, builder), "request can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.startDetect(new StartBatDetectWebRequest(), null, builder),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.startDetect(null, optLogRecorder), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.startDetect(new StartBatDetectWebRequest(), null),
                 "optLogRecorder can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> controller.startDetect(new StartBatDetectWebRequest(), optLogRecorder, null),
-                "builder can not be null");
         assertTrue(true);
     }
 
@@ -82,16 +80,7 @@ public class TerminalDetectControllerTest {
             @Mocked TerminalIdMappingUtils utils) throws BusinessException {
         StartBatDetectWebRequest request = new StartBatDetectWebRequest();
         request.setIdArr(new String[] {"1111", "2222"});
-        UUID[] uuidArr = new UUID[2];
-        uuidArr[0] = UUID.randomUUID();
-        uuidArr[1] = UUID.randomUUID();
-        new Expectations() {
-            {
-                TerminalIdMappingUtils.extractUUID((Map<UUID, String>) any);
-                result = uuidArr;
-            }
-        };
-        DefaultWebResponse response = controller.startDetect(request, optLogRecorder, builder);
+        DefaultWebResponse response = controller.startDetect(request, optLogRecorder);
         assertEquals(Status.SUCCESS, response.getStatus());
     }
 
