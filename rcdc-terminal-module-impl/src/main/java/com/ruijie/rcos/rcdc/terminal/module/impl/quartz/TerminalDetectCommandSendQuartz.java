@@ -50,24 +50,22 @@ public class TerminalDetectCommandSendQuartz implements QuartzTask {
     @Override
     public void execute() throws Exception {
         LOGGER.info("开始发送终端检测指令...");
-        List<TerminalDetectionEntity> detectList = detectionDAO.findByDetectState(DetectStateEnums.WAIT);
-        if (CollectionUtils.isEmpty(detectList)) {
-            LOGGER.info("没有处于等待状态的终端检测记录，不进行指令发送");
-            return;
-        }
-
         // 每次定时任务只发送一条检测指令，若成功则返回，失败则发送下一条
-        for (TerminalDetectionEntity detectionEntity : detectList) {
-            Stopwatch stopwatch = Stopwatch.createStarted();
-            boolean isSuccess = sendDetectCommand(detectionEntity, stopwatch);
-            if (isSuccess) {
-                return;
-            }
+        boolean isSuccess = sendDetectCommand();
+        while (!isSuccess) {
+            isSuccess = sendDetectCommand();
         }
-
+        LOGGER.info("完成发送终端检测指令");
     }
 
-    private boolean sendDetectCommand(TerminalDetectionEntity detectionEntity, Stopwatch stopwatch) {
+    private boolean sendDetectCommand() {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        TerminalDetectionEntity detectionEntity = detectionDAO.findFirstByDetectStateOrderByCreateTime(DetectStateEnums.WAIT);
+        if (detectionEntity == null) {
+            LOGGER.info("没有处于等待状态的终端检测记录，不进行指令发送");
+            return true;
+        }
+
         try {
             operatorService.sendDetectRequest(detectionEntity);
             addSuccessSystemLog(detectionEntity, stopwatch);

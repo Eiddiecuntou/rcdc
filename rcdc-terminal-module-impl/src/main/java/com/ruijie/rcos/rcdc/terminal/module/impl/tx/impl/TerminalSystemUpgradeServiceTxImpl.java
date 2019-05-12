@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -40,6 +43,9 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
+
+    @Autowired
+    private TerminalBasicInfoDAO basicInfoDAO;
 
     @Override
     public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr) {
@@ -209,11 +215,17 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
             return;
         }
 
-        boolean isTerminalOnline = basicInfoService.isTerminalOnline(upgradeTerminal.getTerminalId());
+        String terminalId = upgradeTerminal.getTerminalId();
+        boolean isTerminalOnline = basicInfoService.isTerminalOnline(terminalId);
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (terminalState == CbbTerminalStateEnums.OFFLINE && isTerminalOnline) {
-            return;
+            // 终端在线，则判断终端数据库状态是否为升级中，是则更新为在线
+            if (terminalEntity.getState() != CbbTerminalStateEnums.UPGRADING) {
+                return;
+            }
+            terminalState = CbbTerminalStateEnums.ONLINE;
         }
-        basicInfoService.modifyTerminalState(upgradeTerminal.getTerminalId(), terminalState);
+        basicInfoService.modifyTerminalState(terminalId, terminalState);
     }
 
     private TerminalSystemUpgradeTerminalEntity getUpgradeTerminalEntity(UUID upgradeTaskId, String terminalId) throws BusinessException {

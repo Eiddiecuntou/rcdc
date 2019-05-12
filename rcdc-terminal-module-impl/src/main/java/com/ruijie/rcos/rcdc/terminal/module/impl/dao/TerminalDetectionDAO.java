@@ -146,10 +146,10 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
     List<TerminalDetectionEntity> findByCreateTimeBetween(Date startDt, Date endDt);
 
     /**
-     * 根据终端检测记录状态获取列表
+     * 根据状态查询第一个检测记录
      *
      * @param state 检测记录状态
-     * @return 检测记录列表
+     * @return 检测记录
      */
-    List<TerminalDetectionEntity> findByDetectState(DetectStateEnums state);
+    TerminalDetectionEntity findFirstByDetectStateOrderByCreateTime(DetectStateEnums state);
 }

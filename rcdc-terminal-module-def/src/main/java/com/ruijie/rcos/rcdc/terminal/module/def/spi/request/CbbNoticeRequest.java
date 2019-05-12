@@ -23,6 +23,9 @@ public class CbbNoticeRequest implements Request {
     @Nullable
     private String terminalId;
 
+    public CbbNoticeRequest() {
+    }
+
     public CbbNoticeRequest(NoticeEventEnums noticeEvent, String terminalId) {
         this.dispatcherKey = noticeEvent.getName();
         this.terminalId = terminalId;
