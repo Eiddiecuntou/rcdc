@@ -167,8 +167,9 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         int delay = 0;
         int totalAbnormalNum = 0;
         int checking = 0;
-        boolean isDetectAbnormal = false;
+        boolean isDetectAbnormal;
         for (TerminalDetectionEntity detectEntity : detectList) {
+            isDetectAbnormal = false;
             DetectStateEnums detectState = detectEntity.getDetectState();
             if (detectState == DetectStateEnums.CHECKING || detectState == DetectStateEnums.WAIT) {
                 // 检测中的记录不统计异常数量

@@ -1,10 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
+import org.springframework.stereotype.Service;
 
 import com.google.common.base.Stopwatch;
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
@@ -14,13 +13,12 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.sk.base.concorrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.base.quartz.Quartz;
-import com.ruijie.rcos.sk.base.quartz.QuartzTask;
-import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
+import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 
 /**
  * 
@@ -31,9 +29,8 @@ import com.ruijie.rcos.sk.modulekit.api.isolation.GlobalUniqueBean;
  * 
  * @author nt
  */
-@GlobalUniqueBean("detectCommandSendQuartz")
-@Quartz(cron = "0/12 * * * * ?", msgKey = BusinessKey.RCDC_TERMINAL_QUARTZ_SEND_DETECT_COMMAND)
-public class TerminalDetectCommandSendQuartz implements QuartzTask {
+@Service
+public class TerminalDetectCommandSendQuartz implements SafetySingletonInitializer, Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectCommandSendQuartz.class);
 
@@ -46,9 +43,13 @@ public class TerminalDetectCommandSendQuartz implements QuartzTask {
     @Autowired
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
+    @Override
+    public void safeInit() {
+        ThreadExecutors.runWithFixRate(this, TimeUnit.SECONDS.toMillis(12));
+    }
 
     @Override
-    public void execute() throws Exception {
+    public void run() {
         LOGGER.info("开始发送终端检测指令...");
         // 每次定时任务只发送一条检测指令，若成功则返回，失败则发送下一条
         boolean isSuccess = sendDetectCommand();
@@ -60,7 +61,8 @@ public class TerminalDetectCommandSendQuartz implements QuartzTask {
 
     private boolean sendDetectCommand() {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        TerminalDetectionEntity detectionEntity = detectionDAO.findFirstByDetectStateOrderByCreateTime(DetectStateEnums.WAIT);
+        TerminalDetectionEntity detectionEntity =
+                detectionDAO.findFirstByDetectStateOrderByCreateTime(DetectStateEnums.WAIT);
         if (detectionEntity == null) {
             LOGGER.info("没有处于等待状态的终端检测记录，不进行指令发送");
             return true;
