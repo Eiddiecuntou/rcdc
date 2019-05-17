@@ -13,6 +13,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
  */
 public enum DetectStateEnums {
 
+    WAIT(BusinessKey.RCDC_TERMINAL_DETECT_STATE_WAIT),
+
     CHECKING(BusinessKey.RCDC_TERMINAL_DETECT_STATE_CHECKING),
 
     SUCCESS(BusinessKey.RCDC_TERMINAL_DETECT_STATE_SUCCESS),

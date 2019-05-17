@@ -105,8 +105,8 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         TerminalDetectionEntity entity = new TerminalDetectionEntity();
         Date now = new Date();
         entity.setTerminalId(terminalId);
-        entity.setDetectTime(now);
-        entity.setDetectState(DetectStateEnums.CHECKING);
+        entity.setCreateTime(now);
+        entity.setDetectState(DetectStateEnums.WAIT);
         detectionDAO.save(entity);
         return entity;
     }
@@ -124,7 +124,7 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         Date now = new Date();
         Date startDt = TerminalDateUtil.getDayStart(now);
         Date endDt = TerminalDateUtil.getDayEnd(now);
-        List<TerminalDetectionEntity> detectionList = detectionDAO.findByTerminalIdAndDetectTimeBetween(terminalId, startDt, endDt);
+        List<TerminalDetectionEntity> detectionList = detectionDAO.findByTerminalIdAndCreateTimeBetween(terminalId, startDt, endDt);
         if (CollectionUtils.isEmpty(detectionList)) {
             // 当天无记录，返回null
             return null;
@@ -137,7 +137,7 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
     public Page<TerminalDetectionEntity> pageQuery(CbbTerminalDetectPageRequest request) {
         Assert.notNull(request, "request can not be null");
 
-        Pageable pageable = PageRequest.of(request.getPage(), request.getLimit(), new Sort(Direction.DESC, "detectTime"));
+        Pageable pageable = PageRequest.of(request.getPage(), request.getLimit(), new Sort(Direction.DESC, "createTime"));
         Specification<TerminalDetectionEntity> spec = new TerminalDetectSpecification(request);
 
         return detectionDAO.findAll(spec, pageable);
@@ -150,19 +150,69 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         Date date = getDetectDate(detectDate);
         Date startDt = TerminalDateUtil.getDayStart(date);
         Date endDt = TerminalDateUtil.getDayEnd(date);
+        List<TerminalDetectionEntity> detectList = detectionDAO.findByCreateTimeBetween(startDt, endDt);
 
-        int ipConflict = detectionDAO.countByIpConflictAndDetectTimeBetween(DetectItemStateEnums.TRUE.getState(), startDt, endDt);
-        int bandwidth = detectionDAO.countByBandwidthLessThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_BINDWIDTH_NORM, startDt, endDt);
-        int accessInternet = detectionDAO.countByAccessInternetAndDetectTimeBetween(DetectItemStateEnums.FALSE.getState(), startDt, endDt);
-        int packetLossRate =
-                detectionDAO.countByPacketLossRateGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE, startDt, endDt);
-        int delay = detectionDAO.countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(Constants.TERMINAL_DETECT_DELAY_NORM, startDt, endDt);
-        int checking = detectionDAO.countByDetectStateAndDetectTimeBetween(DetectStateEnums.CHECKING, startDt, endDt);
+        return buildDetectResultDTO(detectList);
+    }
 
-        List<TerminalDetectionEntity> detectList = detectionDAO.findByDetectTimeBetween(startDt, endDt);
-        int totalAbnormalNum = getAllAbnormalNum(detectList);
+    private CbbTerminalDetectResultDTO buildDetectResultDTO(List<TerminalDetectionEntity> detectList) {
+        if (CollectionUtils.isEmpty(detectList)) {
+            return new CbbTerminalDetectResultDTO();
+        }
 
-        // 构建检测结果dto
+        int ipConflict = 0;
+        int bandwidth = 0;
+        int accessInternet = 0;
+        int packetLossRate = 0;
+        int delay = 0;
+        int totalAbnormalNum = 0;
+        int checking = 0;
+        boolean isDetectAbnormal;
+        for (TerminalDetectionEntity detectEntity : detectList) {
+            isDetectAbnormal = false;
+            DetectStateEnums detectState = detectEntity.getDetectState();
+            if (detectState == DetectStateEnums.CHECKING || detectState == DetectStateEnums.WAIT) {
+                // 检测中的记录不统计异常数量
+                checking++;
+                continue;
+            }
+
+            if (detectState == DetectStateEnums.ERROR) {
+                // 检测失败的记录加入总异常数量统计，不计入具体异常统计
+                totalAbnormalNum++;
+                continue;
+            }
+
+            if (isIpConflict(detectEntity.getIpConflict())) {
+                ipConflict++;
+                isDetectAbnormal = true;
+            }
+
+            if (isBandWidthAbnormal(detectEntity.getBandwidth())) {
+                bandwidth++;
+                isDetectAbnormal = true;
+            }
+
+            if (isAccessInternetAbnormal(detectEntity.getAccessInternet())) {
+                accessInternet++;
+                isDetectAbnormal = true;
+            }
+
+            if (isPackageLossRateAbnormal(detectEntity.getPacketLossRate())) {
+                packetLossRate++;
+                isDetectAbnormal = true;
+            }
+
+            if (isNetworkDelayAbnormal(detectEntity.getNetworkDelay())) {
+                delay++;
+                isDetectAbnormal = true;
+            }
+
+            if (isDetectAbnormal) {
+                totalAbnormalNum++;
+            }
+        }
+
         CbbTerminalDetectResultDTO result = new CbbTerminalDetectResultDTO();
         result.setAccessInternet(accessInternet);
         result.setBandwidth(bandwidth);
@@ -175,78 +225,29 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         return result;
     }
 
-    /**
-     * 获取总异常终端数
-     * 
-     * @param detectList 检测记录列表
-     * @return 总异常数
-     */
-    private int getAllAbnormalNum(List<TerminalDetectionEntity> detectList) {
-        if (CollectionUtils.isEmpty(detectList)) {
-            return 0;
-        }
-
-        int totalNum = 0;
-        for (TerminalDetectionEntity detectEntity : detectList) {
-            if (isDetectAbnormal(detectEntity)) {
-                totalNum++;
-            }
-        }
-        return totalNum;
-    }
-
-    /**
-     * 判断终端检测记录是否异常
-     * 
-     * @param detectEntity 检测记录
-     * @return 检测结果是否异常
-     */
-    private boolean isDetectAbnormal(TerminalDetectionEntity detectEntity) {
-        if (detectEntity.getDetectState() == DetectStateEnums.CHECKING) {
-            return false;
-        }
-        // ip冲突
-        if (isIpConflict(detectEntity.getIpConflict())) {
-            return true;
-        }
-        // 带宽异常
-        if (isBandWidthAbnormal(detectEntity.getBandwidth())) {
-            return true;
-        }
-        // 网络访问异常
-        if (isAccessInternetAbnormal(detectEntity.getAccessInternet())) {
-            return true;
-        }
-        // 丢包率异常
-        if (isPackageLossRateAbnormal(detectEntity.getPacketLossRate())) {
-            return true;
-        }
-        // 时延异常
-        if (isNetworkDelayAbnormal(detectEntity.getNetworkDelay())) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean isNetworkDelayAbnormal(Integer networkDelay) {
-        return networkDelay == null || networkDelay >= Constants.TERMINAL_DETECT_DELAY_NORM;
+    private boolean isNetworkDelayAbnormal(Double networkDelay) {
+        return networkDelay == null || networkDelay == Constants.TERMINAL_DETECT_ABNORMAL_COMMON_CODE
+                || networkDelay >= Constants.TERMINAL_DETECT_DELAY_NORM;
     }
 
     private boolean isPackageLossRateAbnormal(Double packetLossRate) {
-        return packetLossRate == null || packetLossRate >= Constants.TERMINAL_DETECT_PACKET_LOSS_RATE;
+        return packetLossRate == null || packetLossRate == Constants.TERMINAL_DETECT_ABNORMAL_COMMON_CODE
+                || packetLossRate >= Constants.TERMINAL_DETECT_PACKET_LOSS_RATE;
     }
 
     private boolean isAccessInternetAbnormal(Integer accessInternet) {
-        return accessInternet == null || accessInternet == DetectItemStateEnums.FALSE.getState();
+        return accessInternet == null || accessInternet == Constants.TERMINAL_DETECT_ABNORMAL_COMMON_CODE
+                || accessInternet == DetectItemStateEnums.FALSE.getState();
     }
 
     private boolean isBandWidthAbnormal(Double bandwidth) {
-        return bandwidth == null || bandwidth <= Constants.TERMINAL_DETECT_BINDWIDTH_NORM;
+        return bandwidth == null || bandwidth == Constants.TERMINAL_DETECT_ABNORMAL_COMMON_CODE
+                || bandwidth <= Constants.TERMINAL_DETECT_BINDWIDTH_NORM;
     }
 
     private boolean isIpConflict(Integer ipConflict) {
-        return ipConflict == null || ipConflict == DetectItemStateEnums.TRUE.getState();
+        return ipConflict == null || ipConflict == Constants.TERMINAL_DETECT_ABNORMAL_COMMON_CODE
+                || ipConflict == DetectItemStateEnums.TRUE.getState();
     }
 
     @Override

@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
 import java.util.Date;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +55,7 @@ public class TerminalBasicInfoServiceImplTest {
      * 测试修改终端名称成功
      */
     @Test
-    public void testModifyTerminalNameSuccess() {
+    public void testModifyTerminalNameSuccess() throws IOException, InterruptedException {
         new Expectations() {
             {
                 try {
@@ -74,7 +76,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         new Verifications() {
             {
-                sender.request((Message) any);
+                sender.syncRequest((Message) any);
                 times = 1;
             }
         };

@@ -54,7 +54,7 @@ public class TerminalDetectionEntity {
     /**
      * 网络时延
      */
-    private Integer networkDelay;
+    private Double networkDelay;
 
     /**
      * 检测时间
@@ -71,6 +71,8 @@ public class TerminalDetectionEntity {
      * 检测失败原因
      */
     private String detectFailMsg;
+
+    private Date createTime;
 
     @Version
     private Integer version;
@@ -168,11 +170,11 @@ public class TerminalDetectionEntity {
         this.detectTime = detectTime;
     }
 
-    public Integer getNetworkDelay() {
+    public Double getNetworkDelay() {
         return networkDelay;
     }
 
-    public void setNetworkDelay(Integer networkDelay) {
+    public void setNetworkDelay(Double networkDelay) {
         this.networkDelay = networkDelay;
     }
 
@@ -192,4 +194,11 @@ public class TerminalDetectionEntity {
         return version;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 }

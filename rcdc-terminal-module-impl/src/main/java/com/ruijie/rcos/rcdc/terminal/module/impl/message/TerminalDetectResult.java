@@ -39,7 +39,7 @@ public class TerminalDetectResult {
     /**
      * 网络时延
      */
-    private Integer delay;
+    private Double delay;
 
 
     public Integer getIpConflict() {
@@ -82,11 +82,11 @@ public class TerminalDetectResult {
         this.packetLossRate = packetLossRate;
     }
 
-    public Integer getDelay() {
+    public Double getDelay() {
         return delay;
     }
 
-    public void setDelay(Integer delay) {
+    public void setDelay(Double delay) {
         this.delay = delay;
     }
 }

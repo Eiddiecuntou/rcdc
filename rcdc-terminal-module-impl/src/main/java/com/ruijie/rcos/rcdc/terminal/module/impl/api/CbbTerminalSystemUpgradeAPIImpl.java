@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
@@ -114,6 +115,9 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     @Autowired
     private SystemUpgradeFileClearHandler upgradeFileClearHandler;
+
+    @Autowired
+    private UpgradeTerminalLockManager lockManager;
 
     @Override
     public CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException {
@@ -395,18 +399,28 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         final UUID upgradeTaskId = request.getUpgradeTaskId();
         final String terminalId = request.getTerminalId();
-        final TerminalSystemUpgradeTerminalEntity upgradeTerminal = checkUpgradeTerminalExist(upgradeTaskId, terminalId);
 
-        if (upgradeTerminal.getState() != CbbSystemUpgradeStateEnums.WAIT) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_CANCEL, terminalId);
+        try {
+            lockManager.getAndCreateLock(terminalId).lock();
+            checkAndCancelUpgradeTerminal(terminalId, upgradeTaskId);
+        } finally {
+            lockManager.getAndCreateLock(terminalId).unlock();
         }
-
-        upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UNDO);
-        terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
 
         CbbTerminalNameResponse response = new CbbTerminalNameResponse();
         response.setTerminalName(basicInfoDAO.getTerminalNameByTerminalId(terminalId));
         return response;
+    }
+
+    private void checkAndCancelUpgradeTerminal(String terminalId, UUID upgradeTaskId) throws BusinessException {
+        final TerminalSystemUpgradeTerminalEntity upgradeTerminal = checkUpgradeTerminalExist(upgradeTaskId, terminalId);
+        if (upgradeTerminal.getState() != CbbSystemUpgradeStateEnums.WAIT) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_CANCEL,
+                    terminalId);
+        }
+
+        upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UNDO);
+        terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
     }
 
 

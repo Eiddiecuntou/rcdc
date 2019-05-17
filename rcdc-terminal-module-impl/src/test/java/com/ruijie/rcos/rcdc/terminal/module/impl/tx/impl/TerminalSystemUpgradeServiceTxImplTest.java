@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
@@ -48,6 +50,9 @@ public class TerminalSystemUpgradeServiceTxImplTest {
 
     @Injectable
     private TerminalBasicInfoService basicInfoService;
+
+    @Injectable
+    private TerminalBasicInfoDAO basicInfoDAO;
 
     /**
      * 测试addSystemUpgradeTask，参数为空

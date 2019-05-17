@@ -12,6 +12,8 @@ public interface Constants {
 
     int SUCCESS = 0;
 
+    int FAILURE = 99;
+
 
     String SYSTEM_TYPE = "rcdc";
 
@@ -40,12 +42,14 @@ public interface Constants {
     /**
      * 终端检测延时正常标准值，大于等于20ms为异常
      */
-    int TERMINAL_DETECT_DELAY_NORM = 20;
+    double TERMINAL_DETECT_DELAY_NORM = 20;
 
     /**
      * 丢包率正常标准值(该数值是实际比率乘以100的数值)，大于等于0.1时为异常
      */
     double TERMINAL_DETECT_PACKET_LOSS_RATE = 0.1;
+
+    int TERMINAL_DETECT_ABNORMAL_COMMON_CODE = -1;
 
     /** 终端管理员密码全局参数表key */
     String RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY = "terminal_pwd";
@@ -153,5 +157,7 @@ public interface Constants {
      * 刷机镜像刷机文件存放路径
      */
     String ISO_IMG_MOUNT_PATH = "/opt/pxeuser/";
+
+    String CURRENT_VERSION_GLOBAL_PARAM_KEY = "systemVersion";
 
 }

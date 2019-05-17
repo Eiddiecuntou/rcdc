@@ -36,7 +36,7 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
      * @param endDt 结束时间
      * @return 终端检测结果列表
      */
-    List<TerminalDetectionEntity> findByTerminalIdAndDetectTimeBetween(String terminalId, Date startDt, Date endDt);
+    List<TerminalDetectionEntity> findByTerminalIdAndCreateTimeBetween(String terminalId, Date startDt, Date endDt);
 
     /**
      * 获取指定状态的检测记录
@@ -95,7 +95,7 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
      * @param endDt 结束时间
      * @return 统计数量
      */
-    int countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(int delayNorm, Date startDt, Date endDt);
+    int countByNetworkDelayGreaterThanEqualAndDetectTimeBetween(double delayNorm, Date startDt, Date endDt);
 
     /**
      * 统计时间段内对应检测状态的数量
@@ -143,6 +143,13 @@ public interface TerminalDetectionDAO extends SkyEngineJpaRepository<TerminalDet
      * @param endDt 结束时间
      * @return 检测列表
      */
-    List<TerminalDetectionEntity> findByDetectTimeBetween(Date startDt, Date endDt);
+    List<TerminalDetectionEntity> findByCreateTimeBetween(Date startDt, Date endDt);
 
+    /**
+     * 根据状态查询第一个检测记录
+     *
+     * @param state 检测记录状态
+     * @return 检测记录
+     */
+    TerminalDetectionEntity findFirstByDetectStateOrderByCreateTime(DetectStateEnums state);
 }

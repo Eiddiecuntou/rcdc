@@ -2,8 +2,10 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
 import java.util.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
@@ -34,6 +36,7 @@ public class TerminalDetectTimeoutQuartz implements QuartzTask {
     @Autowired
     private TerminalDetectionDAO detectionDAO;
 
+
     @Override
     public void execute() throws Exception {
         LOGGER.debug("start to deal with timeout terminal detection...");
@@ -41,7 +44,8 @@ public class TerminalDetectTimeoutQuartz implements QuartzTask {
         Date now = new Date();
         int timeoutSecond = Constants.TERMINAL_DETECT_TIMEOUT;
         Date date = TerminalDateUtil.addSecond(now, -timeoutSecond);
-        List<TerminalDetectionEntity> timeoutDetectList = detectionDAO.findByDetectStateAndDetectTimeBefore(DetectStateEnums.CHECKING, date);
+        List<TerminalDetectionEntity> timeoutDetectList =
+                detectionDAO.findByDetectStateAndDetectTimeBefore(DetectStateEnums.CHECKING, date);
         if (CollectionUtils.isEmpty(timeoutDetectList)) {
             LOGGER.debug("no timeout detection");
             return;
