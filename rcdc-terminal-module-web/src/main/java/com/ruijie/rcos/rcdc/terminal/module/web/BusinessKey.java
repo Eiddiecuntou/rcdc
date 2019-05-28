@@ -211,9 +211,6 @@ public interface BusinessKey {
     /** 关闭终端升级包[{0}]升级任务失败，失败原因：{1} */
     String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_FAIL_LOG = "rcdc_upgrade_terminal_task_close_fail_log";
 
-
-    String RCDC_UPGRADE_TERMINAL_TASK_CLOSE_FAIL = "rcdc_upgrade_terminal_task_close_fail";
-
     /**
      * 批量删除终端升级包任务项名称
      */
@@ -266,21 +263,6 @@ public interface BusinessKey {
 
 
     /**
-     * 终端检测名称
-     */
-    String RCDC_TERMINAL_DETECT_ITEM_NAME = "rcdc_terminal_detect_item_name";
-
-    /**
-     * 终端检测批量任务名
-     */
-    String RCDC_TERMINAL_DETECT_BATCH_TASK_NAME = "rcdc_terminal_detect_batch_task_name";
-
-    /**
-     * 终端检测批量任务描述
-     */
-    String RCDC_TERMINAL_DETECT_BATCH_TASK_DESC = "rcdc_terminal_detect_batch_task_desc";
-
-    /**
      * 终端检测批量任务结果
      */
     String RCDC_TERMINAL_DETECT_BATCH_TASK_RESULT = "rcdc_terminal_detect_batch_task_result";
@@ -291,24 +273,9 @@ public interface BusinessKey {
     String RCDC_TERMINAL_START_DETECT_SUCCESS_LOG = "rcdc_terminal_start_detect_success_log";
 
     /**
-     * 发送检测命令成功
-     */
-    String RCDC_TERMINAL_DETECT_SEND_SUCCESS = "rcdc_terminal_detect_send_success";
-
-    /**
-     * 发送检测命令失败
-     */
-    String RCDC_TERMINAL_DETECT_SEND_FAIL = "rcdc_terminal_detect_send_fail";
-
-    /**
      * 开启终端检测失败日志
      */
     String RCDC_TERMINAL_START_DETECT_FAIL_LOG = "rcdc_terminal_start_detect_fail_log";
-
-    /**
-     * 终端列表日期参数错误
-     */
-    String RCDC_TERMINAL_DETECT_LIST_DATE_ERROR = "rcdc_terminal_detect_list_date_error";
 
     /** 修改终端管理密码成功日志 */
     String RCDC_TERMINAL_CHANGE_PWD_SUCCESS_LOG = "rcdc_terminal_change_pwd_success_log";
