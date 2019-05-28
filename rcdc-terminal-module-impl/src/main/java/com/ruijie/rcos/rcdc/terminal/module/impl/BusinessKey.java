@@ -77,6 +77,11 @@ public interface BusinessKey {
     String RCDC_SYSTEM_CMD_EXECUTE_FAIL = "rcdc_system_cmd_execute_fail";
 
     /**
+     *  文件不合法，请上传正确的ISO文件
+     */
+    String RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL = "rcdc_terminal_upgrade_package_file_illegal";
+
+    /**
      * 系统升级包正在上传中
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING = "rcdc_terminal_system_upgrade_package_is_uploading";
