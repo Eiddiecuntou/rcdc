@@ -156,6 +156,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             if (terminalEntity != null) {
                 detectDTO.setIp(terminalEntity.getIp());
                 detectDTO.setTerminalName(terminalEntity.getTerminalName());
+                detectDTO.setMac(terminalEntity.getMacAddr());
             }
             detectDTOArr[i] = detectDTO;
         });

@@ -210,7 +210,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e.getKey());
         }
     }
 

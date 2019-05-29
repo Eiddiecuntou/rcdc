@@ -290,7 +290,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
             LOGGER.debug("out String is :{}", outStr);
         } catch (BusinessException e) {
             LOGGER.error("shell command execute error", e);
-            throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL, e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e);
         }
     }
 
