@@ -248,4 +248,33 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_SEND_DETECT_COMMAND_FAIL = "rcdc_terminal_send_detect_command_fail";
 
+    /**
+     * 终端操作-检测
+     */
+    String RCDC_TERMINAL_OPERATE_ACTION_DETECT = "rcdc_terminal_operate_action_detect";
+
+    /**
+     * 终端操作-收集日志
+     */
+    String RCDC_TERMINAL_OPERATE_ACTION_COLLECT_LOG = "rcdc_terminal_operate_action_collect_log";
+
+    /**
+     * 终端操作-修改终端管理密码
+     */
+    String RCDC_TERMINAL_OPERATE_ACTION_SEND_PASSWORD_CHANGE = "rcdc_terminal_operate_action_send_password_change";
+
+    /**
+     * 终端操作-重启
+     */
+    String RCDC_TERMINAL_OPERATE_ACTION_RESTART = "rcdc_terminal_operate_action_restart";
+
+    /**
+     * 终端操作-关机
+     */
+    String RCDC_TERMINAL_OPERATE_ACTION_SHUTDOWN = "rcdc_terminal_operate_action_shutdown";
+
+    /**
+     * 终端操作-修改终端名称
+     */
+    String RCDC_TERMINAL_OPERATE_ACTION_MODIFY_NAME = "rcdc_terminal_operate_action_modify_name";
 }
