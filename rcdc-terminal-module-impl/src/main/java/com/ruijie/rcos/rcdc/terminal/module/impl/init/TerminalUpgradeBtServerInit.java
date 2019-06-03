@@ -3,6 +3,13 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutorService;
+
+import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
+import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
+import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
+import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineThreadPoolExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -34,7 +41,9 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     private static final String INIT_PYTHON_SCRIPT_PATH = "/data/web/rcdc/shell/update.py";
 
-    private static final String INIT_COMMAND = "python %s";
+    private static final String INIT_COMMAND = "python %s %s";
+
+    private ExecutorService executorService = SkyengineExecutors.newSingleThreadExecutor(TerminalUpgradeBtServerInit.class.getName());
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
@@ -42,9 +51,16 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
     @Autowired
     private TerminalComponentUpgradeCacheInit upgradeCacheInit;
 
+    @Autowired
+    private NetworkAPI networkAPI;
+
     @Override
     public void safeInit() {
+        LOGGER.info("开始异步执行初始化终端升级组件");
+        executorService.execute(() -> initTerminalComponent());
+    }
 
+    private void initTerminalComponent() {
         // 添加操作系统判断，使初始化失败不影响开发阶段的调试
         boolean isDevelop = Enviroment.isDevelop();
         LOGGER.info("enviroment is develope: {}", isDevelop);
@@ -56,8 +72,15 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
         // bt服务初始化，判断ip是否变更，如果变化则进行bt服务的初始化操作
         LOGGER.info("start upgrade bt share init...");
 
-        if (needUpgrade()) {
-            executeUpdate();
+        String currentIp;
+        try {
+            currentIp = getLocalIP();
+        } catch (BusinessException e) {
+            LOGGER.error("obtain host ip error, can not make init bt server.", e);
+            return;
+        }
+        if (needUpgrade(currentIp)) {
+            executeUpdate(currentIp);
             return;
         }
 
@@ -66,8 +89,8 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
         upgradeCacheInit.safeInit();
     }
 
-    private boolean needUpgrade() {
-        String currentIp = getLocalIP();
+    private boolean needUpgrade(String currentIp) {
+
         String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
 
         if (StringUtils.isBlank(ip)) {
@@ -89,10 +112,12 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
         return false;
     }
 
-    private void executeUpdate() {
+    private void executeUpdate(String currentIp) {
         LOGGER.info("start invoke pythonScript...");
         ShellCommandRunner runner = new ShellCommandRunner();
-        runner.setCommand(String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH));
+        String shellCmd = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH, currentIp);
+        LOGGER.info("excecute shell cmd : {}", shellCmd);
+        runner.setCommand(shellCmd);
         try {
             String outStr = runner.execute(new BtShareInitReturnValueResolver());
             LOGGER.debug("out String is :{}", outStr);
@@ -141,23 +166,9 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
      * 
      * @return ip
      */
-    private static String getLocalIP() {
-        InetAddress addr = null;
-        try {
-            addr = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            LOGGER.error("get localhost address error, {}", e);
-            throw new RuntimeException("get localhost address error,", e);
-        }
-
-        byte[] ipArr = addr.getAddress();
-        String ipAddrStr = "";
-        for (int i = 0; i < ipArr.length; i++) {
-            if (i > 0) {
-                ipAddrStr += ".";
-            }
-            ipAddrStr += ipArr[i] & 0xFF;
-        }
-        return ipAddrStr;
+    private String getLocalIP() throws BusinessException {
+        BaseDetailNetworkRequest request = new BaseDetailNetworkRequest();
+        BaseDetailNetworkInfoResponse response = networkAPI.detailNetwork(request);
+        return response.getNetworkDTO().getIp();
     }
 }

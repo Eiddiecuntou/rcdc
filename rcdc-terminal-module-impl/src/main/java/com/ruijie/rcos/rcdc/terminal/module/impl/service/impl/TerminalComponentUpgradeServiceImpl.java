@@ -2,8 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -37,7 +40,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
 
 
     @Override
-    public TerminalVersionResultDTO getVersion(String rainUpgradeVersion, TerminalPlatformEnums platform) {
+    public TerminalVersionResultDTO getVersion(String rainUpgradeVersion, @Nullable String validateMd5, TerminalPlatformEnums platform) {
         Assert.hasText(rainUpgradeVersion, "rainOsVersion can not be blank");
         Assert.notNull(platform, "platform can not be null");
 
@@ -62,8 +65,8 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         CbbTerminalComponentUpdateListDTO updatelistDTO =
                 new CbbTerminalComponentUpdateListDTO(version, updatelist.getBaseVersion(), updatelist.getComponentSize());
 
-        // 根据版本号对比，版本相同，不升级； 不同则根据平台类型筛选出组件信息，无组件信息则不支持升级，有则返回升级信息
-        if (rainUpgradeVersion.equals(version)) {
+        // 根据版本号对比，版本相同且updatelist的MD5相同，不升级； 不同则根据平台类型筛选出组件信息，无组件信息则不支持升级，有则返回升级信息
+        if (rainUpgradeVersion.equals(version) && Objects.equals(validateMd5, updatelist.getValidateMd5())) {
             // 版本相同，不升级 0
             LOGGER.debug("version is same, return not need upgrade");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), updatelistDTO);
@@ -96,6 +99,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         copyUpdateList.setComponentSize(updatelist.getComponentSize());
         copyUpdateList.setLimitVersion(updatelist.getLimitVersion());
         copyUpdateList.setVersion(updatelist.getVersion());
+        copyUpdateList.setValidateMd5(updatelist.getValidateMd5());
 
         List<CbbTerminalComponentVersionInfoDTO> componentList = new ArrayList<>();
         final List<CbbTerminalComponentVersionInfoDTO> originComponentList = updatelist.getComponentList();

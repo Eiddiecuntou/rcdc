@@ -10,7 +10,7 @@ import json
 import os
 import sys
 
-from Common import getHostIp, getLogger, copyTo, FILE_SPERATOR
+from Common import getLogger
 from Consts import *
 
 
@@ -48,25 +48,15 @@ def btServerInit():
     制作bt种子
     
 '''
-def btMakeSeedBlock(path, seedSavePath):
+def btMakeSeedBlock(path, seedSavePath, ip):
     #调用Init
     btServerInit()
-    req = BtSeedMakeRequest(getHostIp(), path, seedSavePath)
+    req = BtSeedMakeRequest(ip, path, seedSavePath)
     resp = (c_char * 1024)()
     getBtApi().btMakeSeed_block(buildCallCPointerParam(req), resp, 1024)
     jsonStr = string_at(resp, 1024)
-    print jsonStr
     jsonObj = checkSuccess(jsonStr)
     return jsonObj['seed_path']
-
-# def btMakeSeedBlock(path, seedSavePath):
-#     copyTo(path, seedSavePath + FILE_SPERATOR + os.path.split(path)[1] + TORRENT_SUFFIX)
-#     req = BtSeedMakeRequest(getHostIp(), path, seedSavePath)
-#     resp = (c_char * 1024)()
-#     getBtApi().btMakeSeed_block(buildCallCPointerParam(req), resp, 1024)
-#     jsonObj = json.loads(string_at(resp, 1024))
-#     checkSuccess(jsonObj)
-#     return seedSavePath + FILE_SPERATOR + os.path.split(path)[1] + TORRENT_SUFFIX
 
 '''
 
@@ -86,7 +76,6 @@ def stopBtShare(torrentPath):
     resp = (c_char * 1024)()
     getBtApi().btShareStop(buildCallCPointerParam(req), resp, 1024)
     jsonStr = string_at(resp, 1024)
-    print jsonStr
     checkSpecSuccess(jsonStr)
 
 '''
@@ -95,8 +84,6 @@ def stopBtShare(torrentPath):
     
 '''  
 def startBtShare(torrentPath, fileSavePath):
-    print torrentPath
-    print fileSavePath
     logger.info("start path[%s] bt share " % torrentPath)
     if torrentPath is None:
         logger.warn("torrent path is null")
@@ -112,10 +99,8 @@ def startBtShare(torrentPath, fileSavePath):
     req = BtShareStartRequest(torrentPath, fileSavePath)
     resp = (c_char * 1024)()
     reqbytes = buildCallCPointerParam(req)
-    print reqbytes
     getBtApi().btShareStart(reqbytes, resp, 1024)
     jsonStr = string_at(resp, 1024)
-    print jsonStr
     checkSpecSuccess(jsonStr)
 
 
