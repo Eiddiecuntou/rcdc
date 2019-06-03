@@ -157,7 +157,8 @@ def doSameVersionUpgrade(oldUpdateList, originPath, basePath):
     # 删除当前组件包，并将base包命名为origin
     if os.path.exists(originPath):
         shutil.rmtree(originPath)
-    os.rename(basePath, originPath)
+    if os.path.exists(basePath):
+        os.rename(basePath, originPath)
 
     # 重新制作差异文件及种子
     packageUpdate()
