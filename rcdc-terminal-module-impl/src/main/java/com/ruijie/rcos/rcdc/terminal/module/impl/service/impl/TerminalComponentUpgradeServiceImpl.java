@@ -66,7 +66,8 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
                 new CbbTerminalComponentUpdateListDTO(version, updatelist.getBaseVersion(), updatelist.getComponentSize());
 
         // 根据版本号对比，版本相同且updatelist的MD5相同，不升级； 不同则根据平台类型筛选出组件信息，无组件信息则不支持升级，有则返回升级信息
-        if (rainUpgradeVersion.equals(version) && Objects.equals(validateMd5, updatelist.getValidateMd5())) {
+        // TODO 相同版本号添加MD5校验，都相同则不需升级    && Objects.equals(validateMd5, updatelist.getValidateMd5())
+        if (rainUpgradeVersion.equals(version)) {
             // 版本相同，不升级 0
             LOGGER.debug("version is same, return not need upgrade");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), updatelistDTO);

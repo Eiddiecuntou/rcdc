@@ -5,6 +5,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
+import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
+import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -44,6 +49,9 @@ public class TerminalUpgradeBtServerInitTest {
     @Mocked
     private ShellCommandRunner runner;
 
+    @Injectable
+    private NetworkAPI networkAPI;
+
     /**
      * 测试safeInit，开发环境
      * 
@@ -72,27 +80,23 @@ public class TerminalUpgradeBtServerInitTest {
      * 测试safeInit，获取本地ip失败
      * 
      * @param enviroment mock对象
-     * @param inetAddress mock对象
-     * @throws UnknownHostException 异常
+     * @throws BusinessException 异常
      */
     @Test
-    public void testSafeInitGetLocalAddrFail(@Mocked Enviroment enviroment, @Mocked InetAddress inetAddress) throws UnknownHostException {
-
+    public void testSafeInitGetLocalAddrFail(@Mocked Enviroment enviroment) throws BusinessException {
+        BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
+        BaseNetworkDTO dto = new BaseNetworkDTO();
+        dto.setIp("172.12.22.45");
+        response.setNetworkDTO(dto);
         new Expectations() {
             {
                 Enviroment.isDevelop();
                 result = false;
-                InetAddress.getLocalHost();
-                result = new UnknownHostException();
+                networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
+                result = new BusinessException("key");
             }
         };
-        try {
-            init.safeInit();
-            fail();
-        } catch (RuntimeException e) {
-            assertEquals("get localhost address error,", e.getMessage());
-        }
-
+        init.safeInit();
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
@@ -105,24 +109,20 @@ public class TerminalUpgradeBtServerInitTest {
      * 测试safeInit，ip为空
      * 
      * @param enviroment mock对象
-     * @param inetAddress mock对象
-     * @throws UnknownHostException 异常
+     * @throws BusinessException 异常
      */
     @Test
-    public void testSafeInitIpIsBlank(@Mocked Enviroment enviroment, @Mocked InetAddress inetAddress) throws UnknownHostException {
-        byte[] ipArr = new byte[4];
-        ipArr[0] = -84;
-        ipArr[1] = 12;
-        ipArr[2] = 22;
-        ipArr[3] = 45;
+    public void testSafeInitIpIsBlank(@Mocked Enviroment enviroment) throws BusinessException {
+        BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
+        BaseNetworkDTO dto = new BaseNetworkDTO();
+        dto.setIp("172.12.22.45");
+        response.setNetworkDTO(dto);
         new Expectations() {
             {
                 Enviroment.isDevelop();
                 result = false;
-                InetAddress.getLocalHost();
-                result = inetAddress;
-                inetAddress.getAddress();
-                result = ipArr;
+                networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
+                result = response;
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
                 result = "";
             }
@@ -156,24 +156,20 @@ public class TerminalUpgradeBtServerInitTest {
      * 测试safeInit，ip和本地ip一致
      * 
      * @param enviroment mock对象
-     * @param inetAddress mock对象
-     * @throws UnknownHostException 异常
+     * @throws BusinessException 异常
      */
     @Test
-    public void testSafeInitIpEqualsCurrentIp(@Mocked Enviroment enviroment, @Mocked InetAddress inetAddress) throws UnknownHostException {
-        byte[] ipArr = new byte[4];
-        ipArr[0] = -84;
-        ipArr[1] = 12;
-        ipArr[2] = 22;
-        ipArr[3] = 45;
+    public void testSafeInitIpEqualsCurrentIp(@Mocked Enviroment enviroment) throws BusinessException {
+        BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
+        BaseNetworkDTO dto = new BaseNetworkDTO();
+        dto.setIp("172.12.22.45");
+        response.setNetworkDTO(dto);
         new Expectations() {
             {
                 Enviroment.isDevelop();
                 result = false;
-                InetAddress.getLocalHost();
-                result = inetAddress;
-                inetAddress.getAddress();
-                result = ipArr;
+                networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
+                result = response;
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
                 result = "172.12.22.45";
             }
@@ -189,8 +185,6 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
                 times = 1;
-                runner.setCommand(String.format("python %s", "/data/web/rcdc/shell/update.py"));
-                times = 0;
                 upgradeCacheInit.safeInit();
                 times = 1;
             }
@@ -201,26 +195,21 @@ public class TerminalUpgradeBtServerInitTest {
      * 测试safeInit，ip和本地ip不同,executeUpdate有BusinessException
      * 
      * @param enviroment mock对象
-     * @param inetAddress mock对象
-     * @throws UnknownHostException 异常
      * @throws BusinessException 异常
      */
     @Test
-    public void testSafeInitIpDifferentCurrentIpExecuteUpdateHasBusinessException(@Mocked Enviroment enviroment, @Mocked InetAddress inetAddress)
-            throws UnknownHostException, BusinessException {
-        byte[] ipArr = new byte[4];
-        ipArr[0] = -84;
-        ipArr[1] = 12;
-        ipArr[2] = 22;
-        ipArr[3] = 45;
+    public void testSafeInitIpDifferentCurrentIpExecuteUpdateHasBusinessException(@Mocked Enviroment enviroment)
+            throws BusinessException {
+        BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
+        BaseNetworkDTO dto = new BaseNetworkDTO();
+        dto.setIp("172.12.22.45");
+        response.setNetworkDTO(dto);
         new Expectations() {
             {
                 Enviroment.isDevelop();
                 result = false;
-                InetAddress.getLocalHost();
-                result = inetAddress;
-                inetAddress.getAddress();
-                result = ipArr;
+                networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
+                result = response;
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
                 result = "172.22.25.45";
                 runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
@@ -238,7 +227,7 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
                 times = 1;
-                runner.setCommand(String.format("python %s", "/data/web/rcdc/shell/update.py"));
+                runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
                 times = 1;
                 upgradeCacheInit.safeInit();
                 times = 0;
@@ -250,24 +239,20 @@ public class TerminalUpgradeBtServerInitTest {
      * 测试safeInit，ip和本地ip不同
      * 
      * @param enviroment mock对象
-     * @param inetAddress mock对象
-     * @throws UnknownHostException 异常
+     * @throws BusinessException 异常
      */
     @Test
-    public void testSafeInitIpDifferentCurrentIp(@Mocked Enviroment enviroment, @Mocked InetAddress inetAddress) throws UnknownHostException {
-        byte[] ipArr = new byte[4];
-        ipArr[0] = -84;
-        ipArr[1] = 12;
-        ipArr[2] = 22;
-        ipArr[3] = 45;
+    public void testSafeInitIpDifferentCurrentIp(@Mocked Enviroment enviroment) throws BusinessException {
+        BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
+        BaseNetworkDTO dto = new BaseNetworkDTO();
+        dto.setIp("172.12.22.45");
+        response.setNetworkDTO(dto);
         new Expectations() {
             {
                 Enviroment.isDevelop();
                 result = false;
-                InetAddress.getLocalHost();
-                result = inetAddress;
-                inetAddress.getAddress();
-                result = ipArr;
+                networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
+                result = response;
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
                 result = "172.22.25.45";
             }
@@ -283,7 +268,7 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
                 times = 1;
-                runner.setCommand(String.format("python %s", "/data/web/rcdc/shell/update.py"));
+                runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
                 times = 1;
                 upgradeCacheInit.safeInit();
                 times = 0;
