@@ -6,16 +6,20 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.ComponentUpdateListCacheManager;
+import com.ruijie.rcos.sk.base.crypto.Base64Util;
+import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -70,7 +74,12 @@ public class TerminalComponentUpgradeCacheInit {
             }
             try {
                 String updatelistStr = FileUtils.readFileToString(updateListFile, Charset.forName("UTF-8"));
-                CbbTerminalComponentUpdateListDTO updatelist = JSON.parseObject(updatelistStr, CbbTerminalComponentUpdateListDTO.class);
+                CbbTerminalComponentUpdateListDTO updatelist =
+                        JSON.parseObject(updatelistStr, CbbTerminalComponentUpdateListDTO.class);
+                LOGGER.info("开始计算updatelist文件MD值。。。");
+                byte[] md5BytesArr = Md5Builder.computeFileMd5(updateListFile);
+                updatelist.setValidateMd5(Base64Util.encodeToString(md5BytesArr));
+                LOGGER.info("updatelist文件MD值： {}", updatelist.getValidateMd5());
                 putInCache(updatelist);
             } catch (IOException e) {
                 LOGGER.error("read updatelist file error", e);
@@ -152,6 +161,7 @@ public class TerminalComponentUpgradeCacheInit {
         newUpdatelist.setVersion(updatelist.getVersion());
         newUpdatelist.setBaseVersion(updatelist.getBaseVersion());
         newUpdatelist.setLimitVersion(updatelist.getLimitVersion());
+        newUpdatelist.setValidateMd5(updatelist.getValidateMd5());
         newUpdatelist.setComponentSize(0);
         return newUpdatelist;
     }
