@@ -1,20 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
-import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineThreadPoolExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -43,7 +41,8 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     private static final String INIT_COMMAND = "python %s %s";
 
-    private ExecutorService executorService = SkyengineExecutors.newSingleThreadExecutor(TerminalUpgradeBtServerInit.class.getName());
+    private ExecutorService executorService =
+            SkyengineExecutors.newSingleThreadExecutor(TerminalUpgradeBtServerInit.class.getName());
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;

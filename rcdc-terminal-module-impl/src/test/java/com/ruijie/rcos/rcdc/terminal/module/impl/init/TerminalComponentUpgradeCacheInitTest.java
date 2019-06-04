@@ -3,31 +3,22 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.util.Assert;
+
 import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.ComponentUpdateListCacheManager;
+import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Invocation;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
