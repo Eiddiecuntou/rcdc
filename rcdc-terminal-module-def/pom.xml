@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.ruijie.rcos.rcdc.terminal.module</groupId>
     <artifactId>rcdc-terminal-module</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.110-SNAPSHOT</version>
   </parent>
   <artifactId>rcdc-terminal-module-def</artifactId>
   <name>rcdc-terminal-module-def</name>
