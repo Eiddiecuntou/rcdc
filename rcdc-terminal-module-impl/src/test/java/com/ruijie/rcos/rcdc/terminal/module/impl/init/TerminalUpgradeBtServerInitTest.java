@@ -1,30 +1,28 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import static org.junit.Assert.*;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.*;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.util.Assert;
 
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
-import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 
 /**
  * 
@@ -52,6 +50,20 @@ public class TerminalUpgradeBtServerInitTest {
     @Injectable
     private NetworkAPI networkAPI;
 
+    @Mocked
+    private SkyengineExecutors executorService;
+
+
+    @Before
+    public void before() {
+        new MockUp<SkyengineExecutors>() {
+            @Mock
+            public ExecutorService newSingleThreadExecutor(String threadPoolName) {
+                return new MockExecutorService();
+            }
+        };
+    }
+
     /**
      * 测试safeInit，开发环境
      * 
@@ -70,7 +82,7 @@ public class TerminalUpgradeBtServerInitTest {
 
         new Verifications() {
             {
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 times = 0;
             }
         };
@@ -97,9 +109,10 @@ public class TerminalUpgradeBtServerInitTest {
             }
         };
         init.safeInit();
+
         new Verifications() {
             {
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 times = 0;
             }
         };
@@ -123,29 +136,24 @@ public class TerminalUpgradeBtServerInitTest {
                 result = false;
                 networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
                 result = response;
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 result = "";
             }
         };
-        new MockUp<TerminalUpgradeBtServerInit>() {
-            @Mock
-            public void executeUpdate() {
 
-            }
-        };
         try {
             init.safeInit();
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
         }
 
         new Verifications() {
             {
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 times = 1;
-                runner.setCommand(String.format("python %s", "/data/web/rcdc/shell/update.py"));
-                times = 0;
+                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/update.py", "172.12.22.45"));
+                times = 1;
                 upgradeCacheInit.safeInit();
                 times = 0;
             }
@@ -170,7 +178,7 @@ public class TerminalUpgradeBtServerInitTest {
                 result = false;
                 networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
                 result = response;
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 result = "172.12.22.45";
             }
         };
@@ -183,7 +191,7 @@ public class TerminalUpgradeBtServerInitTest {
 
         new Verifications() {
             {
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 times = 1;
                 upgradeCacheInit.safeInit();
                 times = 1;
@@ -202,7 +210,7 @@ public class TerminalUpgradeBtServerInitTest {
             throws BusinessException {
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO dto = new BaseNetworkDTO();
-        dto.setIp("172.12.22.45");
+        dto.setIp("172.0.0.0");
         response.setNetworkDTO(dto);
         new Expectations() {
             {
@@ -210,7 +218,7 @@ public class TerminalUpgradeBtServerInitTest {
                 result = false;
                 networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
                 result = response;
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 result = "172.22.25.45";
                 runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
                 result = new BusinessException("key");
@@ -225,7 +233,7 @@ public class TerminalUpgradeBtServerInitTest {
 
         new Verifications() {
             {
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 times = 1;
                 runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
                 times = 1;
@@ -253,7 +261,7 @@ public class TerminalUpgradeBtServerInitTest {
                 result = false;
                 networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
                 result = response;
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 result = "172.22.25.45";
             }
         };
@@ -266,7 +274,7 @@ public class TerminalUpgradeBtServerInitTest {
 
         new Verifications() {
             {
-                globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
                 times = 1;
                 runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
                 times = 1;
@@ -284,9 +292,12 @@ public class TerminalUpgradeBtServerInitTest {
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
         TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
-        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"),
+                "command can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"),
+                "existValue can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""),
+                "outStr can not be null");
         assertTrue(true);
     }
 
@@ -323,11 +334,102 @@ public class TerminalUpgradeBtServerInitTest {
 
         new Verifications() {
             {
-                globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, "192.168.1.2");
+                globalParameterAPI.updateParameter(anyString, "192.168.1.2");
                 times = 1;
                 upgradeCacheInit.safeInit();
                 times = 1;
             }
         };
+    }
+
+
+    /**
+     *
+     * Description: Function Description
+     * Copyright: Copyright (c) 2019
+     * Company: Ruijie Co., Ltd.
+     * Create Time: 2019年6月04日
+     *
+     * @author nt
+     */
+    private class MockExecutorService implements ExecutorService {
+
+        @Override
+        public void execute(Runnable command) {
+            Assert.notNull(command, "command can not be null");
+            command.run();
+        }
+
+        @Override
+        public void shutdown() {
+
+        }
+
+        @Override
+        public List<Runnable> shutdownNow() {
+            //
+            return null;
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return false;
+        }
+
+        @Override
+        public boolean isTerminated() {
+            return false;
+        }
+
+        @Override
+        public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+            return false;
+        }
+
+        @Override
+        public <T> Future<T> submit(Callable<T> task) {
+            //
+            return null;
+        }
+
+        @Override
+        public <T> Future<T> submit(Runnable task, T result) {
+            //
+            return null;
+        }
+
+        @Override
+        public Future<?> submit(Runnable task) {
+            //
+            return null;
+        }
+
+        @Override
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
+            //
+            return null;
+        }
+
+        @Override
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+                throws InterruptedException {
+            //
+            return null;
+        }
+
+        @Override
+        public <T> T invokeAny(Collection<? extends Callable<T>> tasks)
+                throws InterruptedException, ExecutionException {
+            //
+            return null;
+        }
+
+        @Override
+        public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+                throws InterruptedException, ExecutionException, TimeoutException {
+            //
+            return null;
+        }
+
     }
 }
