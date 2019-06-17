@@ -76,10 +76,6 @@ public class TerminalComponentUpgradeCacheInit {
                 String updatelistStr = FileUtils.readFileToString(updateListFile, Charset.forName("UTF-8"));
                 CbbTerminalComponentUpdateListDTO updatelist =
                         JSON.parseObject(updatelistStr, CbbTerminalComponentUpdateListDTO.class);
-                LOGGER.info("开始计算updatelist文件MD值。。。");
-                byte[] md5BytesArr = Md5Builder.computeFileMd5(updateListFile);
-                updatelist.setValidateMd5(Base64Util.encodeToString(md5BytesArr));
-                LOGGER.info("updatelist文件MD值： {}", updatelist.getValidateMd5());
                 putInCache(updatelist);
             } catch (IOException e) {
                 LOGGER.error("read updatelist file error", e);
