@@ -207,10 +207,6 @@ def makeBakFile(originPath, basePath):
     if not os.path.exists(originPath):
         return;
     os.rename(originPath, basePath)
-    #将种子文件加入到备份文件中
-    if os.path.exists(torrentPath) and os.path.exists(basePath):
-        targetDir = '%s%s%s' %(basePath, FILE_SPERATOR, os.path.basename(torrentPath))
-        copyDirTo(torrentPath, targetDir)
 
 def clearDir(path):
     if os.path.isdir(path):
