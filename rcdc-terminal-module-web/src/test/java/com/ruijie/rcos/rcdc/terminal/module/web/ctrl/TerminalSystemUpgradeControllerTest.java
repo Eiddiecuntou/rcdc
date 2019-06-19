@@ -4,18 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbGetUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.UpgradeableTerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.web.BusinessKey;
@@ -510,19 +507,19 @@ public class TerminalSystemUpgradeControllerTest {
     @Test
     public void testListTerminalBasicInfo() throws BusinessException {
         PageWebRequest request = new PageWebRequest();
-        DefaultPageResponse<TerminalListDTO> pageResp = new DefaultPageResponse<>();
+        DefaultPageResponse<UpgradeableTerminalListDTO> pageResp = new DefaultPageResponse<>();
         new Expectations() {
             {
-                cbbTerminalUpgradeAPI.listUpgradeableTerminal((PageSearchRequest) any);
+                cbbTerminalUpgradeAPI.listUpgradeableTerminal((CbbUpgradeableTerminalPageSearchRequest) any);
                 result = pageResp;
             }
         };
         DefaultWebResponse webResponse = controller.listTerminalBasicInfo(request);
         assertEquals(Status.SUCCESS, webResponse.getStatus());
-        assertEquals(pageResp, (DefaultPageResponse<TerminalListDTO>) webResponse.getContent());
+        assertEquals(pageResp, (DefaultPageResponse<UpgradeableTerminalListDTO>) webResponse.getContent());
         new Verifications() {
             {
-                cbbTerminalUpgradeAPI.listUpgradeableTerminal((PageSearchRequest) any);
+                cbbTerminalUpgradeAPI.listUpgradeableTerminal((CbbUpgradeableTerminalPageSearchRequest) any);
                 times = 1;
             }
         };

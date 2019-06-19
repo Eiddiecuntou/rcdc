@@ -9,8 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbObtainUpgradeableTerminalListSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbObtainUpgradeableTerminalListRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.response.CbbObtainUpgradeableTerminalListResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
+import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
@@ -18,7 +22,7 @@ import org.springframework.data.domain.Page;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.UpgradeableTerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
@@ -84,13 +88,13 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     private CbbTerminalSystemUpgradePackageAPI systemUpgradePackageAPI;
 
     @Injectable
-    private QueryUpgradeableTerminalListService queryUpgradeableTerminalListDAO;
-
-    @Injectable
     private SystemUpgradeFileClearHandler upgradeFileClearHandler;
 
     @Injectable
     private UpgradeTerminalLockManager lockManager;
+
+    @Injectable
+    private CbbObtainUpgradeableTerminalListSPI obtainUpgradeableTerminalListSPI;
 
     /**
      * 测试升级包上传，参数为空
@@ -536,48 +540,28 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     /**
      * 测试listSystemUpgradeTaskTerminal，
      * 
-     * @param terminalListPage mock对象
      * @throws BusinessException 异常
      */
     @Test
-    public void testListUpgradeableTerminal(@Mocked Page<ViewUpgradeableTerminalEntity> terminalListPage) throws BusinessException {
-        PageSearchRequest request = new PageSearchRequest();
-        List<ViewUpgradeableTerminalEntity> taskList = new ArrayList<>();
-        ViewUpgradeableTerminalEntity entity = new ViewUpgradeableTerminalEntity();
-        taskList.add(entity);
+    public void testListUpgradeableTerminal() throws BusinessException {
+        CbbUpgradeableTerminalPageSearchRequest request = new CbbUpgradeableTerminalPageSearchRequest(new PageWebRequest());
+
+
+        CbbObtainUpgradeableTerminalListResponse response = new CbbObtainUpgradeableTerminalListResponse();
+        response.setPageSize(99);
+        response.setTotalCount(101);
+        UpgradeableTerminalListDTO[] terminalArr = new UpgradeableTerminalListDTO[]{};
+        response.setTerminalArr(terminalArr);
 
         new Expectations() {
             {
-                queryUpgradeableTerminalListDAO.pageQuery(request, ViewUpgradeableTerminalEntity.class);
-                result = terminalListPage;
-                terminalListPage.getNumberOfElements();
-                result = 1;
-                terminalListPage.getContent();
-                result = taskList;
-                terminalListPage.getSize();
-                result = 1;
-                terminalListPage.getTotalElements();
-                result = 1;
+                obtainUpgradeableTerminalListSPI.obtainUpgradeableTerminal((CbbObtainUpgradeableTerminalListRequest) any);
+                result = response;
             }
         };
-        DefaultPageResponse<TerminalListDTO> response = upgradeAPIImpl.listUpgradeableTerminal(request);
-        assertEquals(Status.SUCCESS, response.getStatus());
-        assertEquals(entity.getState(), response.getItemArr()[0].getTerminalState());
-        assertEquals(entity.getTerminalId(), response.getItemArr()[0].getId());
-
-        new Verifications() {
-            {
-                queryUpgradeableTerminalListDAO.pageQuery(request, ViewUpgradeableTerminalEntity.class);
-                times = 1;
-                terminalListPage.getNumberOfElements();
-                times = 1;
-                terminalListPage.getContent();
-                times = 1;
-                terminalListPage.getSize();
-                times = 1;
-                terminalListPage.getTotalElements();
-                times = 1;
-            }
-        };
+        DefaultPageResponse<UpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.listUpgradeableTerminal(request);
+        assertEquals(Status.SUCCESS, pageResponse.getStatus());
+        assertEquals(pageResponse.getTotal(), response.getTotalCount());
+        assertEquals(pageResponse.getItemArr(), terminalArr);
     }
 }
