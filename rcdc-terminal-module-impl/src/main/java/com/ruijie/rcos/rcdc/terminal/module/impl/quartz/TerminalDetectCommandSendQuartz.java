@@ -50,13 +50,13 @@ public class TerminalDetectCommandSendQuartz implements SafetySingletonInitializ
 
     @Override
     public void run() {
-        LOGGER.info("开始发送终端检测指令...");
+        LOGGER.debug("开始发送终端检测指令...");
         // 每次定时任务只发送一条检测指令，若成功则返回，失败则发送下一条
         boolean isSuccess = sendDetectCommand();
         while (!isSuccess) {
             isSuccess = sendDetectCommand();
         }
-        LOGGER.info("完成发送终端检测指令");
+        LOGGER.debug("完成发送终端检测指令");
     }
 
     private boolean sendDetectCommand() {

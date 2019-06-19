@@ -29,6 +29,7 @@ import sys
 import json
 import os
 import shutil
+import hashlib
 
 from BtApiService import stopBtShare, btMakeSeedBlock, startBtShare
 from Common import (readFile, createZip, copyTo, createDirectoty,
@@ -112,7 +113,9 @@ def packageUpdate():
     # 非初始安装则更新基线版本
     if(oldVersion != None):
         newUpdateList['baseVersion'] = oldVersion
-    
+    # 计算updatelist初始MD5
+    newUpdateList['validateMd5'] = md5Calc(srcUpdateListPath);
+
     # 创建升级临时目录 
     createUpdateTempDirectory(tempDir)
     
@@ -204,10 +207,6 @@ def makeBakFile(originPath, basePath):
     if not os.path.exists(originPath):
         return;
     os.rename(originPath, basePath)
-    #将种子文件加入到备份文件中
-    if os.path.exists(torrentPath) and os.path.exists(basePath):
-        targetDir = '%s%s%s' %(basePath, FILE_SPERATOR, os.path.basename(torrentPath))
-        copyDirTo(torrentPath, targetDir)
 
 def clearDir(path):
     if os.path.isdir(path):
@@ -325,6 +324,18 @@ def createUpdateTempDirectory(dirPath):
                  % (fullComponentDir, diffComponentDir))
     createDirectoty(fullComponentDir)
     createDirectoty(diffComponentDir)
+
+def md5Calc(file):
+    md5Value=hashlib.md5()
+    with open(file,'rb') as f:
+        while True:
+            dataFlow=f.read(4096)
+            if not dataFlow:
+                break
+            md5Value.update(dataFlow)
+    f.close()
+    return md5Value.hexdigest()
+
 
 
 if __name__ == '__main__':

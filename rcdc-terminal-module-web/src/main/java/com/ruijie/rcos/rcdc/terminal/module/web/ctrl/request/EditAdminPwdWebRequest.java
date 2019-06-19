@@ -16,7 +16,7 @@ import com.ruijie.rcos.sk.webmvc.api.request.WebRequest;
 public class EditAdminPwdWebRequest implements WebRequest {
 
     @NotBlank
-    @Size(min = 3, max = 16)
+    @Size(min = 8, max = 16)
     private String pwd;
 
     public String getPwd() {
