@@ -60,7 +60,8 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         saveBasicInfo(terminalId, basicInfo);
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(), basicInfo.getPlatform());
+        TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(),
+                basicInfo.getValidateMd5(), basicInfo.getPlatform());
         CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, versionResult);
         try {
             if (LOGGER.isDebugEnabled()) {

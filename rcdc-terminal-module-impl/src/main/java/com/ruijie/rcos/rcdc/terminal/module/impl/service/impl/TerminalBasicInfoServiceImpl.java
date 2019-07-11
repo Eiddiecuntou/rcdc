@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.util.Date;
+
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -56,8 +58,8 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             sender.syncRequest(message);
         } catch (Exception e) {
             LOGGER.error("发送修改终端名称消息给终端[" + terminalId + "]失败", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
-                    new String[] {terminalId});
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e, new String[] {
+                    LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_MODIFY_NAME, new String[] {})});
         }
     }
 

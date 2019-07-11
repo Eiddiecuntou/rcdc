@@ -3,29 +3,22 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.util.Assert;
+
 import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.ComponentUpdateListCacheManager;
+import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Invocation;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -209,6 +202,12 @@ public class TerminalComponentUpgradeCacheInitTest {
      */
     @Test
     public void testSafeInitComponentVersionListIsEmpty(@Mocked FileUtils utils) throws IOException {
+        new MockUp<Md5Builder>() {
+            @Mock
+            public byte[] computeFileMd5(File file) throws IOException {
+                return "md5".getBytes();
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -254,6 +253,12 @@ public class TerminalComponentUpgradeCacheInitTest {
      */
     @Test
     public void testSafeInitPlatformArrStrIsBlank(@Mocked FileUtils utils) throws IOException {
+        new MockUp<Md5Builder>() {
+            @Mock
+            public byte[] computeFileMd5(File file) throws IOException {
+                return "md5".getBytes();
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -301,6 +306,12 @@ public class TerminalComponentUpgradeCacheInitTest {
      */
     @Test
     public void testSafeInitPlatformStrIsBlank(@Mocked FileUtils utils) throws IOException {
+        new MockUp<Md5Builder>() {
+            @Mock
+            public byte[] computeFileMd5(File file) throws IOException {
+                return "md5".getBytes();
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -350,6 +361,14 @@ public class TerminalComponentUpgradeCacheInitTest {
      */
     @Test
     public void testSafeInit(@Mocked FileUtils utils) throws IOException {
+
+        new MockUp<Md5Builder>() {
+            @Mock
+            public byte[] computeFileMd5(File file) throws IOException {
+                return "md5".getBytes();
+            }
+        };
+
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -369,6 +388,7 @@ public class TerminalComponentUpgradeCacheInitTest {
                 return true;
             }
         };
+
         CbbTerminalComponentUpdateListDTO dto = new CbbTerminalComponentUpdateListDTO();
         List<CbbTerminalComponentVersionInfoDTO> componentVersionList = new ArrayList<>();
         CbbTerminalComponentVersionInfoDTO versionInfoDTO = new CbbTerminalComponentVersionInfoDTO();
@@ -377,6 +397,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         dto.setComponentList(componentVersionList);
         String updatelistStr = JSONObject.toJSONString(dto);
         Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = new HashMap<>();
+
         new Expectations() {
             {
                 FileUtils.readFileToString((File) any, Charset.forName("UTF-8"));
@@ -385,6 +406,7 @@ public class TerminalComponentUpgradeCacheInitTest {
                 result = caches;
             }
         };
+
         init.safeInit();
         new Verifications() {
             {

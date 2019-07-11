@@ -21,6 +21,8 @@ public class CbbTerminalComponentUpdateListDTO {
 
     private String limitVersion;
 
+    private String validateMd5;
+
     private List<CbbTerminalComponentVersionInfoDTO> componentList;
 
     public CbbTerminalComponentUpdateListDTO() {
@@ -73,4 +75,11 @@ public class CbbTerminalComponentUpdateListDTO {
         this.limitVersion = limitVersion;
     }
 
+    public String getValidateMd5() {
+        return validateMd5;
+    }
+
+    public void setValidateMd5(String validateMd5) {
+        this.validateMd5 = validateMd5;
+    }
 }

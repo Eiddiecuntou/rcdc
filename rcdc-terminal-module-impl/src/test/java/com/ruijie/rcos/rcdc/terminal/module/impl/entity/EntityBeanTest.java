@@ -80,16 +80,6 @@ public class EntityBeanTest {
     }
 
     /**
-     * 测试ViewUpgradeableTerminalEntity
-     */
-    @Test
-    public void testViewUpgradeableTerminalEntity() {
-        GetSetTester tester = new GetSetTester(ViewUpgradeableTerminalEntity.class);
-        tester.runTest();
-        assertTrue(true);
-    }
-
-    /**
      * 测试TerminalUpgradeVersionFileInfo
      */
     @Test

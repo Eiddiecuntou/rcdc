@@ -134,11 +134,8 @@ public class TerminalCollectLogCleanQuartzTest {
         quartz.execute();
         new Verifications() {
             {
-                BaseCreateSystemLogRequest request;
-                baseSystemLogMgmtAPI.createSystemLog(request = withCapture());
-                times = 1;
-                assertEquals(request.getContent(),
-                        BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG);
+                baseSystemLogMgmtAPI.createSystemLog((BaseCreateSystemLogRequest) any);
+                times = 0;
             }
         };
     }
@@ -187,11 +184,8 @@ public class TerminalCollectLogCleanQuartzTest {
         quartz.execute();
         new Verifications() {
             {
-                BaseCreateSystemLogRequest request;
-                baseSystemLogMgmtAPI.createSystemLog(request = withCapture());
-                times = 1;
-                assertEquals(request.getContent(),
-                        BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG);
+                baseSystemLogMgmtAPI.createSystemLog((BaseCreateSystemLogRequest) any);
+                times = 0;
             }
         };
     }

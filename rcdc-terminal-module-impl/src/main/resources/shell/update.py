@@ -25,9 +25,11 @@ Created on 2018年12月7日
     9.成功响应
 
 '''
+import sys
 import json
 import os
 import shutil
+import hashlib
 
 from BtApiService import stopBtShare, btMakeSeedBlock, startBtShare
 from Common import (readFile, createZip, copyTo, createDirectoty,
@@ -101,16 +103,19 @@ def packageUpdate():
     if (os.path.exists(originUpdateListPath)):
         oldUpdateList = json.loads(readFile(originUpdateListPath))
     
-    # 检验是否需要升级，版本相同不升级
+    # 检验升级包版本是否相同，版本相同替换MD5不同的组件并制作种子，不同则进行升级
     oldVersion = None if (oldUpdateList == None) else oldUpdateList['version']
-    if not checkUpgradeSupport(newUpdateList['version'], oldVersion):
-        logger.info("upgrade is not supported")
+    if newUpdateList['version'] == oldVersion:
+        logger.info("upgrade version is same")
+        doSameVersionUpgrade(oldUpdateList, originPath, basePath)
         return;
     
     # 非初始安装则更新基线版本
     if(oldVersion != None):
         newUpdateList['baseVersion'] = oldVersion
-    
+    # 计算updatelist初始MD5
+    newUpdateList['validateMd5'] = md5Calc(srcUpdateListPath);
+
     # 创建升级临时目录 
     createUpdateTempDirectory(tempDir)
     
@@ -137,7 +142,31 @@ def packageUpdate():
     # 更新updatelist文件
     with open('%s%s' % (originPath, RAINOS_UPDATE_UPDATE_LIST_RELATIVE_PATH), 'w+') as updatelistFile:
         updatelistFile.write(json.dumps(newUpdateList))
-        
+
+
+'''
+
+    相同版本组件包升级：
+    1、 将原升级组件包的bt服务停止，并删除该组件包，然后若存在基线版本组件包，则将其重命名origin
+    2、 用新的组件包重新制作差异文件及种子
+    
+'''
+def doSameVersionUpgrade(oldUpdateList, originPath, basePath):
+    componentList = oldUpdateList['componentList']
+
+    # 关闭原bt分享
+    stopOldBtShare(componentList)
+
+    # 删除当前组件包，并将base包命名为origin
+    if os.path.exists(originPath):
+        shutil.rmtree(originPath)
+    if os.path.exists(basePath):
+        os.rename(basePath, originPath)
+
+    # 重新制作差异文件及种子
+    packageUpdate()
+
+
         
 def remakeBtShare(originPath, originUpdateListPath):
     updatelistStr = readFile(originUpdateListPath)
@@ -178,27 +207,11 @@ def makeBakFile(originPath, basePath):
     if not os.path.exists(originPath):
         return;
     os.rename(originPath, basePath)
-    #将种子文件加入到备份文件中
-    if os.path.exists(torrentPath) and os.path.exists(basePath):
-        targetDir = '%s%s%s' %(basePath, FILE_SPERATOR, os.path.basename(torrentPath))
-        copyDirTo(torrentPath, targetDir)
 
 def clearDir(path):
     if os.path.isdir(path):
         shutil.rmtree(path)
     os.makedirs(path)
-
-# 处理rpm升级包
-def dealRpm(tempPath, rpmPackageName, rpmUninstallName):
-    rmpPath = "%s%s" %(tempPath, rpmPackageName)
-    logger.info("deal with rpm, path is : %s" % (rmpPath))
-    #卸载rpm包
-#     rpmUninstall = "rpm -e --nodeps %s" % (rpmUninstallName)
-#     shellCall(rpmUninstall)
-    rpmInstall = "rpm -i %s" % (rmpPath)
-    shellCall(rpmInstall)
-    logger.info("finish deal with rpm")
-    
 
 def completeUpdatePackage(originPath, tempDir, newComponentList, oldComponentList):
     
@@ -259,17 +272,21 @@ def makeTorrentDir():
 def makeBtSeeds(targetPath, componentList):
     logger.info("start batch make bt seed...")
     fullSeedSavePath, diffSeedSavePath = makeTorrentDir()
+
+    # 获取参数ip
+    ip = sys.argv[1]
+    logger.info("ip : %s" % ip)
     
     for component in componentList:
         fileName = component['completePackageName']
         diffFileName = component['incrementalPackageName'] if ('incrementalPackageName' in component.keys()) else None 
         fullPath = '%s%s%s%s' % (targetPath, RAINOS_UPDATE_FULL_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, fileName)
         diffPath = '%s%s%s%s' % (targetPath, RAINOS_UPDATE_DIFF_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, diffFileName)
-        completeTorrentUrl = btMakeSeedBlock(fullPath, fullSeedSavePath)
+        completeTorrentUrl = btMakeSeedBlock(fullPath, fullSeedSavePath, ip)
         component['completeTorrentUrl'] = getFTPRelatePath(completeTorrentUrl)
         component['completeTorrentMd5'] = md5sum(completeTorrentUrl)
         if diffFileName != None or os.path.exists(diffPath):
-            incrementalTorrentUrl = btMakeSeedBlock(diffPath, diffSeedSavePath)
+            incrementalTorrentUrl = btMakeSeedBlock(diffPath, diffSeedSavePath, ip)
             component['incrementalTorrentUrl'] = getFTPRelatePath(incrementalTorrentUrl)
             component['incrementalTorrentMd5'] = md5sum(incrementalTorrentUrl)
             
@@ -299,14 +316,6 @@ def doBsdiff(originPath, tempDir, componentName, componentFileName, oldComponent
     md5 = md5sum(patchfilePath)
     return patchfileName, md5
 
-'''
-    是否升级
-    return： true 升级  false 不升级
-'''
-def checkUpgradeSupport(newVersion, oldVersion):
-    logger.info("package new version : %s, old version : %s" % (newVersion, oldVersion))
-    return newVersion != oldVersion
-
 
 def createUpdateTempDirectory(dirPath):
     fullComponentDir = '%s%s' % (dirPath, RAINOS_UPDATE_FULL_COMPONENT_RELATIVE_PATH)
@@ -316,8 +325,26 @@ def createUpdateTempDirectory(dirPath):
     createDirectoty(fullComponentDir)
     createDirectoty(diffComponentDir)
 
+def md5Calc(file):
+    md5Value=hashlib.md5()
+    with open(file,'rb') as f:
+        while True:
+            dataFlow=f.read(4096)
+            if not dataFlow:
+                break
+            md5Value.update(dataFlow)
+    f.close()
+    return md5Value.hexdigest()
+
+
 
 if __name__ == '__main__':
-    result = update()
-    logger.info("update result : %s" % result)
-    print result
+
+    # # 校验是否传递ip参数
+    if len(sys.argv) < 2:
+        logger.info("ip param can not be null")
+        print "fail"
+    else:
+        result = update()
+        logger.info("update result : %s" % result)
+        print result

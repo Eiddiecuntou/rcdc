@@ -20,6 +20,8 @@ public class CbbTerminalDetectDTO {
 
     private String ip;
 
+    private String mac;
+
     /**
      * ip冲突结果，0 不冲突，1 冲突，如果有冲突则ipConflictMac字段保存冲突的mac地址，否则为空值
      */
@@ -233,4 +235,11 @@ public class CbbTerminalDetectDTO {
         this.detectTime = detectTime;
     }
 
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 }

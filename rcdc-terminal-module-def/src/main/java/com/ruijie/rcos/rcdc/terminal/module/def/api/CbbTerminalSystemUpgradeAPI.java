@@ -2,15 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddTerminalSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCancelUpgradeTerminalRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCloseSystemUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbGetTaskUpgradeTerminalRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbGetUpgradeTaskRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbRetryUpgradeTerminalRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.UpgradeableTerminalListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTaskUpgradeTerminalResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
@@ -92,9 +85,11 @@ public interface CbbTerminalSystemUpgradeAPI {
      * 
      * @param apiRequest 请求参数
      * @return 终端列表
+     * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultPageResponse<TerminalListDTO> listUpgradeableTerminal(PageSearchRequest apiRequest);
+    DefaultPageResponse<UpgradeableTerminalListDTO> listUpgradeableTerminal(
+            CbbUpgradeableTerminalPageSearchRequest apiRequest) throws BusinessException;
 
     /**
      * 获取刷机任务终端列表
