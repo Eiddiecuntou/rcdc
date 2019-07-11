@@ -73,7 +73,9 @@ public class TerminalCollectLogCleanQuartz implements QuartzTask {
 
         // 记录系统日志
         String timeMillis = String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS));
-        addSuccessSystemLog(deleteCount, timeMillis);
+        if (deleteCount > 0) {
+            addSuccessSystemLog(deleteCount, timeMillis);
+        }
         LOGGER.info("完成清理终端收集日志文件定时任务, 共删除[{}]个日志文件, 耗时[{}]毫秒", deleteCount, timeMillis);
     }
 

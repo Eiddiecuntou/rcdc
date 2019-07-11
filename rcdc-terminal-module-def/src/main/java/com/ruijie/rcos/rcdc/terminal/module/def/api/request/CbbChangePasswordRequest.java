@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
-import com.ruijie.rcos.sk.base.annotation.TextShort;
+import com.ruijie.rcos.sk.base.annotation.Size;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -15,7 +15,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 public class CbbChangePasswordRequest implements Request {
 
     @NotBlank
-    @TextShort
+    @Size(min = 8, max = 16)
     private String password;
 
     public String getPassword() {

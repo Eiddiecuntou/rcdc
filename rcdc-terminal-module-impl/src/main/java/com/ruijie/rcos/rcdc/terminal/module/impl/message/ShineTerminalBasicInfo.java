@@ -64,6 +64,8 @@ public class ShineTerminalBasicInfo {
     @Enumerated(EnumType.STRING)
     private TerminalPlatformEnums platform;
 
+    private String validateMd5;
+
     public TerminalPlatformEnums getPlatform() {
         return platform;
     }
@@ -240,5 +242,11 @@ public class ShineTerminalBasicInfo {
         this.hardwareVersion = hardwareVersion;
     }
 
+    public String getValidateMd5() {
+        return validateMd5;
+    }
 
+    public void setValidateMd5(String validateMd5) {
+        this.validateMd5 = validateMd5;
+    }
 }

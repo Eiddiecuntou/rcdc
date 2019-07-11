@@ -45,9 +45,9 @@ public class TerminalComponentUpgradeServiceImplTest {
      */
     @Test
     public void testGetVersionArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion("", TerminalPlatformEnums.VDI),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion("", null, TerminalPlatformEnums.VDI),
                 "rainOsVersion can not be blank");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion("123", null), "platform can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion("123",null, null), "platform can not be null");
         assertTrue(true);
     }
 
@@ -65,9 +65,9 @@ public class TerminalComponentUpgradeServiceImplTest {
             }
         };
         ComponentUpdateListCacheManager.isUpdate = false;
-        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("123", TerminalPlatformEnums.VDI);
+        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("123", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO.getResult().intValue());
-        TerminalVersionResultDTO terminalVersionResultDTO1 = serviceImpl.getVersion("123", TerminalPlatformEnums.VDI);
+        TerminalVersionResultDTO terminalVersionResultDTO1 = serviceImpl.getVersion("123", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO1.getResult().intValue());
         ComponentUpdateListCacheManager.isUpdate = true;
     }
@@ -91,7 +91,7 @@ public class TerminalComponentUpgradeServiceImplTest {
             }
         };
         ComponentUpdateListCacheManager.isUpdate = false;
-        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.1.0.1", TerminalPlatformEnums.VDI);
+        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.1.0.1", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), terminalVersionResultDTO.getResult().intValue());
         ComponentUpdateListCacheManager.isUpdate = true;
     }
@@ -116,7 +116,7 @@ public class TerminalComponentUpgradeServiceImplTest {
             }
         };
         ComponentUpdateListCacheManager.isUpdate = false;
-        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("111", TerminalPlatformEnums.VDI);
+        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("111", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(), terminalVersionResultDTO.getResult().intValue());
         ComponentUpdateListCacheManager.isUpdate = true;
     }
@@ -141,7 +141,7 @@ public class TerminalComponentUpgradeServiceImplTest {
             }
         };
         ComponentUpdateListCacheManager.isUpdate = false;
-        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.0.0.1", TerminalPlatformEnums.VDI);
+        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.0.0.1", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), terminalVersionResultDTO.getResult().intValue());
         ComponentUpdateListCacheManager.isUpdate = true;
     }
@@ -159,7 +159,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         updatelist.setComponentSize(1);
         updatelist.setBaseVersion("1.0.2.1");
         updatelist.setLimitVersion("1.0.1.1");
-        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.0.1.1", TerminalPlatformEnums.VDI);
+        TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.0.1.1", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), terminalVersionResultDTO.getResult().intValue());
 
     }

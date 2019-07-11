@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,14 +77,16 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     public void shutdown(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
         checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN);
-        operateTerminal(terminalId, SendTerminalEventEnums.SHUTDOWN_TERMINAL, "");
+        operateTerminal(terminalId, SendTerminalEventEnums.SHUTDOWN_TERMINAL, "",
+                BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SHUTDOWN);
     }
 
     @Override
     public void restart(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
         checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_RESTART);
-        operateTerminal(terminalId, SendTerminalEventEnums.RESTART_TERMINAL, "");
+        operateTerminal(terminalId, SendTerminalEventEnums.RESTART_TERMINAL, "",
+                BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_RESTART);
     }
 
     @Override
@@ -123,7 +126,8 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         for (String terminalId : onlineTerminalIdList) {
             ChangeTerminalPasswordRequest request = new ChangeTerminalPasswordRequest(password);
             try {
-                operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD, request);
+                operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD, request,
+                        BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_PASSWORD_CHANGE);
             } catch (Exception e) {
                 LOGGER.error("send new password to terminal failed, terminalId[" + terminalId + "], password["
                         + password + "]", e);
@@ -144,7 +148,8 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         collectLogCacheManager.addCache(terminalId);
 
         try {
-            operateTerminal(terminalId, SendTerminalEventEnums.COLLECT_TERMINAL_LOG, "");
+            operateTerminal(terminalId, SendTerminalEventEnums.COLLECT_TERMINAL_LOG, "",
+                    BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_COLLECT_LOG);
         } catch (BusinessException e) {
             collectLogCacheManager.removeCache(terminalId);
             throw e;
@@ -189,8 +194,9 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
         LOGGER.debug("向终端{}发送检测指令", terminalId);
         try {
-            operateTerminal(terminalId, SendTerminalEventEnums.DETECT_TERMINAL, "");
-            //  发送成功后更新记录开始检测时间及状态
+            operateTerminal(terminalId, SendTerminalEventEnums.DETECT_TERMINAL, "",
+                    BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_DETECT);
+            // 发送成功后更新记录开始检测时间及状态
             updateDetectState(detection.getId(), DetectStateEnums.CHECKING);
         } catch (BusinessException e) {
             LOGGER.error("向终端" + terminalId + "发送检测指令失败", e);
@@ -207,7 +213,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         terminalDetectionDAO.save(updateEntity);
     }
 
-    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data)
+    private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data, String operateActionKey)
             throws BusinessException {
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
@@ -219,7 +225,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
-                    new String[] {terminalId});
+                    new String[] {LocaleI18nResolver.resolve(operateActionKey, new String[]{})});
         }
     }
 
