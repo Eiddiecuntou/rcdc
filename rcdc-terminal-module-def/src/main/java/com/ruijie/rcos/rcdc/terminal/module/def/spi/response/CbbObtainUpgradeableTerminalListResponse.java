@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.spi.response;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.UpgradeableTerminalListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
@@ -13,17 +13,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  */
 public class CbbObtainUpgradeableTerminalListResponse extends DefaultResponse {
 
-    private UpgradeableTerminalListDTO[] terminalArr;
+    private CbbUpgradeableTerminalListDTO[] terminalArr;
 
     private int pageSize;
 
     private int totalCount;
 
-    public UpgradeableTerminalListDTO[] getTerminalArr() {
+    public CbbUpgradeableTerminalListDTO[] getTerminalArr() {
         return terminalArr;
     }
 
-    public void setTerminalArr(UpgradeableTerminalListDTO[] terminalArr) {
+    public void setTerminalArr(CbbUpgradeableTerminalListDTO[] terminalArr) {
         this.terminalArr = terminalArr;
     }
 

@@ -109,4 +109,11 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     @Query("update TerminalEntity set state=?1,lastOfflineTime=?2,version=version+1 where terminalId=?3 and version=?4")
     int modifyTerminalStateOffline(CbbTerminalStateEnums state, Date lastOfflineTime, String terminalId, Integer version);
 
+    /**
+     *  根据分组id查询终端
+     *
+     * @param groupId 分组id
+     * @return 终端列表
+     */
+    List<TerminalEntity> findByGroupId(UUID groupId);
 }

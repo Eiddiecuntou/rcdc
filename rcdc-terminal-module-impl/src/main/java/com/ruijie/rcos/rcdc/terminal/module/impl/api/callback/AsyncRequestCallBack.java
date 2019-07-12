@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.api;
+package com.ruijie.rcos.rcdc.terminal.module.impl.api.callback;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;

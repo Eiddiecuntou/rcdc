@@ -22,7 +22,7 @@ import org.springframework.data.domain.Page;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.UpgradeableTerminalListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
@@ -550,7 +550,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         CbbObtainUpgradeableTerminalListResponse response = new CbbObtainUpgradeableTerminalListResponse();
         response.setPageSize(99);
         response.setTotalCount(101);
-        UpgradeableTerminalListDTO[] terminalArr = new UpgradeableTerminalListDTO[]{};
+        CbbUpgradeableTerminalListDTO[] terminalArr = new CbbUpgradeableTerminalListDTO[]{};
         response.setTerminalArr(terminalArr);
 
         new Expectations() {
@@ -559,7 +559,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = response;
             }
         };
-        DefaultPageResponse<UpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.listUpgradeableTerminal(request);
+        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.listUpgradeableTerminal(request);
         assertEquals(Status.SUCCESS, pageResponse.getStatus());
         assertEquals(pageResponse.getTotal(), response.getTotalCount());
         assertEquals(pageResponse.getItemArr(), terminalArr);

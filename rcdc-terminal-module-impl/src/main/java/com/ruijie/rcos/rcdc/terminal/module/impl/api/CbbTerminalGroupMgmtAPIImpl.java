@@ -5,14 +5,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import com.google.common.base.Objects;
-import com.ruijie.rcos.rcdc.rco.module.impl.entity.TerminalGroupEntity;
-import com.ruijie.rcos.rcdc.rco.module.impl.service.TerminalGroupService;
-import com.ruijie.rcos.rcdc.rco.module.impl.tx.TerminalGroupServiceTx;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.TerminalGroupMgmtAPI;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
@@ -21,7 +23,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.CreateTermi
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.DeleteTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.EditTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.GetTerminalGroupCompleteTreeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.GetTerminalGroupTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.TerminalGroupIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.terminal.CheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.terminal.GetTerminalGroupTreeResponse;
@@ -42,9 +43,9 @@ import com.ruijie.rcos.sk.modulekit.api.tx.DtxBusizContext;
  * 
  * @author chenzj
  */
-public class TerminalGroupMgmtAPIImpl implements TerminalGroupMgmtAPI {
+public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalGroupMgmtAPIImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalGroupMgmtAPIImpl.class);
 
     @Autowired
     private TerminalGroupService terminalGroupService;
@@ -147,26 +148,6 @@ public class TerminalGroupMgmtAPIImpl implements TerminalGroupMgmtAPI {
     }
 
     @Override
-    public GetTerminalGroupTreeResponse loadTerminalGroupTree(GetTerminalGroupTreeRequest request)
-            throws BusinessException {
-        Assert.notNull(request, "request can not be null");
-
-        UUID parentGroupId = request.getParentGroupId();
-        List<TerminalGroupEntity> groupList =
-                terminalGroupService.findByTerminalTypeAndParentId(request.getTerminalType(), parentGroupId);
-        int size = groupList == null ? 0 : groupList.size();
-        TerminalGroupTreeNodeDTO[] dtoArr = new TerminalGroupTreeNodeDTO[size];
-        Stream.iterate(0, i -> i + 1).limit(size).forEach(i -> {
-            TerminalGroupEntity entity = groupList.get(i);
-            TerminalGroupTreeNodeDTO dto = new TerminalGroupTreeNodeDTO();
-            entity.converToDTO(dto);
-            dtoArr[i] = dto;
-        });
-
-        return new GetTerminalGroupTreeResponse(dtoArr);
-    }
-
-    @Override
     public CheckGroupNameDuplicationResponse checkNameDuplication(CheckGroupNameDuplicationRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
@@ -226,7 +207,8 @@ public class TerminalGroupMgmtAPIImpl implements TerminalGroupMgmtAPI {
     @Override
     public DefaultResponse deleteTerminalGroup(DeleteTerminalGroupRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        terminalGroupServiceTx.deleteGroupById(request.getId(), request.getMoveGroupId());
+
+        terminalGroupServiceTx.deleteGroup(request.getId(), request.getMoveGroupId());
         return DefaultResponse.Builder.success();
     }
 

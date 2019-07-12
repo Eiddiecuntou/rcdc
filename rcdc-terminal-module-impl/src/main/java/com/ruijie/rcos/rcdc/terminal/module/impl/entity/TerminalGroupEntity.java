@@ -26,7 +26,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
  * @author chenzj
  */
 @Entity
-@Table(name = "t_rco_terminal_group")
+@Table(name = "t_cbb_terminal_group")
 public class TerminalGroupEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

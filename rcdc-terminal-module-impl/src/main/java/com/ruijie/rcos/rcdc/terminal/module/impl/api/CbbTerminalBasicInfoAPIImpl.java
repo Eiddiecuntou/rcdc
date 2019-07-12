@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
@@ -7,7 +8,6 @@ import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -72,21 +72,26 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     }
 
     @Override
-    public DefaultResponse modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException {
-        Assert.notNull(request, "TerminalNameRequest不能为null");
-        String terminalId = request.getTerminalId();
-        try {
-            basicInfoService.modifyTerminalName(terminalId, request.getTerminalName());
-            // 在线情况下方可修改终端名称
-            int version = getVersion(terminalId);
-            int effectRow = basicInfoDAO.modifyTerminalName(terminalId, version, request.getTerminalName());
-            if (effectRow == 0) {
-                throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+    public DefaultResponse modifyTerminal(CbbModifyTerminalRequest request) throws BusinessException {
+        Assert.notNull(request, "request不能为空");
+
+        String terminalId = request.getCbbTerminalId();
+        TerminalEntity entity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+
+        // 终端名称有变更，发送名称变更消息给终端
+        if (!request.getTerminalName().equals(entity.getTerminalName())) {
+            try {
+                basicInfoService.modifyTerminalName(terminalId, request.getTerminalName());
+            } catch (BusinessException e) {
+                LOGGER.error("修改终端名称失败，terminaId:" + terminalId, e);
+                throw e;
             }
-        } catch (BusinessException e) {
-            LOGGER.error("修改终端名称状态失败，terminaId:" + terminalId, e);
-            throw e;
         }
+
+        entity.setGroupId(request.getGroupId());
+        entity.setTerminalName(request.getTerminalName());
+        basicInfoDAO.save(entity);
+
         return DefaultResponse.Builder.success();
     }
 

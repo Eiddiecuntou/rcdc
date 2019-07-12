@@ -86,28 +86,10 @@ public interface TerminalGroupService {
     String[] getTerminalGroupNameArr(UUID groupId) throws BusinessException;
 
     /**
-     * 校验分组层级数是否超出限制
-     *
-     * @param parentGroupId 父级分组数
-     * @param groupId 分组id
-     * @throws BusinessException 业务异常
-     */
-    void checkGroupLevel(@Nullable UUID parentGroupId, UUID groupId) throws BusinessException;
-
-    /**
-     * 获取分组层级
+     *  删除分组
      *
      * @param groupId 分组id
-     * @return 分组分组
-     * @throws BusinessException 业务异常
+     * @throws BusinessException
      */
-    int getGroupHierarchy(UUID groupId) throws BusinessException;
-
-    /**
-     * 获取分组子分组层级(包含自身)
-     *
-     * @param groupId 分组id
-     * @return 子分组层级
-     */
-    int getSubHierarchy(UUID groupId);
+    void deleteGroup(UUID groupId) throws BusinessException;
 }

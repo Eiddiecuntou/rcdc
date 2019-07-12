@@ -18,8 +18,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
  * @author Jarman
  */
 @Entity
-@Table(name = "t_cbb_terminal")
-public class TerminalEntity {
+@Table(name = "v_cbb_upgradeable_terminal")
+public class ViewUpgradeableTerminalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -83,6 +83,8 @@ public class TerminalEntity {
 
     @Enumerated(EnumType.STRING)
     private CbbTerminalStateEnums state;
+
+    private Date lastUpgradeTime;
 
     private UUID groupId;
 
@@ -309,6 +311,14 @@ public class TerminalEntity {
 
     public void setState(CbbTerminalStateEnums state) {
         this.state = state;
+    }
+
+    public Date getLastUpgradeTime() {
+        return lastUpgradeTime;
+    }
+
+    public void setLastUpgradeTime(Date lastUpgradeTime) {
+        this.lastUpgradeTime = lastUpgradeTime;
     }
 
     public UUID getGroupId() {

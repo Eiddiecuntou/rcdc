@@ -18,14 +18,14 @@ import com.ruijie.rcos.sk.modulekit.api.tx.Rollback;
 
 /**
  * 
- * Description: 用户组API接口
+ * Description: 终端组API接口
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2018年10月30日
+ * Create Time: 2018年07月08日
  * 
- * @author chenzj
+ * @author nt
  */
-public interface TerminalGroupMgmtAPI {
+public interface CbbTerminalGroupMgmtAPI {
     
     
     /**
@@ -37,16 +37,6 @@ public interface TerminalGroupMgmtAPI {
      */
     @NoRollback
     GetTerminalGroupTreeResponse loadTerminalGroupCompleteTree(GetTerminalGroupCompleteTreeRequest request) throws BusinessException;
-
-    /**
-     * 加载终端组树形结构(单层)
-     * 
-     * @param request 加载终端树
-     * @return UserGroupTreeResponse 终端组DTO
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    GetTerminalGroupTreeResponse loadTerminalGroupTree(GetTerminalGroupTreeRequest request) throws BusinessException;
     
     /**
      * 检验终端分组名称是否同级重复
@@ -63,7 +53,7 @@ public interface TerminalGroupMgmtAPI {
      * 加载指定id终端组对象
      * 
      * @param request 请求参数id
-     * @return UserGroupTreeResponse 终端组DTO
+     * @return TerminalGroupResponse 终端组DTO
      * @throws BusinessException 业务异常
      */
     @NoRollback
@@ -103,6 +93,5 @@ public interface TerminalGroupMgmtAPI {
      */
     @NoRollback
     DefaultResponse deleteTerminalGroup(DeleteTerminalGroupRequest request) throws BusinessException;
-
 
 }

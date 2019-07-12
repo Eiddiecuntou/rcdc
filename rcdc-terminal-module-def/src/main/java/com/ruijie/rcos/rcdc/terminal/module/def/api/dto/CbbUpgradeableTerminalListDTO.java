@@ -14,7 +14,7 @@ import java.util.UUID;
  * 
  * @author nt
  */
-public class UpgradeableTerminalListDTO {
+public class CbbUpgradeableTerminalListDTO {
 
     /**
      * 终端id
