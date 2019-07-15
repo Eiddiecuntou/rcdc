@@ -76,7 +76,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         Assert.notNull(request, "request不能为空");
 
         String terminalId = request.getCbbTerminalId();
-        TerminalEntity entity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        TerminalEntity entity = getTerminalEntity(terminalId);
 
         // 终端名称有变更，发送名称变更消息给终端
         if (!request.getTerminalName().equals(entity.getTerminalName())) {

@@ -36,6 +36,13 @@ public class GroupHierarchyChecker {
     @Autowired
     private TerminalGroupDAO terminalGroupDAO;
 
+    /**
+     *  分组层级校验
+     *
+     * @param groupId 分组id
+     * @param addHierarchy 添加的层级
+     * @throws BusinessException 业务异常
+     */
     public void check(@Nullable UUID groupId, int addHierarchy) throws BusinessException {
         int groupHierarchy = getGroupHierarchy(groupId);
         LOGGER.info("分组层级为:[{}]", groupHierarchy);
@@ -75,7 +82,7 @@ public class GroupHierarchyChecker {
         return childList;
     }
 
-    public int getGroupHierarchy(@Nullable UUID groupId) throws BusinessException {
+    private int getGroupHierarchy(@Nullable UUID groupId) throws BusinessException {
         if (groupId == null) {
             return 0;
         }

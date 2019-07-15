@@ -76,11 +76,4 @@ public interface TerminalGroupService {
      */
     String[] getTerminalGroupNameArr(UUID groupId) throws BusinessException;
 
-    /**
-     *  删除分组
-     *
-     * @param groupId 分组id
-     * @throws BusinessException
-     */
-    void deleteGroup(UUID groupId) throws BusinessException;
 }

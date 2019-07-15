@@ -264,11 +264,4 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         return terminalGroupDAO.findByTerminalType(terminalType);
     }
 
-    @Override
-    public void deleteGroup(UUID groupId) throws BusinessException {
-        Assert.notNull(groupId, "groupId can not be null");
-
-        checkGroupExist(groupId);
-        terminalGroupDAO.deleteById(groupId);
-    }
 }

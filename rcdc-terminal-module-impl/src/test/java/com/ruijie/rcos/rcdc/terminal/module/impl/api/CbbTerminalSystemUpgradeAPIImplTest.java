@@ -44,6 +44,9 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 
 import mockit.*;
 import mockit.integration.junit4.JMockit;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 /**
  * 
@@ -94,8 +97,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     private UpgradeTerminalLockManager lockManager;
 
     @Injectable
-    private CbbObtainUpgradeableTerminalListSPI obtainUpgradeableTerminalListSPI;
-
+    private QueryUpgradeableTerminalListService upgradeableTerminalListService;
     /**
      * 测试升级包上传，参数为空
      * 
@@ -547,21 +549,20 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         CbbUpgradeableTerminalPageSearchRequest request = new CbbUpgradeableTerminalPageSearchRequest(new PageWebRequest());
 
 
-        CbbObtainUpgradeableTerminalListResponse response = new CbbObtainUpgradeableTerminalListResponse();
-        response.setPageSize(99);
-        response.setTotalCount(101);
-        CbbUpgradeableTerminalListDTO[] terminalArr = new CbbUpgradeableTerminalListDTO[]{};
-        response.setTerminalArr(terminalArr);
+        List<ViewUpgradeableTerminalEntity> entityList = new ArrayList<>();
+        entityList.add(new ViewUpgradeableTerminalEntity());
+        Pageable pageable = PageRequest.of(1, 10);
+        Page<ViewUpgradeableTerminalEntity> upgradeableTerminalPage = new PageImpl<>(entityList, pageable, 100);
 
         new Expectations() {
             {
-                obtainUpgradeableTerminalListSPI.obtainUpgradeableTerminal((CbbObtainUpgradeableTerminalListRequest) any);
-                result = response;
+                upgradeableTerminalListService.pageQuery((PageSearchRequest) any, ViewUpgradeableTerminalEntity.class);
+                result = upgradeableTerminalPage;
             }
         };
         DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.listUpgradeableTerminal(request);
         assertEquals(Status.SUCCESS, pageResponse.getStatus());
-        assertEquals(pageResponse.getTotal(), response.getTotalCount());
-        assertEquals(pageResponse.getItemArr(), terminalArr);
+        assertEquals(pageResponse.getTotal(), upgradeableTerminalPage.getTotalElements());
+        assertEquals(pageResponse.getItemArr().length, upgradeableTerminalPage.getContent().size());
     }
 }

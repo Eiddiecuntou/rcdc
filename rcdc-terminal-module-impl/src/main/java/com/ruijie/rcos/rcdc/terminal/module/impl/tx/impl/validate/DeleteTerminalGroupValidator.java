@@ -47,6 +47,13 @@ public class DeleteTerminalGroupValidator {
     @Autowired
     private GroupNameDuplicationChecker groupNameDuplicationChecker;
 
+    /**
+     *  删除终端分组校验
+     *
+     * @param groupId 删除分组id
+     * @param moveGroupId 移动分组id
+     * @throws BusinessException 业务异常
+     */
     public void validate (UUID groupId, @Nullable UUID moveGroupId) throws BusinessException {
         Assert.notNull(groupId, "delete group id can not be null");
 

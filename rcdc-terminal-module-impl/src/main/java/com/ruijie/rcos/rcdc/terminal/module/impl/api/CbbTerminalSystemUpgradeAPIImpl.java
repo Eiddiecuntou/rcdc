@@ -95,9 +95,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private CbbTerminalSystemUpgradePackageAPI systemUpgradePackageAPI;
 
     @Autowired
-    private CbbObtainUpgradeableTerminalListSPI obtainUpgradeableTerminalListSPI;
-
-    @Autowired
     private SystemUpgradeFileClearHandler upgradeFileClearHandler;
 
     @Autowired

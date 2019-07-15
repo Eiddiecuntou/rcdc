@@ -24,6 +24,13 @@ public class GroupNameDuplicationChecker {
     @Autowired
     private TerminalGroupDAO terminalGroupDAO;
 
+    /**
+     *  分组重名校验
+     *
+     * @param groupEntity 父分组实体对象
+     * @param groupName 分组名称
+     * @throws BusinessException 业务异常
+     */
     public void check(TerminalGroupEntity groupEntity, String groupName) throws BusinessException {
         Assert.notNull(groupEntity, "groupEntity can not be null");
         Assert.notNull(groupEntity.getTerminalType(), "group type can not be null");
