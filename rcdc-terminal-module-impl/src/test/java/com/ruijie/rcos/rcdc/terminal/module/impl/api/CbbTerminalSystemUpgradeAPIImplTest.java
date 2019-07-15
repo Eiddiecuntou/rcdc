@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbObtainUpgradeableTerminalListSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbObtainUpgradeableTerminalListRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.response.CbbObtainUpgradeableTerminalListResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
