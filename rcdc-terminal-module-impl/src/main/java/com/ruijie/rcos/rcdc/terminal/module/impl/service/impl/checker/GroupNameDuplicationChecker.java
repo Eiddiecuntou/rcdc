@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -19,6 +20,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
  *
  * @author nt
  */
+@Service
 public class GroupNameDuplicationChecker {
 
     @Autowired

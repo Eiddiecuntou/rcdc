@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
@@ -21,6 +22,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
  *
  * @author nt
  */
+@Service
 public class GroupSubNumChecker {
 
     @Autowired
