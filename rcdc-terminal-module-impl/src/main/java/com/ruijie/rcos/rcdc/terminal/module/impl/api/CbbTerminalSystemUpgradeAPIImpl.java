@@ -368,7 +368,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private void convertPackageId(List<MatchEqual> matchEqualList) throws BusinessException {
         for (MatchEqual matchEqual : matchEqualList) {
             if ("packageId".equals(matchEqual.getName())) {
-                UUID packageId = UUID.fromString((String) matchEqual.getValueArr()[0]);
+                UUID packageId = (UUID) matchEqual.getValueArr()[0];
                 TerminalSystemUpgradePackageEntity packageEntity = getUpgradePackageEntity(packageId);
                 matchEqual.setName("platform");
                 matchEqual.setValueArr(new TerminalPlatformEnums[] {packageEntity.getPackageType()});
