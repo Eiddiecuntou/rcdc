@@ -1,4 +1,14 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -9,15 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.vo.TreeNode;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Description: 分组层级校验器

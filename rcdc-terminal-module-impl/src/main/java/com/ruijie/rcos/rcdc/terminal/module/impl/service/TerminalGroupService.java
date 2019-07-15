@@ -41,15 +41,6 @@ public interface TerminalGroupService {
      */
     TerminalGroupEntity getTerminalGroup(UUID uuid) throws BusinessException;
 
-    /**
-     * 根据终端类型与父节点id加载直接子节点
-     * 
-     * @param terminalType 终端类型
-     * @param parentGroupId 父级分组id
-     * @return 直接下级分组列表
-     * @throws BusinessException 业务异常
-     */
-    List<TerminalGroupEntity> findByTerminalTypeAndParentId(TerminalTypeEnums terminalType, UUID parentGroupId) throws BusinessException;
 
     /**
      * 判断分组名称是否同级唯一

@@ -2,11 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.util.*;
 
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.vo.TreeNode;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker.GroupHierarchyChecker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -17,9 +13,13 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupHierarchyChecker;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupSubNumChecker;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupTotalNumChecker;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Description: 终端分组service
@@ -39,6 +39,12 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
 
     @Autowired
     private GroupHierarchyChecker groupHierarchyChecker;
+
+    @Autowired
+    private GroupSubNumChecker groupSubNumChecker;
+
+    @Autowired
+    private GroupTotalNumChecker groupTotalNumChecker;
 
     @Override
     public void saveTerminalGroup(TerminalGroupDTO terminalGroup) throws BusinessException {
@@ -72,28 +78,22 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     }
 
     @Override
-    public List<TerminalGroupEntity> findByTerminalTypeAndParentId(TerminalTypeEnums terminalType, @Nullable UUID parentGroupId)
-            throws BusinessException {
-        Assert.notNull(terminalType, "terminal type can not be null");
-
-        if (parentGroupId != null) {
-            checkGroupExist(parentGroupId);
-        }
-        return terminalGroupDAO.findByTerminalTypeAndParentId(terminalType, parentGroupId);
-    }
-
-
-    @Override
     public boolean checkGroupNameUnique(TerminalGroupDTO terminalGroup) throws BusinessException {
         Assert.notNull(terminalGroup, "terminal group can not be null");
+        Assert.hasText(terminalGroup.getGroupName(), "terminal group name can not be blank");
+        Assert.notNull(terminalGroup.getTerminalType(), "terminal type can not be null");
 
         String groupName = terminalGroup.getGroupName();
-        Assert.notNull(groupName, "terminal group can not be null");
-        UUID id = terminalGroup.getId();
+        UUID groupId = terminalGroup.getId();
         UUID parentGroupId = terminalGroup.getParentGroupId();
-        List<TerminalGroupEntity> subList = findByTerminalTypeAndParentId(terminalGroup.getTerminalType(), parentGroupId);
+        List<TerminalGroupEntity> subList =
+                terminalGroupDAO.findByTerminalTypeAndParentId(terminalGroup.getTerminalType(), parentGroupId);
+        if (CollectionUtils.isEmpty(subList)) {
+            return true;
+        }
+
         for (TerminalGroupEntity group : subList) {
-            if (id != null && id.equals(group.getId())) {
+            if (groupId != null && groupId.equals(group.getId())) {
                 // 编辑排除自身
                 continue;
             }
@@ -154,11 +154,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
      */
     private void checkGroupNum(TerminalTypeEnums terminalType) throws BusinessException {
         // 校验分组总数是否超出限制
-        long count = terminalGroupDAO.countByTerminalType(terminalType);
-        if (count >= Constants.TERMINAL_GROUP_MAX_GROUP_NUM) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_NUM_EXCEED_LIMIT,
-                    String.valueOf(Constants.TERMINAL_GROUP_MAX_GROUP_NUM));
-        }
+        groupTotalNumChecker.check(terminalType, 1);
     }
 
     /**
@@ -169,12 +165,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
      * @throws BusinessException 业务异常
      */
     private void checkSubGroupNum(TerminalTypeEnums terminalType, UUID parentGroupId) throws BusinessException {
-        // 校验子分组数是否超出限制
-        long subCount = terminalGroupDAO.countByTerminalTypeAndParentId(terminalType, parentGroupId);
-        if (subCount >= Constants.TERMINAL_GROUP_MAX_SUB_GROUP_NUM) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_SUB_GROUP_NUM_EXCEED_LIMIT,
-                    String.valueOf(Constants.TERMINAL_GROUP_MAX_SUB_GROUP_NUM));
-        }
+        groupSubNumChecker.check(obtainGroupEntity(parentGroupId, terminalType), 1);
     }
 
     /**
@@ -254,6 +245,17 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
      */
     private void checkGroupLevel(UUID parentGroupId, int addHerarchy) throws BusinessException {
         groupHierarchyChecker.check(parentGroupId, addHerarchy);
+    }
+
+    private TerminalGroupEntity obtainGroupEntity(UUID parentGroupId, TerminalTypeEnums terminalType)
+            throws BusinessException {
+        if (parentGroupId == null) {
+            TerminalGroupEntity groupEntity = new TerminalGroupEntity();
+            groupEntity.setTerminalType(terminalType);
+            return groupEntity;
+        }
+
+        return checkGroupExist(parentGroupId);
     }
 
     @Override

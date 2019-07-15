@@ -1,15 +1,15 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Description: 分组名称重复校验器

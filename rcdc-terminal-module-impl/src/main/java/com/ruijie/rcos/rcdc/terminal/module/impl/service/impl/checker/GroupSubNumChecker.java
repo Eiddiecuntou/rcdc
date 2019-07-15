@@ -1,4 +1,9 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker;
+
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -6,10 +11,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-
-import java.util.UUID;
 
 /**
  * Description: 分组子分组数量校验器

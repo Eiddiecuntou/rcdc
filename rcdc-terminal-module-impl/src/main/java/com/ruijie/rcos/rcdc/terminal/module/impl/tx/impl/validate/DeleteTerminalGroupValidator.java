@@ -1,5 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
 import com.google.common.base.Objects;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -7,18 +16,10 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker.GroupHierarchyChecker;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker.GroupNameDuplicationChecker;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker.GroupSubNumChecker;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupHierarchyChecker;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupNameDuplicationChecker;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupSubNumChecker;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Description: Function Description
@@ -113,16 +114,22 @@ public class DeleteTerminalGroupValidator {
             return;
         }
 
+        TerminalGroupEntity moveGroupEntity = obtainMoveGroupEntity(moveGroupId, terminalType);
         for (TerminalGroupEntity subGroup : subGroupList) {
-            List<TerminalGroupEntity> findGroupList = terminalGroupDAO
-                    .findByTerminalTypeAndParentIdAndName(terminalType, moveGroupId, subGroup.getName());
-            if (CollectionUtils.isEmpty(findGroupList)) {
-                continue;
-            }
-            throw new BusinessException(
-                    BusinessKey.RCDC_DELETE_TERMINAL_GROUP_SUB_GROUP_HAS_DUPLICATION_WITH_MOVE_GROUP);
+            groupNameDuplicationChecker.check(moveGroupEntity, subGroup.getName());
         }
 
+    }
+
+    private TerminalGroupEntity obtainMoveGroupEntity(UUID moveGroupId, TerminalTypeEnums terminalType)
+            throws BusinessException {
+        if (moveGroupId == null) {
+            TerminalGroupEntity groupEntity = new TerminalGroupEntity();
+            groupEntity.setTerminalType(terminalType);
+            return groupEntity;
+        }
+
+        return terminalGroupService.checkGroupExist(moveGroupId);
     }
 
     /**
