@@ -8,6 +8,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker.GroupHierarchyChecker;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker.GroupNameDuplicationChecker;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.checker.GroupSubNumChecker;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -37,6 +39,12 @@ public class DeleteTerminalGroupValidator {
 
     @Autowired
     private GroupHierarchyChecker groupHierarchyChecker;
+
+    @Autowired
+    private GroupSubNumChecker groupSubNumChecker;
+
+    @Autowired
+    private GroupNameDuplicationChecker groupNameDuplicationChecker;
 
     public void validate (UUID groupId, @Nullable UUID moveGroupId) throws BusinessException {
         Assert.notNull(groupId, "delete group id can not be null");
@@ -87,17 +95,9 @@ public class DeleteTerminalGroupValidator {
         if (Objects.equal(moveGroupId, Constants.DEFAULT_TERMINAL_GROUP_UUID)) {
             return;
         }
-        TerminalTypeEnums terminalType = groupEntity.getTerminalType();
-        long totalSubGroupNum =
-                getSubGroupNum(terminalType, groupEntity.getId()) + getSubGroupNum(terminalType, moveGroupId);
-        if (totalSubGroupNum > Constants.TERMINAL_GROUP_MAX_SUB_GROUP_NUM) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_SUB_GROUP_NUM_EXCEED_LIMIT,
-                    String.valueOf(Constants.TERMINAL_GROUP_MAX_SUB_GROUP_NUM));
-        }
-    }
 
-    private long getSubGroupNum(TerminalTypeEnums terminalType, UUID id) {
-        return terminalGroupDAO.countByTerminalTypeAndParentId(terminalType, id);
+        groupSubNumChecker.check(groupEntity,
+                groupSubNumChecker.getSubGroupNum(groupEntity.getTerminalType(), moveGroupId));
     }
 
     private void checkSubGroupNameDuplication(TerminalGroupEntity groupEntity, UUID moveGroupId) throws BusinessException {
