@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.response.terminal;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.response.group;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
@@ -12,17 +12,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author chenzj
  */
-public class TerminalGroupResponse extends DefaultResponse {
+public class CbbTerminalGroupResponse extends DefaultResponse {
     
     /**
      * 终端分组dto
      */
     private TerminalGroupDTO terminalGroupDTO;
     
-    public TerminalGroupResponse() {
+    public CbbTerminalGroupResponse() {
     }
 
-    public TerminalGroupResponse(TerminalGroupDTO terminalGroupDTO) {
+    public CbbTerminalGroupResponse(TerminalGroupDTO terminalGroupDTO) {
         this.setStatus(Status.SUCCESS);
         this.terminalGroupDTO = terminalGroupDTO;
     }

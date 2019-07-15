@@ -1,15 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.CheckGroupNameDuplicationRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.CreateTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.DeleteTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.EditTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.GetTerminalGroupCompleteTreeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.GetTerminalGroupTreeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal.TerminalGroupIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.terminal.CheckGroupNameDuplicationResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.terminal.GetTerminalGroupTreeResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.terminal.TerminalGroupResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbCheckGroupNameDuplicationRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbCreateTerminalGroupRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.DtxBusizContext;
@@ -36,7 +36,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    GetTerminalGroupTreeResponse loadTerminalGroupCompleteTree(GetTerminalGroupCompleteTreeRequest request) throws BusinessException;
+    CbbGetTerminalGroupTreeResponse loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeRequest request) throws BusinessException;
     
     /**
      * 检验终端分组名称是否同级重复
@@ -46,18 +46,18 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CheckGroupNameDuplicationResponse checkNameDuplication(CheckGroupNameDuplicationRequest request) throws BusinessException;
+    CbbCheckGroupNameDuplicationResponse checkNameDuplication(CbbCheckGroupNameDuplicationRequest request) throws BusinessException;
 
 
     /**
      * 加载指定id终端组对象
      * 
      * @param request 请求参数id
-     * @return TerminalGroupResponse 终端组DTO
+     * @return CbbTerminalGroupResponse 终端组DTO
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    TerminalGroupResponse loadById(TerminalGroupIdRequest request) throws BusinessException;
+    CbbTerminalGroupResponse loadById(CbbTerminalGroupIdRequest request) throws BusinessException;
 
     /**
      * @description 创建终端组，产品业务组件维护，一个事务中操作不需要callback
@@ -66,7 +66,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     @Rollback(rollbackBy = "rollbackCreateTerminalGroup")
-    DefaultResponse createTerminalGroup(CreateTerminalGroupRequest request) throws BusinessException;
+    DefaultResponse createTerminalGroup(CbbCreateTerminalGroupRequest request) throws BusinessException;
 
     /**
      * 创建终端组失败时处理需要回滚的业务
@@ -83,7 +83,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse editTerminalGroup(EditTerminalGroupRequest request) throws BusinessException;
+    DefaultResponse editTerminalGroup(CbbEditTerminalGroupRequest request) throws BusinessException;
 
     /**
      * @description 删除终端组
@@ -92,6 +92,16 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常.
      */
     @NoRollback
-    DefaultResponse deleteTerminalGroup(DeleteTerminalGroupRequest request) throws BusinessException;
+    DefaultResponse deleteTerminalGroup(CbbDeleteTerminalGroupRequest request) throws BusinessException;
+
+    /**
+     *  获取终端分组路径数组
+     *
+     * @param request 请求参数
+     * @return 请求响应
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    CbbObtainGroupNamePathResponse obtainGroupNamePathArr(CbbTerminalGroupIdRequest request) throws BusinessException;
 
 }

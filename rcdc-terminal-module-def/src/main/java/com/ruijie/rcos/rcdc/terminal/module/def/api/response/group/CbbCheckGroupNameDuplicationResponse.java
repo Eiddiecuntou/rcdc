@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.response.terminal;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.response.group;
 
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
@@ -11,17 +11,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author nt
  */
-public class CheckGroupNameDuplicationResponse extends DefaultResponse {
+public class CbbCheckGroupNameDuplicationResponse extends DefaultResponse {
 
     /**
      * 是否唯一 true:唯一;  false:不唯一
      */
     private Boolean hasDuplication;
     
-    public CheckGroupNameDuplicationResponse() {
+    public CbbCheckGroupNameDuplicationResponse() {
     }
 
-    public CheckGroupNameDuplicationResponse(Boolean hasDuplication) {
+    public CbbCheckGroupNameDuplicationResponse(Boolean hasDuplication) {
         this.setStatus(Status.SUCCESS);
         this.hasDuplication = hasDuplication;
     }

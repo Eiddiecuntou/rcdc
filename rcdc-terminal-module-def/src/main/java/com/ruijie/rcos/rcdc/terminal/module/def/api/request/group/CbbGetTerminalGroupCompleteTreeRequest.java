@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.request.group;
 
 import java.util.UUID;
 import org.springframework.lang.Nullable;
@@ -15,7 +15,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-public class GetTerminalGroupCompleteTreeRequest implements Request {
+public class CbbGetTerminalGroupCompleteTreeRequest implements Request {
 
     @NotNull
     private TerminalTypeEnums terminalType;
@@ -26,10 +26,10 @@ public class GetTerminalGroupCompleteTreeRequest implements Request {
     @Nullable
     private UUID filterGroupId;
     
-    public GetTerminalGroupCompleteTreeRequest() {
+    public CbbGetTerminalGroupCompleteTreeRequest() {
     }
 
-    public GetTerminalGroupCompleteTreeRequest(TerminalTypeEnums terminalType, Boolean enableFilterDefaultGroup, UUID filterGroupId) {
+    public CbbGetTerminalGroupCompleteTreeRequest(TerminalTypeEnums terminalType, Boolean enableFilterDefaultGroup, UUID filterGroupId) {
         super();
         this.terminalType = terminalType;
         this.enableFilterDefaultGroup = enableFilterDefaultGroup;

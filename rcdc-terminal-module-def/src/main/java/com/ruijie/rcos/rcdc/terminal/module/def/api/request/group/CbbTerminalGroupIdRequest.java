@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.request.group;
 
 import java.util.UUID;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
@@ -13,7 +13,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author chenzj
  */
-public class TerminalGroupIdRequest implements Request {
+public class CbbTerminalGroupIdRequest implements Request {
 
     /**
      * 终端id
@@ -22,10 +22,10 @@ public class TerminalGroupIdRequest implements Request {
     private UUID id;
     
 
-    public TerminalGroupIdRequest() {
+    public CbbTerminalGroupIdRequest() {
     }
 
-    public TerminalGroupIdRequest(UUID id) {
+    public CbbTerminalGroupIdRequest(UUID id) {
         this.id = id;
     }
 

@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.request.group;
 
 import java.util.UUID;
 import org.springframework.lang.Nullable;
@@ -14,7 +14,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-public class CheckGroupNameDuplicationRequest implements Request {
+public class CbbCheckGroupNameDuplicationRequest implements Request {
 
     /**
      * 终端id
@@ -35,10 +35,10 @@ public class CheckGroupNameDuplicationRequest implements Request {
     private UUID parentGroupId;
     
 
-    public CheckGroupNameDuplicationRequest() {
+    public CbbCheckGroupNameDuplicationRequest() {
     }
 
-    public CheckGroupNameDuplicationRequest(UUID id, String groupName, UUID parentGroupId) {
+    public CbbCheckGroupNameDuplicationRequest(UUID id, String groupName, UUID parentGroupId) {
         this.id = id;
         this.groupName = groupName;
         this.parentGroupId = parentGroupId;

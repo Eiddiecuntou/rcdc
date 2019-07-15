@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.request.group;
 
 import java.util.UUID;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
@@ -15,7 +15,7 @@ import org.springframework.lang.Nullable;
  * 
  * @author chenzj
  */
-public class DeleteTerminalGroupRequest implements Request {
+public class CbbDeleteTerminalGroupRequest implements Request {
 
     /**
      * 分组id

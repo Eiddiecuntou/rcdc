@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.response.terminal;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.response.group;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
@@ -12,17 +12,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author nt
  */
-public class GetTerminalGroupTreeResponse extends DefaultResponse {
+public class CbbGetTerminalGroupTreeResponse extends DefaultResponse {
     
     /**
      * 终端分组树形结构数组
      */
     private TerminalGroupTreeNodeDTO[] itemArr;
     
-    public GetTerminalGroupTreeResponse() {
+    public CbbGetTerminalGroupTreeResponse() {
     }
 
-    public GetTerminalGroupTreeResponse(TerminalGroupTreeNodeDTO[] itemArr) {
+    public CbbGetTerminalGroupTreeResponse(TerminalGroupTreeNodeDTO[] itemArr) {
         this.setStatus(Status.SUCCESS);
         this.itemArr = itemArr;
     }

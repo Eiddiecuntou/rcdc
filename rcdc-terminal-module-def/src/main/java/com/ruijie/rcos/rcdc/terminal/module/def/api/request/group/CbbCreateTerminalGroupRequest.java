@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.request.terminal;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.request.group;
 
 import java.util.UUID;
 import org.springframework.lang.Nullable;
@@ -17,7 +17,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-public class CreateTerminalGroupRequest implements Request {
+public class CbbCreateTerminalGroupRequest implements Request {
 
     /**
      * 终端分组名称
@@ -40,15 +40,15 @@ public class CreateTerminalGroupRequest implements Request {
     
     
 
-    public CreateTerminalGroupRequest() {
+    public CbbCreateTerminalGroupRequest() {
     }
 
-    public CreateTerminalGroupRequest(String groupName, UUID parentGroupId) {
+    public CbbCreateTerminalGroupRequest(String groupName, UUID parentGroupId) {
         this.groupName = groupName;
         this.parentGroupId = parentGroupId;
     }
 
-    public CreateTerminalGroupRequest(String groupName, UUID parentGroupId, TerminalTypeEnums terminalType) {
+    public CbbCreateTerminalGroupRequest(String groupName, UUID parentGroupId, TerminalTypeEnums terminalType) {
         this.groupName = groupName;
         this.parentGroupId = parentGroupId;
         this.terminalType = terminalType;
