@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
@@ -39,16 +39,6 @@ public interface CbbTerminalBasicInfoAPI {
     CbbTerminalBasicInfoResponse findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
-     * 修改终端名称
-     *
-     * @param request 请求参数对象
-     * @return 返回成功失败状态
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    DefaultResponse modifyTerminalName(CbbTerminalNameRequest request) throws BusinessException;
-
-    /**
      * 修改终端网络配置
      *
      * @param request 请求参数对象
@@ -57,5 +47,15 @@ public interface CbbTerminalBasicInfoAPI {
      */
     @NoRollback
     DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException;
+
+    /**
+     *  编辑终端信息
+     *
+     * @param request 请求参数
+     * @return 请求结果
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    DefaultResponse modifyTerminal(CbbModifyTerminalRequest request) throws BusinessException;
 
 }

@@ -4,13 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Date;
+import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -233,8 +236,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
             {
                 try {
                     basicInfoService.modifyTerminalName(anyString, anyString);
-                    basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
-                    result = 1;
+                    basicInfoDAO.save((TerminalEntity) any);
                 } catch (BusinessException e) {
                     fail();
                 }
@@ -242,9 +244,11 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
 
         try {
-            CbbTerminalNameRequest request = new CbbTerminalNameRequest();
-            request.setTerminalId("123");
-            terminalBasicInfoAPI.modifyTerminalName(request);
+            CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+            request.setCbbTerminalId("123");
+            request.setGroupId(UUID.randomUUID());
+            request.setTerminalName("123");
+            terminalBasicInfoAPI.modifyTerminal(request);
         } catch (BusinessException e) {
             fail();
         }
@@ -266,9 +270,11 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
         try {
-            CbbTerminalNameRequest request = new CbbTerminalNameRequest();
-            request.setTerminalId("123");
-            terminalBasicInfoAPI.modifyTerminalName(request);
+            CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+            request.setCbbTerminalId("123");
+            request.setGroupId(UUID.randomUUID());
+            request.setTerminalName("123");
+            terminalBasicInfoAPI.modifyTerminal(request);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL, e.getKey());
@@ -296,9 +302,11 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
 
         try {
-            CbbTerminalNameRequest request = new CbbTerminalNameRequest();
-            request.setTerminalId("123");
-            terminalBasicInfoAPI.modifyTerminalName(request);
+            CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+            request.setCbbTerminalId("123");
+            request.setGroupId(UUID.randomUUID());
+            request.setTerminalName("123");
+            terminalBasicInfoAPI.modifyTerminal(request);
             fail();
         } catch (BusinessException e) {
             assertEquals("key", e.getKey());
@@ -312,39 +320,11 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
     }
 
-    /**
-     * 测试修改终端名称失败
-     */
-    @Test
-    public void testModifyTerminalNameFail() {
-        new Expectations() {
-            {
-                try {
-                    basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
-                    result = 0;
-                } catch (Exception e) {
-                    fail();
-                }
-            }
-        };
-
-        try {
-            CbbTerminalNameRequest request = new CbbTerminalNameRequest();
-            request.setTerminalId("123");
-            terminalBasicInfoAPI.modifyTerminalName(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
-        }
-
-        modifyNameVerifications();
-    }
-
     private void modifyNameVerifications() {
         new Verifications() {
             {
                 try {
-                    basicInfoDAO.modifyTerminalName(anyString, anyInt, anyString);
+                    basicInfoDAO.save((TerminalEntity) any);
                     times = 1;
 
                 } catch (Exception e) {

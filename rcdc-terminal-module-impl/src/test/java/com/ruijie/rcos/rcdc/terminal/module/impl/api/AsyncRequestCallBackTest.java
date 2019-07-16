@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.api.callback.AsyncRequestCallBack;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;

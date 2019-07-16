@@ -277,4 +277,19 @@ public interface BusinessKey {
      * 终端操作-修改终端名称
      */
     String RCDC_TERMINAL_OPERATE_ACTION_MODIFY_NAME = "rcdc_terminal_operate_action_modify_name";
+
+    /**
+     * 终端组模块
+     */
+    String RCDC_TERMINALGROUP_GROUP_NOT_EXIST = "rcdc_terminalgroup_group_not_exist";
+    String RCDC_TERMINALGROUP_GROUP_CAN_NOT_CREATE_IN_DEFAULT = "rcdc_terminalgroup_group_can_not_create_in_default";
+    String RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE = "rcdc_terminalgroup_group_name_duplicate";
+    String RCDC_TERMINALGROUP_GROUP_LEVEL_EXCEED_LIMIT = "rcdc_terminalgroup_group_level_exceed_limit";
+    String RCDC_TERMINALGROUP_GROUP_NUM_EXCEED_LIMIT = "rcdc_terminalgroup_group_num_exceed_limit";
+    String RCDC_TERMINALGROUP_SUB_GROUP_NUM_EXCEED_LIMIT = "rcdc_terminalgroup_sub_group_num_exceed_limit";
+    String RCDC_TERMINALGROUP_GROUP_CAN_NOT_DELETE_DEFAULT = "rcdc_terminal_group_can_not_delete_default";
+    String RCDC_TERMINALGROUP_GROUP_PARENT_CAN_NOT_SELECT_ITSELF = "rcdc_terminalgroup_group_parent_can_not_select_itself";
+    String RCDC_DELETE_TERMINAL_GROUP_SUB_GROUP_HAS_DUPLICATION_WITH_MOVE_GROUP =
+            "rcdc_delete_terminal_group_sub_group_has_duplication_with_move_group";
+
 }

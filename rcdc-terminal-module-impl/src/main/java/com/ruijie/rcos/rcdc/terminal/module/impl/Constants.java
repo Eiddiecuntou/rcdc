@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl;
 
+import java.util.UUID;
+
 /**
  * Description: 常量
  * Copyright: Copyright (c) 2018
@@ -159,5 +161,17 @@ public interface Constants {
     String ISO_IMG_MOUNT_PATH = "/opt/pxeuser/";
 
     String CURRENT_VERSION_GLOBAL_PARAM_KEY = "systemVersion";
+    
+    /** 终端默认分组UUID */
+    UUID DEFAULT_TERMINAL_GROUP_UUID = UUID.fromString("7769c0c6-473c-4d4c-9f47-5a62bdeb30ba");
+
+    /** 分组最大层级 */
+    int TERMINAL_GROUP_MAX_LEVEL = 9;
+
+    /** 终端组最大数量 */
+    int TERMINAL_GROUP_MAX_GROUP_NUM = 2000;
+
+    /** 终端组最大子分组数量 */
+    int TERMINAL_GROUP_MAX_SUB_GROUP_NUM = 200;
 
 }

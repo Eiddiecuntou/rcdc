@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.UpgradeableTerminalListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTaskUpgradeTerminalResponse;
@@ -88,7 +88,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultPageResponse<UpgradeableTerminalListDTO> listUpgradeableTerminal(
+    DefaultPageResponse<CbbUpgradeableTerminalListDTO> listUpgradeableTerminal(
             CbbUpgradeableTerminalPageSearchRequest apiRequest) throws BusinessException;
 
     /**

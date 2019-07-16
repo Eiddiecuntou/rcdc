@@ -24,13 +24,14 @@ public class CbbUpgradeableTerminalPageSearchRequest extends PageSearchRequest {
 
     @Override
     protected MatchEqual[] exactMatchConvert(ExactMatch[] exactMatchArr) {
-        Assert.notNull(exactMatchArr , "exactMatchArr must not be null");
+        Assert.notNull(exactMatchArr, "exactMatchArr must not be null");
         MatchEqual[] matchEqualArr = new MatchEqual[exactMatchArr.length];
 
         for (int i = 0; i < exactMatchArr.length; i++) {
             ExactMatch exactMatch = exactMatchArr[i];
             MatchEqual matchEqual = null;
             switch (exactMatch.getName()) {
+                case "packageId":
                 case "groupId":
                     String[] valueArr = exactMatch.getValueArr();
                     UUID[] idArr = new UUID[valueArr.length];
@@ -39,7 +40,7 @@ public class CbbUpgradeableTerminalPageSearchRequest extends PageSearchRequest {
                     }
                     matchEqual = new MatchEqual(exactMatch.getName(), idArr);
                     break;
-                default :
+                default:
                     matchEqual = new MatchEqual(exactMatch.getName(), exactMatch.getValueArr());
                     break;
             }
