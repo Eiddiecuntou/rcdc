@@ -292,4 +292,9 @@ public interface BusinessKey {
     String RCDC_DELETE_TERMINAL_GROUP_SUB_GROUP_HAS_DUPLICATION_WITH_MOVE_GROUP =
             "rcdc_delete_terminal_group_sub_group_has_duplication_with_move_group";
 
+    /*****************终端logo*******************/
+    String RCDC_TERMINAL_UPLOAD_LOGO_SUCCESS = "rcdc_terminal_upload_logo_success";
+    String RCDC_TERMINAL_UPLOAD_LOGO_FAIL = "rcdc_terminal_upload_logo_fail";
+    String RCDC_TERMINAL_OPERATE_ACTION_SEND_LOGO = "rcdc_terminal_operate_action_send_logo_url";
+
 }
