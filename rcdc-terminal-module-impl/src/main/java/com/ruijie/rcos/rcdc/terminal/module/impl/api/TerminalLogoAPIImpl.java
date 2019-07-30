@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.PreviewLogoRequ
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.UploadLogoRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.logo.PreviewLogoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -44,12 +45,13 @@ public class TerminalLogoAPIImpl implements TerminalLogoAPI {
         String logoName = request.getLogoName();
         String logoPath = request.getLogoPath();
         File logo = new File(logoPath);
-        if (checkLogo() != null) {
-            deleteLogo(checkLogo());
+        String srcLogoPath = globalParameterAPI.findParameter("terminalLogo");
+        if (srcLogoPath != null) {
+            deleteLogo(srcLogoPath);
         }
         String saveLogoPath = moveLogo(logo, logoName);
         globalParameterAPI.updateParameter("terminalLogo", saveLogoPath);
-        terminalLogoService.syncTerminalLogo(logoName);
+        terminalLogoService.syncTerminalLogo(logoName, SendTerminalEventEnums.UPDATE_TERMINAL_LOGO);
         return DefaultResponse.Builder.success();
     }
 
@@ -64,14 +66,21 @@ public class TerminalLogoAPIImpl implements TerminalLogoAPI {
     @Override
     public DefaultResponse initLogo(InitLogoRequest request) throws BusinessException {
         String logoPath = globalParameterAPI.findParameter("terminalLogo");
-        deleteLogo(logoPath);
-        globalParameterAPI.updateParameter("terminalLogo", null);
+        if (logoPath != null) {
+            File logo = new File(logoPath);
+            String logoName = logo.getName();
+            deleteLogo(logoPath);
+            globalParameterAPI.updateParameter("terminalLogo", null);
+            terminalLogoService.syncTerminalLogo(logoName, SendTerminalEventEnums.INIT_TERMINAL_LOGO);
+        }
         return DefaultResponse.Builder.success();
     }
 
     private String moveLogo(File logo, String logoName) throws BusinessException {
+        String saveLogoFile = configFacade.read("file.busiz.dir.terminal.logo");
         String saveLogoPath = configFacade.read("file.busiz.dir.terminal.logo") + logoName;
         File saveLogo = new File(saveLogoPath);
+        createLogoFile(saveLogoFile);
         try {
             Files.move(logo.toPath(), saveLogo.toPath());
             saveLogo.setReadable(true, false);
@@ -91,8 +100,13 @@ public class TerminalLogoAPIImpl implements TerminalLogoAPI {
         }
     }
 
-    private String checkLogo() {
-        String logoPath = globalParameterAPI.findParameter("terminalLogo");
-        return  logoPath;
+    private void createLogoFile(String logoPath) {
+        File logo = new File(logoPath);
+        if (!logo.exists()) {
+            logo.mkdir();
+            logo.setReadable(true, false);
+            logo.setExecutable(true, false);
+        }
+
     }
 }

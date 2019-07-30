@@ -64,4 +64,9 @@ public interface ShineAction {
      * 请求软件版本信息
      */
     String REQUEST_SOFTWARE_VERSION = "request_software_version";
+
+    /**
+     * 同步LOGO
+     */
+    String SYNC_TERMINAL_LOGO = "sync_terminal_logo";
 }

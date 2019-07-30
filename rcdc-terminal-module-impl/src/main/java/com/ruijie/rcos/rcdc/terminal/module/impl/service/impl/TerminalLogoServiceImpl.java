@@ -13,6 +13,8 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -37,19 +39,22 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
     @Autowired
     private SessionManager sessionManager;
 
+    @Autowired
+    private GlobalParameterAPI globalParameterAPI;
+
     private static final SkyengineScheduledThreadPoolExecutor NOTICE_HANDLER_THREAD_POOL =
             new SkyengineScheduledThreadPoolExecutor(1, TerminalLogoService.class.getName());
 
     @Override
-    public void syncTerminalLogo(String logoName) throws BusinessException {
+    public void syncTerminalLogo(String logoName, SendTerminalEventEnums name) throws BusinessException {
         Assert.hasText(logoName, "logoName不能为空");
         LOGGER.info("向在线终端下发Logo名");
-        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewLogoNameToOnlineTerminal(logoName));
+        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewLogoNameToOnlineTerminal(logoName, name));
 
 
     }
 
-    private void sendNewLogoNameToOnlineTerminal(String logoName) {
+    private void sendNewLogoNameToOnlineTerminal(String logoName, SendTerminalEventEnums name) {
         List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
         LOGGER.info("logo名为:" + logoName);
         if (CollectionUtils.isEmpty(onlineTerminalIdList)) {
@@ -60,10 +65,8 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
         for (String terminalId : onlineTerminalIdList) {
             SyncTerminalLogoRequest request = new SyncTerminalLogoRequest(logoName);
             try {
-                LOGGER.info("同步终端Logo:" + terminalId);
-                operateTerminal(terminalId, SendTerminalEventEnums.SYNC_TERMINAL_LOGO, request,
+                operateTerminal(terminalId, name, request,
                         BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_LOGO);
-                LOGGER.info("同步终端结束:" + terminalId);
             } catch (Exception e) {
                 LOGGER.error("send new logo name to terminal failed, terminalId[" + terminalId + "], logoName["
                         + logoName + "]", e);
@@ -74,20 +77,29 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
 
     private void operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object data, String operateActionKey)
             throws BusinessException {
-        LOGGER.info("terminalId为:" + terminalId);
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
         }
         Message message = new Message(Constants.SYSTEM_TYPE, terminalEvent.getName(), data);
         try {
-            LOGGER.info("发送Logo信息");
             sender.syncRequest(message);
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
                     new String[] {LocaleI18nResolver.resolve(operateActionKey, new String[]{})});
         }
+
+    }
+
+    @Override
+    public String getTerminalLogoName() throws BusinessException {
+        String logoPath = globalParameterAPI.findParameter("terminalLogo");
+        if (StringUtils.isBlank(logoPath)) {
+            return null;
+        }
+        String logoName = logoPath.substring(logoPath.lastIndexOf("/") + 1);
+        return logoName;
     }
 
 }
