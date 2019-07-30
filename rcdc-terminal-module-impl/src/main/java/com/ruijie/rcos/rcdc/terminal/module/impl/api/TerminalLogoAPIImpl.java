@@ -86,7 +86,7 @@ public class TerminalLogoAPIImpl implements TerminalLogoAPI {
             saveLogo.setReadable(true, false);
             saveLogo.setExecutable(true, false);
         } catch (IOException e) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPLOAD_LOGO_FAIL, e.getMessage());
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPLOAD_LOGO_FAIL, e);
         }
         return saveLogoPath;
     }
