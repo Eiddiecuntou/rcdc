@@ -1,12 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi.response;
 
 /**
- * Description:终端Logo
- * Copyright: Copyright (c) 2019
+ * 
+ * Description: Function Description
+ * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/7/22
- *
- * @author hs
+ * Create Time: 2019年7月30日
+ * 
+ * @author huangsen
  */
 public class TerminalLogo {
 

@@ -96,6 +96,7 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
     public String getTerminalLogoName() throws BusinessException {
         String logoPath = globalParameterAPI.findParameter("terminalLogo");
         if (StringUtils.isBlank(logoPath)) {
+            // 如果全局表没有保存Logo信息，则返回null
             return null;
         }
         String logoName = logoPath.substring(logoPath.lastIndexOf("/") + 1);
