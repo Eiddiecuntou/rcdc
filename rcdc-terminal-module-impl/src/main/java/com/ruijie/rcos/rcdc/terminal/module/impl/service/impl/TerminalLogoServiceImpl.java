@@ -1,12 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.SyncTerminalLogoRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -14,13 +21,6 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
 
 
 /**
@@ -42,8 +42,8 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
 
-    private static final SkyengineScheduledThreadPoolExecutor NOTICE_HANDLER_THREAD_POOL =
-            new SkyengineScheduledThreadPoolExecutor(1, TerminalLogoService.class.getName());
+    private static final ThreadExecutor NOTICE_HANDLER_THREAD_POOL =
+            ThreadExecutors.newBuilder(TerminalLogoService.class.getName()).maxThreadNum(1).queueSize(10).build();
 
     @Override
     public void syncTerminalLogo(String logoName, SendTerminalEventEnums name) throws BusinessException {
@@ -65,11 +65,9 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
         for (String terminalId : onlineTerminalIdList) {
             SyncTerminalLogoRequest request = new SyncTerminalLogoRequest(logoName);
             try {
-                operateTerminal(terminalId, name, request,
-                        BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_LOGO);
+                operateTerminal(terminalId, name, request, BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_LOGO);
             } catch (Exception e) {
-                LOGGER.error("send new logo name to terminal failed, terminalId[" + terminalId + "], logoName["
-                        + logoName + "]", e);
+                LOGGER.error("send new logo name to terminal failed, terminalId[" + terminalId + "], logoName[" + logoName + "]", e);
             }
         }
 
@@ -87,7 +85,7 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
-                    new String[]{LocaleI18nResolver.resolve(operateActionKey, new String[]{})});
+                    new String[] {LocaleI18nResolver.resolve(operateActionKey, new String[] {})});
         }
 
     }
