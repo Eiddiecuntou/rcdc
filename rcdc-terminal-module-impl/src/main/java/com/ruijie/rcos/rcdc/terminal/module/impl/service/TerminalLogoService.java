@@ -13,11 +13,13 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
  */
 public interface TerminalLogoService {
 
+    String TERMINAL_LOGO = "terminalLogo";
+
     /**
      * 上传终端Logo
      *
      * @param logoName Logo名字
-     * @param name 发送给终端的Action
+     * @param name     发送给终端的Action
      * @throws BusinessException 业务异常
      */
     void syncTerminalLogo(String logoName, SendTerminalEventEnums name) throws BusinessException;
@@ -26,8 +28,7 @@ public interface TerminalLogoService {
      * 获取终端Logo名
      *
      * @return 终端Logo名
-     * @throws BusinessException 业务异常
      */
-    String getTerminalLogoName() throws BusinessException;
+    String getTerminalLogoName();
 
 }

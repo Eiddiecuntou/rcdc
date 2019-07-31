@@ -41,8 +41,6 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
-    
-    private static final String TERMINAL_LOGO = "terminalLogo";
 
     private static final SkyengineScheduledThreadPoolExecutor NOTICE_HANDLER_THREAD_POOL =
             new SkyengineScheduledThreadPoolExecutor(1, TerminalLogoService.class.getName());
@@ -89,13 +87,13 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
-                    new String[] {LocaleI18nResolver.resolve(operateActionKey, new String[]{})});
+                    new String[]{LocaleI18nResolver.resolve(operateActionKey, new String[]{})});
         }
 
     }
 
     @Override
-    public String getTerminalLogoName() throws BusinessException {
+    public String getTerminalLogoName() {
         String logoPath = globalParameterAPI.findParameter(TERMINAL_LOGO);
         if (StringUtils.isBlank(logoPath)) {
             // 如果全局表没有保存Logo信息，则返回空

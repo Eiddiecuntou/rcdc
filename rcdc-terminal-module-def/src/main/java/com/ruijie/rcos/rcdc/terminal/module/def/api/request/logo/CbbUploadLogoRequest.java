@@ -9,7 +9,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年7月8日
- * 
+ *
  * @author huangsen
  */
 public class CbbUploadLogoRequest implements Request {
@@ -22,9 +22,6 @@ public class CbbUploadLogoRequest implements Request {
 
     @NotBlank
     private String logoMD5;
-
-    public CbbUploadLogoRequest() {
-    }
 
     public CbbUploadLogoRequest(String logoPath, String logoName, String logoMD5) {
         Assert.notNull(logoPath, "logoPath can not be null");

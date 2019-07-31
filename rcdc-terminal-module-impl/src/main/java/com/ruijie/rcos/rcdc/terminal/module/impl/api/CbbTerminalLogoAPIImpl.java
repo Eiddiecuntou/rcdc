@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLogoAPI;
@@ -25,7 +26,7 @@ import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年7月8日
- * 
+ *
  * @author huangsen
  */
 public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
@@ -38,8 +39,6 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
 
     @Autowired
     private TerminalLogoService terminalLogoService;
-    
-    private static final String TERMINAL_LOGO = "terminalLogo";
 
     @Override
     public DefaultResponse uploadLogo(CbbUploadLogoRequest request) throws BusinessException {
@@ -47,19 +46,19 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
         String logoName = request.getLogoName();
         String logoPath = request.getLogoPath();
         File logo = new File(logoPath);
-        String srcLogoPath = globalParameterAPI.findParameter(TERMINAL_LOGO);
+        String srcLogoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
         if (srcLogoPath != null) {
             deleteLogo(srcLogoPath);
         }
         String saveLogoPath = moveLogo(logo, logoName);
-        globalParameterAPI.updateParameter(TERMINAL_LOGO, saveLogoPath);
+        globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, saveLogoPath);
         terminalLogoService.syncTerminalLogo(logoName, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
         return DefaultResponse.Builder.success();
     }
 
     @Override
-    public CbbGetLogoPathResponse getLogoPath(CbbGetLogoPathRequest request) throws BusinessException {
-        String logoPath = globalParameterAPI.findParameter(TERMINAL_LOGO);
+    public CbbGetLogoPathResponse getLogoPath(CbbGetLogoPathRequest request) {
+        String logoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
         CbbGetLogoPathResponse response = new CbbGetLogoPathResponse();
         response.setLogoPath(logoPath);
         return response;
@@ -67,10 +66,10 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
 
     @Override
     public DefaultResponse initLogo(CbbInitLogoRequest request) throws BusinessException {
-        String logoPath = globalParameterAPI.findParameter(TERMINAL_LOGO);
+        String logoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
         if (logoPath != null) {
             deleteLogo(logoPath);
-            globalParameterAPI.updateParameter(TERMINAL_LOGO, null);
+            globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, null);
             terminalLogoService.syncTerminalLogo(StringUtils.EMPTY, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
         }
         return DefaultResponse.Builder.success();
