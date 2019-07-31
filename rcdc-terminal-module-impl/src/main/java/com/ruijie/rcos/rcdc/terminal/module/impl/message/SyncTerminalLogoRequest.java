@@ -15,6 +15,7 @@ public class SyncTerminalLogoRequest {
     private String logoName;
 
     public SyncTerminalLogoRequest(String logoName) {
+        Assert.notNull(logoName, "logoName can not be null");
         this.logoName = logoName;
     }
 
@@ -23,7 +24,6 @@ public class SyncTerminalLogoRequest {
     }
 
     public void setLogoName(String logoName) {
-        Assert.notNull(logoName, "logoName can not be null");
         this.logoName = logoName;
     }
 }
