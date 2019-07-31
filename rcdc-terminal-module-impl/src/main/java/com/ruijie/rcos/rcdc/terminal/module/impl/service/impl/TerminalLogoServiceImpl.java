@@ -41,6 +41,8 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
+    
+    private static final String TERMINAL_LOGO = "terminalLogo";
 
     private static final SkyengineScheduledThreadPoolExecutor NOTICE_HANDLER_THREAD_POOL =
             new SkyengineScheduledThreadPoolExecutor(1, TerminalLogoService.class.getName());
@@ -94,10 +96,10 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
 
     @Override
     public String getTerminalLogoName() throws BusinessException {
-        String logoPath = globalParameterAPI.findParameter("terminalLogo");
+        String logoPath = globalParameterAPI.findParameter(TERMINAL_LOGO);
         if (StringUtils.isBlank(logoPath)) {
-            // 如果全局表没有保存Logo信息，则返回null
-            return null;
+            // 如果全局表没有保存Logo信息，则返回空
+            return StringUtils.EMPTY;
         }
         String logoName = logoPath.substring(logoPath.lastIndexOf("/") + 1);
         return logoName;

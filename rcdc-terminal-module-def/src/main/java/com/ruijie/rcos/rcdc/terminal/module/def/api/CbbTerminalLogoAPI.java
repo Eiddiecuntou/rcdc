@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbGetLogoPathRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbInitLogoRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbPreviewLogoRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.logo.CbbPreviewLogoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.logo.CbbGetLogoPathResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
@@ -34,11 +34,11 @@ public interface CbbTerminalLogoAPI {
      * 预览Logo
      *
      * @param request 请求参数
-     * @return 预览Logo结果
+     * @return 获取Logo路径结果
      * @throws BusinessException 请求异常
      */
     @NoRollback
-    CbbPreviewLogoResponse previewLogo(CbbPreviewLogoRequest request) throws BusinessException;
+    CbbGetLogoPathResponse getLogoPath(CbbGetLogoPathRequest request) throws BusinessException;
 
     /**
      * 初始化Logo

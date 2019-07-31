@@ -3,14 +3,14 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.response.logo;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
- * Description: 终端Logo预览响应
+ * Description: 获取终端Logo路径响应
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年7月8日
  * 
  * @author huangsen
  */
-public class CbbPreviewLogoResponse extends DefaultResponse {
+public class CbbGetLogoPathResponse extends DefaultResponse {
 
     private String logoPath;
 

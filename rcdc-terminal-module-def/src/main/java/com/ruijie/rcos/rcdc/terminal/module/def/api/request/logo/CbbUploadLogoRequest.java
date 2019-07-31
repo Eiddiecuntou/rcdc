@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo;
 
+import org.springframework.util.Assert;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
@@ -26,6 +27,9 @@ public class CbbUploadLogoRequest implements Request {
     }
 
     public CbbUploadLogoRequest(String logoPath, String logoName, String logoMD5) {
+        Assert.notNull(logoPath, "logoPath can not be null");
+        Assert.notNull(logoName, "logoName can not be null");
+        Assert.notNull(logoMD5, "logoMD5 can not be null");
         this.logoPath = logoPath;
         this.logoName = logoName;
         this.logoMD5 = logoMD5;

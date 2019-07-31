@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
+import org.springframework.util.Assert;
+
 /**
  * Description: 同步Logo请求
  * Copyright: Copyright (c) 2018
@@ -21,6 +23,7 @@ public class SyncTerminalLogoRequest {
     }
 
     public void setLogoName(String logoName) {
+        Assert.notNull(logoName, "logoName can not be null");
         this.logoName = logoName;
     }
 }
