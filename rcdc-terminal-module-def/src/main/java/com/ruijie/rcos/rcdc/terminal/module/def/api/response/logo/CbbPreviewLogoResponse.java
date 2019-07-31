@@ -3,12 +3,12 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.response.logo;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
- * Description:终端Logo预览响应
- * Copyright: Copyright (c) 2019
+ * Description: 终端Logo预览响应
+ * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/7/8
- *
- * @author hs
+ * Create Time: 2019年7月8日
+ * 
+ * @author huangsen
  */
 public class CbbPreviewLogoResponse extends DefaultResponse {
 

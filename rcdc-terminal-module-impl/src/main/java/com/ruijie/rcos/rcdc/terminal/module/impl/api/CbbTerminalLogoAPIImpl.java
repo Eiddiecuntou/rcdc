@@ -20,12 +20,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 /**
- * Description:终端Logo实现接口
- * Copyright: Copyright (c) 2019
+ * Description: 终端Logo实现类
+ * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/7/8
- *
- * @author hs
+ * Create Time: 2019年7月8日
+ * 
+ * @author huangsen
  */
 public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
 

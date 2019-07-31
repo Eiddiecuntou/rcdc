@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 /**
- * Description:
+ * Description:同步终端Logo请求
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019/7/18

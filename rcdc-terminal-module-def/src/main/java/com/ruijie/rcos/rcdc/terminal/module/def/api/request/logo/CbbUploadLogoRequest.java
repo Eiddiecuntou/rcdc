@@ -4,12 +4,12 @@ import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
- * Description:上传Logo请求
- * Copyright: Copyright (c) 2019
+ * Description: 上传Logo请求
+ * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/7/8
- *
- * @author hs
+ * Create Time: 2019年7月8日
+ * 
+ * @author huangsen
  */
 public class CbbUploadLogoRequest implements Request {
 
