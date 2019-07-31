@@ -2,17 +2,16 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import org.junit.Test;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.ConnectEventHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.commkit.server.TcpServer;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -52,16 +51,10 @@ public class NettyServerInitTest {
      * 测试safeInit，没有需要初始化的终端状态
      * 
      * @param tcpServer mock对象
+     * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitNoInitTerminal(@Mocked TcpServer tcpServer) {
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
+    public void testSafeInitNoInitTerminal(@Mocked TcpServer tcpServer) throws InterruptedException {
         new Expectations() {
             {
                 terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);
@@ -69,6 +62,8 @@ public class NettyServerInitTest {
             }
         };
         init.safeInit();
+
+        Thread.sleep(1000);
 
         new Verifications() {
             {
@@ -86,16 +81,10 @@ public class NettyServerInitTest {
      * 测试safeInit，有需要初始化的终端状态
      * 
      * @param tcpServer mock对象
+     * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitHasInitTerminal(@Mocked TcpServer tcpServer) {
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
+    public void testSafeInitHasInitTerminal(@Mocked TcpServer tcpServer) throws InterruptedException {
         new Expectations() {
             {
                 terminalBasicInfoDAO.findTerminalEntitiesByState(CbbTerminalStateEnums.ONLINE);
@@ -107,6 +96,8 @@ public class NettyServerInitTest {
             }
         };
         init.safeInit();
+
+        Thread.sleep(1000);
 
         new Verifications() {
             {

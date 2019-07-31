@@ -1,19 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import java.util.List;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.ConnectEventHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.server.TcpServer;
@@ -32,8 +32,8 @@ public class NettyServerInit implements SafetySingletonInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyServerInit.class);
 
-    private static final SkyengineScheduledThreadPoolExecutor START_NETTY_SERVER_THREAD_POOL =
-            new SkyengineScheduledThreadPoolExecutor(1, NettyServerInit.class.getName());
+    private static final ThreadExecutor START_NETTY_SERVER_THREAD_POOL =
+            ThreadExecutors.newBuilder(NettyServerInit.class.getName()).maxThreadNum(1).queueSize(1).build();
 
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;

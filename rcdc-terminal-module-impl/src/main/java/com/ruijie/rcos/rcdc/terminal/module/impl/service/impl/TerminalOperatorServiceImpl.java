@@ -1,13 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
-import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
-import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,10 +20,13 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
@@ -70,23 +68,21 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     /**
      * 终端通知处理线程池,分配1个线程数
      */
-    private static final SkyengineScheduledThreadPoolExecutor NOTICE_HANDLER_THREAD_POOL =
-            new SkyengineScheduledThreadPoolExecutor(1, TerminalOperatorServiceImpl.class.getName());
+    private static final ThreadExecutor NOTICE_HANDLER_THREAD_POOL =
+            ThreadExecutors.newBuilder(TerminalOperatorServiceImpl.class.getName()).maxThreadNum(1).queueSize(1).build();
 
     @Override
     public void shutdown(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
         checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN);
-        operateTerminal(terminalId, SendTerminalEventEnums.SHUTDOWN_TERMINAL, "",
-                BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SHUTDOWN);
+        operateTerminal(terminalId, SendTerminalEventEnums.SHUTDOWN_TERMINAL, "", BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SHUTDOWN);
     }
 
     @Override
     public void restart(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
         checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_RESTART);
-        operateTerminal(terminalId, SendTerminalEventEnums.RESTART_TERMINAL, "",
-                BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_RESTART);
+        operateTerminal(terminalId, SendTerminalEventEnums.RESTART_TERMINAL, "", BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_RESTART);
     }
 
     @Override
@@ -129,8 +125,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
                 operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_PASSWORD, request,
                         BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_PASSWORD_CHANGE);
             } catch (Exception e) {
-                LOGGER.error("send new password to terminal failed, terminalId[" + terminalId + "], password["
-                        + password + "]", e);
+                LOGGER.error("send new password to terminal failed, terminalId[" + terminalId + "], password[" + password + "]", e);
             }
         }
     }
@@ -148,8 +143,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         collectLogCacheManager.addCache(terminalId);
 
         try {
-            operateTerminal(terminalId, SendTerminalEventEnums.COLLECT_TERMINAL_LOG, "",
-                    BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_COLLECT_LOG);
+            operateTerminal(terminalId, SendTerminalEventEnums.COLLECT_TERMINAL_LOG, "", BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_COLLECT_LOG);
         } catch (BusinessException e) {
             collectLogCacheManager.removeCache(terminalId);
             throw e;
@@ -176,8 +170,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             return;
         }
 
-        if (detection.getDetectState() == DetectStateEnums.CHECKING
-                || detection.getDetectState() == DetectStateEnums.WAIT) {
+        if (detection.getDetectState() == DetectStateEnums.CHECKING || detection.getDetectState() == DetectStateEnums.WAIT) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_DETECT_IS_DOING);
         }
 
@@ -194,8 +187,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
         LOGGER.debug("向终端{}发送检测指令", terminalId);
         try {
-            operateTerminal(terminalId, SendTerminalEventEnums.DETECT_TERMINAL, "",
-                    BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_DETECT);
+            operateTerminal(terminalId, SendTerminalEventEnums.DETECT_TERMINAL, "", BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_DETECT);
             // 发送成功后更新记录开始检测时间及状态
             updateDetectState(detection.getId(), DetectStateEnums.CHECKING);
         } catch (BusinessException e) {
@@ -225,7 +217,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
-                    new String[] {LocaleI18nResolver.resolve(operateActionKey, new String[]{})});
+                    new String[] {LocaleI18nResolver.resolve(operateActionKey, new String[] {})});
         }
     }
 

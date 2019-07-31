@@ -2,17 +2,15 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -41,8 +39,8 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     private static final String INIT_COMMAND = "python %s %s";
 
-    private ExecutorService executorService =
-            SkyengineExecutors.newSingleThreadExecutor(TerminalUpgradeBtServerInit.class.getName());
+    private static final ExecutorService EXECUTOR_SERVICE =
+            ThreadExecutors.newBuilder(TerminalUpgradeBtServerInit.class.getName()).maxThreadNum(1).queueSize(1).build();
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
@@ -56,7 +54,7 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
     @Override
     public void safeInit() {
         LOGGER.info("开始异步执行初始化终端升级组件");
-        executorService.execute(() -> initTerminalComponent());
+        EXECUTOR_SERVICE.execute(() -> initTerminalComponent());
     }
 
     private void initTerminalComponent() {

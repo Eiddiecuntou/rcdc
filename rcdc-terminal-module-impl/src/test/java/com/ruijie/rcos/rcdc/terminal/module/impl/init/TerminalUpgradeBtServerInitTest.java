@@ -1,28 +1,26 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import static org.junit.Assert.*;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.*;
-
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
+import mockit.Tested;
+import mockit.Verifications;
 
 /**
  * 
@@ -50,27 +48,14 @@ public class TerminalUpgradeBtServerInitTest {
     @Injectable
     private NetworkAPI networkAPI;
 
-    @Mocked
-    private SkyengineExecutors executorService;
-
-
-    @Before
-    public void before() {
-        new MockUp<SkyengineExecutors>() {
-            @Mock
-            public ExecutorService newSingleThreadExecutor(String threadPoolName) {
-                return new MockExecutorService();
-            }
-        };
-    }
-
     /**
      * 测试safeInit，开发环境
      * 
      * @param enviroment mock对象
+     * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitIsDevelop(@Mocked Enviroment enviroment) {
+    public void testSafeInitIsDevelop(@Mocked Enviroment enviroment) throws InterruptedException {
 
         new Expectations() {
             {
@@ -80,6 +65,8 @@ public class TerminalUpgradeBtServerInitTest {
         };
         init.safeInit();
 
+        Thread.sleep(1000);
+        
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
@@ -93,9 +80,10 @@ public class TerminalUpgradeBtServerInitTest {
      * 
      * @param enviroment mock对象
      * @throws BusinessException 异常
+     * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitGetLocalAddrFail(@Mocked Enviroment enviroment) throws BusinessException {
+    public void testSafeInitGetLocalAddrFail(@Mocked Enviroment enviroment) throws BusinessException, InterruptedException {
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO dto = new BaseNetworkDTO();
         dto.setIp("172.12.22.45");
@@ -110,6 +98,8 @@ public class TerminalUpgradeBtServerInitTest {
         };
         init.safeInit();
 
+        Thread.sleep(1000);
+        
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
@@ -143,6 +133,9 @@ public class TerminalUpgradeBtServerInitTest {
 
         try {
             init.safeInit();
+
+            Thread.sleep(1000);
+            
         } catch (Exception e) {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
@@ -165,9 +158,10 @@ public class TerminalUpgradeBtServerInitTest {
      * 
      * @param enviroment mock对象
      * @throws BusinessException 异常
+     * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitIpEqualsCurrentIp(@Mocked Enviroment enviroment) throws BusinessException {
+    public void testSafeInitIpEqualsCurrentIp(@Mocked Enviroment enviroment) throws BusinessException, InterruptedException {
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO dto = new BaseNetworkDTO();
         dto.setIp("172.12.22.45");
@@ -184,6 +178,8 @@ public class TerminalUpgradeBtServerInitTest {
         };
         try {
             init.safeInit();
+            Thread.sleep(1000);
+            
         } catch (RuntimeException e) {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
@@ -204,10 +200,11 @@ public class TerminalUpgradeBtServerInitTest {
      * 
      * @param enviroment mock对象
      * @throws BusinessException 异常
+     * @throws InterruptedException ex
      */
     @Test
     public void testSafeInitIpDifferentCurrentIpExecuteUpdateHasBusinessException(@Mocked Enviroment enviroment)
-            throws BusinessException {
+            throws BusinessException, InterruptedException {
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO dto = new BaseNetworkDTO();
         dto.setIp("172.0.0.0");
@@ -226,11 +223,12 @@ public class TerminalUpgradeBtServerInitTest {
         };
         try {
             init.safeInit();
+            Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
         }
-
+        
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
@@ -248,9 +246,10 @@ public class TerminalUpgradeBtServerInitTest {
      * 
      * @param enviroment mock对象
      * @throws BusinessException 异常
+     * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitIpDifferentCurrentIp(@Mocked Enviroment enviroment) throws BusinessException {
+    public void testSafeInitIpDifferentCurrentIp(@Mocked Enviroment enviroment) throws BusinessException, InterruptedException {
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO dto = new BaseNetworkDTO();
         dto.setIp("172.12.22.45");
@@ -267,11 +266,12 @@ public class TerminalUpgradeBtServerInitTest {
         };
         try {
             init.safeInit();
+            Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
         }
-
+        
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
@@ -292,12 +292,9 @@ public class TerminalUpgradeBtServerInitTest {
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
         TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
-        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"),
-                "command can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"),
-                "existValue can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""),
-                "outStr can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
         assertTrue(true);
     }
 
@@ -340,96 +337,5 @@ public class TerminalUpgradeBtServerInitTest {
                 times = 1;
             }
         };
-    }
-
-
-    /**
-     *
-     * Description: Function Description
-     * Copyright: Copyright (c) 2019
-     * Company: Ruijie Co., Ltd.
-     * Create Time: 2019年6月04日
-     *
-     * @author nt
-     */
-    private class MockExecutorService implements ExecutorService {
-
-        @Override
-        public void execute(Runnable command) {
-            Assert.notNull(command, "command can not be null");
-            command.run();
-        }
-
-        @Override
-        public void shutdown() {
-
-        }
-
-        @Override
-        public List<Runnable> shutdownNow() {
-            //
-            return null;
-        }
-
-        @Override
-        public boolean isShutdown() {
-            return false;
-        }
-
-        @Override
-        public boolean isTerminated() {
-            return false;
-        }
-
-        @Override
-        public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-            return false;
-        }
-
-        @Override
-        public <T> Future<T> submit(Callable<T> task) {
-            //
-            return null;
-        }
-
-        @Override
-        public <T> Future<T> submit(Runnable task, T result) {
-            //
-            return null;
-        }
-
-        @Override
-        public Future<?> submit(Runnable task) {
-            //
-            return null;
-        }
-
-        @Override
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-            //
-            return null;
-        }
-
-        @Override
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-                throws InterruptedException {
-            //
-            return null;
-        }
-
-        @Override
-        public <T> T invokeAny(Collection<? extends Callable<T>> tasks)
-                throws InterruptedException, ExecutionException {
-            //
-            return null;
-        }
-
-        @Override
-        public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-                throws InterruptedException, ExecutionException, TimeoutException {
-            //
-            return null;
-        }
-
     }
 }

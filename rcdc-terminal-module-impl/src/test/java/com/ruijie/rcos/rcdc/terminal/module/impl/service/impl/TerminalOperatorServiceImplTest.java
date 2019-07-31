@@ -3,14 +3,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.util.Assert;
@@ -25,7 +22,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -506,9 +504,10 @@ public class TerminalOperatorServiceImplTest {
      * 
      * @param aesUtil mock aesUtil
      * @throws BusinessException 异常
+     * @throws InterruptedException ex
      */
     @Test
-    public void testChangePasswordOnlineTerminalIdListIsEmpty(@Mocked AesUtil aesUtil) throws BusinessException {
+    public void testChangePasswordOnlineTerminalIdListIsEmpty(@Mocked AesUtil aesUtil) throws BusinessException, InterruptedException {
         String password = "123";
         String encryptPwd = "yyy123";
         new Expectations() {
@@ -521,14 +520,8 @@ public class TerminalOperatorServiceImplTest {
                 result = Collections.emptyList();
             }
         };
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
         operatorService.changePassword(password);
+        Thread.sleep(1000);
 
         new Verifications() {
             {
@@ -572,9 +565,10 @@ public class TerminalOperatorServiceImplTest {
      * 
      * @param aesUtil mock aesUtil
      * @throws BusinessException 异常
+     * @throws InterruptedException ex
      */
     @Test
-    public void testChangePasswordDefaultRequestMessageSenderIsNull(@Mocked AesUtil aesUtil) throws BusinessException {
+    public void testChangePasswordDefaultRequestMessageSenderIsNull(@Mocked AesUtil aesUtil) throws BusinessException, InterruptedException {
         String password = "123";
         String encryptPwd = "yyy123";
         List<String> onlineTerminalIdList = new ArrayList<>();
@@ -591,14 +585,10 @@ public class TerminalOperatorServiceImplTest {
                 result = null;
             }
         };
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
         operatorService.changePassword(password);
+
+        Thread.sleep(1000);
+
         new Verifications() {
             {
                 globalParameterAPI.updateParameter(Constants.RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY, encryptPwd);
@@ -637,14 +627,8 @@ public class TerminalOperatorServiceImplTest {
                 result = sender;
             }
         };
-        new MockUp<SkyengineScheduledThreadPoolExecutor>() {
-            @Mock
-            public void execute(Runnable command) {
-                Assert.notNull(command, "command can not be null");
-                command.run();
-            }
-        };
         operatorService.changePassword(password);
+        Thread.sleep(1000);
         new Verifications() {
             {
                 globalParameterAPI.updateParameter(Constants.RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY, encryptPwd);

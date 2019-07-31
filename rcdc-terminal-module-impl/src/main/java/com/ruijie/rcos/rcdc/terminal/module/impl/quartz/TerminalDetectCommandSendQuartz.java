@@ -1,10 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
 import java.util.concurrent.TimeUnit;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.google.common.base.Stopwatch;
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
@@ -13,7 +11,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
-import com.ruijie.rcos.sk.base.concorrent.ThreadExecutors;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -45,7 +43,7 @@ public class TerminalDetectCommandSendQuartz implements SafetySingletonInitializ
 
     @Override
     public void safeInit() {
-        ThreadExecutors.runWithFixRate(this, TimeUnit.SECONDS.toMillis(12));
+        ThreadExecutors.scheduleWithFixedDelay("TerminalDetectCommandSendQuartz", this, TimeUnit.SECONDS.toMillis(12), TimeUnit.SECONDS.toMillis(12));
     }
 
     @Override
@@ -61,8 +59,7 @@ public class TerminalDetectCommandSendQuartz implements SafetySingletonInitializ
 
     private boolean sendDetectCommand() {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        TerminalDetectionEntity detectionEntity =
-                detectionDAO.findFirstByDetectStateOrderByCreateTime(DetectStateEnums.WAIT);
+        TerminalDetectionEntity detectionEntity = detectionDAO.findFirstByDetectStateOrderByCreateTime(DetectStateEnums.WAIT);
         if (detectionEntity == null) {
             LOGGER.info("没有处于等待状态的终端检测记录，不进行指令发送");
             return true;
@@ -78,8 +75,7 @@ public class TerminalDetectCommandSendQuartz implements SafetySingletonInitializ
             return false;
         } catch (Exception ex) {
             LOGGER.error("发送终端检测指令失败", ex);
-            addFailSystemLog(detectionEntity,
-                    LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SEND_DETECT_COMMAND_FAIL, new String[] {}),
+            addFailSystemLog(detectionEntity, LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SEND_DETECT_COMMAND_FAIL, new String[] {}),
                     stopwatch);
             return false;
         }
@@ -87,17 +83,15 @@ public class TerminalDetectCommandSendQuartz implements SafetySingletonInitializ
 
     private void addFailSystemLog(TerminalDetectionEntity detectionEntity, String failMsg, Stopwatch stopwatch) {
         String timeMillis = String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS));
-        BaseCreateSystemLogRequest systemLogRequest =
-                new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_FAIL_SYSTEM_LOG,
-                        detectionEntity.getTerminalId(), failMsg, timeMillis);
+        BaseCreateSystemLogRequest systemLogRequest = new BaseCreateSystemLogRequest(
+                BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_FAIL_SYSTEM_LOG, detectionEntity.getTerminalId(), failMsg, timeMillis);
         baseSystemLogMgmtAPI.createSystemLog(systemLogRequest);
     }
 
     private void addSuccessSystemLog(TerminalDetectionEntity detectionEntity, Stopwatch stopwatch) {
         String timeMillis = String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS));
-        BaseCreateSystemLogRequest systemLogRequest =
-                new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_SUCCESS_SYSTEM_LOG,
-                        detectionEntity.getTerminalId(), timeMillis);
+        BaseCreateSystemLogRequest systemLogRequest = new BaseCreateSystemLogRequest(
+                BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_SUCCESS_SYSTEM_LOG, detectionEntity.getTerminalId(), timeMillis);
         baseSystemLogMgmtAPI.createSystemLog(systemLogRequest);
     }
 }

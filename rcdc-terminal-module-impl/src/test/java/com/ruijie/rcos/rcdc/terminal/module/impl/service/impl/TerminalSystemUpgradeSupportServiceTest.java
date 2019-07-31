@@ -23,7 +23,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResol
 import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.SystemUpgradeQuartzHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService.SupportServiceQuartzHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.NfsServiceUtil;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner.ReturnValueResolver;
@@ -60,9 +60,6 @@ public class TerminalSystemUpgradeSupportServiceTest {
 
     @Mocked
     private ShellCommandRunner runner;
-
-    @Mocked
-    private SkyengineScheduledThreadPoolExecutor executor;
 
     /**
      * 初始化
@@ -176,8 +173,6 @@ public class TerminalSystemUpgradeSupportServiceTest {
             {
                 runner.execute((SimpleCmdReturnValueResolver) any);
                 times = 3;
-                executor.scheduleAtFixedRate((Runnable) any, anyLong, anyLong, (TimeUnit) any);
-                times = 0;
             }
         };
     }
@@ -188,9 +183,11 @@ public class TerminalSystemUpgradeSupportServiceTest {
      * @param nfsServiceUtil mock对象
      * @param handler mock对象
      * @throws BusinessException 异常
+     * @throws InterruptedException ex
      */
     @Test
-    public void testIsTerminalOnline(@Mocked NfsServiceUtil nfsServiceUtil, @Mocked SupportServiceQuartzHandler handler) throws BusinessException {
+    public void testIsTerminalOnline(@Mocked NfsServiceUtil nfsServiceUtil, @Mocked SupportServiceQuartzHandler handler)
+            throws BusinessException, InterruptedException {
 
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", null);
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SUPPORT_SERVICE_FUTURE", null);
@@ -209,12 +206,12 @@ public class TerminalSystemUpgradeSupportServiceTest {
 
         service.openSystemUpgradeService(packageEntity);
 
+        Thread.sleep(1000);
+
         new Verifications() {
             {
                 runner.execute((SimpleCmdReturnValueResolver) any);
                 times = 3;
-                executor.scheduleAtFixedRate((Runnable) any, anyLong, anyLong, (TimeUnit) any);
-                times = 2;
             }
         };
     }
