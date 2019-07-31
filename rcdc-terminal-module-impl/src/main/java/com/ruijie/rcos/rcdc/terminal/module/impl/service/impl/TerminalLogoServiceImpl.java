@@ -24,7 +24,7 @@ import java.util.List;
 
 
 /**
- * Description:
+ * Description:终端Logo操作
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019/7/18

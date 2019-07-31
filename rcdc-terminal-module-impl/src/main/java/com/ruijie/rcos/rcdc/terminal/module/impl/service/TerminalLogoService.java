@@ -4,7 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
- * Description:
+ * Description:终端Logo操作接口
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019/7/18
