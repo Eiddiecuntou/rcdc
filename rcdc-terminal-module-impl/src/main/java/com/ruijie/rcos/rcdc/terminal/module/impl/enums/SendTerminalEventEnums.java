@@ -48,7 +48,12 @@ public enum SendTerminalEventEnums {
     /**
      * 升级终端
      */
-    UPGRADE_TERMINAL_SYSTEM("upgrade_system");
+    UPGRADE_TERMINAL_SYSTEM("upgrade_system"),
+
+    /**
+     * 同步终端Logo
+     */
+    CHANGE_TERMINAL_LOGO("change_terminal_logo");
 
     private String name;
 

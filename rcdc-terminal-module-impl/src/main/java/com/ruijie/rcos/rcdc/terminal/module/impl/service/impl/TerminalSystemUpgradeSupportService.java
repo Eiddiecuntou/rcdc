@@ -19,8 +19,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.SystemUpgradeQuartzHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.NfsServiceUtil;
-import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
-import com.ruijie.rcos.sk.base.concorrent.executor.SkyengineScheduledThreadPoolExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -46,10 +46,11 @@ public class TerminalSystemUpgradeSupportService {
 
     private static ScheduledFuture<?> SUPPORT_SERVICE_FUTURE = null;
 
-    private static SkyengineScheduledThreadPoolExecutor SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL =
-            new SkyengineScheduledThreadPoolExecutor(2, "SYSTEM_UPGRADE_SCHEDULED_THREAD");
+    private static ThreadExecutor SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL =
+            ThreadExecutors.newBuilder("SYSTEM_UPGRADE_SCHEDULED_THREAD").maxThreadNum(2).queueSize(1).build();
 
-    private static ExecutorService CLOSE_SERVICE_THREAD_POOL = SkyengineExecutors.newFixedThreadPool("CLOSE_SERVICE_THREAD", 1);
+    private static ExecutorService CLOSE_SERVICE_THREAD_POOL =
+            ThreadExecutors.newBuilder("CLOSE_SERVICE_THREAD").maxThreadNum(1).queueSize(1).build();
 
     @Autowired
     private SystemUpgradeQuartzHandler systemUpgradeQuartzHandler;

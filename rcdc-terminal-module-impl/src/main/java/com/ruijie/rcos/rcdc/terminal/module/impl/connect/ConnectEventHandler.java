@@ -12,7 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.SyncServerTimeResponse;
-import com.ruijie.rcos.sk.base.concorrent.SkyengineExecutors;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.Session;
@@ -47,7 +47,8 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
     /**
      * 接收报文处理线程池,分配50个线程数
      */
-    private static final ExecutorService MESSAGE_HANDLER_THREAD_POOL = SkyengineExecutors.newFixedThreadPool("messageHandleThread", 50);
+    private static final ExecutorService MESSAGE_HANDLER_THREAD_POOL =
+            ThreadExecutors.newBuilder("messageHandleThread").maxThreadNum(50).queueSize(1).build();
 
     @Override
     public void onReceive(ResponseMessageSender sender, BaseMessage message) {
@@ -116,8 +117,8 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
             LOGGER.info("分发消息，terminalId:{}; action: {}; data:{}; ip:{}", terminalId, message.getAction(), data, terminalInfo.getTerminalIp());
             cbbDispatcherHandlerSPI.dispatch(request);
         } catch (Exception e) {
-            LOGGER.error("消息分发执行异常;ip:" + terminalInfo.getTerminalIp() + ", action:" + message.getAction()
-                    + ",terminalId:" + terminalId + ",data:" + message.getData(), e);
+            LOGGER.error("消息分发执行异常;ip:" + terminalInfo.getTerminalIp() + ", action:" + message.getAction() + ",terminalId:" + terminalId + ",data:"
+                    + message.getData(), e);
         }
     }
 
