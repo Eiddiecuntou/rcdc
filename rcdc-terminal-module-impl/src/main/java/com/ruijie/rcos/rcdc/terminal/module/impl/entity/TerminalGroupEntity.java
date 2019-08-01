@@ -2,19 +2,14 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import java.util.Date;
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
+
+import javax.persistence.*;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
 
 /**
  * 终端组持久化实体
@@ -38,9 +33,6 @@ public class TerminalGroupEntity {
 
     private Date createTime;
 
-    @Enumerated(EnumType.STRING)
-    private TerminalTypeEnums terminalType;
-
     @Version
     private int version;
 
@@ -55,7 +47,6 @@ public class TerminalGroupEntity {
         terminalGroupDTO.setId(id);
         terminalGroupDTO.setGroupName(name);
         terminalGroupDTO.setParentGroupId(parentId);
-        terminalGroupDTO.setTerminalType(terminalType);
     }
 
     /**
@@ -65,7 +56,7 @@ public class TerminalGroupEntity {
      */
     public void converToDTO(TerminalGroupTreeNodeDTO treeNodeDTO) {
         Assert.notNull(treeNodeDTO, "terminal group treeNodeDTO can not be null");
-        
+
         treeNodeDTO.setId(id);
         treeNodeDTO.setLabel(name);
         treeNodeDTO.setParentId(parentId);
@@ -103,14 +94,6 @@ public class TerminalGroupEntity {
         this.createTime = createTime;
     }
 
-    public TerminalTypeEnums getTerminalType() {
-        return terminalType;
-    }
-
-    public void setTerminalType(TerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
-    }
-    
     public int getVersion() {
         return version;
     }
@@ -118,7 +101,7 @@ public class TerminalGroupEntity {
     public void setVersion(int version) {
         this.version = version;
     }
-    
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

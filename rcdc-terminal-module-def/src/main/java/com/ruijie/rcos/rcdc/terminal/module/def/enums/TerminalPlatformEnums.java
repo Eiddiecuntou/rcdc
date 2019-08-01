@@ -23,6 +23,11 @@ public enum TerminalPlatformEnums {
     IDV,
 
     /**
+     * 软终端
+     */
+    SOFT_TERMINAL,
+
+    /**
      * 其他终端,需要注意此类终端，给出提示信息
      */
     OTHER,

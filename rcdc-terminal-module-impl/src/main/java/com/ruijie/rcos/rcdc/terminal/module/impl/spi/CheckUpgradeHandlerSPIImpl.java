@@ -2,6 +2,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 
 import java.util.Date;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +90,8 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity);
         basicInfoEntity.setLastOnlineTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
+        basicInfoEntity.setTerminalType(CbbTerminalTypeEnums.convert(basicInfoEntity.getTerminalOsType()));
+        basicInfoEntity.setGroupId(Constants.DEFAULT_TERMINAL_GROUP_UUID);
         basicInfoDAO.save(basicInfoEntity);
         // 通知其他组件终端为在线状态
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.ONLINE, terminalId);
