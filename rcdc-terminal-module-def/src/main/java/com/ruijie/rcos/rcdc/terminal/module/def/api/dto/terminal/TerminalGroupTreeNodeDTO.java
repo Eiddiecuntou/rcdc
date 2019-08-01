@@ -26,8 +26,6 @@ public class TerminalGroupTreeNodeDTO {
     
     @SuppressWarnings("PMD.ArrayOrListPropertyNamingRule")
     private TerminalGroupTreeNodeDTO[] children;
-
-    private boolean isDefault;
     
     public UUID getId() {
         return id;
@@ -60,12 +58,5 @@ public class TerminalGroupTreeNodeDTO {
     public void setChildren(TerminalGroupTreeNodeDTO[] children) {
         this.children = children;
     }
-
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
-    }
+    
 }
