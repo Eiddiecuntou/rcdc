@@ -1,7 +1,3 @@
-/** 将rco终端分组表修改为cbb修改终端分组表 */
-ALTER TABLE t_rco_terminal_group rename to t_cbb_terminal_group;
-
-
 /** 删除可刷机终端视图(终端分组移至cbb,所以视图从rco移至cbb) */
 DROP VIEW IF EXISTS v_cbb_upgradeable_terminal;
 
