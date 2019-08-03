@@ -50,7 +50,6 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
         LOGGER.info("向在线终端下发Logo名");
         NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewLogoNameToOnlineTerminal(logoName, name));
 
-
     }
 
     private void sendNewLogoNameToOnlineTerminal(String logoName, SendTerminalEventEnums name) {
