@@ -47,7 +47,6 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
 
     @Override
     public void syncTerminalLogo(String logoName, SendTerminalEventEnums name) throws BusinessException {
-        Assert.hasText(logoName, "logoName不能为空");
         LOGGER.info("向在线终端下发Logo名");
         NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewLogoNameToOnlineTerminal(logoName, name));
 
@@ -93,7 +92,7 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
     @Override
     public String getTerminalLogoName() {
         String logoPath = globalParameterAPI.findParameter(TERMINAL_LOGO);
-        if (StringUtils.isBlank(logoPath)) {
+        if (logoPath == null) {
             // 如果全局表没有保存Logo信息，则返回空
             return StringUtils.EMPTY;
         }
