@@ -6,6 +6,10 @@ import java.util.Date;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.GetVersionRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandlerFactory;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -49,6 +53,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private TerminalComponentUpgradeService componentUpgradeService;
 
     @Autowired
+    private TerminalComponentUpgradeHandlerFactory handlerFactory;
+
+    @Autowired
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerSPIImpl.class);
@@ -57,15 +64,44 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
 
+        LOGGER.info("组件升级处理请求开始处理。。。");
         // 保存终端基本信息
         String terminalId = request.getTerminalId();
         ShineTerminalBasicInfo basicInfo = convertJsondata(request);
         saveBasicInfo(terminalId, basicInfo);
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(),
-                basicInfo.getValidateMd5(), basicInfo.getPlatform());
-        CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, versionResult);
+//        TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(),
+//                basicInfo.getValidateMd5(), basicInfo.getPlatform());
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        TerminalComponentUpgradeHandler handler = null;
+        LOGGER.info("获取组件升级处理对象");
+        try {
+            handler = handlerFactory.getHandler(terminalEntity.getPlatform(), terminalEntity.getTerminalType());
+        } catch (BusinessException e) {
+            LOGGER.error("获取组件升级处理对象异常", e);
+        }
+
+        if (handler == null) {
+            LOGGER.error("未获取到组件升级处理对象");
+            return;
+        }
+        LOGGER.info("获取组件升级处理结果");
+        GetVersionRequest versionRequest = new GetVersionRequest();
+        versionRequest.setRainUpgradeVersion(terminalEntity.getRainUpgradeVersion());
+        versionRequest.setValidateMd5(basicInfo.getValidateMd5());
+        TerminalVersionResultDTO resultDTO = null;
+        try {
+            resultDTO = handler.getVersion(versionRequest);
+        } catch (Exception e) {
+            LOGGER.error("获取组件升级结果异常", e);
+        }
+        if (resultDTO == null) {
+            LOGGER.error("获取组件升级结果异常");
+            return;
+        }
+        LOGGER.info("响应组件升级处理结果");
+        CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, resultDTO);
         try {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("response check upgrade : {}", JSON.toJSONString(cbbShineMessageRequest));

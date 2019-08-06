@@ -5,13 +5,15 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.ComponentUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.Expectations;
@@ -36,7 +38,7 @@ public class TerminalComponentUpgradeServiceImplTest {
 
 
     @Injectable
-    private ComponentUpdateListCacheManager cacheManager;
+    private VDITerminalUpdateListCacheManager cacheManager;
 
     /**
      * 测试getVersion,参数为空
@@ -56,20 +58,20 @@ public class TerminalComponentUpgradeServiceImplTest {
      */
     @Test
     public void testGetVersionUpdatelistIsNull() {
-        CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
+        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
         new Expectations() {
             {
-                cacheManager.getCache(TerminalPlatformEnums.VDI);
+                cacheManager.get(CbbTerminalTypeEnums.LINUX);
                 returns(null, updatelist);
             }
         };
-        ComponentUpdateListCacheManager.isUpdate = false;
+        cacheManager.setUpdatelistCacheReady();
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("123", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO.getResult().intValue());
         TerminalVersionResultDTO terminalVersionResultDTO1 = serviceImpl.getVersion("123", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO1.getResult().intValue());
-        ComponentUpdateListCacheManager.isUpdate = true;
+        cacheManager.setUpdatelistCacheNotReady();
     }
 
     /**
@@ -77,23 +79,23 @@ public class TerminalComponentUpgradeServiceImplTest {
      */
     @Test
     public void testGetVersionNoUpgrade() {
-        CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
-        List<CbbTerminalComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbTerminalComponentVersionInfoDTO());
+        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        List<CbbLinuxVDIComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new CbbLinuxVDIComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
         updatelist.setBaseVersion("1.0.1.1");
         new Expectations() {
             {
-                cacheManager.getCache(TerminalPlatformEnums.VDI);
+                cacheManager.get(CbbTerminalTypeEnums.LINUX);
                 result = updatelist;
             }
         };
-        ComponentUpdateListCacheManager.isUpdate = false;
+        cacheManager.setUpdatelistCacheReady();
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.1.0.1", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), terminalVersionResultDTO.getResult().intValue());
-        ComponentUpdateListCacheManager.isUpdate = true;
+        cacheManager.setUpdatelistCacheNotReady();
     }
 
     /**
@@ -101,9 +103,9 @@ public class TerminalComponentUpgradeServiceImplTest {
      */
     @Test
     public void testGetVersionRainUpgradeVersionIsIllegale() {
-        CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
-        List<CbbTerminalComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbTerminalComponentVersionInfoDTO());
+        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        List<CbbLinuxVDIComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new CbbLinuxVDIComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
@@ -111,14 +113,14 @@ public class TerminalComponentUpgradeServiceImplTest {
         updatelist.setLimitVersion("1.0.0.1");
         new Expectations() {
             {
-                cacheManager.getCache(TerminalPlatformEnums.VDI);
+                cacheManager.get(CbbTerminalTypeEnums.LINUX);
                 result = updatelist;
             }
         };
-        ComponentUpdateListCacheManager.isUpdate = false;
+        cacheManager.setUpdatelistCacheReady();
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("111", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(), terminalVersionResultDTO.getResult().intValue());
-        ComponentUpdateListCacheManager.isUpdate = true;
+        cacheManager.setUpdatelistCacheNotReady();
     }
 
     /**
@@ -126,9 +128,9 @@ public class TerminalComponentUpgradeServiceImplTest {
      */
     @Test
     public void testGetVersionLimitVersion() {
-        CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
-        List<CbbTerminalComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbTerminalComponentVersionInfoDTO());
+        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        List<CbbLinuxVDIComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new CbbLinuxVDIComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
@@ -136,14 +138,14 @@ public class TerminalComponentUpgradeServiceImplTest {
         updatelist.setLimitVersion("1.0.1.1");
         new Expectations() {
             {
-                cacheManager.getCache(TerminalPlatformEnums.VDI);
+                cacheManager.get(CbbTerminalTypeEnums.LINUX);
                 result = updatelist;
             }
         };
-        ComponentUpdateListCacheManager.isUpdate = false;
+        cacheManager.setUpdatelistCacheReady();
         TerminalVersionResultDTO terminalVersionResultDTO = serviceImpl.getVersion("1.0.0.1", null, TerminalPlatformEnums.VDI);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), terminalVersionResultDTO.getResult().intValue());
-        ComponentUpdateListCacheManager.isUpdate = true;
+        cacheManager.setUpdatelistCacheNotReady();
     }
 
     /**
@@ -151,9 +153,9 @@ public class TerminalComponentUpgradeServiceImplTest {
      */
     @Test
     public void testGetVersionIsUpdating() {
-        CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
-        List<CbbTerminalComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbTerminalComponentVersionInfoDTO());
+        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        List<CbbLinuxVDIComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new CbbLinuxVDIComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);

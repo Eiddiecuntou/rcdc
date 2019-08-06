@@ -61,27 +61,27 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
         // 添加操作系统判断，使初始化失败不影响开发阶段的调试
         boolean isDevelop = Enviroment.isDevelop();
         LOGGER.info("enviroment is develope: {}", isDevelop);
-        if (isDevelop) {
-            LOGGER.info("enviroment is develope, skip upgrade bt share init...");
-            return;
-        }
-
-        // bt服务初始化，判断ip是否变更，如果变化则进行bt服务的初始化操作
-        LOGGER.info("start upgrade bt share init...");
-
-        String currentIp;
-        try {
-            currentIp = getLocalIP();
-        } catch (BusinessException e) {
-            LOGGER.error("obtain host ip error, can not make init bt server.", e);
-            return;
-        }
-        if (needUpgrade(currentIp)) {
-            executeUpdate(currentIp);
-            return;
-        }
-
-        LOGGER.info("init upgrade ceche");
+//        if (isDevelop) {
+//            LOGGER.info("enviroment is develope, skip upgrade bt share init...");
+//            return;
+//        }
+//
+//        // bt服务初始化，判断ip是否变更，如果变化则进行bt服务的初始化操作
+//        LOGGER.info("start upgrade bt share init...");
+//
+//        String currentIp;
+//        try {
+//            currentIp = getLocalIP();
+//        } catch (BusinessException e) {
+//            LOGGER.error("obtain host ip error, can not make init bt server.", e);
+//            return;
+//        }
+//        if (needUpgrade(currentIp)) {
+//            executeUpdate(currentIp);
+//            return;
+//        }
+//
+//        LOGGER.info("init upgrade ceche");
         // 更新缓存中的updatelist
         upgradeCacheInit.safeInit();
     }

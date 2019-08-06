@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
-
 /**
  * 
  * Description: 终端组件升级请求结果信息
@@ -11,17 +9,17 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpda
  * 
  * @author nt
  */
-public class TerminalVersionResultDTO {
+public class TerminalVersionResultDTO<T> {
 
     private Integer result;
 
-    private CbbTerminalComponentUpdateListDTO updatelist;
+    private T updatelist;
 
     public TerminalVersionResultDTO() {
         
     }
 
-    public TerminalVersionResultDTO(Integer result, CbbTerminalComponentUpdateListDTO updatelist) {
+    public TerminalVersionResultDTO(Integer result, T updatelist) {
         this.result = result;
         this.updatelist = updatelist;
     }
@@ -34,11 +32,11 @@ public class TerminalVersionResultDTO {
         this.result = result;
     }
 
-    public CbbTerminalComponentUpdateListDTO getUpdatelist() {
+    public T getUpdatelist() {
         return updatelist;
     }
 
-    public void setUpdatelist(CbbTerminalComponentUpdateListDTO updatelist) {
+    public void setUpdatelist(T updatelist) {
         this.updatelist = updatelist;
     }
 }

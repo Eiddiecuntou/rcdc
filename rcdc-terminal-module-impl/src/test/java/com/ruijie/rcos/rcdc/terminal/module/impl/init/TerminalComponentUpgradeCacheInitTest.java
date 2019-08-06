@@ -10,11 +10,11 @@ import org.junit.runner.RunWith;
 import org.springframework.util.Assert;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.ComponentUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 
@@ -37,7 +37,7 @@ public class TerminalComponentUpgradeCacheInitTest {
     private TerminalComponentUpgradeCacheInit init;
 
     @Injectable
-    private ComponentUpdateListCacheManager cacheManager;
+    private VDITerminalUpdateListCacheManager cacheManager;
 
     /**
      * 测试safeInit,upgradeDirectory不是目录
@@ -53,7 +53,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         init.safeInit();
         new Verifications() {
             {
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 times = 0;
             }
         };
@@ -78,7 +78,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         init.safeInit();
         new Verifications() {
             {
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 times = 0;
             }
         };
@@ -112,7 +112,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         init.safeInit();
         new Verifications() {
             {
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 times = 0;
             }
         };
@@ -145,7 +145,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         init.safeInit();
         new Verifications() {
             {
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 times = 0;
             }
         };
@@ -188,7 +188,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         init.safeInit();
         new Verifications() {
             {
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 times = 0;
             }
         };
@@ -227,7 +227,7 @@ public class TerminalComponentUpgradeCacheInitTest {
                 return true;
             }
         };
-        CbbTerminalComponentUpdateListDTO dto = new CbbTerminalComponentUpdateListDTO();
+        CbbLinuxVDIUpdateListDTO dto = new CbbLinuxVDIUpdateListDTO();
         dto.setComponentList(Collections.emptyList());
         String updatelistStr = JSONObject.toJSONString(dto);
         new Expectations() {
@@ -239,7 +239,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         init.safeInit();
         new Verifications() {
             {
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 times = 0;
             }
         };
@@ -278,9 +278,9 @@ public class TerminalComponentUpgradeCacheInitTest {
                 return true;
             }
         };
-        CbbTerminalComponentUpdateListDTO dto = new CbbTerminalComponentUpdateListDTO();
-        List<CbbTerminalComponentVersionInfoDTO> componentVersionList = new ArrayList<>();
-        componentVersionList.add(new CbbTerminalComponentVersionInfoDTO());
+        CbbLinuxVDIUpdateListDTO dto = new CbbLinuxVDIUpdateListDTO();
+        List<CbbLinuxVDIComponentVersionInfoDTO> componentVersionList = new ArrayList<>();
+        componentVersionList.add(new CbbLinuxVDIComponentVersionInfoDTO());
         dto.setComponentList(componentVersionList);
         String updatelistStr = JSONObject.toJSONString(dto);
         new Expectations() {
@@ -292,7 +292,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         init.safeInit();
         new Verifications() {
             {
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 times = 2;
             }
         };
@@ -331,9 +331,9 @@ public class TerminalComponentUpgradeCacheInitTest {
                 return true;
             }
         };
-        CbbTerminalComponentUpdateListDTO dto = new CbbTerminalComponentUpdateListDTO();
-        List<CbbTerminalComponentVersionInfoDTO> componentVersionList = new ArrayList<>();
-        CbbTerminalComponentVersionInfoDTO versionInfoDTO = new CbbTerminalComponentVersionInfoDTO();
+        CbbLinuxVDIUpdateListDTO dto = new CbbLinuxVDIUpdateListDTO();
+        List<CbbLinuxVDIComponentVersionInfoDTO> componentVersionList = new ArrayList<>();
+        CbbLinuxVDIComponentVersionInfoDTO versionInfoDTO = new CbbLinuxVDIComponentVersionInfoDTO();
         versionInfoDTO.setPlatform("&465");
         componentVersionList.add(versionInfoDTO);
         dto.setComponentList(componentVersionList);
@@ -347,7 +347,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         init.safeInit();
         new Verifications() {
             {
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 times = 2;
             }
         };
@@ -389,20 +389,20 @@ public class TerminalComponentUpgradeCacheInitTest {
             }
         };
 
-        CbbTerminalComponentUpdateListDTO dto = new CbbTerminalComponentUpdateListDTO();
-        List<CbbTerminalComponentVersionInfoDTO> componentVersionList = new ArrayList<>();
-        CbbTerminalComponentVersionInfoDTO versionInfoDTO = new CbbTerminalComponentVersionInfoDTO();
+        CbbLinuxVDIUpdateListDTO dto = new CbbLinuxVDIUpdateListDTO();
+        List<CbbLinuxVDIComponentVersionInfoDTO> componentVersionList = new ArrayList<>();
+        CbbLinuxVDIComponentVersionInfoDTO versionInfoDTO = new CbbLinuxVDIComponentVersionInfoDTO();
         versionInfoDTO.setPlatform("ALL");
         componentVersionList.add(versionInfoDTO);
         dto.setComponentList(componentVersionList);
         String updatelistStr = JSONObject.toJSONString(dto);
-        Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = new HashMap<>();
+        Map<TerminalPlatformEnums, CbbLinuxVDIUpdateListDTO> caches = new HashMap<>();
 
         new Expectations() {
             {
                 FileUtils.readFileToString((File) any, Charset.forName("UTF-8"));
                 result = updatelistStr;
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 result = caches;
             }
         };
@@ -410,7 +410,7 @@ public class TerminalComponentUpgradeCacheInitTest {
         init.safeInit();
         new Verifications() {
             {
-                cacheManager.getUpdateListCaches();
+                cacheManager.getUpdateListCache();
                 times = 2;
             }
         };

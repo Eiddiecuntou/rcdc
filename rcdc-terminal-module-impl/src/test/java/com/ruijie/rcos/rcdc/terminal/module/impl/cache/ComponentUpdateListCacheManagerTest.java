@@ -3,9 +3,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.util.Map;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalComponentUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.Deencapsulation;
@@ -25,7 +27,7 @@ import mockit.integration.junit4.JMockit;
 public class ComponentUpdateListCacheManagerTest {
 
     @Tested
-    private ComponentUpdateListCacheManager manager;
+    private VDITerminalUpdateListCacheManager manager;
 
     /**
      * 测试addCache,参数为空
@@ -33,10 +35,10 @@ public class ComponentUpdateListCacheManagerTest {
      * @throws Exception 异常
      */
     @Test
-    public void testAddCacheArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.addCache(null, new CbbTerminalComponentUpdateListDTO()),
+    public void testAddArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.add(null, new CbbLinuxVDIUpdateListDTO()),
                 "platform can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.addCache(TerminalPlatformEnums.VDI, null), "updatelist can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.add(CbbTerminalTypeEnums.LINUX, null), "updatelist can not be null");
         assertTrue(true);
     }
 
@@ -44,10 +46,10 @@ public class ComponentUpdateListCacheManagerTest {
      * 测试addCache,
      */
     @Test
-    public void testAddCache() {
-        CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
-        manager.addCache(TerminalPlatformEnums.VDI, updatelist);
-        Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
+    public void testAdd() {
+        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        manager.add(CbbTerminalTypeEnums.LINUX, updatelist);
+        Map<TerminalPlatformEnums, CbbLinuxVDIUpdateListDTO> caches = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
         assertEquals(1, caches.size());
         assertEquals(updatelist, caches.get(TerminalPlatformEnums.VDI));
         caches.remove(TerminalPlatformEnums.VDI);
@@ -59,8 +61,8 @@ public class ComponentUpdateListCacheManagerTest {
      * @throws Exception 异常
      */
     @Test
-    public void testRemoveCacheArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.removeCache(null), "platform can not be null");
+    public void testRemoveArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.remove(null), "platform can not be null");
         assertTrue(true);
     }
 
@@ -68,11 +70,11 @@ public class ComponentUpdateListCacheManagerTest {
      * 测试removeCache,
      */
     @Test
-    public void testRemoveCache() {
-        CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
-        Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
-        caches.put(TerminalPlatformEnums.VDI, updatelist);
-        manager.removeCache(TerminalPlatformEnums.VDI);
+    public void testRemove() {
+        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        Map<CbbTerminalTypeEnums, CbbLinuxVDIUpdateListDTO> caches = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
+        caches.put(CbbTerminalTypeEnums.LINUX, updatelist);
+        manager.remove(CbbTerminalTypeEnums.LINUX);
         assertEquals(0, caches.size());
     }
 
@@ -82,8 +84,8 @@ public class ComponentUpdateListCacheManagerTest {
      * @throws Exception 异常
      */
     @Test
-    public void testGetCacheArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.getCache(null), "platform can not be null");
+    public void testGetArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.get(null), "platform can not be null");
         assertTrue(true);
     }
 
@@ -91,11 +93,11 @@ public class ComponentUpdateListCacheManagerTest {
      * 测试getCache,
      */
     @Test
-    public void testGetCache() {
-        CbbTerminalComponentUpdateListDTO updatelist = new CbbTerminalComponentUpdateListDTO();
-        Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
+    public void testGet() {
+        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        Map<TerminalPlatformEnums, CbbLinuxVDIUpdateListDTO> caches = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
         caches.put(TerminalPlatformEnums.VDI, updatelist);
-        assertEquals(updatelist, manager.getCache(TerminalPlatformEnums.VDI));
+        assertEquals(updatelist, manager.get(CbbTerminalTypeEnums.LINUX));
         caches.remove(TerminalPlatformEnums.VDI);
     }
 
@@ -104,7 +106,7 @@ public class ComponentUpdateListCacheManagerTest {
      */
     @Test
     public void testGetUpdateListCaches() {
-        Map<TerminalPlatformEnums, CbbTerminalComponentUpdateListDTO> caches = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
-        assertEquals(caches, manager.getUpdateListCaches());
+        Map<TerminalPlatformEnums, CbbLinuxVDIUpdateListDTO> caches = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
+        assertEquals(caches, manager.getUpdateListCache());
     }
 }
