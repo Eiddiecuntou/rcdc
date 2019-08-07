@@ -45,7 +45,7 @@ public class WinSoftComponentUpgradeHandler extends AbstractTerminalComponentUpg
                     new CbbWinSoftUpdateListDTO());
         }
 
-        CbbWinSoftUpdateListDTO updatelist = SoftTerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.LINUX);
+        CbbWinSoftUpdateListDTO updatelist = SoftTerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.WINDOWS);
         String rainUpgradeVersion = request.getRainUpgradeVersion();
         String validateMd5 = request.getValidateMd5();
         // 判断终端类型升级包是否存在或是否含有组件信息

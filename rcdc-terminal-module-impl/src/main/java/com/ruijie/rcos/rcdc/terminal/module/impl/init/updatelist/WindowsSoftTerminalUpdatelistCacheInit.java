@@ -1,15 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinSoftUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.SoftTerminalUpdateListCacheManager;
+import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.stereotype.Service;
+import com.ruijie.rcos.sk.base.util.StringUtils;
 
 /**
  * Description: Function Description
@@ -26,7 +29,7 @@ public class WindowsSoftTerminalUpdatelistCacheInit extends AbstractUpdatelistCa
 
     @Override
     protected String getUpdateListPath() {
-        return "C:\\Users\\nieti\\Desktop\\shine\\soft-update.list";
+        return "/opt/ftp/terminal/terminal_component/windows_app/soft-update.list";
     }
 
     @Override
@@ -46,7 +49,11 @@ public class WindowsSoftTerminalUpdatelistCacheInit extends AbstractUpdatelistCa
 
     @Override
     protected void fillUpdateList(CbbWinSoftUpdateListDTO updatelist) {
-
+        try {
+            updatelist.setValidateMd5(StringUtils.bytes2Hex(Md5Builder.computeFileMd5(new File(getUpdateListPath()))));
+        } catch (IOException e) {
+            LOGGER.error("计算updatelist文件MD5值异常", e);
+        }
     }
 
     @Override

@@ -30,7 +30,7 @@ public class TerminalComponentUpgradeCacheInit {
     public void safeInit() {
         LOGGER.info("开始初始化linuxVDI终端组件升级updatelist");
         linuxVDIUpdatelistCacheInit.init();
-//        windowsSoftTerminalUpdatelistCacheInit.init();
+        windowsSoftTerminalUpdatelistCacheInit.init();
     }
 
 }

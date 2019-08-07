@@ -39,8 +39,8 @@ public class TerminalComponentUpgradeHandlerFactory {
         HashMap softHandlerHolder = Maps.newHashMap();
         softHandlerHolder.put(CbbTerminalTypeEnums.WINDOWS, new WinSoftComponentUpgradeHandler());
 
-        upgradeHandlerHolder.put(TerminalPlatformEnums.VDI, softHandlerHolder);
-        upgradeHandlerHolder.put(TerminalPlatformEnums.SOFT_TERMINAL, softHandlerHolder);
+        upgradeHandlerHolder.put(TerminalPlatformEnums.VDI, VDIHandlerHolder);
+        upgradeHandlerHolder.put(TerminalPlatformEnums.APP, softHandlerHolder);
     }
 
     public TerminalComponentUpgradeHandler getHandler(TerminalPlatformEnums platform, CbbTerminalTypeEnums terminalType)

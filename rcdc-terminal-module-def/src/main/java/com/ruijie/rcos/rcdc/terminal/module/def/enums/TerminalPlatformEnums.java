@@ -25,7 +25,7 @@ public enum TerminalPlatformEnums {
     /**
      * 软终端
      */
-    SOFT_TERMINAL,
+    APP,
 
     /**
      * 其他终端,需要注意此类终端，给出提示信息
