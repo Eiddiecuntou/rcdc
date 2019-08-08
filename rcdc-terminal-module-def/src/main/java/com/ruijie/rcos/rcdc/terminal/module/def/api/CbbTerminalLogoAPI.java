@@ -20,8 +20,6 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
  */
 public interface CbbTerminalLogoAPI {
     
-    String TERMINAL_LOGO_NAME = "logo.png";
-
     /**
      * 上传Logo
      *
