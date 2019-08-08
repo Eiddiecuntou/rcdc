@@ -19,7 +19,7 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
  * @author huangsen
  */
 public interface CbbTerminalLogoAPI {
-
+    
     /**
      * 上传Logo
      *
