@@ -43,16 +43,15 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
     @Override
     public DefaultResponse uploadLogo(CbbUploadLogoRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        String logoName = request.getLogoName();
         String logoPath = request.getLogoPath();
         File logo = new File(logoPath);
         String srcLogoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
         if (srcLogoPath != null) {
             deleteLogo(srcLogoPath);
         }
-        String saveLogoPath = moveLogo(logo, logoName);
+        String saveLogoPath = moveLogo(logo, TERMINAL_LOGO_NAME);
         globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, saveLogoPath);
-        terminalLogoService.syncTerminalLogo(logoName, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+        terminalLogoService.syncTerminalLogo(TERMINAL_LOGO_NAME, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
         return DefaultResponse.Builder.success();
     }
 
