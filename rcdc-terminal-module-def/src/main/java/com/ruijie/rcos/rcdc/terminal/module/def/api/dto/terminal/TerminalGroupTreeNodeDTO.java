@@ -17,6 +17,8 @@ public class TerminalGroupTreeNodeDTO {
     private UUID id;
     
     private String label;
+
+    private Boolean enableDefault;
     
     /**
      * 父级节点id，用于组装树形结构，序列化时忽略该属性
@@ -58,5 +60,12 @@ public class TerminalGroupTreeNodeDTO {
     public void setChildren(TerminalGroupTreeNodeDTO[] children) {
         this.children = children;
     }
-    
+
+    public Boolean getEnableDefault() {
+        return enableDefault;
+    }
+
+    public void setEnableDefault(Boolean enableDefault) {
+        this.enableDefault = enableDefault;
+    }
 }
