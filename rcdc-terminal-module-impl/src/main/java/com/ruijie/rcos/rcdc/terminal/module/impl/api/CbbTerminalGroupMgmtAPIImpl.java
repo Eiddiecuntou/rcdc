@@ -143,6 +143,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
             TerminalGroupEntity entity = subList.get(i);
             TerminalGroupTreeNodeDTO dto = new TerminalGroupTreeNodeDTO();
             entity.converToDTO(dto);
+            dto.setEnableDefault(Constants.DEFAULT_TERMINAL_GROUP_UUID.equals(dto.getId()));
             dtoArr[i] = dto;
         });
         return dtoArr;
