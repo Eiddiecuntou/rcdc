@@ -1,10 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request.group;
 
 import java.util.UUID;
+
 import org.springframework.lang.Nullable;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
+
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
-import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.base.annotation.TextShort;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
@@ -31,14 +31,6 @@ public class CbbCreateTerminalGroupRequest implements Request {
      */
     @Nullable
     private UUID parentGroupId;
-    
-    /**
-     * 终端类型
-     */
-    @NotNull
-    private TerminalTypeEnums terminalType = TerminalTypeEnums.VDI;
-    
-    
 
     public CbbCreateTerminalGroupRequest() {
     }
@@ -46,12 +38,6 @@ public class CbbCreateTerminalGroupRequest implements Request {
     public CbbCreateTerminalGroupRequest(String groupName, UUID parentGroupId) {
         this.groupName = groupName;
         this.parentGroupId = parentGroupId;
-    }
-
-    public CbbCreateTerminalGroupRequest(String groupName, UUID parentGroupId, TerminalTypeEnums terminalType) {
-        this.groupName = groupName;
-        this.parentGroupId = parentGroupId;
-        this.terminalType = terminalType;
     }
 
     public String getGroupName() {
@@ -69,13 +55,4 @@ public class CbbCreateTerminalGroupRequest implements Request {
     public void setParentGroupId(UUID parentGroupId) {
         this.parentGroupId = parentGroupId;
     }
-
-    public TerminalTypeEnums getTerminalType() {
-        return terminalType;
-    }
-
-    public void setTerminalType(TerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
-    }
-    
 }

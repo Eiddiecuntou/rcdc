@@ -10,7 +10,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
@@ -37,7 +37,7 @@ public class GroupHierarchyChecker {
     private TerminalGroupDAO terminalGroupDAO;
 
     /**
-     *  分组层级校验
+     * 分组层级校验
      *
      * @param groupId 分组id
      * @param addHierarchy 添加的层级
@@ -54,7 +54,7 @@ public class GroupHierarchyChecker {
     }
 
     /**
-     *  获取分组层级数（包含自身）
+     * 获取分组层级数（包含自身）
      *
      * @param groupId 分组id
      * @return 分组层级数
@@ -64,7 +64,7 @@ public class GroupHierarchyChecker {
 
         // 获取子分组层级数
         List<TerminalGroupEntity> subGroupList =
-                terminalGroupDAO.findByTerminalTypeAndParentId(TerminalTypeEnums.VDI, groupId);
+                terminalGroupDAO.findByParentId(groupId);
         List<TreeNode> childList = buildChildrenNode(subGroupList);
         TreeNode rootNode = new TreeNode(groupId, childList);
         int maxDepth = rootNode.maxDepth(rootNode);
@@ -76,7 +76,7 @@ public class GroupHierarchyChecker {
         List<TreeNode> childList = new ArrayList<>(subGroupList.size());
         for (TerminalGroupEntity entity : subGroupList) {
             List<TerminalGroupEntity> subList =
-                    terminalGroupDAO.findByTerminalTypeAndParentId(TerminalTypeEnums.VDI, entity.getId());
+                    terminalGroupDAO.findByParentId(entity.getId());
             childList.add(new TreeNode(entity.getId(), buildChildrenNode(subList)));
         }
         return childList;

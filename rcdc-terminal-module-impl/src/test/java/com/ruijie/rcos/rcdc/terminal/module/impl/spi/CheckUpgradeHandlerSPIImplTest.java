@@ -2,6 +2,10 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import mockit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
@@ -14,10 +18,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Tested;
-import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -28,7 +28,7 @@ import mockit.integration.junit4.JMockit;
  *
  * @author Jarman
  */
-@RunWith(JMockit.class)
+@RunWith(SkyEngineRunner.class)
 public class CheckUpgradeHandlerSPIImplTest {
 
     @Tested
@@ -46,9 +46,6 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Injectable
     private TerminalComponentUpgradeService componentUpgradeService;
 
-    @Injectable
-    private TerminalDetectionDAO terminalDetectionDAO;
-
 
     /**
      * 测试检查组件升级- 更新终端信息
@@ -60,6 +57,8 @@ public class CheckUpgradeHandlerSPIImplTest {
         entity.setTerminalId("123456");
         entity.setTerminalName("t-box3");
         entity.setCpuType("intel");
+        entity.setTerminalOsType("Linux");
+        entity.setTerminalType(CbbTerminalTypeEnums.LINUX);
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
@@ -69,6 +68,13 @@ public class CheckUpgradeHandlerSPIImplTest {
                 } catch (Exception e) {
                     fail();
                 }
+            }
+        };
+
+        new MockUp(CbbTerminalTypeEnums.class) {
+            @Mock
+            public CbbTerminalTypeEnums convert(String typeName) {
+                return CbbTerminalTypeEnums.LINUX;
             }
         };
 
@@ -100,6 +106,13 @@ public class CheckUpgradeHandlerSPIImplTest {
                 } catch (Exception e) {
                     fail();
                 }
+            }
+        };
+
+        new MockUp(CbbTerminalTypeEnums.class) {
+            @Mock
+            public CbbTerminalTypeEnums convert(String typeName) {
+                return CbbTerminalTypeEnums.LINUX;
             }
         };
 

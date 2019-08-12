@@ -2,9 +2,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import java.util.List;
 import java.util.UUID;
-import org.springframework.lang.Nullable;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -21,10 +21,9 @@ public interface TerminalGroupService {
     
     /**
      * 根据终端类型查询所有分组
-     * @param terminalType 终端类型
      * @return 分组列表
      */
-    List<TerminalGroupEntity> findAllByTerminalType(TerminalTypeEnums terminalType);
+    List<TerminalGroupEntity> findAll();
     
     /**
      * @description 保存终端组

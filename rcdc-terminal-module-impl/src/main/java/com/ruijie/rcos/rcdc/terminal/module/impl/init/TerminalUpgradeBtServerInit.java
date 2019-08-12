@@ -83,7 +83,7 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
         LOGGER.info("init upgrade ceche");
         // 更新缓存中的updatelist
-        upgradeCacheInit.safeInit();
+        upgradeCacheInit.cachesInit();
     }
 
     private boolean needUpgrade(String currentIp) {
@@ -152,7 +152,7 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
             // 更新数据库中的服务器ip
             globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
             // 更新缓存中的updatelist
-            upgradeCacheInit.safeInit();
+            upgradeCacheInit.cachesInit();
             return outStr;
         }
 

@@ -5,9 +5,10 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
@@ -19,7 +20,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupTotal
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 /**
  * Description: 终端分组service
@@ -53,10 +53,9 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         Assert.hasText(groupName, "terminal group name can not be null");
 
         UUID parentGroupId = terminalGroup.getParentGroupId();
-        TerminalTypeEnums terminalType = terminalGroup.getTerminalType();
         checkDefault(parentGroupId);
-        checkGroupNum(terminalType);
-        checkSubGroupNum(terminalType, parentGroupId);
+        checkGroupNum();
+        checkSubGroupNum(parentGroupId);
         checkNameUniqueThrowExceptionIfNot(terminalGroup);
         checkGroupLevel(parentGroupId, 1);
 
@@ -81,13 +80,12 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     public boolean checkGroupNameUnique(TerminalGroupDTO terminalGroup) throws BusinessException {
         Assert.notNull(terminalGroup, "terminal group can not be null");
         Assert.hasText(terminalGroup.getGroupName(), "terminal group name can not be blank");
-        Assert.notNull(terminalGroup.getTerminalType(), "terminal type can not be null");
 
         String groupName = terminalGroup.getGroupName();
         UUID groupId = terminalGroup.getId();
         UUID parentGroupId = terminalGroup.getParentGroupId();
         List<TerminalGroupEntity> subList =
-                terminalGroupDAO.findByTerminalTypeAndParentId(terminalGroup.getTerminalType(), parentGroupId);
+                terminalGroupDAO.findByParentId(parentGroupId);
         if (CollectionUtils.isEmpty(subList)) {
             return true;
         }
@@ -126,13 +124,27 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
             if (!parentGroupId.equals(groupEntity.getParentId())) {
                 LOGGER.debug("parent group id is changed, check group level by id[{}] and parent id ", id, parentGroupId);
                 checkGroupLevel(parentGroupId, groupHierarchyChecker.getSubHierarchy(terminalGroup.getId()));
-                checkSubGroupNum(groupEntity.getTerminalType(), parentGroupId);
+                checkSubGroupNum(parentGroupId);
             }
         }
 
         // 检验分组名称是否同级唯一
         checkNameUniqueThrowExceptionIfNot(terminalGroup);
-        terminalGroupDAO.modifyGroupNameAndParent(id, groupName, parentGroupId, groupEntity.getVersion());
+        modifyGroupNameAndParent(id, groupName, parentGroupId);
+    }
+
+    /**
+     *  更新分组名及父分组
+     * @param groupId 分组id
+     * @param groupName 分组名
+     * @param parentGroupId 父分组id
+     * @throws BusinessException 业务异常
+     */
+    private void modifyGroupNameAndParent(UUID groupId, String groupName, UUID parentGroupId) throws BusinessException {
+        TerminalGroupEntity groupEntity = checkGroupExist(groupId);
+        groupEntity.setParentId(parentGroupId);
+        groupEntity.setName(groupName);
+        terminalGroupDAO.save(groupEntity);
     }
 
     /**
@@ -149,23 +161,21 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     /**
      * 检验分组数量是否超出限制
      *
-     * @param terminalType 终端类型
      * @throws BusinessException 业务异常
      */
-    private void checkGroupNum(TerminalTypeEnums terminalType) throws BusinessException {
+    private void checkGroupNum() throws BusinessException {
         // 校验分组总数是否超出限制
-        groupTotalNumChecker.check(terminalType, 1);
+        groupTotalNumChecker.check(1);
     }
 
     /**
      * 检验子分组数量是否超出限制
      *
-     * @param terminalType 终端类型
      * @param parentGroupId 父分组id
      * @throws BusinessException 业务异常
      */
-    private void checkSubGroupNum(TerminalTypeEnums terminalType, UUID parentGroupId) throws BusinessException {
-        groupSubNumChecker.check(obtainGroupEntity(parentGroupId, terminalType), 1);
+    private void checkSubGroupNum(UUID parentGroupId) throws BusinessException {
+        groupSubNumChecker.check(obtainGroupEntity(parentGroupId), 1);
     }
 
     /**
@@ -178,7 +188,6 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         TerminalGroupEntity entity = new TerminalGroupEntity();
         entity.setName(terminalGroup.getGroupName());
         entity.setParentId(terminalGroup.getParentGroupId());
-        entity.setTerminalType(terminalGroup.getTerminalType());
         entity.setCreateTime(new Date());
         return entity;
     }
@@ -247,11 +256,10 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         groupHierarchyChecker.check(parentGroupId, addHerarchy);
     }
 
-    private TerminalGroupEntity obtainGroupEntity(UUID parentGroupId, TerminalTypeEnums terminalType)
+    private TerminalGroupEntity obtainGroupEntity(UUID parentGroupId)
             throws BusinessException {
         if (parentGroupId == null) {
             TerminalGroupEntity groupEntity = new TerminalGroupEntity();
-            groupEntity.setTerminalType(terminalType);
             return groupEntity;
         }
 
@@ -259,9 +267,8 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     }
 
     @Override
-    public List<TerminalGroupEntity> findAllByTerminalType(TerminalTypeEnums terminalType) {
-        Assert.notNull(terminalType, "terminal type can not be null");
-        return terminalGroupDAO.findByTerminalType(terminalType);
+    public List<TerminalGroupEntity> findAll() {
+        return terminalGroupDAO.findAll();
     }
 
 }

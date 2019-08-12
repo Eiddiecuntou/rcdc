@@ -1,7 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import org.springframework.lang.Nullable;
 
 /**
@@ -18,10 +19,10 @@ public interface TerminalComponentUpgradeService {
     /**
      * 获取终端组件升级版本信息
      * 
-     * @param rainOsVersion 终端组件版本
+     * @param terminalEntity 终端信息
      * @param validateMd5 组件包校验md5值
-     * @param platform 终端平台类型
      * @return 组件升级版本信息
+     * @throws BusinessException 业务异常
      */
-    TerminalVersionResultDTO getVersion(String rainOsVersion, @Nullable String validateMd5, TerminalPlatformEnums platform);
+    TerminalVersionResultDTO getVersion(TerminalEntity terminalEntity, @Nullable String validateMd5) throws BusinessException;
 }
