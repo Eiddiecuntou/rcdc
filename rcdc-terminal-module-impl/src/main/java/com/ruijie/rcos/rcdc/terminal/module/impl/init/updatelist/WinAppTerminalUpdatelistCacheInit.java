@@ -1,18 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.AppTerminalUpdateListCacheManager;
-import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.base.util.StringUtils;
 
 /**
  * Description: Function Description
@@ -28,6 +26,8 @@ public class WinAppTerminalUpdatelistCacheInit extends AbstractUpdatelistCacheIn
     private static final Logger LOGGER = LoggerFactory.getLogger(WinAppTerminalUpdatelistCacheInit.class);
 
     private static final String UPDATE_LIST_PATH = "/opt/ftp/terminal/terminal_component/windows_app/update.list";
+
+    private static final String COMPONENT_PACKAGE_DOWNLOAD_URL_PRE = "/terminal_component/windows_app/component/";
 
     @Override
     protected String getUpdateListPath() {
@@ -51,11 +51,10 @@ public class WinAppTerminalUpdatelistCacheInit extends AbstractUpdatelistCacheIn
 
     @Override
     protected void fillUpdateList(CbbWinAppUpdateListDTO updatelist) {
-        try {
-            updatelist.setValidateMd5(StringUtils.bytes2Hex(Md5Builder.computeFileMd5(new File(getUpdateListPath()))));
-        } catch (IOException e) {
-            LOGGER.error("计算updatelist文件MD5值异常", e);
-        }
+
+        List<CbbWinAppComponentVersionInfoDTO> componentList = updatelist.getComponentList();
+        componentList.forEach(
+            component -> component.setUrl(COMPONENT_PACKAGE_DOWNLOAD_URL_PRE + component.getCompletePackageName()));
     }
 
     @Override
