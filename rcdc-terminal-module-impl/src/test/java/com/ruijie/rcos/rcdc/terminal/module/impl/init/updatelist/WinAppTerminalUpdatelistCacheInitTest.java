@@ -91,6 +91,6 @@ public class WinAppTerminalUpdatelistCacheInitTest {
 
         cacheInit.fillUpdateList(dto);
 
-        Assert.assertEquals("/terminal_component/windows_app/component/aaa", versionInfoDTO.getUrl());
+        Assert.assertEquals("/terminal_component/windows_app/component/aaa", versionInfoDTO.getCompletePackageUrl());
     }
 }

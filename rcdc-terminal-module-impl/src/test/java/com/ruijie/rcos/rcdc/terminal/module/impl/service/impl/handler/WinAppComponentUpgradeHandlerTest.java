@@ -3,28 +3,33 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import mockit.Mocked;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.AppTerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import mockit.Expectations;
+import mockit.Mock;
+import mockit.MockUp;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 
-import mockit.Mock;
-import mockit.MockUp;
 import mockit.Tested;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -36,10 +41,10 @@ import mockit.Tested;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
-public class LinuxVDIComponentUpgradeHandlerTest {
+public class WinAppComponentUpgradeHandlerTest {
 
     @Tested
-    private LinuxVDIComponentUpgradeHandler handler;
+    private WinAppComponentUpgradeHandler handler;
 
 
     /**
@@ -59,15 +64,15 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionUpdatelistIsNull() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
 
-        new MockUp(VDITerminalUpdateListCacheManager.class) {
+        new MockUp(AppTerminalUpdateListCacheManager.class) {
 
             private boolean isFirst = true;
 
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 if (isFirst) {
                     isFirst = false;
                     // 模拟返回空
@@ -78,7 +83,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
             }
         };
 
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        AppTerminalUpdateListCacheManager.setUpdatelistCacheReady();
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("123");
         request.setValidateMd5("xxx");
@@ -88,7 +93,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         TerminalVersionResultDTO terminalVersionResultDTO1 = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(),
                 terminalVersionResultDTO1.getResult().intValue());
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        AppTerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
     }
 
     /**
@@ -96,18 +101,17 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionNoUpgrade() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
-        List<CbbLinuxVDIComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbLinuxVDIComponentVersionInfoDTO());
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
+        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new CbbWinAppComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setValidateMd5("123");
         updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.1.1");
 
-        new MockUp(VDITerminalUpdateListCacheManager.class) {
+        new MockUp(AppTerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -115,11 +119,11 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.1.0.1");
         request.setValidateMd5("123");
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        AppTerminalUpdateListCacheManager.setUpdatelistCacheReady();
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        AppTerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
     }
 
     /**
@@ -127,18 +131,22 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionRainUpgradeVersionIsIllegale() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
-        List<CbbLinuxVDIComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbLinuxVDIComponentVersionInfoDTO());
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
+        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        CbbWinAppComponentVersionInfoDTO complete = new CbbWinAppComponentVersionInfoDTO();
+        complete.setComplete(true);
+        CbbWinAppComponentVersionInfoDTO component = new CbbWinAppComponentVersionInfoDTO();
+        component.setComplete(false);
+        componentList.add(complete);
+        componentList.add(component);
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.1.1");
-        updatelist.setLimitVersion("1.0.0.1");
+        updatelist.setLimitVersion("1.0.1.1");
         updatelist.setValidateMd5("123");
-        new MockUp(VDITerminalUpdateListCacheManager.class) {
+        new MockUp(AppTerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -146,11 +154,11 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        AppTerminalUpdateListCacheManager.setUpdatelistCacheReady();
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        AppTerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
     }
 
     /**
@@ -158,25 +166,24 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionLimitVersion() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
-        List<CbbLinuxVDIComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbLinuxVDIComponentVersionInfoDTO());
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
+        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        CbbWinAppComponentVersionInfoDTO complete = new CbbWinAppComponentVersionInfoDTO();
+        complete.setComplete(true);
+        CbbWinAppComponentVersionInfoDTO component = new CbbWinAppComponentVersionInfoDTO();
+        component.setComplete(false);
+        componentList.add(complete);
+        componentList.add(component);
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.2.1");
         updatelist.setLimitVersion("1.0.1.1");
+        updatelist.setValidateMd5("123");
 
-        new MockUp(Logger.class) {
-            @Mock
-            public boolean isDebugEnabled() {
-                return true;
-            }
-        };
 
-        new MockUp(VDITerminalUpdateListCacheManager.class) {
+        new MockUp(AppTerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -184,11 +191,11 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        AppTerminalUpdateListCacheManager.setUpdatelistCacheReady();
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        AppTerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
     }
 
     /**
@@ -196,13 +203,12 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionIsUpdating() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
-        List<CbbLinuxVDIComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbLinuxVDIComponentVersionInfoDTO());
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
+        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new CbbWinAppComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.2.1");
         updatelist.setLimitVersion("1.0.1.1");
 
         GetVersionRequest request = new GetVersionRequest();

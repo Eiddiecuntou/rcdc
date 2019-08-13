@@ -53,8 +53,8 @@ public class WinAppTerminalUpdatelistCacheInit extends AbstractUpdatelistCacheIn
     protected void fillUpdateList(CbbWinAppUpdateListDTO updatelist) {
 
         List<CbbWinAppComponentVersionInfoDTO> componentList = updatelist.getComponentList();
-        componentList.forEach(
-            component -> component.setUrl(COMPONENT_PACKAGE_DOWNLOAD_URL_PRE + component.getCompletePackageName()));
+        componentList.forEach(component -> component
+            .setCompletePackageUrl(COMPONENT_PACKAGE_DOWNLOAD_URL_PRE + component.getCompletePackageName()));
     }
 
     @Override

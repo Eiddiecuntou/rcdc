@@ -1,8 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.util.Assert;
@@ -57,9 +55,9 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
         String versionStr = updatelist.getVersion();
         String rainUpgradeVersion = request.getRainUpgradeVersion();
         // 根据版本号对比，版本相同且updatelist的MD5相同，不升级
-        if (rainUpgradeVersion.equals(versionStr) && Objects.equals(validateMd5, updatelist.getValidateMd5())) {
+        if (rainUpgradeVersion.equals(versionStr)) {
             // 版本相同，不升级 0
-            LOGGER.debug("版本号及MD5校验值与服务端相同，不需要升级");
+            LOGGER.debug("版本号服务端相同，不需要升级");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
                     new CbbWinAppUpdateListDTO());
         }
@@ -67,11 +65,11 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
         if (compareVersion(updatelist.getLimitVersion(), rainUpgradeVersion)) {
             LOGGER.debug("版本号小于服务端版本号，需要进行完整升级");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
-                    getUpdateListResult(true));
+                    getUpdateListResult(updatelist, true));
         }
 
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
-                getUpdateListResult(false));
+                getUpdateListResult(updatelist, false));
     }
 
     /**
@@ -80,17 +78,14 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
      * @param isComplete 是否完整升级包
      * @return
      */
-    private CbbWinAppUpdateListDTO getUpdateListResult(boolean isComplete) {
-        Map<CbbTerminalTypeEnums, CbbWinAppUpdateListDTO> updateListCache =
-                AppTerminalUpdateListCacheManager.getUpdateListCache();
-        CbbWinAppUpdateListDTO cacheUpdateListDTO = updateListCache.get(CbbTerminalTypeEnums.WINDOWS);
-        List<CbbWinAppComponentVersionInfoDTO> componentList = cacheUpdateListDTO.getComponentList().stream()
+    private CbbWinAppUpdateListDTO getUpdateListResult(CbbWinAppUpdateListDTO updatelist, boolean isComplete) {
+        List<CbbWinAppComponentVersionInfoDTO> componentList = updatelist.getComponentList().stream()
                 .filter(component -> (component.getComplete() == isComplete)).collect(Collectors.toList());
 
         CbbWinAppUpdateListDTO resultDTO = new CbbWinAppUpdateListDTO();
-        resultDTO.setVersion(cacheUpdateListDTO.getVersion());
-        resultDTO.setLimitVersion(cacheUpdateListDTO.getLimitVersion());
-        resultDTO.setValidateMd5(cacheUpdateListDTO.getValidateMd5());
+        resultDTO.setVersion(updatelist.getVersion());
+        resultDTO.setLimitVersion(updatelist.getLimitVersion());
+        resultDTO.setValidateMd5(updatelist.getValidateMd5());
         resultDTO.setComponentList(componentList);
         resultDTO.setComponentSize(componentList.size());
         return resultDTO;

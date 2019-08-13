@@ -24,7 +24,7 @@ public class CbbWinAppComponentVersionInfoDTO extends CbbCommonComponentVersionI
     /**
      * 下载路径
      */
-    private String url;
+    private String completePackageUrl;
 
     public Boolean getComplete() {
         return isComplete;
@@ -34,12 +34,12 @@ public class CbbWinAppComponentVersionInfoDTO extends CbbCommonComponentVersionI
         isComplete = complete;
     }
 
-    public String getUrl() {
-        return url;
+    public String getCompletePackageUrl() {
+        return completePackageUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setCompletePackageUrl(String completePackageUrl) {
+        this.completePackageUrl = completePackageUrl;
     }
 
     public String getCompletePackageName() {
