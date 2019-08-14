@@ -68,6 +68,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
+    // FIXME neiting 这个不需要分页查询目录，列出所有系统刷机包就好了
     DefaultPageResponse<CbbTerminalSystemUpgradePackageInfoDTO> listSystemUpgradePackage(PageSearchRequest request) throws BusinessException;
 
     /**
@@ -78,6 +79,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
+    // FIXME neiting 这个修改为根据Id获取系统刷机包信息的接口
     CbbUpgradePackageNameResponse getTerminalUpgradePackageName(CbbUpgradePackageIdRequest request) throws BusinessException;
 
     /**

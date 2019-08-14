@@ -76,6 +76,7 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
+    // FIXME neiting 这个接口修改为singleDetect
     DefaultResponse detect(CbbTerminalDetectRequest request) throws BusinessException;
 
     /**
@@ -86,6 +87,7 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
+    // FIXME neiting 这个接口修改为batchDetect
     DefaultResponse detect(CbbTerminalBatDetectRequest request) throws BusinessException;
 
     /**
@@ -96,6 +98,7 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
+    // FIXME neiting 检测记录的单独一个API接口提供
     DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException;
 
     /**

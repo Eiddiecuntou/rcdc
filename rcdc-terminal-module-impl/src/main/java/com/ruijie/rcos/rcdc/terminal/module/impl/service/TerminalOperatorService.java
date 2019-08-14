@@ -67,6 +67,7 @@ public interface TerminalOperatorService {
      * @param terminalIdArr 终端id数组
      * @throws BusinessException 业务异常
      */
+    // FIXME nieting 这个接口没有必须要开放，直接调用单个检测就好了
     void detect(String[] terminalIdArr) throws BusinessException;
 
     /**

@@ -46,6 +46,7 @@ public interface CbbTerminalBasicInfoAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
+    // FIXME nieting 这个接口给那个模块使用，感觉没有这个业务
     DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException;
 
     /**

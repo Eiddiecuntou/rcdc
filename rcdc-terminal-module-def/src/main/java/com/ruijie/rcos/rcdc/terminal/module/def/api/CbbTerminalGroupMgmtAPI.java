@@ -39,6 +39,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
+    // FIXME nieting 删除这个接口，修改为使用getByName接口返回对象
     CbbCheckGroupNameDuplicationResponse checkNameDuplication(CbbCheckGroupNameDuplicationRequest request) throws BusinessException;
 
 
