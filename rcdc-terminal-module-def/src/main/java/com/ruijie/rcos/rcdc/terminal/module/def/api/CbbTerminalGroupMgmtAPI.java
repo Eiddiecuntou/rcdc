@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
@@ -32,16 +31,14 @@ public interface CbbTerminalGroupMgmtAPI {
     CbbGetTerminalGroupTreeResponse loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeRequest request) throws BusinessException;
     
     /**
-     * 检验终端分组名称是否同级重复
+     * 根据分组名称及父分组id获取分组
      * 
-     * @param request 校验请求信息
+     * @param request 请求信息
      * @return 校验结果
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    // FIXME nieting 删除这个接口，修改为使用getByName接口返回对象
-    CbbCheckGroupNameDuplicationResponse checkNameDuplication(CbbCheckGroupNameDuplicationRequest request) throws BusinessException;
-
+    CbbTerminalGroupResponse getByName(CbbGetSubGroupByNameRequest request) throws BusinessException;
 
     /**
      * 加载指定id终端组对象

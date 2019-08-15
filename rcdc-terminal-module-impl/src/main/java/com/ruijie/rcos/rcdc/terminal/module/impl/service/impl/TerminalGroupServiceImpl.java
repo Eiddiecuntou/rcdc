@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -271,4 +272,10 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         return terminalGroupDAO.findAll();
     }
 
+    @Override
+    public List<TerminalGroupEntity> getByName(@Nullable UUID parentGroupId, String groupName) {
+        Assert.hasText(groupName, "groupName can not be blank");
+
+        return terminalGroupDAO.findByParentIdAndName(parentGroupId, groupName);
+    }
 }

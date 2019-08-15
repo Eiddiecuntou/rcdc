@@ -15,7 +15,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
@@ -142,12 +141,18 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public CbbCheckGroupNameDuplicationResponse checkNameDuplication(CbbCheckGroupNameDuplicationRequest request) throws BusinessException {
+    public CbbTerminalGroupResponse getByName(CbbGetSubGroupByNameRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(request.getId(), request.getGroupName(), request.getParentGroupId());
-        boolean enableUnique = terminalGroupService.checkGroupNameUnique(terminalGroup);
-        return new CbbCheckGroupNameDuplicationResponse(!enableUnique);
+        List<TerminalGroupEntity> groupEntityList = terminalGroupService.getByName(request.getParentGroupId(), request.getGroupName());
+        if (CollectionUtils.isEmpty(groupEntityList)) {
+            return new CbbTerminalGroupResponse(null);
+        }
+
+        // 同级下分组名称唯一，因此列表只可能存在一个
+        TerminalGroupDTO groupDTO = new TerminalGroupDTO();
+        groupEntityList.get(0).converToDTO(groupDTO);
+        return new CbbTerminalGroupResponse(groupDTO);
     }
 
     @Override

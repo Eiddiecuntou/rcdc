@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request.group;
 
 import java.util.UUID;
+
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
 import com.ruijie.rcos.sk.base.annotation.TextShort;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
@@ -14,17 +16,12 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-public class CbbCheckGroupNameDuplicationRequest implements Request {
-
-    /**
-     * 终端id
-     */
-    @Nullable
-    private UUID id;
+public class CbbGetSubGroupByNameRequest implements Request {
     
     /**
      * 终端分组名称
      */
+    @NotNull
     @TextShort
     private String groupName;
     
@@ -35,21 +32,12 @@ public class CbbCheckGroupNameDuplicationRequest implements Request {
     private UUID parentGroupId;
     
 
-    public CbbCheckGroupNameDuplicationRequest() {
+    public CbbGetSubGroupByNameRequest() {
     }
 
-    public CbbCheckGroupNameDuplicationRequest(UUID id, String groupName, UUID parentGroupId) {
-        this.id = id;
+    public CbbGetSubGroupByNameRequest(UUID id, String groupName, UUID parentGroupId) {
         this.groupName = groupName;
         this.parentGroupId = parentGroupId;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getGroupName() {

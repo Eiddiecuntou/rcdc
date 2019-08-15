@@ -95,31 +95,6 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         return DefaultResponse.Builder.success();
     }
 
-    @Override
-    public DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException {
-        Assert.notNull(request, "TerminalNetworkRequest不能为null");
-        // 先发送网络配置消息给shine，后修改数据库
-        String terminalId = request.getTerminalId();
-        ShineNetworkConfig shineNetworkConfig = new ShineNetworkConfig();
-        BeanCopier beanCopier = BeanCopier.create(request.getClass(), shineNetworkConfig.getClass(), false);
-        beanCopier.copy(request, shineNetworkConfig, null);
-        shineNetworkConfig.setGetDnsMode(request.getGetDnsMode().ordinal());
-        shineNetworkConfig.setGetIpMode(request.getGetIpMode().ordinal());
-        basicInfoService.modifyTerminalNetworkConfig(request.getTerminalId(), shineNetworkConfig);
-
-        int version = getVersion(terminalId);
-        int effectRow = basicInfoDAO.modifyTerminalNetworkConfig(terminalId, version, request);
-        if (effectRow == 0) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
-        }
-        return DefaultResponse.Builder.success();
-    }
-
-    private Integer getVersion(String terminalId) throws BusinessException {
-        TerminalEntity basicInfoEntity = getTerminalEntity(terminalId);
-        return basicInfoEntity.getVersion();
-    }
-
     private TerminalEntity getTerminalEntity(String terminalId) throws BusinessException {
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (basicInfoEntity == null) {

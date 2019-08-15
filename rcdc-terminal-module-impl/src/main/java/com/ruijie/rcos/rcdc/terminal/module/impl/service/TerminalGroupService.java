@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.UUID;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetSubGroupByNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.springframework.lang.Nullable;
 
 /**
  * 
@@ -75,4 +77,11 @@ public interface TerminalGroupService {
      */
     String[] getTerminalGroupNameArr(UUID groupId) throws BusinessException;
 
+    /**
+     *  根据名称获取分组下的子分组
+     * @param parentGroupId 父分组id
+     * @param groupName 分组名称
+     * @return 分组对象
+     */
+    List<TerminalGroupEntity> getByName(@Nullable UUID parentGroupId, String groupName);
 }

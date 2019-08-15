@@ -62,15 +62,6 @@ public interface TerminalOperatorService {
     void sendDetectRequest(TerminalDetectionEntity detection) throws BusinessException;
 
     /**
-     * 批量终端检测
-     *
-     * @param terminalIdArr 终端id数组
-     * @throws BusinessException 业务异常
-     */
-    // FIXME nieting 这个接口没有必须要开放，直接调用单个检测就好了
-    void detect(String[] terminalIdArr) throws BusinessException;
-
-    /**
      * 获取终端管理员密码
      * 
      * @return 终端管理员密码

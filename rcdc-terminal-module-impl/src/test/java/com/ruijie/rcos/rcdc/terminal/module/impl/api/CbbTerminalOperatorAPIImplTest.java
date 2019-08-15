@@ -166,116 +166,10 @@ public class CbbTerminalOperatorAPIImplTest {
         try {
             CbbTerminalBatDetectRequest request = new CbbTerminalBatDetectRequest();
             request.setTerminalIdArr(terminalIdArr);
-            DefaultResponse resp = terminalOperatorAPI.detect(request);
+            DefaultResponse resp = terminalOperatorAPI.batchDetect(request);
             Assert.assertEquals(Status.SUCCESS, resp.getStatus());
         } catch (Exception e) {
             fail();
-        }
-    }
-
-    /**
-     * 测试获取终端检测列表
-     * 
-     * @param resolver mock LocaleI18nResolver
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testListDetect(@Mocked LocaleI18nResolver resolver) throws BusinessException {
-        CbbTerminalDetectPageRequest pageReq = new CbbTerminalDetectPageRequest();
-        pageReq.setLimit(10);
-        pageReq.setPage(1);
-
-        Page<TerminalDetectionEntity> page = buildRespPage();
-
-        new Expectations() {
-            {
-                detectService.pageQuery((CbbTerminalDetectPageRequest) any);
-                result = page;
-            }
-        };
-
-        DefaultPageResponse<CbbTerminalDetectDTO> resp = terminalOperatorAPI.listDetect(pageReq);
-        Assert.assertEquals(Status.SUCCESS, resp.getStatus());
-        Assert.assertEquals(1, resp.getItemArr().length);
-
-    }
-
-    /**
-     * 测试获取终端检测列表-返回结果中列表数量为空
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testListDetectResultListIsEmpty() throws BusinessException {
-        CbbTerminalDetectPageRequest pageReq = new CbbTerminalDetectPageRequest();
-        pageReq.setLimit(10);
-        pageReq.setPage(1);
-
-        Page<TerminalDetectionEntity> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(1, 10), 1);
-
-        new Expectations() {
-            {
-                detectService.pageQuery((CbbTerminalDetectPageRequest) any);
-                result = page;
-            }
-        };
-
-        DefaultPageResponse<CbbTerminalDetectDTO> resp = terminalOperatorAPI.listDetect(pageReq);
-        Assert.assertEquals(Status.SUCCESS, resp.getStatus());
-        Assert.assertEquals(0, resp.getItemArr().length);
-
-    }
-
-    /**
-     * 测试获取终端检测列表-请求为空
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testListDetectRequestIsNull() throws BusinessException {
-        CbbTerminalDetectPageRequest pageReq = null;
-
-        try {
-            terminalOperatorAPI.listDetect(pageReq);
-            fail();
-        } catch (Exception e) {
-            Assert.assertEquals("request can not be null", e.getMessage());
-        }
-
-    }
-
-    private Page<TerminalDetectionEntity> buildRespPage() {
-        List<TerminalDetectionEntity> detectionList = new ArrayList<>();
-        TerminalDetectionEntity entity = new TerminalDetectionEntity();
-        entity.setDetectState(DetectStateEnums.CHECKING);
-        detectionList.add(entity);
-        return new PageImpl<>(detectionList, PageRequest.of(1, 10), 1);
-    }
-
-    /**
-     * 测试获取终端检测结果
-     */
-    @Test
-    public void testGetDetectResult() {
-        CbbTerminalDetectResultRequest request = new CbbTerminalDetectResultRequest();
-        request.setDetectDate(CbbDetectDateEnums.TODAY);
-
-        CbbDetectResultResponse detectResult = terminalOperatorAPI.getDetectResult(request);
-        Assert.assertEquals(Status.SUCCESS, detectResult.getStatus());
-    }
-
-    /**
-     * 测试获取终端检测结果-请求参数为空
-     */
-    @Test
-    public void testGetDetectResultRequestIsNull() {
-        CbbTerminalDetectResultRequest request = null;
-
-        try {
-            terminalOperatorAPI.getDetectResult(request);
-            fail();
-        } catch (Exception e) {
-            Assert.assertEquals("request can not be null", e.getMessage());
         }
     }
 
@@ -317,7 +211,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testDetectArgumentIsNull() throws Exception {
         CbbTerminalDetectRequest request = null;
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.detect(request), "CbbTerminalIdRequest不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.singleDetect(request), "CbbTerminalIdRequest不能为空");
         assertTrue(true);
     }
 
@@ -329,7 +223,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testDetect() throws BusinessException {
         CbbTerminalDetectRequest request = new CbbTerminalDetectRequest("123");
-        DefaultResponse response = terminalOperatorAPI.detect(request);
+        DefaultResponse response = terminalOperatorAPI.singleDetect(request);
         assertEquals(Status.SUCCESS, response.getStatus());
         new Verifications() {
             {
@@ -337,65 +231,6 @@ public class CbbTerminalOperatorAPIImplTest {
                 times = 1;
             }
         };
-    }
-
-    /**
-     * 测试getRecentDetect，参数为空
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testGetRecentDetectArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getRecentDetect(null), "request can not be null");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试getRecentDetect，
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testGetRecentDetect() throws Exception {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        CbbTerminalDetectDTO detectInfo = new CbbTerminalDetectDTO();
-        new Expectations() {
-            {
-                detectService.getRecentDetect(request.getTerminalId());
-                result = detectInfo;
-            }
-        };
-        CbbDetectInfoResponse response = terminalOperatorAPI.getRecentDetect(request);
-        assertEquals(detectInfo, response.getDetectInfo());
-    }
-
-    /**
-     * 测试getTerminalBaiscInfo，参数为空
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testGetTerminalBaiscInfoArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getTerminalBaiscInfo(null), "request can not be null");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试getTerminalBaiscInfo，
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testGetTerminalBaiscInfo() throws Exception {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        CbbTerminalBasicInfoResponse response = new CbbTerminalBasicInfoResponse();
-        new Expectations() {
-            {
-                basicInfoAPI.findBasicInfoByTerminalId(request);
-                result = response;
-            }
-        };
-        assertEquals(response, terminalOperatorAPI.getTerminalBaiscInfo(request));
     }
 
     /**
