@@ -9,8 +9,8 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.DeepCopyUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -33,14 +33,15 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
         Assert.notNull(request, "get version request can not be null");
 
         LOGGER.debug("linux VDI终端请求版本号");
-        if (VDITerminalUpdateListCacheManager.isCacheNotReady()) {
+        if (TerminalUpdateListCacheManager.isCacheNotReady(TerminalTypeEnums.VDI_LINUX)) {
             LOGGER.debug("linux VDI终端请求版本号未就绪");
             return buildResult(CbbTerminalComponentUpgradeResultEnums.PREPARING, new CbbLinuxVDIUpdateListDTO());
         }
 
-        CbbLinuxVDIUpdateListDTO updatelist = VDITerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.LINUX);
+        CbbLinuxVDIUpdateListDTO updatelist =
+                TerminalUpdateListCacheManager.get(TerminalTypeEnums.VDI_LINUX, CbbLinuxVDIUpdateListDTO.class);
         String rainUpgradeVersion = request.getRainUpgradeVersion();
-        String validateMd5 =  request.getValidateMd5();
+        String validateMd5 = request.getValidateMd5();
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist or component is null, return not support");
@@ -66,7 +67,8 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
         LOGGER.debug("terminal version is {}", terminalVersion);
         if (terminalVersion != 0 && compareVersion(updatelist.getLimitVersion(), rainUpgradeVersion)) {
             LOGGER.debug("limit version is big, return not support");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), updatelistDTO);
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
+                    updatelistDTO);
         }
 
         // 深拷贝对象
@@ -88,7 +90,8 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
     /**
      * 构建响应结果dto
      */
-    private TerminalVersionResultDTO buildResult(CbbTerminalComponentUpgradeResultEnums result, CbbLinuxVDIUpdateListDTO updateListDto) {
+    private TerminalVersionResultDTO buildResult(CbbTerminalComponentUpgradeResultEnums result,
+            CbbLinuxVDIUpdateListDTO updateListDto) {
         return new TerminalVersionResultDTO(result.getResult(), updateListDto);
     }
 

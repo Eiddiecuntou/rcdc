@@ -1,12 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import java.util.Map;
-
 import org.springframework.stereotype.Service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -31,10 +28,6 @@ public class LinuxVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemp
         return UPDATE_LIST_PATH;
     }
 
-    @Override
-    protected Map<CbbTerminalTypeEnums, CbbLinuxVDIUpdateListDTO> getUpdateListCacheManager() {
-        return VDITerminalUpdateListCacheManager.getUpdateListCache();
-    }
 
     @Override
     protected void fillUpdateList(CbbLinuxVDIUpdateListDTO updatelist) {
@@ -42,17 +35,8 @@ public class LinuxVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemp
     }
 
     @Override
-    protected CbbTerminalTypeEnums getTerminalType() {
-        return CbbTerminalTypeEnums.LINUX;
+    protected TerminalTypeEnums getTerminalType() {
+        return TerminalTypeEnums.VDI_LINUX;
     }
 
-    @Override
-    protected void cacheInitFinished() {
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
-    }
-
-    @Override
-    protected void cacheInitPre() {
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
-    }
 }

@@ -1,12 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.*;
@@ -18,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -241,20 +236,6 @@ public class AbstractUpdatelistCacheInitTemplateTest {
             return "ssss";
         }
 
-        @Override
-        protected void cacheInitPre() {
-
-        }
-
-        @Override
-        protected void cacheInitFinished() {
-
-        }
-
-        @Override
-        protected Map<CbbTerminalTypeEnums, CbbCommonUpdatelistDTO> getUpdateListCacheManager() {
-            return new HashMap<>();
-        }
 
         @Override
         protected void fillUpdateList(CbbCommonUpdatelistDTO updatelist) {
@@ -262,8 +243,8 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         }
 
         @Override
-        protected CbbTerminalTypeEnums getTerminalType() {
-            return CbbTerminalTypeEnums.WINDOWS;
+        protected TerminalTypeEnums getTerminalType() {
+            return TerminalTypeEnums.APP_WINDOWS;
         }
     }
 }

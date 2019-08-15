@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
@@ -38,7 +38,7 @@ public class ConnectCloseHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         String terminalId = request.getTerminalId();
         LOGGER.debug("连接关闭事件处理，terminal={}", terminalId);
         basicInfoService.modifyTerminalStateToOffline(terminalId);
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.OFFLINE, terminalId);
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.OFFLINE, terminalId);
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 }

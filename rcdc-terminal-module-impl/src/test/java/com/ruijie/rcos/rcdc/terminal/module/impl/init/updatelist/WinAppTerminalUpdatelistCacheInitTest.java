@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,12 +9,10 @@ import org.junit.runner.RunWith;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.AppTerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
 import mockit.Tested;
-import mockit.Verifications;
 
 /**
  * Description: Function Description
@@ -38,42 +35,9 @@ public class WinAppTerminalUpdatelistCacheInitTest {
     }
 
     @Test
-    public void testGetUpdateListCacheManager() {
-        Map<CbbTerminalTypeEnums, CbbWinAppUpdateListDTO> updateListCacheManager =
-                cacheInit.getUpdateListCacheManager();
-        Assert.assertEquals(AppTerminalUpdateListCacheManager.getUpdateListCache(), updateListCacheManager);
-    }
-
-    @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
-        Assert.assertEquals(CbbTerminalTypeEnums.WINDOWS, terminalType);
-    }
-
-    @Test
-    public void testCacheInitPre() {
-
-        cacheInit.cacheInitPre();
-
-        new Verifications() {
-            {
-                AppTerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
-                times = 1;
-            }
-        };
-    }
-
-    @Test
-    public void testCacheInitFinished() {
-
-        cacheInit.cacheInitFinished();
-
-        new Verifications() {
-            {
-                AppTerminalUpdateListCacheManager.setUpdatelistCacheReady();
-                times = 1;
-            }
-        };
+        TerminalTypeEnums terminalType = cacheInit.getTerminalType();
+        Assert.assertEquals(TerminalTypeEnums.APP_WINDOWS, terminalType);
     }
 
     /**

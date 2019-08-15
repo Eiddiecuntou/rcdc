@@ -10,8 +10,8 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.AppTerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -33,13 +33,14 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
         Assert.notNull(request, "get version request can not be null");
 
         LOGGER.debug("windows软终端请求版本号");
-        if (AppTerminalUpdateListCacheManager.isCacheNotReady()) {
+        if (TerminalUpdateListCacheManager.isCacheNotReady(TerminalTypeEnums.APP_WINDOWS)) {
             LOGGER.debug("soft windows终端请求版本号服务端未就绪");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(),
                     new CbbWinAppUpdateListDTO());
         }
 
-        CbbWinAppUpdateListDTO updatelist = AppTerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.WINDOWS);
+        CbbWinAppUpdateListDTO updatelist =
+                TerminalUpdateListCacheManager.get(TerminalTypeEnums.APP_WINDOWS, CbbWinAppUpdateListDTO.class);
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist不存在或updatelist中组件信息不存在，返回服务器异常响应");

@@ -1,19 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import mockit.Expectations;
-import mockit.Tested;
-import mockit.Verifications;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Map;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
-import static org.junit.Assert.assertTrue;
+import mockit.Tested;
 
 /**
  * Description: Function Description
@@ -36,41 +33,9 @@ public class LinuxVDIUpdatelistCacheInitTest {
     }
 
     @Test
-    public void testGetUpdateListCacheManager() {
-        Map<CbbTerminalTypeEnums, CbbLinuxVDIUpdateListDTO> cacheManager = cacheInit.getUpdateListCacheManager();
-        Assert.assertEquals(VDITerminalUpdateListCacheManager.getUpdateListCache(), cacheManager);
-    }
-
-    @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
-        Assert.assertEquals(CbbTerminalTypeEnums.LINUX, terminalType);
-    }
-
-    @Test
-    public void testCacheInitPre() {
-
-        cacheInit.cacheInitPre();
-
-        new Verifications(){
-            {
-                VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
-                times = 1;
-            }
-        };
-    }
-
-    @Test
-    public void testCacheInitFinished() {
-
-        cacheInit.cacheInitFinished();
-
-        new Verifications(){
-            {
-                VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
-                times = 1;
-            }
-        };
+        TerminalTypeEnums terminalType = cacheInit.getTerminalType();
+        Assert.assertEquals(TerminalTypeEnums.VDI_LINUX, terminalType);
     }
 
     @Test

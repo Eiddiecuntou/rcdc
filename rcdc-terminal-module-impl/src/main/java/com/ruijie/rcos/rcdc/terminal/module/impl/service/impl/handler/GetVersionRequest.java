@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
 

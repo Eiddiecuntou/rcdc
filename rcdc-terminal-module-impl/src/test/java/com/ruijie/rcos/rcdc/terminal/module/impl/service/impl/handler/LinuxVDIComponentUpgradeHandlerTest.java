@@ -1,13 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import mockit.Mocked;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,8 +13,8 @@ import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -62,12 +60,12 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
 
-        new MockUp(VDITerminalUpdateListCacheManager.class) {
+        new MockUp(TerminalUpdateListCacheManager.class) {
 
             private boolean isFirst = true;
 
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
                 if (isFirst) {
                     isFirst = false;
                     // 模拟返回空
@@ -78,7 +76,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
             }
         };
 
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.VDI_LINUX);
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("123");
         request.setValidateMd5("xxx");
@@ -88,7 +86,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         TerminalVersionResultDTO terminalVersionResultDTO1 = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(),
                 terminalVersionResultDTO1.getResult().intValue());
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.VDI_LINUX);
     }
 
     /**
@@ -105,9 +103,9 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         updatelist.setComponentSize(1);
         updatelist.setBaseVersion("1.0.1.1");
 
-        new MockUp(VDITerminalUpdateListCacheManager.class) {
+        new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
                 return updatelist;
             }
         };
@@ -115,11 +113,11 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.1.0.1");
         request.setValidateMd5("123");
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.VDI_LINUX);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.VDI_LINUX);
     }
 
     /**
@@ -136,9 +134,9 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         updatelist.setBaseVersion("1.0.1.1");
         updatelist.setLimitVersion("1.0.0.1");
         updatelist.setValidateMd5("123");
-        new MockUp(VDITerminalUpdateListCacheManager.class) {
+        new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
                 return updatelist;
             }
         };
@@ -146,11 +144,11 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.VDI_LINUX);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.VDI_LINUX);
     }
 
     /**
@@ -174,9 +172,9 @@ public class LinuxVDIComponentUpgradeHandlerTest {
             }
         };
 
-        new MockUp(VDITerminalUpdateListCacheManager.class) {
+        new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
                 return updatelist;
             }
         };
@@ -184,11 +182,11 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.VDI_LINUX);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        VDITerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.VDI_LINUX);
     }
 
     /**

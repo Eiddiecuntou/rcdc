@@ -25,17 +25,7 @@ public enum TerminalPlatformEnums {
     /**
      * 软终端
      */
-    APP,
-
-    /**
-     * 其他终端,需要注意此类终端，给出提示信息
-     */
-    OTHER,
-
-    /**
-     * 所有
-     */
-    ALL;
+    APP;
 
     /**
      * 判断平台字符串是否为平台枚举成员

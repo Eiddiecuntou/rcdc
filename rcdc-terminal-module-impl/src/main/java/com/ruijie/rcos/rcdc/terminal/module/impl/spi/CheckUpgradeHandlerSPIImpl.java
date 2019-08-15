@@ -10,8 +10,7 @@ import org.springframework.util.Assert;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
@@ -95,11 +94,10 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity);
         basicInfoEntity.setLastOnlineTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
-        basicInfoEntity.setTerminalType(CbbTerminalTypeEnums.convert(basicInfoEntity.getTerminalOsType()));
         basicInfoEntity.setGroupId(Constants.DEFAULT_TERMINAL_GROUP_UUID);
         basicInfoDAO.save(basicInfoEntity);
         // 通知其他组件终端为在线状态
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.ONLINE, terminalId);
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE, terminalId);
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 

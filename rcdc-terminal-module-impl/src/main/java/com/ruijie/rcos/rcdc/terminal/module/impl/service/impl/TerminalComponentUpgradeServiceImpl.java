@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.GetVersionRequest;
@@ -37,11 +38,11 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
             throws BusinessException {
         Assert.notNull(terminalEntity, "terminalEntity can not be null");
         Assert.notNull(terminalEntity.getPlatform(), "platform can not be null");
-        Assert.notNull(terminalEntity.getTerminalType(), "terminalType can not be null");
 
+        TerminalTypeEnums terminalType =
+                TerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
         LOGGER.info("获取组件升级处理对象");
-        TerminalComponentUpgradeHandler handler =
-                handlerFactory.getHandler(terminalEntity.getPlatform(), terminalEntity.getTerminalType());
+        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(terminalType);
 
         GetVersionRequest versionRequest = new GetVersionRequest();
         versionRequest.setRainUpgradeVersion(terminalEntity.getRainUpgradeVersion());

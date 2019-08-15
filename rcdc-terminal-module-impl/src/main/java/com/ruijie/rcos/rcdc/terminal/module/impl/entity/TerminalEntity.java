@@ -7,7 +7,6 @@ import javax.persistence.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
@@ -86,9 +85,6 @@ public class TerminalEntity {
     private CbbTerminalStateEnums state;
 
     private UUID groupId;
-
-    @Enumerated(EnumType.STRING)
-    private CbbTerminalTypeEnums terminalType;
 
     public UUID getId() {
         return id;
@@ -323,11 +319,4 @@ public class TerminalEntity {
         this.groupId = groupId;
     }
 
-    public CbbTerminalTypeEnums getTerminalType() {
-        return terminalType;
-    }
-
-    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
-    }
 }

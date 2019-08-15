@@ -4,14 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -21,6 +21,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019/8/1
+ * 
  * @param <T>
  *
  * @author nt
@@ -33,6 +34,11 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbCommonUpd
      * updatelist缓存初始化
      */
     public final void init() {
+        // 开始初始化，将缓存就绪状态设为未就绪
+        LOGGER.info("start init updatelist...");
+        TerminalTypeEnums terminalType = getTerminalType();
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(terminalType);
+
         String filePath = getUpdateListPath();
         File updateListFile = new File(filePath);
         if (!updateListFile.isFile()) {
@@ -50,7 +56,7 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbCommonUpd
         putInCache(updatelist);
 
         // 完成初始化后将updatelist缓存状态更新为false
-        cacheInitFinished();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(terminalType);
         LOGGER.info("finish init updatelist...");
 
 
@@ -84,13 +90,6 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbCommonUpd
     }
 
     /**
-     * 获取updatelist文件路径
-     *
-     * @return
-     */
-    protected abstract String getUpdateListPath();
-
-    /**
      * 将组件信息存入缓存
      *
      * @param updatelist 组件信息
@@ -105,24 +104,28 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbCommonUpd
         updatelist.setComponentSize(updatelist.getComponentList().size());
 
         // 将组件升级updatelist按终端类型，存入缓存中
-        Map<CbbTerminalTypeEnums, T> updatelistCache = getUpdateListCacheManager();
-        updatelistCache.put(getTerminalType(), updatelist);
+        TerminalUpdateListCacheManager.add(getTerminalType(), updatelist);
     }
 
     /**
-     * 初始化updatelist缓存完成
+     * 获取updatelist文件路径
+     *
+     * @return updatelist文件路径
      */
-    protected abstract void cacheInitPre();
+    protected abstract String getUpdateListPath();
 
     /**
-     * 初始化updatelist缓存完成
+     * 补充updatelist信息
+     * 
+     * @param updatelist updatelist信息
      */
-    protected abstract void cacheInitFinished();
-
-    protected abstract Map<CbbTerminalTypeEnums, T> getUpdateListCacheManager();
-
     protected abstract void fillUpdateList(T updatelist);
 
-    protected abstract CbbTerminalTypeEnums getTerminalType();
+    /**
+     * 获取终端类型
+     * 
+     * @return 终端类型
+     */
+    protected abstract TerminalTypeEnums getTerminalType();
 
 }

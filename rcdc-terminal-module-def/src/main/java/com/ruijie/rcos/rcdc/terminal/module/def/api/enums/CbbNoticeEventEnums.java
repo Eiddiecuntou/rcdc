@@ -8,7 +8,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
  *
  * @author Jarman
  */
-public enum NoticeEventEnums {
+public enum CbbNoticeEventEnums {
 
     /**
      * 连接成功，在线状态
@@ -27,7 +27,7 @@ public enum NoticeEventEnums {
 
     private String name;
 
-    NoticeEventEnums(String name) {
+    CbbNoticeEventEnums(String name) {
         this.name = name;
     }
 

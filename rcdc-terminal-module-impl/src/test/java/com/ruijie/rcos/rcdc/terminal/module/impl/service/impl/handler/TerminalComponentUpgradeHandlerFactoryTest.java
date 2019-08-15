@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -31,9 +31,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
      */
     @Test
     public void testGetHandlerArgIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handlerFactory.getHandler(null, null),
-                "platform can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handlerFactory.getHandler(TerminalPlatformEnums.VDI, null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handlerFactory.getHandler( null),
                 "terminal type can not be null");
         Assert.assertTrue(true);
     }
@@ -44,23 +42,8 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
      */
     @Test
     public void testGetHandler() throws BusinessException {
-        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(TerminalPlatformEnums.VDI, CbbTerminalTypeEnums.LINUX);
+        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(TerminalTypeEnums.VDI_LINUX);
         Assert.assertTrue(handler instanceof LinuxVDIComponentUpgradeHandler);
-    }
-
-    /**
-     * 测试获取版本请求-平台类型不支持
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testGetHandlerWhilePlatformNotSupport() {
-
-        try {
-            handlerFactory.getHandler(TerminalPlatformEnums.IDV, CbbTerminalTypeEnums.LINUX);
-            Assert.fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST, e.getKey());
-        }
     }
 
     /**
@@ -71,7 +54,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
     public void testGetHandlerWhileTerminalTypeNotSupport() {
 
         try {
-            handlerFactory.getHandler(TerminalPlatformEnums.VDI, CbbTerminalTypeEnums.IOS);
+            handlerFactory.getHandler(TerminalTypeEnums.IDV_LINUX);
             Assert.fail();
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST, e.getKey());

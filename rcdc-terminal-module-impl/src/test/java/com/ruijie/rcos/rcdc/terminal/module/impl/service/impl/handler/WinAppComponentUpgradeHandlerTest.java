@@ -1,35 +1,27 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.AppTerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import mockit.Expectations;
-import mockit.Mock;
-import mockit.MockUp;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
-import mockit.Tested;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
 
 /**
  *
@@ -67,12 +59,12 @@ public class WinAppComponentUpgradeHandlerTest {
         CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
 
-        new MockUp(AppTerminalUpdateListCacheManager.class) {
+        new MockUp(TerminalUpdateListCacheManager.class) {
 
             private boolean isFirst = true;
 
             @Mock
-            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
                 if (isFirst) {
                     isFirst = false;
                     // 模拟返回空
@@ -83,7 +75,7 @@ public class WinAppComponentUpgradeHandlerTest {
             }
         };
 
-        AppTerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.APP_WINDOWS);
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("123");
         request.setValidateMd5("xxx");
@@ -93,7 +85,7 @@ public class WinAppComponentUpgradeHandlerTest {
         TerminalVersionResultDTO terminalVersionResultDTO1 = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(),
                 terminalVersionResultDTO1.getResult().intValue());
-        AppTerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.APP_WINDOWS);
     }
 
     /**
@@ -109,9 +101,9 @@ public class WinAppComponentUpgradeHandlerTest {
         updatelist.setValidateMd5("123");
         updatelist.setComponentSize(1);
 
-        new MockUp(AppTerminalUpdateListCacheManager.class) {
+        new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
                 return updatelist;
             }
         };
@@ -119,11 +111,11 @@ public class WinAppComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.1.0.1");
         request.setValidateMd5("123");
-        AppTerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.APP_WINDOWS);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        AppTerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.APP_WINDOWS);
     }
 
     /**
@@ -144,9 +136,9 @@ public class WinAppComponentUpgradeHandlerTest {
         updatelist.setComponentSize(1);
         updatelist.setLimitVersion("1.0.1.1");
         updatelist.setValidateMd5("123");
-        new MockUp(AppTerminalUpdateListCacheManager.class) {
+        new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
                 return updatelist;
             }
         };
@@ -154,11 +146,11 @@ public class WinAppComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
-        AppTerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.APP_WINDOWS);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        AppTerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.APP_WINDOWS);
     }
 
     /**
@@ -181,9 +173,9 @@ public class WinAppComponentUpgradeHandlerTest {
         updatelist.setValidateMd5("123");
 
 
-        new MockUp(AppTerminalUpdateListCacheManager.class) {
+        new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
                 return updatelist;
             }
         };
@@ -191,11 +183,11 @@ public class WinAppComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
-        AppTerminalUpdateListCacheManager.setUpdatelistCacheReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.APP_WINDOWS);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        AppTerminalUpdateListCacheManager.setUpdatelistCacheNotReady();
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.APP_WINDOWS);
     }
 
     /**

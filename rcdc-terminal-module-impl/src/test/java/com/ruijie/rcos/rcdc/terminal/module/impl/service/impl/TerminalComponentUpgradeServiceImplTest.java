@@ -2,11 +2,10 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
+import java.util.Collections;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.GetVersionRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.LinuxVDIComponentUpgradeHandler;
@@ -17,14 +16,10 @@ import mockit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.VDITerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.integration.junit4.JMockit;
-import org.springframework.data.jpa.repository.Modifying;
 
 /**
  * 
@@ -56,11 +51,6 @@ public class TerminalComponentUpgradeServiceImplTest {
         TerminalEntity terminalEntity1 = new TerminalEntity();
         ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion(terminalEntity1, null),
                 "platform can not be null");
-
-        TerminalEntity terminalEntity2 = new TerminalEntity();
-        terminalEntity2.setPlatform(TerminalPlatformEnums.VDI);
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion(terminalEntity2, null),
-                "terminalType can not be null");
         assertTrue(true);
     }
 
@@ -74,12 +64,12 @@ public class TerminalComponentUpgradeServiceImplTest {
 
         TerminalEntity terminalEntity = new TerminalEntity();
         terminalEntity.setPlatform(TerminalPlatformEnums.VDI);
-        terminalEntity.setTerminalType(CbbTerminalTypeEnums.LINUX);
+        terminalEntity.setTerminalOsType("Linux");
 
         TerminalComponentUpgradeHandler handler = new LinuxVDIComponentUpgradeHandler();
         new Expectations() {
             {
-                handlerFactory.getHandler((TerminalPlatformEnums) any, (CbbTerminalTypeEnums) any);
+                handlerFactory.getHandler((TerminalTypeEnums) any);
                 result = handler;
             }
         };
@@ -102,7 +92,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals("sss", versionDTO.getUpdatelist());
         new Verifications(){
             {
-                handlerFactory.getHandler((TerminalPlatformEnums) any, (CbbTerminalTypeEnums) any);
+                handlerFactory.getHandler((TerminalTypeEnums) any);
                 times = 1;
             }
         };

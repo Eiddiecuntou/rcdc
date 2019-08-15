@@ -1,16 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Maps;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -28,46 +25,31 @@ public class TerminalComponentUpgradeHandlerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalComponentUpgradeHandlerFactory.class);
 
-    private static Map<TerminalPlatformEnums, HashMap<CbbTerminalTypeEnums, AbstractTerminalComponentUpgradeHandler>> upgradeHandlerHolder =
-            Maps.newHashMap();
+    private static Map<TerminalTypeEnums, TerminalComponentUpgradeHandler> upgradeHandlerHolder = Maps.newHashMap();
 
     static {
         LOGGER.info("=======================注册终端组件升级处理器=================");
-        HashMap vdiHandlerHolder = Maps.newHashMap();
-        vdiHandlerHolder.put(CbbTerminalTypeEnums.LINUX, new LinuxVDIComponentUpgradeHandler());
-
-        HashMap appHandlerHolder = Maps.newHashMap();
-        appHandlerHolder.put(CbbTerminalTypeEnums.WINDOWS, new WinAppComponentUpgradeHandler());
-
-        upgradeHandlerHolder.put(TerminalPlatformEnums.VDI, vdiHandlerHolder);
-        upgradeHandlerHolder.put(TerminalPlatformEnums.APP, appHandlerHolder);
+        upgradeHandlerHolder.put(TerminalTypeEnums.VDI_LINUX, new LinuxVDIComponentUpgradeHandler());
+        upgradeHandlerHolder.put(TerminalTypeEnums.APP_WINDOWS, new WinAppComponentUpgradeHandler());
         LOGGER.info("=======================完成注册终端组件升级处理器=================");
     }
 
     /**
-     *  获取终端组件升级处理对象
-     * @param platform 平台类型
+     * 获取终端组件升级处理对象
+     * 
      * @param terminalType 终端类型
      * @return 组件升级处理对象
      * @throws BusinessException 业务异常
      */
-    public TerminalComponentUpgradeHandler getHandler(TerminalPlatformEnums platform, CbbTerminalTypeEnums terminalType)
-            throws BusinessException {
-        Assert.notNull(platform, "platform can not be null");
+    public TerminalComponentUpgradeHandler getHandler(TerminalTypeEnums terminalType) throws BusinessException {
         Assert.notNull(terminalType, "terminal type can not be null");
 
-        HashMap<CbbTerminalTypeEnums, AbstractTerminalComponentUpgradeHandler> platformHandlerHolder =
-                upgradeHandlerHolder.get(platform);
-        if (CollectionUtils.isEmpty(platformHandlerHolder)) {
-            LOGGER.error("平台类型为[{}]的组件升级处理对象不存在", platform.name());
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST,
-                    new String[] {platform.name(), terminalType.name()});
-        }
-        TerminalComponentUpgradeHandler handler = platformHandlerHolder.get(terminalType);
+        TerminalComponentUpgradeHandler handler = upgradeHandlerHolder.get(terminalType);
+
         if (handler == null) {
-            LOGGER.error("平台类型为[{}]、终端类型为[{}]的组件升级处理对象不存在", platform.name(), terminalType.name());
+            LOGGER.error("终端类型为[{}]的组件升级处理对象不存在", terminalType.name());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST,
-                    new String[] {platform.name(), terminalType.name()});
+                    new String[] {terminalType.name()});
         }
 
         return handler;
