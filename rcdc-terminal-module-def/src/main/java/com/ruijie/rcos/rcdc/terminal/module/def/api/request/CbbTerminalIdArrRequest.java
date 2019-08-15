@@ -12,7 +12,6 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-// FIXME nieting 使用SkyEngine的IdArrWebRequest
 public class CbbTerminalIdArrRequest implements Request {
 
     @NotEmpty

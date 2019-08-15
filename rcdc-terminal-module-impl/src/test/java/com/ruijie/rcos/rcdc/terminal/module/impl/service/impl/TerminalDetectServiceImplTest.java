@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
@@ -344,7 +344,7 @@ public class TerminalDetectServiceImplTest {
                 result = detectList;
             }
         };
-        CbbTerminalDetectResultDTO result = detectService.getDetectResult(CbbDetectDateEnums.TODAY);
+        CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(CbbDetectDateEnums.TODAY);
         assertEquals(0, result.getAccessInternet());
         assertEquals(0, result.getBandwidth());
         assertEquals(0, result.getIpConflict());
@@ -368,7 +368,7 @@ public class TerminalDetectServiceImplTest {
                 result = detectList;
             }
         };
-        CbbTerminalDetectResultDTO result = detectService.getDetectResult(CbbDetectDateEnums.TODAY);
+        CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(CbbDetectDateEnums.TODAY);
         assertEquals(0, result.getAccessInternet());
         assertEquals(0, result.getBandwidth());
         assertEquals(0, result.getIpConflict());
@@ -430,7 +430,7 @@ public class TerminalDetectServiceImplTest {
                 result = detectList;
             }
         };
-        CbbTerminalDetectResultDTO result = detectService.getDetectResult(CbbDetectDateEnums.YESTERDAY);
+        CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(CbbDetectDateEnums.YESTERDAY);
         assertEquals(3, result.getAccessInternet());
         assertEquals(2, result.getBandwidth());
         assertEquals(1, result.getIpConflict());

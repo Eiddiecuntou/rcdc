@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -157,7 +158,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public CbbTerminalGroupResponse loadById(CbbTerminalGroupIdRequest request) throws BusinessException {
+    public CbbTerminalGroupResponse loadById(IdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         UUID id = request.getId();
@@ -200,7 +201,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public CbbObtainGroupNamePathResponse obtainGroupNamePathArr(CbbTerminalGroupIdRequest request) throws BusinessException {
+    public CbbObtainGroupNamePathResponse obtainGroupNamePathArr(IdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         CbbObtainGroupNamePathResponse response = new CbbObtainGroupNamePathResponse();

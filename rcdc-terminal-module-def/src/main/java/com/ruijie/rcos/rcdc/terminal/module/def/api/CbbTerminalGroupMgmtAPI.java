@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGrou
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
@@ -48,7 +49,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalGroupResponse loadById(CbbTerminalGroupIdRequest request) throws BusinessException;
+    CbbTerminalGroupResponse loadById(IdRequest request) throws BusinessException;
 
     /**
      * @description 创建终端组
@@ -85,6 +86,6 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbObtainGroupNamePathResponse obtainGroupNamePathArr(CbbTerminalGroupIdRequest request) throws BusinessException;
+    CbbObtainGroupNamePathResponse obtainGroupNamePathArr(IdRequest request) throws BusinessException;
 
 }

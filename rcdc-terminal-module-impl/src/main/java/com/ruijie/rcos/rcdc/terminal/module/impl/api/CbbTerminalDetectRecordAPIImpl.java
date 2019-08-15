@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalDetectRecordAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -112,7 +112,7 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
     public CbbDetectResultResponse getDetectResult(CbbTerminalDetectResultRequest request) {
         Assert.notNull(request, "request can not be null");
 
-        CbbTerminalDetectResultDTO result = detectService.getDetectResult(request.getDetectDate());
+        CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(request.getDetectDate());
         CbbDetectResultResponse resp = new CbbDetectResultResponse(result);
         resp.setStatus(Response.Status.SUCCESS);
         return resp;

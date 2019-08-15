@@ -85,21 +85,11 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public DefaultResponse singleDetect(CbbTerminalDetectRequest request) throws BusinessException {
+    public DefaultResponse singleDetect(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
 
         String terminalId = request.getTerminalId();
         operatorService.detect(terminalId);
-        return DefaultResponse.Builder.success();
-    }
-
-    @Override
-    public DefaultResponse batchDetect(CbbTerminalBatDetectRequest request) throws BusinessException {
-        Assert.notNull(request, "CbbTerminalBatDetectRequest不能为null");
-
-        for (String terminalId : request.getTerminalIdArr()) {
-            operatorService.detect(terminalId);
-        }
         return DefaultResponse.Builder.success();
     }
 

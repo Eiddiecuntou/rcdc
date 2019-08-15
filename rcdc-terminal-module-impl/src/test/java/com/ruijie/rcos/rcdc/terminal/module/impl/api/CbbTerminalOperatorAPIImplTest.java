@@ -5,13 +5,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBatDetectRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
@@ -137,25 +134,6 @@ public class CbbTerminalOperatorAPIImplTest {
     }
 
     /**
-     * 测试批量检测
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testDetectForArr() throws BusinessException {
-        String[] terminalIdArr = {"1", "2", "3"};
-
-        try {
-            CbbTerminalBatDetectRequest request = new CbbTerminalBatDetectRequest();
-            request.setTerminalIdArr(terminalIdArr);
-            DefaultResponse resp = terminalOperatorAPI.batchDetect(request);
-            Assert.assertEquals(Status.SUCCESS, resp.getStatus());
-        } catch (Exception e) {
-            fail();
-        }
-    }
-
-    /**
      * 测试changePassword，参数为空
      * 
      * @throws Exception 异常
@@ -192,7 +170,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testDetectArgumentIsNull() throws Exception {
-        CbbTerminalDetectRequest request = null;
+        CbbTerminalIdRequest request = null;
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.singleDetect(request), "CbbTerminalIdRequest不能为空");
         assertTrue(true);
     }
@@ -204,7 +182,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testDetect() throws BusinessException {
-        CbbTerminalDetectRequest request = new CbbTerminalDetectRequest("123");
+        CbbTerminalIdRequest request = new CbbTerminalIdRequest("123");
         DefaultResponse response = terminalOperatorAPI.singleDetect(request);
         assertEquals(Status.SUCCESS, response.getStatus());
         new Verifications() {

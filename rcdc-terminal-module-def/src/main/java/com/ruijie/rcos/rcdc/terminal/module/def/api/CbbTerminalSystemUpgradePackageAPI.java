@@ -1,14 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbDeleteTerminalUpgradePackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradePackageIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
@@ -42,7 +41,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbUpgradePackageNameResponse deleteUpgradePackage(CbbDeleteTerminalUpgradePackageRequest request)
+    CbbUpgradePackageNameResponse deleteUpgradePackage(IdRequest request)
             throws BusinessException;
 
     /**
@@ -76,7 +75,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbUpgradePackageResponse getById(CbbUpgradePackageIdRequest request) throws BusinessException;
+    CbbUpgradePackageResponse getById(IdRequest request) throws BusinessException;
 
     /**
      * 校验升级包是否允许上传
