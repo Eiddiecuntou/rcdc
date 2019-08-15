@@ -10,6 +10,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author huangsen
  */
+// FIXME nieting 修改使用SkyEngine的DefaultRequest，删除此类
 public class CbbGetLogoPathRequest implements Request {
 
 }

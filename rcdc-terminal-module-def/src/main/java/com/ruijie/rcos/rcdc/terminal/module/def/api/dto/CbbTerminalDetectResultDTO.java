@@ -9,6 +9,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
  * 
  * @author nt
  */
+// FIXME nieting 类名修改一下CbbTerminalDetectStatisticsDTO
 public class CbbTerminalDetectResultDTO {
 
     private int ipConflict;

@@ -13,6 +13,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author chenzj
  */
+// FIXME nieting 使用SkyEngine的IdWebRequest
 public class CbbTerminalGroupIdRequest implements Request {
 
     /**

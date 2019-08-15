@@ -11,6 +11,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  *
  * @author Jarman
  */
+// FIXME nieting 修改使用SkyEngine的IdArrWebRequest，删除此类
 public class CbbTerminalBatDetectRequest implements Request {
 
     @NotEmpty

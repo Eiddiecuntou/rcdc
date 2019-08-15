@@ -14,6 +14,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
+// FIXME nieting 修改使用SkyEngine的IdRequest，删除此类
 public class CbbUpgradePackageIdRequest implements Request {
 
     @NotNull
