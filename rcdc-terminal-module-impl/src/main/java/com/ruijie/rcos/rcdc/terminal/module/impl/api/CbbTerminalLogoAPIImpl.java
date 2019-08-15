@@ -31,6 +31,8 @@ import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
  */
 public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
 
+    private static final String TERMINAL_LOGO_NAME = "logo.png";
+
     @Autowired
     private ConfigFacade configFacade;
 
@@ -43,16 +45,13 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
     @Override
     public DefaultResponse uploadLogo(CbbUploadLogoRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        String logoName = request.getLogoName();
-        String logoPath = request.getLogoPath();
-        File logo = new File(logoPath);
-        String srcLogoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
-        if (srcLogoPath != null) {
-            deleteLogo(srcLogoPath);
-        }
-        String saveLogoPath = moveLogo(logo, logoName);
-        globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, saveLogoPath);
-        terminalLogoService.syncTerminalLogo(logoName, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+
+        deleteLogo();
+
+        saveLogo(request.getLogoPath());
+
+        terminalLogoService.syncTerminalLogo(TERMINAL_LOGO_NAME, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+
         return DefaultResponse.Builder.success();
     }
 
@@ -66,37 +65,42 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
 
     @Override
     public DefaultResponse initLogo(CbbInitLogoRequest request) throws BusinessException {
-        String logoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
+        String logoPath = deleteLogo();
         if (logoPath != null) {
-            deleteLogo(logoPath);
             globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, null);
             terminalLogoService.syncTerminalLogo(StringUtils.EMPTY, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
         }
         return DefaultResponse.Builder.success();
     }
 
-    private String moveLogo(File logo, String logoName) throws BusinessException {
+    private void saveLogo(String logoPath) throws BusinessException {
+        File logo = new File(logoPath);
         String saveLogoFile = configFacade.read("file.busiz.dir.terminal.logo");
-        String saveLogoPath = saveLogoFile + logoName;
+        String saveLogoPath = saveLogoFile + TERMINAL_LOGO_NAME;
         File saveLogo = new File(saveLogoPath);
         createLogoFilePath(saveLogoFile);
         try {
             Files.move(logo.toPath(), saveLogo.toPath());
             saveLogo.setReadable(true, false);
             saveLogo.setExecutable(true, false);
+
+            globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, saveLogoPath);
         } catch (IOException e) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPLOAD_LOGO_FAIL, e);
         }
-        return saveLogoPath;
+
     }
 
-    private void deleteLogo(String logoPath) {
-        Assert.notNull(logoPath, "logoPath is null");
-        File logo = new File(logoPath);
-        if (logo.exists()) {
-            SkyengineFile skyengineFile = new SkyengineFile(logoPath);
-            skyengineFile.delete(false);
+    private String deleteLogo() {
+        String logoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
+        if (logoPath != null) {
+            File logo = new File(logoPath);
+            if (logo.exists()) {
+                SkyengineFile skyengineFile = new SkyengineFile(logoPath);
+                skyengineFile.delete(false);
+            }
         }
+        return logoPath;
     }
 
     private void createLogoFilePath(String logoPath) {

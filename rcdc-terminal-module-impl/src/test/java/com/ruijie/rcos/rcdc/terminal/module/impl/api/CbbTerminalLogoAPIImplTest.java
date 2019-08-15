@@ -226,8 +226,8 @@ public class CbbTerminalLogoAPIImplTest {
         CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
         new MockUp<CbbTerminalLogoAPIImpl>() {
             @Mock
-            private String moveLogo(File logo, String logoName) {
-                return "/opt/ftp/terminal/logo/logo.png";
+            private void saveLogo(String logoPath) {
+                
             }
         };
 
@@ -235,15 +235,12 @@ public class CbbTerminalLogoAPIImplTest {
             {
                 globalParameterAPI.findParameter("terminalLogo");
                 result = "/opt/ftp/terminal/logo/logo.png";
-                globalParameterAPI.updateParameter("terminalLogo", anyString);
                 terminalLogoService.syncTerminalLogo(anyString, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
             }
         };
         terminalLogoAPI.uploadLogo(request);
         new Verifications() {
             {
-                globalParameterAPI.updateParameter("terminalLogo", anyString);
-                times = 1;
                 terminalLogoService.syncTerminalLogo(anyString, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
                 times = 1;
             }
