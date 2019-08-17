@@ -3,23 +3,24 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import java.util.Date;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
@@ -56,19 +57,23 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
 
+        LOGGER.info("组件升级处理请求开始处理。。。");
         // 保存终端基本信息
         String terminalId = request.getTerminalId();
         ShineTerminalBasicInfo basicInfo = convertJsondata(request);
         saveBasicInfo(terminalId, basicInfo);
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(basicInfo.getRainUpgradeVersion(),
-                basicInfo.getValidateMd5(), basicInfo.getPlatform());
-        CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, versionResult);
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         try {
+            TerminalVersionResultDTO versionResult =
+                    componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
+            CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, versionResult);
+
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("response check upgrade : {}", JSON.toJSONString(cbbShineMessageRequest));
             }
+
             messageHandlerAPI.response(cbbShineMessageRequest);
         } catch (Exception e) {
             LOGGER.error("升级检查消息应答失败", e);
@@ -92,7 +97,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         basicInfoEntity.setGroupId(Constants.DEFAULT_TERMINAL_GROUP_UUID);
         basicInfoDAO.save(basicInfoEntity);
         // 通知其他组件终端为在线状态
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(NoticeEventEnums.ONLINE, terminalId);
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE, terminalId);
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 

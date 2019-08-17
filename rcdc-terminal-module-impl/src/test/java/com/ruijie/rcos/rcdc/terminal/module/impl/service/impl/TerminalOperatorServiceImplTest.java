@@ -285,47 +285,6 @@ public class TerminalOperatorServiceImplTest {
     }
 
     /**
-     * 测试检测,参数为空
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testDetect0ArgumentIsNull() throws Exception {
-        // 测试参数为空
-        String[] terminalIdArr = new String[0];
-        ThrowExceptionTester.throwIllegalArgumentException(() -> operatorService.detect(terminalIdArr), "terminalIdArr大小不能为0");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试检测
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testDetect0() throws BusinessException {
-        String[] terminalIdArr = new String[1];
-        String terminalId = "123";
-        terminalIdArr[0] = terminalId;
-        new Expectations() {
-            {
-                terminalDetectService.findInCurrentDate(anyString);
-                result = new TerminalDetectionEntity();
-            }
-        };
-        operatorService.detect(terminalIdArr);
-
-        new Verifications() {
-            {
-                terminalDetectService.findInCurrentDate(anyString);
-                times = 1;
-                terminalDetectionDAO.save((TerminalDetectionEntity) any);
-                times = 0;
-            }
-        };
-    }
-
-    /**
      * 测试检测
      * 
      * @throws BusinessException 业务异常

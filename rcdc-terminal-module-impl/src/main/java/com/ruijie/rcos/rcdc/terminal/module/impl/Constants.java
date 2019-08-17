@@ -19,8 +19,6 @@ public interface Constants {
 
     String SYSTEM_TYPE = "rcdc";
 
-    String TERMINAL_COMPONENT_UPGRADE_DIRECTION_NAME = "origin";
-
     /**
      * 终端管理员密码aes加密key值
      */
@@ -75,15 +73,6 @@ public interface Constants {
      */
     String MOUNT_RELATE_DIR = "mount_dir/";
 
-    /**
-     * 存放终端系统idv刷机包路径
-     */
-    String TERMINAL_UPGRADE_ISO_PATH_IDV = "/opt/upgrade/linux_idv/";
-
-    /**
-     * 存放终端系统ota刷机包路径
-     */
-    String TERMINAL_UPGRADE_ISO_PATH_OTA = "/opt/upgrade/ota/";
 
     /**
      * 系统刷机包挂载路径
@@ -133,17 +122,8 @@ public interface Constants {
     /**
      * 终端组件升级包路径
      */
-    String TERMINAL_TERMINAL_COMPONET_UPGRADE_PATH = "/opt/upgrade/app/terminal_component/";
-
-    /**
-     * 终端组件升级包路径
-     */
     String TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_linux/temp";
 
-    /**
-     * 终端组件升级包updatelist文件名
-     */
-    String TERMINAL_COMPONET_ORIGIN_UPDATE_LIST_FILE_NAME = "/origin/update.list";
 
     /**
      * 终端检测超时时间（单位:秒）
@@ -159,8 +139,6 @@ public interface Constants {
      * 刷机镜像刷机文件存放路径
      */
     String ISO_IMG_MOUNT_PATH = "/opt/pxeuser/";
-
-    String CURRENT_VERSION_GLOBAL_PARAM_KEY = "systemVersion";
     
     /** 终端默认分组UUID */
     UUID DEFAULT_TERMINAL_GROUP_UUID = UUID.fromString("7769c0c6-473c-4d4c-9f47-5a62bdeb30ba");

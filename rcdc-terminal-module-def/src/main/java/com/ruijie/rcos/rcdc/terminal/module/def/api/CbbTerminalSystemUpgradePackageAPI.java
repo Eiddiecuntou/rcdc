@@ -1,18 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbDeleteTerminalUpgradePackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradePackageIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckUploadingResultResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
@@ -46,7 +41,8 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbUpgradePackageNameResponse deleteUpgradePackage(CbbDeleteTerminalUpgradePackageRequest request) throws BusinessException;
+    CbbUpgradePackageNameResponse deleteUpgradePackage(IdRequest request)
+            throws BusinessException;
 
     /**
      * 
@@ -60,25 +56,26 @@ public interface CbbTerminalSystemUpgradePackageAPI {
 
     /**
      * 
-     * 获取系统升级包分页列表
+     * 获取系统升级包列表
      * 
      * @param request 请求参数
      * 
-     * @return 分页列表查询结果
+     * @return 升级包列表
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultPageResponse<CbbTerminalSystemUpgradePackageInfoDTO> listSystemUpgradePackage(PageSearchRequest request) throws BusinessException;
+    CbbListTerminalSystemUpgradePackageResponse listSystemUpgradePackage(DefaultRequest request)
+            throws BusinessException;
 
     /**
-     * 获取终端升级包名称
+     * 获取终端升级包信息
      * 
      * @param request 请求参数
-     * @return 终端升级包名称
+     * @return 终端升级包信息
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbUpgradePackageNameResponse getTerminalUpgradePackageName(CbbUpgradePackageIdRequest request) throws BusinessException;
+    CbbUpgradePackageResponse getById(IdRequest request) throws BusinessException;
 
     /**
      * 校验升级包是否允许上传
@@ -88,6 +85,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request) throws BusinessException;
+    CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request)
+            throws BusinessException;
 
 }

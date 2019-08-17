@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
@@ -14,7 +14,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  */
 public class CbbDetectResultResponse extends DefaultResponse {
 
-    private CbbTerminalDetectResultDTO result;
+    private CbbTerminalDetectStatisticsDTO result;
 
 
 
@@ -22,15 +22,15 @@ public class CbbDetectResultResponse extends DefaultResponse {
         
     }
 
-    public CbbDetectResultResponse(CbbTerminalDetectResultDTO result) {
+    public CbbDetectResultResponse(CbbTerminalDetectStatisticsDTO result) {
         this.result = result;
     }
 
-    public CbbTerminalDetectResultDTO getResult() {
+    public CbbTerminalDetectStatisticsDTO getResult() {
         return result;
     }
 
-    public void setResult(CbbTerminalDetectResultDTO result) {
+    public void setResult(CbbTerminalDetectStatisticsDTO result) {
         this.result = result;
     }
 

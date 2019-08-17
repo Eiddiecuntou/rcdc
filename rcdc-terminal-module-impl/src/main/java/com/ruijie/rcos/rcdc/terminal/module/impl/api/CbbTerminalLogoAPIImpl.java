@@ -4,11 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLogoAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbGetLogoPathRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbInitLogoRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.logo.CbbGetLogoPathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -56,7 +55,7 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
     }
 
     @Override
-    public CbbGetLogoPathResponse getLogoPath(CbbGetLogoPathRequest request) {
+    public CbbGetLogoPathResponse getLogoPath(DefaultRequest request) {
         String logoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
         CbbGetLogoPathResponse response = new CbbGetLogoPathResponse();
         response.setLogoPath(logoPath);
@@ -64,7 +63,7 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
     }
 
     @Override
-    public DefaultResponse initLogo(CbbInitLogoRequest request) throws BusinessException {
+    public DefaultResponse initLogo(DefaultRequest request) throws BusinessException {
         String logoPath = deleteLogo();
         if (logoPath != null) {
             globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, null);
