@@ -172,7 +172,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbTerminalNameResponse addSystemUpgradeTerminal(CbbAddTerminalSystemUpgradeTaskRequest request)
+    public CbbTerminalNameResponse addSystemUpgradeTerminal(CbbUpgradeTerminalRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
@@ -421,7 +421,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbTerminalNameResponse cancelUpgradeTerminal(CbbCancelUpgradeTerminalRequest request)
+    public CbbTerminalNameResponse cancelUpgradeTerminal(CbbUpgradeTerminalRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
@@ -454,7 +454,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
 
     @Override
-    public CbbTerminalNameResponse retryUpgradeTerminal(CbbRetryUpgradeTerminalRequest request)
+    public CbbTerminalNameResponse retryUpgradeTerminal(CbbUpgradeTerminalRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 

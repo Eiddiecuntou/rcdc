@@ -2,26 +2,27 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request.group;
 
 import java.util.UUID;
 
-import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
+
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.TextShort;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
  * 
- * Description: 检测终端名称是否同级唯一
+ * Description: 创建终端分组请求参数
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年12月19日
  * 
  * @author nt
  */
-public class CbbGetSubGroupByNameRequest implements Request {
-    
+public class CbbTerminalGroupRequest implements Request {
+
     /**
      * 终端分组名称
      */
-    @NotNull
+    @NotBlank
     @TextShort
     private String groupName;
     
@@ -30,12 +31,11 @@ public class CbbGetSubGroupByNameRequest implements Request {
      */
     @Nullable
     private UUID parentGroupId;
-    
 
-    public CbbGetSubGroupByNameRequest() {
+    public CbbTerminalGroupRequest() {
     }
 
-    public CbbGetSubGroupByNameRequest(String groupName, UUID parentGroupId) {
+    public CbbTerminalGroupRequest(String groupName, UUID parentGroupId) {
         this.groupName = groupName;
         this.parentGroupId = parentGroupId;
     }
@@ -55,5 +55,4 @@ public class CbbGetSubGroupByNameRequest implements Request {
     public void setParentGroupId(UUID parentGroupId) {
         this.parentGroupId = parentGroupId;
     }
-
 }

@@ -39,7 +39,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalGroupResponse getByName(CbbGetSubGroupByNameRequest request) throws BusinessException;
+    CbbTerminalGroupResponse getByName(CbbTerminalGroupRequest request) throws BusinessException;
 
     /**
      * 加载指定id终端组对象
@@ -58,7 +58,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse createTerminalGroup(CbbCreateTerminalGroupRequest request) throws BusinessException;
+    DefaultResponse createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException;
 
     /**
      * @description 编辑终端组

@@ -143,7 +143,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public CbbTerminalGroupResponse getByName(CbbGetSubGroupByNameRequest request) throws BusinessException {
+    public CbbTerminalGroupResponse getByName(CbbTerminalGroupRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         List<TerminalGroupEntity> groupEntityList = terminalGroupService.getByName(request.getParentGroupId(), request.getGroupName());
@@ -174,7 +174,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public DefaultResponse createTerminalGroup(CbbCreateTerminalGroupRequest request) throws BusinessException {
+    public DefaultResponse createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         TerminalGroupDTO saveGroup = new TerminalGroupDTO(null, request.getGroupName(), request.getParentGroupId());

@@ -261,7 +261,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminalNotFoundTerminal() {
-        CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
+        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
 
         new Expectations() {
             {
@@ -285,7 +285,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminalUploadingTaskHasClose() throws BusinessException {
-        CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
+        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
@@ -314,7 +314,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminalUploadingTerminalExist() throws BusinessException {
-        CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
+        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
@@ -345,7 +345,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminal() throws BusinessException {
-        CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
+        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();

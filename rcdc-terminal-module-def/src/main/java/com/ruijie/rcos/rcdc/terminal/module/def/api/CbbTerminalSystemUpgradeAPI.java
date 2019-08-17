@@ -49,7 +49,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalNameResponse addSystemUpgradeTerminal(CbbAddTerminalSystemUpgradeTaskRequest request) throws BusinessException;
+    CbbTerminalNameResponse addSystemUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException;
 
     /**
      * 
@@ -109,7 +109,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalNameResponse cancelUpgradeTerminal(CbbCancelUpgradeTerminalRequest request) throws BusinessException;
+    CbbTerminalNameResponse cancelUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException;
 
     /**
      * 重试终端刷机
@@ -119,7 +119,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalNameResponse retryUpgradeTerminal(CbbRetryUpgradeTerminalRequest request) throws BusinessException;
+    CbbTerminalNameResponse retryUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException;
 
     /**
      * 获取终端刷机任务信息
