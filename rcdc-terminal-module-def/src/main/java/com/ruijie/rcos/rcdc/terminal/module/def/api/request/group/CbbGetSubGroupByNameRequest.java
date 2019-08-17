@@ -35,7 +35,7 @@ public class CbbGetSubGroupByNameRequest implements Request {
     public CbbGetSubGroupByNameRequest() {
     }
 
-    public CbbGetSubGroupByNameRequest(UUID id, String groupName, UUID parentGroupId) {
+    public CbbGetSubGroupByNameRequest(String groupName, UUID parentGroupId) {
         this.groupName = groupName;
         this.parentGroupId = parentGroupId;
     }
