@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbAppTerminalAPI;
@@ -29,7 +31,8 @@ public class CbbAppTerminalAPIImpl implements CbbAppTerminalAPI {
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbAppTerminalAPIImpl.class);
 
     @Override
-    public CbbDownLoadUrlResponse getWindowsAppDownloadUrl() throws BusinessException {
+    public CbbDownLoadUrlResponse getWindowsAppDownloadUrl(DefaultRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
 
         CbbWinAppUpdateListDTO listDTO =
                 TerminalUpdateListCacheManager.get(TerminalTypeEnums.APP_WINDOWS, CbbWinAppUpdateListDTO.class);
