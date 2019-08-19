@@ -350,30 +350,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         return new CbbListTerminalSystemUpgradePackageResponse(dtoArr);
     }
 
-    private void completeUpgradingTaskInfo(CbbTerminalSystemUpgradePackageInfoDTO dto, final TerminalSystemUpgradePackageEntity packageEntity) {
-        final UUID packageId = packageEntity.getId();
-        final TerminalSystemUpgradeEntity upgradingTask = getUpgradingTask(packageId);
-        if (upgradingTask == null) {
-            dto.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
-            return;
-        }
-        dto.setState(upgradingTask.getState());
-        dto.setUpgradeTaskId(upgradingTask.getId());
-    }
-
-    private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
-        final List<TerminalSystemUpgradeEntity> upgradingTaskList =
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
-        if (CollectionUtils.isEmpty(upgradingTaskList)) {
-            // 无升级中的任务
-            return null;
-        }
-        // 同一时间只存在一个正在刷机中的任务
-        return upgradingTaskList.get(0);
-    }
-
     @Override
     public CbbUpgradePackageNameResponse deleteUpgradePackage(IdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
@@ -402,4 +378,29 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         completeUpgradingTaskInfo(dto, packageEntity);
         return new CbbUpgradePackageResponse(dto);
     }
+
+    private void completeUpgradingTaskInfo(CbbTerminalSystemUpgradePackageInfoDTO dto, final TerminalSystemUpgradePackageEntity packageEntity) {
+        final UUID packageId = packageEntity.getId();
+        final TerminalSystemUpgradeEntity upgradingTask = getUpgradingTask(packageId);
+        if (upgradingTask == null) {
+            dto.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
+            return;
+        }
+        dto.setState(upgradingTask.getState());
+        dto.setUpgradeTaskId(upgradingTask.getId());
+    }
+
+    private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+        final List<TerminalSystemUpgradeEntity> upgradingTaskList =
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
+        if (CollectionUtils.isEmpty(upgradingTaskList)) {
+            // 无升级中的任务
+            return null;
+        }
+        // 同一时间只存在一个正在刷机中的任务
+        return upgradingTaskList.get(0);
+    }
+
 }
