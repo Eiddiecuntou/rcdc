@@ -56,7 +56,6 @@ public class TerminalUpdateListCacheManagerTest {
         manager.add(TerminalTypeEnums.VDI_LINUX, updatelist);
         Map<TerminalTypeEnums, CbbLinuxVDIUpdateListDTO> caches =
                 Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
-        assertEquals(1, caches.size());
         assertEquals(updatelist, caches.get(TerminalTypeEnums.VDI_LINUX));
         caches.remove(TerminalTypeEnums.VDI_LINUX);
     }
