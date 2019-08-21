@@ -90,11 +90,11 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             LOGGER.info("新终端接入,terminalId:[{}]", terminalId);
             basicInfoEntity = new TerminalEntity();
             basicInfoEntity.setCreateTime(now);
+            basicInfoEntity.setGroupId(Constants.DEFAULT_TERMINAL_GROUP_UUID);
         }
         BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity);
         basicInfoEntity.setLastOnlineTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
-        basicInfoEntity.setGroupId(Constants.DEFAULT_TERMINAL_GROUP_UUID);
         basicInfoDAO.save(basicInfoEntity);
         // 通知其他组件终端为在线状态
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE, terminalId);
