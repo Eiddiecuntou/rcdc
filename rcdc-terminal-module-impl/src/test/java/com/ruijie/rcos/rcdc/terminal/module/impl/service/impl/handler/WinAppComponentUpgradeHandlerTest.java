@@ -126,9 +126,7 @@ public class WinAppComponentUpgradeHandlerTest {
         CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
         List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
         CbbWinAppComponentVersionInfoDTO complete = new CbbWinAppComponentVersionInfoDTO();
-        complete.setComplete(true);
         CbbWinAppComponentVersionInfoDTO component = new CbbWinAppComponentVersionInfoDTO();
-        component.setComplete(false);
         componentList.add(complete);
         componentList.add(component);
         updatelist.setComponentList(componentList);
@@ -161,9 +159,7 @@ public class WinAppComponentUpgradeHandlerTest {
         CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
         List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
         CbbWinAppComponentVersionInfoDTO complete = new CbbWinAppComponentVersionInfoDTO();
-        complete.setComplete(true);
         CbbWinAppComponentVersionInfoDTO component = new CbbWinAppComponentVersionInfoDTO();
-        component.setComplete(false);
         componentList.add(complete);
         componentList.add(component);
         updatelist.setComponentList(componentList);

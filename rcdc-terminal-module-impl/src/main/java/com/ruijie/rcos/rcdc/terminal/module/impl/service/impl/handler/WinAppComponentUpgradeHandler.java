@@ -1,12 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
@@ -52,10 +52,9 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
             LOGGER.debug("updatelist : {}", JSON.toJSONString(updatelist));
         }
 
-        String validateMd5 = request.getValidateMd5();
         String versionStr = updatelist.getVersion();
         String rainUpgradeVersion = request.getRainUpgradeVersion();
-        // 根据版本号对比，版本相同且updatelist的MD5相同，不升级
+
         if (rainUpgradeVersion.equals(versionStr)) {
             // 版本相同，不升级 0
             LOGGER.debug("版本号服务端相同，不需要升级");
@@ -77,11 +76,21 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
      * 获取升级包updatelist结果
      * 
      * @param isComplete 是否完整升级包
-     * @return
+     * @return updatelist结果
      */
     private CbbWinAppUpdateListDTO getUpdateListResult(CbbWinAppUpdateListDTO updatelist, boolean isComplete) {
-        List<CbbWinAppComponentVersionInfoDTO> componentList = updatelist.getComponentList().stream()
-                .filter(component -> (component.getComplete() == isComplete)).collect(Collectors.toList());
+        List<CbbWinAppComponentVersionInfoDTO> componentList = updatelist.getComponentList();
+        if (isComplete) {
+            componentList = Lists.newArrayList();
+            CbbWinAppComponentVersionInfoDTO versionInfoDTO = new CbbWinAppComponentVersionInfoDTO();
+            versionInfoDTO.setCompletePackageName(updatelist.getCompletePackageName());
+            versionInfoDTO.setCompletePackageUrl(updatelist.getCompletePackageUrl());
+            versionInfoDTO.setMd5(updatelist.getMd5());
+            versionInfoDTO.setName(updatelist.getName());
+            versionInfoDTO.setVersion(updatelist.getVersion());
+            versionInfoDTO.setPlatform(updatelist.getPlatform());
+            componentList.add(versionInfoDTO);
+        }
 
         CbbWinAppUpdateListDTO resultDTO = new CbbWinAppUpdateListDTO();
         resultDTO.setVersion(updatelist.getVersion());
