@@ -291,6 +291,9 @@ public interface BusinessKey {
     String RCDC_TERMINALGROUP_GROUP_PARENT_CAN_NOT_SELECT_ITSELF = "rcdc_terminalgroup_group_parent_can_not_select_itself";
     String RCDC_DELETE_TERMINAL_GROUP_SUB_GROUP_HAS_DUPLICATION_WITH_MOVE_GROUP =
             "rcdc_delete_terminal_group_sub_group_has_duplication_with_move_group";
+    String RCDC_TERMINAL_GROUP_DEFAULT_NAME_OVERVIEW = "rcdc_terminal_group_default_name_overview";
+    String RCDC_TERMINAL_GROUP_DEFAULT_NAME_UNGROUPED = "rcdc_terminal_group_default_name_ungrouped";
+    String RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME = "rcdc_terminal_usergroup_not_allow_reserve_name";
 
     /*****************终端logo*******************/
     String RCDC_TERMINAL_UPLOAD_LOGO_SUCCESS = "rcdc_terminal_upload_logo_success";
