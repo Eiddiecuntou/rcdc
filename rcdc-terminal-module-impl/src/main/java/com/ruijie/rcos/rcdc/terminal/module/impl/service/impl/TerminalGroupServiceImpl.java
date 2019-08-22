@@ -261,6 +261,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         defaultGroupNameList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_GROUP_DEFAULT_NAME_UNGROUPED));
         return defaultGroupNameList;
     }
+
     /**
      * 检验分组级别是否超出限制
      *
@@ -271,8 +272,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         groupHierarchyChecker.check(parentGroupId, addHerarchy);
     }
 
-    private TerminalGroupEntity obtainGroupEntity(UUID parentGroupId)
-            throws BusinessException {
+    private TerminalGroupEntity obtainGroupEntity(UUID parentGroupId) throws BusinessException {
         if (parentGroupId == null) {
             TerminalGroupEntity groupEntity = new TerminalGroupEntity();
             return groupEntity;
