@@ -35,6 +35,7 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
         LOGGER.debug("windows软终端请求版本号");
         if (TerminalUpdateListCacheManager.isCacheNotReady(TerminalTypeEnums.APP_WINDOWS)) {
             LOGGER.debug("soft windows终端请求版本号服务端未就绪");
+            // FIXME 不需要换行，下同，检查下IDE设置，行宽设置150
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(),
                     new CbbWinAppUpdateListDTO());
         }
@@ -81,6 +82,7 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
     private CbbWinAppUpdateListDTO getUpdateListResult(CbbWinAppUpdateListDTO updatelist, boolean isComplete) {
         List<CbbWinAppComponentVersionInfoDTO> componentList = updatelist.getComponentList();
         if (isComplete) {
+            // FIXME if 里面的代码抽一个方法
             componentList = Lists.newArrayList();
             CbbWinAppComponentVersionInfoDTO versionInfoDTO = new CbbWinAppComponentVersionInfoDTO();
             versionInfoDTO.setCompletePackageName(updatelist.getCompletePackageName());

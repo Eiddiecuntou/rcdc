@@ -27,6 +27,7 @@ import java.io.File;
  */
 public class CbbAppTerminalAPIImpl implements CbbAppTerminalAPI {
 
+    // FIXME 不需要换行
     private static final String WINDOWS_APP_COMPONENT_DIR =
             "/opt/ftp/terminal/terminal_component/windows_app/component/";
 
@@ -35,7 +36,7 @@ public class CbbAppTerminalAPIImpl implements CbbAppTerminalAPI {
     @Override
     public CbbDownLoadUrlResponse getWindowsAppDownloadUrl(DefaultRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-
+        // FIXME 不需要换行
         CbbWinAppUpdateListDTO listDTO =
                 TerminalUpdateListCacheManager.get(TerminalTypeEnums.APP_WINDOWS, CbbWinAppUpdateListDTO.class);
         // 获取updatelist中完整组件的信息，从中获取全量包文件路径

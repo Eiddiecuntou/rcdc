@@ -34,7 +34,7 @@ public abstract class AbstractTerminalComponentUpgradeHandler implements Termina
     }
 
     /**
-     * 比较版本
+     * 比较版本 // FIXME 方法名再想一个，要让人知道返回结果是什么意思
      *
      * @param firstVersion 版本1
      * @param secondVersion 版本2

@@ -50,7 +50,7 @@ public class TerminalUpdateListCacheManager {
      *
      * @param <T> updatelist对象
      * @param terminalType 软终端类型
-     * @param clz updatelist对象类型
+     * @param clz updatelist对象类型 FIXME 可以删除
      * @return 返回对应缓存对象
      */
     public static <T extends CbbCommonUpdatelistDTO> T get(TerminalTypeEnums terminalType, Class<T> clz) {
@@ -91,7 +91,7 @@ public class TerminalUpdateListCacheManager {
 
     /**
      * 判断updatelist缓存是否为未就绪状态
-     *
+     * FIXME 建议改为 isCacheReady 是否准备就绪 ，正向逻辑更好理解
      * @param terminalType 终端类型
      * @return 是否未就绪
      */
@@ -100,6 +100,7 @@ public class TerminalUpdateListCacheManager {
 
         Boolean isReady = UPDATE_LIST_CACHE_READY_STATE_MAP.get(terminalType);
         if (isReady == null) {
+            // FIXME 直接 return true就可以了
             isReady = false;
         }
         return !isReady;

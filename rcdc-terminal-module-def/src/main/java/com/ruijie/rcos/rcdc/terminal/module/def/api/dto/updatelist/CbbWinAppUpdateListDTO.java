@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
 
 /**
- * 
+ * FIXME 注释要修改下
  * Description: linuxVDI终端组件升级版本信息
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
