@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.test.MethodNullArgumentTester;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import org.junit.Assert;
 import org.junit.Test;
@@ -62,7 +61,7 @@ public class AbstractTerminalComponentUpgradeHandlerTest {
 
         String versionStr1 = "2.0.3.1";
         String versionStr2 = "1.9.4.1";
-        boolean isVersionBigger = handler.compareVersion(versionStr1, versionStr2);
+        boolean isVersionBigger = handler.isVersionBigger(versionStr1, versionStr2);
         Assert.assertEquals(true, isVersionBigger);
     }
 
@@ -72,8 +71,8 @@ public class AbstractTerminalComponentUpgradeHandlerTest {
     @Test
     public void testCompareVersionArgIsNull() throws Exception {
         TestedTerminalComponentUpgradeHandler handler = new TestedTerminalComponentUpgradeHandler();
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.compareVersion(null, "sss"), "firstVersion can not be blank");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.compareVersion("sss", null), "secondVersion can not be blank");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.isVersionBigger(null, "sss"), "firstVersion can not be blank");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.isVersionBigger("sss", null), "secondVersion can not be blank");
         Assert.assertTrue(true);
     }
 

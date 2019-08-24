@@ -33,13 +33,12 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
         Assert.notNull(request, "get version request can not be null");
 
         LOGGER.debug("linux VDI终端请求版本号");
-        if (TerminalUpdateListCacheManager.isCacheNotReady(TerminalTypeEnums.VDI_LINUX)) {
+        if (!TerminalUpdateListCacheManager.isCacheReady(TerminalTypeEnums.VDI_LINUX)) {
             LOGGER.debug("linux VDI终端请求版本号未就绪");
             return buildResult(CbbTerminalComponentUpgradeResultEnums.PREPARING, new CbbLinuxVDIUpdateListDTO());
         }
 
-        CbbLinuxVDIUpdateListDTO updatelist =
-                TerminalUpdateListCacheManager.get(TerminalTypeEnums.VDI_LINUX, CbbLinuxVDIUpdateListDTO.class);
+        CbbLinuxVDIUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(TerminalTypeEnums.VDI_LINUX);
         String rainUpgradeVersion = request.getRainUpgradeVersion();
         String validateMd5 = request.getValidateMd5();
         // 判断终端类型升级包是否存在或是否含有组件信息
@@ -52,8 +51,7 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
             LOGGER.debug("updatelist : {}", JSON.toJSONString(updatelist));
         }
         String version = updatelist.getVersion();
-        CbbLinuxVDIUpdateListDTO updatelistDTO =
-                new CbbLinuxVDIUpdateListDTO(version, updatelist.getBaseVersion(), updatelist.getComponentSize());
+        CbbLinuxVDIUpdateListDTO updatelistDTO = new CbbLinuxVDIUpdateListDTO(version, updatelist.getBaseVersion(), updatelist.getComponentSize());
 
         // 根据版本号对比，版本相同且updatelist的MD5相同，不升级； 不同则根据平台类型筛选出组件信息，无组件信息则不支持升级，有则返回升级信息
         if (rainUpgradeVersion.equals(version) && Objects.equals(validateMd5, updatelist.getValidateMd5())) {
@@ -65,10 +63,9 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
         // 最低支持版本判断
         Integer terminalVersion = getVersionFromVerStr(rainUpgradeVersion);
         LOGGER.debug("terminal version is {}", terminalVersion);
-        if (terminalVersion != 0 && compareVersion(updatelist.getLimitVersion(), rainUpgradeVersion)) {
+        if (terminalVersion != 0 && isVersionBigger(updatelist.getLimitVersion(), rainUpgradeVersion)) {
             LOGGER.debug("limit version is big, return not support");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
-                    updatelistDTO);
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), updatelistDTO);
         }
 
         // 深拷贝对象
@@ -90,8 +87,7 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
     /**
      * 构建响应结果dto
      */
-    private TerminalVersionResultDTO buildResult(CbbTerminalComponentUpgradeResultEnums result,
-            CbbLinuxVDIUpdateListDTO updateListDto) {
+    private TerminalVersionResultDTO buildResult(CbbTerminalComponentUpgradeResultEnums result, CbbLinuxVDIUpdateListDTO updateListDto) {
         return new TerminalVersionResultDTO(result.getResult(), updateListDto);
     }
 

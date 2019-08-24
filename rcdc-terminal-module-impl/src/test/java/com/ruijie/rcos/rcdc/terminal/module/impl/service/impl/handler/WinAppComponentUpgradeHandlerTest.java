@@ -64,7 +64,7 @@ public class WinAppComponentUpgradeHandlerTest {
             private boolean isFirst = true;
 
             @Mock
-            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
+            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType) {
                 if (isFirst) {
                     isFirst = false;
                     // 模拟返回空
@@ -103,7 +103,7 @@ public class WinAppComponentUpgradeHandlerTest {
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
+            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -136,7 +136,7 @@ public class WinAppComponentUpgradeHandlerTest {
         updatelist.setValidateMd5("123");
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
+            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -171,7 +171,7 @@ public class WinAppComponentUpgradeHandlerTest {
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
+            public CbbWinAppUpdateListDTO get(TerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };

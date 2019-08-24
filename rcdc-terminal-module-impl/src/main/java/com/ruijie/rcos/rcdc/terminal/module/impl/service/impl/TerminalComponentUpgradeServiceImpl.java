@@ -34,13 +34,11 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
     private TerminalComponentUpgradeHandlerFactory handlerFactory;
 
     @Override
-    public TerminalVersionResultDTO getVersion(TerminalEntity terminalEntity, @Nullable String validateMd5)
-            throws BusinessException {
+    public TerminalVersionResultDTO getVersion(TerminalEntity terminalEntity, @Nullable String validateMd5) throws BusinessException {
         Assert.notNull(terminalEntity, "terminalEntity can not be null");
         Assert.notNull(terminalEntity.getPlatform(), "platform can not be null");
-        // FIXME 不需要换行，只要不超过150个字符
-        TerminalTypeEnums terminalType =
-                TerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
+
+        TerminalTypeEnums terminalType = TerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
         LOGGER.info("获取组件升级处理对象");
         TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(terminalType);
 

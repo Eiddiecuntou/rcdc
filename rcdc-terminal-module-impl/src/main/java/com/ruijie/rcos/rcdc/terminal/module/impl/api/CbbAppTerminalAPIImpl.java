@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
+import java.io.File;
+
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -12,10 +12,10 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-
-import java.io.File;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 
 /**
  * Description: Function Description
@@ -27,20 +27,16 @@ import java.io.File;
  */
 public class CbbAppTerminalAPIImpl implements CbbAppTerminalAPI {
 
-    // FIXME 不需要换行
-    private static final String WINDOWS_APP_COMPONENT_DIR =
-            "/opt/ftp/terminal/terminal_component/windows_app/component/";
+    private static final String WINDOWS_APP_COMPONENT_DIR = "/opt/ftp/terminal/terminal_component/windows_app/component/";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbAppTerminalAPIImpl.class);
 
     @Override
     public CbbDownLoadUrlResponse getWindowsAppDownloadUrl(DefaultRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        // FIXME 不需要换行
-        CbbWinAppUpdateListDTO listDTO =
-                TerminalUpdateListCacheManager.get(TerminalTypeEnums.APP_WINDOWS, CbbWinAppUpdateListDTO.class);
+        CbbWinAppUpdateListDTO listDTO = TerminalUpdateListCacheManager.get(TerminalTypeEnums.APP_WINDOWS);
         // 获取updatelist中完整组件的信息，从中获取全量包文件路径
-        if (TerminalUpdateListCacheManager.isCacheNotReady(TerminalTypeEnums.APP_WINDOWS)) {
+        if (!TerminalUpdateListCacheManager.isCacheReady(TerminalTypeEnums.APP_WINDOWS)) {
             LOGGER.error("windows软终端updatelist缓存未就绪");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_WINDOWS_APP_UPDATELIST_CACHE_NOT_READY);
         }
