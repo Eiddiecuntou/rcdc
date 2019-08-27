@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -260,7 +261,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminalNotFoundTerminal() {
-        CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
+        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
 
         new Expectations() {
             {
@@ -284,7 +285,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminalUploadingTaskHasClose() throws BusinessException {
-        CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
+        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
@@ -313,7 +314,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminalUploadingTerminalExist() throws BusinessException {
-        CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
+        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
@@ -344,7 +345,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminal() throws BusinessException {
-        CbbAddTerminalSystemUpgradeTaskRequest request = new CbbAddTerminalSystemUpgradeTaskRequest();
+        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
@@ -513,12 +514,12 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testCloseSystemUpgradeTask() throws BusinessException {
-        CbbCloseSystemUpgradeTaskRequest request = new CbbCloseSystemUpgradeTaskRequest();
+        IdRequest request = new IdRequest();
         DefaultResponse response = upgradeAPIImpl.closeSystemUpgradeTask(request);
         assertEquals(Status.SUCCESS, response.getStatus());
         new Verifications() {
             {
-                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getUpgradeTaskId());
+                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getId());
                 times = 1;
             }
         };

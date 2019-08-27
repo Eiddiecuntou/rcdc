@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.NoticeEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
@@ -64,7 +64,7 @@ public class ConnectCloseHandlerSPIImplTest {
                 terminalEventNoticeSPI.notify(cbbNoticeRequest = withCapture());
                 times = 1;
                 assertEquals("123", cbbNoticeRequest.getTerminalId());
-                assertEquals(NoticeEventEnums.OFFLINE.getName(), cbbNoticeRequest.getDispatcherKey());
+                assertEquals(CbbNoticeEventEnums.OFFLINE.getName(), cbbNoticeRequest.getDispatcherKey());
             }
         };
     }

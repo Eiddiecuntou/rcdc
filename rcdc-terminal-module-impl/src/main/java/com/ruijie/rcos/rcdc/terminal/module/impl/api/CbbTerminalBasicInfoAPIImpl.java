@@ -3,16 +3,13 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalNetworkRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -93,31 +90,6 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         basicInfoDAO.save(entity);
 
         return DefaultResponse.Builder.success();
-    }
-
-    @Override
-    public DefaultResponse modifyTerminalNetworkConfig(CbbTerminalNetworkRequest request) throws BusinessException {
-        Assert.notNull(request, "TerminalNetworkRequest不能为null");
-        // 先发送网络配置消息给shine，后修改数据库
-        String terminalId = request.getTerminalId();
-        ShineNetworkConfig shineNetworkConfig = new ShineNetworkConfig();
-        BeanCopier beanCopier = BeanCopier.create(request.getClass(), shineNetworkConfig.getClass(), false);
-        beanCopier.copy(request, shineNetworkConfig, null);
-        shineNetworkConfig.setGetDnsMode(request.getGetDnsMode().ordinal());
-        shineNetworkConfig.setGetIpMode(request.getGetIpMode().ordinal());
-        basicInfoService.modifyTerminalNetworkConfig(request.getTerminalId(), shineNetworkConfig);
-
-        int version = getVersion(terminalId);
-        int effectRow = basicInfoDAO.modifyTerminalNetworkConfig(terminalId, version, request);
-        if (effectRow == 0) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
-        }
-        return DefaultResponse.Builder.success();
-    }
-
-    private Integer getVersion(String terminalId) throws BusinessException {
-        TerminalEntity basicInfoEntity = getTerminalEntity(terminalId);
-        return basicInfoEntity.getVersion();
     }
 
     private TerminalEntity getTerminalEntity(String terminalId) throws BusinessException {

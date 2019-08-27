@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import java.util.UUID;
+
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.springframework.lang.Nullable;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
@@ -15,21 +17,10 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-public class CbbGetTaskUpgradeTerminalRequest implements Request {
-
-    @NotNull
-    private UUID upgradeTaskId;
+public class CbbGetTaskUpgradeTerminalRequest extends IdRequest {
 
     @Nullable
     private CbbSystemUpgradeStateEnums terminalState;
-
-    public UUID getUpgradeTaskId() {
-        return upgradeTaskId;
-    }
-
-    public void setUpgradeTaskId(UUID upgradeTaskId) {
-        this.upgradeTaskId = upgradeTaskId;
-    }
 
     public CbbSystemUpgradeStateEnums getTerminalState() {
         return terminalState;

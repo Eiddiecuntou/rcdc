@@ -318,4 +318,5 @@ public class TerminalEntity {
     public void setGroupId(UUID groupId) {
         this.groupId = groupId;
     }
+
 }

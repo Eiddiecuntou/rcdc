@@ -11,6 +11,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResp
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
@@ -48,7 +49,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalNameResponse addSystemUpgradeTerminal(CbbAddTerminalSystemUpgradeTaskRequest request) throws BusinessException;
+    CbbTerminalNameResponse addSystemUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException;
 
     /**
      * 
@@ -78,7 +79,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse closeSystemUpgradeTask(CbbCloseSystemUpgradeTaskRequest request) throws BusinessException;
+    DefaultResponse closeSystemUpgradeTask(IdRequest request) throws BusinessException;
 
     /**
      * 终端可刷机的列表
@@ -108,7 +109,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalNameResponse cancelUpgradeTerminal(CbbCancelUpgradeTerminalRequest request) throws BusinessException;
+    CbbTerminalNameResponse cancelUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException;
 
     /**
      * 重试终端刷机
@@ -118,7 +119,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalNameResponse retryUpgradeTerminal(CbbRetryUpgradeTerminalRequest request) throws BusinessException;
+    CbbTerminalNameResponse retryUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException;
 
     /**
      * 获取终端刷机任务信息
@@ -128,6 +129,6 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(CbbGetUpgradeTaskRequest request) throws BusinessException;
+    CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(IdRequest request) throws BusinessException;
 
 }

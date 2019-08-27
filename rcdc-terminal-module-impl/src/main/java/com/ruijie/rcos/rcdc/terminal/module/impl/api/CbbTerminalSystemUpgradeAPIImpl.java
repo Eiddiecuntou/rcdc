@@ -44,6 +44,7 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 
 /**
  * 
@@ -171,7 +172,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbTerminalNameResponse addSystemUpgradeTerminal(CbbAddTerminalSystemUpgradeTaskRequest request)
+    public CbbTerminalNameResponse addSystemUpgradeTerminal(CbbUpgradeTerminalRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
@@ -256,12 +257,12 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(CbbGetUpgradeTaskRequest request)
+    public CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(IdRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         final TerminalSystemUpgradeEntity upgradeTaskEntity =
-                terminalSystemUpgradeService.getSystemUpgradeTask(request.getUpgradeTaskId());
+                terminalSystemUpgradeService.getSystemUpgradeTask(request.getId());
         CbbSystemUpgradeTaskDTO upgradeTaskDTO = new CbbSystemUpgradeTaskDTO();
         TASK_BEAN_COPIER.copy(upgradeTaskEntity, upgradeTaskDTO, null);
         upgradeTaskDTO.setUpgradeTaskState(upgradeTaskEntity.getState());
@@ -306,10 +307,10 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultResponse closeSystemUpgradeTask(CbbCloseSystemUpgradeTaskRequest request) throws BusinessException {
+    public DefaultResponse closeSystemUpgradeTask(IdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getUpgradeTaskId());
+        terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getId());
         return DefaultResponse.Builder.success();
     }
 
@@ -391,7 +392,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     public CbbGetTaskUpgradeTerminalResponse getUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalRequest request) {
         Assert.notNull(request, "request can not be null");
 
-        final UUID upgradeTaskId = request.getUpgradeTaskId();
+        final UUID upgradeTaskId = request.getId();
         final CbbSystemUpgradeStateEnums upgradeTerminalState = request.getTerminalState();
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = null;
         if (upgradeTerminalState == null) {
@@ -420,7 +421,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbTerminalNameResponse cancelUpgradeTerminal(CbbCancelUpgradeTerminalRequest request)
+    public CbbTerminalNameResponse cancelUpgradeTerminal(CbbUpgradeTerminalRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
@@ -453,7 +454,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
 
     @Override
-    public CbbTerminalNameResponse retryUpgradeTerminal(CbbRetryUpgradeTerminalRequest request)
+    public CbbTerminalNameResponse retryUpgradeTerminal(CbbUpgradeTerminalRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
