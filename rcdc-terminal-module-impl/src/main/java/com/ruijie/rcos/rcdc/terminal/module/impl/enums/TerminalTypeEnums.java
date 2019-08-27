@@ -72,9 +72,8 @@ public enum TerminalTypeEnums {
      * @param platform 平台类型
      * @param osType 操作系统类型
      * @return 终端类型枚举对象
-     * @throws IllegalArgumentException 异常
      */
-    public static TerminalTypeEnums convert(String platform, String osType) throws IllegalArgumentException {
+    public static TerminalTypeEnums convert(String platform, String osType) {
         Assert.hasText(platform, "platform can not be blank");
         Assert.hasText(osType, "osType can not be blank");
 

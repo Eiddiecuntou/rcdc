@@ -37,15 +37,14 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbCommonUpd
         // 开始初始化，将缓存就绪状态设为未就绪
         LOGGER.info("start init updatelist...");
         TerminalTypeEnums terminalType = getTerminalType();
+        LOGGER.info("terminal type: {}", terminalType.name());
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(terminalType);
-
         String filePath = getUpdateListPath();
         File updateListFile = new File(filePath);
         if (!updateListFile.isFile()) {
             LOGGER.error("updatelist file not exist or not a file, the file path is {}", filePath);
             return;
         }
-
         String updateListContent = readUpdateListContent(updateListFile);
         if (StringUtils.isBlank(updateListContent)) {
             LOGGER.error("获取updatelist信息失败，请检查updatelist文件是否正确，updatelist文件路径：{}", filePath);
@@ -54,7 +53,6 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbCommonUpd
 
         T updatelist = JSON.parseObject(updateListContent, getTClass());
         putInCache(updatelist);
-
         // 完成初始化后将updatelist缓存状态更新为false
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(terminalType);
         LOGGER.info("finish init updatelist...");

@@ -65,7 +65,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
             private boolean isFirst = true;
 
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
+            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
                 if (isFirst) {
                     isFirst = false;
                     // 模拟返回空
@@ -105,7 +105,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
+            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -136,7 +136,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         updatelist.setValidateMd5("123");
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
+            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -174,7 +174,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType, Class clz) {
+            public CbbLinuxVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };

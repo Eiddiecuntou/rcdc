@@ -67,10 +67,8 @@ public class TerminalUpdateListCacheManagerTest {
      */
     @Test
     public void testGetArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.get(null, null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.get(null),
                 "terminalType can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.get(TerminalTypeEnums.VDI_LINUX, null),
-                "clz can not be null");
         assertTrue(true);
     }
 
@@ -83,7 +81,7 @@ public class TerminalUpdateListCacheManagerTest {
                 Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
         CbbWinAppUpdateListDTO dto = new CbbWinAppUpdateListDTO();
         caches.put(TerminalTypeEnums.APP_WINDOWS, dto);
-        CbbWinAppUpdateListDTO getDTO = manager.get(TerminalTypeEnums.APP_WINDOWS, CbbWinAppUpdateListDTO.class);
+        CbbWinAppUpdateListDTO getDTO = manager.get(TerminalTypeEnums.APP_WINDOWS);
         assertEquals(dto, getDTO);
     }
 
@@ -126,8 +124,8 @@ public class TerminalUpdateListCacheManagerTest {
      */
     @Test
     public void testIsCacheNotReady() {
-        boolean isNotReady = manager.isCacheNotReady(TerminalTypeEnums.APP_WINDOWS);
-        assertEquals(true, isNotReady);
+        boolean isReady = manager.isCacheReady(TerminalTypeEnums.APP_WINDOWS);
+        assertEquals(false, isReady);
     }
 
 }

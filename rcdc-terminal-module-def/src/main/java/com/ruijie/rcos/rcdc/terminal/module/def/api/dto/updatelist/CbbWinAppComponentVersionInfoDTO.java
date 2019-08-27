@@ -12,11 +12,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
 public class CbbWinAppComponentVersionInfoDTO extends CbbCommonComponentVersionInfoDTO {
 
     /**
-     * 是否完整升级包
-     */
-    private Boolean isComplete;
-
-    /**
      * 组件包文件名
      */
     private String completePackageName;
@@ -25,14 +20,6 @@ public class CbbWinAppComponentVersionInfoDTO extends CbbCommonComponentVersionI
      * 下载路径
      */
     private String completePackageUrl;
-
-    public Boolean getComplete() {
-        return isComplete;
-    }
-
-    public void setComplete(Boolean complete) {
-        isComplete = complete;
-    }
 
     public String getCompletePackageUrl() {
         return completePackageUrl;
