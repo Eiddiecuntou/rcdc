@@ -7,7 +7,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
@@ -29,7 +28,7 @@ public class GroupSubNumChecker {
     private TerminalGroupDAO terminalGroupDAO;
 
     /**
-     *  终端子分组数量校验
+     * 终端子分组数量校验
      *
      * @param groupEntity 父分组实体对象
      * @param addSubGroupNum 添加的子分组数量
@@ -38,9 +37,7 @@ public class GroupSubNumChecker {
     public void check(TerminalGroupEntity groupEntity, long addSubGroupNum) throws BusinessException {
         Assert.notNull(groupEntity, "groupEntity can not be null");
 
-        TerminalTypeEnums terminalType = groupEntity.getTerminalType();
-        long totalSubGroupNum =
-                getSubGroupNum(terminalType, groupEntity.getId()) + addSubGroupNum;
+        long totalSubGroupNum = getSubGroupNum(groupEntity.getId()) + addSubGroupNum;
         if (totalSubGroupNum > Constants.TERMINAL_GROUP_MAX_SUB_GROUP_NUM) {
             throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_SUB_GROUP_NUM_EXCEED_LIMIT,
                     String.valueOf(Constants.TERMINAL_GROUP_MAX_SUB_GROUP_NUM));
@@ -48,15 +45,12 @@ public class GroupSubNumChecker {
     }
 
     /**
-     *  获取子分组数量
+     * 获取子分组数量
      *
-     * @param terminalType 终端类型
      * @param parentId 父分组ID
      * @return 子分组数量
      */
-    public long getSubGroupNum(TerminalTypeEnums terminalType, @Nullable UUID parentId) {
-        Assert.notNull(terminalType, "terminal type can not be null");
-
-        return terminalGroupDAO.countByTerminalTypeAndParentId(terminalType, parentId);
+    public long getSubGroupNum(@Nullable UUID parentId) {
+        return terminalGroupDAO.countByParentId(parentId);
     }
 }

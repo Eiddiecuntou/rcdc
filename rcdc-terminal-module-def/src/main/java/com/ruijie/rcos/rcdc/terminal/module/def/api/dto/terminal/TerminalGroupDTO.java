@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal;
 
 import java.util.UUID;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
 
 /**
  * 终端组DTO对象
@@ -13,7 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
  * @author chenzj
  */
 public class TerminalGroupDTO {
-    
+
     /**
      * 终端分组id
      */
@@ -25,22 +24,18 @@ public class TerminalGroupDTO {
     private String groupName;
 
     /**
-     *父级分组id
+     * 父级分组id
      */
     private UUID parentGroupId;
-    
+
     /**
      * 父级分组名称
      */
     private String parentGroupName;
-    
-    /**
-     * 终端类型
-     */
-    private TerminalTypeEnums terminalType = TerminalTypeEnums.VDI;
-    
+
 
     public TerminalGroupDTO() {
+
     }
 
     public TerminalGroupDTO(UUID id, String groupName, UUID parentGroupId) {
@@ -80,14 +75,4 @@ public class TerminalGroupDTO {
     public void setParentGroupName(String parentGroupName) {
         this.parentGroupName = parentGroupName;
     }
-
-    public TerminalTypeEnums getTerminalType() {
-        return terminalType;
-    }
-
-    public void setTerminalType(TerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
-    }
-
-
 }

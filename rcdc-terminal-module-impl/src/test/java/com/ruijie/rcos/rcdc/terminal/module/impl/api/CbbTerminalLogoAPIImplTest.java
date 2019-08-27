@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbGetLogoPathRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbInitLogoRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
@@ -10,6 +8,7 @@ import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.base.util.StringUtils;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import mockit.*;
 import mockit.integration.junit4.JMockit;
@@ -256,7 +255,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testGetLogoPath() throws Exception {
-        CbbGetLogoPathRequest request = new CbbGetLogoPathRequest();
+        DefaultRequest request = new DefaultRequest();
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminalLogo");
@@ -281,7 +280,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testInitLogoPathIsNotNull() throws Exception {
-        CbbInitLogoRequest request = new CbbInitLogoRequest();
+        DefaultRequest request = new DefaultRequest();
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminalLogo");
@@ -313,7 +312,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testInitLogoPathIsNull() throws Exception {
-        CbbInitLogoRequest request = new CbbInitLogoRequest();
+        DefaultRequest request = new DefaultRequest();
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminalLogo");

@@ -151,14 +151,6 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     }
 
     @Override
-    public void detect(String[] terminalIdArr) throws BusinessException {
-        Assert.notEmpty(terminalIdArr, "terminalIdArr大小不能为0");
-        for (String terminalId : terminalIdArr) {
-            detect(terminalId);
-        }
-    }
-
-    @Override
     public void detect(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
         checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_DETECT);

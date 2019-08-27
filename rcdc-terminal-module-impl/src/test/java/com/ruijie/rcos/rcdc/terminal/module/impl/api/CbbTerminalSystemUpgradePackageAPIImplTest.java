@@ -1,50 +1,36 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
 import org.junit.Test;
-import org.springframework.data.domain.Page;
+
 import com.google.common.io.Files;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckUploadingResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradePackageListService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
-import mockit.Deencapsulation;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 
 /**
  * 
@@ -71,9 +57,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     @Injectable
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
-
-    @Injectable
-    private QuerySystemUpgradePackageListService querySystemUpgradePackageListService;
 
     @Mocked
     private ShellCommandRunner shellCommandRunner;
@@ -551,102 +534,4 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         assertTrue(true);
     }
 
-    /**
-     * 测试listSystemUpgradePackage，NoUpgradingTask
-     * 
-     * @param page mock对象
-     * @throws BusinessException 异常
-     * @throws Exception 异常
-     */
-    @Test
-    public void testListSystemUpgradePackageNoUpgradingTask(@Mocked Page<TerminalSystemUpgradePackageEntity> page) throws BusinessException {
-        PageSearchRequest request = new PageSearchRequest();
-        List<TerminalSystemUpgradePackageEntity> packageList = new ArrayList<>();
-        TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
-        packageList.add(packageEntity);
-        new Expectations() {
-            {
-                querySystemUpgradePackageListService.pageQuery(request, TerminalSystemUpgradePackageEntity.class);
-                result = page;
-                page.getContent();
-                result = packageList;
-                page.getSize();
-                result = 1;
-                page.getTotalElements();
-                result = 1;
-
-            }
-        };
-        DefaultPageResponse<CbbTerminalSystemUpgradePackageInfoDTO> response = upgradePackageAPIImpl.listSystemUpgradePackage(request);
-        assertEquals(Status.SUCCESS, response.getStatus());
-        assertEquals(packageEntity.getPackageName(), response.getItemArr()[0].getName());
-
-        new Verifications() {
-            {
-                querySystemUpgradePackageListService.pageQuery(request, TerminalSystemUpgradePackageEntity.class);
-                times = 1;
-                page.getContent();
-                times = 1;
-                page.getSize();
-                times = 1;
-                page.getTotalElements();
-                times = 1;
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageEntity.getId(),
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     * 测试listSystemUpgradePackage，
-     * 
-     * @param page mock对象
-     * @throws BusinessException 异常
-     * @throws Exception 异常
-     */
-    @Test
-    public void testListSystemUpgradePackage(@Mocked Page<TerminalSystemUpgradePackageEntity> page) throws BusinessException {
-        PageSearchRequest request = new PageSearchRequest();
-        List<TerminalSystemUpgradePackageEntity> packageList = new ArrayList<>();
-        TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
-        packageList.add(packageEntity);
-
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = new ArrayList<>();
-        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradingTaskList.add(upgradeEntity);
-        new Expectations() {
-            {
-                querySystemUpgradePackageListService.pageQuery(request, TerminalSystemUpgradePackageEntity.class);
-                result = page;
-                page.getContent();
-                result = packageList;
-                page.getSize();
-                result = 1;
-                page.getTotalElements();
-                result = 1;
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageEntity.getId(),
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
-                result = upgradingTaskList;
-            }
-        };
-        DefaultPageResponse<CbbTerminalSystemUpgradePackageInfoDTO> response = upgradePackageAPIImpl.listSystemUpgradePackage(request);
-        assertEquals(Status.SUCCESS, response.getStatus());
-
-        new Verifications() {
-            {
-                querySystemUpgradePackageListService.pageQuery(request, TerminalSystemUpgradePackageEntity.class);
-                times = 1;
-                page.getContent();
-                times = 1;
-                page.getSize();
-                times = 1;
-                page.getTotalElements();
-                times = 1;
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageEntity.getId(),
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 1;
-            }
-        };
-    }
 }

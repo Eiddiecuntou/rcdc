@@ -2,11 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import java.util.List;
 import java.util.UUID;
-import org.springframework.lang.Nullable;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.springframework.lang.Nullable;
 
 /**
  * 
@@ -21,10 +21,9 @@ public interface TerminalGroupService {
     
     /**
      * 根据终端类型查询所有分组
-     * @param terminalType 终端类型
      * @return 分组列表
      */
-    List<TerminalGroupEntity> findAllByTerminalType(TerminalTypeEnums terminalType);
+    List<TerminalGroupEntity> findAll();
     
     /**
      * @description 保存终端组
@@ -76,4 +75,11 @@ public interface TerminalGroupService {
      */
     String[] getTerminalGroupNameArr(UUID groupId) throws BusinessException;
 
+    /**
+     *  根据名称获取分组下的子分组
+     * @param parentGroupId 父分组id
+     * @param groupName 分组名称
+     * @return 分组对象
+     */
+    List<TerminalGroupEntity> getByName(@Nullable UUID parentGroupId, String groupName);
 }

@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
@@ -72,7 +72,7 @@ public interface TerminalDetectService {
      * @param detectDate 日期
      * @return 检测结果
      */
-    CbbTerminalDetectResultDTO getDetectResult(CbbDetectDateEnums detectDate);
+    CbbTerminalDetectStatisticsDTO getDetectResult(CbbDetectDateEnums detectDate);
 
     /**
      * 获取最近的终端检测记录

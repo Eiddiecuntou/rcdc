@@ -35,11 +35,10 @@ public class GroupNameDuplicationChecker {
      */
     public void check(TerminalGroupEntity groupEntity, String groupName) throws BusinessException {
         Assert.notNull(groupEntity, "groupEntity can not be null");
-        Assert.notNull(groupEntity.getTerminalType(), "group type can not be null");
         Assert.hasText(groupName, "groupName can not be blank");
 
         List<TerminalGroupEntity> findGroupList = terminalGroupDAO
-                .findByTerminalTypeAndParentIdAndName(groupEntity.getTerminalType(), groupEntity.getId(), groupName);
+                .findByParentIdAndName(groupEntity.getId(), groupName);
         if (CollectionUtils.isEmpty(findGroupList)) {
             return;
         }

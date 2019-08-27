@@ -298,4 +298,8 @@ public interface BusinessKey {
     String RCDC_TERMINAL_OPERATE_ACTION_SEND_LOGO = "rcdc_terminal_operate_action_send_logo_url";
     String RCDC_TERMINAL_LOGO_RECORD_NOT_EXIST = "rcdc_terminal_logo_record_not_exist";
 
+    /************ 终端组件升级***************/
+    String RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST = "rcdc_terminal_component_upgrade_handler_not_exist";
+    String RCDC_TERMINAL_WINDOWS_APP_UPDATELIST_CACHE_NOT_READY = "rcdc_terminal_windows_app_updatelist_cache_not_ready";
+    String RCDC_TERMINAL_COMPONENT_UPDATELIST_CACHE_INCORRECT = "rcdc_terminal_component_updatelist_cache_incorrect";
 }

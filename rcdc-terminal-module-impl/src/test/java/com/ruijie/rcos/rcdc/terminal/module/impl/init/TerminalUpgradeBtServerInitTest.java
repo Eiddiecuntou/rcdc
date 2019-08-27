@@ -147,7 +147,7 @@ public class TerminalUpgradeBtServerInitTest {
                 times = 1;
                 runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/update.py", "172.12.22.45"));
                 times = 1;
-                upgradeCacheInit.safeInit();
+                upgradeCacheInit.cachesInit();
                 times = 0;
             }
         };
@@ -189,7 +189,7 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.findParameter(anyString);
                 times = 1;
-                upgradeCacheInit.safeInit();
+                upgradeCacheInit.cachesInit();
                 times = 1;
             }
         };
@@ -235,7 +235,7 @@ public class TerminalUpgradeBtServerInitTest {
                 times = 1;
                 runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
                 times = 1;
-                upgradeCacheInit.safeInit();
+                upgradeCacheInit.cachesInit();
                 times = 0;
             }
         };
@@ -278,7 +278,7 @@ public class TerminalUpgradeBtServerInitTest {
                 times = 1;
                 runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
                 times = 1;
-                upgradeCacheInit.safeInit();
+                upgradeCacheInit.cachesInit();
                 times = 0;
             }
         };
@@ -333,7 +333,7 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.updateParameter(anyString, "192.168.1.2");
                 times = 1;
-                upgradeCacheInit.safeInit();
+                upgradeCacheInit.cachesInit();
                 times = 1;
             }
         };

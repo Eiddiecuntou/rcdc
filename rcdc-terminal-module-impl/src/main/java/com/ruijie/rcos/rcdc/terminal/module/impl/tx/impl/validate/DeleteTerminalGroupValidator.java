@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.google.common.base.Objects;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
@@ -105,7 +105,7 @@ public class DeleteTerminalGroupValidator {
         }
 
         groupSubNumChecker.check(groupEntity,
-                groupSubNumChecker.getSubGroupNum(groupEntity.getTerminalType(), moveGroupId));
+                groupSubNumChecker.getSubGroupNum(moveGroupId));
     }
 
     private void checkSubGroupNameDuplication(TerminalGroupEntity groupEntity, UUID moveGroupId) throws BusinessException {
@@ -114,25 +114,23 @@ public class DeleteTerminalGroupValidator {
             return;
         }
 
-        TerminalTypeEnums terminalType = groupEntity.getTerminalType();
         List<TerminalGroupEntity> subGroupList =
-                terminalGroupDAO.findByTerminalTypeAndParentId(terminalType, groupEntity.getId());
+                terminalGroupDAO.findByParentId(groupEntity.getId());
         if (CollectionUtils.isEmpty(subGroupList)) {
             return;
         }
 
-        TerminalGroupEntity moveGroupEntity = obtainMoveGroupEntity(moveGroupId, terminalType);
+        TerminalGroupEntity moveGroupEntity = obtainMoveGroupEntity(moveGroupId);
         for (TerminalGroupEntity subGroup : subGroupList) {
             groupNameDuplicationChecker.check(moveGroupEntity, subGroup.getName());
         }
 
     }
 
-    private TerminalGroupEntity obtainMoveGroupEntity(UUID moveGroupId, TerminalTypeEnums terminalType)
+    private TerminalGroupEntity obtainMoveGroupEntity(UUID moveGroupId)
             throws BusinessException {
         if (moveGroupId == null) {
             TerminalGroupEntity groupEntity = new TerminalGroupEntity();
-            groupEntity.setTerminalType(terminalType);
             return groupEntity;
         }
 

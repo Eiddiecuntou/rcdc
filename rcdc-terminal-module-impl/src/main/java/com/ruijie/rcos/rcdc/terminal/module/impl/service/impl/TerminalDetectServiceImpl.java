@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectResultDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -144,7 +144,7 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
     }
 
     @Override
-    public CbbTerminalDetectResultDTO getDetectResult(CbbDetectDateEnums detectDate) {
+    public CbbTerminalDetectStatisticsDTO getDetectResult(CbbDetectDateEnums detectDate) {
         Assert.notNull(detectDate, "detect date can not be null");
 
         Date date = getDetectDate(detectDate);
@@ -155,9 +155,9 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         return buildDetectResultDTO(detectList);
     }
 
-    private CbbTerminalDetectResultDTO buildDetectResultDTO(List<TerminalDetectionEntity> detectList) {
+    private CbbTerminalDetectStatisticsDTO buildDetectResultDTO(List<TerminalDetectionEntity> detectList) {
         if (CollectionUtils.isEmpty(detectList)) {
-            return new CbbTerminalDetectResultDTO();
+            return new CbbTerminalDetectStatisticsDTO();
         }
 
         int ipConflict = 0;
@@ -213,7 +213,7 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
             }
         }
 
-        CbbTerminalDetectResultDTO result = new CbbTerminalDetectResultDTO();
+        CbbTerminalDetectStatisticsDTO result = new CbbTerminalDetectStatisticsDTO();
         result.setAccessInternet(accessInternet);
         result.setBandwidth(bandwidth);
         result.setDelay(delay);
