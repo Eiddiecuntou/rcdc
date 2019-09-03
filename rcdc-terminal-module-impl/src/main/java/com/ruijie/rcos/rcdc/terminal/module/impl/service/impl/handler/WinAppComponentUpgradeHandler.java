@@ -1,12 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.DeepCopyUtil;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
@@ -14,6 +13,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+
+import java.util.Collections;
 
 /**
  * Description: Function Description
@@ -66,14 +67,15 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
     }
 
     private CbbWinAppUpdateListDTO getCompleteUpgradeResult(CbbWinAppUpdateListDTO updatelist) {
-        CbbWinAppUpdateListDTO copyUpdateList = DeepCopyUtil.deepCopy(updatelist);
-        copyUpdateList.setComponentList(Lists.newArrayList());
+        CbbWinAppUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
+
+        copyUpdateList.setComponentList(Collections.emptyList());
         copyUpdateList.setComponentSize(0);
         return copyUpdateList;
     }
 
     private CbbWinAppUpdateListDTO getIncrementUpgradeResult(CbbWinAppUpdateListDTO updatelist) {
-        CbbWinAppUpdateListDTO copyUpdateList = DeepCopyUtil.deepCopy(updatelist);
+        CbbWinAppUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
 
         // 增量升级，清除完整升级信息
         copyUpdateList.setName(StringUtils.EMPTY);
