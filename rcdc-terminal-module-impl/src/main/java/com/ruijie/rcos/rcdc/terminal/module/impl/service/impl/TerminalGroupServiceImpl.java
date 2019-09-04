@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.util.*;
 
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -9,7 +11,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
@@ -54,10 +55,11 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         Assert.hasText(groupName, "terminal group name can not be null");
 
         UUID parentGroupId = terminalGroup.getParentGroupId();
+
         checkDefault(parentGroupId);
         checkGroupNum();
         checkSubGroupNum(parentGroupId);
-        checkNameUniqueThrowExceptionIfNot(terminalGroup);
+        checkGroupName(terminalGroup);
         checkGroupLevel(parentGroupId, 1);
 
         TerminalGroupEntity entity = buildTerminalGroupEntity(terminalGroup);
@@ -130,7 +132,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         }
 
         // 检验分组名称是否同级唯一
-        checkNameUniqueThrowExceptionIfNot(terminalGroup);
+        checkGroupName(terminalGroup);
         modifyGroupNameAndParent(id, groupName, parentGroupId);
     }
 
@@ -238,13 +240,26 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
      * @param terminalGroup 分组对象
      * @throws BusinessException 业务异常
      */
-    private void checkNameUniqueThrowExceptionIfNot(TerminalGroupDTO terminalGroup) throws BusinessException {
+    private void checkGroupName(TerminalGroupDTO terminalGroup) throws BusinessException {
+        // 校验分组名称是否为默认名称
+        String groupName = terminalGroup.getGroupName();
+        if (getDefaultGroupNameList().contains(groupName)) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME, groupName);
+        }
+
         boolean enableUnique = checkGroupNameUnique(terminalGroup);
         if (!enableUnique) {
-            LOGGER.error("terminal group name has exist, group name[{}], parent group id[{}]", terminalGroup.getGroupName(),
+            LOGGER.error("terminal group name has exist, group name[{}], parent group id[{}]", groupName,
                     terminalGroup.getParentGroupId());
-            throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE, terminalGroup.getGroupName());
+            throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE, groupName);
         }
+    }
+
+    private List<String> getDefaultGroupNameList() {
+        List<String> defaultGroupNameList = Lists.newArrayList();
+        defaultGroupNameList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_GROUP_DEFAULT_NAME_OVERVIEW));
+        defaultGroupNameList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_GROUP_DEFAULT_NAME_UNGROUPED));
+        return defaultGroupNameList;
     }
 
     /**
@@ -257,8 +272,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         groupHierarchyChecker.check(parentGroupId, addHerarchy);
     }
 
-    private TerminalGroupEntity obtainGroupEntity(UUID parentGroupId)
-            throws BusinessException {
+    private TerminalGroupEntity obtainGroupEntity(UUID parentGroupId) throws BusinessException {
         if (parentGroupId == null) {
             TerminalGroupEntity groupEntity = new TerminalGroupEntity();
             return groupEntity;

@@ -13,17 +13,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  */
 public class CbbListTerminalSystemUpgradePackageResponse extends DefaultResponse {
 
-    private CbbTerminalSystemUpgradePackageInfoDTO[] packageArr;
+    private CbbTerminalSystemUpgradePackageInfoDTO[] itemArr;
 
-    public CbbListTerminalSystemUpgradePackageResponse(CbbTerminalSystemUpgradePackageInfoDTO[] packageArr) {
-        this.packageArr = packageArr;
+    public CbbListTerminalSystemUpgradePackageResponse(CbbTerminalSystemUpgradePackageInfoDTO[] itemArr) {
+        this.itemArr = itemArr;
     }
 
-    public CbbTerminalSystemUpgradePackageInfoDTO[] getPackageArr() {
-        return packageArr;
+    public CbbTerminalSystemUpgradePackageInfoDTO[] getItemArr() {
+        return itemArr;
     }
 
-    public void setPackageArr(CbbTerminalSystemUpgradePackageInfoDTO[] packageArr) {
-        this.packageArr = packageArr;
+    public void setItemArr(CbbTerminalSystemUpgradePackageInfoDTO[] itemArr) {
+        this.itemArr = itemArr;
     }
 }
