@@ -1,7 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
+import java.util.List;
 import java.util.Objects;
 
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.sk.base.util.BeanCopyUtil;
+import org.apache.commons.lang3.SerializationUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -12,7 +17,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUp
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.DeepCopyUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -69,7 +73,7 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
         }
 
         // 深拷贝对象
-        CbbLinuxVDIUpdateListDTO copyUpdateList = DeepCopyUtil.deepCopy(updatelist);
+        CbbLinuxVDIUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
 
         LOGGER.debug("return start upgrade");
         // 判断是否差异升级
@@ -77,8 +81,6 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
             LOGGER.info("非差异升级, 清理差异升级信息");
             clearDifferenceUpgradeInfo(copyUpdateList);
         }
-
-        LOGGER.info("升级响应：{}", JSON.toJSONString(copyUpdateList));
 
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
     }
@@ -106,4 +108,5 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
             componentInfo.setBasePackageMd5(null);
         }
     }
+
 }
