@@ -33,8 +33,8 @@ public class TerminalComponentUpgradeCacheInit {
      */
     public void cachesInit() {
         LOGGER.info("开始终端组件升级信息缓存初始化");
-        linuxVDIUpdatelistCacheInit.init();
         windowsAppTerminalUpdatelistCacheInit.init();
+        linuxVDIUpdatelistCacheInit.init();
         LOGGER.info("完成终端组件升级信息缓存初始化");
     }
 
