@@ -14,7 +14,7 @@ import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckUploadingResultResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -77,11 +77,11 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testIsUpgradeFileUploading() {
-        Set<TerminalPlatformEnums> uploadingSet =
+        Set<CbbTerminalPlatformEnums> uploadingSet =
                 Deencapsulation.getField(CbbTerminalSystemUpgradePackageAPIImpl.class, "SYS_UPGRADE_PACKAGE_UPLOADING");
-        uploadingSet.add(TerminalPlatformEnums.VDI);
+        uploadingSet.add(CbbTerminalPlatformEnums.VDI);
         CbbTerminalPlatformRequest request = new CbbTerminalPlatformRequest();
-        request.setPlatform(TerminalPlatformEnums.VDI);
+        request.setPlatform(CbbTerminalPlatformEnums.VDI);
         CbbCheckUploadingResultResponse response = upgradePackageAPIImpl.isUpgradeFileUploading(request);
         assertTrue(response.isHasLoading());
         uploadingSet.clear();
@@ -321,8 +321,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 return fileArr;
             }
         };
-        Set<TerminalPlatformEnums> upgradePackageUploadnigSet = Deencapsulation.getField(upgradePackageAPIImpl, "SYS_UPGRADE_PACKAGE_UPLOADING");
-        upgradePackageUploadnigSet.add(TerminalPlatformEnums.VDI);
+        Set<CbbTerminalPlatformEnums> upgradePackageUploadnigSet = Deencapsulation.getField(upgradePackageAPIImpl, "SYS_UPGRADE_PACKAGE_UPLOADING");
+        upgradePackageUploadnigSet.add(CbbTerminalPlatformEnums.VDI);
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
@@ -365,7 +365,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Expectations() {
             {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((TerminalPlatformEnums) any);
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalPlatformEnums) any);
                 result = new TerminalSystemUpgradePackageEntity();
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 result = true;
@@ -413,7 +413,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Expectations() {
             {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((TerminalPlatformEnums) any);
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalPlatformEnums) any);
                 result = null;
 
             }

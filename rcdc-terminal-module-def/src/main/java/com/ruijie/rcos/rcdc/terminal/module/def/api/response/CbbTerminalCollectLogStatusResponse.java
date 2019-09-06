@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
@@ -15,15 +15,15 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 public class CbbTerminalCollectLogStatusResponse extends DefaultResponse {
 
 
-    private CollectLogStateEnums state;
+    private CbbCollectLogStateEnums state;
 
     private String logName;
 
-    public CollectLogStateEnums getState() {
+    public CbbCollectLogStateEnums getState() {
         return state;
     }
 
-    public void setState(CollectLogStateEnums state) {
+    public void setState(CbbCollectLogStateEnums state) {
         this.state = state;
     }
 

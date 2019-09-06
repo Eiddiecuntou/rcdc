@@ -16,7 +16,7 @@ import mockit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.integration.junit4.JMockit;
@@ -63,7 +63,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         updatelist.setComponentList(Collections.emptyList());
 
         TerminalEntity terminalEntity = new TerminalEntity();
-        terminalEntity.setPlatform(TerminalPlatformEnums.VDI);
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
         terminalEntity.setTerminalOsType("Linux");
 
         TerminalComponentUpgradeHandler handler = new LinuxVDIComponentUpgradeHandler();
