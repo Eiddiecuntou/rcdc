@@ -33,7 +33,7 @@ public enum CbbTerminalPlatformEnums {
      * @param platform 终端平台类型
      * @return 是否为枚举成员
      */
-    public static boolean contains(String platform) {
+    public static boolean isPlatform(String platform) {
         Assert.hasText(platform, "platform can not be empty");
 
         for (CbbTerminalPlatformEnums platformEnum : CbbTerminalPlatformEnums.values()) {
