@@ -3,14 +3,17 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.Date;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 
@@ -27,13 +30,14 @@ import mockit.integration.junit4.JMockit;
  * @author nt
  */
 @RunWith(JMockit.class)
-public class TerminalCollectLogCleanQuartzTest {
+public class TerminalCollectLogCleanQuartzTaskTest {
 
     @Tested
-    private TerminalCollectLogCleanQuartz quartz;
+    private TerminalCollectLogCleanQuartzTask quartz;
 
     @Injectable
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
+
 
     /**
      * 测试execute，终端日志存放目录不存在
@@ -49,15 +53,13 @@ public class TerminalCollectLogCleanQuartzTest {
                 return key;
             }
         };
-
-        quartz.execute();
+        quartz.run();
         new Verifications() {
             {
                 BaseCreateSystemLogRequest request;
                 baseSystemLogMgmtAPI.createSystemLog(request = withCapture());
                 times = 1;
-                assertEquals(request.getContent(),
-                        BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_FAIL_SYSTEM_LOG);
+                assertEquals(request.getContent(), BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_FAIL_SYSTEM_LOG);
             }
         };
     }
@@ -69,7 +71,6 @@ public class TerminalCollectLogCleanQuartzTest {
      */
     @Test
     public void testExecuteLogDirectoryIsEmpty() throws Exception {
-
         new MockUp<File>() {
             @Mock
             public File[] listFiles() {
@@ -82,7 +83,7 @@ public class TerminalCollectLogCleanQuartzTest {
             }
         };
 
-        quartz.execute();
+        quartz.run();
         new Verifications() {
             {
                 baseSystemLogMgmtAPI.createSystemLog((BaseCreateSystemLogRequest) any);
@@ -98,7 +99,6 @@ public class TerminalCollectLogCleanQuartzTest {
      */
     @Test
     public void testExecute() throws Exception {
-
         new MockUp<SkyengineFile>() {
 
             @Mock
@@ -131,7 +131,7 @@ public class TerminalCollectLogCleanQuartzTest {
             }
         };
 
-        quartz.execute();
+        quartz.run();
         new Verifications() {
             {
                 baseSystemLogMgmtAPI.createSystemLog((BaseCreateSystemLogRequest) any);
@@ -177,11 +177,10 @@ public class TerminalCollectLogCleanQuartzTest {
 
             @Mock
             public long lastModified() {
-                return new Date().getTime() - TerminalCollectLogCleanQuartz.TERMINAL_LOG_FILE_EXPIRE_TIME;
+                return new Date().getTime() - TerminalCollectLogCleanQuartzTask.TERMINAL_LOG_FILE_EXPIRE_TIME;
             }
         };
-
-        quartz.execute();
+        quartz.run();
         new Verifications() {
             {
                 baseSystemLogMgmtAPI.createSystemLog((BaseCreateSystemLogRequest) any);
@@ -227,18 +226,44 @@ public class TerminalCollectLogCleanQuartzTest {
 
             @Mock
             public long lastModified() {
-                return new Date().getTime() - TerminalCollectLogCleanQuartz.TERMINAL_LOG_FILE_EXPIRE_TIME;
+                return new Date().getTime() - TerminalCollectLogCleanQuartzTask.TERMINAL_LOG_FILE_EXPIRE_TIME;
             }
         };
-
-        quartz.execute();
+        quartz.run();
         new Verifications() {
             {
                 BaseCreateSystemLogRequest request;
                 baseSystemLogMgmtAPI.createSystemLog(request = withCapture());
                 times = 1;
-                assertEquals(request.getContent(),
-                        BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG);
+                assertEquals(request.getContent(), BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG);
+            }
+        };
+    }
+
+    /**
+     * 测试异常方法
+     *
+     * @throws ParseException 解析异常
+     */
+    @Test
+    public void testSafeInitWhileException() throws ParseException {
+        new Expectations(ThreadExecutors.class) {
+            {
+                ThreadExecutors.scheduleWithCron(anyString, (Runnable) any, anyString);
+                result = new ParseException("", 0);
+            }
+        };
+        try {
+            quartz.safeInit();
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertEquals(e.getMessage(), "定时任务[" + quartz.getClass() + "]cron表达式[0 0 2 * * ? *]解析异常");
+        }
+
+        new Verifications() {
+            {
+                ThreadExecutors.scheduleWithCron(anyString, (Runnable) any, anyString);
+                times = 1;
             }
         };
     }

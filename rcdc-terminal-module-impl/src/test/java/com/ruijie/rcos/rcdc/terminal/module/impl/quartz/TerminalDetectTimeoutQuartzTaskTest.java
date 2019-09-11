@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import com.ruijie.rcos.sk.base.quartz.QuartzTaskContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
@@ -26,13 +28,16 @@ import mockit.integration.junit4.JMockit;
  * @author ls
  */
 @RunWith(JMockit.class)
-public class TerminalDetectTimeoutQuartzTest {
+public class TerminalDetectTimeoutQuartzTaskTest {
 
     @Tested
-    private TerminalDetectTimeoutQuartz quartz;
+    private TerminalDetectTimeoutQuartzTask quartz;
 
     @Injectable
     private TerminalDetectionDAO detectionDAO;
+
+    @Injectable
+    private QuartzTaskContext quartzTaskContext;
 
     /**
      * 测试execute,timeoutDetectList为空
@@ -47,7 +52,7 @@ public class TerminalDetectTimeoutQuartzTest {
                 result = Collections.emptyList();
             }
         };
-        quartz.execute();
+        quartz.execute(quartzTaskContext);
         new Verifications() {
             {
                 detectionDAO.save((TerminalDetectionEntity) any);
@@ -71,7 +76,7 @@ public class TerminalDetectTimeoutQuartzTest {
                 result = timeoutDetectList;
             }
         };
-        quartz.execute();
+        quartz.execute(quartzTaskContext);
         new Verifications() {
             {
                 TerminalDetectionEntity entity1;

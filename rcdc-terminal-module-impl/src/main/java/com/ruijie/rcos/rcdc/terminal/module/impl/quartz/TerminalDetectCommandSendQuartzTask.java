@@ -28,9 +28,9 @@ import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
  * @author nt
  */
 @Service
-public class TerminalDetectCommandSendQuartz implements SafetySingletonInitializer, Runnable {
+public class TerminalDetectCommandSendQuartzTask implements SafetySingletonInitializer, Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectCommandSendQuartz.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalDetectCommandSendQuartzTask.class);
 
     @Autowired
     private TerminalDetectionDAO detectionDAO;
