@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
@@ -16,13 +16,13 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 public class CbbTerminalPlatformRequest implements Request {
 
     @NotNull
-    private TerminalPlatformEnums platform;
+    private CbbTerminalPlatformEnums platform;
 
-    public TerminalPlatformEnums getPlatform() {
+    public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
 
-    public void setPlatform(TerminalPlatformEnums platform) {
+    public void setPlatform(CbbTerminalPlatformEnums platform) {
         this.platform = platform;
     }
 
