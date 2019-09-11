@@ -32,7 +32,7 @@ import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
  * @author nt
  */
 @Service
-public class TerminalCollectLogCleanQuartzTask implements SafetySingletonInitializer {
+public class TerminalCollectLogCleanQuartzTask implements SafetySingletonInitializer, Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalCollectLogCleanQuartzTask.class);
 
@@ -45,15 +45,17 @@ public class TerminalCollectLogCleanQuartzTask implements SafetySingletonInitial
     public void safeInit() {
         String cronExpression = "0 0 2 * * ? *";
         try {
-            ThreadExecutors.scheduleWithCron(this.getClass().getSimpleName(), () -> execute(), cronExpression);
+            ThreadExecutors.scheduleWithCron(this.getClass().getSimpleName(), this, cronExpression);
         } catch (ParseException e) {
             throw new RuntimeException("定时任务[" + this.getClass() + "]cron表达式[" + cronExpression + "]解析异常", e);
         }
     }
 
-    private void execute() {
+    @Override
+    public void run() {
         deleteTerminalLogFile();
     }
+
 
     private void deleteTerminalLogFile() {
         LOGGER.info("开始清理终端收集日志文件定时任务...");
@@ -112,5 +114,6 @@ public class TerminalCollectLogCleanQuartzTask implements SafetySingletonInitial
         SkyengineFile skyengineFile = new SkyengineFile(file);
         return skyengineFile.delete(false);
     }
+
 
 }
