@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.concurrent.ScheduledFuture;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +16,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
-import com.ruijie.rcos.sk.base.loader.SingletonJdkServiceLoader;
 
 import mockit.*;
 import mockit.integration.junit4.JMockit;
@@ -40,8 +38,6 @@ public class TerminalCollectLogCleanQuartzTaskTest {
     @Injectable
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
-    @Mocked
-    private SingletonJdkServiceLoader singletonJdkServiceLoader;
 
     /**
      * 测试execute，终端日志存放目录不存在
@@ -57,8 +53,7 @@ public class TerminalCollectLogCleanQuartzTaskTest {
                 return key;
             }
         };
-        mockThreadExecutors();
-        quartz.safeInit();
+        quartz.run();
         new Verifications() {
             {
                 BaseCreateSystemLogRequest request;
@@ -76,7 +71,6 @@ public class TerminalCollectLogCleanQuartzTaskTest {
      */
     @Test
     public void testExecuteLogDirectoryIsEmpty() throws Exception {
-        mockThreadExecutors();
         new MockUp<File>() {
             @Mock
             public File[] listFiles() {
@@ -89,7 +83,7 @@ public class TerminalCollectLogCleanQuartzTaskTest {
             }
         };
 
-        quartz.safeInit();
+        quartz.run();
         new Verifications() {
             {
                 baseSystemLogMgmtAPI.createSystemLog((BaseCreateSystemLogRequest) any);
@@ -105,7 +99,6 @@ public class TerminalCollectLogCleanQuartzTaskTest {
      */
     @Test
     public void testExecute() throws Exception {
-        mockThreadExecutors();
         new MockUp<SkyengineFile>() {
 
             @Mock
@@ -138,7 +131,7 @@ public class TerminalCollectLogCleanQuartzTaskTest {
             }
         };
 
-        quartz.safeInit();
+        quartz.run();
         new Verifications() {
             {
                 baseSystemLogMgmtAPI.createSystemLog((BaseCreateSystemLogRequest) any);
@@ -155,7 +148,6 @@ public class TerminalCollectLogCleanQuartzTaskTest {
      */
     @Test
     public void testExecuteDeleteFileFail(@Mocked SkyengineFile skyengineFile) throws Exception {
-        mockThreadExecutors();
 
         new MockUp<SkyengineFile>() {
 
@@ -188,7 +180,7 @@ public class TerminalCollectLogCleanQuartzTaskTest {
                 return new Date().getTime() - TerminalCollectLogCleanQuartzTask.TERMINAL_LOG_FILE_EXPIRE_TIME;
             }
         };
-        quartz.safeInit();
+        quartz.run();
         new Verifications() {
             {
                 baseSystemLogMgmtAPI.createSystemLog((BaseCreateSystemLogRequest) any);
@@ -205,7 +197,6 @@ public class TerminalCollectLogCleanQuartzTaskTest {
      */
     @Test
     public void testExecuteDeleteFileSuccess(@Mocked SkyengineFile skyengineFile) throws Exception {
-        mockThreadExecutors();
 
         new MockUp<SkyengineFile>() {
 
@@ -238,7 +229,7 @@ public class TerminalCollectLogCleanQuartzTaskTest {
                 return new Date().getTime() - TerminalCollectLogCleanQuartzTask.TERMINAL_LOG_FILE_EXPIRE_TIME;
             }
         };
-        quartz.safeInit();
+        quartz.run();
         new Verifications() {
             {
                 BaseCreateSystemLogRequest request;
@@ -277,14 +268,4 @@ public class TerminalCollectLogCleanQuartzTaskTest {
         };
     }
 
-    private void mockThreadExecutors() {
-        new MockUp<ThreadExecutors>() {
-            @Mock
-            ScheduledFuture<?> scheduleWithCron(String threadName, Runnable command, String cronExpression) throws ParseException {
-                command.run();
-                //
-                return null;
-            }
-        };
-    }
 }
