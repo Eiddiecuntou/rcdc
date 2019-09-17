@@ -41,7 +41,7 @@ class BtShareStartRequest():
 # Init(char rcdc, null)
 def btServerInit():
     reqBytes = getReqBytes("rcdc");
-    getBtApi().Init(reqBytes, None)
+    getBtApi().abslayer_Init(reqBytes, None)
         
 '''
 
@@ -53,7 +53,7 @@ def btMakeSeedBlock(path, seedSavePath, ip):
     btServerInit()
     req = BtSeedMakeRequest(ip, path, seedSavePath)
     resp = (c_char * 1024)()
-    getBtApi().btMakeSeed_block(buildCallCPointerParam(req), resp, 1024)
+    getBtApi().abslayer_btMakeSeed_block(buildCallCPointerParam(req), resp, 1024)
     jsonStr = string_at(resp, 1024)
     jsonObj = checkSuccess(jsonStr)
     return jsonObj['seed_path']
@@ -74,7 +74,7 @@ def stopBtShare(torrentPath):
     btServerInit()     
     req = BtShareStopRequest(torrentPath)
     resp = (c_char * 1024)()
-    getBtApi().btShareStop(buildCallCPointerParam(req), resp, 1024)
+    getBtApi().abslayer_btShareStop(buildCallCPointerParam(req), resp, 1024)
     jsonStr = string_at(resp, 1024)
     checkSpecSuccess(jsonStr)
 
@@ -99,7 +99,7 @@ def startBtShare(torrentPath, fileSavePath):
     req = BtShareStartRequest(torrentPath, fileSavePath)
     resp = (c_char * 1024)()
     reqbytes = buildCallCPointerParam(req)
-    getBtApi().btShareStart(reqbytes, resp, 1024)
+    getBtApi().abslayer_btShareStart(reqbytes, resp, 1024)
     jsonStr = string_at(resp, 1024)
     checkSpecSuccess(jsonStr)
 
