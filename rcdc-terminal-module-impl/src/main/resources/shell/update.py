@@ -30,6 +30,7 @@ import json
 import os
 import shutil
 import hashlib
+import traceback
 
 from BtApiService import stopBtShare, btMakeSeedBlock, startBtShare
 from Common import (readFile, createZip, copyTo, createDirectoty,
@@ -68,8 +69,9 @@ def update():
     except RJUpgradeException as rjEx:
         logger.error("install failed with rj exception : %s" % rjEx.msg)
         return "fail"
-    except Exception as e:
-        logger.error("install failed with exception : %s" % e.message)
+    except:
+        logger.error("install failed")
+        logger.exception(traceback.format_exc())
         return "fail"
     
     return "success"
