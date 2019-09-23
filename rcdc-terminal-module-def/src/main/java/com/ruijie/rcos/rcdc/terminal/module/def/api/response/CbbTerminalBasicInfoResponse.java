@@ -304,4 +304,8 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
     public void setState(CbbTerminalStateEnums state) {
         this.state = state;
     }
+
+    public String getTerminalIdForOptLog() {
+        return getMacAddr();
+    }
 }
