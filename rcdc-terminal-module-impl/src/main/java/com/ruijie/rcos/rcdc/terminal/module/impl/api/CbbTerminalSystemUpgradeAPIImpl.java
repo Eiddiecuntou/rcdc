@@ -24,7 +24,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskSt
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -162,7 +162,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
      * @param platform 终端平台类型
      * @throws BusinessException 业务异常
      */
-    private void isUpgradePackageUploading(TerminalPlatformEnums platform) throws BusinessException {
+    private void isUpgradePackageUploading(CbbTerminalPlatformEnums platform) throws BusinessException {
         CbbTerminalPlatformRequest platformReq = new CbbTerminalPlatformRequest();
         platformReq.setPlatform(platform);
         final CbbCheckUploadingResultResponse response = systemUpgradePackageAPI.isUpgradeFileUploading(platformReq);
@@ -372,7 +372,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
                 UUID packageId = (UUID) matchEqual.getValueArr()[0];
                 TerminalSystemUpgradePackageEntity packageEntity = getUpgradePackageEntity(packageId);
                 matchEqual.setName("platform");
-                matchEqual.setValueArr(new TerminalPlatformEnums[] {packageEntity.getPackageType()});
+                matchEqual.setValueArr(new CbbTerminalPlatformEnums[] {packageEntity.getPackageType()});
             }
         }
     }

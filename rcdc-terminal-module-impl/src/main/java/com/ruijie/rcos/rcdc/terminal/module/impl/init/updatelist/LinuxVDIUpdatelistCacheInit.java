@@ -31,7 +31,7 @@ public class LinuxVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemp
 
     @Override
     protected void fillUpdateList(CbbLinuxVDIUpdateListDTO updatelist) {
-
+        // 这里无需处理
     }
 
     @Override

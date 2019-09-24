@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 
 /**
  * Description: 收集日志缓存对象
@@ -16,14 +16,14 @@ public class CollectLogCache {
         
     }
 
-    public CollectLogCache(CollectLogStateEnums state) {
+    public CollectLogCache(CbbCollectLogStateEnums state) {
         this.state = state;
     }
 
     /**
      * 状态
      */
-    private CollectLogStateEnums state;
+    private CbbCollectLogStateEnums state;
 
     /**
      * 只有状态为已完成时才有值
@@ -31,11 +31,11 @@ public class CollectLogCache {
     private String logFileName;
 
 
-    public CollectLogStateEnums getState() {
+    public CbbCollectLogStateEnums getState() {
         return state;
     }
 
-    public void setState(CollectLogStateEnums state) {
+    public void setState(CbbCollectLogStateEnums state) {
         this.state = state;
     }
 

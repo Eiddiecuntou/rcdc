@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -38,6 +39,9 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     @Autowired
     private TerminalBasicInfoServiceTx terminalBasicInfoServiceTx;
 
+    @Autowired
+    private TerminalGroupService terminalGroupService;
+
     @Override
     public CbbTerminalBasicInfoResponse findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
@@ -74,6 +78,9 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
 
         String terminalId = request.getCbbTerminalId();
         TerminalEntity entity = getTerminalEntity(terminalId);
+
+        //校验终端分组
+        terminalGroupService.checkGroupExist(request.getGroupId());
 
         // 终端名称有变更，发送名称变更消息给终端
         if (!request.getTerminalName().equals(entity.getTerminalName())) {

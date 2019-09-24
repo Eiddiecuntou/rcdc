@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.google.common.cache.Cache;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import mockit.Deencapsulation;
 import mockit.Injectable;
 import mockit.Mock;
@@ -41,7 +41,7 @@ public class CollectLogCacheManagerTest {
         }
 
         Assert.assertEquals(caches.size(), 1);
-        Assert.assertEquals(caches.getIfPresent(terminalId).getState(), CollectLogStateEnums.DOING);
+        Assert.assertEquals(caches.getIfPresent(terminalId).getState(), CbbCollectLogStateEnums.DOING);
         caches.invalidateAll();
     }
 
@@ -70,14 +70,14 @@ public class CollectLogCacheManagerTest {
 
         new MockUp<CollectLogCacheManager>() {
             @Mock
-            public void updateState(String terminalId, CollectLogStateEnums state, String logFileName) {
+            public void updateState(String terminalId, CbbCollectLogStateEnums state, String logFileName) {
 
             }
         };
 
         String terminalId = "123";
         try {
-            cacheManager.updateState(terminalId, CollectLogStateEnums.FAILURE);
+            cacheManager.updateState(terminalId, CbbCollectLogStateEnums.FAILURE);
         } catch (Exception e) {
             fail();
         }
@@ -93,9 +93,9 @@ public class CollectLogCacheManagerTest {
             Cache<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
             CollectLogCache cache = new CollectLogCache();
             caches.put(terminalId, cache);
-            cacheManager.updateState(terminalId, CollectLogStateEnums.FAILURE, "shine.zip");
+            cacheManager.updateState(terminalId, CbbCollectLogStateEnums.FAILURE, "shine.zip");
             Assert.assertEquals(caches.size(), 1);
-            Assert.assertEquals(caches.getIfPresent(terminalId).getState(), CollectLogStateEnums.FAILURE);
+            Assert.assertEquals(caches.getIfPresent(terminalId).getState(), CbbCollectLogStateEnums.FAILURE);
 
         } catch (Exception e) {
             fail();
@@ -111,10 +111,10 @@ public class CollectLogCacheManagerTest {
     public void testUpdateState2CacheIsNull(@Injectable Cache<String, CollectLogCache> caches) {
         String terminalId = "2222";
         try {
-            cacheManager.updateState(terminalId, CollectLogStateEnums.FAILURE, "shine.zip");
+            cacheManager.updateState(terminalId, CbbCollectLogStateEnums.FAILURE, "shine.zip");
             Cache<String, CollectLogCache> caches1 = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
             Assert.assertEquals(1, caches1.size());
-            Assert.assertEquals(CollectLogStateEnums.FAILURE, caches1.getIfPresent(terminalId).getState());
+            Assert.assertEquals(CbbCollectLogStateEnums.FAILURE, caches1.getIfPresent(terminalId).getState());
             cacheManager.removeCache(terminalId);
 
         } catch (Exception e) {
