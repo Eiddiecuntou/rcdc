@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -61,8 +61,8 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
     private void completeSystemUpgradePackageEntity(TerminalSystemUpgradePackageEntity upgradePackage, TerminalUpgradeVersionFileInfo versionInfo) {
         upgradePackage.setPackageName(versionInfo.getPackageName());
         upgradePackage.setImgName(versionInfo.getImgName());
-        upgradePackage.setOrigin(SystemUpgradePackageOriginEnums.USER_UPLOAD);
-        upgradePackage.setDistributionMode(SystemUpgradeDistributionModeEnums.FAST_UPGRADE);
+        upgradePackage.setOrigin(CbbSystemUpgradePackageOriginEnums.USER_UPLOAD);
+        upgradePackage.setDistributionMode(CbbSystemUpgradeDistributionModeEnums.FAST_UPGRADE);
         upgradePackage.setPackageType(versionInfo.getPackageType());
         upgradePackage.setPackageVersion(versionInfo.getVersion());
         upgradePackage.setUploadTime(new Date());

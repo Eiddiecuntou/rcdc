@@ -13,7 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
@@ -215,7 +215,7 @@ public class CbbTerminalOperatorAPIImplTest {
         request.setTerminalId("123");
         CollectLogCache cache = new CollectLogCache();
         cache.setLogFileName("logFileName");
-        cache.setState(CollectLogStateEnums.DONE);
+        cache.setState(CbbCollectLogStateEnums.DONE);
         new Expectations() {
             {
                 collectLogCacheManager.getCache("123");
@@ -224,7 +224,7 @@ public class CbbTerminalOperatorAPIImplTest {
         };
         CbbTerminalCollectLogStatusResponse response = terminalOperatorAPI.getCollectLog(request);
         assertEquals("logFileName", response.getLogName());
-        assertEquals(CollectLogStateEnums.DONE, response.getState());
+        assertEquals(CbbCollectLogStateEnums.DONE, response.getState());
     }
 
     /**
@@ -244,7 +244,7 @@ public class CbbTerminalOperatorAPIImplTest {
         };
 
         CbbTerminalCollectLogStatusResponse collectLog = terminalOperatorAPI.getCollectLog(request);
-        assertEquals(CollectLogStateEnums.FAILURE, collectLog.getState());
+        assertEquals(CbbCollectLogStateEnums.FAILURE, collectLog.getState());
 
     }
 
