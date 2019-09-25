@@ -45,9 +45,9 @@ public class QueryUpgradeableTerminalListServiceTest {
 
     @Test
     public void testGetSearchColumn() {
-        List<String> searchColumn = service.getSearchColumn();
-        assertEquals("terminalName", searchColumn.get(0));
-        assertEquals("ip", searchColumn.get(1));
+        List<String> searchColumnList = service.getSearchColumn();
+        assertEquals("terminalName", searchColumnList.get(0));
+        assertEquals("ip", searchColumnList.get(1));
     }
 
 

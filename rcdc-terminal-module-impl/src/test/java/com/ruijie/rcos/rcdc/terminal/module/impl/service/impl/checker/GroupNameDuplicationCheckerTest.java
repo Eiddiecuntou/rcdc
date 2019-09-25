@@ -82,11 +82,11 @@ public class GroupNameDuplicationCheckerTest {
         TerminalGroupEntity groupEntity = new TerminalGroupEntity();
         groupEntity.setId(UUID.randomUUID());
 
-        List<TerminalGroupEntity> list = Lists.newArrayList(groupEntity);
+        List<TerminalGroupEntity> groupList = Lists.newArrayList(groupEntity);
         new Expectations() {
             {
                 terminalGroupDAO.findByParentIdAndName(groupEntity.getId(), "123");
-                result = list;
+                result = groupList;
             }
         };
 

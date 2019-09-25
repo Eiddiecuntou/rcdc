@@ -79,13 +79,13 @@ public class CbbTerminalDetectRecordAPIImplTest {
      */
     @Test
     public void testListDetect() throws BusinessException {
-        List<TerminalDetectionEntity> list = Lists.newArrayList();
+        List<TerminalDetectionEntity> entityList = Lists.newArrayList();
         TerminalDetectionEntity entity = new TerminalDetectionEntity();
         entity.setId(UUID.randomUUID());
         entity.setTerminalId("123");
         entity.setDetectState(DetectStateEnums.SUCCESS);
-        list.add(entity);
-        Page page = new PageImpl<TerminalDetectionEntity>(list, new PageRequest(0, 10), 1);
+        entityList.add(entity);
+        Page page = new PageImpl<TerminalDetectionEntity>(entityList, new PageRequest(0, 10), 1);
 
         new Expectations() {
             {

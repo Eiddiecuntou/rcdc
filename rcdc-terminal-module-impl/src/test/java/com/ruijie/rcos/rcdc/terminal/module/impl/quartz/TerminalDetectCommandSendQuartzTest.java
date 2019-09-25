@@ -18,6 +18,7 @@ import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
 import mockit.*;
+import org.springframework.util.Assert;
 
 /**
  * Description: Function Description
@@ -93,6 +94,8 @@ public class TerminalDetectCommandSendQuartzTest {
         new MockUp<LocaleI18nResolver>() {
             @Mock
             public String resolve(String key, String... args) {
+                Assert.hasText(key, "key is not empty");
+                Assert.notNull(args, "args is not null");
                 StringBuilder sb = new StringBuilder();
                 sb.append(key);
                 if (ArrayUtils.isEmpty(args)) {
@@ -152,6 +155,8 @@ public class TerminalDetectCommandSendQuartzTest {
         new MockUp<LocaleI18nResolver>() {
             @Mock
             public String resolve(String key, String... args) {
+                Assert.hasText(key, "key is not empty");
+                Assert.notNull(args, "args is not null");
                 StringBuilder sb = new StringBuilder();
                 sb.append(key);
                 if (ArrayUtils.isEmpty(args)) {
@@ -210,6 +215,8 @@ public class TerminalDetectCommandSendQuartzTest {
         new MockUp<LocaleI18nResolver>() {
             @Mock
             public String resolve(String key, String... args) {
+                Assert.hasText(key, "key is not empty");
+                Assert.notNull(args, "args is not null");
                 StringBuilder sb = new StringBuilder();
                 sb.append(key);
                 if (ArrayUtils.isEmpty(args)) {
