@@ -73,6 +73,7 @@ public class CbbAppTerminalAPIImplTest {
 
             @Mock
             public CbbWinAppUpdateListDTO get(TerminalTypeEnums type) {
+                // 获取updatelist缓存为空
                 return null;
             }
 

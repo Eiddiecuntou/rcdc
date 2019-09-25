@@ -254,6 +254,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         new MockUp<File>() {
             @Mock
             public Path toPath() {
+                // file toPath 返回null
                 return null;
             }
         };
