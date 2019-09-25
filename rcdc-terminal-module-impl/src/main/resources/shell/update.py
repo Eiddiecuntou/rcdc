@@ -210,11 +210,6 @@ def makeBakFile(originPath, basePath):
         return;
     os.rename(originPath, basePath)
 
-def clearDir(path):
-    if os.path.isdir(path):
-        shutil.rmtree(path)
-    os.makedirs(path)
-
 def completeUpdatePackage(originPath, tempDir, newComponentList, oldComponentList):
     
     # 获取updatelist组件信息,遍历判断，版本不同的则进行差异包制作
@@ -264,7 +259,6 @@ def getFTPRelatePath(torrentPath):
     return torrentPath.replace(torrentPrePath, "")
 
 def makeTorrentDir():
-    clearDir(torrentPath)
     fullSeedSavePath = '%s%s' % (torrentPath, RAINOS_UPDATE_FULL_COMPONENT_TORRENT_RELATIVE_PATH)
     diffSeedSavePath = '%s%s' % (torrentPath, RAINOS_UPDATE_DIFF_COMPONENT_TORRENT_RELATIVE_PATH)
     createDirectoty(fullSeedSavePath)
