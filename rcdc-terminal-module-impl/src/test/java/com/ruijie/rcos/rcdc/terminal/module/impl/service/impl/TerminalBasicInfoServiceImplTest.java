@@ -294,6 +294,9 @@ public class TerminalBasicInfoServiceImplTest {
                 result = basicInfoEntity;
                 basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, anyString, anyInt);
                 result = 1;
+
+                sessionManager.getSession(terminalId);
+                result = null;
             }
         };
         basicInfoService.modifyTerminalStateToOffline(terminalId);
@@ -322,6 +325,9 @@ public class TerminalBasicInfoServiceImplTest {
                 result = basicInfoEntity;
                 basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, terminalId, anyInt);
                 result = 0;
+
+                sessionManager.getSession(terminalId);
+                result = null;
             }
         };
         basicInfoService.modifyTerminalStateToOffline(terminalId);
