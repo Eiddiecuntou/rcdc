@@ -53,6 +53,9 @@ public class TerminalBasicInfoServiceImplTest {
 
     /**
      * 测试修改终端名称成功
+     * 
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
     public void testModifyTerminalNameSuccess() throws IOException, InterruptedException {

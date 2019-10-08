@@ -77,6 +77,8 @@ public class GroupSubNumCheckerTest {
 
     /**
      * 测试分组数未超出限制
+     * 
+     * @throws BusinessException exception
      */
     @Test
     public void testCheck() throws BusinessException {

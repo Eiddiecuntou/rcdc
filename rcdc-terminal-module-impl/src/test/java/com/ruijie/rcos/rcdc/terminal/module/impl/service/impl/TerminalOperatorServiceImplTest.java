@@ -72,6 +72,9 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试关机成功
+     * 
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
     public void testShutdownSuccess() throws IOException, InterruptedException {
@@ -133,6 +136,9 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试重启
+     * 
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
     public void testRestart() throws IOException, InterruptedException {
@@ -212,7 +218,9 @@ public class TerminalOperatorServiceImplTest {
     /**
      * 测试发送收集日志
      * 
-     * @throws BusinessException 业务异常
+     * @throws BusinessException exception
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
     public void testCollectLogSend() throws BusinessException, IOException, InterruptedException {
@@ -563,6 +571,8 @@ public class TerminalOperatorServiceImplTest {
      * 
      * @param aesUtil mock aesUtil
      * @throws BusinessException 异常
+     * @throws IOException 异常
+     * @throws InterruptedException 异常
      */
     @Test
     public void testChangePassword(@Mocked AesUtil aesUtil) throws BusinessException, IOException, InterruptedException {

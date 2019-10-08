@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
@@ -24,7 +22,6 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
-
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
@@ -43,7 +40,6 @@ import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
-
 import mockit.*;
 
 /**
@@ -82,7 +78,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testIsUpgradeFileUploadingArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.isUpgradeFileUploading(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.isUpgradeFileUploading(null),
+                "request can not be null");
         assertTrue(true);
     }
 
@@ -108,7 +105,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testUploadUpgradeFileArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.uploadUpgradePackage(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.uploadUpgradePackage(null),
+                "request can not be null");
         assertTrue(true);
     }
 
@@ -335,7 +333,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 return fileArr;
             }
         };
-        Set<CbbTerminalPlatformEnums> upgradePackageUploadnigSet = Deencapsulation.getField(upgradePackageAPIImpl, "SYS_UPGRADE_PACKAGE_UPLOADING");
+        Set<CbbTerminalPlatformEnums> upgradePackageUploadnigSet =
+                Deencapsulation.getField(upgradePackageAPIImpl, "SYS_UPGRADE_PACKAGE_UPLOADING");
         upgradePackageUploadnigSet.add(CbbTerminalPlatformEnums.VDI);
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
@@ -404,7 +403,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testUploadUpgradeFileUnSupportUpgradePackage() {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersionTypeError";
+        String path =
+                CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersionTypeError";
         new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
             @Mock
             public String getVersionFilePath() {
@@ -544,12 +544,16 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testListSystemUpgradePackageArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.listSystemUpgradePackage(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.listSystemUpgradePackage(null),
+                "request can not be null");
         assertTrue(true);
     }
 
     /**
-     *  测试listSystemUpgradePackage-无进行中的升级任务
+     * 测试listSystemUpgradePackage-无进行中的升级任务
+     * 
+     * @throws ParseException exception
+     * @throws BusinessException exception
      */
     @Test
     public void testListSystemUpgradePackageNoRunningTask() throws ParseException, BusinessException {
@@ -561,31 +565,38 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 terminalSystemUpgradePackageDAO.findByIsDelete(false);
                 result = packageList;
 
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = null;
             }
         };
 
-        CbbListTerminalSystemUpgradePackageResponse response = upgradePackageAPIImpl.listSystemUpgradePackage(new DefaultRequest());
+        CbbListTerminalSystemUpgradePackageResponse response =
+                upgradePackageAPIImpl.listSystemUpgradePackage(new DefaultRequest());
 
-        CbbTerminalSystemUpgradePackageInfoDTO checkDTO = buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.FINISH, null);
+        CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
+                buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.FINISH, null);
 
         new Verifications() {
             {
                 terminalSystemUpgradePackageDAO.findByIsDelete(false);
                 times = 1;
 
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
 
-//                super.withEqual(checkDTO, response.getItemArr()[0]);
+                // super.withEqual(checkDTO, response.getItemArr()[0]);
             }
         };
 
     }
 
     /**
-     *  测试listSystemUpgradePackage-存在进行中的升级任务
+     * 测试listSystemUpgradePackage-存在进行中的升级任务
+     * 
+     * @throws ParseException exception
+     * @throws BusinessException exception
      */
     @Test
     public void testListSystemUpgradePackageHasRunningTask() throws ParseException, BusinessException {
@@ -602,24 +613,28 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 terminalSystemUpgradePackageDAO.findByIsDelete(false);
                 result = packageList;
 
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradingTaskList;
             }
         };
 
-        CbbListTerminalSystemUpgradePackageResponse response = upgradePackageAPIImpl.listSystemUpgradePackage(new DefaultRequest());
+        CbbListTerminalSystemUpgradePackageResponse response =
+                upgradePackageAPIImpl.listSystemUpgradePackage(new DefaultRequest());
 
-        CbbTerminalSystemUpgradePackageInfoDTO checkDTO = buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.UPGRADING, systemUpgradeId);
+        CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
+                buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.UPGRADING, systemUpgradeId);
 
         new Verifications() {
             {
                 terminalSystemUpgradePackageDAO.findByIsDelete(false);
                 times = 1;
 
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
 
-//                super.withEqual(checkDTO, response.getItemArr()[0]);
+                // super.withEqual(checkDTO, response.getItemArr()[0]);
             }
         };
 
@@ -627,16 +642,21 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试删除升级包参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testDeleteUpgradePackageParamIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.deleteUpgradePackage(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.deleteUpgradePackage(null),
+                "request can not be null");
         assertTrue(true);
     }
 
     /**
-     *  测试删除升级包 - 升级包存在进行中的升级任务
+     * 测试删除升级包 - 升级包存在进行中的升级任务
+     * 
+     * @throws ParseException exception
+     * @throws BusinessException exception
      */
     @Test
     public void testDeleteUpgradePackageHasRunningTask() throws ParseException, BusinessException {
@@ -673,7 +693,10 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     }
 
     /**
-     *  测试删除升级包 - 升级包不存在进行中的升级任务
+     * 测试删除升级包 - 升级包不存在进行中的升级任务
+     * 
+     * @throws ParseException exception
+     * @throws BusinessException exception
      */
     @Test
     public void testDeleteUpgradePackageNoRunningTask() throws ParseException, BusinessException {
@@ -712,21 +735,24 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试根据id获取升级包 - 参数为空
+     * 
      * @throws Exception 异常
      */
     @Test
     public void testGetByIdParamIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.getById(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.getById(null),
+                "request can not be null");
         assertTrue(true);
     }
 
     /**
-     *  测试根据id获取升级包 - 无进行中的升级任务
+     * 测试根据id获取升级包 - 无进行中的升级任务
+     * 
      * @throws ParseException 转换日期异常
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testGetByIdNoUpgradingTask () throws ParseException, BusinessException {
+    public void testGetByIdNoUpgradingTask() throws ParseException, BusinessException {
         UUID packageId = UUID.fromString("7769c0c6-473c-4d4c-9f47-5a62bdeb30ba");
         TerminalSystemUpgradePackageEntity packageEntity = buildSystemUpgradePackageEntity(packageId);
 
@@ -735,35 +761,39 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
                 result = packageEntity;
 
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = null;
             }
         };
 
         CbbUpgradePackageResponse response = upgradePackageAPIImpl.getById(new IdRequest(packageId));
 
-        CbbTerminalSystemUpgradePackageInfoDTO checkDTO = buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.FINISH, null);
+        CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
+                buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.FINISH, null);
 
         new Verifications() {
             {
                 terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
                 times = 1;
 
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
 
-//                super.withEqual(checkDTO, response.getPackageInfo());
+                // super.withEqual(checkDTO, response.getPackageInfo());
             }
         };
     }
 
     /**
-     *  测试根据id获取升级包 - 存在进行中的升级任务
+     * 测试根据id获取升级包 - 存在进行中的升级任务
+     * 
      * @throws ParseException 转换日期异常
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testGetByIdHasUpgradingTask () throws ParseException, BusinessException {
+    public void testGetByIdHasUpgradingTask() throws ParseException, BusinessException {
         UUID packageId = UUID.fromString("7769c0c6-473c-4d4c-9f47-5a62bdeb30ba");
         TerminalSystemUpgradePackageEntity packageEntity = buildSystemUpgradePackageEntity(packageId);
 
@@ -777,29 +807,33 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
                 result = packageEntity;
 
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradingTaskList;
             }
         };
 
         CbbUpgradePackageResponse response = upgradePackageAPIImpl.getById(new IdRequest(packageId));
 
-        CbbTerminalSystemUpgradePackageInfoDTO checkDTO = buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.UPGRADING, systemUpgradeId);
+        CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
+                buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.UPGRADING, systemUpgradeId);
 
         new Verifications() {
             {
                 terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
                 times = 1;
 
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
 
-//                super.withEqual(checkDTO, response.getPackageInfo());
+                // super.withEqual(checkDTO, response.getPackageInfo());
             }
         };
     }
 
-    private CbbTerminalSystemUpgradePackageInfoDTO buildCheckDTO(UUID packageId, CbbSystemUpgradeTaskStateEnums state, UUID upgradeTaskId) throws ParseException {
+    private CbbTerminalSystemUpgradePackageInfoDTO buildCheckDTO(UUID packageId, CbbSystemUpgradeTaskStateEnums state,
+            UUID upgradeTaskId) throws ParseException {
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO = new CbbTerminalSystemUpgradePackageInfoDTO();
         checkDTO.setName("packageName");
         checkDTO.setState(state);
@@ -841,7 +875,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testCheckAllowUploadPackageParamIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.checkAllowUploadPackage(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.checkAllowUploadPackage(null),
+                "request can not be null");
         assertTrue(true);
     }
 

@@ -26,18 +26,27 @@ public class LinuxVDIUpdatelistCacheInitTest {
     @Tested
     private LinuxVDIUpdatelistCacheInit cacheInit;
 
+    /**
+     * testGetUpdateListPath
+     */
     @Test
     public void testGetUpdateListPath() {
         String updateListPath = cacheInit.getUpdateListPath();
         Assert.assertEquals("/opt/upgrade/app/terminal_component/terminal_vdi_linux/origin/update.list", updateListPath);
     }
 
+    /**
+     * testGetTerminalType
+     */
     @Test
     public void testGetTerminalType() {
         TerminalTypeEnums terminalType = cacheInit.getTerminalType();
         Assert.assertEquals(TerminalTypeEnums.VDI_LINUX, terminalType);
     }
 
+    /**
+     * testFillUpdateList
+     */
     @Test
     public void testFillUpdateList() {
 

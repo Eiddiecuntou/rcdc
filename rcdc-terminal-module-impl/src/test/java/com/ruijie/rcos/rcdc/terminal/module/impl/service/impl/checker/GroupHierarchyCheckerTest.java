@@ -2,15 +2,12 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -18,7 +15,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -149,6 +145,8 @@ public class GroupHierarchyCheckerTest {
 
     /**
      * 测试校验分组层级 - 分组数未超过限制
+     * 
+     * @throws BusinessException exception
      */
     @Test
     public void testCheck() throws BusinessException {
@@ -187,6 +185,11 @@ public class GroupHierarchyCheckerTest {
         };
     }
 
+    /**
+     * testGetSubHierarchy
+     * 
+     * @throws BusinessException exception
+     */
     @Test
     public void testGetSubHierarchy() {
         TerminalGroupEntity groupEntity = new TerminalGroupEntity();
