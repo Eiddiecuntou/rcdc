@@ -1,6 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import mockit.Verifications;
 import org.junit.Assert;
 import org.junit.Test;
 import com.alibaba.fastjson.JSON;
@@ -25,7 +31,7 @@ public class MessageUtilsTest {
         try {
             MessageUtils.parse(obj, null);
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "data不能为空");
+            assertEquals(e.getMessage(), "data不能为空");
         }
     }
 
@@ -37,7 +43,7 @@ public class MessageUtilsTest {
         try {
             MessageUtils.parse(null, null);
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "data不能为null");
+            assertEquals(e.getMessage(), "data不能为null");
         }
     }
 
@@ -50,7 +56,7 @@ public class MessageUtilsTest {
             String data = "hello";
             MessageUtils.parse(data, null);
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "报文数据格式转换错误；data:[hello]");
+            assertEquals(e.getMessage(), "报文数据格式转换错误；data:[hello]");
         }
     }
 
@@ -64,7 +70,7 @@ public class MessageUtilsTest {
             response.setCode(200);
             String json = JSON.toJSONString(response);
             CbbShineMessageResponse result = MessageUtils.parse(json, null);
-            Assert.assertEquals(response.getCode(), result.getCode());
+            assertEquals(response.getCode(), result.getCode());
         } catch (Exception e) {
             fail();
         }
@@ -81,9 +87,9 @@ public class MessageUtilsTest {
             response.setContent("");
             String json = JSON.toJSONString(response);
             CbbShineMessageResponse result = MessageUtils.parse(json, User.class);
-            Assert.assertEquals(response.getCode(), result.getCode());
+            assertEquals(response.getCode(), result.getCode());
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "content内容不能为空；content:");
+            assertEquals(e.getMessage(), "content内容不能为空；content:");
         }
     }
 
@@ -98,9 +104,9 @@ public class MessageUtilsTest {
             response.setContent(null);
             String json = JSON.toJSONString(response);
             CbbShineMessageResponse result = MessageUtils.parse(json, User.class);
-            Assert.assertEquals(response.getCode(), result.getCode());
+            assertEquals(response.getCode(), result.getCode());
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "content内容不能为空；content:null");
+            assertEquals(e.getMessage(), "content内容不能为空；content:null");
         }
     }
 
@@ -115,9 +121,9 @@ public class MessageUtilsTest {
             response.setContent("hello");
             String json = JSON.toJSONString(response);
             CbbShineMessageResponse result = MessageUtils.parse(json, User.class);
-            Assert.assertEquals(response.getCode(), result.getCode());
+            assertEquals(response.getCode(), result.getCode());
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "报文数据格式转换错误；data:[hello]");
+            assertEquals(e.getMessage(), "报文数据格式转换错误；data:[hello]");
         }
     }
 
@@ -135,11 +141,26 @@ public class MessageUtilsTest {
             response.setContent(user);
             String json = JSON.toJSONString(response);
             CbbShineMessageResponse result = MessageUtils.parse(json, User.class);
-            Assert.assertEquals(response.getCode(), result.getCode());
-            Assert.assertEquals(response.getContent().name, user.getName());
+            assertEquals(response.getCode(), result.getCode());
+            assertEquals(response.getContent().name, user.getName());
         } catch (Exception e) {
             fail();
         }
+    }
+
+    @Test
+    public void testBuildErrorResponseMessage() {
+        CbbDispatcherRequest request = new CbbDispatcherRequest();
+        request.setTerminalId("terminalId");
+        request.setRequestId("requestId");
+        request.setDispatcherKey("dispatchKey");
+
+        CbbResponseShineMessage message = MessageUtils.buildErrorResponseMessage(request);
+
+        assertEquals(request.getTerminalId(), message.getTerminalId());
+        assertEquals(request.getRequestId(), message.getRequestId());
+        assertEquals(request.getDispatcherKey(), message.getAction());
+        assertEquals(Constants.FAILURE, message.getCode().intValue());
     }
 
     /**
