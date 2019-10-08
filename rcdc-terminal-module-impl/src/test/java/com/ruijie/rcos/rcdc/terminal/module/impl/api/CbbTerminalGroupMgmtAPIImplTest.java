@@ -55,7 +55,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
     @Test
     public void testLoadTerminalGroupCompleteTreeWhileNoGroup() throws BusinessException {
 
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupService.findAll();
                 result = null;
@@ -65,7 +65,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbGetTerminalGroupTreeResponse response = api.loadTerminalGroupCompleteTree(new CbbGetTerminalGroupCompleteTreeRequest());
         assertEquals(0, response.getItemArr().length);
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupService.findAll();
                 times = 1;
@@ -86,7 +86,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         filterGroup.setId(UUID.randomUUID());
         groupList.add(filterGroup);
 
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupService.findAll();
                 result = groupList;
@@ -99,7 +99,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbGetTerminalGroupTreeResponse response = api.loadTerminalGroupCompleteTree(request);
         assertEquals(2, response.getItemArr().length);
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupService.findAll();
                 times = 1;
@@ -116,7 +116,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
         List<TerminalGroupEntity> groupList = buildTerminalGroupEntities();
 
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupService.findAll();
                 result = groupList;
@@ -128,7 +128,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbGetTerminalGroupTreeResponse response = api.loadTerminalGroupCompleteTree(request);
         assertEquals(3, response.getItemArr().length);
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupService.findAll();
                 times = 1;
@@ -203,7 +203,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         assertEquals(groupEntity.getId(), response.getTerminalGroupDTO().getId());
         assertEquals(groupEntity.getName(), response.getTerminalGroupDTO().getGroupName());
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupService.getByName((UUID) any, anyString);
                 times = 1;
@@ -213,6 +213,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
     /**
      * 测试根据id获取分组- 父分组id不为null
+     * 
+     * @throws BusinessException exception
      */
     @Test
     public void testLoadByIdParentGroupIdIsNotNull() throws BusinessException {
@@ -238,7 +240,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         assertEquals(groupEntity1.getName(), response.getTerminalGroupDTO().getGroupName());
         assertEquals(groupEntity2.getName(), response.getTerminalGroupDTO().getParentGroupName());
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupService.getTerminalGroup((UUID) any);
                 times = 2;
@@ -248,6 +250,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
     /**
      * 测试根据id获取分组- 父分组id为null
+     * 
+     * @throws BusinessException exception
      */
     @Test
     public void testLoadByIdParentGroupIdIsNull() throws BusinessException {
@@ -268,7 +272,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         assertEquals(groupEntity1.getName(), response.getTerminalGroupDTO().getGroupName());
         assertEquals(null, response.getTerminalGroupDTO().getParentGroupName());
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupService.getTerminalGroup((UUID) any);
                 times = 1;
@@ -282,7 +286,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
      */
     @Test
     public void testCreateTerminalGroup() throws BusinessException {
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupService.saveTerminalGroup((TerminalGroupDTO) any);
             }
@@ -290,7 +294,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
         api.createTerminalGroup(new CbbTerminalGroupRequest("aaa", UUID.randomUUID()));
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupService.saveTerminalGroup((TerminalGroupDTO) any);
                 times = 1;
@@ -304,7 +308,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
      */
     @Test
     public void testModifyGroupById() throws BusinessException {
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupService.modifyGroupById((TerminalGroupDTO) any);
             }
@@ -312,7 +316,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
         api.editTerminalGroup(new CbbEditTerminalGroupRequest(UUID.randomUUID(), "aaa", UUID.randomUUID()));
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupService.modifyGroupById((TerminalGroupDTO) any);
                 times = 1;
@@ -326,7 +330,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
      */
     @Test
     public void testDeleteTerminalGroup() throws BusinessException {
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupServiceTx.deleteGroup((UUID) any, (UUID) any);
             }
@@ -334,7 +338,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
         api.deleteTerminalGroup(new CbbDeleteTerminalGroupRequest());
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupServiceTx.deleteGroup((UUID) any, (UUID) any);
                 times = 1;
@@ -350,7 +354,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
     public void testObtainGroupNamePathArr() throws BusinessException {
 
         String[] nameStrArr = new String[]{"aa","bb","cc"};
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupService.getTerminalGroupNameArr((UUID) any);
                 result = nameStrArr;
@@ -360,7 +364,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbObtainGroupNamePathResponse response = api.obtainGroupNamePathArr(new IdRequest(UUID.randomUUID()));
         assertEquals(nameStrArr, response.getGroupNameArr());
 
-        new Verifications(){
+        new Verifications() {
             {
                 terminalGroupService.getTerminalGroupNameArr((UUID) any);
                 times = 1;

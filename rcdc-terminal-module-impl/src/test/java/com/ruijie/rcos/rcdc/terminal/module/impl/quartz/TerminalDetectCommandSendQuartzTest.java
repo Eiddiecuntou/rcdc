@@ -32,7 +32,7 @@ import org.springframework.util.Assert;
 public class TerminalDetectCommandSendQuartzTest {
 
     @Tested
-    private TerminalDetectCommandSendQuartz quartz;
+    private TerminalDetectCommandSendQuartzTask quartz;
 
     @Injectable
     private TerminalDetectionDAO detectionDAO;

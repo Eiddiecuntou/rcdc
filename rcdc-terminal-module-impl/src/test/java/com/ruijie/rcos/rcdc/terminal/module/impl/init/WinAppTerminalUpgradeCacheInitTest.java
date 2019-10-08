@@ -29,6 +29,9 @@ public class WinAppTerminalUpgradeCacheInitTest {
     @Injectable
     private WinAppTerminalUpdatelistCacheInit windowsAppTerminalUpdatelistCacheInit;
 
+    /**
+     * testSafeInit
+     */
     @Test
     public void testSafeInit() {
         new Expectations() {

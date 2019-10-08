@@ -148,6 +148,9 @@ public class MessageUtilsTest {
         }
     }
 
+    /**
+     * testBuildErrorResponseMessage
+     */
     @Test
     public void testBuildErrorResponseMessage() {
         CbbDispatcherRequest request = new CbbDispatcherRequest();

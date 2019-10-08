@@ -54,7 +54,8 @@ public class TerminalGroupServiceImplTest {
 
     /**
      * 测试保存终端分组 - 分组名为保留分组
-     *
+     * 
+     * @throws BusinessException exception
      */
     @Test
     public void testSaveTerminalGroupParentGroupIsDefault() throws BusinessException {
@@ -89,6 +90,7 @@ public class TerminalGroupServiceImplTest {
     /**
      * 测试保存终端分组 - 分组名同级下已存在
      *
+     * @throws BusinessException exception
      */
     @Test
     public void testSaveTerminalGroupGroupNameNotUnique() throws BusinessException {
@@ -268,7 +270,7 @@ public class TerminalGroupServiceImplTest {
     /**
      * 测试编辑终端-参数为空
      *
-     * @throws BusinessException 业务异常
+     * @throws Exception 业务异常
      */
     @Test
     public void testModifyByTerminalIdParamIsEmpty() throws Exception {
@@ -300,6 +302,7 @@ public class TerminalGroupServiceImplTest {
     /**
      * 测试编辑终端-父级节点为null
      *
+     * @throws BusinessException exception
      */
     @Test
     public void testmodifyGroupByIdWhileParentIdIsNull() throws BusinessException {

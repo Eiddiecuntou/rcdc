@@ -159,7 +159,7 @@ public class CbbAppTerminalAPIImplTest {
             assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPDATELIST_CACHE_INCORRECT, e.getKey());
         }
 
-        new Verifications(){
+        new Verifications() {
             {
                 TerminalUpdateListCacheManager.get(TerminalTypeEnums.APP_WINDOWS);
                 times = 1;
@@ -212,7 +212,7 @@ public class CbbAppTerminalAPIImplTest {
             fail();
         }
 
-        new Verifications(){
+        new Verifications() {
             {
                 TerminalUpdateListCacheManager.get(TerminalTypeEnums.APP_WINDOWS);
                 times = 1;

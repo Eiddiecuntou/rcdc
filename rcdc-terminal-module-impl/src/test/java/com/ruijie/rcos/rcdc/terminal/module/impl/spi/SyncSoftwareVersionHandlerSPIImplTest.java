@@ -24,10 +24,8 @@ import mockit.integration.junit4.JMockit;
 
 /**
  * 
- * Description: Function Description
- * Copyright: Copyright (c) 2019
- * Company: Ruijie Co., Ltd.
- * Create Time: 2019年05月06日
+ * Description: Function Description Copyright: Copyright (c) 2019 Company:
+ * Ruijie Co., Ltd. Create Time: 2019年05月06日
  * 
  * @author nt
  */
@@ -46,7 +44,8 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
     /**
      * 测试dispatch,参数为空
      * 
-     * @throws Exception 异常
+     * @throws Exception
+     *             异常
      */
     @Test
     public void testDispatchArgumentIsNull() throws Exception {
@@ -57,8 +56,10 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
     /**
      * 测试dispatch
      * 
-     * @param utils mock MessageUtils
-     * @throws BusinessException 异常
+     * @param utils
+     *            mock MessageUtils
+     * @throws BusinessException
+     *             异常
      */
     @Test
     public void testDispatch(@Mocked MessageUtils utils) throws BusinessException {
@@ -91,8 +92,10 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
     /**
      * 测试dispatch，响应失败
      *
-     * @param utils mock MessageUtils
-     * @throws BusinessException 异常
+     * @param utils
+     *            mock MessageUtils
+     * @throws BusinessException
+     *             异常
      */
     @Test
     public void testDispatchFail(@Mocked MessageUtils utils) throws BusinessException {
@@ -129,7 +132,8 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
     /**
      * 测试dispatch失败，获取版本号异常
      * 
-     * @throws BusinessException 异常
+     * @throws BusinessException
+     *             异常
      */
     @Test
     public void testDispatchGetVersionFail() throws BusinessException {
@@ -139,13 +143,13 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
         new Expectations() {
             {
                 systemUpgradeAPI.obtainSystemReleaseVersion((BaseObtainSystemReleaseVersionRequest) any);
-                result =  new BusinessException("key");
+                result = new BusinessException("key");
             }
         };
 
-        new MockUp<MessageUtils>(){
+        new MockUp<MessageUtils>() {
             @Mock
-            public CbbResponseShineMessage buildErrorResponseMessage(CbbDispatcherRequest request){
+            public CbbResponseShineMessage buildErrorResponseMessage(CbbDispatcherRequest request) {
                 return responseMessage;
             }
         };

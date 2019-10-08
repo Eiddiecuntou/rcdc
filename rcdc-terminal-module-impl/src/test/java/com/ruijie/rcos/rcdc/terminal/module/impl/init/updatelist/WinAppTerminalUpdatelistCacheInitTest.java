@@ -28,12 +28,18 @@ public class WinAppTerminalUpdatelistCacheInitTest {
     @Tested
     private WinAppTerminalUpdatelistCacheInit cacheInit;
 
+    /**
+     * testGetUpdateListPath
+     */
     @Test
     public void testGetUpdateListPath() {
         String updateListPath = cacheInit.getUpdateListPath();
         Assert.assertEquals("/opt/ftp/terminal/terminal_component/windows_app/update.list", updateListPath);
     }
 
+    /**
+     * testGetTerminalType
+     */
     @Test
     public void testGetTerminalType() {
         TerminalTypeEnums terminalType = cacheInit.getTerminalType();

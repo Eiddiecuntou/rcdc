@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import org.junit.Assert;
@@ -44,6 +45,8 @@ public class AbstractTerminalComponentUpgradeHandlerTest {
 
     /**
      * 测试从版本字符串获取数字版本-版本号为空
+     * 
+     * @throws Exception exception
      */
     @Test
     public void testGetVersionFromVerStrArgIsNull() throws Exception {
@@ -67,6 +70,8 @@ public class AbstractTerminalComponentUpgradeHandlerTest {
 
     /**
      * 测试比较版本-参数为null
+     * 
+     * @throws Exception exception
      */
     @Test
     public void testCompareVersionArgIsNull() throws Exception {
@@ -76,6 +81,14 @@ public class AbstractTerminalComponentUpgradeHandlerTest {
         Assert.assertTrue(true);
     }
 
+    /**
+     * Description: Function Description
+     * Copyright: Copyright (c) 2018
+     * Company: Ruijie Co., Ltd.
+     * Create Time: 2019/8/12
+     *
+     * @author nt
+     */
     private class TestedTerminalComponentUpgradeHandler extends AbstractTerminalComponentUpgradeHandler {
 
         @Override

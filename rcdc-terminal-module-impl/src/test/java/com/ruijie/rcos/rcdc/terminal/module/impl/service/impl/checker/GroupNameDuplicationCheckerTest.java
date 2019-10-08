@@ -52,6 +52,8 @@ public class GroupNameDuplicationCheckerTest {
 
     /**
      * 测试子分组数超出限制
+     * 
+     * @throws BusinessException exception
      */
     @Test
     public void testCheck() throws BusinessException {

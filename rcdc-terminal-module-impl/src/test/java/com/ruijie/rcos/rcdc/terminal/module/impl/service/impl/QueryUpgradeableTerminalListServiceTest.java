@@ -43,6 +43,9 @@ public class QueryUpgradeableTerminalListServiceTest {
         assertEquals(Direction.DESC, defaultDataSort.getDirection());
     }
 
+    /**
+     * testGetSearchColumn
+     */
     @Test
     public void testGetSearchColumn() {
         List<String> searchColumnList = service.getSearchColumn();
