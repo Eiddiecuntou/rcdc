@@ -60,7 +60,7 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
 
         // 最低支持版本判断,终端OTA版本号低于OS_LIMIT则不支持升级
         Integer terminalOTAVersion = getVersionFromVerStr(rainOsVersion);
-        LOGGER.info("终端[" + request.getTerminalId() +"]的OTA版本号为[" + rainOsVersion + "]");
+        LOGGER.info("终端[" + request.getTerminalId() + "]的OTA版本号为[" + rainOsVersion + "]");
         if (terminalOTAVersion != 0 && isVersionBigger(updatelist.getOsLimit(), rainOsVersion)) {
             LOGGER.info("终端[{}]的OTA版本号低于OS_LIMIT,不支持升级", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), updatelistDTO);

@@ -99,7 +99,7 @@ public class AndroidVDIComponentUpgradeHandlerTest {
         updatelist.setValidateMd5("123");
         updatelist.setComponentSize(1);
         updatelist.setBaseVersion("1.0.1.1");
-
+        updatelist.setOsLimit("1.0.2.1");
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
             public CbbAndroidVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
@@ -132,6 +132,7 @@ public class AndroidVDIComponentUpgradeHandlerTest {
         updatelist.setBaseVersion("1.0.1.1");
         updatelist.setLimitVersion("1.0.0.1");
         updatelist.setValidateMd5("123");
+        updatelist.setOsLimit("1.0.2.1");
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
             public CbbAndroidVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
