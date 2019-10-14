@@ -116,11 +116,9 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
         // 调用LinuxVDI终端组件升级python脚本
         String shellCmdLinuxVDI = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH_VDI_LINUX, currentIp);
         EXECUTOR_SERVICE.execute(() -> invokePythonScript(shellCmdLinuxVDI));
-        LOGGER.info("success invoke linuxVDI component upgrade pythonScript");
         // 调用Android终端组件升级python脚本
         String shellCmdAndroidVDI = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID, currentIp);
         EXECUTOR_SERVICE.execute(() -> invokePythonScript(shellCmdAndroidVDI));
-        LOGGER.info("success invoke android component upgrade pythonScript");
     }
 
     private void invokePythonScript(String shellCmd) {
