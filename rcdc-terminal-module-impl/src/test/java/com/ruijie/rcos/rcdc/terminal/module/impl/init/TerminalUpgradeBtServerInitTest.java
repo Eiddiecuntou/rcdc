@@ -1,9 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import org.junit.Test;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
@@ -14,13 +10,10 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * 
@@ -145,7 +138,7 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.findParameter(anyString);
                 times = 1;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/update.py", "172.12.22.45"));
+                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
                 times = 1;
                 upgradeCacheInit.cachesInit();
                 times = 0;
@@ -234,7 +227,7 @@ public class TerminalUpgradeBtServerInitTest {
                 globalParameterAPI.findParameter(anyString);
                 times = 1;
                 runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
-                times = 1;
+                times = 2;
                 upgradeCacheInit.cachesInit();
                 times = 0;
             }
@@ -277,7 +270,7 @@ public class TerminalUpgradeBtServerInitTest {
                 globalParameterAPI.findParameter(anyString);
                 times = 1;
                 runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
-                times = 1;
+                times = 2;
                 upgradeCacheInit.cachesInit();
                 times = 0;
             }

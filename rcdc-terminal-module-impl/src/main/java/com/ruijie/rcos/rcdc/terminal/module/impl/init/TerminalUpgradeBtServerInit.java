@@ -1,10 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
@@ -20,14 +15,19 @@ import com.ruijie.rcos.sk.base.shell.ShellCommandRunner.ReturnValueResolver;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.util.concurrent.ExecutorService;
 
 /**
- * 
  * Description: 终端组件升级bt服务初始化
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年1月27日
- * 
+ *
  * @author nt
  */
 @Service
@@ -35,12 +35,14 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalUpgradeBtServerInit.class);
 
-    private static final String INIT_PYTHON_SCRIPT_PATH = "/data/web/rcdc/shell/update.py";
+    private static final String INIT_PYTHON_SCRIPT_PATH_VDI_LINUX = "/data/web/rcdc/shell/updateLinuxVDI.py";
+
+    private static final String INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID = "/data/web/rcdc/shell/updateAndroidVDI.py";
 
     private static final String INIT_COMMAND = "python %s %s";
 
     private static final ExecutorService EXECUTOR_SERVICE =
-            ThreadExecutors.newBuilder(TerminalUpgradeBtServerInit.class.getName()).maxThreadNum(1).queueSize(1).build();
+            ThreadExecutors.newBuilder(TerminalUpgradeBtServerInit.class.getName()).maxThreadNum(2).queueSize(1).build();
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
@@ -111,9 +113,19 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     private void executeUpdate(String currentIp) {
         LOGGER.info("start invoke pythonScript...");
+        // 调用LinuxVDI终端组件升级python脚本
+        String shellCmdLinuxVDI = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH_VDI_LINUX, currentIp);
+        EXECUTOR_SERVICE.execute(() -> invokePythonScript(shellCmdLinuxVDI));
+        LOGGER.info("success invoke linuxVDI component upgrade pythonScript");
+        // 调用Android终端组件升级python脚本
+        String shellCmdAndroidVDI = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID, currentIp);
+        EXECUTOR_SERVICE.execute(() -> invokePythonScript(shellCmdAndroidVDI));
+        LOGGER.info("success invoke android component upgrade pythonScript");
+    }
+
+    private void invokePythonScript(String shellCmd) {
         ShellCommandRunner runner = new ShellCommandRunner();
-        String shellCmd = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH, currentIp);
-        LOGGER.info("excecute shell cmd : {}", shellCmd);
+        LOGGER.info("execute shell cmd : {}", shellCmd);
         runner.setCommand(shellCmd);
         try {
             String outStr = runner.execute(new BtShareInitReturnValueResolver());
@@ -121,19 +133,15 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
         } catch (BusinessException e) {
             LOGGER.error("bt share init error", e);
         }
-
-        LOGGER.info("success invoke pythonScript...");
     }
 
 
-
     /**
-     * 
      * Description: Function Description
      * Copyright: Copyright (c) 2018
      * Company: Ruijie Co., Ltd.
      * Create Time: 2019年1月28日
-     * 
+     *
      * @author nt
      */
     public class BtShareInitReturnValueResolver implements ReturnValueResolver<String> {
@@ -160,7 +168,7 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
     /**
      * 获取ip
-     * 
+     *
      * @return ip
      */
     private String getLocalIP() throws BusinessException {

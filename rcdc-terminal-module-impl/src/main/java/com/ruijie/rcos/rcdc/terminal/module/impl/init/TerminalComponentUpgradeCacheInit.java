@@ -1,12 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDITerminalUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.WinAppTerminalUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -28,6 +28,9 @@ public class TerminalComponentUpgradeCacheInit {
     @Autowired
     private WinAppTerminalUpdatelistCacheInit windowsAppTerminalUpdatelistCacheInit;
 
+    @Autowired
+    private AndroidVDITerminalUpdatelistCacheInit androidVDITerminalUpdatelistCacheInit;
+
     /**
      * 各组件的升级信息缓存初始化
      */
@@ -35,6 +38,7 @@ public class TerminalComponentUpgradeCacheInit {
         LOGGER.info("开始终端组件升级信息缓存初始化");
         windowsAppTerminalUpdatelistCacheInit.init();
         linuxVDIUpdatelistCacheInit.init();
+        androidVDITerminalUpdatelistCacheInit.init();
         LOGGER.info("完成终端组件升级信息缓存初始化");
     }
 

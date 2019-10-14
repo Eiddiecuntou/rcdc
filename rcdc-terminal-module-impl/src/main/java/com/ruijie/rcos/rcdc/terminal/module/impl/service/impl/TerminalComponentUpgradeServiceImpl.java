@@ -44,6 +44,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
 
         GetVersionRequest versionRequest = new GetVersionRequest();
         versionRequest.setRainUpgradeVersion(terminalEntity.getRainUpgradeVersion());
+        versionRequest.setRainOsVersion(terminalEntity.getRainOsVersion());
         versionRequest.setValidateMd5(validateMd5);
         return handler.getVersion(versionRequest);
     }

@@ -1,12 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import java.util.Objects;
-
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
@@ -15,6 +9,10 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.DeepCopyUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Objects;
 
 /**
  * Description: Function Description
@@ -75,14 +73,13 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
         // 判断是否差异升级
         if (!rainUpgradeVersion.equals(copyUpdateList.getBaseVersion())) {
             LOGGER.info("非差异升级, 清理差异升级信息");
-            clearDifferenceUpgradeInfo(copyUpdateList);
+            clearDifferenceUpgradeInfo(copyUpdateList.getComponentList());
         }
 
         LOGGER.info("升级响应：{}", JSON.toJSONString(copyUpdateList));
 
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
     }
-
 
     /**
      * 构建响应结果dto
@@ -91,19 +88,4 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
         return new TerminalVersionResultDTO(result.getResult(), updateListDto);
     }
 
-    /**
-     * 清除差异升级信息
-     *
-     * @param updatelist 升级信息
-     */
-    private void clearDifferenceUpgradeInfo(CbbLinuxVDIUpdateListDTO updatelist) {
-        for (CbbLinuxVDIComponentVersionInfoDTO componentInfo : updatelist.getComponentList()) {
-            componentInfo.setIncrementalPackageMd5(null);
-            componentInfo.setIncrementalPackageName(null);
-            componentInfo.setIncrementalTorrentMd5(null);
-            componentInfo.setIncrementalTorrentUrl(null);
-            componentInfo.setBasePackageName(null);
-            componentInfo.setBasePackageMd5(null);
-        }
-    }
 }

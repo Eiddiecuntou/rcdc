@@ -1,6 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbVDIComponentCommonVersionInfoDTO;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 /**
  * Description: Function Description
@@ -49,4 +52,19 @@ public abstract class AbstractTerminalComponentUpgradeHandler implements Termina
         return v1 > v2;
     }
 
+    /**
+     * VDI终端：清除差异升级信息
+     *
+     * @param componentList 组件升级信息
+     */
+    public void clearDifferenceUpgradeInfo(List<CbbVDIComponentCommonVersionInfoDTO> componentList) {
+        for (CbbVDIComponentCommonVersionInfoDTO componentInfo : componentList) {
+            componentInfo.setIncrementalPackageMd5(null);
+            componentInfo.setIncrementalPackageName(null);
+            componentInfo.setIncrementalTorrentMd5(null);
+            componentInfo.setIncrementalTorrentUrl(null);
+            componentInfo.setBasePackageName(null);
+            componentInfo.setBasePackageMd5(null);
+        }
+    }
 }

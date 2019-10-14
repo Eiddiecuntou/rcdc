@@ -1,16 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.util.Map;
 
 /**
  * Description: Function Description
@@ -31,6 +30,7 @@ public class TerminalComponentUpgradeHandlerFactory {
         LOGGER.info("=======================注册终端组件升级处理器=================");
         upgradeHandlerHolder.put(TerminalTypeEnums.VDI_LINUX, new LinuxVDIComponentUpgradeHandler());
         upgradeHandlerHolder.put(TerminalTypeEnums.APP_WINDOWS, new WinAppComponentUpgradeHandler());
+        upgradeHandlerHolder.put(TerminalTypeEnums.VDI_ANDROID, new AndroidVDIComponentUpgradeHandler());
         LOGGER.info("=======================完成注册终端组件升级处理器=================");
     }
 
