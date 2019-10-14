@@ -58,13 +58,12 @@ diffComponentDir = None
 rpmPackageName = None
 rpmUninstallName = None
 
-
 # 入口函数
 def VDIUpdate(terminalPlatform):
     try:
-        logger.info("start upgrade terminal vdi android package update...")
+        logger.info("start upgrade terminal vdi " + terminalPlatform + " package update...")
         packageUpdate(terminalPlatform)
-        logger.info("finish terminal vdi android package update")
+        logger.info("finish terminal vdi " + terminalPlatform + " package update")
     except RJUpgradeException as rjEx:
         logger.error("install failed with rj exception : %s" % rjEx.msg)
         return "fail"
@@ -76,13 +75,13 @@ def VDIUpdate(terminalPlatform):
     return "success"
 
 
-def packageUpdate(terminalType):
+def packageUpdate(terminalPlatform):
     # 根据终端类型生成路径
-    generatePath(installPath, torrentPath)
+    generatePath(installPath, torrentPath, terminalPlatform)
     # 根据终端类型生成Dir
-    generateDir(fullComponentDir, diffComponentDir)
+    generateDir(fullComponentDir, diffComponentDir, terminalPlatform)
     # 根据终端类型生成包名
-    generatePackageName(rpmPackageName, rpmUninstallName)
+    generatePackageName(rpmPackageName, rpmUninstallName, terminalPlatform)
     logger.info("start update package...")
     # 升级包及包内updatelist路径
     originPath = '%s%s%s' % (installPath, FILE_SPERATOR, originDirName)
@@ -346,9 +345,9 @@ def md5Calc(file):
 '''
     根据终端类型生成路径
 '''
-def generatePath(installPath, torrentPath):
+def generatePath(installPath, torrentPath, terminalPlatform):
     installPathPrefix = "/opt/upgrade/app/terminal_component/terminal_vdi_"
-    installPath = '%s%s' % (installPathSuffix, terminalPlatform)
+    installPath = '%s%s' % (installPathPrefix, terminalPlatform)
 
     torrentPathPrefix = "/opt/ftp/terminal/terminal_component/linux_"
     torrentPathsuffix = "/torrent"
@@ -356,7 +355,7 @@ def generatePath(installPath, torrentPath):
 '''
     # 根据终端类型生成Dir
 '''
-def generateDir(fullComponentDir, diffComponentDir):
+def generateDir(fullComponentDir, diffComponentDir, terminalPlatform):
     fullComponentDirPrefix = "/opt/upgrade/app/terminal_component/terminal_vdi_"
     fullComponentDirSuffix = "/origin/full/component/"
     fullComponentDir = '%s%s%s' % (fullComponentDirPrefix, terminalPlatform, fullComponentDirSuffix)
@@ -369,7 +368,7 @@ def generateDir(fullComponentDir, diffComponentDir):
     rpmUninstallName = "rcos-rco-linux-android"
 
 '''
-def generatePackageName(rpmPackageName, rpmUninstallName):
+def generatePackageName(rpmPackageName, rpmUninstallName, terminalPlatform):
     rpmPackageNamePrefix = "rcos-rco-linux-"
     rpmPackageNameSuffix = "-1.0.0.rpm"
     rpmPackageName = '%s%s' % (rpmPackageNamePrefix, terminalPlatform, rpmPackageNameSuffix)
