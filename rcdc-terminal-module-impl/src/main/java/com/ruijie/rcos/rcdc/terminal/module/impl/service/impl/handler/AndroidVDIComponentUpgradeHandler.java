@@ -30,9 +30,9 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
     public TerminalVersionResultDTO<CbbAndroidVDIUpdateListDTO> getVersion(GetVersionRequest request) {
         Assert.notNull(request, "request can not be null");
 
-        LOGGER.debug("Android终端请求版本号");
+        LOGGER.info("Android终端[{}]请求版本号", request.getTerminalId());
         if (!TerminalUpdateListCacheManager.isCacheReady(TerminalTypeEnums.VDI_ANDROID)) {
-            LOGGER.debug("Android终端请求版本号未就绪");
+            LOGGER.info("Android终端[{}]请求版本号未就绪", request.getTerminalId());
             return buildResult(CbbTerminalComponentUpgradeResultEnums.PREPARING, new CbbAndroidVDIUpdateListDTO());
         }
         CbbAndroidVDIUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(TerminalTypeEnums.VDI_ANDROID);
@@ -44,29 +44,25 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         String validateMd5 = request.getValidateMd5();
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
-            LOGGER.debug("updatelist or component is null");
+            LOGGER.info("updatelist or component is null, terminalType is [{}]", TerminalTypeEnums.VDI_ANDROID.toString());
             return buildResult(CbbTerminalComponentUpgradeResultEnums.ABNORMAL, new CbbAndroidVDIUpdateListDTO());
         }
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("updatelist : {}", JSON.toJSONString(updatelist));
-        }
-
+        LOGGER.info("updatelist:{}", JSON.toJSONString(updatelist));
         String version = updatelist.getVersion();
         CbbAndroidVDIUpdateListDTO updatelistDTO = new CbbAndroidVDIUpdateListDTO(version, updatelist);
 
         // 版本相同且updatelist的MD5相同,不升级
         if (rainOsVersion.equals(version) && Objects.equals(validateMd5, updatelist.getValidateMd5())) {
             // 版本相同,不升级
-            LOGGER.debug("version is same, not need upgrade");
+            LOGGER.info("Android终端[{}]版本一致,不需升级", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), updatelistDTO);
         }
 
         // 最低支持版本判断,终端OTA版本号低于OS_LIMIT则不支持升级
         Integer terminalOTAVersion = getVersionFromVerStr(rainOsVersion);
-        LOGGER.debug("terminalOTAVersion version is {}", terminalOTAVersion);
+        LOGGER.info("终端[" + request.getTerminalId() +"]的OTA版本号为[" + rainOsVersion + "]");
         if (terminalOTAVersion != 0 && isVersionBigger(updatelist.getOsLimit(), rainOsVersion)) {
-            LOGGER.debug("osLimit version is bigger than terminalOTAVersion, not support upgrade");
+            LOGGER.info("终端[{}]的OTA版本号低于OS_LIMIT,不支持升级", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), updatelistDTO);
         }
 
@@ -76,11 +72,11 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         LOGGER.debug("start upgrade");
         // 判断是否差异升级,终端update.list的版本号(VER)与服务器update.list的BASE版本号相同则为差异升级
         if (!rainUpgradeVersion.equals(copyUpdateList.getBaseVersion())) {
-            LOGGER.info("Android终端组件进行非差异升级, 清理差异升级信息");
+            LOGGER.info("Android终端[{}]组件进行非差异升级, 清理差异升级信息", request.getTerminalId());
             clearDifferenceUpgradeInfo(copyUpdateList.getComponentList());
         }
 
-        LOGGER.info("Android终端组件升级响应：{}", JSON.toJSONString(copyUpdateList));
+        LOGGER.info("Android终端[" + request.getTerminalId() + "]组件升级响应：" + JSON.toJSONString(copyUpdateList));
 
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
     }

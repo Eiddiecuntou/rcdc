@@ -85,4 +85,8 @@ public enum TerminalTypeEnums {
 
         throw new IllegalArgumentException("终端类型【" + platform + "】【" + osType + "】未定义，不支持该类型的终端");
     }
+
+    public static void main(String[] args) {
+        System.out.println(TerminalTypeEnums.VDI_LINUX.toString());
+    }
 }
