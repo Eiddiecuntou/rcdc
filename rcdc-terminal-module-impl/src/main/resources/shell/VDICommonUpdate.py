@@ -3,7 +3,7 @@
 '''
 Created on 2018年10月14日
 
-@author: XiaoJiaXin
+@author: nt
 '''
 '''
     升级包安装流程
