@@ -33,7 +33,7 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         LOGGER.info("Android终端[{}]请求版本号", request.getTerminalId());
         if (!TerminalUpdateListCacheManager.isCacheReady(TerminalTypeEnums.VDI_ANDROID)) {
             LOGGER.info("Android终端[{}]请求版本号未就绪", request.getTerminalId());
-            return buildResult(CbbTerminalComponentUpgradeResultEnums.PREPARING, new CbbAndroidVDIUpdateListDTO());
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult());
         }
         CbbAndroidVDIUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(TerminalTypeEnums.VDI_ANDROID);
         // 终端OTA版本号
@@ -45,14 +45,14 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.info("updatelist or component is null, terminalType is [{}]", TerminalTypeEnums.VDI_ANDROID.toString());
-            return buildResult(CbbTerminalComponentUpgradeResultEnums.ABNORMAL, new CbbAndroidVDIUpdateListDTO());
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult());
         }
         LOGGER.info("updatelist:{}", JSON.toJSONString(updatelist));
-        String version = updatelist.getVersion();
-        CbbAndroidVDIUpdateListDTO updatelistDTO = new CbbAndroidVDIUpdateListDTO(version, updatelist);
+
+        CbbAndroidVDIUpdateListDTO updatelistDTO = new CbbAndroidVDIUpdateListDTO(updatelist);
 
         // 版本相同且updatelist的MD5相同,不升级
-        if (rainOsVersion.equals(version) && Objects.equals(validateMd5, updatelist.getValidateMd5())) {
+        if (rainOsVersion.equals(updatelist.getVersion()) && Objects.equals(validateMd5, updatelist.getValidateMd5())) {
             // 版本相同,不升级
             LOGGER.info("Android终端[{}]版本一致,不需升级", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), updatelistDTO);

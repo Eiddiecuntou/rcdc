@@ -3,8 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
 
-import java.util.UUID;
-
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018
@@ -15,8 +13,8 @@ import java.util.UUID;
  */
 public class GetVersionRequest {
 
-    @NotNull
-    private UUID terminalId;
+    @Nullable
+    private String terminalId;
 
     @NotNull
     private String rainUpgradeVersion;
@@ -27,11 +25,11 @@ public class GetVersionRequest {
     @Nullable
     private String rainOsVersion;
 
-    public UUID getTerminalId() {
+    public String getTerminalId() {
         return terminalId;
     }
 
-    public void setTerminalId(UUID terminalId) {
+    public void setTerminalId(String terminalId) {
         this.terminalId = terminalId;
     }
 

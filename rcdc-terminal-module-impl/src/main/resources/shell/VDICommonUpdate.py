@@ -349,8 +349,8 @@ def generatePath(installPath, torrentPath, terminalPlatform):
     installPathPrefix = "/opt/upgrade/app/terminal_component/terminal_vdi_"
     installPath = '%s%s' % (installPathPrefix, terminalPlatform)
 
-    torrentPathPrefix = "/opt/ftp/terminal/terminal_component/linux_"
-    torrentPathsuffix = "/torrent"
+    torrentPathPrefix = "/opt/ftp/terminal/terminal_component/"
+    torrentPathsuffix = "_vdi/torrent"
     torrentPath = '%s%s%s' % (torrentPathPrefix, terminalPlatform, torrentPathPrefix)
 '''
     # 根据终端类型生成Dir
@@ -362,15 +362,3 @@ def generateDir(fullComponentDir, diffComponentDir, terminalPlatform):
     diffComponentDirPrefix = "/opt/upgrade/app/terminal_component/terminal_vdi_"
     diffComponentDirSuffix = "/origin/diff/component/"
     diffComponentDir = '%s%s%s' % (diffComponentDirPrefix, terminalPlatform, diffComponentDirSuffix)
-'''
-    # 根据终端类型生成包名,安卓终端：
-    rpmPackageName = "rcos-rco-linux-android-1.0.0.rpm"
-    rpmUninstallName = "rcos-rco-linux-android"
-
-'''
-def generatePackageName(rpmPackageName, rpmUninstallName, terminalPlatform):
-    rpmPackageNamePrefix = "rcos-rco-linux-"
-    rpmPackageNameSuffix = "-1.0.0.rpm"
-    rpmPackageName = '%s%s' % (rpmPackageNamePrefix, terminalPlatform, rpmPackageNameSuffix)
-    rpmUninstallNamePrefix = "rcos-rco-linux-"
-    rpmUninstallName = '%s%s' % (rpmUninstallNamePrefix, terminalPlatform)

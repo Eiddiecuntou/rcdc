@@ -13,8 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
  */
 public class AndroidVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbAndroidVDIUpdateListDTO> {
 
-    private static final String UPDATE_LIST_PATH =
-            "/opt/upgrade/app/terminal_component/terminal_vdi_android/origin/update.list";
+    private static final String UPDATE_LIST_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_android/origin/update.list";
 
     @Override
     protected String getUpdateListPath() {

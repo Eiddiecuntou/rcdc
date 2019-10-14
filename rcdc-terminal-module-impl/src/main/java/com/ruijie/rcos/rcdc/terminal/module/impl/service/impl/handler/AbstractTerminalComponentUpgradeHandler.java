@@ -57,7 +57,8 @@ public abstract class AbstractTerminalComponentUpgradeHandler implements Termina
      *
      * @param componentList 组件升级信息
      */
-    public void clearDifferenceUpgradeInfo(List<CbbVDIComponentCommonVersionInfoDTO> componentList) {
+    protected void clearDifferenceUpgradeInfo(List<CbbVDIComponentCommonVersionInfoDTO> componentList) {
+        Assert.notNull(componentList, "componentList cannot be null");
         for (CbbVDIComponentCommonVersionInfoDTO componentInfo : componentList) {
             componentInfo.setIncrementalPackageMd5(null);
             componentInfo.setIncrementalPackageName(null);

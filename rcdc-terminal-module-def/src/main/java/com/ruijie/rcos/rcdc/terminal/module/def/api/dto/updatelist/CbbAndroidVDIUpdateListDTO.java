@@ -22,9 +22,14 @@ public class CbbAndroidVDIUpdateListDTO extends CbbCommonUpdatelistDTO<CbbVDICom
 
     }
 
-    public CbbAndroidVDIUpdateListDTO(String version, CbbAndroidVDIUpdateListDTO updatelist) {
-        super(version, updatelist.getComponentSize());
+    public CbbAndroidVDIUpdateListDTO(CbbAndroidVDIUpdateListDTO updatelist) {
         Assert.notNull(updatelist, "updatelist cannot be null");
+        Assert.notNull(updatelist.getVersion(), "version cannot be null");
+        Assert.notNull(updatelist.getComponentSize(), "componentSize cannot be null");
+        Assert.notNull(updatelist.getOsLimit(), "osLimit cannot be null");
+        Assert.notNull(updatelist.getBaseVersion(), "baseVersion cannot be null");
+        super.setVersion(updatelist.getVersion());
+        super.setComponentSize(updatelist.getComponentSize());
         this.osLimit = updatelist.getOsLimit();
         this.baseVersion = updatelist.getBaseVersion();
     }

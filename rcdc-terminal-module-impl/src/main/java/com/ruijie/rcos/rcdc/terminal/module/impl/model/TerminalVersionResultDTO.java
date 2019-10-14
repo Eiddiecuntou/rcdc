@@ -25,6 +25,10 @@ public class TerminalVersionResultDTO<T> {
         this.updatelist = updatelist;
     }
 
+    public TerminalVersionResultDTO(Integer result) {
+        this.result = result;
+    }
+
     public Integer getResult() {
         return result;
     }
