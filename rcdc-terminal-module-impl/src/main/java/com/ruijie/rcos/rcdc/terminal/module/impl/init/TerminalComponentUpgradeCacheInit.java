@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDITerminalUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.WinAppTerminalUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -29,7 +29,7 @@ public class TerminalComponentUpgradeCacheInit {
     private WinAppTerminalUpdatelistCacheInit windowsAppTerminalUpdatelistCacheInit;
 
     @Autowired
-    private AndroidVDITerminalUpdatelistCacheInit androidVDITerminalUpdatelistCacheInit;
+    private AndroidVDIUpdatelistCacheInit androidVDIUpdatelistCacheInit;
 
     /**
      * 各组件的升级信息缓存初始化
@@ -38,7 +38,7 @@ public class TerminalComponentUpgradeCacheInit {
         LOGGER.info("开始终端组件升级信息缓存初始化");
         windowsAppTerminalUpdatelistCacheInit.init();
         linuxVDIUpdatelistCacheInit.init();
-        androidVDITerminalUpdatelistCacheInit.init();
+        androidVDIUpdatelistCacheInit.init();
         LOGGER.info("完成终端组件升级信息缓存初始化");
     }
 

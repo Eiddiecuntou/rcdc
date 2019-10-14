@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDITerminalUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,7 +35,7 @@ public class TerminalComponentUpgradeCacheInitTest {
     private WinAppTerminalUpdatelistCacheInit windowsAppTerminalUpdatelistCacheInit;
 
     @Injectable
-    private AndroidVDITerminalUpdatelistCacheInit androidVDITerminalUpdatelistCacheInit;
+    private AndroidVDIUpdatelistCacheInit androidVDIUpdatelistCacheInit;
 
     @Test
     public void testSafeInit() {
@@ -45,7 +45,7 @@ public class TerminalComponentUpgradeCacheInitTest {
 
                 windowsAppTerminalUpdatelistCacheInit.init();
 
-                androidVDITerminalUpdatelistCacheInit.init();
+                androidVDIUpdatelistCacheInit.init();
             }
         };
 

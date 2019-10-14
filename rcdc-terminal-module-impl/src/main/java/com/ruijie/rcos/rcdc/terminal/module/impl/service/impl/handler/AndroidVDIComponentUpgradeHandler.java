@@ -55,7 +55,7 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         String version = updatelist.getVersion();
         CbbAndroidVDIUpdateListDTO updatelistDTO = new CbbAndroidVDIUpdateListDTO(version, updatelist);
 
-        // 版本相同且updatelist的MD5相同,不升级;不同则根据平台类型筛选出组件信息，无组件信息则不支持升级，有则返回升级信息
+        // 版本相同且updatelist的MD5相同,不升级
         if (rainOsVersion.equals(version) && Objects.equals(validateMd5, updatelist.getValidateMd5())) {
             // 版本相同,不升级
             LOGGER.debug("version is same, not need upgrade");

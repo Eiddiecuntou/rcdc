@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class AndroidVDITerminalUpdateCacheInitTest {
 
     @Tested
-    private AndroidVDITerminalUpdatelistCacheInit cacheInit;
+    private AndroidVDIUpdatelistCacheInit cacheInit;
 
     @Test
     public void testGetUpdateListPath() {
