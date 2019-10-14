@@ -80,11 +80,4 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
 
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
     }
-
-    /**
-     * 构建响应结果dto
-     */
-    private TerminalVersionResultDTO buildResult(CbbTerminalComponentUpgradeResultEnums result, CbbAndroidVDIUpdateListDTO updateListDTO) {
-        return new TerminalVersionResultDTO(result.getResult(), updateListDTO);
-    }
 }
