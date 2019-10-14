@@ -51,8 +51,8 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
 
         CbbAndroidVDIUpdateListDTO updatelistDTO = new CbbAndroidVDIUpdateListDTO(updatelist);
 
-        // 版本相同且updatelist的MD5相同,不升级
-        if (rainOsVersion.equals(updatelist.getVersion()) && Objects.equals(validateMd5, updatelist.getValidateMd5())) {
+        // 判断是否升级
+        if (isNeedUpgrade(updatelist, request)) {
             // 版本相同,不升级
             LOGGER.info("Android终端[{}]版本一致,不需升级", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), updatelistDTO);
@@ -79,5 +79,12 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         LOGGER.info("Android终端[" + request.getTerminalId() + "]组件升级响应：" + JSON.toJSONString(copyUpdateList));
 
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
+    }
+
+    private boolean isNeedUpgrade(CbbAndroidVDIUpdateListDTO updatelist, GetVersionRequest request) {
+        // 版本相同且updatelist的MD5相同,则不升级
+        String rainOsVersion = request.getRainOsVersion();
+        String validateMd5 = request.getValidateMd5();
+        return rainOsVersion.equals(updatelist.getVersion()) && Objects.equals(validateMd5, updatelist.getValidateMd5());
     }
 }
