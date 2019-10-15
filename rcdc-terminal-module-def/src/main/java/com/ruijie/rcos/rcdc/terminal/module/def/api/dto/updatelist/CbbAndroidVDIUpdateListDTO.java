@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
 
-import org.springframework.util.Assert;
-
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2019
@@ -20,18 +18,6 @@ public class CbbAndroidVDIUpdateListDTO extends CbbCommonUpdatelistDTO<CbbVDICom
 
     public CbbAndroidVDIUpdateListDTO() {
 
-    }
-
-    public CbbAndroidVDIUpdateListDTO(CbbAndroidVDIUpdateListDTO updatelist) {
-        Assert.notNull(updatelist, "updatelist cannot be null");
-        Assert.notNull(updatelist.getVersion(), "version cannot be null");
-        Assert.notNull(updatelist.getComponentSize(), "componentSize cannot be null");
-        Assert.notNull(updatelist.getOsLimit(), "osLimit cannot be null");
-        Assert.notNull(updatelist.getBaseVersion(), "baseVersion cannot be null");
-        super.setVersion(updatelist.getVersion());
-        super.setComponentSize(updatelist.getComponentSize());
-        this.osLimit = updatelist.getOsLimit();
-        this.baseVersion = updatelist.getBaseVersion();
     }
 
     public String getOsLimit() {
