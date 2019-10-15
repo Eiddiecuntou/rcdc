@@ -36,30 +36,29 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult());
         }
         CbbAndroidVDIUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(TerminalTypeEnums.VDI_ANDROID);
+        LOGGER.info("updatelist:{}", JSON.toJSONString(updatelist));
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.info("updatelist or component is null, terminalType is [{}]", TerminalTypeEnums.VDI_ANDROID.toString());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult());
         }
-        LOGGER.info("updatelist:{}", JSON.toJSONString(updatelist));
-
         // 判断是否升级
         if (!isNeedToUpgrade(updatelist, request)) {
-            // 版本相同,不升级
-            LOGGER.info("Android终端[{}]版本一致,不需升级", request.getTerminalId());
+            // 版本相同、MD5值相同,不升级
+            LOGGER.info("Android终端[{}]不需升级", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), updatelist);
         }
 
         // 判断是否支持升级
         if (!isSupportUpgrade(updatelist, request)) {
-            LOGGER.info("终端[{}]的OTA版本号低于OS_LIMIT,不支持升级", request.getTerminalId());
+            LOGGER.info("终端[" + request.getTerminalId() + "]的OTA版本号低于版本号[" + updatelist.getOsLimit() + "],不支持升级");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), updatelist);
         }
 
         // 深拷贝对象
         CbbAndroidVDIUpdateListDTO copyUpdateList = DeepCopyUtil.deepCopy(updatelist);
 
-        LOGGER.debug("start upgrade");
+        LOGGER.info("start upgrade");
         // 判断是否差异升级,终端update.list的版本号(VER)与服务器update.list的BASE版本号相同则为差异升级
         String rainUpgradeVersion = request.getRainUpgradeVersion();
         if (!rainUpgradeVersion.equals(copyUpdateList.getBaseVersion())) {
