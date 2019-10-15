@@ -87,7 +87,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      * @throws Exception 异常
      */
     @Test
-    public void testUploadUpgradeFileArgumentIsNull() throws Exception {
+    public void testUploadUpgradePackageArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.uploadUpgradePackage(null), "request can not be null");
         assertTrue(true);
     }
@@ -102,9 +102,11 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         TerminalSystemUpgradeHandler handler = new LinuxVDISystemUpgradeHandler();
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("linux.iso");
-        request.setFilePath("/opt/terminal/linux_vdi");
+        request.setFileName("123.iso");
+        request.setFilePath("/temp");
         JSONObject jsonObject = new JSONObject();
+        jsonObject.put("platType", "VDI");
+        jsonObject.put("osType", "Linux");
         request.setCustomData(jsonObject);
         new Expectations() {
             {

@@ -74,6 +74,8 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private static final String PLAT_TYPE = "platType";
 
+    private static final String OS_TYPE = "osType";
+
     @Override
     public CbbCheckUploadingResultResponse isUpgradeFileUploading(CbbTerminalPlatformRequest request) {
         Assert.notNull(request, "request can not be null");
@@ -114,17 +116,19 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     public DefaultResponse uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         JSONObject jsonObject = request.getCustomData();
-        TerminalTypeEnums platType = jsonObject.getObject(PLAT_TYPE, TerminalTypeEnums.class);
+        String platType = jsonObject.getString(PLAT_TYPE);
+        String osType = jsonObject.getString(OS_TYPE);
+        TerminalTypeEnums terminalType = TerminalTypeEnums.convert(platType, osType);
         synchronized (LOCK) {
-            if (SYS_UPGRADE_PACKAGE_UPLOADING.contains(platType)) {
+            if (SYS_UPGRADE_PACKAGE_UPLOADING.contains(terminalType)) {
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);
             }
-            SYS_UPGRADE_PACKAGE_UPLOADING.add(platType);
+            SYS_UPGRADE_PACKAGE_UPLOADING.add(terminalType);
         }
-        TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(platType);
+        TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
         handler.uploadUpgradePackage(request);
         // 完成清除上传标志缓存内记录
-        SYS_UPGRADE_PACKAGE_UPLOADING.remove(platType);
+        SYS_UPGRADE_PACKAGE_UPLOADING.remove(terminalType);
         return DefaultResponse.Builder.success();
     }
 
