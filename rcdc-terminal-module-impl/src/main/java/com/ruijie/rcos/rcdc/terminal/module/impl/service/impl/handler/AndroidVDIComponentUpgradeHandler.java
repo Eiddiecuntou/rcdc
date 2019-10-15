@@ -44,17 +44,14 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         LOGGER.info("updatelist:{}", JSON.toJSONString(updatelist));
 
         // 判断是否升级
-        if (isNeedUpgrade(updatelist, request)) {
+        if (!isNeedToUpgrade(updatelist, request)) {
             // 版本相同,不升级
             LOGGER.info("Android终端[{}]版本一致,不需升级", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), updatelist);
         }
 
-        // 最低支持版本判断,终端OTA版本号低于OS_LIMIT则不支持升级
-        String rainOsVersion = request.getRainOsVersion();
-        Integer terminalOTAVersion = getVersionFromVerStr(rainOsVersion);
-        LOGGER.info("终端[" + request.getTerminalId() + "]的OTA版本号为[" + rainOsVersion + "]");
-        if (terminalOTAVersion != 0 && isVersionBigger(updatelist.getOsLimit(), rainOsVersion)) {
+        // 判断是否支持升级
+        if (!isSupportUpgrade(updatelist, request)) {
             LOGGER.info("终端[{}]的OTA版本号低于OS_LIMIT,不支持升级", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), updatelist);
         }
@@ -75,10 +72,18 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
     }
 
-    private boolean isNeedUpgrade(CbbAndroidVDIUpdateListDTO updatelist, GetVersionRequest request) {
-        // 版本相同且updatelist的MD5相同,则不升级
+    private boolean isSupportUpgrade(CbbAndroidVDIUpdateListDTO updatelist, GetVersionRequest request) {
+        // 终端OTA版本号高于OS_LIMIT则支持升级
+        String rainOsVersion = request.getRainOsVersion();
+        Integer terminalOTAVersion = getVersionFromVerStr(rainOsVersion);
+        LOGGER.info("终端[" + request.getTerminalId() + "]的OTA版本号为[" + rainOsVersion + "]");
+        return terminalOTAVersion == 0 || isVersionBigger(rainOsVersion, updatelist.getOsLimit());
+    }
+
+    private boolean isNeedToUpgrade(CbbAndroidVDIUpdateListDTO updatelist, GetVersionRequest request) {
+        // 版本不相同或updatelist的MD5不相同,则需要升级
         String rainOsVersion = request.getRainOsVersion();
         String validateMd5 = request.getValidateMd5();
-        return rainOsVersion.equals(updatelist.getVersion()) && Objects.equals(validateMd5, updatelist.getValidateMd5());
+        return !rainOsVersion.equals(updatelist.getVersion()) || !Objects.equals(validateMd5, updatelist.getValidateMd5());
     }
 }
