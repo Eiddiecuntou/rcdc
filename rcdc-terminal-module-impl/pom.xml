@@ -31,5 +31,10 @@
             <artifactId>base-sysmanage-module-def</artifactId>
             <version>${base-sysmanage-module.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.ruijie.rcos.library</groupId>
+            <artifactId>linux-library</artifactId>
+            <version>${linux-library.version}</version>
+        </dependency>
     </dependencies>
 </project>

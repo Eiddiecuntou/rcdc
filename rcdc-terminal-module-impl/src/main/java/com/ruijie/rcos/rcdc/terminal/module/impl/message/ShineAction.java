@@ -69,4 +69,20 @@ public interface ShineAction {
      * 同步LOGO
      */
     String SYNC_TERMINAL_LOGO = "sync_terminal_logo";
+
+
+    /**
+     * 检查OTA升级
+     */
+    String CHECK_UPGRADE_OTA = "check_upgrade_ota";
+
+    /**
+     * OTA升级结果
+     */
+    String OTA_UPGRADE_RESULT = "ota_upgrade_result";
+
+    /**
+     * 同步检查OTA升级结果
+     */
+    String SYNC_CHECK_OTA_UPGRADE_RESULT = "sync_check_ota_upgrade_result";
 }

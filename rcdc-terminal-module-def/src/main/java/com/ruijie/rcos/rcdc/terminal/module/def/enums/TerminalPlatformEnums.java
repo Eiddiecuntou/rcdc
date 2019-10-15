@@ -25,7 +25,13 @@ public enum TerminalPlatformEnums {
     /**
      * 软终端
      */
-    APP;
+    APP,
+
+    /**
+     * 安卓终端
+     */
+    RK3188;
+
 
     /**
      * 判断平台字符串是否为平台枚举成员

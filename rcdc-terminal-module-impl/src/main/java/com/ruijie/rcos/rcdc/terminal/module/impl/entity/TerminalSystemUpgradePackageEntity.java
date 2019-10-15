@@ -1,18 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
-import java.util.Date;
-import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Description: 终端系统升级包实体类
@@ -35,6 +30,15 @@ public class TerminalSystemUpgradePackageEntity {
     private String packageName;
 
     private String filePath;
+
+    private String fileMD5;
+
+    private String seedPath;
+
+    private String seedMD5;
+
+    @Enumerated(EnumType.STRING)
+    private CbbSystemUpgradeModeEnums upgradeMode;
 
     @Enumerated(EnumType.STRING)
     private TerminalPlatformEnums packageType;
@@ -93,6 +97,37 @@ public class TerminalSystemUpgradePackageEntity {
         this.filePath = filePath;
     }
 
+    public String getFileMD5() {
+        return fileMD5;
+    }
+
+    public void setFileMD5(String fileMD5) {
+        this.fileMD5 = fileMD5;
+    }
+
+    public String getSeedPath() {
+        return seedPath;
+    }
+
+    public void setSeedPath(String seedPath) {
+        this.seedPath = seedPath;
+    }
+
+    public String getSeedMD5() {
+        return seedMD5;
+    }
+
+    public void setSeedMD5(String seedMD5) {
+        this.seedMD5 = seedMD5;
+    }
+
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
+    }
 
     public TerminalPlatformEnums getPackageType() {
         return packageType;

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
@@ -23,6 +24,9 @@ public class CbbTerminalUpgradePackageUploadRequest implements Request {
 
     @NotBlank
     private String fileMD5;
+
+    @NotBlank
+    private JSONObject customData;
 
     public CbbTerminalUpgradePackageUploadRequest() {
         
@@ -62,4 +66,11 @@ public class CbbTerminalUpgradePackageUploadRequest implements Request {
         this.fileMD5 = fileMD5;
     }
 
+    public JSONObject getCustomData() {
+        return customData;
+    }
+
+    public void setCustomData(JSONObject customData) {
+        this.customData = customData;
+    }
 }

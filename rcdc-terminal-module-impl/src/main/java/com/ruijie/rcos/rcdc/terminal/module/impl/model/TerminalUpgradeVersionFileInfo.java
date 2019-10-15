@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
@@ -22,6 +23,14 @@ public class TerminalUpgradeVersionFileInfo {
     private String filePath;
 
     private TerminalPlatformEnums packageType;
+
+    private String fileMD5;
+
+    private String seedLink;
+
+    private String seedMD5;
+
+    private CbbSystemUpgradeModeEnums upgradeMode;
 
     public String getImgName() {
         return imgName;
@@ -61,6 +70,38 @@ public class TerminalUpgradeVersionFileInfo {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getFileMD5() {
+        return fileMD5;
+    }
+
+    public void setFileMD5(String fileMD5) {
+        this.fileMD5 = fileMD5;
+    }
+
+    public String getSeedLink() {
+        return seedLink;
+    }
+
+    public void setSeedLink(String seedLink) {
+        this.seedLink = seedLink;
+    }
+
+    public String getSeedMD5() {
+        return seedMD5;
+    }
+
+    public void setSeedMD5(String seedMD5) {
+        this.seedMD5 = seedMD5;
+    }
+
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
     }
 
     @Override
