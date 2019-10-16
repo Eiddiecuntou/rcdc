@@ -7,6 +7,7 @@ import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetail
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -37,6 +38,9 @@ public class VDITerminalComponentUpgradeInitTest {
 
     @Injectable
     private LinuxVDIUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
+
+    @Injectable
+    private AndroidVDIUpdatelistCacheInit androidVDIUpdatelistCacheInit;
 
     @Mocked
     private ShellCommandRunner runner;
@@ -231,7 +235,7 @@ public class VDITerminalComponentUpgradeInitTest {
                 times = 1;
 
                 runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
-                times = 1;
+                times = 2;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 0;
             }
@@ -275,7 +279,7 @@ public class VDITerminalComponentUpgradeInitTest {
                 times = 1;
 
                 runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
-                times = 1;
+                times = 2;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 0;
             }
