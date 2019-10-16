@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
@@ -90,10 +90,50 @@ public class EntityBeanTest {
         info.setFilePath("filePath");
         info.setImgName("imgName");
         info.setPackageName("packageName");
-        info.setPackageType(TerminalPlatformEnums.VDI);
+        info.setPackageType(CbbTerminalPlatformEnums.VDI);
         info.setVersion("version");
         String result =
                 "TerminalUpgradeVersionFileInfo [packageName=packageName, imgName=imgName," + " version=version, filePath=filePath, packageType=VDI]";
         assertEquals(result, info.toString());
+    }
+
+    /**
+     * 测试TerminalGroupEntity
+     */
+    @Test
+    public void testTerminalGroupEntity() {
+        GetSetTester tester = new GetSetTester(TerminalGroupEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试TerminalSystemUpgradeEntity
+     */
+    @Test
+    public void testTerminalSystemUpgradeEntity() {
+        GetSetTester tester = new GetSetTester(TerminalSystemUpgradeEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试TerminalSystemUpgradeTerminalEntity
+     */
+    @Test
+    public void testTerminalSystemUpgradeTerminalEntity() {
+        GetSetTester tester = new GetSetTester(TerminalSystemUpgradeTerminalEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试ViewUpgradeableTerminalEntity
+     */
+    @Test
+    public void testViewUpgradeableTerminalEntity() {
+        GetSetTester tester = new GetSetTester(ViewUpgradeableTerminalEntity.class);
+        tester.runTest();
+        assertTrue(true);
     }
 }

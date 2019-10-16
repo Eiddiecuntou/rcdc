@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -59,7 +59,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         entity.setTerminalName("t-box3");
         entity.setCpuType("intel");
         entity.setTerminalOsType("Linux");
-        entity.setPlatform(TerminalPlatformEnums.VDI);
+        entity.setPlatform(CbbTerminalPlatformEnums.VDI);
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);

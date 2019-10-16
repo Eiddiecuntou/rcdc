@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.util.Assert;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -23,7 +22,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
-import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -32,8 +30,6 @@ import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
@@ -76,6 +72,9 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试关机成功
+     * 
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
     public void testShutdownSuccess() throws IOException, InterruptedException {
@@ -137,6 +136,9 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试重启
+     * 
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
     public void testRestart() throws IOException, InterruptedException {
@@ -174,7 +176,7 @@ public class TerminalOperatorServiceImplTest {
     public void testCollectLogIsDoing() {
         String terminalId = "12334";
         CollectLogCache collectLogCache = new CollectLogCache();
-        collectLogCache.setState(CollectLogStateEnums.DOING);
+        collectLogCache.setState(CbbCollectLogStateEnums.DOING);
         new Expectations() {
             {
                 collectLogCacheManager.getCache(terminalId);
@@ -196,7 +198,7 @@ public class TerminalOperatorServiceImplTest {
     public void testCollectLogNoExistsAndIsDoing() {
         String terminalId = "123";
         CollectLogCache logCache = new CollectLogCache();
-        logCache.setState(CollectLogStateEnums.DOING);
+        logCache.setState(CbbCollectLogStateEnums.DOING);
         new Expectations() {
             {
                 collectLogCacheManager.getCache(terminalId);
@@ -216,12 +218,14 @@ public class TerminalOperatorServiceImplTest {
     /**
      * 测试发送收集日志
      * 
-     * @throws BusinessException 业务异常
+     * @throws BusinessException exception
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
     public void testCollectLogSend() throws BusinessException, IOException, InterruptedException {
         CollectLogCache logCache = new CollectLogCache();
-        logCache.setState(CollectLogStateEnums.DONE);
+        logCache.setState(CbbCollectLogStateEnums.DONE);
         new Expectations() {
             {
                 collectLogCacheManager.getCache(anyString);
@@ -256,7 +260,7 @@ public class TerminalOperatorServiceImplTest {
     @Test
     public void testCollectLogSendDefaultRequestMessageSenderIsNull() throws BusinessException {
         CollectLogCache logCache = new CollectLogCache();
-        logCache.setState(CollectLogStateEnums.DONE);
+        logCache.setState(CbbCollectLogStateEnums.DONE);
         new Expectations() {
             {
                 collectLogCacheManager.getCache(anyString);
@@ -567,6 +571,8 @@ public class TerminalOperatorServiceImplTest {
      * 
      * @param aesUtil mock aesUtil
      * @throws BusinessException 异常
+     * @throws IOException 异常
+     * @throws InterruptedException 异常
      */
     @Test
     public void testChangePassword(@Mocked AesUtil aesUtil) throws BusinessException, IOException, InterruptedException {

@@ -2,9 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import java.util.Collections;
-
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.GetVersionRequest;
@@ -16,7 +14,7 @@ import mockit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.integration.junit4.JMockit;
@@ -56,6 +54,8 @@ public class TerminalComponentUpgradeServiceImplTest {
 
     /**
      * 测试getVersion,updatelist为空
+     * 
+     * @throws BusinessException exception
      */
     @Test
     public void testGetVersion() throws BusinessException {
@@ -63,7 +63,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         updatelist.setComponentList(Collections.emptyList());
 
         TerminalEntity terminalEntity = new TerminalEntity();
-        terminalEntity.setPlatform(TerminalPlatformEnums.VDI);
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
         terminalEntity.setTerminalOsType("Linux");
 
         TerminalComponentUpgradeHandler handler = new LinuxVDIComponentUpgradeHandler();
@@ -74,7 +74,7 @@ public class TerminalComponentUpgradeServiceImplTest {
             }
         };
 
-        new MockUp<LinuxVDIComponentUpgradeHandler>(){
+        new MockUp<LinuxVDIComponentUpgradeHandler>() {
 
             @Mock
             public TerminalVersionResultDTO getVersion(GetVersionRequest request) {
@@ -90,7 +90,7 @@ public class TerminalComponentUpgradeServiceImplTest {
 
         assertEquals(111, versionDTO.getResult().intValue());
         assertEquals("sss", versionDTO.getUpdatelist());
-        new Verifications(){
+        new Verifications() {
             {
                 handlerFactory.getHandler((TerminalTypeEnums) any);
                 times = 1;
