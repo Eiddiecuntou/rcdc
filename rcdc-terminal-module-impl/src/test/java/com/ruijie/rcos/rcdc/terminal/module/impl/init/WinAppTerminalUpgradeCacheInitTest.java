@@ -1,61 +1,47 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.WinAppTerminalUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * Description: Function Description
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年1月24日
- * 
+ *
  * @author ls
  */
 @RunWith(SkyEngineRunner.class)
-public class TerminalComponentUpgradeCacheInitTest {
+public class WinAppTerminalUpgradeCacheInitTest {
 
     @Tested
-    private TerminalComponentUpgradeCacheInit init;
-
-    @Injectable
-    private LinuxVDIUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
+    private WinAppTerminalUpgradeCacheInit init;
 
     @Injectable
     private WinAppTerminalUpdatelistCacheInit windowsAppTerminalUpdatelistCacheInit;
 
-    @Injectable
-    private AndroidVDIUpdatelistCacheInit androidVDIUpdatelistCacheInit;
-
+    /**
+     * testSafeInit
+     */
     @Test
     public void testSafeInit() {
         new Expectations() {
             {
-                linuxVDIUpdatelistCacheInit.init();
-
                 windowsAppTerminalUpdatelistCacheInit.init();
-
-                androidVDIUpdatelistCacheInit.init();
             }
         };
 
-        init.cachesInit();
+        init.safeInit();
 
         new Verifications() {
             {
-                linuxVDIUpdatelistCacheInit.init();
-                times = 1;
-
                 windowsAppTerminalUpdatelistCacheInit.init();
                 times = 1;
             }

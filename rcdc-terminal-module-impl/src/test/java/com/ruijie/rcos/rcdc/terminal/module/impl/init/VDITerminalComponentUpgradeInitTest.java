@@ -1,10 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
+
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
@@ -24,16 +26,16 @@ import static org.junit.Assert.*;
  * 
  * @author ls
  */
-public class TerminalUpgradeBtServerInitTest {
+public class VDITerminalComponentUpgradeInitTest {
 
     @Tested
-    private TerminalUpgradeBtServerInit init;
+    private VDITerminalComponentUpgradeInit init;
 
     @Injectable
     private GlobalParameterAPI globalParameterAPI;
 
     @Injectable
-    private TerminalComponentUpgradeCacheInit upgradeCacheInit;
+    private LinuxVDIUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
 
     @Mocked
     private ShellCommandRunner runner;
@@ -140,7 +142,7 @@ public class TerminalUpgradeBtServerInitTest {
                 times = 1;
                 runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
                 times = 1;
-                upgradeCacheInit.cachesInit();
+                linuxVDIUpdatelistCacheInit.init();
                 times = 0;
             }
         };
@@ -182,7 +184,7 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.findParameter(anyString);
                 times = 1;
-                upgradeCacheInit.cachesInit();
+                linuxVDIUpdatelistCacheInit.init();
                 times = 1;
             }
         };
@@ -210,7 +212,7 @@ public class TerminalUpgradeBtServerInitTest {
                 result = response;
                 globalParameterAPI.findParameter(anyString);
                 result = "172.22.25.45";
-                runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
+                runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
                 result = new BusinessException("key");
             }
         };
@@ -226,9 +228,10 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.findParameter(anyString);
                 times = 1;
-                runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
-                times = 2;
-                upgradeCacheInit.cachesInit();
+
+                runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
+                times = 1;
+                linuxVDIUpdatelistCacheInit.init();
                 times = 0;
             }
         };
@@ -269,9 +272,10 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.findParameter(anyString);
                 times = 1;
-                runner.execute((TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver) any);
-                times = 2;
-                upgradeCacheInit.cachesInit();
+
+                runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
+                times = 1;
+                linuxVDIUpdatelistCacheInit.init();
                 times = 0;
             }
         };
@@ -284,7 +288,7 @@ public class TerminalUpgradeBtServerInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
-        TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
@@ -296,7 +300,7 @@ public class TerminalUpgradeBtServerInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverExitValueNotZero() {
-        TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
         try {
             resolver.resolve("dsd", 1, "dsd");
             fail();
@@ -312,8 +316,8 @@ public class TerminalUpgradeBtServerInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolver() throws BusinessException {
-        TerminalUpgradeBtServerInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
-        new MockUp<TerminalUpgradeBtServerInit>() {
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
+        new MockUp<VDITerminalComponentUpgradeInit>() {
             @Mock
             public String getLocalIP() {
                 return "192.168.1.2";
@@ -326,7 +330,7 @@ public class TerminalUpgradeBtServerInitTest {
             {
                 globalParameterAPI.updateParameter(anyString, "192.168.1.2");
                 times = 1;
-                upgradeCacheInit.cachesInit();
+                linuxVDIUpdatelistCacheInit.init();
                 times = 1;
             }
         };

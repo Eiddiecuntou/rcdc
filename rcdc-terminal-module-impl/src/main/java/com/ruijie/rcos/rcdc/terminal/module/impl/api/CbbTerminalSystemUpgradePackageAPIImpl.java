@@ -19,7 +19,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadP
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -57,7 +57,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private static final BeanCopier PACKAGE_BEAN_COPIER =
             BeanCopier.create(TerminalSystemUpgradePackageEntity.class, CbbTerminalSystemUpgradePackageInfoDTO.class, false);
 
-    private static final Set<TerminalPlatformEnums> SYS_UPGRADE_PACKAGE_UPLOADING = new HashSet<>();
+    private static final Set<CbbTerminalPlatformEnums> SYS_UPGRADE_PACKAGE_UPLOADING = new HashSet<>();
 
     private static final Object LOCK = new Object();
 
@@ -125,7 +125,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         TerminalUpgradeVersionFileInfo versionInfo = null;
         synchronized (LOCK) {
             versionInfo = getPackageVersionInfo(fileName, filePath);
-            TerminalPlatformEnums packageType = versionInfo.getPackageType();
+            CbbTerminalPlatformEnums packageType = versionInfo.getPackageType();
             if (SYS_UPGRADE_PACKAGE_UPLOADING.contains(packageType)) {
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);
             }
@@ -183,7 +183,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
      * @param packageType 升级包类型
      * @return
      */
-    private boolean isExistRunningTask(TerminalPlatformEnums packageType) {
+    private boolean isExistRunningTask(CbbTerminalPlatformEnums packageType) {
         TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(packageType);
         if (upgradePackage == null) {
             return false;
@@ -192,11 +192,11 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         return terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
     }
 
-    private String moveUpgradePackage(String fileName, String storePackageName, String filePath, TerminalPlatformEnums packageType)
+    private String moveUpgradePackage(String fileName, String storePackageName, String filePath, CbbTerminalPlatformEnums packageType)
             throws BusinessException {
         File to = null;
         LOGGER.debug("升级包类型：{}", packageType.name());
-        if (packageType != TerminalPlatformEnums.VDI) {
+        if (packageType != CbbTerminalPlatformEnums.VDI) {
             LOGGER.debug("暂不支持的升级包类型：{}", packageType);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT, packageType.name());
         }
@@ -305,7 +305,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         // 获取镜像名称
         String imgName = getImgName();
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
-        versionInfo.setPackageType(TerminalPlatformEnums.valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE)));
+        versionInfo.setPackageType(CbbTerminalPlatformEnums.valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE)));
         versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION));
         versionInfo.setImgName(imgName);
         return versionInfo;

@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
@@ -62,15 +62,15 @@ public class ShineTerminalBasicInfo {
     private String hardwareVersion;
 
     @Enumerated(EnumType.STRING)
-    private TerminalPlatformEnums platform;
+    private CbbTerminalPlatformEnums platform;
 
     private String validateMd5;
 
-    public TerminalPlatformEnums getPlatform() {
+    public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
 
-    public void setPlatform(TerminalPlatformEnums platform) {
+    public void setPlatform(CbbTerminalPlatformEnums platform) {
         this.platform = platform;
     }
 

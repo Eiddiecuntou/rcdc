@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -37,11 +37,11 @@ public class CollectLogResponseSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.hasText(request.getData(), "data不能为null");
         CbbShineMessageResponse<TerminalLogName> response = MessageUtils.parse(request.getData(), TerminalLogName.class);
         if (Constants.SUCCESS == response.getCode()) {
-            collectLogCacheManager.updateState(request.getTerminalId(), CollectLogStateEnums.DONE, response.getContent().getLogName());
+            collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.DONE, response.getContent().getLogName());
             LOGGER.debug("日志上传成功；terminalId:{};logName:{}", request.getTerminalId(), response.getContent().getLogName());
             return;
         }
         LOGGER.error("日志收集失败；terminalId:{}", request.getTerminalId());
-        collectLogCacheManager.updateState(request.getTerminalId(), CollectLogStateEnums.FAILURE);
+        collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.FAILURE);
     }
 }

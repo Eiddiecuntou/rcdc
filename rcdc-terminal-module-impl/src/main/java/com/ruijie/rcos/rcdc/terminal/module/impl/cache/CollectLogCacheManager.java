@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 
 /**
  * Description: 缓存收集日志过程的状态，
@@ -33,7 +33,7 @@ public class CollectLogCacheManager {
      */
     public CollectLogCache addCache(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        CollectLogCache cache = new CollectLogCache(CollectLogStateEnums.DOING);
+        CollectLogCache cache = new CollectLogCache(CbbCollectLogStateEnums.DOING);
         COLLECT_LOG_CACHE.put(terminalId, cache);
         return cache;
     }
@@ -54,7 +54,7 @@ public class CollectLogCacheManager {
      * @param terminalId 终端id
      * @param state 缓存转态
      */
-    public void updateState(String terminalId, CollectLogStateEnums state) {
+    public void updateState(String terminalId, CbbCollectLogStateEnums state) {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(state, "CollectLogStateEnums不能为null");
         updateState(terminalId, state, "");
@@ -67,7 +67,7 @@ public class CollectLogCacheManager {
      * @param state 终端状态
      * @param logFileName 日志上传成功后记录日志文件名称
      */
-    public void updateState(String terminalId, CollectLogStateEnums state, String logFileName) {
+    public void updateState(String terminalId, CbbCollectLogStateEnums state, String logFileName) {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(state, "CollectLogStateEnums不能为null");
         Assert.hasText(logFileName, "logFileName不能为空");

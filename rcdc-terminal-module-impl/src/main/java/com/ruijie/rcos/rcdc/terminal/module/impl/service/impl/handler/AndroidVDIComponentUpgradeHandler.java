@@ -6,9 +6,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUp
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.DeepCopyUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -56,7 +56,7 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         }
 
         // 深拷贝对象
-        CbbAndroidVDIUpdateListDTO copyUpdateList = DeepCopyUtil.deepCopy(updatelist);
+        CbbAndroidVDIUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
 
         LOGGER.info("start upgrade");
         // 判断是否差异升级,终端update.list的版本号(VER)与服务器update.list的BASE版本号相同则为差异升级
