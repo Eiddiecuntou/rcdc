@@ -128,15 +128,26 @@ public interface Constants {
      * OTA包版本号
      */
     String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION = "VER";
+
     /**
      * OTA包存放目录
      */
-    String TERMINAL_UPGRADE_OTA_PACKAGE = "/opt/upgrade/ota";
+    String TERMINAL_UPGRADE_OTA_PACKAGE = "/opt/upgrade/ota/package/";
+
+    /**
+     * OTA包中version存放目录
+     */
+    String TERMINAL_UPGRADE_OTA_PACKAGE_VERSION = "/opt/upgrade/ota/package/version";
+
+    /**
+     * OTA包中zip包存放目录
+     */
+    String TERMINAL_UPGRADE_OTA_PACKAGE_ZIP = "/opt/upgrade/ota/package/Rainrcd.zip";
 
     /**
      * OTA包种子文件保存目录
      */
-    String TERMINAL_UPGRADE_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed";
+    String TERMINAL_UPGRADE_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/";
 
     /**
      * 终端组件升级包路径

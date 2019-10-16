@@ -16,6 +16,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFil
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.SystemResultCheckUtil;
+import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -24,13 +25,9 @@ import com.ruijie.rcos.sk.base.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.zip.ZipFile;
 
 /**
  * Description: Function Description
@@ -48,6 +45,8 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
 
     private static final String SEED_PATH = "seed_path";
 
+    private static final String ZIP_SUFFIX = "zip";
+
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
@@ -57,29 +56,49 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
     @Override
     public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        String fileName = request.getFileName();
         String filePath = request.getFilePath();
         JSONObject jsonObject = request.getCustomData();
         CbbSystemUpgradeModeEnums upgradeMode = jsonObject.getObject(UPGRADE_MODE, CbbSystemUpgradeModeEnums.class);
-        TerminalUpgradeVersionFileInfo upgradeInfo = getPackageVersionInfo(filePath);
-        String storePackageName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
-        String toPath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE + storePackageName;
-        String packagePath = moveUpgradePackage(fileName, toPath, filePath);
-        upgradeInfo.setFilePath(packagePath);
+        TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(filePath);
         upgradeInfo.setUpgradeMode(upgradeMode);
         terminalSystemUpgradePackageService.saveTerminalUpgradePackage(upgradeInfo);
         // 替换升级文件,清除原升级包目录下旧文件
-        FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, storePackageName);
+        FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, upgradeInfo.getPackageName());
 
     }
 
-    private TerminalUpgradeVersionFileInfo getPackageVersionInfo(String filePath) throws BusinessException {
+    private TerminalUpgradeVersionFileInfo getPackageInfo(String filePath) throws BusinessException {
         Assert.hasText(filePath, "filePath can not be blank");
+        String storePackageName = UUID.randomUUID() + ZIP_SUFFIX;
+        String packagePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE + storePackageName;
+        //解压zip文件
+        Properties prop = unZipPackage(filePath);
+        File newFile = new File(packagePath);
+        File oldFile = new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP);
+        //解压后的zip文件重命名
+        oldFile.renameTo(newFile);
+        TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
+        upgradeInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION));
+        upgradeInfo.setFileMD5(prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5));
+        upgradeInfo.setPackageName(storePackageName);
+        upgradeInfo.setFilePath(packagePath);
+        SeedFileInfo seedFileInfo = makeBtSeed(filePath);
+        upgradeInfo.setSeedLink(seedFileInfo.getSeedFilePath());
+        upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
+        return upgradeInfo;
+    }
 
+    private Properties unZipPackage(String filePath) throws BusinessException {
+        Assert.hasText(filePath, "filePath can not be blank");
+        File zipFile = new File(filePath);
+        String unZipFilePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE;
+        createFilePath(unZipFilePath);
+        File unZipFile = new File(unZipFilePath);
+        String versionFilePath = getVersionFilePath();
         Properties prop = new Properties();
         try {
-            ZipFile zipFile = new ZipFile(filePath);
-            InputStream inputStream = zipFile.getInputStream(zipFile.getEntry("version"));
+            ZipUtil.unzipFile(zipFile, unZipFile);
+            InputStream inputStream = new FileInputStream(versionFilePath);
             prop.load(inputStream);
         } catch (FileNotFoundException e) {
             LOGGER.debug("version file not found, file path[{}]", filePath);
@@ -89,18 +108,14 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
 
-        TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
-        upgradeInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION));
-        upgradeInfo.setFileMD5(prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5));
-        SeedFileInfo seedFileInfo = makeBtSeed(filePath);
-        upgradeInfo.setSeedLink(seedFileInfo.getSeedFilePath());
-        upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
-        return upgradeInfo;
+        return prop;
+
     }
 
     private SeedFileInfo makeBtSeed(String filePath) throws BusinessException {
         Assert.notNull(filePath, "filePath can not be null");
         String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
+        createFilePath(seedSavePath);
         CbbMakeBtSeedRequest request = new CbbMakeBtSeedRequest(getLocalIP(), filePath, seedSavePath);
         String result = Bt.btMakeSeed_block(JSON.toJSONString(request));
         SystemResultCheckUtil.checkResult(result);
@@ -140,5 +155,18 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
         return response.getNetworkDTO().getIp();
     }
 
+    private void createFilePath(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.mkdir();
+            file.setReadable(true, false);
+            file.setExecutable(true, false);
+        }
+
+    }
+
+    private String getVersionFilePath() {
+        return Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION;
+    }
 
 }

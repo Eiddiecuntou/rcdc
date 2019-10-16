@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformR
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckUploadingResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
@@ -21,7 +22,7 @@ import org.junit.Test;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * 
@@ -92,13 +93,41 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         assertTrue(true);
     }
 
+
     /**
-     * uploadUpgradePackage，正常
+     *测试uploadUpgradePackage，有升级包在上传
      *
-     * @throws BusinessException 异常
+     * @throws Exception 异常
      */
     @Test
-    public void testuploadUpgradePackage() throws BusinessException {
+    public void testUploadUpgradePackageIsUploading() throws Exception {
+        TerminalSystemUpgradeHandler handler = new LinuxVDISystemUpgradeHandler();
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFileName("123.iso");
+        request.setFilePath("/temp");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("platType", "VDI");
+        jsonObject.put("osType", "Linux");
+        request.setCustomData(jsonObject);
+        Set<TerminalTypeEnums> upgradePackageUploadnigSet = Deencapsulation.getField(upgradePackageAPIImpl, "SYS_UPGRADE_PACKAGE_UPLOADING");
+        upgradePackageUploadnigSet.add(TerminalTypeEnums.VDI_LINUX);
+        try {
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING, e.getKey());
+        }
+        upgradePackageUploadnigSet.clear();
+
+    }
+
+    /**
+     * 测试uploadUpgradePackage，没有升级包在上传
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testUploadUpgradePackage() throws Exception {
 
         TerminalSystemUpgradeHandler handler = new LinuxVDISystemUpgradeHandler();
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();

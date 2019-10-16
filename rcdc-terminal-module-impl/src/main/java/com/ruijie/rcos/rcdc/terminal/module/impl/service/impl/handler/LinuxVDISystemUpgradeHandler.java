@@ -77,7 +77,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
         // 将新升级文件移动到目录下
         String storePackageName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
         final String toPath = Constants.TERMINAL_UPGRADE_ISO_PATH_VDI + storePackageName;
-        final String packagePath = moveUpgradePackage(fileName, toPath, filePath);
+        final String packagePath = moveUpgradePackage(toPath, filePath);
         // 更新升级包信息入库
         versionInfo.setFilePath(packagePath);
         terminalSystemUpgradePackageService.saveTerminalUpgradePackage(versionInfo);

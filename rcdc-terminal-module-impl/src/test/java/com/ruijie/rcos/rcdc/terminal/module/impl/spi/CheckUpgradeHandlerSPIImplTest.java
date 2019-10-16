@@ -1,11 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
@@ -16,10 +10,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
 import mockit.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -47,6 +45,9 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Injectable
     private TerminalComponentUpgradeService componentUpgradeService;
 
+    @Injectable
+    private TerminalBasicInfoService basicInfoService;
+
 
     /**
      * 测试检查组件升级- 更新终端信息
@@ -62,6 +63,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         entity.setPlatform(TerminalPlatformEnums.VDI);
         new Expectations() {
             {
+                basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 result = entity;
                 try {
@@ -102,6 +104,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 result = null;
+                basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
                 try {
                     messageHandlerAPI.response((CbbResponseShineMessage) any);
                 } catch (Exception e) {
@@ -133,11 +136,10 @@ public class CheckUpgradeHandlerSPIImplTest {
     private void saveVerifications() {
         new Verifications() {
             {
-                TerminalEntity basicInfoEntity;
-                basicInfoDAO.save(basicInfoEntity = withCapture());
-                assertEquals(basicInfoEntity.getTerminalId(), "123");
-                assertEquals(basicInfoEntity.getTerminalName(), "t-box2");
-                assertEquals(basicInfoEntity.getCpuType(), "intel5");
+                basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
+                times = 1;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 1;
             }
         };
     }

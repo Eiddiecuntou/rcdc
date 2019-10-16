@@ -24,30 +24,29 @@ public abstract class AbstractTerminalSystemUpgradeHandler implements TerminalSy
 
     /**
      *
-     * @param fileName 文件名
      * @param toPath 目的路径
-     * @param filePath 原路径
+     * @param fromPath 原路径
      * @return 升级包保存路径
      * @throws BusinessException 异常
      */
-    public String moveUpgradePackage(String fileName, String toPath, String filePath)
+    public String moveUpgradePackage(String toPath, String fromPath)
             throws BusinessException {
-        Assert.notNull(fileName, "fileName can not be null");
         Assert.notNull(toPath, "toPath can not be null");
-        Assert.notNull(filePath, "filePath can not be null");
-        LOGGER.info("开始移动刷机包[{}]到路径[{}]", fileName, Constants.TERMINAL_UPGRADE_ISO_PATH_VDI);
+        Assert.notNull(fromPath, "fromPath can not be null");
         File to = new File(toPath);
-        File from = new File(filePath);
+        File from = new File(fromPath);
 
         // 再次校验磁盘空间是否足够
         final boolean isEnough = checkPackageDiskSpaceIsEnough(from.length());
+
         if (!isEnough) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH);
         }
+
         try {
             Files.move(from, to);
         } catch (Exception e) {
-            LOGGER.debug("move upgrade file to target directory fail, fileName : {}", fileName);
+            LOGGER.debug("move upgrade file to target directory fail");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e);
         }
         LOGGER.info("完成移动刷机包");

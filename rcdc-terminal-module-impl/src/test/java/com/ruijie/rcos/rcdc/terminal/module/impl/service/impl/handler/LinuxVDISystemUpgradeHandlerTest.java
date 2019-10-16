@@ -122,8 +122,8 @@ public class LinuxVDISystemUpgradeHandlerTest {
      */
     @Test
     public void testUploadUpgradeFileMountUpgradePackageFail() throws BusinessException {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
+        String path = LinuxVDISystemUpgradeHandlerTest.class.getResource("/").getPath() + "testVersion";
+        new MockUp<LinuxVDISystemUpgradeHandlerTest>() {
             @Mock
             public String getVersionFilePath() {
                 return path;
@@ -268,6 +268,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
                 return path;
             }
         };
+
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
