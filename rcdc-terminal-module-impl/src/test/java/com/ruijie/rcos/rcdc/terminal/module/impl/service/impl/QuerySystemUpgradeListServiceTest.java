@@ -72,19 +72,13 @@ public class QuerySystemUpgradeListServiceTest {
     public void testFindSpecificationIsNull(@Mocked Pageable pageable, @Mocked Page<TerminalSystemUpgradeEntity> page) {
         Specification<TerminalSystemUpgradeEntity> specification = null;
 
-        new Expectations() {
-            {
-                terminalSystemUpgradeDAO.findAll(specification, pageable);
-                result = page;
-            }
-        };
         service.find(specification, pageable);
         new Verifications() {
             {
                 terminalSystemUpgradeDAO.findAll(pageable);
                 times = 1;
                 terminalSystemUpgradeDAO.findAll(specification, pageable);
-                times = 1;
+                times = 0;
             }
         };
     }

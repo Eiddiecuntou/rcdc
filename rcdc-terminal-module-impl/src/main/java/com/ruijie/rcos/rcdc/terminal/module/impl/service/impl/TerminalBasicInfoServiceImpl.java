@@ -89,6 +89,13 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         Assert.hasText(terminalId, "terminalId 不能为空");
         // 如果当前终端状态为升级中，则不更新为离线状态
         TerminalEntity entity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+
+        Session session = sessionManager.getSession(terminalId);
+        if (session != null) {
+            LOGGER.info("存在session连接，终端处于在线状态，不做离线状态更新；terminalId={}", terminalId);
+            return;
+        }
+
         if (CbbTerminalStateEnums.UPGRADING == entity.getState()) {
             LOGGER.info("当前终端处于升级状态，不做离线状态修改；terminalId={}, ip={}", terminalId, entity.getIp());
             return;

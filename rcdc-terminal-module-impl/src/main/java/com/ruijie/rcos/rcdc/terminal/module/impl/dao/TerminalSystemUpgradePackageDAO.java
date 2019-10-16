@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 
@@ -27,7 +27,7 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
      * @param packageType 升级包类型
      * @return 返回系统升级包信息
      */
-    TerminalSystemUpgradePackageEntity findFirstByPackageType(TerminalPlatformEnums packageType);
+    TerminalSystemUpgradePackageEntity findFirstByPackageType(CbbTerminalPlatformEnums packageType);
 
 
     /**
@@ -37,7 +37,7 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
      * @param packageType 升级包类型
      * @return 返回系统升级包信息
      */
-    List<TerminalSystemUpgradePackageEntity> findByPackageType(TerminalPlatformEnums packageType);
+    List<TerminalSystemUpgradePackageEntity> findByPackageType(CbbTerminalPlatformEnums packageType);
 
     /**
      * 查询终端系统升级包列表
@@ -61,7 +61,7 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
     @Transactional
     @Query("update TerminalSystemUpgradePackageEntity set packageVersion=:packageVersion "
             + ",imgName=:imgName,version = version + 1 where packageType=:packageType and version=:version")
-    int modifyTerminalUpgradePackageVersion(@Param("imgName") String imgName, @Param("packageType") TerminalPlatformEnums packageType,
+    int modifyTerminalUpgradePackageVersion(@Param("imgName") String imgName, @Param("packageType") CbbTerminalPlatformEnums packageType,
             @Param("packageVersion") String packageVersion, @Param("version") int version);
 
 }

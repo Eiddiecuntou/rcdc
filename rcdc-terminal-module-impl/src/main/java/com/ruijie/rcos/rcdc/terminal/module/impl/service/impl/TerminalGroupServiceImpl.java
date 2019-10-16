@@ -49,7 +49,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     private GroupTotalNumChecker groupTotalNumChecker;
 
     @Override
-    public void saveTerminalGroup(TerminalGroupDTO terminalGroup) throws BusinessException {
+    public synchronized void saveTerminalGroup(TerminalGroupDTO terminalGroup) throws BusinessException {
         Assert.notNull(terminalGroup, "terminal group can not be null");
         String groupName = terminalGroup.getGroupName();
         Assert.hasText(groupName, "terminal group name can not be null");
