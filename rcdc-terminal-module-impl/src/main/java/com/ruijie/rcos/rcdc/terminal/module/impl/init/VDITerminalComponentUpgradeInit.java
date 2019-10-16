@@ -46,7 +46,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
     private static final String INIT_COMMAND = "python %s %s";
 
     private static final ExecutorService EXECUTOR_SERVICE =
-            ThreadExecutors.newBuilder(VDITerminalComponentUpgradeInit.class.getName()).maxThreadNum(1).queueSize(1).build();
+            ThreadExecutors.newBuilder(VDITerminalComponentUpgradeInit.class.getName()).maxThreadNum(2).queueSize(1).build();
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
