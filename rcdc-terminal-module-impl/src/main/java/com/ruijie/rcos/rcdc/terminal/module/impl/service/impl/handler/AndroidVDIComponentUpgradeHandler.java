@@ -79,10 +79,16 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         return terminalOTAVersion == 0 || isVersionBigger(rainOsVersion, updatelist.getOsLimit());
     }
 
+    /**
+     * 检查终端是否需要升级
+     *
+     * @param: updatelist updatelist文件内容
+     * @param：request 终端信息对象
+     * @return: boolean 是否需要升级结果
+     */
     private boolean isNeedToUpgrade(CbbAndroidVDIUpdateListDTO updatelist, GetVersionRequest request) {
-        // 版本不相同或updatelist的MD5不相同,则需要升级
-        String rainOsVersion = request.getRainOsVersion();
-        String validateMd5 = request.getValidateMd5();
-        return !rainOsVersion.equals(updatelist.getVersion()) || !Objects.equals(validateMd5, updatelist.getValidateMd5());
+        boolean isVersionEqual = request.getRainOsVersion().equals(updatelist.getVersion());
+        boolean isMD5Equal = Objects.equals(request.getValidateMd5(), updatelist.getValidateMd5());
+        return !isVersionEqual || !isMD5Equal;
     }
 }
