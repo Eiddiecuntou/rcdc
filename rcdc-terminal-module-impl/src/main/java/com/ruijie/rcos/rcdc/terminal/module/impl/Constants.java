@@ -120,10 +120,14 @@ public interface Constants {
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION = "version";
 
     /**
-     * 终端组件升级包路径
+     * Linux VDI 终端组件升级包路径
      */
-    String TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_linux/temp";
+    String LINUX_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_linux/temp";
 
+    /**
+     * Android VDI 终端组件升级包路径
+     */
+    String ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_android/temp";
 
     /**
      * 终端检测超时时间（单位:秒）

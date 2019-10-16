@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 
 /**
- *
  * Description: 终端组件升级bt服务初始化
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
@@ -35,9 +34,9 @@ import java.util.concurrent.ExecutorService;
  * @author nt
  */
 @Service
-public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInitializer {
+public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDITerminalComponentUpgradeInit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VDITerminalComponentUpgradeInit.class);
 
     private static final String INIT_PYTHON_SCRIPT_PATH_VDI_LINUX = "/data/web/rcdc/shell/updateLinuxVDI.py";
 
@@ -46,7 +45,7 @@ public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInit
     private static final String INIT_COMMAND = "python %s %s";
 
     private static final ExecutorService EXECUTOR_SERVICE =
-            ThreadExecutors.newBuilder(LinuxVDITerminalComponentUpgradeInit.class.getName()).maxThreadNum(2).queueSize(1).build();
+            ThreadExecutors.newBuilder(VDITerminalComponentUpgradeInit.class.getName()).maxThreadNum(2).queueSize(1).build();
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
@@ -63,10 +62,34 @@ public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInit
     @Override
     public void safeInit() {
         LOGGER.info("开始异步执行初始化Linux VDI终端升级组件");
-        EXECUTOR_SERVICE.execute(() -> initTerminalComponent());
+        EXECUTOR_SERVICE.execute(() -> initLinuxVDITerminalComponent());
+        LOGGER.info("开始异步执行初始化Android VDI终端升级组件");
+        EXECUTOR_SERVICE.execute(() -> initAndroidVDIVDITerminalComponent());
     }
 
-    private void initTerminalComponent() {
+    private void initLinuxVDITerminalComponent() {
+        String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_LINUX;
+        TerminalTypeEnums terminalType = TerminalTypeEnums.VDI_LINUX;
+        String tempPath = Constants.LINUX_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
+        // 检查环境,判断是否需要升级,需要则进行升级
+        checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
+        LOGGER.info("init upgrade ceche");
+        // 更新Linux VDI 终端缓存中的updatelist
+        linuxVDIUpdatelistCacheInit.init();
+    }
+
+    private void initAndroidVDIVDITerminalComponent() {
+        String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID;
+        TerminalTypeEnums terminalType = TerminalTypeEnums.VDI_ANDROID;
+        String tempPath = Constants.ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
+        // 检查环境,判断是否需要升级,需要则进行升级
+        checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
+        LOGGER.info("init upgrade ceche");
+        // 更新android终端缓存中的updatelist
+        androidVDIUpdatelistCacheInit.init();
+    }
+
+    private void checkAndUpgrade(String pythonScriptPath, TerminalTypeEnums terminalType, String upgradeTempPath) {
         // 添加操作系统判断，使初始化失败不影响开发阶段的调试
         boolean isDevelop = Enviroment.isDevelop();
         LOGGER.info("enviroment is develope: {}", isDevelop);
@@ -74,10 +97,8 @@ public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInit
             LOGGER.info("enviroment is develope, skip upgrade bt share init...");
             return;
         }
-
         // bt服务初始化，判断ip是否变更，如果变化则进行bt服务的初始化操作
         LOGGER.info("start upgrade bt share init...");
-
         String currentIp;
         try {
             currentIp = getLocalIP();
@@ -85,18 +106,14 @@ public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInit
             LOGGER.error("obtain host ip error, can not make init bt server.", e);
             return;
         }
-        if (needUpgrade(currentIp)) {
-            executeUpdate(currentIp);
+        if (needUpgrade(currentIp, upgradeTempPath)) {
+            executeUpdate(currentIp, pythonScriptPath, terminalType);
             return;
         }
-
-        LOGGER.info("init upgrade ceche");
-        // 更新缓存中的updatelist
-        linuxVDIUpdatelistCacheInit.init();
-        androidVDIUpdatelistCacheInit.init();
     }
 
-    private boolean needUpgrade(String currentIp) {
+
+    private boolean needUpgrade(String currentIp, String upgradeTempPath) {
 
         String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
 
@@ -110,7 +127,7 @@ public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInit
             return true;
         }
 
-        File tempDir = new File(Constants.TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH);
+        File tempDir = new File(upgradeTempPath);
         if (tempDir.isDirectory()) {
             // 系统补丁包升级后，需要制作新版本的升级业务
             return true;
@@ -119,18 +136,10 @@ public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInit
         return false;
     }
 
-    private void executeUpdate(String currentIp) {
+    private void executeUpdate(String currentIp, String pythonScriptPath, TerminalTypeEnums terminalType) {
         LOGGER.info("start invoke pythonScript...");
-        // 调用LinuxVDI终端组件升级python脚本
-        String shellCmdLinuxVDI = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH_VDI_LINUX, currentIp);
-        EXECUTOR_SERVICE.execute(() -> invokePythonScript(shellCmdLinuxVDI, TerminalTypeEnums.VDI_LINUX));
-        // 调用Android终端组件升级python脚本
-        String shellCmdAndroidVDI = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID, currentIp);
-        EXECUTOR_SERVICE.execute(() -> invokePythonScript(shellCmdAndroidVDI, TerminalTypeEnums.VDI_ANDROID));
-    }
-
-    private void invokePythonScript(String shellCmd, TerminalTypeEnums terminalType) {
         ShellCommandRunner runner = new ShellCommandRunner();
+        String shellCmd = String.format(INIT_COMMAND, pythonScriptPath, currentIp);
         LOGGER.info("execute shell cmd : {}", shellCmd);
         runner.setCommand(shellCmd);
         try {
@@ -139,10 +148,12 @@ public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInit
         } catch (BusinessException e) {
             LOGGER.error("bt share init error", e);
         }
+
+        LOGGER.info("success invoke [{}] pythonScript...", terminalType.toString());
     }
 
+
     /**
-     *
      * Description: Function Description
      * Copyright: Copyright (c) 2018
      * Company: Ruijie Co., Ltd.
@@ -154,7 +165,8 @@ public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInit
 
         private TerminalTypeEnums terminalType;
 
-        public BtShareInitReturnValueResolver (TerminalTypeEnums terminalType) {
+        public BtShareInitReturnValueResolver(TerminalTypeEnums terminalType) {
+            Assert.notNull(terminalType, "terminalType cannot be null");
             this.terminalType = terminalType;
         }
 
@@ -163,12 +175,10 @@ public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInit
             Assert.hasText(command, "command can not be null");
             Assert.notNull(exitValue, "existValue can not be null");
             Assert.hasText(outStr, "outStr can not be null");
-
             if (exitValue.intValue() != 0) {
                 LOGGER.error("bt share init python script execute error, exitValue: {}, outStr: {}", exitValue, outStr);
                 throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
             }
-
             // 更新数据库中的服务器ip
             globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
             // 更新缓存中的updatelist
