@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import java.util.List;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +10,6 @@ import org.junit.runner.RunWith;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
 import mockit.Tested;

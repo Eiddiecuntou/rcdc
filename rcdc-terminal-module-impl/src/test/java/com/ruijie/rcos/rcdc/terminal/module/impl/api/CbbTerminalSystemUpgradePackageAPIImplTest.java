@@ -1,25 +1,42 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalTypeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckUploadingResultResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.LinuxVDISystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import mockit.*;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 
+import java.io.File;
+import java.text.ParseException;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -127,7 +144,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     /**
      * 测试uploadUpgradeFile，系统升级任务正在进行中
      * 
-     * @throws BusinessException 异常
+     * @throws Exception 异常
      */
     @Test
     public void testUploadUpgradePackage() throws Exception {
@@ -482,7 +499,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     private TerminalSystemUpgradePackageEntity buildSystemUpgradePackageEntity(UUID packageId) throws ParseException {
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
-        packageEntity.setPackageType(CbbTerminalPlatformEnums.VDI);
+        packageEntity.setPackageType(TerminalTypeEnums.VDI_LINUX);
         packageEntity.setIsDelete(false);
         packageEntity.setFilePath("filepath");
         packageEntity.setDistributionMode(CbbSystemUpgradeDistributionModeEnums.FAST_UPGRADE);

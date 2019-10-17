@@ -1,12 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import java.util.Collections;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.GetVersionRequest;
@@ -20,15 +16,10 @@ import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Collections;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import mockit.integration.junit4.JMockit;
 
 /**
  * 

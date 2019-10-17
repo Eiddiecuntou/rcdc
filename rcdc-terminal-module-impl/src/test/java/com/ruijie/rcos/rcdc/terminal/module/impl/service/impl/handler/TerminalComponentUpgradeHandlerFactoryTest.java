@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;

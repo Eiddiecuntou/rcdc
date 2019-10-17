@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 
 import javax.persistence.*;
@@ -16,9 +16,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * Description: 终端系统升级包实体类
@@ -63,10 +60,10 @@ public class TerminalSystemUpgradePackageEntity {
 
 
     @Enumerated(EnumType.STRING)
-    private SystemUpgradePackageOriginEnums origin;
+    private CbbSystemUpgradePackageOriginEnums origin;
 
     @Enumerated(EnumType.STRING)
-    private SystemUpgradeDistributionModeEnums distributionMode;
+    private CbbSystemUpgradeDistributionModeEnums distributionMode;
 
     private Boolean isDelete;
 
@@ -177,23 +174,19 @@ public class TerminalSystemUpgradePackageEntity {
         this.version = version;
     }
 
-
-    public SystemUpgradePackageOriginEnums getOrigin() {
+    public CbbSystemUpgradePackageOriginEnums getOrigin() {
         return origin;
     }
 
-
-    public void setOrigin(SystemUpgradePackageOriginEnums origin) {
+    public void setOrigin(CbbSystemUpgradePackageOriginEnums origin) {
         this.origin = origin;
     }
 
-
-    public SystemUpgradeDistributionModeEnums getDistributionMode() {
+    public CbbSystemUpgradeDistributionModeEnums getDistributionMode() {
         return distributionMode;
     }
 
-
-    public void setDistributionMode(SystemUpgradeDistributionModeEnums distributionMode) {
+    public void setDistributionMode(CbbSystemUpgradeDistributionModeEnums distributionMode) {
         this.distributionMode = distributionMode;
     }
 

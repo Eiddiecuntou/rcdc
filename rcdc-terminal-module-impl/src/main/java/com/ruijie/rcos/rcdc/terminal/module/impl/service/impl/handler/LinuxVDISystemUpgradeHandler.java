@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -185,9 +185,9 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
 
-        TerminalPlatformEnums platType = TerminalPlatformEnums.
+        CbbTerminalPlatformEnums platType = CbbTerminalPlatformEnums.
                 valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE));
-        if (platType != TerminalPlatformEnums.VDI) {
+        if (platType != CbbTerminalPlatformEnums.VDI) {
             LOGGER.debug("暂不支持的升级包类型：{}", platType);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT, platType.name());
         }

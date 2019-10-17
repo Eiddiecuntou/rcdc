@@ -1,11 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -20,6 +26,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
@@ -27,7 +34,6 @@ import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import mockit.*;
-import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
@@ -35,12 +41,16 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.junit.Assert.*;
 
@@ -237,7 +247,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = Optional.of(upgradePackageEntity);
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
+                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalTypeRequest) any);
                 result = response;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = false;
@@ -695,7 +705,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
         packageEntity.setIsDelete(false);
-        packageEntity.setPackageType(CbbTerminalPlatformEnums.VDI);
+        packageEntity.setPackageType(TerminalTypeEnums.VDI_LINUX);
 
         List<ViewUpgradeableTerminalEntity> entityList = new ArrayList<>();
         entityList.add(new ViewUpgradeableTerminalEntity());

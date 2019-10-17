@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
