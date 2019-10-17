@@ -1,25 +1,25 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.GetVersionRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.LinuxVDIComponentUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.*;
+import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import mockit.integration.junit4.JMockit;
+
+import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -56,6 +56,7 @@ public class TerminalComponentUpgradeServiceImplTest {
 
     /**
      * 测试getVersion,updatelist为空
+     * @throws BusinessException 异常
      */
     @Test
     public void testGetVersion() throws BusinessException {
@@ -74,7 +75,7 @@ public class TerminalComponentUpgradeServiceImplTest {
             }
         };
 
-        new MockUp<LinuxVDIComponentUpgradeHandler>(){
+        new MockUp<LinuxVDIComponentUpgradeHandler>() {
 
             @Mock
             public TerminalVersionResultDTO getVersion(GetVersionRequest request) {
@@ -90,7 +91,7 @@ public class TerminalComponentUpgradeServiceImplTest {
 
         assertEquals(111, versionDTO.getResult().intValue());
         assertEquals("sss", versionDTO.getUpdatelist());
-        new Verifications(){
+        new Verifications() {
             {
                 handlerFactory.getHandler((TerminalTypeEnums) any);
                 times = 1;

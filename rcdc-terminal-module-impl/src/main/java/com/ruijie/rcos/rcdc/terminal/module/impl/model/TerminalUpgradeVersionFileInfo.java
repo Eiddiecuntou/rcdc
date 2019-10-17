@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 
 /**
  * 
@@ -22,7 +22,7 @@ public class TerminalUpgradeVersionFileInfo {
 
     private String filePath;
 
-    private TerminalPlatformEnums packageType;
+    private TerminalTypeEnums packageType;
 
     private String fileMD5;
 
@@ -48,11 +48,11 @@ public class TerminalUpgradeVersionFileInfo {
         this.version = version;
     }
 
-    public TerminalPlatformEnums getPackageType() {
+    public TerminalTypeEnums getPackageType() {
         return packageType;
     }
 
-    public void setPackageType(TerminalPlatformEnums packageType) {
+    public void setPackageType(TerminalTypeEnums packageType) {
         this.packageType = packageType;
     }
 

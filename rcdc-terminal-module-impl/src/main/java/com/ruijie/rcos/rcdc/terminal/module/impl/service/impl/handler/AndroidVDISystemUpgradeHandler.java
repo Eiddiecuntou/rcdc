@@ -9,14 +9,18 @@ import com.ruijie.rcos.linux.library.Bt;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbMakeBtSeedRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.SystemResultCheckUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -28,6 +32,8 @@ import org.springframework.util.Assert;
 import java.io.*;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description: Function Description
@@ -47,27 +53,44 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
 
     private static final String ZIP_SUFFIX = "zip";
 
+    private static final int PERIOD_SECOND = 15;
+
+    private static ScheduledFuture<?> UPGRADE_TASK_FUTURE = null;
+
+    private static ThreadExecutor OTA_UPGRADE_SCHEDULED_THREAD_POOL =
+            ThreadExecutors.newBuilder("OTA_UPGRADE_SCHEDULED_THREAD").maxThreadNum(1).queueSize(1).build();
+
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
     @Autowired
     private NetworkAPI networkAPI;
 
+    @Autowired
+    private TerminalOtaUpgradeScheduleService terminalOtaUpgradeScheduleService;
+
     @Override
     public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
+        String fileName = request.getFileName();
         String filePath = request.getFilePath();
         JSONObject jsonObject = request.getCustomData();
         CbbSystemUpgradeModeEnums upgradeMode = jsonObject.getObject(UPGRADE_MODE, CbbSystemUpgradeModeEnums.class);
-        TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(filePath);
+        TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(fileName, filePath);
         upgradeInfo.setUpgradeMode(upgradeMode);
         terminalSystemUpgradePackageService.saveTerminalUpgradePackage(upgradeInfo);
         // 替换升级文件,清除原升级包目录下旧文件
         FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, upgradeInfo.getPackageName());
 
+        if ( UPGRADE_TASK_FUTURE == null) {
+            //开启检查终端状态定时任务
+            OTA_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(terminalOtaUpgradeScheduleService, 0, PERIOD_SECOND, TimeUnit.SECONDS);
+        }
+
     }
 
-    private TerminalUpgradeVersionFileInfo getPackageInfo(String filePath) throws BusinessException {
+    @Override
+    public TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.hasText(filePath, "filePath can not be blank");
         String storePackageName = UUID.randomUUID() + ZIP_SUFFIX;
         String packagePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE + storePackageName;
@@ -80,6 +103,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
         TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
         upgradeInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION));
         upgradeInfo.setFileMD5(prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5));
+        upgradeInfo.setPackageType(TerminalTypeEnums.VDI_ANDROID);
         upgradeInfo.setPackageName(storePackageName);
         upgradeInfo.setFilePath(packagePath);
         SeedFileInfo seedFileInfo = makeBtSeed(filePath);
@@ -138,7 +162,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
             seedMD5 = StringUtils.bytes2Hex(Md5Builder.computeFileMd5(seedFile));
         } catch (IOException e) {
             LOGGER.error("compute seed file md5 fail, seed file path[{}]", filePath);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL, e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL, e);
         }
         return seedMD5;
 

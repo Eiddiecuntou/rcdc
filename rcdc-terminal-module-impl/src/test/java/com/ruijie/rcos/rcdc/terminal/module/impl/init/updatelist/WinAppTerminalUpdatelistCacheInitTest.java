@@ -1,18 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import mockit.Tested;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
-import mockit.Tested;
+import java.util.List;
 
 /**
  * Description: Function Description
@@ -28,12 +26,18 @@ public class WinAppTerminalUpdatelistCacheInitTest {
     @Tested
     private WinAppTerminalUpdatelistCacheInit cacheInit;
 
+    /**
+     * 测试getUpdateListPath
+     */
     @Test
     public void testGetUpdateListPath() {
         String updateListPath = cacheInit.getUpdateListPath();
         Assert.assertEquals("/opt/ftp/terminal/terminal_component/windows_app/update.list", updateListPath);
     }
 
+    /**
+     * 测试getTerminalType
+     */
     @Test
     public void testGetTerminalType() {
         TerminalTypeEnums terminalType = cacheInit.getTerminalType();

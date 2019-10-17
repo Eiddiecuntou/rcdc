@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
+package com.ruijie.rcos.rcdc.terminal.module.def.enums;
 
 import org.springframework.util.Assert;
 

@@ -1,13 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -211,6 +214,25 @@ public class FileOperateUtil {
             }
         }
         return packageDir;
+    }
+
+    /**
+     * 获取指定目录下文件
+     * @param filePath 文件目录
+     * @return 返回所有文件list
+     */
+    public static List<File> listFile(String filePath) {
+        Assert.notNull(filePath, "filePath can not be null");
+        List<File> fileList = new ArrayList<File>();
+        File file = new File(filePath);
+        File[] fileArr = file.listFiles();
+        for (int i = 0; i < fileArr.length; i++) {
+            if (fileArr[i].isFile()) {
+                fileList.add(fileArr[i]);
+            }
+        }
+        return fileList;
+
     }
 
 

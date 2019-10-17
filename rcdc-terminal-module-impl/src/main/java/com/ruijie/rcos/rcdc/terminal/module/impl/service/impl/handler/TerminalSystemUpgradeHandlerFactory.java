@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.google.common.collect.Maps;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -45,7 +45,7 @@ public class TerminalSystemUpgradeHandlerFactory {
 
         if (handler == null) {
             LOGGER.error("终端类型为[{}]的系统升级处理对象不存在", terminalType.name());
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_HANDLER_NOT_EXIST,
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_HANDLER_NOT_EXIST,
                     new String[] {terminalType.name()});
         }
 

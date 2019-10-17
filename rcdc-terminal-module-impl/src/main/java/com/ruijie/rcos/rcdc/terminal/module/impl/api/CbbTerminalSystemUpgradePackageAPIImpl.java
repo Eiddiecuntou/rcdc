@@ -6,16 +6,17 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePack
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalTypeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageModifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
@@ -51,7 +52,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalSystemUpgradePackageAPIImpl.class);
 
     @Autowired
-    TerminalSystemUpgradeHandlerFactory handlerFactory;
+    private TerminalSystemUpgradeHandlerFactory handlerFactory;
 
     private static final BeanCopier PACKAGE_BEAN_COPIER =
             BeanCopier.create(TerminalSystemUpgradePackageEntity.class, CbbTerminalSystemUpgradePackageInfoDTO.class, false);
@@ -77,11 +78,11 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private static final String OS_TYPE = "osType";
 
     @Override
-    public CbbCheckUploadingResultResponse isUpgradeFileUploading(CbbTerminalPlatformRequest request) {
+    public CbbCheckUploadingResultResponse isUpgradeFileUploading(CbbTerminalTypeRequest request) {
         Assert.notNull(request, "request can not be null");
 
         CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
-        response.setHasLoading(SYS_UPGRADE_PACKAGE_UPLOADING.contains(request.getPlatform()));
+        response.setHasLoading(SYS_UPGRADE_PACKAGE_UPLOADING.contains(request.getTerminalType()));
         return response;
     }
 
@@ -129,6 +130,16 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         handler.uploadUpgradePackage(request);
         // 完成清除上传标志缓存内记录
         SYS_UPGRADE_PACKAGE_UPLOADING.remove(terminalType);
+        return DefaultResponse.Builder.success();
+    }
+
+    @Override
+    public DefaultResponse modifyUpgradePackage(CbbTerminalUpgradePackageModifyRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        TerminalSystemUpgradePackageEntity packageEntity =
+                terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getPackageId());
+        packageEntity.setUpgradeMode(request.getUpgradeMode());
+        terminalSystemUpgradePackageDAO.save(packageEntity);
         return DefaultResponse.Builder.success();
     }
 

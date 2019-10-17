@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -16,6 +16,8 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+
+import java.util.Date;
 
 /**
  * Description: Function Description
@@ -58,12 +60,24 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
 
     private void updateTerminalUpgradeStatus(OtaUpgradeResultInfo otaUpgradeResultInfo) {
         Assert.notNull(otaUpgradeResultInfo, "otaUpgradeResultInfo can not be null");
-        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalPlatformEnums.RK3188);
-        TerminalSystemUpgradeTerminalEntity upgradeTerminal = systemUpgradeTerminalDAO
-                .findFirstBySysUpgradeIdAndTerminalId(upgradePackage.getId(), otaUpgradeResultInfo.getBasicInfo().getTerminalId());
-        if (upgradeTerminal != null) {
-            upgradeTerminal.setState(otaUpgradeResultInfo.getUpgradeResult());
-            systemUpgradeTerminalDAO.save(upgradeTerminal);
+        Assert.notNull(otaUpgradeResultInfo.getOtaVersion(), "otaUpgradeResultInfo.getOtaVersion() can not be null");
+        Assert.notNull(otaUpgradeResultInfo.getBasicInfo(), "otaUpgradeResultInfo.getBasicInfo() can not be null");
+        String terminalId = otaUpgradeResultInfo.getBasicInfo().getTerminalId();
+        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalTypeEnums.VDI_ANDROID);
+        if (upgradePackage == null) {
+            LOGGER.info("OTA升级包不存在");
+            return;
         }
+        TerminalSystemUpgradeTerminalEntity upgradeTerminal = systemUpgradeTerminalDAO
+                .findFirstBySysUpgradeIdAndTerminalId(upgradePackage.getId(), terminalId);
+        if (upgradeTerminal == null) {
+            upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
+            upgradeTerminal.setSysUpgradeId(upgradePackage.getId());
+            upgradeTerminal.setTerminalId(terminalId);
+            upgradeTerminal.setTerminalType(TerminalTypeEnums.VDI_ANDROID);
+            upgradeTerminal.setCreateTime(new Date());
+        }
+        upgradeTerminal.setState(otaUpgradeResultInfo.getUpgradeResult());
+        systemUpgradeTerminalDAO.save(upgradeTerminal);
     }
 }

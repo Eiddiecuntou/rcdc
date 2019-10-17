@@ -2,8 +2,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -14,6 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalOtaUpgradeInfo;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -55,8 +57,14 @@ public class CheckOtaUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     private TerminalOtaUpgradeInfo getTerminaOtaUpgradeInfo() {
         TerminalOtaUpgradeInfo upgradeInfo = new TerminalOtaUpgradeInfo();
-        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalPlatformEnums.RK3188);
-        Assert.notNull(upgradePackage, "upgradePackage can not be null");
+        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalTypeEnums.VDI_ANDROID);
+        if (upgradePackage == null ) {
+            upgradeInfo.setOtaVersion(StringUtils.EMPTY);
+            upgradeInfo.setOtaMD5(StringUtils.EMPTY);
+            upgradeInfo.setOtaSeedLink(StringUtils.EMPTY);
+            upgradeInfo.setOtaSeedMD5(StringUtils.EMPTY);
+            upgradeInfo.setUpgradeMode(CbbSystemUpgradeModeEnums.NOUPGRADE);
+        }
         upgradeInfo.setOtaVersion(upgradePackage.getPackageVersion());
         upgradeInfo.setOtaMD5(upgradePackage.getFileMD5());
         upgradeInfo.setOtaSeedLink(upgradePackage.getSeedPath());

@@ -1,14 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalTypeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckUploadingResultResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.LinuxVDISystemUpgradeHandler;
@@ -72,11 +71,11 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testIsUpgradeFileUploading() {
-        Set<TerminalPlatformEnums> uploadingSet =
+        Set<TerminalTypeEnums> uploadingSet =
                 Deencapsulation.getField(CbbTerminalSystemUpgradePackageAPIImpl.class, "SYS_UPGRADE_PACKAGE_UPLOADING");
-        uploadingSet.add(TerminalPlatformEnums.VDI);
-        CbbTerminalPlatformRequest request = new CbbTerminalPlatformRequest();
-        request.setPlatform(TerminalPlatformEnums.VDI);
+        uploadingSet.add(TerminalTypeEnums.VDI_LINUX);
+        CbbTerminalTypeRequest request = new CbbTerminalTypeRequest();
+        request.setTerminalType(TerminalTypeEnums.VDI_LINUX);
         CbbCheckUploadingResultResponse response = upgradePackageAPIImpl.isUpgradeFileUploading(request);
         assertTrue(response.isHasLoading());
         uploadingSet.clear();

@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -170,6 +171,12 @@ public class AbstractTerminalSystemUpgradeHandlerTest {
         @Override
         public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
 
+        }
+
+        @Override
+        public TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
+            // 测试类
+            return null;
         }
     }
 }

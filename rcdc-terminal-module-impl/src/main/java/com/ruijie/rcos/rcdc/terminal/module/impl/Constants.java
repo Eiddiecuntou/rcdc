@@ -130,6 +130,16 @@ public interface Constants {
     String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION = "VER";
 
     /**
+     * OTA包版本号
+     */
+    String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT = "PLAT";
+
+    /**
+     * OTA包存放目录
+     */
+    String TERMINAL_UPGRADE_OTA = "/opt/upgrade/ota/";
+
+    /**
      * OTA包存放目录
      */
     String TERMINAL_UPGRADE_OTA_PACKAGE = "/opt/upgrade/ota/package/";

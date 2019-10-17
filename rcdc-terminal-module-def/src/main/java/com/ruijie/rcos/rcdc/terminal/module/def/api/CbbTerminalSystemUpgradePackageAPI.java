@@ -1,7 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalTypeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageModifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -52,7 +53,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 上传文件结果
      */
     @NoRollback
-    CbbCheckUploadingResultResponse isUpgradeFileUploading(CbbTerminalPlatformRequest request);
+    CbbCheckUploadingResultResponse isUpgradeFileUploading(CbbTerminalTypeRequest request);
 
     /**
      * 
@@ -87,5 +88,15 @@ public interface CbbTerminalSystemUpgradePackageAPI {
     @NoRollback
     CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request)
             throws BusinessException;
+
+    /**
+     *
+     * @param request 请求参数
+     * @return 请求响应
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    DefaultResponse modifyUpgradePackage(CbbTerminalUpgradePackageModifyRequest request) throws BusinessException;
+
 
 }

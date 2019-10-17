@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImpl;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImplTest;
@@ -84,6 +84,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
     public void testUploadUpgradeFileSystemUpgradePackageVersionFileNotFoundException() {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
+        request.setFilePath("/temp");
         try {
             handler.uploadUpgradePackage(request);
             fail();
@@ -107,6 +108,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         };
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
+        request.setFilePath("/temp");
         try {
             handler.uploadUpgradePackage(request);
             fail();
@@ -149,6 +151,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         };
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
+        request.setFilePath("/temp");
         try {
             handler.uploadUpgradePackage(request);
             fail();
@@ -173,6 +176,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         };
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
+        request.setFilePath("/temp");
         try {
             handler.uploadUpgradePackage(request);
             fail();
@@ -208,6 +212,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         };
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
+        request.setFilePath("/temp");
         try {
             handler.uploadUpgradePackage(request);
             fail();
@@ -285,7 +290,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
 
         new Expectations() {
             {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((TerminalPlatformEnums) any);
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((TerminalTypeEnums) any);
                 result = new TerminalSystemUpgradePackageEntity();
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 result = true;
@@ -338,7 +343,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
         }
     }
 

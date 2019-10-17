@@ -2,10 +2,12 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import mockit.*;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Verifications;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +15,6 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Description: Function Description
@@ -27,10 +27,14 @@ import java.util.Map;
 @RunWith(SkyEngineRunner.class)
 public class AbstractUpdatelistCacheInitTemplateTest {
 
+    /**
+     * 测试initWhileUpdateListFileIsNotFile
+     * @throws IOException 异常
+     */
     @Test
     public void testInitWhileUpdateListFileIsNotFile() throws IOException {
 
-        new MockUp<File>(){
+        new MockUp<File>() {
             @Mock
             public boolean isFile() {
                 return false;
@@ -47,7 +51,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         TestedUpdatelistCacheInit cacheInit = new TestedUpdatelistCacheInit();
         cacheInit.init();
 
-        new Verifications(){
+        new Verifications() {
             {
                 FileUtils.readFileToString((File) any, (Charset) any);
                 times = 0;
@@ -56,10 +60,14 @@ public class AbstractUpdatelistCacheInitTemplateTest {
 
     }
 
+    /**
+     * 测试 initWhileReadUpdateListFileContentError
+     * @throws IOException 异常
+     */
     @Test
     public void testInitWhileReadUpdateListFileContentError() throws IOException {
 
-        new MockUp<File>(){
+        new MockUp<File>() {
             @Mock
             public boolean isFile() {
                 return true;
@@ -84,7 +92,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         TestedUpdatelistCacheInit cacheInit = new TestedUpdatelistCacheInit();
         cacheInit.init();
 
-        new Verifications(){
+        new Verifications() {
             {
                 JSON.parseObject(anyString, (Class) any);
                 times = 0;
@@ -92,10 +100,14 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         };
     }
 
+    /**
+     * 测试initWhileUpdateListParseObjectIsNull
+     * @throws IOException 异常
+     */
     @Test
     public void testInitWhileUpdateListParseObjectIsNull() throws IOException {
 
-        new MockUp<File>(){
+        new MockUp<File>() {
             @Mock
             public boolean isFile() {
                 return true;
@@ -119,7 +131,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
 
         new MockUp(TestedUpdatelistCacheInit.class) {
             @Mock
-            public void fillUpdateList(CbbCommonUpdatelistDTO updatelist){
+            public void fillUpdateList(CbbCommonUpdatelistDTO updatelist) {
                 throw new RuntimeException("aaa");
             }
         };
@@ -131,7 +143,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
             Assert.fail();
         }
 
-        new Verifications(){
+        new Verifications() {
             {
                 FileUtils.readFileToString((File) any, (Charset) any);
                 times = 1;
@@ -143,10 +155,14 @@ public class AbstractUpdatelistCacheInitTemplateTest {
 
     }
 
+    /**
+     * 测试initWhileComponentListIsEmpty
+     * @throws IOException 异常
+     */
     @Test
     public void testInitWhileComponentListIsEmpty() throws IOException {
 
-        new MockUp<File>(){
+        new MockUp<File>() {
             @Mock
             public boolean isFile() {
                 return true;
@@ -169,7 +185,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
 
         new MockUp(TestedUpdatelistCacheInit.class) {
             @Mock
-            public void fillUpdateList(CbbCommonUpdatelistDTO updatelist){
+            public void fillUpdateList(CbbCommonUpdatelistDTO updatelist) {
                 throw new RuntimeException("aaa");
             }
         };
@@ -181,7 +197,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
             Assert.fail();
         }
 
-        new Verifications(){
+        new Verifications() {
             {
                 FileUtils.readFileToString((File) any, (Charset) any);
                 times = 1;
@@ -193,10 +209,14 @@ public class AbstractUpdatelistCacheInitTemplateTest {
 
     }
 
+    /**
+     * 测试init
+     * @throws IOException 异常
+     */
     @Test
     public void testInit() throws IOException {
 
-        new MockUp<File>(){
+        new MockUp<File>() {
             @Mock
             public boolean isFile() {
                 return true;
@@ -206,7 +226,8 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         new MockUp(FileUtils.class) {
             @Mock
             public String readFileToString(File file, Charset charset) {
-                return "{\"componentList\":[{\"md5\":null,\"name\":null,\"platform\":null,\"version\":\"aaa\"}],\"componentSize\":null,\"limitVersion\":null,\"validateMd5\":null,\"version\":\"123\"}";
+                return "{\"componentList\":[{\"md5\":null,\"name\":null,\"platform\":null,\"version\":\"aaa\"}]," +
+                        "\"componentSize\":null,\"limitVersion\":null,\"validateMd5\":null,\"version\":\"123\"}";
             }
         };
 
@@ -217,7 +238,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
             Assert.fail();
         }
 
-        new Verifications(){
+        new Verifications() {
             {
                 FileUtils.readFileToString((File) any, (Charset) any);
                 times = 1;
@@ -229,6 +250,9 @@ public class AbstractUpdatelistCacheInitTemplateTest {
 
     }
 
+    /**
+     *
+     */
     class TestedUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbCommonUpdatelistDTO> {
 
         @Override

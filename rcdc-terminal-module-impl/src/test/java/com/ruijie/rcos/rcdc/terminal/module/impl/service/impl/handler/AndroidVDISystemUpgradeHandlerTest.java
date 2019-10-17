@@ -10,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePa
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.SystemResultCheckUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
@@ -50,6 +51,9 @@ public class AndroidVDISystemUpgradeHandlerTest {
 
     @Mocked
     private Bt bt;
+
+    @Injectable
+    private TerminalOtaUpgradeScheduleService terminalOtaUpgradeScheduleService;
 
     /**
      *
@@ -251,7 +255,7 @@ public class AndroidVDISystemUpgradeHandlerTest {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL, e.getKey());
         }
 
     }

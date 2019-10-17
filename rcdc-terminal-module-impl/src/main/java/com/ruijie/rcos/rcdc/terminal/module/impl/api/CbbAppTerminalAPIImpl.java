@@ -1,21 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.io.File;
-
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbAppTerminalAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDownLoadUrlResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.io.File;
 
 /**
  * Description: Function Description

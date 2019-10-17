@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -58,7 +58,7 @@ public class TerminalSystemUpgradeHandlerFactoryTest {
             handlerFactory.getHandler(TerminalTypeEnums.APP_ANDROID);
             Assert.fail();
         } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_HANDLER_NOT_EXIST, e.getKey());
+            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_HANDLER_NOT_EXIST, e.getKey());
         }
     }
 

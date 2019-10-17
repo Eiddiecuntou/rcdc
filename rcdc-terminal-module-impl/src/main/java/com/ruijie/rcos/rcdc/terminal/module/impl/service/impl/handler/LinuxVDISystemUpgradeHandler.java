@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -60,12 +61,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR);
         }
 
-        TerminalUpgradeVersionFileInfo versionInfo = getPackageVersionInfo(fileName, filePath);
-        TerminalPlatformEnums packageType = versionInfo.getPackageType();
-        if (packageType != TerminalPlatformEnums.VDI) {
-            LOGGER.debug("暂不支持的升级包类型：{}", packageType);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT, packageType.name());
-        }
+        TerminalUpgradeVersionFileInfo versionInfo = getPackageInfo(fileName, filePath);
 
         // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包
         boolean hasRunningTask = isExistRunningTask(versionInfo.getPackageType());
@@ -86,7 +82,10 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
         FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI, storePackageName);
     }
 
-    private TerminalUpgradeVersionFileInfo getPackageVersionInfo(final String fileName, final String filePath) throws BusinessException {
+    @Override
+    public TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
+        Assert.notNull(fileName, "fileName can not be null");
+        Assert.notNull(filePath, "filePath can not be null");
         // 挂载升级包文件
         mountUpgradePackage(filePath);
 
@@ -112,7 +111,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
      * @param packageType 升级包类型
      * @return
      */
-    private boolean isExistRunningTask(TerminalPlatformEnums packageType) {
+    private boolean isExistRunningTask(TerminalTypeEnums packageType) {
         TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(packageType);
         if (upgradePackage == null) {
             return false;
@@ -186,10 +185,17 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
 
+        TerminalPlatformEnums platType = TerminalPlatformEnums.
+                valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE));
+        if (platType != TerminalPlatformEnums.VDI) {
+            LOGGER.debug("暂不支持的升级包类型：{}", platType);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT, platType.name());
+        }
+
         // 获取镜像名称
         String imgName = getImgName();
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
-        versionInfo.setPackageType(TerminalPlatformEnums.valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE)));
+        versionInfo.setPackageType(TerminalTypeEnums.VDI_LINUX);
         versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION));
         versionInfo.setImgName(imgName);
         return versionInfo;

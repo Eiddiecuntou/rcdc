@@ -1,12 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import java.util.Map;
-
-import org.springframework.util.Assert;
-
 import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import org.springframework.util.Assert;
+
+import java.util.Map;
 
 
 /**

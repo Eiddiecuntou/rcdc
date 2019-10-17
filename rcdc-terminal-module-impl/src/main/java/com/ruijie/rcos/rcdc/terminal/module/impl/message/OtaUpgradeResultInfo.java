@@ -2,6 +2,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2019
@@ -12,6 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateE
  */
 public class OtaUpgradeResultInfo {
 
+    @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeStateEnums upgradeResult;
 
     private String failMsg;

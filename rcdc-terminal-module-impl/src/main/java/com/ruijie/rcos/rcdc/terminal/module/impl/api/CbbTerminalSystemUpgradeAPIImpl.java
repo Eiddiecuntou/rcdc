@@ -1,17 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.data.domain.Page;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
@@ -24,7 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskSt
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -45,6 +33,17 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * 
@@ -159,13 +158,13 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     /**
      * 判断刷机包是否正在上传中
      * 
-     * @param platform 终端平台类型
+     * @param terminalType 终端类型
      * @throws BusinessException 业务异常
      */
-    private void isUpgradePackageUploading(TerminalPlatformEnums platform) throws BusinessException {
-        CbbTerminalPlatformRequest platformReq = new CbbTerminalPlatformRequest();
-        platformReq.setPlatform(platform);
-        final CbbCheckUploadingResultResponse response = systemUpgradePackageAPI.isUpgradeFileUploading(platformReq);
+    private void isUpgradePackageUploading(TerminalTypeEnums terminalType) throws BusinessException {
+        CbbTerminalTypeRequest terminalTypeRequest = new CbbTerminalTypeRequest();
+        terminalTypeRequest.setTerminalType(terminalType);
+        final CbbCheckUploadingResultResponse response = systemUpgradePackageAPI.isUpgradeFileUploading(terminalTypeRequest);
         if (response.isHasLoading()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);
         }
@@ -221,6 +220,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setSysUpgradeId(upgradeEntity.getId());
         upgradeTerminal.setTerminalId(terminalEntity.getTerminalId());
+        upgradeTerminal.setTerminalType(TerminalTypeEnums.VDI_LINUX);
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.WAIT);
         upgradeTerminal.setCreateTime(new Date());
         systemUpgradeTerminalDAO.save(upgradeTerminal);
@@ -372,7 +372,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
                 UUID packageId = (UUID) matchEqual.getValueArr()[0];
                 TerminalSystemUpgradePackageEntity packageEntity = getUpgradePackageEntity(packageId);
                 matchEqual.setName("platform");
-                matchEqual.setValueArr(new TerminalPlatformEnums[] {packageEntity.getPackageType()});
+                matchEqual.setValueArr(new TerminalTypeEnums[] {packageEntity.getPackageType()});
             }
         }
     }

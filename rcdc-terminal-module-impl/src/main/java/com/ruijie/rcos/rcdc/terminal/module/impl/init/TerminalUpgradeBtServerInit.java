@@ -1,10 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
@@ -20,6 +15,12 @@ import com.ruijie.rcos.sk.base.shell.ShellCommandRunner.ReturnValueResolver;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.util.concurrent.ExecutorService;
 
 /**
  * 

@@ -1,22 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.*;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.data.domain.Page;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
@@ -32,19 +15,37 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeTerminalListService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QueryUpgradeableTerminalListService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
-
+import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import mockit.*;
 import mockit.integration.junit4.JMockit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 /**
  * 
@@ -96,6 +97,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private QueryUpgradeableTerminalListService upgradeableTerminalListService;
+
     /**
      * 测试升级包上传，参数为空
      * 
@@ -145,7 +147,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = Optional.of(upgradePackageEntity);
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
+                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalTypeRequest) any);
                 result = response;
             }
         };
@@ -173,7 +175,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = Optional.of(upgradePackageEntity);
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
+                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalTypeRequest) any);
                 result = response;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = true;
@@ -209,7 +211,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = upgradePackageOpt;
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
+                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalTypeRequest) any);
                 result = response;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = false;
@@ -233,7 +235,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 times = 1;
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
+                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalTypeRequest) any);
                 times = 1;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 times = 1;

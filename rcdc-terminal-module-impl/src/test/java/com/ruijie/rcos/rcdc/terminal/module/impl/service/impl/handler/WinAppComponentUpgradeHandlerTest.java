@@ -1,27 +1,25 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import static org.junit.Assert.assertEquals;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
+import static org.junit.Assert.assertEquals;
 
 /**
  *

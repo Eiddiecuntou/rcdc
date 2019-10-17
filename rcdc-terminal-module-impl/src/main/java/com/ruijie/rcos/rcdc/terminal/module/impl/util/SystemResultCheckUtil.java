@@ -49,7 +49,7 @@ public class SystemResultCheckUtil {
             //筛选出错误码
             String codeStr = matcher.replaceAll("");
             LOGGER.error("指令执行失败：code={}", codeStr);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_MAKE_SEED_FILE_FAIL, codeStr);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL, codeStr);
         }
         return result;
     }

@@ -1,16 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.google.common.collect.Maps;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.util.Map;
 
 /**
  * Description: Function Description

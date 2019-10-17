@@ -82,7 +82,7 @@ public interface ShineAction {
     String OTA_UPGRADE_RESULT = "ota_upgrade_result";
 
     /**
-     * 同步检查OTA升级结果
+     * 同步是否需要OTA升级
      */
-    String SYNC_CHECK_OTA_UPGRADE_RESULT = "sync_check_ota_upgrade_result";
+    String OTA_UPGRADE_JUDGE = "ota_upgrade_judge";
 }
