@@ -1,16 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import mockit.Tested;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.List;
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+
+import mockit.Tested;
 
 /**
  * Description: Function Description
@@ -27,7 +29,7 @@ public class WinAppTerminalUpdatelistCacheInitTest {
     private WinAppTerminalUpdatelistCacheInit cacheInit;
 
     /**
-     * 测试getUpdateListPath
+     * testGetUpdateListPath
      */
     @Test
     public void testGetUpdateListPath() {
@@ -36,7 +38,7 @@ public class WinAppTerminalUpdatelistCacheInitTest {
     }
 
     /**
-     * 测试getTerminalType
+     * testGetTerminalType
      */
     @Test
     public void testGetTerminalType() {

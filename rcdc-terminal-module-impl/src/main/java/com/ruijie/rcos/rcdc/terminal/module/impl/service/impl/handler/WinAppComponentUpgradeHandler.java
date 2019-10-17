@@ -1,8 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
@@ -14,6 +17,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+
+import java.util.Collections;
 
 /**
  * Description: Function Description
@@ -59,45 +64,30 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
 
         if (isVersionBigger(updatelist.getLimitVersion(), rainUpgradeVersion)) {
             LOGGER.debug("版本号小于服务端版本号，需要进行完整升级");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getUpdateListResult(updatelist, true));
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getCompleteUpgradeResult(updatelist));
         }
 
-        return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getUpdateListResult(updatelist, false));
+        return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getIncrementUpgradeResult(updatelist));
     }
 
-    /**
-     * 获取升级包updatelist结果
-     * 
-     * @param isComplete 是否完整升级包
-     * @return updatelist结果
-     */
-    private CbbWinAppUpdateListDTO getUpdateListResult(CbbWinAppUpdateListDTO updatelist, boolean isComplete) {
-        List<CbbWinAppComponentVersionInfoDTO> componentList = updatelist.getComponentList();
-        if (isComplete) {
-            componentList = buildCompleteComponentList(updatelist);
-        }
+    private CbbWinAppUpdateListDTO getCompleteUpgradeResult(CbbWinAppUpdateListDTO updatelist) {
+        CbbWinAppUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
 
-        CbbWinAppUpdateListDTO resultDTO = new CbbWinAppUpdateListDTO();
-        resultDTO.setVersion(updatelist.getVersion());
-        resultDTO.setLimitVersion(updatelist.getLimitVersion());
-        resultDTO.setValidateMd5(updatelist.getValidateMd5());
-        resultDTO.setComponentList(componentList);
-        resultDTO.setComponentSize(componentList.size());
-        return resultDTO;
+        copyUpdateList.setComponentList(Collections.emptyList());
+        copyUpdateList.setComponentSize(0);
+        return copyUpdateList;
     }
 
-    private List<CbbWinAppComponentVersionInfoDTO> buildCompleteComponentList(CbbWinAppUpdateListDTO updatelist) {
-        List<CbbWinAppComponentVersionInfoDTO> componentList;
-        componentList = Lists.newArrayList();
-        CbbWinAppComponentVersionInfoDTO versionInfoDTO = new CbbWinAppComponentVersionInfoDTO();
-        versionInfoDTO.setCompletePackageName(updatelist.getCompletePackageName());
-        versionInfoDTO.setCompletePackageUrl(updatelist.getCompletePackageUrl());
-        versionInfoDTO.setMd5(updatelist.getMd5());
-        versionInfoDTO.setName(updatelist.getName());
-        versionInfoDTO.setVersion(updatelist.getVersion());
-        versionInfoDTO.setPlatform(updatelist.getPlatform());
-        componentList.add(versionInfoDTO);
-        return componentList;
+    private CbbWinAppUpdateListDTO getIncrementUpgradeResult(CbbWinAppUpdateListDTO updatelist) {
+        CbbWinAppUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
+
+        // 增量升级，清除完整升级信息
+        copyUpdateList.setName(StringUtils.EMPTY);
+        copyUpdateList.setCompletePackageName(StringUtils.EMPTY);
+        copyUpdateList.setCompletePackageUrl(StringUtils.EMPTY);
+        copyUpdateList.setMd5(StringUtils.EMPTY);
+
+        return copyUpdateList;
     }
 
 }

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -136,7 +136,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_COLLECT_LOG);
 
         CollectLogCache collectLogCache = collectLogCacheManager.getCache(terminalId);
-        if (collectLogCache != null && CollectLogStateEnums.DOING == collectLogCache.getState()) {
+        if (collectLogCache != null && CbbCollectLogStateEnums.DOING == collectLogCache.getState()) {
             LOGGER.info("终端[{}]正在收集日志中，不允许重复收集", terminalId);
             return;
         }

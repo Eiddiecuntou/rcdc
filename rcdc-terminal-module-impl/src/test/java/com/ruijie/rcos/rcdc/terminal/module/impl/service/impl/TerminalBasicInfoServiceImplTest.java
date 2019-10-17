@@ -1,5 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.util.Date;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -14,13 +24,6 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import mockit.*;
 import mockit.integration.junit4.JMockit;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.IOException;
-import java.util.Date;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -50,8 +53,9 @@ public class TerminalBasicInfoServiceImplTest {
 
     /**
      * 测试修改终端名称成功
-     * @throws IOException 异常
-     * @throws InterruptedException  异常
+     *
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
     public void testModifyTerminalNameSuccess() throws IOException, InterruptedException {
@@ -293,6 +297,9 @@ public class TerminalBasicInfoServiceImplTest {
                 result = basicInfoEntity;
                 basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, anyString, anyInt);
                 result = 1;
+
+                sessionManager.getSession(terminalId);
+                result = null;
             }
         };
         basicInfoService.modifyTerminalStateToOffline(terminalId);
@@ -321,6 +328,9 @@ public class TerminalBasicInfoServiceImplTest {
                 result = basicInfoEntity;
                 basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, terminalId, anyInt);
                 result = 0;
+
+                sessionManager.getSession(terminalId);
+                result = null;
             }
         };
         basicInfoService.modifyTerminalStateToOffline(terminalId);

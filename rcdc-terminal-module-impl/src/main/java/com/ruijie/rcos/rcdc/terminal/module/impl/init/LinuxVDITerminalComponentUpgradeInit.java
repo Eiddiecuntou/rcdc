@@ -1,5 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
@@ -32,29 +39,29 @@ import java.util.concurrent.ExecutorService;
  * @author nt
  */
 @Service
-public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
+public class LinuxVDITerminalComponentUpgradeInit implements SafetySingletonInitializer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalUpgradeBtServerInit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDITerminalComponentUpgradeInit.class);
 
     private static final String INIT_PYTHON_SCRIPT_PATH = "/data/web/rcdc/shell/update.py";
 
     private static final String INIT_COMMAND = "python %s %s";
 
     private static final ExecutorService EXECUTOR_SERVICE =
-            ThreadExecutors.newBuilder(TerminalUpgradeBtServerInit.class.getName()).maxThreadNum(1).queueSize(1).build();
+            ThreadExecutors.newBuilder(LinuxVDITerminalComponentUpgradeInit.class.getName()).maxThreadNum(1).queueSize(1).build();
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
 
     @Autowired
-    private TerminalComponentUpgradeCacheInit upgradeCacheInit;
+    private LinuxVDIUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
 
     @Autowired
     private NetworkAPI networkAPI;
 
     @Override
     public void safeInit() {
-        LOGGER.info("开始异步执行初始化终端升级组件");
+        LOGGER.info("开始异步执行初始化Linux VDI终端升级组件");
         EXECUTOR_SERVICE.execute(() -> initTerminalComponent());
     }
 
@@ -84,7 +91,7 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
 
         LOGGER.info("init upgrade ceche");
         // 更新缓存中的updatelist
-        upgradeCacheInit.cachesInit();
+        linuxVDIUpdatelistCacheInit.init();
     }
 
     private boolean needUpgrade(String currentIp) {
@@ -153,7 +160,7 @@ public class TerminalUpgradeBtServerInit implements SafetySingletonInitializer {
             // 更新数据库中的服务器ip
             globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
             // 更新缓存中的updatelist
-            upgradeCacheInit.cachesInit();
+            linuxVDIUpdatelistCacheInit.init();
             return outStr;
         }
 

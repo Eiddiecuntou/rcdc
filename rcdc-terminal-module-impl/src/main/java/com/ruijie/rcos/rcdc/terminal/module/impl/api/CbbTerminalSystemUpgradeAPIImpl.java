@@ -1,5 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
@@ -33,17 +45,6 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.data.domain.Page;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * 

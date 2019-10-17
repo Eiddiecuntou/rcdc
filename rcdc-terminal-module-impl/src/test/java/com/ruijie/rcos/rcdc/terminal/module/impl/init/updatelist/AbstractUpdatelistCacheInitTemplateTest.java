@@ -1,5 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
@@ -12,15 +20,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Verifications;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * Description: Function Description
- * Copyright: Copyright (c) 2018
- * Company: Ruijie Co., Ltd.
- * Create Time: 2019/8/8
+ * Description: Function Description Copyright: Copyright (c) 2018 Company:
+ * Ruijie Co., Ltd. Create Time: 2019/8/8
  *
  * @author nt
  */
@@ -28,8 +37,9 @@ import java.nio.charset.Charset;
 public class AbstractUpdatelistCacheInitTemplateTest {
 
     /**
-     * 测试initWhileUpdateListFileIsNotFile
-     * @throws IOException 异常
+     * testInitWhileUpdateListFileIsNotFile
+     *
+     * @throws IOException exception
      */
     @Test
     public void testInitWhileUpdateListFileIsNotFile() throws IOException {
@@ -61,8 +71,9 @@ public class AbstractUpdatelistCacheInitTemplateTest {
     }
 
     /**
-     * 测试 initWhileReadUpdateListFileContentError
-     * @throws IOException 异常
+     * testInitWhileReadUpdateListFileContentError
+     *
+     * @throws IOException exception
      */
     @Test
     public void testInitWhileReadUpdateListFileContentError() throws IOException {
@@ -101,8 +112,9 @@ public class AbstractUpdatelistCacheInitTemplateTest {
     }
 
     /**
-     * 测试initWhileUpdateListParseObjectIsNull
-     * @throws IOException 异常
+     * testInitWhileUpdateListParseObjectIsNull
+     *
+     * @throws IOException exception
      */
     @Test
     public void testInitWhileUpdateListParseObjectIsNull() throws IOException {
@@ -156,8 +168,9 @@ public class AbstractUpdatelistCacheInitTemplateTest {
     }
 
     /**
-     * 测试initWhileComponentListIsEmpty
-     * @throws IOException 异常
+     * testInitWhileComponentListIsEmpty
+     *
+     * @throws IOException exception
      */
     @Test
     public void testInitWhileComponentListIsEmpty() throws IOException {
@@ -210,8 +223,9 @@ public class AbstractUpdatelistCacheInitTemplateTest {
     }
 
     /**
-     * 测试init
-     * @throws IOException 异常
+     * testInit
+     *
+     * @throws IOException exception
      */
     @Test
     public void testInit() throws IOException {
@@ -226,8 +240,8 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         new MockUp(FileUtils.class) {
             @Mock
             public String readFileToString(File file, Charset charset) {
-                return "{\"componentList\":[{\"md5\":null,\"name\":null,\"platform\":null,\"version\":\"aaa\"}]," +
-                        "\"componentSize\":null,\"limitVersion\":null,\"validateMd5\":null,\"version\":\"123\"}";
+                return "{\"componentList\":[{\"md5\":null,\"name\":null,\"platform\":null,\"version\":\"aaa\"}],"
+                        + "\"componentSize\":null,\"limitVersion\":null,\"validateMd5\":null,\"version\":\"123\"}";
             }
         };
 
@@ -251,7 +265,10 @@ public class AbstractUpdatelistCacheInitTemplateTest {
     }
 
     /**
+     * Description: Function Description Copyright: Copyright (c) 2018 Company:
+     * Ruijie Co., Ltd. Create Time: 2019/8/8
      *
+     * @author nt
      */
     class TestedUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbCommonUpdatelistDTO> {
 
@@ -259,7 +276,6 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         protected String getUpdateListPath() {
             return "ssss";
         }
-
 
         @Override
         protected void fillUpdateList(CbbCommonUpdatelistDTO updatelist) {

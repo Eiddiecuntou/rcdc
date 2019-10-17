@@ -1,8 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -13,13 +23,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePa
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.io.File;
-import java.util.*;
 
 /**
  * 
@@ -58,8 +61,8 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
     private void completeSystemUpgradePackageEntity(TerminalSystemUpgradePackageEntity upgradePackage, TerminalUpgradeVersionFileInfo versionInfo) {
         upgradePackage.setPackageName(versionInfo.getPackageName());
         upgradePackage.setImgName(versionInfo.getImgName());
-        upgradePackage.setOrigin(SystemUpgradePackageOriginEnums.USER_UPLOAD);
-        upgradePackage.setDistributionMode(SystemUpgradeDistributionModeEnums.FAST_UPGRADE);
+        upgradePackage.setOrigin(CbbSystemUpgradePackageOriginEnums.USER_UPLOAD);
+        upgradePackage.setDistributionMode(CbbSystemUpgradeDistributionModeEnums.FAST_UPGRADE);
         upgradePackage.setPackageType(versionInfo.getPackageType());
         upgradePackage.setPackageVersion(versionInfo.getVersion());
         upgradePackage.setUploadTime(new Date());

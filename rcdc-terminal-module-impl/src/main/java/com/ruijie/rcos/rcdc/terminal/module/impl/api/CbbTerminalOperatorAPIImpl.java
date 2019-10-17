@@ -11,7 +11,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -149,7 +149,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         CollectLogCache cache = collectLogCacheManager.getCache(terminalId);
         if (cache == null) {
             // 日志不存在，构造失败状态信息
-            cache = new CollectLogCache(CollectLogStateEnums.FAILURE);
+            cache = new CollectLogCache(CbbCollectLogStateEnums.FAILURE);
         }
         return cache;
     }

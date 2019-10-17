@@ -8,6 +8,17 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradeDistributionModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.SystemUpgradePackageOriginEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalPlatformEnums;
 
 /**
  * Description: 终端系统升级包实体类

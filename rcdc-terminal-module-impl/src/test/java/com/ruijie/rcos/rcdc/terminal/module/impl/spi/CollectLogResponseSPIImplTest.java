@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
@@ -72,9 +72,9 @@ public class CollectLogResponseSPIImplTest {
 
         new Verifications() {
             {
-                collectLogCacheManager.updateState(request.getTerminalId(), CollectLogStateEnums.DONE, response.getContent().getLogName());
+                collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.DONE, response.getContent().getLogName());
                 times = 1;
-                collectLogCacheManager.updateState(request.getTerminalId(), CollectLogStateEnums.FAILURE);
+                collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.FAILURE);
                 times = 0;
             }
         };
@@ -104,9 +104,9 @@ public class CollectLogResponseSPIImplTest {
 
         new Verifications() {
             {
-                collectLogCacheManager.updateState(request.getTerminalId(), CollectLogStateEnums.DONE, response.getContent().getLogName());
+                collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.DONE, response.getContent().getLogName());
                 times = 0;
-                collectLogCacheManager.updateState(request.getTerminalId(), CollectLogStateEnums.FAILURE);
+                collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.FAILURE);
                 times = 1;
             }
         };

@@ -97,4 +97,44 @@ public class EntityBeanTest {
                 " version=version, filePath=filePath, packageType=VDI_LINUX]";
         assertEquals(result, info.toString());
     }
+
+    /**
+     * 测试TerminalGroupEntity
+     */
+    @Test
+    public void testTerminalGroupEntity() {
+        GetSetTester tester = new GetSetTester(TerminalGroupEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试TerminalSystemUpgradeEntity
+     */
+    @Test
+    public void testTerminalSystemUpgradeEntity() {
+        GetSetTester tester = new GetSetTester(TerminalSystemUpgradeEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试TerminalSystemUpgradeTerminalEntity
+     */
+    @Test
+    public void testTerminalSystemUpgradeTerminalEntity() {
+        GetSetTester tester = new GetSetTester(TerminalSystemUpgradeTerminalEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试ViewUpgradeableTerminalEntity
+     */
+    @Test
+    public void testViewUpgradeableTerminalEntity() {
+        GetSetTester tester = new GetSetTester(ViewUpgradeableTerminalEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
 }

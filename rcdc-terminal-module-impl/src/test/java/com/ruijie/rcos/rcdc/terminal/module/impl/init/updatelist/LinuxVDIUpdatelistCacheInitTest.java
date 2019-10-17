@@ -1,14 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import mockit.Tested;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertTrue;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+
+import mockit.Tested;
 
 /**
  * Description: Function Description
@@ -25,7 +27,7 @@ public class LinuxVDIUpdatelistCacheInitTest {
     private LinuxVDIUpdatelistCacheInit cacheInit;
 
     /**
-     * 测试getUpdateListPath() {
+     * testGetUpdateListPath
      */
     @Test
     public void testGetUpdateListPath() {
@@ -34,7 +36,7 @@ public class LinuxVDIUpdatelistCacheInitTest {
     }
 
     /**
-     * 测试getTerminalType
+     * testGetTerminalType
      */
     @Test
     public void testGetTerminalType() {
@@ -43,7 +45,7 @@ public class LinuxVDIUpdatelistCacheInitTest {
     }
 
     /**
-     * 测试fillUpdateList
+     * testFillUpdateList
      */
     @Test
     public void testFillUpdateList() {
