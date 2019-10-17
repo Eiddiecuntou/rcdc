@@ -64,7 +64,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         LOGGER.info("开始异步执行初始化Linux VDI终端升级组件");
         EXECUTOR_SERVICE.execute(() -> initLinuxVDITerminalComponent());
         LOGGER.info("开始异步执行初始化Android VDI终端升级组件");
-        EXECUTOR_SERVICE.execute(() -> initAndroidVDIVDITerminalComponent());
+        EXECUTOR_SERVICE.execute(() -> initAndroidVDITerminalComponent());
     }
 
     private void initLinuxVDITerminalComponent() {
@@ -78,7 +78,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         linuxVDIUpdatelistCacheInit.init();
     }
 
-    private void initAndroidVDIVDITerminalComponent() {
+    private void initAndroidVDITerminalComponent() {
         String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID;
         TerminalTypeEnums terminalType = TerminalTypeEnums.VDI_ANDROID;
         String tempPath = Constants.ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
@@ -182,10 +182,10 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
             // 更新数据库中的服务器ip
             globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
             // 更新缓存中的updatelist
-            if (terminalType.equals(TerminalTypeEnums.VDI_LINUX)) {
+            if (terminalType == TerminalTypeEnums.VDI_LINUX) {
                 linuxVDIUpdatelistCacheInit.init();
             }
-            if (terminalType.equals(TerminalTypeEnums.VDI_ANDROID)) {
+            if (terminalType == TerminalTypeEnums.VDI_ANDROID) {
                 androidVDIUpdatelistCacheInit.init();
             }
             return outStr;
