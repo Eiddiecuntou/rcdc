@@ -3,9 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 import javax.persistence.Entity;
@@ -49,7 +48,7 @@ public class TerminalSystemUpgradePackageEntity {
     private CbbSystemUpgradeModeEnums upgradeMode;
 
     @Enumerated(EnumType.STRING)
-    private TerminalTypeEnums packageType;
+    private CbbTerminalTypeEnums packageType;
 
     private Date uploadTime;
 
@@ -137,11 +136,11 @@ public class TerminalSystemUpgradePackageEntity {
         this.upgradeMode = upgradeMode;
     }
 
-    public TerminalTypeEnums getPackageType() {
+    public CbbTerminalTypeEnums getPackageType() {
         return packageType;
     }
 
-    public void setPackageType(TerminalTypeEnums packageType) {
+    public void setPackageType(CbbTerminalTypeEnums packageType) {
         this.packageType = packageType;
     }
 

@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.google.common.collect.Maps;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -24,11 +24,11 @@ public class TerminalSystemUpgradeHandlerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeHandlerFactory.class);
 
-    private static Map<TerminalTypeEnums, TerminalSystemUpgradeHandler> systemUpgradeHandlerHolder = Maps.newHashMap();
+    private static Map<CbbTerminalTypeEnums, TerminalSystemUpgradeHandler> systemUpgradeHandlerHolder = Maps.newHashMap();
 
     static {
-        systemUpgradeHandlerHolder.put(TerminalTypeEnums.VDI_LINUX, new LinuxVDISystemUpgradeHandler());
-        systemUpgradeHandlerHolder.put(TerminalTypeEnums.VDI_ANDROID, new AndroidVDISystemUpgradeHandler());
+        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_LINUX, new LinuxVDISystemUpgradeHandler());
+        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_ANDROID, new AndroidVDISystemUpgradeHandler());
     }
 
     /**
@@ -38,7 +38,7 @@ public class TerminalSystemUpgradeHandlerFactory {
      * @return 组件升级处理对象
      * @throws BusinessException 业务异常
      */
-    public TerminalSystemUpgradeHandler getHandler(TerminalTypeEnums terminalType) throws BusinessException {
+    public TerminalSystemUpgradeHandler getHandler(CbbTerminalTypeEnums terminalType) throws BusinessException {
         Assert.notNull(terminalType, "terminal type can not be null");
 
         TerminalSystemUpgradeHandler handler = systemUpgradeHandlerHolder.get(terminalType);

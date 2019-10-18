@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler;
 import java.util.List;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,7 +84,7 @@ public class SystemUpgradeStartWaitingHandler {
         final TerminalSystemUpgradePackageEntity upgradePackage = systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
 
         // 获取正在刷机中的终端数量
-        int upgradingNum = systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+        int upgradingNum = systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
 
         // 构造刷机指令信息
         TerminalSystemUpgradeMsg upgradeMsg = new TerminalSystemUpgradeMsg(upgradePackage.getImgName(), upgradePackage.getPackageVersion());

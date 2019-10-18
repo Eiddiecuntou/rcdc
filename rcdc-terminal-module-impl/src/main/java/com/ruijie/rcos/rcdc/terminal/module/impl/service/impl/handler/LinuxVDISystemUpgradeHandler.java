@@ -1,8 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
+import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -33,7 +34,7 @@ import java.util.UUID;
  *
  * @author hs
  */
-public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeHandler {
+public class LinuxVDISystemUpgradeHandler implements TerminalSystemUpgradeHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDISystemUpgradeHandler.class);
 
@@ -82,8 +83,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
         FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI, storePackageName);
     }
 
-    @Override
-    public TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
+    private TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.notNull(fileName, "fileName can not be null");
         Assert.notNull(filePath, "filePath can not be null");
         // 挂载升级包文件
@@ -111,7 +111,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
      * @param packageType 升级包类型
      * @return
      */
-    private boolean isExistRunningTask(TerminalTypeEnums packageType) {
+    private boolean isExistRunningTask(CbbTerminalTypeEnums packageType) {
         TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(packageType);
         if (upgradePackage == null) {
             return false;
@@ -195,7 +195,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
         // 获取镜像名称
         String imgName = getImgName();
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
-        versionInfo.setPackageType(TerminalTypeEnums.VDI_LINUX);
+        versionInfo.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION));
         versionInfo.setImgName(imgName);
         return versionInfo;
@@ -218,6 +218,41 @@ public class LinuxVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeH
             throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST);
         }
         return fileNameArr[0];
+    }
+
+    private String moveUpgradePackage(String toPath, String fromPath)
+            throws BusinessException {
+        Assert.notNull(toPath, "toPath can not be null");
+        Assert.notNull(fromPath, "fromPath can not be null");
+        File to = new File(toPath);
+        File from = new File(fromPath);
+
+        // 再次校验磁盘空间是否足够
+        final boolean isEnough = checkPackageDiskSpaceIsEnough(from.length());
+
+        if (!isEnough) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH);
+        }
+
+        try {
+            Files.move(from, to);
+        } catch (Exception e) {
+            LOGGER.debug("move upgrade file to target directory fail");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e);
+        }
+        LOGGER.info("完成移动刷机包");
+
+        return toPath;
+    }
+
+    private boolean checkPackageDiskSpaceIsEnough(Long fileSize) {
+        File packageDir = new File(Constants.TERMINAL_UPGRADE_PACKAGE_PATH);
+        final long usableSpace = packageDir.getUsableSpace();
+        if (usableSpace >= fileSize) {
+            return true;
+        }
+
+        return false;
     }
 
 }

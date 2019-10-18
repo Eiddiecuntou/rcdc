@@ -24,7 +24,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskSt
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -162,7 +162,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
      * @param terminalType 终端类型
      * @throws BusinessException 业务异常
      */
-    private void isUpgradePackageUploading(TerminalTypeEnums terminalType) throws BusinessException {
+    private void isUpgradePackageUploading(CbbTerminalTypeEnums terminalType) throws BusinessException {
         CbbTerminalTypeRequest terminalTypeRequest = new CbbTerminalTypeRequest();
         terminalTypeRequest.setTerminalType(terminalType);
         final CbbCheckUploadingResultResponse response = systemUpgradePackageAPI.isUpgradeFileUploading(terminalTypeRequest);
@@ -221,7 +221,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setSysUpgradeId(upgradeEntity.getId());
         upgradeTerminal.setTerminalId(terminalEntity.getTerminalId());
-        upgradeTerminal.setTerminalType(TerminalTypeEnums.VDI_LINUX);
+        upgradeTerminal.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.WAIT);
         upgradeTerminal.setCreateTime(new Date());
         systemUpgradeTerminalDAO.save(upgradeTerminal);
@@ -373,7 +373,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
                 UUID packageId = (UUID) matchEqual.getValueArr()[0];
                 TerminalSystemUpgradePackageEntity packageEntity = getUpgradePackageEntity(packageId);
                 matchEqual.setName("platform");
-                matchEqual.setValueArr(new TerminalTypeEnums[] {packageEntity.getPackageType()});
+                matchEqual.setValueArr(new CbbTerminalTypeEnums[] {packageEntity.getPackageType()});
             }
         }
     }

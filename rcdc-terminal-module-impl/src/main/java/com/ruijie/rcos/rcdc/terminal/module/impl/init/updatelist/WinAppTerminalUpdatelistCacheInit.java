@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class WinAppTerminalUpdatelistCacheInit extends AbstractUpdatelistCacheIn
     }
 
     @Override
-    protected TerminalTypeEnums getTerminalType() {
-        return TerminalTypeEnums.APP_WINDOWS;
+    protected CbbTerminalTypeEnums getTerminalType() {
+        return CbbTerminalTypeEnums.APP_WINDOWS;
     }
 }

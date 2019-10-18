@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 
@@ -47,11 +47,12 @@ public interface TerminalSystemUpgradeTerminalDAO extends SkyEngineJpaRepository
 
     /**
      * 根据刷机状态统计刷机数量
-     * 
+     *
+     * @param terminalType 终端类型
      * @param state 刷机终端状态
      * @return 统计数量
      */
-    int countByState(CbbSystemUpgradeStateEnums state);
+    int countByState(CbbTerminalTypeEnums terminalType, CbbSystemUpgradeStateEnums state);
 
     /**
      * 统计刷机任务指定状态的终端数量
@@ -77,7 +78,7 @@ public interface TerminalSystemUpgradeTerminalDAO extends SkyEngineJpaRepository
      * @param state 升级状态
      * @return 升级终端记录
      */
-    List<TerminalSystemUpgradeTerminalEntity> findByTerminalTypeAndState(TerminalTypeEnums terminalType, CbbSystemUpgradeStateEnums state);
+    List<TerminalSystemUpgradeTerminalEntity> findByTerminalTypeAndState(CbbTerminalTypeEnums terminalType, CbbSystemUpgradeStateEnums state);
 
     /**
      * 删除终端刷机记录

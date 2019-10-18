@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImpl;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImplTest;
@@ -290,7 +290,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
 
         new Expectations() {
             {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((TerminalTypeEnums) any);
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = new TerminalSystemUpgradePackageEntity();
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 result = true;

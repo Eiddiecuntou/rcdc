@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -63,7 +63,7 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
         Assert.notNull(otaUpgradeResultInfo.getOtaVersion(), "otaUpgradeResultInfo.getOtaVersion() can not be null");
         Assert.notNull(otaUpgradeResultInfo.getBasicInfo(), "otaUpgradeResultInfo.getBasicInfo() can not be null");
         String terminalId = otaUpgradeResultInfo.getBasicInfo().getTerminalId();
-        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalTypeEnums.VDI_ANDROID);
+        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         if (upgradePackage == null) {
             LOGGER.info("OTA升级包不存在");
             return;
@@ -74,7 +74,7 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
             upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
             upgradeTerminal.setSysUpgradeId(upgradePackage.getId());
             upgradeTerminal.setTerminalId(terminalId);
-            upgradeTerminal.setTerminalType(TerminalTypeEnums.VDI_ANDROID);
+            upgradeTerminal.setTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
             upgradeTerminal.setCreateTime(new Date());
         }
         upgradeTerminal.setState(otaUpgradeResultInfo.getUpgradeResult());

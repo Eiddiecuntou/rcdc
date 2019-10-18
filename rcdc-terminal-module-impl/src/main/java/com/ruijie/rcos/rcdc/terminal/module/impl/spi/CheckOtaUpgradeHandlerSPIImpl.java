@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -57,7 +57,7 @@ public class CheckOtaUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     private TerminalOtaUpgradeInfo getTerminaOtaUpgradeInfo() {
         TerminalOtaUpgradeInfo upgradeInfo = new TerminalOtaUpgradeInfo();
-        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalTypeEnums.VDI_ANDROID);
+        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         if (upgradePackage == null ) {
             upgradeInfo.setOtaVersion(StringUtils.EMPTY);
             upgradeInfo.setOtaMD5(StringUtils.EMPTY);

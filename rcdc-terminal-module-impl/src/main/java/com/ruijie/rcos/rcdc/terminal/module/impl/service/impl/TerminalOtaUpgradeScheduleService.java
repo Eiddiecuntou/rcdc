@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.TerminalDateUtil;
@@ -34,7 +34,7 @@ public class TerminalOtaUpgradeScheduleService implements Runnable {
     public void run() {
         LOGGER.debug("开始处理OTA升级定时任务");
         List<TerminalSystemUpgradeTerminalEntity> terminalList = systemUpgradeTerminalDAO
-                .findByTerminalTypeAndState(TerminalTypeEnums.VDI_ANDROID, CbbSystemUpgradeStateEnums.UPGRADING);
+                .findByTerminalTypeAndState(CbbTerminalTypeEnums.VDI_ANDROID, CbbSystemUpgradeStateEnums.UPGRADING);
         for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : terminalList) {
             boolean isTimeout = TerminalDateUtil.isTimeout(upgradeTerminal.getCreateTime(), TIME_OUT);
             if (isTimeout) {

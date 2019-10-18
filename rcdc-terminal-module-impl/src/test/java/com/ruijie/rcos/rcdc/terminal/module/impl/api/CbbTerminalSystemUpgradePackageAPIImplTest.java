@@ -11,7 +11,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -89,11 +89,11 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testIsUpgradeFileUploading() {
-        Set<TerminalTypeEnums> uploadingSet =
+        Set<CbbTerminalTypeEnums> uploadingSet =
                 Deencapsulation.getField(CbbTerminalSystemUpgradePackageAPIImpl.class, "SYS_UPGRADE_PACKAGE_UPLOADING");
-        uploadingSet.add(TerminalTypeEnums.VDI_LINUX);
+        uploadingSet.add(CbbTerminalTypeEnums.VDI_LINUX);
         CbbTerminalTypeRequest request = new CbbTerminalTypeRequest();
-        request.setTerminalType(TerminalTypeEnums.VDI_LINUX);
+        request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
         CbbCheckUploadingResultResponse response = upgradePackageAPIImpl.isUpgradeFileUploading(request);
         assertTrue(response.isHasLoading());
         uploadingSet.clear();
@@ -129,8 +129,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         jsonObject.put("platType", "VDI");
         jsonObject.put("osType", "Linux");
         request.setCustomData(jsonObject);
-        Set<TerminalTypeEnums> upgradePackageUploadnigSet = Deencapsulation.getField(upgradePackageAPIImpl, "SYS_UPGRADE_PACKAGE_UPLOADING");
-        upgradePackageUploadnigSet.add(TerminalTypeEnums.VDI_LINUX);
+        Set<CbbTerminalTypeEnums> upgradePackageUploadnigSet = Deencapsulation.getField(upgradePackageAPIImpl, "SYS_UPGRADE_PACKAGE_UPLOADING");
+        upgradePackageUploadnigSet.add(CbbTerminalTypeEnums.VDI_LINUX);
         try {
             upgradePackageAPIImpl.uploadUpgradePackage(request);
             fail();
@@ -159,7 +159,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         request.setCustomData(jsonObject);
         new Expectations() {
             {
-                handlerFactory.getHandler((TerminalTypeEnums) any);
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = handler;
             }
         };
@@ -173,7 +173,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         upgradePackageAPIImpl.uploadUpgradePackage(request);
         new Verifications() {
             {
-                handlerFactory.getHandler((TerminalTypeEnums) any);
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 times = 1;
                 handler.uploadUpgradePackage(request);
                 times = 1;
@@ -486,7 +486,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         checkDTO.setDistributionMode(CbbSystemUpgradeDistributionModeEnums.FAST_UPGRADE);
         checkDTO.setId(packageId);
         checkDTO.setOrigin(CbbSystemUpgradePackageOriginEnums.USER_UPLOAD);
-        checkDTO.setPackageType(CbbTerminalPlatformEnums.VDI);
+        checkDTO.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         checkDTO.setUploadTime(DateUtils.parseDate("2019-09-17 10:10:10", "yyyy-MM-dd HH:mm:ss"));
         checkDTO.setUpgradeTaskId(upgradeTaskId);
 
@@ -499,7 +499,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     private TerminalSystemUpgradePackageEntity buildSystemUpgradePackageEntity(UUID packageId) throws ParseException {
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
-        packageEntity.setPackageType(TerminalTypeEnums.VDI_LINUX);
+        packageEntity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         packageEntity.setIsDelete(false);
         packageEntity.setFilePath("filepath");
         packageEntity.setDistributionMode(CbbSystemUpgradeDistributionModeEnums.FAST_UPGRADE);

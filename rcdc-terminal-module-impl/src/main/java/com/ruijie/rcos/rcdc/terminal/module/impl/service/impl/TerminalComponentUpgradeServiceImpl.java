@@ -5,7 +5,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
@@ -38,7 +38,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         Assert.notNull(terminalEntity, "terminalEntity can not be null");
         Assert.notNull(terminalEntity.getPlatform(), "platform can not be null");
 
-        TerminalTypeEnums terminalType = TerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
+        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
         LOGGER.info("获取组件升级处理对象");
         TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(terminalType);
 

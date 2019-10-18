@@ -10,22 +10,12 @@ import org.junit.runner.RunWith;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Verifications;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Verifications;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * Description: Function Description Copyright: Copyright (c) 2018 Company:
@@ -283,8 +273,8 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         }
 
         @Override
-        protected TerminalTypeEnums getTerminalType() {
-            return TerminalTypeEnums.APP_WINDOWS;
+        protected CbbTerminalTypeEnums getTerminalType() {
+            return CbbTerminalTypeEnums.APP_WINDOWS;
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import java.util.Collections;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
@@ -71,7 +71,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         TerminalComponentUpgradeHandler handler = new LinuxVDIComponentUpgradeHandler();
         new Expectations() {
             {
-                handlerFactory.getHandler((TerminalTypeEnums) any);
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = handler;
             }
         };
@@ -94,7 +94,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals("sss", versionDTO.getUpdatelist());
         new Verifications() {
             {
-                handlerFactory.getHandler((TerminalTypeEnums) any);
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 times = 1;
             }
         };

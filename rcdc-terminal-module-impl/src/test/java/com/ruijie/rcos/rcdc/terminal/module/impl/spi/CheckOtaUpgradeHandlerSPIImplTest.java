@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
@@ -47,11 +47,11 @@ public class CheckOtaUpgradeHandlerSPIImplTest {
         request.setRequestId("456");
         request.setData(generateJson());
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
-        upgradePackage.setPackageType(TerminalTypeEnums.VDI_ANDROID);
+        upgradePackage.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         upgradePackage.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         new Expectations() {
             {
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalTypeEnums.VDI_ANDROID);
+                termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
                 result = upgradePackage;
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
             }
@@ -59,7 +59,7 @@ public class CheckOtaUpgradeHandlerSPIImplTest {
         checkOtaUpgradeHandler.dispatch(request);
         new Verifications() {
             {
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalTypeEnums.VDI_ANDROID);
+                termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
                 times = 1;
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
                 times = 1;

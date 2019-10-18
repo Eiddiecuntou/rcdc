@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -74,10 +74,10 @@ public class CheckUpgradeHandlerSPIImplTest {
             }
         };
 
-        new MockUp(TerminalTypeEnums.class) {
+        new MockUp(CbbTerminalTypeEnums.class) {
             @Mock
-            public TerminalTypeEnums convert(String platform, String osType) {
-                return TerminalTypeEnums.VDI_LINUX;
+            public CbbTerminalTypeEnums convert(String platform, String osType) {
+                return CbbTerminalTypeEnums.VDI_LINUX;
             }
         };
 
@@ -113,10 +113,10 @@ public class CheckUpgradeHandlerSPIImplTest {
             }
         };
 
-        new MockUp(TerminalTypeEnums.class) {
+        new MockUp(CbbTerminalTypeEnums.class) {
             @Mock
-            public TerminalTypeEnums convert(String typeName) {
-                return TerminalTypeEnums.VDI_LINUX;
+            public CbbTerminalTypeEnums convert(String typeName) {
+                return CbbTerminalTypeEnums.VDI_LINUX;
             }
         };
 

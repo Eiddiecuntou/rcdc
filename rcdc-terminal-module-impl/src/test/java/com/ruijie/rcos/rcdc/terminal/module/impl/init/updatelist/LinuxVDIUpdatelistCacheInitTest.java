@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
 import mockit.Tested;
@@ -40,8 +40,8 @@ public class LinuxVDIUpdatelistCacheInitTest {
      */
     @Test
     public void testGetTerminalType() {
-        TerminalTypeEnums terminalType = cacheInit.getTerminalType();
-        Assert.assertEquals(TerminalTypeEnums.VDI_LINUX, terminalType);
+        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
+        Assert.assertEquals(CbbTerminalTypeEnums.VDI_LINUX, terminalType);
     }
 
     /**

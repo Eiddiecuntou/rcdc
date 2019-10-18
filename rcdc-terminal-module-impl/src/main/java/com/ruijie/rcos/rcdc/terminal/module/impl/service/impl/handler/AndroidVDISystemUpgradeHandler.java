@@ -9,7 +9,7 @@ import com.ruijie.rcos.linux.library.Bt;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbMakeBtSeedRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author hs
  */
-public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgradeHandler {
+public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AndroidVDISystemUpgradeHandler.class);
 
@@ -51,7 +51,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
 
     private static final String SEED_PATH = "seed_path";
 
-    private static final String ZIP_SUFFIX = "zip";
+    private static final String OTA_SUFFIX = "zip";
 
     private static final int PERIOD_SECOND = 15;
 
@@ -79,8 +79,6 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
         TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(fileName, filePath);
         upgradeInfo.setUpgradeMode(upgradeMode);
         terminalSystemUpgradePackageService.saveTerminalUpgradePackage(upgradeInfo);
-        // 替换升级文件,清除原升级包目录下旧文件
-        FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, upgradeInfo.getPackageName());
 
         if ( UPGRADE_TASK_FUTURE == null) {
             //开启检查终端状态定时任务
@@ -89,27 +87,51 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
 
     }
 
-    @Override
-    public TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
+    private TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
+        Assert.hasText(fileName, "fileName can not be blank");
         Assert.hasText(filePath, "filePath can not be blank");
-        String storePackageName = UUID.randomUUID() + ZIP_SUFFIX;
+        String storePackageName = UUID.randomUUID() + OTA_SUFFIX;
         String packagePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE + storePackageName;
         //解压zip文件
         Properties prop = unZipPackage(filePath);
         File newFile = new File(packagePath);
         File oldFile = new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP);
+        if (!oldFile.exists()) {
+            LOGGER.error("ota upgrade package not exist");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_NOT_EXIST);
+        }
         //解压后的zip文件重命名
         oldFile.renameTo(newFile);
+        String fileMD5 = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5);
+        String paltType = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT);
+        //校验OTA包
+        checkOtaUpgradePackage(paltType, fileMD5, packagePath);
         TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
         upgradeInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION));
-        upgradeInfo.setFileMD5(prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5));
-        upgradeInfo.setPackageType(TerminalTypeEnums.VDI_ANDROID);
-        upgradeInfo.setPackageName(storePackageName);
+        upgradeInfo.setFileMD5(fileMD5);
+        upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        upgradeInfo.setPackageName(fileName);
         upgradeInfo.setFilePath(packagePath);
         SeedFileInfo seedFileInfo = makeBtSeed(filePath);
         upgradeInfo.setSeedLink(seedFileInfo.getSeedFilePath());
         upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
+        // 替换升级文件,清除原升级包目录下旧文件
+        FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, storePackageName);
         return upgradeInfo;
+    }
+
+    private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) throws BusinessException {
+        Assert.notNull(platType, "platType can not be null");
+        Assert.notNull(fileMD5, "fileMD5 can not be null");
+        Assert.notNull(packagePath, "packagePath can not be null");
+        String packageMD5 = generateFileMD5(packagePath);
+        File packageFile = new File(packagePath);
+        if (!fileMD5.equals(packageMD5) || !platType.equals(Constants.TERMINAL_UPGRADE_OTA_PLATFORM_TYPE)) {
+            FileOperateUtil.deleteFile(packageFile);
+            LOGGER.error("terminal ota upgrade package has error");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR);
+        }
+
     }
 
     private Properties unZipPackage(String filePath) throws BusinessException {
@@ -119,6 +141,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
         createFilePath(unZipFilePath);
         File unZipFile = new File(unZipFilePath);
         String versionFilePath = getVersionFilePath();
+        File versionFile = new File(versionFilePath);
         Properties prop = new Properties();
         try {
             ZipUtil.unzipFile(zipFile, unZipFile);
@@ -130,6 +153,9 @@ public class AndroidVDISystemUpgradeHandler extends AbstractTerminalSystemUpgrad
         } catch (IOException e) {
             LOGGER.debug("version file read error, file path[{}]", filePath);
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+        } finally {
+            //删除version文件
+            FileOperateUtil.deleteFile(versionFile);
         }
 
         return prop;

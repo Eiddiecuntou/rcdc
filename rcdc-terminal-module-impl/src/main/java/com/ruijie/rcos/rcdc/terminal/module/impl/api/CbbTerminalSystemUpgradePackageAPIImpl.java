@@ -10,14 +10,13 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalTypeReque
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageModifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandler;
@@ -57,7 +56,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private static final BeanCopier PACKAGE_BEAN_COPIER =
             BeanCopier.create(TerminalSystemUpgradePackageEntity.class, CbbTerminalSystemUpgradePackageInfoDTO.class, false);
 
-    private static final Set<TerminalTypeEnums> SYS_UPGRADE_PACKAGE_UPLOADING = new HashSet<>();
+    private static final Set<CbbTerminalTypeEnums> SYS_UPGRADE_PACKAGE_UPLOADING = new HashSet<>();
 
     private static final Object LOCK = new Object();
 
@@ -119,7 +118,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         JSONObject jsonObject = request.getCustomData();
         String platType = jsonObject.getString(PLAT_TYPE);
         String osType = jsonObject.getString(OS_TYPE);
-        TerminalTypeEnums terminalType = TerminalTypeEnums.convert(platType, osType);
+        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(platType, osType);
         synchronized (LOCK) {
             if (SYS_UPGRADE_PACKAGE_UPLOADING.contains(terminalType)) {
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);
@@ -156,16 +155,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
             return true;
         }
 
-        return false;
-    }
-
-    private boolean checkFileType(String fileName) {
-        String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-        // 文件类型校验
-        if (UpgradeFileTypeEnums.contains(fileType)) {
-            LOGGER.debug("file type [{}] is correct", fileType);
-            return true;
-        }
         return false;
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
@@ -79,7 +80,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 result = upgradePackage;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 1;
             }
         };
@@ -90,7 +91,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
@@ -123,7 +124,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 0;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
@@ -147,7 +148,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 result = upgradePackage;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 61;
             }
         };
@@ -160,7 +161,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
@@ -191,7 +192,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
                 result = upgradePackage;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 result = upgradeTerminal;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 1;
                 lockManager.getAndCreateLock(anyString);
                 result = new ReentrantLock();
@@ -204,7 +205,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
@@ -234,7 +235,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 result = upgradePackage;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 1;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 result = upgradeTerminal;
@@ -251,7 +252,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 1;
@@ -281,7 +282,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 result = upgradePackage;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 1;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 result = upgradeTerminal;
@@ -296,7 +297,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 1;

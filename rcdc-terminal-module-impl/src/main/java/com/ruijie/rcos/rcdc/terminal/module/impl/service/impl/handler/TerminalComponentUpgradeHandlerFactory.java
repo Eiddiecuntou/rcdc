@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.google.common.collect.Maps;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -24,12 +24,12 @@ public class TerminalComponentUpgradeHandlerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalComponentUpgradeHandlerFactory.class);
 
-    private static Map<TerminalTypeEnums, TerminalComponentUpgradeHandler> upgradeHandlerHolder = Maps.newHashMap();
+    private static Map<CbbTerminalTypeEnums, TerminalComponentUpgradeHandler> upgradeHandlerHolder = Maps.newHashMap();
 
     static {
         LOGGER.info("=======================注册终端组件升级处理器=================");
-        upgradeHandlerHolder.put(TerminalTypeEnums.VDI_LINUX, new LinuxVDIComponentUpgradeHandler());
-        upgradeHandlerHolder.put(TerminalTypeEnums.APP_WINDOWS, new WinAppComponentUpgradeHandler());
+        upgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_LINUX, new LinuxVDIComponentUpgradeHandler());
+        upgradeHandlerHolder.put(CbbTerminalTypeEnums.APP_WINDOWS, new WinAppComponentUpgradeHandler());
         LOGGER.info("=======================完成注册终端组件升级处理器=================");
     }
 
@@ -40,7 +40,7 @@ public class TerminalComponentUpgradeHandlerFactory {
      * @return 组件升级处理对象
      * @throws BusinessException 业务异常
      */
-    public TerminalComponentUpgradeHandler getHandler(TerminalTypeEnums terminalType) throws BusinessException {
+    public TerminalComponentUpgradeHandler getHandler(CbbTerminalTypeEnums terminalType) throws BusinessException {
         Assert.notNull(terminalType, "terminal type can not be null");
 
         TerminalComponentUpgradeHandler handler = upgradeHandlerHolder.get(terminalType);

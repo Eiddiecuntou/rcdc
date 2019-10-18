@@ -221,6 +221,14 @@ public class AndroidVDISystemUpgradeHandlerTest {
 
         };
 
+        new MockUp<AndroidVDISystemUpgradeHandler>() {
+
+            @Mock
+            private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) {
+
+            }
+        };
+
         new Expectations(ZipUtil.class) {
             {
                 ZipUtil.unzipFile((File) any, (File) any);
@@ -299,6 +307,14 @@ public class AndroidVDISystemUpgradeHandlerTest {
                 return true;
             }
 
+        };
+
+        new MockUp<AndroidVDISystemUpgradeHandler>() {
+
+            @Mock
+            private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) {
+
+            }
         };
 
         new Expectations(ZipUtil.class) {

@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
  *
  * @author Jarman
  */
-public enum TerminalTypeEnums {
+public enum CbbTerminalTypeEnums {
 
     /**
      * linux_vdi
@@ -61,7 +61,7 @@ public enum TerminalTypeEnums {
 
     private String osType;
 
-    TerminalTypeEnums(String platform, String osType) {
+    CbbTerminalTypeEnums(String platform, String osType) {
         this.platform = platform;
         this.osType = osType;
     }
@@ -73,11 +73,11 @@ public enum TerminalTypeEnums {
      * @param osType 操作系统类型
      * @return 终端类型枚举对象
      */
-    public static TerminalTypeEnums convert(String platform, String osType) {
+    public static CbbTerminalTypeEnums convert(String platform, String osType) {
         Assert.hasText(platform, "platform can not be blank");
         Assert.hasText(osType, "osType can not be blank");
 
-        for (TerminalTypeEnums type : TerminalTypeEnums.values()) {
+        for (CbbTerminalTypeEnums type : CbbTerminalTypeEnums.values()) {
             if (platform.equals(type.platform) && osType.equals(type.osType)) {
                 return type;
             }

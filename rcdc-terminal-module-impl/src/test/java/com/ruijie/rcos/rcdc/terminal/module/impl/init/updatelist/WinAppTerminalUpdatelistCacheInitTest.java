@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import java.util.List;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,8 +42,8 @@ public class WinAppTerminalUpdatelistCacheInitTest {
      */
     @Test
     public void testGetTerminalType() {
-        TerminalTypeEnums terminalType = cacheInit.getTerminalType();
-        Assert.assertEquals(TerminalTypeEnums.APP_WINDOWS, terminalType);
+        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
+        Assert.assertEquals(CbbTerminalTypeEnums.APP_WINDOWS, terminalType);
     }
 
     /**

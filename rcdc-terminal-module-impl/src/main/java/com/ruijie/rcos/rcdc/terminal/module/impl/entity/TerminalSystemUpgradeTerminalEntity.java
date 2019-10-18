@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,7 +28,7 @@ public class TerminalSystemUpgradeTerminalEntity {
 
     private String terminalId;
 
-    private TerminalTypeEnums terminalType;
+    private CbbTerminalTypeEnums terminalType;
 
     private Date startTime;
 
@@ -64,11 +64,11 @@ public class TerminalSystemUpgradeTerminalEntity {
         this.terminalId = terminalId;
     }
 
-    public TerminalTypeEnums getTerminalType() {
+    public CbbTerminalTypeEnums getTerminalType() {
         return terminalType;
     }
 
-    public void setTerminalType(TerminalTypeEnums terminalType) {
+    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
         this.terminalType = terminalType;
     }
 

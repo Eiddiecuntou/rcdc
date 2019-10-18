@@ -125,6 +125,11 @@ public interface Constants {
     String TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5 = "MD5";
 
     /**
+     * OTA包平台类型
+     */
+    String TERMINAL_UPGRADE_OTA_PLATFORM_TYPE = "RK3188";
+
+    /**
      * OTA包版本号
      */
     String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION = "VER";

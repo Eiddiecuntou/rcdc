@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -35,7 +35,7 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbCommonUpd
     public final void init() {
         // 开始初始化，将缓存就绪状态设为未就绪
         LOGGER.info("start init updatelist...");
-        TerminalTypeEnums terminalType = getTerminalType();
+        CbbTerminalTypeEnums terminalType = getTerminalType();
         LOGGER.info("terminal type: {}", terminalType.name());
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(terminalType);
         String filePath = getUpdateListPath();
@@ -123,6 +123,6 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbCommonUpd
      * 
      * @return 终端类型
      */
-    protected abstract TerminalTypeEnums getTerminalType();
+    protected abstract CbbTerminalTypeEnums getTerminalType();
 
 }

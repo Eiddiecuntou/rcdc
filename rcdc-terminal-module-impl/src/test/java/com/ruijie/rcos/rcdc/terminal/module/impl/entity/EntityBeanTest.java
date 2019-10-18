@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
@@ -91,7 +91,7 @@ public class EntityBeanTest {
         info.setFilePath("filePath");
         info.setImgName("imgName");
         info.setPackageName("packageName");
-        info.setPackageType(TerminalTypeEnums.VDI_LINUX);
+        info.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         info.setVersion("version");
         String result = "TerminalUpgradeVersionFileInfo [packageName=packageName, imgName=imgName," +
                 " version=version, filePath=filePath, packageType=VDI_LINUX]";

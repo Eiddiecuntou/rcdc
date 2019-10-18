@@ -10,8 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateE
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -705,7 +704,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
         packageEntity.setIsDelete(false);
-        packageEntity.setPackageType(TerminalTypeEnums.VDI_LINUX);
+        packageEntity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
 
         List<ViewUpgradeableTerminalEntity> entityList = new ArrayList<>();
         entityList.add(new ViewUpgradeableTerminalEntity());

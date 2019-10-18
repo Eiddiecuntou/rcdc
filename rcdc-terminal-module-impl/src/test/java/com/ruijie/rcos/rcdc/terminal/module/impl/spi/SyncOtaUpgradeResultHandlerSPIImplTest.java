@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
@@ -57,13 +57,13 @@ public class SyncOtaUpgradeResultHandlerSPIImplTest {
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
         UUID packageId  = UUID.randomUUID();
         packageEntity.setId(packageId);
-        packageEntity.setPackageType(TerminalTypeEnums.VDI_ANDROID);
+        packageEntity.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalSystemUpgradeTerminalEntity terminalEntity = new TerminalSystemUpgradeTerminalEntity();
         terminalEntity.setTerminalId("123");
         new Expectations() {
             {
                 basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalTypeEnums.VDI_ANDROID);
+                termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
                 result = packageEntity;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 result = terminalEntity;
@@ -76,7 +76,7 @@ public class SyncOtaUpgradeResultHandlerSPIImplTest {
             {
                 basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
                 times = 1;
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(TerminalTypeEnums.VDI_ANDROID);
+                termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
                 times = 1;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 times = 1;

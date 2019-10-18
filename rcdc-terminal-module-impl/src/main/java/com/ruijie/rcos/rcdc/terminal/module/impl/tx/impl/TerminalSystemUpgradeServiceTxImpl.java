@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -91,7 +91,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         TerminalSystemUpgradeTerminalEntity entity = new TerminalSystemUpgradeTerminalEntity();
         entity.setSysUpgradeId(upgradeTaskId);
         entity.setTerminalId(terminalId);
-        entity.setTerminalType(TerminalTypeEnums.VDI_LINUX);
+        entity.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
         entity.setState(CbbSystemUpgradeStateEnums.WAIT);
         entity.setCreateTime(new Date());
         systemUpgradeTerminalDAO.save(entity);

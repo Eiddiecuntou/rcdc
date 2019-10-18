@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDownLoadUrlResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -45,12 +45,12 @@ public class CbbAppTerminalAPIImplTest {
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(TerminalTypeEnums type) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 return listDTO;
             }
 
             @Mock
-            public boolean isCacheReady(TerminalTypeEnums type) {
+            public boolean isCacheReady(CbbTerminalTypeEnums type) {
                 return false;
             }
         };
@@ -72,13 +72,13 @@ public class CbbAppTerminalAPIImplTest {
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(TerminalTypeEnums type) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 // 获取updatelist缓存为空
                 return null;
             }
 
             @Mock
-            public boolean isCacheReady(TerminalTypeEnums type) {
+            public boolean isCacheReady(CbbTerminalTypeEnums type) {
                 return true;
             }
         };
@@ -102,12 +102,12 @@ public class CbbAppTerminalAPIImplTest {
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(TerminalTypeEnums type) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 return listDTO;
             }
 
             @Mock
-            public boolean isCacheReady(TerminalTypeEnums type) {
+            public boolean isCacheReady(CbbTerminalTypeEnums type) {
                 return true;
             }
         };
@@ -134,12 +134,12 @@ public class CbbAppTerminalAPIImplTest {
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(TerminalTypeEnums type) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 return listDTO;
             }
 
             @Mock
-            public boolean isCacheReady(TerminalTypeEnums type) {
+            public boolean isCacheReady(CbbTerminalTypeEnums type) {
                 return true;
             }
         };
@@ -161,10 +161,10 @@ public class CbbAppTerminalAPIImplTest {
 
         new Verifications() {
             {
-                TerminalUpdateListCacheManager.get(TerminalTypeEnums.APP_WINDOWS);
+                TerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.APP_WINDOWS);
                 times = 1;
 
-                TerminalUpdateListCacheManager.isCacheReady(TerminalTypeEnums.APP_WINDOWS);
+                TerminalUpdateListCacheManager.isCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
                 times = 1;
 
                 FileUtils.isValidPath((File) any);
@@ -187,12 +187,12 @@ public class CbbAppTerminalAPIImplTest {
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(TerminalTypeEnums type) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 return listDTO;
             }
 
             @Mock
-            public boolean isCacheReady(TerminalTypeEnums type) {
+            public boolean isCacheReady(CbbTerminalTypeEnums type) {
                 return true;
             }
         };
@@ -214,10 +214,10 @@ public class CbbAppTerminalAPIImplTest {
 
         new Verifications() {
             {
-                TerminalUpdateListCacheManager.get(TerminalTypeEnums.APP_WINDOWS);
+                TerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.APP_WINDOWS);
                 times = 1;
 
-                TerminalUpdateListCacheManager.isCacheReady(TerminalTypeEnums.APP_WINDOWS);
+                TerminalUpdateListCacheManager.isCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
                 times = 1;
 
                 FileUtils.isValidPath((File) any);
