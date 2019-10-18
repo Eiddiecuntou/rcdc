@@ -43,16 +43,9 @@ public class CheckOtaUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "request can not be null");
         Assert.hasText(request.getData(), "request.getData() can not be blank");
-        CheckOtaUpgradeInfo checkOtaUpgradeInfo = convertJsondata(request);
         TerminalOtaUpgradeInfo terminalOtaUpgradeInfo = getTerminaOtaUpgradeInfo();
         CbbResponseShineMessage<TerminalOtaUpgradeInfo> responseMessage = MessageUtils.buildResponseMessage(request, terminalOtaUpgradeInfo);
         messageHandlerAPI.response(responseMessage);
-    }
-
-    private CheckOtaUpgradeInfo convertJsondata(CbbDispatcherRequest request) {
-        String jsonData = String.valueOf(request.getData());
-        CheckOtaUpgradeInfo checkOtaUpgradeInfo = JSON.parseObject(jsonData, CheckOtaUpgradeInfo.class);
-        return checkOtaUpgradeInfo;
     }
 
     private TerminalOtaUpgradeInfo getTerminaOtaUpgradeInfo() {
@@ -63,7 +56,7 @@ public class CheckOtaUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             upgradeInfo.setOtaMD5(StringUtils.EMPTY);
             upgradeInfo.setOtaSeedLink(StringUtils.EMPTY);
             upgradeInfo.setOtaSeedMD5(StringUtils.EMPTY);
-            upgradeInfo.setUpgradeMode(CbbSystemUpgradeModeEnums.NOUPGRADE);
+            upgradeInfo.setUpgradeMode(CbbSystemUpgradeModeEnums.CLOSE_UPGRADE);
         }
         upgradeInfo.setOtaVersion(upgradePackage.getPackageVersion());
         upgradeInfo.setOtaMD5(upgradePackage.getFileMD5());
