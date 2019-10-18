@@ -15,6 +15,7 @@ import javax.persistence.Enumerated;
  */
 public class OtaUpgradeResultInfo {
 
+    // FIXME 这个注解使持久化使用的，你这个对象会存到数据库吗？
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeStateEnums upgradeResult;
 

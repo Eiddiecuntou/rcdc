@@ -38,6 +38,7 @@ public class TerminalOtaUpgradeScheduleService implements Runnable {
         for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : terminalList) {
             boolean isTimeout = TerminalDateUtil.isTimeout(upgradeTerminal.getCreateTime(), TIME_OUT);
             if (isTimeout) {
+                // FIXME 超时设置成失败就好
                 upgradeTerminal.setState(CbbSystemUpgradeStateEnums.TIMEOUT);
                 systemUpgradeTerminalDAO.save(upgradeTerminal);
             }

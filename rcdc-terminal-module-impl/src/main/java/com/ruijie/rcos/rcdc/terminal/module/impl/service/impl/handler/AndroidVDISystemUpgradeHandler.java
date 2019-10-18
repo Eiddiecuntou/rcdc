@@ -78,6 +78,8 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         CbbSystemUpgradeModeEnums upgradeMode = jsonObject.getObject(UPGRADE_MODE, CbbSystemUpgradeModeEnums.class);
         TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(fileName, filePath);
         upgradeInfo.setUpgradeMode(upgradeMode);
+        // FIXME 我的建议是OTA升级包对应一个升级任务，每次更新OTA包后，将升级任务的升级包名、版本号等也更新掉
+        // FIXME 要考虑到升级的表设计的用法结构是这样，不能随意的去使用它，会导致混乱
         terminalSystemUpgradePackageService.saveTerminalUpgradePackage(upgradeInfo);
 
         if ( UPGRADE_TASK_FUTURE == null) {
@@ -112,6 +114,7 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         upgradeInfo.setPackageName(fileName);
         upgradeInfo.setFilePath(packagePath);
+        // FIXME BT种子制作完要调用分享接口才能下载
         SeedFileInfo seedFileInfo = makeBtSeed(filePath);
         upgradeInfo.setSeedLink(seedFileInfo.getSeedFilePath());
         upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
@@ -166,6 +169,7 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         Assert.notNull(filePath, "filePath can not be null");
         String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
         createFilePath(seedSavePath);
+        // FIXME CbbMakeBtSeedRequest这个如果不对外暴露，那么不要定义到def中
         CbbMakeBtSeedRequest request = new CbbMakeBtSeedRequest(getLocalIP(), filePath, seedSavePath);
         String result = Bt.btMakeSeed_block(JSON.toJSONString(request));
         SystemResultCheckUtil.checkResult(result);
@@ -173,6 +177,7 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         File seedFile = new File(seedPath);
         FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_SEED_FILE, seedFile.getName());
         String seedMD5 = generateFileMD5(seedPath);
+        // FIXME  MD5工具框架已经提供了，Md5Builder,不用自己写了
         SeedFileInfo seedFileInfo = new SeedFileInfo(seedPath, seedMD5);
         return seedFileInfo;
     }

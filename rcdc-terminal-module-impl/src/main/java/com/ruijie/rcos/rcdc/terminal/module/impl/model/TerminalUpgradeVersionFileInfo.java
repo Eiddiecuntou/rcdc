@@ -104,6 +104,7 @@ public class TerminalUpgradeVersionFileInfo {
         this.upgradeMode = upgradeMode;
     }
 
+    // FIXME 字段有变化，toString应该重新生成下
     @Override
     public String toString() {
         return "TerminalUpgradeVersionFileInfo [packageName=" + packageName + ", imgName=" + imgName + ", version=" + version + ", filePath="
