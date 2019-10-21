@@ -7,15 +7,21 @@ import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailN
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.linux.library.Bt;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbMakeBtSeedRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.MakeBtSeedRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.StartBtShareRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.SystemResultCheckUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
@@ -69,6 +75,12 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
     @Autowired
     private TerminalOtaUpgradeScheduleService terminalOtaUpgradeScheduleService;
 
+    @Autowired
+    private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
+
+    @Autowired
+    private TerminalSystemUpgradeServiceTx terminalSystemUpgradeServiceTx;
+
     @Override
     public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
@@ -78,10 +90,9 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         CbbSystemUpgradeModeEnums upgradeMode = jsonObject.getObject(UPGRADE_MODE, CbbSystemUpgradeModeEnums.class);
         TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(fileName, filePath);
         upgradeInfo.setUpgradeMode(upgradeMode);
-        // FIXME 我的建议是OTA升级包对应一个升级任务，每次更新OTA包后，将升级任务的升级包名、版本号等也更新掉
-        // FIXME 要考虑到升级的表设计的用法结构是这样，不能随意的去使用它，会导致混乱
         terminalSystemUpgradePackageService.saveTerminalUpgradePackage(upgradeInfo);
-
+        TerminalSystemUpgradePackageEntity packageEntity = terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        terminalSystemUpgradeServiceTx.addOtaUpgradeTask(packageEntity);
         if ( UPGRADE_TASK_FUTURE == null) {
             //开启检查终端状态定时任务
             OTA_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(terminalOtaUpgradeScheduleService, 0, PERIOD_SECOND, TimeUnit.SECONDS);
@@ -114,8 +125,10 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         upgradeInfo.setPackageName(fileName);
         upgradeInfo.setFilePath(packagePath);
-        // FIXME BT种子制作完要调用分享接口才能下载
-        SeedFileInfo seedFileInfo = makeBtSeed(filePath);
+        //制作Bt种子
+        SeedFileInfo seedFileInfo = makeBtSeed(packagePath);
+        //开启Bt服务
+        startBtShare(seedFileInfo.getSeedFilePath(), Constants.TERMINAL_UPGRADE_OTA_PACKAGE);
         upgradeInfo.setSeedLink(seedFileInfo.getSeedFilePath());
         upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
         // 替换升级文件,清除原升级包目录下旧文件
@@ -169,17 +182,21 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         Assert.notNull(filePath, "filePath can not be null");
         String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
         createFilePath(seedSavePath);
-        // FIXME CbbMakeBtSeedRequest这个如果不对外暴露，那么不要定义到def中
-        CbbMakeBtSeedRequest request = new CbbMakeBtSeedRequest(getLocalIP(), filePath, seedSavePath);
+        MakeBtSeedRequest request = new MakeBtSeedRequest(getLocalIP(), filePath, seedSavePath);
         String result = Bt.btMakeSeed_block(JSON.toJSONString(request));
         SystemResultCheckUtil.checkResult(result);
         String seedPath = JSONObject.parseObject(result).getString(SEED_PATH);
         File seedFile = new File(seedPath);
         FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_SEED_FILE, seedFile.getName());
         String seedMD5 = generateFileMD5(seedPath);
-        // FIXME  MD5工具框架已经提供了，Md5Builder,不用自己写了
         SeedFileInfo seedFileInfo = new SeedFileInfo(seedPath, seedMD5);
         return seedFileInfo;
+    }
+
+    private void startBtShare(String seedPath, String filePath) throws BusinessException {
+        StartBtShareRequest btShareRequest = new StartBtShareRequest(seedPath, filePath);
+        String result = Bt.btShareStart(JSON.toJSONString(btShareRequest));
+        SystemResultCheckUtil.checkResult(result);
     }
 
     /**

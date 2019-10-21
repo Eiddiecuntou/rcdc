@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -177,7 +179,8 @@ public class TerminalSystemUpgradeServiceImplTest {
     public void testHasSystemUpgradeInProgressIsFalse() {
         new Expectations() {
             {
-                terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = new ArrayList<>();
             }
         };
@@ -185,7 +188,8 @@ public class TerminalSystemUpgradeServiceImplTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
             }
         };
@@ -201,7 +205,8 @@ public class TerminalSystemUpgradeServiceImplTest {
         upgradingTaskList.add(upgradeEntity);
         new Expectations() {
             {
-                terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradingTaskList;
             }
         };
@@ -209,7 +214,8 @@ public class TerminalSystemUpgradeServiceImplTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
             }
         };

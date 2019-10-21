@@ -20,7 +20,6 @@ import java.util.Map;
  * @author hs
  */
 @Service
-// FIXME 这个是上传升级包的工厂吧，你的命名是升级，这里应该改下，还有下面的具体业务handler
 public class TerminalSystemUpgradeHandlerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeHandlerFactory.class);

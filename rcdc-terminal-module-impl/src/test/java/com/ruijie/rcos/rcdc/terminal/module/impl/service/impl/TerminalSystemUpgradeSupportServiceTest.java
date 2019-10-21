@@ -12,6 +12,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
@@ -226,7 +228,8 @@ public class TerminalSystemUpgradeSupportServiceTest {
         SupportServiceQuartzHandler handler = service.new SupportServiceQuartzHandler();
         new Expectations() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = new ArrayList<>();
             }
         };
@@ -240,7 +243,8 @@ public class TerminalSystemUpgradeSupportServiceTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 2;
             }
         };
@@ -256,7 +260,8 @@ public class TerminalSystemUpgradeSupportServiceTest {
         SupportServiceQuartzHandler handler = service.new SupportServiceQuartzHandler();
         new Expectations() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = new ArrayList<>();
             }
         };
@@ -270,7 +275,8 @@ public class TerminalSystemUpgradeSupportServiceTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 2;
             }
         };
@@ -288,7 +294,8 @@ public class TerminalSystemUpgradeSupportServiceTest {
         upgradeTaskList.add(new TerminalSystemUpgradeEntity());
         new Expectations() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradeTaskList;
             }
         };
@@ -296,7 +303,8 @@ public class TerminalSystemUpgradeSupportServiceTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
             }
         };

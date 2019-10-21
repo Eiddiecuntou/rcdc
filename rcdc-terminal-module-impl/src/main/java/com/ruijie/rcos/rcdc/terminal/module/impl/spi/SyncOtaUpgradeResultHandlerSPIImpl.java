@@ -1,11 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.OtaUpgradeResultInfo;
@@ -16,8 +19,11 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Description: Function Description
@@ -40,6 +46,9 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
 
     @Autowired
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
+
+    @Autowired
+    private TerminalSystemUpgradeDAO systemUpgradeDAO;
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
@@ -64,19 +73,26 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
         Assert.notNull(otaUpgradeResultInfo.getBasicInfo(), "otaUpgradeResultInfo.getBasicInfo() can not be null");
         String terminalId = otaUpgradeResultInfo.getBasicInfo().getTerminalId();
         TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        if (upgradePackage == null) {
+        if (upgradePackage == null || upgradePackage.getIsDelete() == true) {
             LOGGER.info("OTA升级包不存在");
             return;
         }
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO
+                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
+        if (CollectionUtils.isEmpty(upgradingTaskList)) {
+            return;
+        }
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = systemUpgradeTerminalDAO
-                .findFirstBySysUpgradeIdAndTerminalId(upgradePackage.getId(), terminalId);
+                .findFirstBySysUpgradeIdAndTerminalId(upgradingTaskList.get(0).getId(), terminalId);
         if (upgradeTerminal == null) {
             upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
             upgradeTerminal.setSysUpgradeId(upgradePackage.getId());
             upgradeTerminal.setTerminalId(terminalId);
             upgradeTerminal.setTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
-            upgradeTerminal.setCreateTime(new Date());
         }
+        upgradeTerminal.setCreateTime(new Date());
         upgradeTerminal.setState(otaUpgradeResultInfo.getUpgradeResult());
         systemUpgradeTerminalDAO.save(upgradeTerminal);
     }

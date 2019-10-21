@@ -51,7 +51,7 @@ public class CheckOtaUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private TerminalOtaUpgradeInfo getTerminaOtaUpgradeInfo() {
         TerminalOtaUpgradeInfo upgradeInfo = new TerminalOtaUpgradeInfo();
         TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        if (upgradePackage == null ) {
+        if (upgradePackage == null || upgradePackage.getIsDelete() == true) {
             upgradeInfo.setOtaVersion(StringUtils.EMPTY);
             upgradeInfo.setOtaMD5(StringUtils.EMPTY);
             upgradeInfo.setOtaSeedLink(StringUtils.EMPTY);

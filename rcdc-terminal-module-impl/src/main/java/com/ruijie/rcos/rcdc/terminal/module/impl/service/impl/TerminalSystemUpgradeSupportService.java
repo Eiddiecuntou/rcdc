@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -220,7 +222,8 @@ public class TerminalSystemUpgradeSupportService {
         private boolean closeSupportService() throws BusinessException {
             List<CbbSystemUpgradeTaskStateEnums> stateList =
                     Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
-            List<TerminalSystemUpgradeEntity> upgradeTaskList = systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+            List<TerminalSystemUpgradeEntity> upgradeTaskList = systemUpgradeDAO
+                    .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
             if (CollectionUtils.isEmpty(upgradeTaskList)) {
                 LOGGER.info("无正在进行中的刷机任务");
                 // 确认关闭nfs服务，关闭定时任务
@@ -234,7 +237,8 @@ public class TerminalSystemUpgradeSupportService {
         private void setClosingTaskToFinish() {
             List<CbbSystemUpgradeTaskStateEnums> stateList =
                     Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.CLOSING});
-            List<TerminalSystemUpgradeEntity> closingTaskList = systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+            List<TerminalSystemUpgradeEntity> closingTaskList = systemUpgradeDAO
+                    .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
             if (CollectionUtils.isEmpty(closingTaskList)) {
                 LOGGER.info("无正在关闭中的刷机任务");
                 return;

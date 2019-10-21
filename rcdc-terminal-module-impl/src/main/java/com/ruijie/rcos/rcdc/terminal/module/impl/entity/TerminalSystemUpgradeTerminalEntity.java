@@ -28,6 +28,7 @@ public class TerminalSystemUpgradeTerminalEntity {
 
     private String terminalId;
 
+    @Enumerated(EnumType.STRING)
     private CbbTerminalTypeEnums terminalType;
 
     private Date startTime;

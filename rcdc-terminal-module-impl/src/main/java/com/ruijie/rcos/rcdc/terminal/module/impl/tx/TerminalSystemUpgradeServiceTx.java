@@ -26,6 +26,13 @@ public interface TerminalSystemUpgradeServiceTx {
     UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr);
 
     /**
+     * 添加OTA升级任务
+     *
+     * @param upgradePackageEntity OTA升级包对象
+     */
+    void addOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackageEntity);
+
+    /**
      * 结束刷机任务
      * 
      * @param upgradeTaskId 刷机任务id

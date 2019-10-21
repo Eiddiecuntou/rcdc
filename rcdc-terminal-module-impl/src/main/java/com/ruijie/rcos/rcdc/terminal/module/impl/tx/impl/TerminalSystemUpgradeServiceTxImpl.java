@@ -18,11 +18,10 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * 
@@ -75,6 +74,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         entity.setUpgradePackageId(upgradePackage.getId());
         entity.setPackageName(upgradePackage.getPackageName());
         entity.setPackageVersion(upgradePackage.getPackageVersion());
+        entity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         entity.setCreateTime(new Date());
         entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         systemUpgradeDAO.save(entity);
@@ -96,6 +96,28 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         entity.setCreateTime(new Date());
         systemUpgradeTerminalDAO.save(entity);
         return entity;
+    }
+
+    @Override
+    public void addOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage) {
+        Assert.notNull(upgradePackage, "upgradePackage can not be null");
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO
+                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
+        if (!CollectionUtils.isEmpty(upgradingTaskList)) {
+            TerminalSystemUpgradeEntity systemUpgrade = upgradingTaskList.get(0);
+            systemUpgrade.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+            systemUpgradeDAO.save(systemUpgrade);
+        }
+        TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
+        entity.setPackageVersion(upgradePackage.getPackageVersion());
+        entity.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        entity.setCreateTime(new Date());
+        entity.setUpgradePackageId(upgradePackage.getId());
+        entity.setPackageName(upgradePackage.getPackageName());
+        entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+        systemUpgradeDAO.save(entity);
     }
 
     @Override

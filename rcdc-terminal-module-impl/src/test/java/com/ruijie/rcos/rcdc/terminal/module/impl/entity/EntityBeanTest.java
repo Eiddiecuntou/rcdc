@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -93,8 +94,21 @@ public class EntityBeanTest {
         info.setPackageName("packageName");
         info.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         info.setVersion("version");
-        String result = "TerminalUpgradeVersionFileInfo [packageName=packageName, imgName=imgName," +
-                " version=version, filePath=filePath, packageType=VDI_LINUX]";
+        info.setFileMD5("fileMD5");
+        info.setSeedLink("seedLink");
+        info.setSeedMD5("seedMD5");
+        info.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
+        String result = "TerminalUpgradeVersionFileInfo{" +
+                "packageName='" + "packageName" + '\'' +
+                ", imgName='" + "imgName" + '\'' +
+                ", version='" + "version" + '\'' +
+                ", filePath='" + "filePath" + '\'' +
+                ", packageType=" + "VDI_LINUX" +
+                ", fileMD5='" + "fileMD5" + '\'' +
+                ", seedLink='" + "seedLink" + '\'' +
+                ", seedMD5='" + "seedMD5" + '\'' +
+                ", upgradeMode=" + "AUTO" +
+                '}';
         assertEquals(result, info.toString());
     }
 

@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
+package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.util.Assert;
@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
  *
  * @author hs
  */
-public class CbbMakeBtSeedRequest implements Request {
+public class MakeBtSeedRequest {
 
     private String ip;
 
@@ -19,7 +19,7 @@ public class CbbMakeBtSeedRequest implements Request {
 
     private String seedSavePath;
 
-    public CbbMakeBtSeedRequest(String ip, String filePath, String seedSavePath) {
+    public MakeBtSeedRequest(String ip, String filePath, String seedSavePath) {
         Assert.hasText(ip, "ip can not be blank");
         Assert.hasText(filePath, "filePath can not be blank");
         Assert.hasText(seedSavePath, "seedSavePath can not be blank");

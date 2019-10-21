@@ -116,7 +116,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     public DefaultResponse uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         JSONObject jsonObject = request.getCustomData();
-        // FIXME 如果CbbTerminalTypeEnums开放出去了，可以直接让前端传一个就行
         String platType = jsonObject.getString(PLAT_TYPE);
         String osType = jsonObject.getString(OS_TYPE);
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(platType, osType);

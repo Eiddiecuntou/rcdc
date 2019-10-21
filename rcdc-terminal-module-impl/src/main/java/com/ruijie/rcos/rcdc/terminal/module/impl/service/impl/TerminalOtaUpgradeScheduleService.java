@@ -33,12 +33,12 @@ public class TerminalOtaUpgradeScheduleService implements Runnable {
     @Override
     public void run() {
         LOGGER.debug("开始处理OTA升级定时任务");
+
         List<TerminalSystemUpgradeTerminalEntity> terminalList = systemUpgradeTerminalDAO
                 .findByTerminalTypeAndState(CbbTerminalTypeEnums.VDI_ANDROID, CbbSystemUpgradeStateEnums.UPGRADING);
         for (TerminalSystemUpgradeTerminalEntity upgradeTerminal : terminalList) {
             boolean isTimeout = TerminalDateUtil.isTimeout(upgradeTerminal.getCreateTime(), TIME_OUT);
             if (isTimeout) {
-                // FIXME 超时设置成失败就好
                 upgradeTerminal.setState(CbbSystemUpgradeStateEnums.TIMEOUT);
                 systemUpgradeTerminalDAO.save(upgradeTerminal);
             }

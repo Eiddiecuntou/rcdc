@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
 /**
  * 
@@ -34,6 +35,9 @@ public class TerminalSystemUpgradeEntity {
     private String packageVersion;
 
     private String packageName;
+
+    @Enumerated(EnumType.STRING)
+    private CbbTerminalTypeEnums packageType;
 
     private Date createTime;
 
@@ -73,6 +77,14 @@ public class TerminalSystemUpgradeEntity {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public CbbTerminalTypeEnums getPackageType() {
+        return packageType;
+    }
+
+    public void setPackageType(CbbTerminalTypeEnums packageType) {
+        this.packageType = packageType;
     }
 
     public Date getCreateTime() {

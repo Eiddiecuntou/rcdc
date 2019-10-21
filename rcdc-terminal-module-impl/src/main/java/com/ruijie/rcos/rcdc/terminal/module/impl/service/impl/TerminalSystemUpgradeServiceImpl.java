@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -90,7 +92,8 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
                 .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
         List<TerminalSystemUpgradeEntity> upgradingTaskList = null;
         if (upgradePackageId == null) {
-            upgradingTaskList = terminalSystemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+            upgradingTaskList = terminalSystemUpgradeDAO
+                    .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
         } else {
             upgradingTaskList = terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
         }

@@ -49,6 +49,7 @@ public class CheckOtaUpgradeHandlerSPIImplTest {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         upgradePackage.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         upgradePackage.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
+        upgradePackage.setIsDelete(false);
         new Expectations() {
             {
                 termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);

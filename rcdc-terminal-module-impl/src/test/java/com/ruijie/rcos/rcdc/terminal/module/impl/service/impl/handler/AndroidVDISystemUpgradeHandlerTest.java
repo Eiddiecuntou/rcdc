@@ -8,9 +8,11 @@ import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
 import com.ruijie.rcos.linux.library.Bt;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.SystemResultCheckUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
@@ -22,6 +24,7 @@ import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +57,12 @@ public class AndroidVDISystemUpgradeHandlerTest {
 
     @Injectable
     private TerminalOtaUpgradeScheduleService terminalOtaUpgradeScheduleService;
+
+    @Injectable
+    private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
+
+    @Injectable
+    private TerminalSystemUpgradeServiceTx terminalSystemUpgradeServiceTx;
 
     /**
      *
@@ -328,6 +337,8 @@ public class AndroidVDISystemUpgradeHandlerTest {
                 result = response;
                 Bt.btMakeSeed_block(anyString);
                 result = savePath;
+                Bt.btShareStart(anyString);
+                result = "SUCCESS";
                 SystemResultCheckUtil.checkResult(savePath);
                 result = savePath;
                 terminalSystemUpgradePackageService.saveTerminalUpgradePackage((TerminalUpgradeVersionFileInfo) any);

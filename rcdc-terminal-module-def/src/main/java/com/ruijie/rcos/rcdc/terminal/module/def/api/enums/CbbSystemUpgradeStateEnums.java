@@ -22,6 +22,5 @@ public enum CbbSystemUpgradeStateEnums {
 
     UNSUPPORTED,
 
-    // FIXME 不用加这个状态，超时设置成失败就好
     TIMEOUT
 }

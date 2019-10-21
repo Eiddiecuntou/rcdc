@@ -104,11 +104,18 @@ public class TerminalUpgradeVersionFileInfo {
         this.upgradeMode = upgradeMode;
     }
 
-    // FIXME 字段有变化，toString应该重新生成下
     @Override
     public String toString() {
-        return "TerminalUpgradeVersionFileInfo [packageName=" + packageName + ", imgName=" + imgName + ", version=" + version + ", filePath="
-                + filePath + ", packageType=" + packageType + "]";
+        return "TerminalUpgradeVersionFileInfo{" +
+                "packageName='" + packageName + '\'' +
+                ", imgName='" + imgName + '\'' +
+                ", version='" + version + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", packageType=" + packageType +
+                ", fileMD5='" + fileMD5 + '\'' +
+                ", seedLink='" + seedLink + '\'' +
+                ", seedMD5='" + seedMD5 + '\'' +
+                ", upgradeMode=" + upgradeMode +
+                '}';
     }
-
 }

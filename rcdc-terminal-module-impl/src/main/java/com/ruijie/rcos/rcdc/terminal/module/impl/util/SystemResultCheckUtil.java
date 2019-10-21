@@ -49,9 +49,7 @@ public class SystemResultCheckUtil {
             //筛选出错误码
             String codeStr = matcher.replaceAll("");
             LOGGER.error("指令执行失败：code={}", codeStr);
-
-            // FIXME 如果是封装成工具类，那么不应该跑具体操作的异常了，如果调用其他抽象层接口出错呢？在抛种子制作异常不是有问题吗？
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL, codeStr);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_CALL_SYSTEM_INTERFACE_FAIL, codeStr);
         }
         return result;
     }

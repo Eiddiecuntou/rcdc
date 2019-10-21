@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -45,7 +47,8 @@ public class TerminalSystemUpgradeTaskInit implements SafetySingletonInitializer
         LOGGER.info("开始终端刷机服务初始化...");
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
                 .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
-        final List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+        final List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO.
+                findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
             LOGGER.info("无进行中的刷机任务");
             return;
