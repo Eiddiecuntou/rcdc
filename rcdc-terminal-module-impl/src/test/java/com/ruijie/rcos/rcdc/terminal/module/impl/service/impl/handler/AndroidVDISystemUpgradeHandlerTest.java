@@ -5,7 +5,6 @@ import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
-import com.ruijie.rcos.linux.library.Bt;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -13,18 +12,17 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFil
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.SystemResultCheckUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,9 +49,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
 
     @Injectable
     private NetworkAPI networkAPI;
-
-    @Mocked
-    private Bt bt;
 
     @Injectable
     private TerminalOtaUpgradeScheduleService terminalOtaUpgradeScheduleService;
@@ -87,7 +82,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("upgradeMode", "AUTO");
         request.setCustomData(jsonObject);
-        final String savePath = "{\"seed_path\":\"/opt/ftp/terminal/ota/seed/123.zip.torrent\"}";
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO networkDTO = new BaseNetworkDTO();
         networkDTO.setIp("172.28.109.7");
@@ -144,7 +138,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("upgradeMode", "AUTO");
         request.setCustomData(jsonObject);
-        final String savePath = "{\"seed_path\":\"/opt/ftp/terminal/ota/seed/123.zip.torrent\"}";
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO networkDTO = new BaseNetworkDTO();
         networkDTO.setIp("172.28.109.7");
@@ -238,19 +231,23 @@ public class AndroidVDISystemUpgradeHandlerTest {
             }
         };
 
+        new MockUp<ShellCommandRunner>() {
+
+            @Mock
+            public String execute() {
+                return savePath;
+            }
+        };
+
         new Expectations(ZipUtil.class) {
             {
                 ZipUtil.unzipFile((File) any, (File) any);
             }
         };
-        new Expectations(SystemResultCheckUtil.class) {
+        new Expectations() {
             {
                 networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
                 result = response;
-                Bt.btMakeSeed_block(anyString);
-                result = savePath;
-                SystemResultCheckUtil.checkResult(savePath);
-                result = savePath;
             }
         };
 
@@ -326,21 +323,31 @@ public class AndroidVDISystemUpgradeHandlerTest {
             }
         };
 
+        new MockUp<ShellCommandRunner>() {
+
+            @Mock
+            public String execute() {
+                return savePath;
+            }
+        };
+
+        new MockUp<ShellCommandRunner>() {
+
+            @Mock
+            public String execute() {
+                return "seed";
+            }
+        };
+
         new Expectations(ZipUtil.class) {
             {
                 ZipUtil.unzipFile((File) any, (File) any);
             }
         };
-        new Expectations(SystemResultCheckUtil.class) {
+        new Expectations() {
             {
                 networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
                 result = response;
-                Bt.btMakeSeed_block(anyString);
-                result = savePath;
-                Bt.btShareStart(anyString);
-                result = "SUCCESS";
-                SystemResultCheckUtil.checkResult(savePath);
-                result = savePath;
                 terminalSystemUpgradePackageService.saveTerminalUpgradePackage((TerminalUpgradeVersionFileInfo) any);
 
             }

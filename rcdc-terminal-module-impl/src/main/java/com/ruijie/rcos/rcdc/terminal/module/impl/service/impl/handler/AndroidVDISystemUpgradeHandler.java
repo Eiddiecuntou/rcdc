@@ -1,29 +1,22 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
-import com.ruijie.rcos.linux.library.Bt;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.MakeBtSeedRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.StartBtShareRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.SystemResultCheckUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
@@ -31,6 +24,7 @@ import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -55,9 +49,11 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
 
     private static final String UPGRADE_MODE = "upgradeMode";
 
-    private static final String SEED_PATH = "seed_path";
-
     private static final String OTA_SUFFIX = "zip";
+
+    private static final String INIT_COMMAND = "python %s %s %s %s";
+
+    private static final String INIT_PYTHON_SCRIPT_PATH = "/data/web/rcdc/shell/ota_bt.py";
 
     private static final int PERIOD_SECOND = 15;
 
@@ -127,8 +123,6 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         upgradeInfo.setFilePath(packagePath);
         //制作Bt种子
         SeedFileInfo seedFileInfo = makeBtSeed(packagePath);
-        //开启Bt服务
-        startBtShare(seedFileInfo.getSeedFilePath(), Constants.TERMINAL_UPGRADE_OTA_PACKAGE);
         upgradeInfo.setSeedLink(seedFileInfo.getSeedFilePath());
         upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
         // 替换升级文件,清除原升级包目录下旧文件
@@ -182,21 +176,23 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         Assert.notNull(filePath, "filePath can not be null");
         String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
         createFilePath(seedSavePath);
-        MakeBtSeedRequest request = new MakeBtSeedRequest(getLocalIP(), filePath, seedSavePath);
-        String result = Bt.btMakeSeed_block(JSON.toJSONString(request));
-        SystemResultCheckUtil.checkResult(result);
-        String seedPath = JSONObject.parseObject(result).getString(SEED_PATH);
+        ShellCommandRunner runner = new ShellCommandRunner();
+        String seedPath = null;
+        String shellCmd = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH, filePath, seedSavePath, getLocalIP());
+        LOGGER.info("excecute shell cmd : {}", shellCmd);
+        runner.setCommand(shellCmd);
+        try {
+            seedPath = runner.execute();
+            LOGGER.debug("seed path is :{}", seedPath);
+        } catch (BusinessException e) {
+            LOGGER.error("make seed file error", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL, e);
+        }
         File seedFile = new File(seedPath);
         FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_SEED_FILE, seedFile.getName());
         String seedMD5 = generateFileMD5(seedPath);
         SeedFileInfo seedFileInfo = new SeedFileInfo(seedPath, seedMD5);
         return seedFileInfo;
-    }
-
-    private void startBtShare(String seedPath, String filePath) throws BusinessException {
-        StartBtShareRequest btShareRequest = new StartBtShareRequest(seedPath, filePath);
-        String result = Bt.btShareStart(JSON.toJSONString(btShareRequest));
-        SystemResultCheckUtil.checkResult(result);
     }
 
     /**
