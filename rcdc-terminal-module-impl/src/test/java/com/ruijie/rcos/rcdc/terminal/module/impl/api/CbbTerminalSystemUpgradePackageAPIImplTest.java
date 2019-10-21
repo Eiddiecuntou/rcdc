@@ -31,6 +31,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import mockit.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.text.ParseException;
@@ -71,6 +72,9 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     @Injectable
     private TerminalSystemUpgradeHandlerFactory handlerFactory;
+
+    @Injectable
+    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
 
     /**
      * 测试isUpgradeFileUploading，参数为空
@@ -537,7 +541,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Expectations() {
             {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 result = true;
             }
         };
@@ -563,7 +567,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 times = 1;
             }
         };
@@ -580,7 +584,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Expectations() {
             {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 result = false;
             }
         };
@@ -598,7 +602,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 times = 1;
             }
         };

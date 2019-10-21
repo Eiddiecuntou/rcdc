@@ -28,9 +28,6 @@ public class TerminalSystemUpgradeTerminalEntity {
 
     private String terminalId;
 
-    @Enumerated(EnumType.STRING)
-    private CbbTerminalTypeEnums terminalType;
-
     private Date startTime;
 
     private Date createTime;
@@ -63,14 +60,6 @@ public class TerminalSystemUpgradeTerminalEntity {
 
     public void setTerminalId(String terminalId) {
         this.terminalId = terminalId;
-    }
-
-    public CbbTerminalTypeEnums getTerminalType() {
-        return terminalType;
-    }
-
-    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
-        this.terminalType = terminalType;
     }
 
     public Date getStartTime() {

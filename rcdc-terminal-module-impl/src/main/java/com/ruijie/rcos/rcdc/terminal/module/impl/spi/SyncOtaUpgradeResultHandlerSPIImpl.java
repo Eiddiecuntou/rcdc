@@ -90,7 +90,6 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
             upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
             upgradeTerminal.setSysUpgradeId(upgradePackage.getId());
             upgradeTerminal.setTerminalId(terminalId);
-            upgradeTerminal.setTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
         }
         upgradeTerminal.setCreateTime(new Date());
         upgradeTerminal.setState(otaUpgradeResultInfo.getUpgradeResult());

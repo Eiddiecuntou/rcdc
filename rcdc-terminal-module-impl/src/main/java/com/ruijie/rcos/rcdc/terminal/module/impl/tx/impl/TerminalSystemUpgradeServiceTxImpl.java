@@ -91,7 +91,6 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         TerminalSystemUpgradeTerminalEntity entity = new TerminalSystemUpgradeTerminalEntity();
         entity.setSysUpgradeId(upgradeTaskId);
         entity.setTerminalId(terminalId);
-        entity.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
         entity.setState(CbbSystemUpgradeStateEnums.WAIT);
         entity.setCreateTime(new Date());
         systemUpgradeTerminalDAO.save(entity);

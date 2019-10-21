@@ -221,7 +221,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setSysUpgradeId(upgradeEntity.getId());
         upgradeTerminal.setTerminalId(terminalEntity.getTerminalId());
-        upgradeTerminal.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.WAIT);
         upgradeTerminal.setCreateTime(new Date());
         systemUpgradeTerminalDAO.save(upgradeTerminal);

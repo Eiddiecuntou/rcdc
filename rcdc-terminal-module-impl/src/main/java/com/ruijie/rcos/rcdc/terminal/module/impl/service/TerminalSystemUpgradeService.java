@@ -34,13 +34,6 @@ public interface TerminalSystemUpgradeService {
     void modifySystemUpgradeState(TerminalSystemUpgradeEntity upgradeTask) throws BusinessException;
 
     /**
-     * 判断是否存在刷机任务处于进行状态
-     * 
-     * @return 判断结果
-     */
-    boolean hasSystemUpgradeInProgress();
-
-    /**
      * 判断刷机包是否存在刷机任务处于进行状态
      * 
      * @param upgradePackageId 刷机包id

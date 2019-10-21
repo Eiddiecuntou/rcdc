@@ -77,11 +77,6 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     }
 
     @Override
-    public boolean hasSystemUpgradeInProgress() {
-        return hasUpgradingTask(null);
-    }
-
-    @Override
     public boolean hasSystemUpgradeInProgress(UUID upgradePackageId) {
         Assert.notNull(upgradePackageId, "upgradePackageId can not be null");
         return hasUpgradingTask(upgradePackageId);
@@ -91,12 +86,9 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
                 .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
         List<TerminalSystemUpgradeEntity> upgradingTaskList = null;
-        if (upgradePackageId == null) {
-            upgradingTaskList = terminalSystemUpgradeDAO
-                    .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
-        } else {
-            upgradingTaskList = terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
-        }
+
+        upgradingTaskList = terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
+
 
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
             LOGGER.info("不存在升级中的刷机任务");

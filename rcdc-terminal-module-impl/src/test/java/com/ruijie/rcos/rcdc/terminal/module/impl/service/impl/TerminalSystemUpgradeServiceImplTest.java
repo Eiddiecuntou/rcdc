@@ -173,55 +173,6 @@ public class TerminalSystemUpgradeServiceImplTest {
     }
 
     /**
-     * 测试hasSystemUpgradeInProgress，返回false
-     */
-    @Test
-    public void testHasSystemUpgradeInProgressIsFalse() {
-        new Expectations() {
-            {
-                terminalSystemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                result = new ArrayList<>();
-            }
-        };
-        assertFalse(terminalSystemUpgradeService.hasSystemUpgradeInProgress());
-
-        new Verifications() {
-            {
-                terminalSystemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     * 测试hasSystemUpgradeInProgress，返回true
-     */
-    @Test
-    public void testHasSystemUpgradeInProgressIsTrue() {
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = new ArrayList<>();
-        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradingTaskList.add(upgradeEntity);
-        new Expectations() {
-            {
-                terminalSystemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                result = upgradingTaskList;
-            }
-        };
-        assertTrue(terminalSystemUpgradeService.hasSystemUpgradeInProgress());
-
-        new Verifications() {
-            {
-                terminalSystemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 1;
-            }
-        };
-    }
-
-    /**
      * 测试hasSystemUpgradeInProgress0，参数为空
      * 
      * @throws Exception 异常

@@ -46,15 +46,6 @@ public interface TerminalSystemUpgradeTerminalDAO extends SkyEngineJpaRepository
     List<TerminalSystemUpgradeTerminalEntity> findBySysUpgradeIdAndState(UUID sysUpgradeId, CbbSystemUpgradeStateEnums state);
 
     /**
-     * 根据刷机状态统计刷机数量
-     *
-     * @param terminalType 终端类型
-     * @param state 刷机终端状态
-     * @return 统计数量
-     */
-    int countByState(CbbTerminalTypeEnums terminalType, CbbSystemUpgradeStateEnums state);
-
-    /**
      * 统计刷机任务指定状态的终端数量
      * 
      * @param sysUpgradeId 刷机任务id

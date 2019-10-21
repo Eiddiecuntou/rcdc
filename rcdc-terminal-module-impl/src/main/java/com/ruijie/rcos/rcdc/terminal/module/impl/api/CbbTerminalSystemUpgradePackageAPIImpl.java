@@ -72,6 +72,9 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
+    @Autowired
+    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+
     private static final String PLAT_TYPE = "platType";
 
     private static final String OS_TYPE = "osType";
@@ -90,8 +93,12 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         Assert.notNull(request, "request can not be null");
 
         boolean allowUpload = true;
+        boolean hasRunningTask = false;
         List<String> errorList = Lists.newArrayList();
-        boolean hasRunningTask = terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(request.getTerminalType());
+        if (upgradePackage != null) {
+            hasRunningTask = terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
+        }
         if (hasRunningTask) {
             LOGGER.debug("system upgrade task is running");
             allowUpload = false;

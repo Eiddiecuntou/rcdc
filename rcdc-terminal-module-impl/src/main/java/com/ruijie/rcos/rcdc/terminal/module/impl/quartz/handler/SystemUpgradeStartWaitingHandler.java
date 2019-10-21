@@ -1,9 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeService
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 
@@ -54,6 +59,9 @@ public class SystemUpgradeStartWaitingHandler {
     @Autowired
     private UpgradeTerminalLockManager lockManager;
 
+    @Autowired
+    private TerminalSystemUpgradeDAO systemUpgradeDAO;
+
     /**
      * 执行处理开始等待中的刷机终端
      * 
@@ -82,9 +90,17 @@ public class SystemUpgradeStartWaitingHandler {
         LOGGER.info("开始等待中的终端刷机处理...");
         int count = 0;
         final TerminalSystemUpgradePackageEntity upgradePackage = systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
-
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO
+                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
+        if (CollectionUtils.isEmpty(upgradingTaskList)) {
+            LOGGER.info("不存在升级中的刷机任务");
+            return;
+        }
         // 获取正在刷机中的终端数量
-        int upgradingNum = systemUpgradeTerminalDAO.countByState(CbbTerminalTypeEnums.VDI_LINUX, CbbSystemUpgradeStateEnums.UPGRADING);
+        int upgradingNum = systemUpgradeTerminalDAO
+                .countBySysUpgradeIdAndState(upgradingTaskList.get(0).getId(), CbbSystemUpgradeStateEnums.UPGRADING);
 
         // 构造刷机指令信息
         TerminalSystemUpgradeMsg upgradeMsg = new TerminalSystemUpgradeMsg(upgradePackage.getImgName(), upgradePackage.getPackageVersion());
