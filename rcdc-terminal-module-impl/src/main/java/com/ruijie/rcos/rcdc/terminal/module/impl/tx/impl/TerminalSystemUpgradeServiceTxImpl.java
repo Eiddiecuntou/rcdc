@@ -13,15 +13,21 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEnt
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -34,6 +40,13 @@ import java.util.*;
  */
 @Service
 public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgradeServiceTx {
+
+    private static final int PERIOD_SECOND = 15;
+
+    private static ThreadExecutor OTA_UPGRADE_SCHEDULED_THREAD_POOL =
+            ThreadExecutors.newBuilder("OTA_UPGRADE_SCHEDULED_THREAD").maxThreadNum(1).queueSize(1).build();
+
+    private static ScheduledFuture<?> UPGRADE_TASK_FUTURE = null;
 
     @Autowired
     private TerminalSystemUpgradeDAO systemUpgradeDAO;
@@ -74,7 +87,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         entity.setUpgradePackageId(upgradePackage.getId());
         entity.setPackageName(upgradePackage.getPackageName());
         entity.setPackageVersion(upgradePackage.getPackageVersion());
-        entity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+        entity.setPackageType(upgradePackage.getPackageType());
         entity.setCreateTime(new Date());
         entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         systemUpgradeDAO.save(entity);
@@ -98,33 +111,54 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
     }
 
     @Override
-    public void addOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage) {
+    public void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage) {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO
-                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
-        if (!CollectionUtils.isEmpty(upgradingTaskList)) {
-            TerminalSystemUpgradeEntity systemUpgrade = upgradingTaskList.get(0);
-            systemUpgrade.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
-            systemUpgradeDAO.save(systemUpgrade);
+        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage);
+        UUID upgradeTaskId = entity.getId();
+        //开启检查终端状态定时任务
+        if (UPGRADE_TASK_FUTURE == null) {
+            OTA_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(new TerminalOtaUpgradeScheduleService(upgradeTaskId),
+                    0, PERIOD_SECOND, TimeUnit.SECONDS);
         }
-        TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
-        entity.setPackageVersion(upgradePackage.getPackageVersion());
-        entity.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        entity.setCreateTime(new Date());
-        entity.setUpgradePackageId(upgradePackage.getId());
-        entity.setPackageName(upgradePackage.getPackageName());
-        entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
-        systemUpgradeDAO.save(entity);
+    }
+
+    private void closeAndroidVDIUpgradeTask(TerminalSystemUpgradeEntity systemUpgradeTask) throws BusinessException {
+        Assert.notNull(systemUpgradeTask, "systemUpgradeTask can not be null");
+        // 将升级中的终端设置为失败
+        final List<TerminalSystemUpgradeTerminalEntity> upgradingTerminalList =
+                systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.UPGRADING);
+        for (TerminalSystemUpgradeTerminalEntity upgradingTerminal : upgradingTerminalList) {
+            setUpgradingTerminalToFail(upgradingTerminal);
+        }
+
+        systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
+        systemUpgradeDAO.save(systemUpgradeTask);
+        //关闭定时任务
+        cancelScheduleTask();
+    }
+
+    private void cancelScheduleTask() {
+        if (UPGRADE_TASK_FUTURE != null) {
+            UPGRADE_TASK_FUTURE.cancel(true);
+            UPGRADE_TASK_FUTURE = null;
+        }
     }
 
     @Override
     public void closeSystemUpgradeTask(UUID upgradeTaskId) throws BusinessException {
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
-
         final TerminalSystemUpgradeEntity systemUpgradeTask = getSystemUpgradeTask(upgradeTaskId);
+        if (systemUpgradeTask.getPackageType() == CbbTerminalTypeEnums.VDI_ANDROID) {
+            closeAndroidVDIUpgradeTask(systemUpgradeTask);
 
+        } else if (systemUpgradeTask.getPackageType() == CbbTerminalTypeEnums.VDI_LINUX) {
+            closeLinuxVDIUpgradeTask(systemUpgradeTask);
+        }
+
+    }
+
+    private void closeLinuxVDIUpgradeTask(TerminalSystemUpgradeEntity systemUpgradeTask) throws BusinessException {
+        Assert.notNull(systemUpgradeTask, "systemUpgradeTask can not be null");
         if (systemUpgradeTask.getState() != CbbSystemUpgradeTaskStateEnums.UPGRADING) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_HAS_CLOSED);
         }

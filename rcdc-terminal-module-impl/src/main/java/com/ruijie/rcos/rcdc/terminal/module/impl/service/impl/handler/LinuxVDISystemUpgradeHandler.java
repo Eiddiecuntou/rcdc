@@ -7,7 +7,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -20,6 +19,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.*;
@@ -34,6 +34,7 @@ import java.util.UUID;
  *
  * @author hs
  */
+@Service
 public class LinuxVDISystemUpgradeHandler implements TerminalSystemUpgradeHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDISystemUpgradeHandler.class);
@@ -63,13 +64,6 @@ public class LinuxVDISystemUpgradeHandler implements TerminalSystemUpgradeHandle
         }
 
         TerminalUpgradeVersionFileInfo versionInfo = getPackageInfo(fileName, filePath);
-
-        // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包
-        boolean hasRunningTask = isExistRunningTask(versionInfo.getPackageType());
-        if (hasRunningTask) {
-            LOGGER.debug("system upgrade task is running, can not upload file ", fileName);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
-        }
 
         // 将新升级文件移动到目录下
         String storePackageName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
@@ -105,20 +99,6 @@ public class LinuxVDISystemUpgradeHandler implements TerminalSystemUpgradeHandle
         return versionInfo;
     }
 
-    /**
-     * 检验是否存在正在进行的升级任务
-     *
-     * @param packageType 升级包类型
-     * @return
-     */
-    private boolean isExistRunningTask(CbbTerminalTypeEnums packageType) {
-        TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(packageType);
-        if (upgradePackage == null) {
-            return false;
-        }
-
-        return terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
-    }
 
     private boolean checkFileType(String fileName) {
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();

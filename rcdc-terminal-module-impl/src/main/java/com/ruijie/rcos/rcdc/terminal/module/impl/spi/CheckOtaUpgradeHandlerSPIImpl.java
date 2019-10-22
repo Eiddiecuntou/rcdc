@@ -1,15 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.CheckOtaUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalOtaUpgradeInfo;
@@ -19,6 +20,10 @@ import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Description: Function Description
@@ -39,6 +44,9 @@ public class CheckOtaUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     @Autowired
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
 
+    @Autowired
+    private TerminalSystemUpgradeDAO systemUpgradeDAO;
+
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "request can not be null");
@@ -51,7 +59,11 @@ public class CheckOtaUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private TerminalOtaUpgradeInfo getTerminaOtaUpgradeInfo() {
         TerminalOtaUpgradeInfo upgradeInfo = new TerminalOtaUpgradeInfo();
         TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        if (upgradePackage == null || upgradePackage.getIsDelete() == true) {
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO
+                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
+        if (upgradePackage.getIsDelete() == true || CollectionUtils.isEmpty(upgradingTaskList)) {
             upgradeInfo.setOtaVersion(StringUtils.EMPTY);
             upgradeInfo.setOtaMD5(StringUtils.EMPTY);
             upgradeInfo.setOtaSeedLink(StringUtils.EMPTY);

@@ -2,13 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImpl;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImplTest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
@@ -24,7 +22,6 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -256,55 +253,6 @@ public class LinuxVDISystemUpgradeHandlerTest {
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，系统升级任务正在进行中
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileUpgrading() {
-        String path = LinuxVDISystemUpgradeHandlerTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<LinuxVDISystemUpgradeHandler>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
-
-            @Mock
-            public String[] list() {
-                String[] fileArr = new String[1];
-                fileArr[0] = "dfd";
-                return fileArr;
-            }
-        };
-
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = new TerminalSystemUpgradePackageEntity();
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                result = true;
-
-            }
-        };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        request.setFilePath("dsdsd");
-        try {
-            handler.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, e.getKey());
         }
     }
 

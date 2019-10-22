@@ -41,6 +41,16 @@ public interface CbbTerminalSystemUpgradeAPI {
     CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException;
 
     /**
+     * 开启OTA升级任务
+     *
+     * @param request 请求参数
+     * @return 请求结果
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    DefaultResponse startOtaUpgradeTask(CbbStartOtaUpgradeTaskRequest request) throws BusinessException;
+
+    /**
      * 
      * 添加刷机任务终端
      * 

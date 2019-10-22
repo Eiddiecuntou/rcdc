@@ -73,8 +73,8 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
         Assert.notNull(otaUpgradeResultInfo.getBasicInfo(), "otaUpgradeResultInfo.getBasicInfo() can not be null");
         String terminalId = otaUpgradeResultInfo.getBasicInfo().getTerminalId();
         TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        if (upgradePackage == null || upgradePackage.getIsDelete() == true) {
-            LOGGER.info("OTA升级包不存在");
+        if (upgradePackage.getIsDelete() == true) {
+            LOGGER.info("OTA升级包被删除");
             return;
         }
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
@@ -82,6 +82,7 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
         List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO
                 .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
+            LOGGER.info("没有OTA升级任务");
             return;
         }
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = systemUpgradeTerminalDAO
@@ -90,8 +91,8 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
             upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
             upgradeTerminal.setSysUpgradeId(upgradePackage.getId());
             upgradeTerminal.setTerminalId(terminalId);
+            upgradeTerminal.setCreateTime(new Date());
         }
-        upgradeTerminal.setCreateTime(new Date());
         upgradeTerminal.setState(otaUpgradeResultInfo.getUpgradeResult());
         systemUpgradeTerminalDAO.save(upgradeTerminal);
     }

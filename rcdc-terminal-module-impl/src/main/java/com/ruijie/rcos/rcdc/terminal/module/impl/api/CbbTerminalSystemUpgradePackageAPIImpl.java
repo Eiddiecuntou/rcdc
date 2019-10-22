@@ -132,6 +132,12 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
             }
             SYS_UPGRADE_PACKAGE_UPLOADING.add(terminalType);
         }
+        // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包
+        boolean hasRunningTask = isExistRunningTask(terminalType);
+        if (hasRunningTask) {
+            LOGGER.debug("system upgrade task is running, can not upload file ");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
+        }
         TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
         handler.uploadUpgradePackage(request);
         // 完成清除上传标志缓存内记录
@@ -147,6 +153,21 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         packageEntity.setUpgradeMode(request.getUpgradeMode());
         terminalSystemUpgradePackageDAO.save(packageEntity);
         return DefaultResponse.Builder.success();
+    }
+
+    /**
+     * 检验是否存在正在进行的升级任务
+     *
+     * @param packageType 升级包类型
+     * @return
+     */
+    private boolean isExistRunningTask(CbbTerminalTypeEnums packageType) {
+        TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(packageType);
+        if (upgradePackage == null) {
+            return false;
+        }
+
+        return terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
     }
 
     /**

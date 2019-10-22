@@ -1,17 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.data.domain.Page;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
@@ -45,6 +33,17 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * 
@@ -169,6 +168,17 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         if (response.isHasLoading()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);
         }
+    }
+
+    @Override
+    public DefaultResponse startOtaUpgradeTask(CbbStartOtaUpgradeTaskRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        UUID packageId = request.getPackageId();
+        TerminalSystemUpgradePackageEntity upgradePackage = getUpgradePackageEntity(packageId);
+        // 判断刷机包是否允许开启升级任务
+        checkAllowCreateTask(upgradePackage);
+        terminalSystemUpgradeServiceTx.startOtaUpgradeTask(upgradePackage);
+        return DefaultResponse.Builder.success();
     }
 
     @Override
@@ -309,7 +319,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     @Override
     public DefaultResponse closeSystemUpgradeTask(IdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-
         terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getId());
         return DefaultResponse.Builder.success();
     }

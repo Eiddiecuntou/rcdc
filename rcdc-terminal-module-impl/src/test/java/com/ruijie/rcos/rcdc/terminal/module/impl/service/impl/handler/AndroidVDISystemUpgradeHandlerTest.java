@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFil
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -150,11 +151,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
                 return false;
             }
 
-            @Mock
-            public boolean renameTo(File dest) {
-                return true;
-            }
-
         };
 
         new MockUp<AndroidVDISystemUpgradeHandler>() {
@@ -162,6 +158,11 @@ public class AndroidVDISystemUpgradeHandlerTest {
             @Mock
             private String generateFileMD5(String filePath) {
                 return "3b20fe7c2aaff10b54312e1c868b4542";
+            }
+
+            @Mock
+            private void deleteVersionAndZip() {
+
             }
 
         };
@@ -216,17 +217,17 @@ public class AndroidVDISystemUpgradeHandlerTest {
                 return true;
             }
 
-            @Mock
-            public boolean renameTo(File dest) {
-                return true;
-            }
-
         };
 
         new MockUp<AndroidVDISystemUpgradeHandler>() {
 
             @Mock
             private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) {
+
+            }
+
+            @Mock
+            private void deleteVersionAndZip() {
 
             }
         };
@@ -265,11 +266,17 @@ public class AndroidVDISystemUpgradeHandlerTest {
             }
         };
 
+        new Expectations(FileOperateUtil.class) {
+            {
+                FileOperateUtil.deleteFile((File) any);
+            }
+        };
+
         try {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_UPLOAD_FAIL, e.getKey());
         }
 
     }
@@ -319,6 +326,11 @@ public class AndroidVDISystemUpgradeHandlerTest {
 
             @Mock
             private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) {
+
+            }
+
+            @Mock
+            private void deleteVersionAndZip() {
 
             }
         };

@@ -1,18 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
@@ -21,12 +13,15 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTer
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 /**
  * 
@@ -129,6 +124,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         systemUpgradeTask.setId(upgradeTaskId);
         systemUpgradeTask.setUpgradePackageId(upgradeTaskId);
+        systemUpgradeTask.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setSysUpgradeId(upgradeTaskId);
@@ -177,6 +173,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         systemUpgradeTask.setUpgradePackageId(upgradeTaskId);
         systemUpgradeTask.setId(upgradeTaskId);
+        systemUpgradeTask.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
 
         List<TerminalSystemUpgradeTerminalEntity> waitUpgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();

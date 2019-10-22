@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 import java.util.UUID;
@@ -16,10 +16,10 @@ import java.util.UUID;
  */
 public class CbbTerminalUpgradePackageModifyRequest implements Request {
 
-    @NotBlank
+    @NotNull
     private UUID packageId;
 
-    @NotBlank
+    @NotNull
     private CbbSystemUpgradeModeEnums upgradeMode;
 
     public UUID getPackageId() {

@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEn
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.CheckOtaUpgradeInfo;
@@ -36,6 +37,9 @@ public class CheckOtaUpgradeHandlerSPIImplTest {
 
     @Injectable
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
+
+    @Injectable
+    private TerminalSystemUpgradeDAO systemUpgradeDAO;
 
     /**
      * 测试dispatch
