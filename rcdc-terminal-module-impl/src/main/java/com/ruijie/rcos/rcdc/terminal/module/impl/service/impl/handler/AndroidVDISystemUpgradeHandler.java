@@ -83,29 +83,30 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
     private TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.hasText(fileName, "fileName can not be blank");
         Assert.hasText(filePath, "filePath can not be blank");
-        String storePackageName = UUID.randomUUID() + OTA_SUFFIX;
-        String unZipFilePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE;
-        String packagePath = unZipFilePath + storePackageName;
+        String savePackageName = UUID.randomUUID() + OTA_SUFFIX;
         //解压zip文件
-        Properties prop = unZipPackage(filePath, unZipFilePath);
+        String packagePath = unZipPackage(filePath, savePackageName);
+        String versionPath = getVersionFilePath();
+        File versionFile = new File(versionPath);
+        Properties prop = new Properties();
+        try {
+            InputStream inputStream = new FileInputStream(versionPath);
+            prop.load(inputStream);
+        } catch (IOException e) {
+            LOGGER.debug("version file read error, file path[{}]", versionPath);
+            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+        }
+        FileOperateUtil.deleteFile(versionFile);
         String fileMD5 = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5);
         String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT);
         String version = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION);
-        SeedFileInfo seedFileInfo = null;
-        File newFile = new File(packagePath);
-        try {
-            //校验OTA包
-            checkOtaUpgradePackage(platType, fileMD5, packagePath);
-            //制作Bt种子
-            seedFileInfo = makeBtSeed(packagePath);
-        } catch (BusinessException e) {
-            //有异常，删除新上传的OTA包
-            FileOperateUtil.deleteFile(newFile);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_UPLOAD_FAIL, e);
-        }
+        //校验OTA包
+        checkOtaUpgradePackage(platType, fileMD5, packagePath);
+        //制作Bt种子
+        SeedFileInfo seedFileInfo = makeBtSeed(packagePath);
 
         // 替换升级文件,清除原升级包目录下旧文件
-        FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, storePackageName);
+        FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, savePackageName);
         TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
         upgradeInfo.setVersion(version);
         upgradeInfo.setFileMD5(fileMD5);
@@ -121,47 +122,40 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         Assert.notNull(platType, "platType can not be null");
         Assert.notNull(fileMD5, "fileMD5 can not be null");
         Assert.notNull(packagePath, "packagePath can not be null");
-        File oldFile = new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP);
-        File newFile = new File(packagePath);
-        if (!oldFile.exists()) {
-            LOGGER.error("ota upgrade package not exist");
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_NOT_EXIST);
-        }
-        try {
-            Files.move(oldFile.toPath(), newFile.toPath());
-        } catch (Exception e) {
-            LOGGER.debug("move upgrade file to target directory fail");
-            FileOperateUtil.deleteFile(oldFile);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL, e);
-        }
-
+        File packageFile = new File(packagePath);
         String packageMD5 = generateFileMD5(packagePath);
         if (!fileMD5.equals(packageMD5) || !platType.equals(Constants.TERMINAL_UPGRADE_OTA_PLATFORM_TYPE)) {
+            FileOperateUtil.deleteFile(packageFile);
             LOGGER.error("terminal ota upgrade package has error, fileMD5[{}], platType[{}]", fileMD5, platType);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR);
         }
 
     }
 
-    private Properties unZipPackage(String zipfilePath, String unZipFilePath) throws BusinessException {
+    private String unZipPackage(String zipfilePath, String savePackageName) throws BusinessException {
         Assert.hasText(zipfilePath, "filePath can not be blank");
-        Assert.hasText(unZipFilePath, "unZipFilePath can not be blank");
+        Assert.hasText(savePackageName, "unZipFilePath can not be blank");
+        String unZipFilePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE;
+        String savePackagePath = unZipFilePath + savePackageName;
         File zipFile = new File(zipfilePath);
         createFilePath(unZipFilePath);
         File unZipFile = new File(unZipFilePath);
-        Properties prop = new Properties();
         try {
             ZipUtil.unzipFile(zipFile, unZipFile);
-            InputStream inputStream = new FileInputStream(getVersionFilePath());
-            prop.load(inputStream);
-        } catch (FileNotFoundException e) {
-            LOGGER.debug("version file not found, file path[{}]", zipFile);
-            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST, e);
         } catch (IOException e) {
             LOGGER.debug("version file read error, file path[{}]", zipFile);
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
-        return prop;
+        File oldZipFile = new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP);
+        File savePackageFile = new File(savePackagePath);
+        try {
+            Files.move(oldZipFile.toPath(), savePackageFile.toPath());
+        } catch (IOException e) {
+            LOGGER.debug("move upgrade file to target directory fail");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL, e);
+        }
+
+        return savePackagePath;
 
     }
 

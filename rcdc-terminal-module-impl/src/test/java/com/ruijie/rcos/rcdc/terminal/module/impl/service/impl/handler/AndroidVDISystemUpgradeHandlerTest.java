@@ -27,6 +27,8 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -116,12 +118,17 @@ public class AndroidVDISystemUpgradeHandlerTest {
                 ZipUtil.unzipFile((File) any, (File) any);
             }
         };
+        new Expectations(Files.class) {
+            {
+                Files.move((Path) any,(Path) any);
+            }
+        };
 
         try {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_FILE_NOT_EXIST, e.getKey());
+            assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
         }
 
     }
@@ -218,6 +225,11 @@ public class AndroidVDISystemUpgradeHandlerTest {
             }
 
         };
+        new Expectations(Files.class) {
+            {
+                Files.move((Path) any,(Path) any);
+            }
+        };
 
         new MockUp<AndroidVDISystemUpgradeHandler>() {
 
@@ -276,7 +288,7 @@ public class AndroidVDISystemUpgradeHandlerTest {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_UPLOAD_FAIL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL, e.getKey());
         }
 
     }
@@ -315,12 +327,15 @@ public class AndroidVDISystemUpgradeHandlerTest {
                 return true;
             }
 
-            @Mock
-            public boolean renameTo(File dest) {
-                return true;
-            }
 
         };
+
+        new Expectations(Files.class) {
+            {
+                Files.move((Path) any,(Path) any);
+            }
+        };
+
 
         new MockUp<AndroidVDISystemUpgradeHandler>() {
 
