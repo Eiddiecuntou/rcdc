@@ -67,6 +67,7 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
         return otaUpgradeResultInfo;
     }
 
+    //FIXME 和小丹确认，发送报文的具体内容，不同状态。
     private void updateTerminalUpgradeStatus(OtaUpgradeResultInfo otaUpgradeResultInfo) {
         Assert.notNull(otaUpgradeResultInfo, "otaUpgradeResultInfo can not be null");
         Assert.notNull(otaUpgradeResultInfo.getOtaVersion(), "otaUpgradeResultInfo.getOtaVersion() can not be null");

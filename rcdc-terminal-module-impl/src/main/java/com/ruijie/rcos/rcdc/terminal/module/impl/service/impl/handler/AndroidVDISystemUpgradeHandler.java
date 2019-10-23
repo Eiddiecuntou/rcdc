@@ -26,7 +26,6 @@ import com.ruijie.rcos.sk.base.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -87,24 +86,28 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         Assert.hasText(fileName, "fileName can not be blank");
         Assert.hasText(filePath, "filePath can not be blank");
         String savePackageName = UUID.randomUUID() + OTA_SUFFIX;
-
-        //解压zip文件
-        String packagePath = unZipPackage(filePath, savePackageName);
-
-        //校验version信息
-        TerminalUpgradeVersionFileInfo upgradeInfo = checkVersionInfo(packagePath);
-
-        //制作Bt种子
-        SeedFileInfo seedFileInfo = makeBtSeed(packagePath);
-
-        // 替换升级文件,清除原升级包目录下旧文件
-        FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, savePackageName);
-        upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        upgradeInfo.setPackageName(fileName);
-        upgradeInfo.setFilePath(packagePath);
-        upgradeInfo.setSeedLink(seedFileInfo.getSeedFilePath());
-        upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
-        return upgradeInfo;
+        try {
+            // 解压zip文件
+            String packagePath = unZipPackage(filePath, savePackageName);
+            // 校验version信息
+            TerminalUpgradeVersionFileInfo upgradeInfo = checkVersionInfo(packagePath);
+            // 制作Bt种子
+            SeedFileInfo seedFileInfo = makeBtSeed(packagePath);
+            // 替换升级文件,清除原升级包目录下旧文件
+            FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, savePackageName);
+            upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+            upgradeInfo.setPackageName(fileName);
+            upgradeInfo.setFilePath(packagePath);
+            upgradeInfo.setSeedLink(seedFileInfo.getSeedFilePath());
+            upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
+            return upgradeInfo;
+        } catch (BusinessException e) {
+            FileOperateUtil.deleteFileByPath(Constants.TERMINAL_UPGRADE_OTA_PACKAGE + savePackageName);
+            throw e;
+        } finally {
+            FileOperateUtil.deleteFileByPath(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
+            FileOperateUtil.deleteFileByPath(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP);
+        }
     }
 
     private String unZipPackage(String zipfilePath, String savePackageName) throws BusinessException {
@@ -113,18 +116,17 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         String unZipFilePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE;
         String savePackagePath = unZipFilePath + savePackageName;
         File zipFile = new File(zipfilePath);
-        createFilePath(unZipFilePath);
-        File unZipFile = new File(unZipFilePath);
+        File unZipFile = createFilePath(unZipFilePath);
         try {
             ZipUtil.unzipFile(zipFile, unZipFile);
         } catch (IOException e) {
             LOGGER.debug("version file read error, file path[{}]", zipFile);
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
-        File oldZipFile = new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP);
+        File rainrcdFile = new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP);
         File savePackageFile = new File(savePackagePath);
         try {
-            Files.move(oldZipFile.toPath(), savePackageFile.toPath());
+            Files.move(rainrcdFile.toPath(), savePackageFile.toPath());
         } catch (IOException e) {
             LOGGER.debug("move upgrade file to target directory fail");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL, e);
@@ -134,9 +136,8 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
 
     }
 
-    private TerminalUpgradeVersionFileInfo checkVersionInfo (String packagePath) throws BusinessException {
+    private TerminalUpgradeVersionFileInfo checkVersionInfo(String packagePath) throws BusinessException {
         String versionPath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION;
-        File versionFile = new File(versionPath);
         Properties prop = new Properties();
         try {
             InputStream inputStream = new FileInputStream(versionPath);
@@ -148,8 +149,7 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         String fileMD5 = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5);
         String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT);
         String version = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION);
-        FileOperateUtil.deleteFile(versionFile);
-        //校验OTA包
+        // 校验OTA包
         checkOtaUpgradePackage(platType, fileMD5, packagePath);
         TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
         upgradeInfo.setFileMD5(fileMD5);
@@ -161,10 +161,8 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         Assert.notNull(platType, "platType can not be null");
         Assert.notNull(fileMD5, "fileMD5 can not be null");
         Assert.notNull(packagePath, "packagePath can not be null");
-        File packageFile = new File(packagePath);
         String packageMD5 = generateFileMD5(packagePath);
         if (!fileMD5.equals(packageMD5) || !platType.equals(Constants.TERMINAL_UPGRADE_OTA_PLATFORM_TYPE)) {
-            FileOperateUtil.deleteFile(packageFile);
             LOGGER.error("terminal ota upgrade package has error, fileMD5[{}], platType[{}]", fileMD5, platType);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR);
         }
@@ -197,7 +195,7 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
     /**
      * 计算MD5值
      */
-    private String generateFileMD5(String filePath) throws  BusinessException {
+    private String generateFileMD5(String filePath) throws BusinessException {
 
         File seedFile = new File(filePath);
         String seedMD5 = null;
@@ -222,14 +220,14 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         return response.getNetworkDTO().getIp();
     }
 
-    private void createFilePath(String filePath) {
+    private File createFilePath(String filePath) {
         File file = new File(filePath);
         if (!file.exists()) {
             file.mkdir();
             file.setReadable(true, false);
             file.setExecutable(true, false);
         }
-
+        return file;
     }
 
 }

@@ -3,7 +3,11 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbGetTaskUpgradeTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradeTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradeableTerminalPageSearchRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTaskUpgradeTerminalResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
@@ -43,12 +47,22 @@ public interface CbbTerminalSystemUpgradeAPI {
     /**
      * 开启OTA升级任务
      *
-     * @param request 请求参数
+     * @param request 请求参数，传升级包的id
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse startOtaUpgradeTask(CbbStartOtaUpgradeTaskRequest request) throws BusinessException;
+    DefaultResponse startOtaUpgradeTask(IdRequest request) throws BusinessException;
+
+
+    /**
+     * 关闭OTA升级任务
+     * 
+     * @param request 请求参数，传升级包的id
+     * @return 请求结果
+     * @throws BusinessException
+     */
+    DefaultResponse closeOtaUpgradeTask(IdRequest request) throws BusinessException;
 
     /**
      * 
@@ -99,8 +113,8 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultPageResponse<CbbUpgradeableTerminalListDTO> listUpgradeableTerminal(
-            CbbUpgradeableTerminalPageSearchRequest apiRequest) throws BusinessException;
+    DefaultPageResponse<CbbUpgradeableTerminalListDTO> listUpgradeableTerminal(CbbUpgradeableTerminalPageSearchRequest apiRequest)
+        throws BusinessException;
 
     /**
      * 获取刷机任务终端列表

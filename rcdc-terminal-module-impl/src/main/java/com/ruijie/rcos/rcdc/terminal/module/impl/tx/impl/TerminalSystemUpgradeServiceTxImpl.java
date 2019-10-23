@@ -111,13 +111,13 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
     }
 
     @Override
-    public void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage) {
+    public synchronized void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage) {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
-        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage);
-        UUID upgradeTaskId = entity.getId();
-        //开启检查终端状态定时任务
         if (UPGRADE_TASK_FUTURE == null) {
-            OTA_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(new TerminalOtaUpgradeScheduleService(upgradeTaskId),
+            TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage);
+            UUID upgradeTaskId = entity.getId();
+            //开启检查终端状态定时任务
+            UPGRADE_TASK_FUTURE =  OTA_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(new TerminalOtaUpgradeScheduleService(upgradeTaskId,systemUpgradeTerminalDAO),
                     0, PERIOD_SECOND, TimeUnit.SECONDS);
         }
     }
@@ -130,7 +130,9 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         for (TerminalSystemUpgradeTerminalEntity upgradingTerminal : upgradingTerminalList) {
             setUpgradingTerminalToFail(upgradingTerminal);
         }
-
+        
+        //FIXME 停止bt服务
+        
         systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
         systemUpgradeDAO.save(systemUpgradeTask);
         //关闭定时任务
