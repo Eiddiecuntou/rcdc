@@ -107,20 +107,6 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         return upgradeInfo;
     }
 
-    private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) throws BusinessException {
-        Assert.notNull(platType, "platType can not be null");
-        Assert.notNull(fileMD5, "fileMD5 can not be null");
-        Assert.notNull(packagePath, "packagePath can not be null");
-        File packageFile = new File(packagePath);
-        String packageMD5 = generateFileMD5(packagePath);
-        if (!fileMD5.equals(packageMD5) || !platType.equals(Constants.TERMINAL_UPGRADE_OTA_PLATFORM_TYPE)) {
-            FileOperateUtil.deleteFile(packageFile);
-            LOGGER.error("terminal ota upgrade package has error, fileMD5[{}], platType[{}]", fileMD5, platType);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR);
-        }
-
-    }
-
     private String unZipPackage(String zipfilePath, String savePackageName) throws BusinessException {
         Assert.hasText(zipfilePath, "filePath can not be blank");
         Assert.hasText(savePackageName, "unZipFilePath can not be blank");
@@ -169,6 +155,20 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         upgradeInfo.setFileMD5(fileMD5);
         upgradeInfo.setVersion(version);
         return upgradeInfo;
+    }
+
+    private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) throws BusinessException {
+        Assert.notNull(platType, "platType can not be null");
+        Assert.notNull(fileMD5, "fileMD5 can not be null");
+        Assert.notNull(packagePath, "packagePath can not be null");
+        File packageFile = new File(packagePath);
+        String packageMD5 = generateFileMD5(packagePath);
+        if (!fileMD5.equals(packageMD5) || !platType.equals(Constants.TERMINAL_UPGRADE_OTA_PLATFORM_TYPE)) {
+            FileOperateUtil.deleteFile(packageFile);
+            LOGGER.error("terminal ota upgrade package has error, fileMD5[{}], platType[{}]", fileMD5, platType);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR);
+        }
+
     }
 
     private SeedFileInfo makeBtSeed(String filePath) throws BusinessException {
