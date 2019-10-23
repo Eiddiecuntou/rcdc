@@ -220,18 +220,18 @@ public class FileOperateUtil {
      * 获取指定目录下文件
      * @param filePath 文件目录
      * @return 返回所有文件list
-     * @throws BusinessException 业务异常
      */
-    public static List<File> listFile(String filePath) throws BusinessException {
+    public static List<File> listFile(String filePath) {
         Assert.notNull(filePath, "filePath can not be null");
         File file = new File(filePath);
         if  (!file.exists()) {
-            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST);
+            LOGGER.error("filePath is not exist");
+            throw new IllegalArgumentException("filePath:{}" + filePath);
         }
         List<File> fileList = new ArrayList<File>();
         if (file.isFile()) {
-            fileList.add(file);
-            return fileList;
+            LOGGER.error("filePath is not directory");
+            throw new IllegalArgumentException("filePath:{}" + filePath);
         }
         File[] fileArr = file.listFiles();
         if (fileArr != null) {

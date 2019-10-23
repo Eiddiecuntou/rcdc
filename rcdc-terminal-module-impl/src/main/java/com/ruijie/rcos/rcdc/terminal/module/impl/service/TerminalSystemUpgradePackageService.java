@@ -1,11 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import java.util.List;
-import java.util.UUID;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 
@@ -59,5 +63,24 @@ public interface TerminalSystemUpgradePackageService {
      * @throws BusinessException 业务异常
      */
     void deleteSoft(UUID packageId) throws BusinessException;
+
+    /**
+     *
+     * 判断是否正在上传刷机包
+     *
+     * @param terminalType 终端类型
+     * @return 上传文件结果
+     */
+    @NoRollback
+    boolean isUpgradeFileUploading(CbbTerminalTypeEnums terminalType);
+
+    /**
+     *
+     * @param request 请求参数
+     * @param terminalType 终端类型
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request, CbbTerminalTypeEnums terminalType) throws BusinessException;
 
 }

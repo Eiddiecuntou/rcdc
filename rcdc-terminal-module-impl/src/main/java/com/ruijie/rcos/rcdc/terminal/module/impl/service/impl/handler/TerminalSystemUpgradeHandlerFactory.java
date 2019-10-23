@@ -6,6 +6,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -20,15 +22,22 @@ import java.util.Map;
  * @author hs
  */
 @Service
-public class TerminalSystemUpgradeHandlerFactory {
+public class TerminalSystemUpgradeHandlerFactory implements SafetySingletonInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeHandlerFactory.class);
 
     private static Map<CbbTerminalTypeEnums, TerminalSystemUpgradeHandler> systemUpgradeHandlerHolder = Maps.newHashMap();
 
-    static {
-        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_LINUX, new LinuxVDISystemUpgradeHandler());
-        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_ANDROID, new AndroidVDISystemUpgradeHandler());
+    @Autowired
+    private LinuxVDISystemUpgradeHandler linuxVDISystemUpgradeHandler;
+
+    @Autowired
+    private AndroidVDISystemUpgradeHandler androidVDISystemUpgradeHandler;
+
+    @Override
+    public void safeInit() {
+        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_LINUX, linuxVDISystemUpgradeHandler);
+        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_ANDROID, androidVDISystemUpgradeHandler);
     }
 
     /**

@@ -27,7 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Properties;
 import java.util.UUID;
@@ -84,32 +87,18 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         Assert.hasText(fileName, "fileName can not be blank");
         Assert.hasText(filePath, "filePath can not be blank");
         String savePackageName = UUID.randomUUID() + OTA_SUFFIX;
+
         //解压zip文件
         String packagePath = unZipPackage(filePath, savePackageName);
-        String versionPath = getVersionFilePath();
-        File versionFile = new File(versionPath);
-        Properties prop = new Properties();
-        try {
-            InputStream inputStream = new FileInputStream(versionPath);
-            prop.load(inputStream);
-        } catch (IOException e) {
-            LOGGER.debug("version file read error, file path[{}]", versionPath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
-        }
-        FileOperateUtil.deleteFile(versionFile);
-        String fileMD5 = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5);
-        String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT);
-        String version = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION);
-        //校验OTA包
-        checkOtaUpgradePackage(platType, fileMD5, packagePath);
+
+        //校验version信息
+        TerminalUpgradeVersionFileInfo upgradeInfo = checkVersionInfo(packagePath);
+
         //制作Bt种子
         SeedFileInfo seedFileInfo = makeBtSeed(packagePath);
 
         // 替换升级文件,清除原升级包目录下旧文件
         FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_PACKAGE, savePackageName);
-        TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
-        upgradeInfo.setVersion(version);
-        upgradeInfo.setFileMD5(fileMD5);
         upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         upgradeInfo.setPackageName(fileName);
         upgradeInfo.setFilePath(packagePath);
@@ -157,6 +146,29 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
 
         return savePackagePath;
 
+    }
+
+    private TerminalUpgradeVersionFileInfo checkVersionInfo (String packagePath) throws BusinessException {
+        String versionPath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION;
+        File versionFile = new File(versionPath);
+        Properties prop = new Properties();
+        try {
+            InputStream inputStream = new FileInputStream(versionPath);
+            prop.load(inputStream);
+        } catch (IOException e) {
+            LOGGER.debug("version file read error, file path[{}]", versionPath);
+            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+        }
+        String fileMD5 = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5);
+        String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT);
+        String version = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION);
+        FileOperateUtil.deleteFile(versionFile);
+        //校验OTA包
+        checkOtaUpgradePackage(platType, fileMD5, packagePath);
+        TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
+        upgradeInfo.setFileMD5(fileMD5);
+        upgradeInfo.setVersion(version);
+        return upgradeInfo;
     }
 
     private SeedFileInfo makeBtSeed(String filePath) throws BusinessException {
@@ -218,10 +230,6 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
             file.setExecutable(true, false);
         }
 
-    }
-
-    private String getVersionFilePath() {
-        return Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION;
     }
 
 }

@@ -1,16 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-
+import mockit.Injectable;
 import mockit.Tested;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Map;
 
 /**
  * Description: Function Description
@@ -25,6 +27,12 @@ public class TerminalSystemUpgradeHandlerFactoryTest {
 
     @Tested
     private TerminalSystemUpgradeHandlerFactory handlerFactory;
+
+    @Injectable
+    private LinuxVDISystemUpgradeHandler linuxVDISystemUpgradeHandler;
+
+    @Injectable
+    private AndroidVDISystemUpgradeHandler androidVDISystemUpgradeHandler;
 
     /**
      *  获取版本升级处理器参数为空
@@ -43,8 +51,11 @@ public class TerminalSystemUpgradeHandlerFactoryTest {
      */
     @Test
     public void testGetHandler() throws BusinessException {
+
+        Map<CbbTerminalTypeEnums, TerminalSystemUpgradeHandler> systemUpgradeHandlerHolder = Maps.newHashMap();
+        handlerFactory.safeInit();
         TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
-        Assert.assertTrue(handler instanceof LinuxVDISystemUpgradeHandler);
+        Assert.assertEquals(handler, linuxVDISystemUpgradeHandler);
     }
 
     /**

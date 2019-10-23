@@ -6,10 +6,12 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePack
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalTypeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageModifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbListTerminalSystemUpgradePackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -19,8 +21,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEnt
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -50,15 +50,10 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalSystemUpgradePackageAPIImpl.class);
 
-    @Autowired
-    private TerminalSystemUpgradeHandlerFactory handlerFactory;
-
     private static final BeanCopier PACKAGE_BEAN_COPIER =
             BeanCopier.create(TerminalSystemUpgradePackageEntity.class, CbbTerminalSystemUpgradePackageInfoDTO.class, false);
 
     private static final Set<CbbTerminalTypeEnums> SYS_UPGRADE_PACKAGE_UPLOADING = new HashSet<>();
-
-    private static final Object LOCK = new Object();
 
     @Autowired
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
@@ -78,15 +73,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private static final String PLAT_TYPE = "platType";
 
     private static final String OS_TYPE = "osType";
-
-    @Override
-    public CbbCheckUploadingResultResponse isUpgradeFileUploading(CbbTerminalTypeRequest request) {
-        Assert.notNull(request, "request can not be null");
-
-        CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
-        response.setHasLoading(SYS_UPGRADE_PACKAGE_UPLOADING.contains(request.getTerminalType()));
-        return response;
-    }
 
     @Override
     public CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request) throws BusinessException {
@@ -126,30 +112,25 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         String platType = jsonObject.getString(PLAT_TYPE);
         String osType = jsonObject.getString(OS_TYPE);
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(platType, osType);
-        synchronized (LOCK) {
-            if (SYS_UPGRADE_PACKAGE_UPLOADING.contains(terminalType)) {
-                throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);
-            }
-            SYS_UPGRADE_PACKAGE_UPLOADING.add(terminalType);
-        }
         // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包
         boolean hasRunningTask = isExistRunningTask(terminalType);
         if (hasRunningTask) {
             LOGGER.debug("system upgrade task is running, can not upload file ");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }
-        TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
-        handler.uploadUpgradePackage(request);
-        // 完成清除上传标志缓存内记录
-        SYS_UPGRADE_PACKAGE_UPLOADING.remove(terminalType);
+        terminalSystemUpgradePackageService.uploadUpgradePackage(request, terminalType);
         return DefaultResponse.Builder.success();
     }
 
     @Override
-    public DefaultResponse modifyUpgradePackage(CbbTerminalUpgradePackageModifyRequest request) throws BusinessException {
+    public DefaultResponse editUpgradePackage(CbbTerminalUpgradePackageModifyRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         TerminalSystemUpgradePackageEntity packageEntity =
                 terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getPackageId());
+        if (packageEntity.getPackageType() != CbbTerminalTypeEnums.VDI_ANDROID) {
+            LOGGER.debug("only android vdi terminal can be edited");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_OTA_UPGRADE_PACKAGE_NOT_EDIT);
+        }
         packageEntity.setUpgradeMode(request.getUpgradeMode());
         terminalSystemUpgradePackageDAO.save(packageEntity);
         return DefaultResponse.Builder.success();

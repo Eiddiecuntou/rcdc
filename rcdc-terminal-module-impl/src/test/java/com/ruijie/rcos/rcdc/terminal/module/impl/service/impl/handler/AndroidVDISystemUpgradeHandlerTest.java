@@ -12,7 +12,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFil
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -26,6 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -167,10 +168,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
                 return "3b20fe7c2aaff10b54312e1c868b4542";
             }
 
-            @Mock
-            private void deleteVersionAndZip() {
-
-            }
 
         };
 
@@ -210,13 +207,9 @@ public class AndroidVDISystemUpgradeHandlerTest {
         networkDTO.setIp("172.28.109.7");
         response.setNetworkDTO(networkDTO);
         byte[] bytesArr = new byte[]{'d',(byte)0xff,-1,(byte)255,(byte)0x80,(byte) 128,-128};
-        new MockUp<AndroidVDISystemUpgradeHandler>() {
-
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
+        TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
+        upgradeInfo.setVersion("1.1.1");
+        upgradeInfo.setFileMD5("12343454");
         new MockUp<File>() {
 
             @Mock
@@ -234,14 +227,10 @@ public class AndroidVDISystemUpgradeHandlerTest {
         new MockUp<AndroidVDISystemUpgradeHandler>() {
 
             @Mock
-            private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) {
-
+            private TerminalUpgradeVersionFileInfo checkVersionInfo(String packagePath) {
+                return upgradeInfo;
             }
 
-            @Mock
-            private void deleteVersionAndZip() {
-
-            }
         };
 
         new MockUp<ShellCommandRunner>() {
@@ -278,11 +267,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
             }
         };
 
-        new Expectations(FileOperateUtil.class) {
-            {
-                FileOperateUtil.deleteFile((File) any);
-            }
-        };
 
         try {
             handler.uploadUpgradePackage(request);
@@ -313,13 +297,9 @@ public class AndroidVDISystemUpgradeHandlerTest {
         networkDTO.setIp("172.28.109.7");
         response.setNetworkDTO(networkDTO);
         byte[] bytesArr = new byte[]{'d',(byte)0xff,-1,(byte)255,(byte)0x80,(byte) 128,-128};
-        new MockUp<AndroidVDISystemUpgradeHandler>() {
-
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
+        TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
+        upgradeInfo.setVersion("1.1.1");
+        upgradeInfo.setFileMD5("12343454");
         new MockUp<File>() {
 
             @Mock
@@ -330,24 +310,13 @@ public class AndroidVDISystemUpgradeHandlerTest {
 
         };
 
-        new Expectations(Files.class) {
-            {
-                Files.move((Path) any,(Path) any);
-            }
-        };
-
-
         new MockUp<AndroidVDISystemUpgradeHandler>() {
 
             @Mock
-            private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) {
-
+            private TerminalUpgradeVersionFileInfo checkVersionInfo(String packagePath) {
+                return upgradeInfo;
             }
 
-            @Mock
-            private void deleteVersionAndZip() {
-
-            }
         };
 
         new MockUp<ShellCommandRunner>() {
@@ -358,17 +327,23 @@ public class AndroidVDISystemUpgradeHandlerTest {
             }
         };
 
-        new MockUp<ShellCommandRunner>() {
+
+        new MockUp<FileInputStream>() {
 
             @Mock
-            public String execute() {
-                return "seed";
+            public void $init(String filePath) throws FileNotFoundException {
+
             }
         };
 
         new Expectations(ZipUtil.class) {
             {
                 ZipUtil.unzipFile((File) any, (File) any);
+            }
+        };
+        new Expectations(Files.class) {
+            {
+                Files.move((Path) any,(Path) any);
             }
         };
         new Expectations() {
@@ -402,6 +377,5 @@ public class AndroidVDISystemUpgradeHandlerTest {
             }
         };
     }
-
 
 }

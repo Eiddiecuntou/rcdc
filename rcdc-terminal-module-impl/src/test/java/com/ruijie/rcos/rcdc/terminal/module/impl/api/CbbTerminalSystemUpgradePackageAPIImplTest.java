@@ -5,12 +5,13 @@ import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalTypeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbListTerminalSystemUpgradePackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -31,12 +32,10 @@ import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import mockit.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -77,33 +76,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
 
     /**
-     * 测试isUpgradeFileUploading，参数为空
-     *
-     * @throws Exception 异常
-     */
-    @Test
-    public void testIsUpgradeFileUploadingArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.isUpgradeFileUploading(null),
-                "request can not be null");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试isUpgradeFileUploading，
-     */
-    @Test
-    public void testIsUpgradeFileUploading() {
-        Set<CbbTerminalTypeEnums> uploadingSet =
-                Deencapsulation.getField(CbbTerminalSystemUpgradePackageAPIImpl.class, "SYS_UPGRADE_PACKAGE_UPLOADING");
-        uploadingSet.add(CbbTerminalTypeEnums.VDI_LINUX);
-        CbbTerminalTypeRequest request = new CbbTerminalTypeRequest();
-        request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
-        CbbCheckUploadingResultResponse response = upgradePackageAPIImpl.isUpgradeFileUploading(request);
-        assertTrue(response.isHasLoading());
-        uploadingSet.clear();
-    }
-
-    /**
      * 测试uploadUpgradeFile，参数为空
      *
      * @throws Exception 异常
@@ -112,37 +84,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     public void testUploadUpgradePackageArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.uploadUpgradePackage(null), "request can not be null");
         assertTrue(true);
-    }
-
-
-    /**
-     * 测试uploadUpgradeFile，文件类型错误
-     *
-     * @throws BusinessException 异常
-     *测试uploadUpgradePackage，有升级包在上传
-     *
-     * @throws Exception 异常
-     */
-    @Test
-    public void testUploadUpgradePackageIsUploading() throws Exception {
-        TerminalSystemUpgradeHandler handler = new LinuxVDISystemUpgradeHandler();
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("123.iso");
-        request.setFilePath("/temp");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("platType", "VDI");
-        jsonObject.put("osType", "Linux");
-        request.setCustomData(jsonObject);
-        Set<CbbTerminalTypeEnums> upgradePackageUploadnigSet = Deencapsulation.getField(upgradePackageAPIImpl, "SYS_UPGRADE_PACKAGE_UPLOADING");
-        upgradePackageUploadnigSet.add(CbbTerminalTypeEnums.VDI_LINUX);
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING, e.getKey());
-        }
-        upgradePackageUploadnigSet.clear();
-
     }
 
     /**
@@ -163,23 +104,14 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         request.setCustomData(jsonObject);
         new Expectations() {
             {
-                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
-                result = handler;
+                terminalSystemUpgradePackageService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
             }
         };
-        new MockUp<LinuxVDISystemUpgradeHandler>() {
 
-            @Mock
-            public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) {
-
-            }
-        };
         upgradePackageAPIImpl.uploadUpgradePackage(request);
         new Verifications() {
             {
-                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
-                times = 1;
-                handler.uploadUpgradePackage(request);
+                terminalSystemUpgradePackageService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
                 times = 1;
             }
         };
