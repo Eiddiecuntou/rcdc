@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
@@ -59,6 +60,12 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
+
+    @Autowired
+    private BtService btService;
+
+    @Autowired
+    private TerminalOtaUpgradeScheduleService terminalOtaUpgradeScheduleService;
 
     @Override
     public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr) {
@@ -111,30 +118,32 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
     }
 
     @Override
-    public synchronized void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage) {
+    public synchronized void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         if (UPGRADE_TASK_FUTURE == null) {
             TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage);
             UUID upgradeTaskId = entity.getId();
+
+            //开启BT服务
+            btService.startBtShare(upgradePackage.getSeedPath());
+
             //开启检查终端状态定时任务
-            UPGRADE_TASK_FUTURE =  OTA_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(new TerminalOtaUpgradeScheduleService(upgradeTaskId,systemUpgradeTerminalDAO),
-                    0, PERIOD_SECOND, TimeUnit.SECONDS);
+            UPGRADE_TASK_FUTURE = OTA_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(terminalOtaUpgradeScheduleService
+                    , 0, PERIOD_SECOND, TimeUnit.SECONDS);
         }
     }
 
     private void closeAndroidVDIUpgradeTask(TerminalSystemUpgradeEntity systemUpgradeTask) throws BusinessException {
         Assert.notNull(systemUpgradeTask, "systemUpgradeTask can not be null");
+        systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
+        systemUpgradeDAO.save(systemUpgradeTask);
         // 将升级中的终端设置为失败
         final List<TerminalSystemUpgradeTerminalEntity> upgradingTerminalList =
                 systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(systemUpgradeTask.getId(), CbbSystemUpgradeStateEnums.UPGRADING);
         for (TerminalSystemUpgradeTerminalEntity upgradingTerminal : upgradingTerminalList) {
             setUpgradingTerminalToFail(upgradingTerminal);
         }
-        
-        //FIXME 停止bt服务
-        
-        systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
-        systemUpgradeDAO.save(systemUpgradeTask);
+
         //关闭定时任务
         cancelScheduleTask();
     }
@@ -264,6 +273,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
             case SUCCESS:
             case FAIL:
             case UNDO:
+            case TIMEOUT:
                 terminalState = CbbTerminalStateEnums.OFFLINE;
                 break;
             default:

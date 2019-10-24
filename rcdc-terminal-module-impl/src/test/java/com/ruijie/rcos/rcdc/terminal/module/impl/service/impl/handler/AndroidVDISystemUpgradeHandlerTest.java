@@ -9,6 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePa
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
@@ -16,7 +17,6 @@ import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import mockit.*;
@@ -63,6 +63,9 @@ public class AndroidVDISystemUpgradeHandlerTest {
     @Injectable
     private TerminalSystemUpgradeServiceTx terminalSystemUpgradeServiceTx;
 
+    @Injectable
+    private BtService btService;
+
     /**
      *
      * @throws Exception 异常
@@ -96,11 +99,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
             @Mock
             public boolean exists() {
                 return false;
-            }
-
-            @Mock
-            public boolean renameTo(File dest) {
-                return true;
             }
 
         };
@@ -233,14 +231,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
 
         };
 
-        new MockUp<ShellCommandRunner>() {
-
-            @Mock
-            public String execute() {
-                return savePath;
-            }
-        };
-
         new Expectations(ZipUtil.class) {
             {
                 ZipUtil.unzipFile((File) any, (File) any);
@@ -250,6 +240,8 @@ public class AndroidVDISystemUpgradeHandlerTest {
             {
                 networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
                 result = response;
+                btService.makeBtSeed(anyString, anyString, anyString);
+                result = savePath;
             }
         };
 
@@ -319,15 +311,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
 
         };
 
-        new MockUp<ShellCommandRunner>() {
-
-            @Mock
-            public String execute() {
-                return savePath;
-            }
-        };
-
-
         new MockUp<FileInputStream>() {
 
             @Mock
@@ -350,6 +333,8 @@ public class AndroidVDISystemUpgradeHandlerTest {
             {
                 networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
                 result = response;
+                btService.makeBtSeed(anyString, anyString, anyString);
+                result = savePath;
                 terminalSystemUpgradePackageService.saveTerminalUpgradePackage((TerminalUpgradeVersionFileInfo) any);
 
             }

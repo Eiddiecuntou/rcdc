@@ -13,6 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
@@ -21,11 +22,11 @@ import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -51,10 +52,6 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
 
     private static final String OTA_SUFFIX = ".zip";
 
-    private static final String INIT_COMMAND = "python %s %s %s %s";
-
-    private static final String INIT_PYTHON_SCRIPT_PATH = "/data/web/rcdc/shell/ota_bt.py";
-
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
@@ -66,6 +63,9 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
 
     @Autowired
     private TerminalSystemUpgradeServiceTx terminalSystemUpgradeServiceTx;
+
+    @Autowired
+    private BtService btService;
 
     @Override
     public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
@@ -101,7 +101,7 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
             upgradeInfo.setSeedLink(seedFileInfo.getSeedFilePath());
             upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
             return upgradeInfo;
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             FileOperateUtil.deleteFileByPath(Constants.TERMINAL_UPGRADE_OTA_PACKAGE + savePackageName);
             throw e;
         } finally {
@@ -173,18 +173,7 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         Assert.notNull(filePath, "filePath can not be null");
         String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
         createFilePath(seedSavePath);
-        ShellCommandRunner runner = new ShellCommandRunner();
-        String seedPath = null;
-        String shellCmd = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH, filePath, seedSavePath, getLocalIP());
-        LOGGER.info("excecute shell cmd : {}", shellCmd);
-        runner.setCommand(shellCmd);
-        try {
-            seedPath = runner.execute();
-            LOGGER.debug("seed path is :{}", seedPath);
-        } catch (BusinessException e) {
-            LOGGER.error("make seed file error", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL, e);
-        }
+        String seedPath = btService.makeBtSeed(filePath, seedSavePath, getLocalIP());
         File seedFile = new File(seedPath);
         FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_SEED_FILE, seedFile.getName());
         String seedMD5 = generateFileMD5(seedPath);

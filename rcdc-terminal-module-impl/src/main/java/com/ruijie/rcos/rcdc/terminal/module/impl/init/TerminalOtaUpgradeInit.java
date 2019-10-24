@@ -2,9 +2,15 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
@@ -18,6 +24,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,13 +43,26 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
     @Autowired
     private TerminalSystemUpgradeHandlerFactory handlerFactory;
 
+    @Autowired
+    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+
+    @Autowired
+    private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
+
+    @Autowired
+    private BtService btService;
+
     @Override
     public void safeInit() {
         String basePath = Constants.TERMINAL_UPGRADE_OTA;
+
+        //bt服务初始化
+        btServiceInit();
+
         try {
             List<File> fileList = FileOperateUtil.listFile(basePath);
             if (CollectionUtils.isEmpty(fileList)) {
-                LOGGER.debug("OTA升级包不存在");
+                LOGGER.debug("出厂路径下OTA升级包不存在");
                 return;
             }
             File file = fileList.get(0);
@@ -54,6 +74,26 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
             LOGGER.error("获取OTA包信息失败", e);
         }
 
+    }
+
+    private void btServiceInit() {
+        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO
+                .findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        if (upgradePackage == null) {
+            return;
+        }
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO
+                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
+        if (!CollectionUtils.isEmpty(upgradingTaskList)) {
+            try {
+                btService.startBtShare(upgradePackage.getSeedPath());
+            } catch (BusinessException e) {
+                LOGGER.error("开始BT服务失败", e);
+            }
+
+        }
     }
 
     private CbbTerminalUpgradePackageUploadRequest generateRequest(File file) {

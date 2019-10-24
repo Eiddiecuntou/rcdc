@@ -30,8 +30,9 @@ public interface TerminalSystemUpgradeServiceTx {
      * 开启OTA升级任务
      *
      * @param upgradePackageEntity OTA升级包对象
+     * @throws BusinessException 业务异常
      */
-    void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackageEntity);
+    void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackageEntity) throws BusinessException ;
 
     /**
      * 结束刷机任务

@@ -10,7 +10,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTermin
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.*;
@@ -48,6 +50,12 @@ public class TerminalSystemUpgradeServiceTxImplTest {
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
+
+    @Injectable
+    private BtService btService;
+
+    @Injectable
+    private TerminalOtaUpgradeScheduleService terminalOtaUpgradeScheduleService;
 
     /**
      * 测试addSystemUpgradeTask，参数为空

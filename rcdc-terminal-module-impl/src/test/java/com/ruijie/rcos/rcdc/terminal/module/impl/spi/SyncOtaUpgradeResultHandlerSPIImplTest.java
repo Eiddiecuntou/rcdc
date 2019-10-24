@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -14,6 +13,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTer
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.OtaUpgradeResultInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -21,7 +22,6 @@ import mockit.Tested;
 import mockit.Verifications;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +53,12 @@ public class SyncOtaUpgradeResultHandlerSPIImplTest {
     @Injectable
     private TerminalSystemUpgradeDAO systemUpgradeDAO;
 
+    @Injectable
+    private TerminalSystemUpgradeServiceTx systemUpgradeServiceTx;
+
+    @Injectable
+    private TerminalSystemUpgradeService systemUpgradeService;
+
     /**
      * 测试 dispatch
      *
@@ -76,9 +82,7 @@ public class SyncOtaUpgradeResultHandlerSPIImplTest {
         new Expectations() {
             {
                 basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-                result = packageEntity;
-                systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any, (List< CbbSystemUpgradeTaskStateEnums >) any);
+                systemUpgradeService.getSystemUpgradeTaskByTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
                 result = systemUpgradeList;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 result = terminalEntity;
@@ -91,7 +95,7 @@ public class SyncOtaUpgradeResultHandlerSPIImplTest {
             {
                 basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
                 times = 1;
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+                systemUpgradeService.getSystemUpgradeTaskByTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
                 times = 1;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 times = 1;
