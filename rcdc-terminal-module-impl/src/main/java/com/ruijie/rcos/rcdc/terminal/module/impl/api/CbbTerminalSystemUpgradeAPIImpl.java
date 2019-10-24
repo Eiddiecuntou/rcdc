@@ -144,6 +144,17 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         return response;
     }
 
+    @Override
+    public DefaultResponse startOtaUpgradeTask(IdRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        UUID packageId = request.getId();
+        TerminalSystemUpgradePackageEntity upgradePackage = getUpgradePackageEntity(packageId);
+        // 判断刷机包是否允许开启升级任务
+        checkAllowCreateTask(upgradePackage);
+        terminalSystemUpgradeServiceTx.startOtaUpgradeTask(upgradePackage);
+        return DefaultResponse.Builder.success();
+    }
+
     private void checkAllowCreateTask(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
 
         // 判断刷机包是否正在上传中
@@ -167,17 +178,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_FILE_NOT_EXIST,
                     upgradePackage.getPackageName());
         }
-    }
-
-    @Override
-    public DefaultResponse startOtaUpgradeTask(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
-        UUID packageId = request.getId();
-        TerminalSystemUpgradePackageEntity upgradePackage = getUpgradePackageEntity(packageId);
-        // 判断刷机包是否允许开启升级任务
-        checkAllowCreateTask(upgradePackage);
-        terminalSystemUpgradeServiceTx.startOtaUpgradeTask(upgradePackage);
-        return DefaultResponse.Builder.success();
     }
 
     @Override
