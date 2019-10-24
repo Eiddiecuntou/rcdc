@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -49,7 +51,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Expectations() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = new ArrayList<>();
             }
         };
@@ -57,7 +60,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradePackageService.getSystemUpgradePackage((UUID) any);
                 times = 0;
@@ -80,7 +84,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Expectations() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = arrayList;
                 systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
                 result = new BusinessException("key");
@@ -90,7 +95,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
                 times = 1;
@@ -114,7 +120,8 @@ public class TerminalSystemUpgradeTaskInitTest {
         TerminalSystemUpgradePackageEntity systemUpgradePackage = new TerminalSystemUpgradePackageEntity();
         new Expectations() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = arrayList;
                 systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
                 result = systemUpgradePackage;
@@ -124,7 +131,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO.findByStateInOrderByCreateTimeAsc((List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO
+                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
                 times = 1;

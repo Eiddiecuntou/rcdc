@@ -1,11 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
@@ -13,6 +10,11 @@ import com.ruijie.rcos.sk.base.test.GetSetTester;
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -90,10 +92,23 @@ public class EntityBeanTest {
         info.setFilePath("filePath");
         info.setImgName("imgName");
         info.setPackageName("packageName");
-        info.setPackageType(CbbTerminalPlatformEnums.VDI);
+        info.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         info.setVersion("version");
-        String result =
-                "TerminalUpgradeVersionFileInfo [packageName=packageName, imgName=imgName," + " version=version, filePath=filePath, packageType=VDI]";
+        info.setFileMD5("fileMD5");
+        info.setSeedLink("seedLink");
+        info.setSeedMD5("seedMD5");
+        info.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
+        String result = "TerminalUpgradeVersionFileInfo{" +
+                "packageName='" + "packageName" + '\'' +
+                ", imgName='" + "imgName" + '\'' +
+                ", version='" + "version" + '\'' +
+                ", filePath='" + "filePath" + '\'' +
+                ", packageType=" + "VDI_LINUX" +
+                ", fileMD5='" + "fileMD5" + '\'' +
+                ", seedLink='" + "seedLink" + '\'' +
+                ", seedMD5='" + "seedMD5" + '\'' +
+                ", upgradeMode=" + "AUTO" +
+                '}';
         assertEquals(result, info.toString());
     }
 

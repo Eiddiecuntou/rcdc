@@ -1,14 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+
 import mockit.Tested;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Description: Function Description
@@ -41,7 +43,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
      */
     @Test
     public void testGetHandler() throws BusinessException {
-        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(TerminalTypeEnums.VDI_LINUX);
+        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
         Assert.assertTrue(handler instanceof LinuxVDIComponentUpgradeHandler);
     }
 
@@ -53,7 +55,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
     public void testGetHandlerWhileTerminalTypeNotSupport() {
 
         try {
-            handlerFactory.getHandler(TerminalTypeEnums.IDV_LINUX);
+            handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
             Assert.fail();
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST, e.getKey());

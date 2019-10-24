@@ -1,5 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+
 import java.util.Date;
 import java.util.UUID;
 import javax.persistence.Entity;
@@ -10,9 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 
 /**
  * Description: 终端系统升级包实体类
@@ -36,8 +38,17 @@ public class TerminalSystemUpgradePackageEntity {
 
     private String filePath;
 
+    private String fileMD5;
+
+    private String seedPath;
+
+    private String seedMD5;
+
     @Enumerated(EnumType.STRING)
-    private CbbTerminalPlatformEnums packageType;
+    private CbbSystemUpgradeModeEnums upgradeMode;
+
+    @Enumerated(EnumType.STRING)
+    private CbbTerminalTypeEnums packageType;
 
     private Date uploadTime;
 
@@ -93,16 +104,45 @@ public class TerminalSystemUpgradePackageEntity {
         this.filePath = filePath;
     }
 
+    public String getFileMD5() {
+        return fileMD5;
+    }
 
-    public CbbTerminalPlatformEnums getPackageType() {
+    public void setFileMD5(String fileMD5) {
+        this.fileMD5 = fileMD5;
+    }
+
+    public String getSeedPath() {
+        return seedPath;
+    }
+
+    public void setSeedPath(String seedPath) {
+        this.seedPath = seedPath;
+    }
+
+    public String getSeedMD5() {
+        return seedMD5;
+    }
+
+    public void setSeedMD5(String seedMD5) {
+        this.seedMD5 = seedMD5;
+    }
+
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
+    }
+
+    public CbbTerminalTypeEnums getPackageType() {
         return packageType;
     }
 
-
-    public void setPackageType(CbbTerminalPlatformEnums packageType) {
+    public void setPackageType(CbbTerminalTypeEnums packageType) {
         this.packageType = packageType;
     }
-
 
     public Date getUploadTime() {
         return uploadTime;
@@ -133,21 +173,17 @@ public class TerminalSystemUpgradePackageEntity {
         this.version = version;
     }
 
-
     public CbbSystemUpgradePackageOriginEnums getOrigin() {
         return origin;
     }
-
 
     public void setOrigin(CbbSystemUpgradePackageOriginEnums origin) {
         this.origin = origin;
     }
 
-
     public CbbSystemUpgradeDistributionModeEnums getDistributionMode() {
         return distributionMode;
     }
-
 
     public void setDistributionMode(CbbSystemUpgradeDistributionModeEnums distributionMode) {
         this.distributionMode = distributionMode;

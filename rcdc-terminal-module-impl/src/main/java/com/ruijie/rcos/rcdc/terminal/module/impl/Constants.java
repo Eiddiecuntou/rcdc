@@ -120,7 +120,52 @@ public interface Constants {
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION = "version";
 
     /**
-     * Linux VDI 终端组件升级包路径
+     * OTA 包的MD5值
+     */
+    String TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5 = "MD5";
+
+    /**
+     * OTA包平台类型
+     */
+    String TERMINAL_UPGRADE_OTA_PLATFORM_TYPE = "RK3188";
+
+    /**
+     * OTA包版本号
+     */
+    String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION = "VER";
+
+    /**
+     * OTA包版本号
+     */
+    String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT = "PLAT";
+
+    /**
+     * 出厂OTA包存放目录
+     */
+    String TERMINAL_UPGRADE_OTA = "/opt/upgrade/ota/";
+
+    /**
+     * 解压后OTA包存放目录
+     */
+    String TERMINAL_UPGRADE_OTA_PACKAGE = "/opt/upgrade/ota/package/";
+
+    /**
+     * OTA包中version存放目录
+     */
+    String TERMINAL_UPGRADE_OTA_PACKAGE_VERSION = "/opt/upgrade/ota/package/version";
+
+    /**
+     * OTA包中zip包存放目录
+     */
+    String TERMINAL_UPGRADE_OTA_PACKAGE_ZIP = "/opt/upgrade/ota/package/Rainrcd.zip";
+
+    /**
+     * OTA包种子文件保存目录
+     */
+    String TERMINAL_UPGRADE_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/";
+
+    /**
+     * 终端组件升级包路径
      */
     String LINUX_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_linux/temp";
 

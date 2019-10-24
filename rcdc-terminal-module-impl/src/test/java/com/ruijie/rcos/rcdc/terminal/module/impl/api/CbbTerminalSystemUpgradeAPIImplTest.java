@@ -1,6 +1,50 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.*;
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTaskUpgradeTerminalResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeTerminalListService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QueryUpgradeableTerminalListService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
+import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
+import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
+import mockit.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -13,45 +57,7 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.data.domain.Page;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
-
-import mockit.*;
-import mockit.integration.junit4.JMockit;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import static org.junit.Assert.*;
 
 /**
  * 
@@ -101,6 +107,15 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private QueryUpgradeableTerminalListService upgradeableTerminalListService;
+
+    @Injectable
+    private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
+
+    @Injectable
+    private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
+
+    @Injectable
+    private BtService btService;
 
     /**
      * 测试升级包上传，参数为空
@@ -181,14 +196,12 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         request.setTerminalIdArr(new String[] { "123", "456" });
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
         upgradePackageEntity.setIsDelete(false);
-        CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
-        response.setHasLoading(true);
         new Expectations() {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = Optional.of(upgradePackageEntity);
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
-                result = response;
+                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
+                result = true;
             }
         };
         try {
@@ -209,14 +222,12 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
         upgradePackageEntity.setIsDelete(false);
-        CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
-        response.setHasLoading(false);
         new Expectations() {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = Optional.of(upgradePackageEntity);
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
-                result = response;
+                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
+                result = false;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = true;
             }
@@ -240,14 +251,12 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
         upgradePackageEntity.setIsDelete(false);
         upgradePackageEntity.setFilePath("aaa");
-        CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
-        response.setHasLoading(false);
         new Expectations() {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = Optional.of(upgradePackageEntity);
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
-                result = response;
+                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
+                result = false;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = false;
             }
@@ -291,16 +300,13 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         upgradePackageEntity.setFilePath("/opt");
         Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = Optional.of(upgradePackageEntity);
 
-        CbbCheckUploadingResultResponse response = new CbbCheckUploadingResultResponse();
-        response.setHasLoading(false);
-
         UUID upgradeTaskId = UUID.randomUUID();
         new Expectations() {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = upgradePackageOpt;
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
-                result = response;
+                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
+                result = false;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = false;
                 terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(),
@@ -324,7 +330,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 times = 1;
-                systemUpgradePackageAPI.isUpgradeFileUploading((CbbTerminalPlatformRequest) any);
+                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
                 times = 1;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 times = 1;
@@ -704,7 +710,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
         packageEntity.setIsDelete(false);
-        packageEntity.setPackageType(CbbTerminalPlatformEnums.VDI);
+        packageEntity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
 
         List<ViewUpgradeableTerminalEntity> entityList = new ArrayList<>();
         entityList.add(new ViewUpgradeableTerminalEntity());
@@ -739,7 +745,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试listSystemUpgradeTaskTerminal，
-     * 
+     *
      * @throws BusinessException
      *             异常
      */
@@ -778,7 +784,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试根据id获取升级任务信息
-     * 
+     *
      * @throws BusinessException
      *             业务异常
      */
@@ -884,7 +890,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试取消终端刷机 - 刷机终端不存在
-     * 
+     *
      * @throws BusinessException
      *             业务异常
      */
@@ -934,7 +940,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试取消终端刷机 - 刷机终端状态不可取消
-     * 
+     *
      * @throws BusinessException
      *             业务异常
      */
@@ -988,7 +994,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试取消终端刷机
-     * 
+     *
      * @throws BusinessException
      *             业务异常
      */
@@ -1045,7 +1051,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试重试终端刷机 - 刷机终端状态不可取消
-     * 
+     *
      * @throws BusinessException
      *             业务异常
      */
@@ -1091,7 +1097,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试重试终端刷机 - 服务端刷机终端状态文件不存在
-     * 
+     *
      * @throws BusinessException
      *             业务异常
      */
@@ -1147,7 +1153,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     /**
      * 测试重试终端刷机 - 服务端刷机终端状态文件已存在
-     * 
+     *
      * @throws BusinessException
      *             业务异常
      */

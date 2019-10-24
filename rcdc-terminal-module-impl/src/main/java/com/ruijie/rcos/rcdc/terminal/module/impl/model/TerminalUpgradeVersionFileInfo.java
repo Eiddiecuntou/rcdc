@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
 /**
  * 
@@ -21,7 +22,15 @@ public class TerminalUpgradeVersionFileInfo {
 
     private String filePath;
 
-    private CbbTerminalPlatformEnums packageType;
+    private CbbTerminalTypeEnums packageType;
+
+    private String fileMD5;
+
+    private String seedLink;
+
+    private String seedMD5;
+
+    private CbbSystemUpgradeModeEnums upgradeMode;
 
     public String getImgName() {
         return imgName;
@@ -39,11 +48,11 @@ public class TerminalUpgradeVersionFileInfo {
         this.version = version;
     }
 
-    public CbbTerminalPlatformEnums getPackageType() {
+    public CbbTerminalTypeEnums getPackageType() {
         return packageType;
     }
 
-    public void setPackageType(CbbTerminalPlatformEnums packageType) {
+    public void setPackageType(CbbTerminalTypeEnums packageType) {
         this.packageType = packageType;
     }
 
@@ -63,10 +72,50 @@ public class TerminalUpgradeVersionFileInfo {
         this.filePath = filePath;
     }
 
-    @Override
-    public String toString() {
-        return "TerminalUpgradeVersionFileInfo [packageName=" + packageName + ", imgName=" + imgName + ", version=" + version + ", filePath="
-                + filePath + ", packageType=" + packageType + "]";
+    public String getFileMD5() {
+        return fileMD5;
     }
 
+    public void setFileMD5(String fileMD5) {
+        this.fileMD5 = fileMD5;
+    }
+
+    public String getSeedLink() {
+        return seedLink;
+    }
+
+    public void setSeedLink(String seedLink) {
+        this.seedLink = seedLink;
+    }
+
+    public String getSeedMD5() {
+        return seedMD5;
+    }
+
+    public void setSeedMD5(String seedMD5) {
+        this.seedMD5 = seedMD5;
+    }
+
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
+    }
+
+    @Override
+    public String toString() {
+        return "TerminalUpgradeVersionFileInfo{" +
+                "packageName='" + packageName + '\'' +
+                ", imgName='" + imgName + '\'' +
+                ", version='" + version + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", packageType=" + packageType +
+                ", fileMD5='" + fileMD5 + '\'' +
+                ", seedLink='" + seedLink + '\'' +
+                ", seedMD5='" + seedMD5 + '\'' +
+                ", upgradeMode=" + upgradeMode +
+                '}';
+    }
 }

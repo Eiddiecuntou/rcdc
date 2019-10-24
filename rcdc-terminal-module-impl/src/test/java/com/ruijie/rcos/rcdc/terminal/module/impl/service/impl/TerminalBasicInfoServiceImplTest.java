@@ -11,6 +11,7 @@ import java.util.Date;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -21,11 +22,7 @@ import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -51,9 +48,12 @@ public class TerminalBasicInfoServiceImplTest {
     @Injectable
     private DefaultRequestMessageSender sender;
 
+    @Injectable
+    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
+
     /**
      * 测试修改终端名称成功
-     * 
+     *
      * @throws IOException exception
      * @throws InterruptedException exception
      */

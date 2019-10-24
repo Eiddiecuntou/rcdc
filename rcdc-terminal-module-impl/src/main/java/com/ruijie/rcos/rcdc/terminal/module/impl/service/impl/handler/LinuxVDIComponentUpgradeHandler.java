@@ -3,8 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -31,12 +31,12 @@ public class LinuxVDIComponentUpgradeHandler extends AbstractTerminalComponentUp
         Assert.notNull(request, "get version request can not be null");
 
         LOGGER.debug("linux VDI终端请求版本号");
-        if (!TerminalUpdateListCacheManager.isCacheReady(TerminalTypeEnums.VDI_LINUX)) {
+        if (!TerminalUpdateListCacheManager.isCacheReady(CbbTerminalTypeEnums.VDI_LINUX)) {
             LOGGER.debug("linux VDI终端请求版本号未就绪");
             return buildResult(CbbTerminalComponentUpgradeResultEnums.PREPARING, new CbbLinuxVDIUpdateListDTO());
         }
 
-        CbbLinuxVDIUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(TerminalTypeEnums.VDI_LINUX);
+        CbbLinuxVDIUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.VDI_LINUX);
         String rainUpgradeVersion = request.getRainUpgradeVersion();
         String validateMd5 = request.getValidateMd5();
         // 判断终端类型升级包是否存在或是否含有组件信息

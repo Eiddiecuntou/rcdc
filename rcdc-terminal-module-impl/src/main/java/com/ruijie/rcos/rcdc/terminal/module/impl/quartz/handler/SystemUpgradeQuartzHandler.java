@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -68,7 +70,8 @@ public class SystemUpgradeQuartzHandler implements Runnable {
     private void dealAllUpgradingTask() throws BusinessException {
         List<CbbSystemUpgradeTaskStateEnums> stateList =
                 Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
-        List<TerminalSystemUpgradeEntity> upgradeTaskList = systemUpgradeDAO.findByStateInOrderByCreateTimeAsc(stateList);
+        List<TerminalSystemUpgradeEntity> upgradeTaskList = systemUpgradeDAO
+                .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
         if (CollectionUtils.isEmpty(upgradeTaskList)) {
             LOGGER.info("无正在进行中的刷机任务");
             return;

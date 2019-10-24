@@ -1,22 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-
 import mockit.Deencapsulation;
 import mockit.Tested;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -42,7 +40,7 @@ public class TerminalUpdateListCacheManagerTest {
     public void testAddArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> manager.add(null, new CbbWinAppUpdateListDTO()),
                 "terminalType can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.add(TerminalTypeEnums.APP_WINDOWS, null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> manager.add(CbbTerminalTypeEnums.APP_WINDOWS, null),
                 "updatelist can not be null");
         assertTrue(true);
     }
@@ -53,11 +51,11 @@ public class TerminalUpdateListCacheManagerTest {
     @Test
     public void testAdd() {
         CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
-        manager.add(TerminalTypeEnums.VDI_LINUX, updatelist);
-        Map<TerminalTypeEnums, CbbLinuxVDIUpdateListDTO> caches =
+        manager.add(CbbTerminalTypeEnums.VDI_LINUX, updatelist);
+        Map<CbbTerminalTypeEnums, CbbLinuxVDIUpdateListDTO> caches =
                 Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
-        assertEquals(updatelist, caches.get(TerminalTypeEnums.VDI_LINUX));
-        caches.remove(TerminalTypeEnums.VDI_LINUX);
+        assertEquals(updatelist, caches.get(CbbTerminalTypeEnums.VDI_LINUX));
+        caches.remove(CbbTerminalTypeEnums.VDI_LINUX);
     }
 
     /**
@@ -77,11 +75,11 @@ public class TerminalUpdateListCacheManagerTest {
      */
     @Test
     public void testGet() {
-        Map<TerminalTypeEnums, CbbCommonUpdatelistDTO> caches =
+        Map<CbbTerminalTypeEnums, CbbCommonUpdatelistDTO> caches =
                 Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
         CbbWinAppUpdateListDTO dto = new CbbWinAppUpdateListDTO();
-        caches.put(TerminalTypeEnums.APP_WINDOWS, dto);
-        CbbWinAppUpdateListDTO getDTO = manager.get(TerminalTypeEnums.APP_WINDOWS);
+        caches.put(CbbTerminalTypeEnums.APP_WINDOWS, dto);
+        CbbWinAppUpdateListDTO getDTO = manager.get(CbbTerminalTypeEnums.APP_WINDOWS);
         assertEquals(dto, getDTO);
     }
 
@@ -90,7 +88,7 @@ public class TerminalUpdateListCacheManagerTest {
      */
     @Test
     public void testGetUpdateListCaches() {
-        Map<TerminalTypeEnums, CbbWinAppUpdateListDTO> caches =
+        Map<CbbTerminalTypeEnums, CbbWinAppUpdateListDTO> caches =
                 Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
         assertEquals(caches, manager.getUpdateListCache());
     }
@@ -101,9 +99,9 @@ public class TerminalUpdateListCacheManagerTest {
     @Test
     public void testSetUpdatelistCacheReady() {
 
-        manager.setUpdatelistCacheReady(TerminalTypeEnums.APP_WINDOWS);
-        Map<TerminalTypeEnums, Boolean> stateMap = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_READY_STATE_MAP");
-        assertEquals(true, stateMap.get(TerminalTypeEnums.APP_WINDOWS));
+        manager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
+        Map<CbbTerminalTypeEnums, Boolean> stateMap = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_READY_STATE_MAP");
+        assertEquals(true, stateMap.get(CbbTerminalTypeEnums.APP_WINDOWS));
     }
 
     /**
@@ -112,10 +110,10 @@ public class TerminalUpdateListCacheManagerTest {
     @Test
     public void testSetUpdatelistCacheNotReady() {
 
-        manager.setUpdatelistCacheNotReady(TerminalTypeEnums.APP_WINDOWS);
-        Map<TerminalTypeEnums, Boolean> stateMap =
+        manager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
+        Map<CbbTerminalTypeEnums, Boolean> stateMap =
                 Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_READY_STATE_MAP");
-        assertEquals(false, stateMap.get(TerminalTypeEnums.APP_WINDOWS));
+        assertEquals(false, stateMap.get(CbbTerminalTypeEnums.APP_WINDOWS));
 
     }
 
@@ -124,7 +122,7 @@ public class TerminalUpdateListCacheManagerTest {
      */
     @Test
     public void testIsCacheNotReady() {
-        boolean isReady = manager.isCacheReady(TerminalTypeEnums.APP_WINDOWS);
+        boolean isReady = manager.isCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
         assertEquals(false, isReady);
     }
 
