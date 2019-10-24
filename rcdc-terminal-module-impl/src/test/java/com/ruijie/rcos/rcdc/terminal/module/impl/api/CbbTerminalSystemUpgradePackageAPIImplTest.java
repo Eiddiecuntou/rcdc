@@ -1,46 +1,44 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbListTerminalSystemUpgradePackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
-import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import org.apache.commons.lang3.time.DateUtils;
-import org.junit.Test;
-import com.google.common.io.Files;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.LinuxVDISystemUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import mockit.*;
+import org.apache.commons.lang3.time.DateUtils;
+import org.junit.Test;
+
+import java.io.File;
+import java.text.ParseException;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -71,32 +69,11 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     @Mocked
     private ShellCommandRunner shellCommandRunner;
 
-    /**
-     * 测试isUpgradeFileUploading，参数为空
-     *
-     * @throws Exception 异常
-     */
-    @Test
-    public void testIsUpgradeFileUploadingArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.isUpgradeFileUploading(null),
-                "request can not be null");
-        assertTrue(true);
-    }
+    @Injectable
+    private TerminalSystemUpgradeHandlerFactory handlerFactory;
 
-    /**
-     * 测试isUpgradeFileUploading，
-     */
-    @Test
-    public void testIsUpgradeFileUploading() {
-        Set<CbbTerminalPlatformEnums> uploadingSet =
-                Deencapsulation.getField(CbbTerminalSystemUpgradePackageAPIImpl.class, "SYS_UPGRADE_PACKAGE_UPLOADING");
-        uploadingSet.add(CbbTerminalPlatformEnums.VDI);
-        CbbTerminalPlatformRequest request = new CbbTerminalPlatformRequest();
-        request.setPlatform(CbbTerminalPlatformEnums.VDI);
-        CbbCheckUploadingResultResponse response = upgradePackageAPIImpl.isUpgradeFileUploading(request);
-        assertTrue(response.isHasLoading());
-        uploadingSet.clear();
-    }
+    @Injectable
+    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
 
     /**
      * 测试uploadUpgradeFile，参数为空
@@ -104,438 +81,43 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      * @throws Exception 异常
      */
     @Test
-    public void testUploadUpgradeFileArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.uploadUpgradePackage(null),
-                "request can not be null");
+    public void testUploadUpgradePackageArgumentIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.uploadUpgradePackage(null), "request can not be null");
         assertTrue(true);
     }
 
     /**
-     * 测试uploadUpgradeFile，文件类型错误
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileFileTypeError() {
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.ds");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，系统升级包版本文件不存在
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileSystemUpgradePackageVersionFileNotFoundException() {
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，系统升级包版本文件IOException
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileSystemUpgradePackageVersionIOException() {
-        new MockUp<FileInputStream>() {
-            @Mock
-            public void $init(String filePath) throws IOException {
-                throw new IOException();
-            }
-        };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，挂载升级包失败
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileMountUpgradePackageFail() throws BusinessException {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
-
-            @Mock
-            public String[] list() {
-                return new String[0];
-            }
-        };
-
-        new Expectations() {
-            {
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = new BusinessException("key");
-            }
-        };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，镜像文件不存在
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileImgNoExist() {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，镜像文件不存在
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileImgNoExist1() {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
-
-            @Mock
-            public String[] list() {
-                return new String[0];
-            }
-        };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，Version错误
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileVersionFail() {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
-
-            @Mock
-            public String[] list() {
-                String[] fileArr = new String[1];
-                fileArr[0] = "";
-                return fileArr;
-            }
-        };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        request.setFilePath("dsdsd");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，系统升级包正在上传中
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileUpgradePackageUploading() {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
-
-            @Mock
-            public String[] list() {
-                String[] fileArr = new String[1];
-                fileArr[0] = "dfd";
-                return fileArr;
-            }
-        };
-        Set<CbbTerminalPlatformEnums> upgradePackageUploadnigSet =
-                Deencapsulation.getField(upgradePackageAPIImpl, "SYS_UPGRADE_PACKAGE_UPLOADING");
-        upgradePackageUploadnigSet.add(CbbTerminalPlatformEnums.VDI);
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        request.setFilePath("dsdsd");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING, e.getKey());
-        }
-        upgradePackageUploadnigSet.clear();
-    }
-
-    /**
      * 测试uploadUpgradeFile，系统升级任务正在进行中
-     *
-     * @throws BusinessException 异常
+     * 
+     * @throws Exception 异常
      */
     @Test
-    public void testUploadUpgradeFileUpgrading() {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
+    public void testUploadUpgradePackage() throws Exception {
 
-            @Mock
-            public String[] list() {
-                String[] fileArr = new String[1];
-                fileArr[0] = "dfd";
-                return fileArr;
-            }
-        };
-
+        TerminalSystemUpgradeHandler handler = new LinuxVDISystemUpgradeHandler();
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFileName("123.iso");
+        request.setFilePath("/temp");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("platType", "VDI");
+        jsonObject.put("osType", "Linux");
+        request.setCustomData(jsonObject);
         new Expectations() {
             {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalPlatformEnums) any);
-                result = new TerminalSystemUpgradePackageEntity();
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                result = true;
-
-            }
-        };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        request.setFilePath("dsdsd");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，不支持的升级包
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileUnSupportUpgradePackage() {
-        String path =
-                CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersionTypeError";
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
-
-            @Mock
-            public String[] list() {
-                String[] fileArr = new String[1];
-                fileArr[0] = "dfd";
-                return fileArr;
+                terminalSystemUpgradePackageService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
             }
         };
 
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalPlatformEnums) any);
-                result = null;
-
-            }
-        };
-
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        request.setFilePath("dsdsd");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，刷机包移动失败
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFileMoveUpgradePackageFail() {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<Files>() {
-            @Mock
-            public void move(File from, File to) throws IOException {
-                throw new IOException();
-            }
-        };
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
-
-            @Mock
-            public String[] list() {
-                String[] fileArr = new String[1];
-                fileArr[0] = "dfd";
-                return fileArr;
-            }
-        };
-
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        request.setFilePath("dsdsd");
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e.getKey());
-        }
-    }
-
-    /**
-     * 测试uploadUpgradeFile，
-     *
-     * @param util mock对象
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testUploadUpgradeFile(@Mocked FileOperateUtil util) throws BusinessException {
-        String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
-        new MockUp<Files>() {
-            @Mock
-            public void move(File from, File to) throws IOException {
-
-            }
-        };
-        new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
-            @Mock
-            public String getVersionFilePath() {
-                return path;
-            }
-        };
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
-
-            @Mock
-            public String[] list() {
-                String[] fileArr = new String[1];
-                fileArr[0] = "dfd";
-                return fileArr;
-            }
-        };
-
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        request.setFileName("sdsds.iso");
-        request.setFilePath("dsdsd");
-        DefaultResponse response = upgradePackageAPIImpl.uploadUpgradePackage(request);
-        assertEquals(Status.SUCCESS, response.getStatus());
+        upgradePackageAPIImpl.uploadUpgradePackage(request);
         new Verifications() {
             {
-                terminalSystemUpgradePackageService.saveTerminalUpgradePackage((TerminalUpgradeVersionFileInfo) any);
+                terminalSystemUpgradePackageService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
                 times = 1;
             }
         };
+
     }
+
 
     /**
      * 测试listSystemUpgradePackage，参数为空
@@ -551,7 +133,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试listSystemUpgradePackage-无进行中的升级任务
-     * 
+     *
      * @throws ParseException exception
      * @throws BusinessException exception
      */
@@ -594,7 +176,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试listSystemUpgradePackage-存在进行中的升级任务
-     * 
+     *
      * @throws ParseException exception
      * @throws BusinessException exception
      */
@@ -642,7 +224,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试删除升级包参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -654,7 +236,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试删除升级包 - 升级包存在进行中的升级任务
-     * 
+     *
      * @throws ParseException exception
      * @throws BusinessException exception
      */
@@ -694,7 +276,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试删除升级包 - 升级包不存在进行中的升级任务
-     * 
+     *
      * @throws ParseException exception
      * @throws BusinessException exception
      */
@@ -735,7 +317,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试根据id获取升级包 - 参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -747,7 +329,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试根据id获取升级包 - 无进行中的升级任务
-     * 
+     *
      * @throws ParseException 转换日期异常
      * @throws BusinessException 业务异常
      */
@@ -788,7 +370,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     /**
      * 测试根据id获取升级包 - 存在进行中的升级任务
-     * 
+     *
      * @throws ParseException 转换日期异常
      * @throws BusinessException 业务异常
      */
@@ -840,7 +422,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         checkDTO.setDistributionMode(CbbSystemUpgradeDistributionModeEnums.FAST_UPGRADE);
         checkDTO.setId(packageId);
         checkDTO.setOrigin(CbbSystemUpgradePackageOriginEnums.USER_UPLOAD);
-        checkDTO.setPackageType(CbbTerminalPlatformEnums.VDI);
+        checkDTO.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         checkDTO.setUploadTime(DateUtils.parseDate("2019-09-17 10:10:10", "yyyy-MM-dd HH:mm:ss"));
         checkDTO.setUpgradeTaskId(upgradeTaskId);
 
@@ -853,7 +435,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
     private TerminalSystemUpgradePackageEntity buildSystemUpgradePackageEntity(UUID packageId) throws ParseException {
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
-        packageEntity.setPackageType(CbbTerminalPlatformEnums.VDI);
+        packageEntity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         packageEntity.setIsDelete(false);
         packageEntity.setFilePath("filepath");
         packageEntity.setDistributionMode(CbbSystemUpgradeDistributionModeEnums.FAST_UPGRADE);
@@ -891,7 +473,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Expectations() {
             {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 result = true;
             }
         };
@@ -917,7 +499,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 times = 1;
             }
         };
@@ -934,7 +516,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Expectations() {
             {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 result = false;
             }
         };
@@ -952,7 +534,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress();
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
                 times = 1;
             }
         };

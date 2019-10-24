@@ -1,13 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.util.Assert;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -201,6 +203,22 @@ public class FileOperateUtil {
         return deleteFile.delete();
     }
 
+    /**
+     * 根据路径删除文件，只能删除文件不能删除目录
+     * @param filePath 文件路径
+     */
+    public static void deleteFileByPath(String filePath) {
+        Assert.hasText(filePath, "filePath can not be null");
+        File file = new File(filePath);
+        if (file.isDirectory()) {
+            throw new RuntimeException("无法直接删除目录");
+        }
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+
     private static File checkAndGetDirectory(final String directoryPath) throws BusinessException {
         File packageDir = new File(directoryPath);
         if (!packageDir.exists() || !packageDir.isDirectory()) {
@@ -211,6 +229,36 @@ public class FileOperateUtil {
             }
         }
         return packageDir;
+    }
+
+    /**
+     * 获取指定目录下文件
+     * 
+     * @param filePath 文件目录
+     * @return 返回所有文件list
+     */
+    public static List<File> listFile(String filePath) {
+        Assert.notNull(filePath, "filePath can not be null");
+        File file = new File(filePath);
+        if (!file.exists()) {
+            LOGGER.error("filePath is not exist");
+            throw new IllegalArgumentException("filePath:{}" + filePath);
+        }
+        List<File> fileList = new ArrayList<File>();
+        if (file.isFile()) {
+            LOGGER.error("filePath is not directory");
+            throw new IllegalArgumentException("filePath:{}" + filePath);
+        }
+        File[] fileArr = file.listFiles();
+        if (fileArr != null) {
+            for (int i = 0; i < fileArr.length; i++) {
+                if (fileArr[i].isFile()) {
+                    fileList.add(fileArr[i]);
+                }
+            }
+        }
+        return fileList;
+
     }
 
 

@@ -1,14 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
-import java.util.List;
-import java.util.UUID;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Description: 终端基本信息表DAO
@@ -27,7 +29,7 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
      * @param packageType 升级包类型
      * @return 返回系统升级包信息
      */
-    TerminalSystemUpgradePackageEntity findFirstByPackageType(CbbTerminalPlatformEnums packageType);
+    TerminalSystemUpgradePackageEntity findFirstByPackageType(CbbTerminalTypeEnums packageType);
 
 
     /**
@@ -37,7 +39,7 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
      * @param packageType 升级包类型
      * @return 返回系统升级包信息
      */
-    List<TerminalSystemUpgradePackageEntity> findByPackageType(CbbTerminalPlatformEnums packageType);
+    List<TerminalSystemUpgradePackageEntity> findByPackageType(CbbTerminalTypeEnums packageType);
 
     /**
      * 查询终端系统升级包列表

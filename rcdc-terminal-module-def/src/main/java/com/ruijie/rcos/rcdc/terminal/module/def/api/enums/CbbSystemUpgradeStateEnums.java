@@ -20,5 +20,7 @@ public enum CbbSystemUpgradeStateEnums {
 
     UNDO,
 
-    UNSUPPORTED
+    UNSUPPORTED,
+
+    TIMEOUT
 }

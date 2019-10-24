@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.base.annotation.Range;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
@@ -19,6 +20,9 @@ public class CbbCheckAllowUploadPackageRequest implements Request {
     @Range(min = "1")
     private Long fileSize;
 
+    @NotNull
+    private CbbTerminalTypeEnums terminalType;
+
     public CbbCheckAllowUploadPackageRequest(Long fileSize) {
         this.fileSize = fileSize;
     }
@@ -31,4 +35,11 @@ public class CbbCheckAllowUploadPackageRequest implements Request {
         this.fileSize = fileSize;
     }
 
+    public CbbTerminalTypeEnums getTerminalType() {
+        return terminalType;
+    }
+
+    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
+        this.terminalType = terminalType;
+    }
 }

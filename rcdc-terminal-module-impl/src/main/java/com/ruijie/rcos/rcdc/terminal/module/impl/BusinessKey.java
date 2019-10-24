@@ -305,4 +305,14 @@ public interface BusinessKey {
     String RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST = "rcdc_terminal_component_upgrade_handler_not_exist";
     String RCDC_TERMINAL_WINDOWS_APP_UPDATELIST_CACHE_NOT_READY = "rcdc_terminal_windows_app_updatelist_cache_not_ready";
     String RCDC_TERMINAL_COMPONENT_UPDATELIST_CACHE_INCORRECT = "rcdc_terminal_component_updatelist_cache_incorrect";
+
+    /************Android终端OTA升级**************************/
+    String RCDC_TERMINAL_OTA_UPGRADE_HANDLER_NOT_EXIST = "rcdc_terminal_ota_upgrade_handler_not_exist";
+    String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_UPLOAD_FAIL = "rcdc_terminal_ota_upgrade_package_upload_fail";
+    String RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL = "rcdc_terminal_ota_upgrade_computer_seed_file_md5_fail";
+    String RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_make_seed_file_fail";
+    String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR = "rcdc_terminal_ota_upgrade_package_has_error";
+    String RCDC_TERMINAL_NOT_OTA_UPGRADE_PACKAGE_NOT_EDIT = "rcdc_terminal_not_ota_upgrade_package_not_edit";
+    String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
+
 }

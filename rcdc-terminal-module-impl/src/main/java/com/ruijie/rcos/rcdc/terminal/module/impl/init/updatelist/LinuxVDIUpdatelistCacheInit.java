@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 import org.springframework.stereotype.Service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -35,8 +35,8 @@ public class LinuxVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemp
     }
 
     @Override
-    protected TerminalTypeEnums getTerminalType() {
-        return TerminalTypeEnums.VDI_LINUX;
+    protected CbbTerminalTypeEnums getTerminalType() {
+        return CbbTerminalTypeEnums.VDI_LINUX;
     }
 
 }

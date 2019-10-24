@@ -1,9 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import java.util.UUID;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 
@@ -34,13 +37,6 @@ public interface TerminalSystemUpgradeService {
     void modifySystemUpgradeState(TerminalSystemUpgradeEntity upgradeTask) throws BusinessException;
 
     /**
-     * 判断是否存在刷机任务处于进行状态
-     * 
-     * @return 判断结果
-     */
-    boolean hasSystemUpgradeInProgress();
-
-    /**
      * 判断刷机包是否存在刷机任务处于进行状态
      * 
      * @param upgradePackageId 刷机包id
@@ -56,5 +52,12 @@ public interface TerminalSystemUpgradeService {
      * @throws BusinessException 业务异常
      */
     TerminalSystemUpgradeEntity getSystemUpgradeTask(UUID systemUpgradeId) throws BusinessException;
+
+    /**
+     * 根据终端类型获取升级任务
+     * @param terminalType 终端类型
+     * @return 返回结果
+     */
+    List<TerminalSystemUpgradeEntity> getSystemUpgradeTaskByTerminalType(CbbTerminalTypeEnums terminalType);
 
 }

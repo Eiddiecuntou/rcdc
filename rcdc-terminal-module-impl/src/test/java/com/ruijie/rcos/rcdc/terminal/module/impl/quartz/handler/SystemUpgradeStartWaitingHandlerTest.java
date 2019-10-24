@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
+import jdk.nashorn.internal.ir.Terminal;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
@@ -22,6 +27,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 
@@ -52,6 +58,9 @@ public class SystemUpgradeStartWaitingHandlerTest {
     @Injectable
     private UpgradeTerminalLockManager lockManager;
 
+    @Injectable
+    private TerminalSystemUpgradeDAO systemUpgradeDAO;
+
     /**
      * 测试execute，参数为空
      * 
@@ -75,11 +84,18 @@ public class SystemUpgradeStartWaitingHandlerTest {
     public void testExecuteStartWaitingUpgradeTerminalListIsEmpty() throws BusinessException {
         UUID upgradePackageId = UUID.randomUUID();
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = new ArrayList<>();
+        TerminalSystemUpgradeEntity systemUpgrade = new TerminalSystemUpgradeEntity();
+        systemUpgrade.setId(UUID.randomUUID());
+        upgradingTaskList.add(systemUpgrade);
         new Expectations() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 result = upgradePackage;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeDAO
+                        .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                result = upgradingTaskList;
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 1;
             }
         };
@@ -90,7 +106,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
@@ -123,7 +139,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 0;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
@@ -143,11 +159,18 @@ public class SystemUpgradeStartWaitingHandlerTest {
     public void testExecuteStartWaitingGreaterThanUpgradeMaxNum() throws BusinessException {
         UUID upgradePackageId = UUID.randomUUID();
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = new ArrayList<>();
+        TerminalSystemUpgradeEntity systemUpgrade = new TerminalSystemUpgradeEntity();
+        systemUpgrade.setId(UUID.randomUUID());
+        upgradingTaskList.add(systemUpgrade);
         new Expectations() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 result = upgradePackage;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeDAO
+                        .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                result = upgradingTaskList;
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 61;
             }
         };
@@ -160,7 +183,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
@@ -185,13 +208,20 @@ public class SystemUpgradeStartWaitingHandlerTest {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.SUCCESS);
         upgradeTerminal.setTerminalId("123");
         upgradeTerminalList.add(upgradeTerminal);
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = new ArrayList<>();
+        TerminalSystemUpgradeEntity systemUpgrade = new TerminalSystemUpgradeEntity();
+        systemUpgrade.setId(UUID.randomUUID());
+        upgradingTaskList.add(systemUpgrade);
         new Expectations() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 result = upgradePackage;
+                systemUpgradeDAO
+                        .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                result = upgradingTaskList;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 result = upgradeTerminal;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 1;
                 lockManager.getAndCreateLock(anyString);
                 result = new ReentrantLock();
@@ -204,7 +234,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 0;
@@ -229,12 +259,19 @@ public class SystemUpgradeStartWaitingHandlerTest {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.WAIT);
         upgradeTerminal.setTerminalId("123");
         upgradeTerminalList.add(upgradeTerminal);
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = new ArrayList<>();
+        TerminalSystemUpgradeEntity systemUpgrade = new TerminalSystemUpgradeEntity();
+        systemUpgrade.setId(UUID.randomUUID());
+        upgradingTaskList.add(systemUpgrade);
 
         new Expectations() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 result = upgradePackage;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeDAO
+                        .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                result = upgradingTaskList;
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 1;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 result = upgradeTerminal;
@@ -251,7 +288,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 1;
@@ -276,12 +313,19 @@ public class SystemUpgradeStartWaitingHandlerTest {
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.WAIT);
         upgradeTerminal.setTerminalId("123");
         upgradeTerminalList.add(upgradeTerminal);
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = new ArrayList<>();
+        TerminalSystemUpgradeEntity systemUpgrade = new TerminalSystemUpgradeEntity();
+        systemUpgrade.setId(UUID.randomUUID());
+        upgradingTaskList.add(systemUpgrade);
 
         new Expectations() {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 result = upgradePackage;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeDAO
+                        .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                result = upgradingTaskList;
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 result = 1;
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId((UUID) any, anyString);
                 result = upgradeTerminal;
@@ -296,7 +340,7 @@ public class SystemUpgradeStartWaitingHandlerTest {
             {
                 systemUpgradePackageService.getSystemUpgradePackage(upgradePackageId);
                 times = 1;
-                systemUpgradeTerminalDAO.countByState(CbbSystemUpgradeStateEnums.UPGRADING);
+                systemUpgradeTerminalDAO.countBySysUpgradeIdAndState((UUID) any, CbbSystemUpgradeStateEnums.UPGRADING);
                 times = 1;
                 systemUpgradeService.systemUpgrade(anyString, (TerminalSystemUpgradeMsg) any);
                 times = 1;
