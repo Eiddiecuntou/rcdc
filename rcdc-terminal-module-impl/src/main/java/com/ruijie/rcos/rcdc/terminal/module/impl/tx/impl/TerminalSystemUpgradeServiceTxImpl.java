@@ -121,12 +121,10 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
     public synchronized void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         if (UPGRADE_TASK_FUTURE == null) {
-            TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage);
-            UUID upgradeTaskId = entity.getId();
-
             //开启BT服务
             btService.startBtShare(upgradePackage.getSeedPath());
-
+            //添加任务
+            addSystemUpgradeTaskEntity(upgradePackage);
             //开启检查终端状态定时任务
             UPGRADE_TASK_FUTURE = OTA_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(terminalOtaUpgradeScheduleService
                     , 0, PERIOD_SECOND, TimeUnit.SECONDS);
@@ -273,6 +271,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
             case SUCCESS:
             case FAIL:
             case UNDO:
+            case UNSUPPORTED:
             case TIMEOUT:
                 terminalState = CbbTerminalStateEnums.OFFLINE;
                 break;

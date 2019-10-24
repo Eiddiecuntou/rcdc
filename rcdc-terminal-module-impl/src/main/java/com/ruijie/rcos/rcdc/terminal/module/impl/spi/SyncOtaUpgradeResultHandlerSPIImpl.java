@@ -20,7 +20,6 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-
 import java.util.Date;
 import java.util.List;
 
@@ -71,54 +70,63 @@ public class SyncOtaUpgradeResultHandlerSPIImpl implements CbbDispatcherHandlerS
         Assert.notNull(otaUpgradeResultInfo.getOtaVersion(), "otaUpgradeResultInfo.getOtaVersion() can not be null");
         Assert.notNull(otaUpgradeResultInfo.getBasicInfo(), "otaUpgradeResultInfo.getBasicInfo() can not be null");
         String terminalId = otaUpgradeResultInfo.getBasicInfo().getTerminalId();
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeService
-                .getSystemUpgradeTaskByTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
+        List<TerminalSystemUpgradeEntity> upgradingTaskList =
+            systemUpgradeService.getSystemUpgradeTaskByTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
             LOGGER.info("没有OTA升级任务，不更新终端状态");
             return;
         }
 
         TerminalSystemUpgradeEntity upgradeTask = upgradingTaskList.get(0);
-        TerminalSystemUpgradeTerminalEntity upgradeTerminal = systemUpgradeTerminalDAO
-                .findFirstBySysUpgradeIdAndTerminalId(upgradeTask.getId(), terminalId);
+        TerminalSystemUpgradeTerminalEntity upgradeTerminal =
+            systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeTask.getId(), terminalId);
 
         CbbSystemUpgradeStateEnums state = otaUpgradeResultInfo.getUpgradeResult();
         String terminalOtaVersion = otaUpgradeResultInfo.getOtaVersion();
         String rcdcOtaVersion = upgradeTask.getPackageVersion();
-
-        if (state == CbbSystemUpgradeStateEnums.SUCCESS) {
-            if (terminalOtaVersion.equals(rcdcOtaVersion) && upgradeTerminal != null) {
-                //上报升级成功结果，版本号一致并且在升级列表中，更新升级终端列表
-                upgradeTerminal.setState(state);
-            }
+        if (upgradeTerminal == null) {
+            createOtaTerminal(terminalId, upgradeTask, state);
+        } else {
+            updateOtaTerminal(upgradeTerminal, state, terminalOtaVersion, rcdcOtaVersion);
         }
-        if (state == CbbSystemUpgradeStateEnums.FAIL) {
-            //上报失败结果(目前只有下载失败情况)，如果在升级列表中，更新终端列表
-            if (upgradeTerminal != null) {
-                upgradeTerminal.setState(state);
-            }
+    }
 
-        }
+    private void updateOtaTerminal(TerminalSystemUpgradeTerminalEntity upgradeTerminal, CbbSystemUpgradeStateEnums state, String terminalOtaVersion,
+        String rcdcOtaVersion) {
         if (state == CbbSystemUpgradeStateEnums.UPGRADING) {
-            //上报需要升级结果，如果不在列表中，添加升级记录
-            if (upgradeTerminal == null) {
-                upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
-                upgradeTerminal.setSysUpgradeId(upgradeTask.getId());
-                upgradeTerminal.setTerminalId(terminalId);
-            }
-            //上报需要升级结果，在列表中，更新时间和状态
+            upgradeTerminal.setState(state);
             upgradeTerminal.setCreateTime(new Date());
+        }
+
+        if (state == CbbSystemUpgradeStateEnums.FAIL) {
             upgradeTerminal.setState(state);
         }
 
-        //同步终端状态
-        if (upgradeTerminal != null) {
-            systemUpgradeTerminalDAO.save(upgradeTerminal);
-            try {
-                systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
-            } catch (BusinessException e) {
-                LOGGER.error("同步终端状态失败", e);
-            }
+        if (state == CbbSystemUpgradeStateEnums.SUCCESS && terminalOtaVersion.equals(rcdcOtaVersion)) {
+            upgradeTerminal.setState(state);
+        }
+        saveOtaTerminal(upgradeTerminal);
+    }
+
+    private void createOtaTerminal(String terminalId, TerminalSystemUpgradeEntity upgradeTask, CbbSystemUpgradeStateEnums state) {
+        TerminalSystemUpgradeTerminalEntity upgradeTerminal;
+        if (state == CbbSystemUpgradeStateEnums.UPGRADING || state == CbbSystemUpgradeStateEnums.UNSUPPORTED) {
+            upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
+            upgradeTerminal.setSysUpgradeId(upgradeTask.getId());
+            upgradeTerminal.setTerminalId(terminalId);
+            // 上报需要升级结果，在列表中，更新时间和状态
+            upgradeTerminal.setCreateTime(new Date());
+            upgradeTerminal.setState(state);
+            saveOtaTerminal(upgradeTerminal);
+        }
+    }
+
+    private void saveOtaTerminal(TerminalSystemUpgradeTerminalEntity upgradeTerminal) {
+        systemUpgradeTerminalDAO.save(upgradeTerminal);
+        try {
+            systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
+        } catch (BusinessException e) {
+            LOGGER.error("同步终端状态失败", e);
         }
     }
 

@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -55,14 +54,33 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
     @Override
     public void safeInit() {
         String basePath = Constants.TERMINAL_UPGRADE_OTA;
+        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        if (upgradePackage == null) {
+            initOtaZipFile(basePath);
+        } else {
+            initBtServer(upgradePackage);
+        }
+    }
 
-        //bt服务初始化
-        btServiceInit();
+    private void initBtServer(TerminalSystemUpgradePackageEntity upgradePackage) {
+        List<CbbSystemUpgradeTaskStateEnums> stateList =
+            Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<TerminalSystemUpgradeEntity> upgradingTaskList =
+            terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
+        if (!CollectionUtils.isEmpty(upgradingTaskList)) {
+            try {
+                btService.startBtShare(upgradePackage.getSeedPath());
+            } catch (BusinessException e) {
+                LOGGER.error("开始BT服务失败", e);
+            }
+        }
+    }
 
+    private void initOtaZipFile(String basePath) {
         try {
             List<File> fileList = FileOperateUtil.listFile(basePath);
             if (CollectionUtils.isEmpty(fileList)) {
-                LOGGER.debug("出厂路径下OTA升级包不存在");
+                LOGGER.info("出厂路径下OTA升级包不存在");
                 return;
             }
             File file = fileList.get(0);
@@ -72,27 +90,6 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
             FileOperateUtil.deleteFile(file);
         } catch (BusinessException e) {
             LOGGER.error("获取OTA包信息失败", e);
-        }
-
-    }
-
-    private void btServiceInit() {
-        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO
-                .findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        if (upgradePackage == null) {
-            return;
-        }
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO
-                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
-        if (!CollectionUtils.isEmpty(upgradingTaskList)) {
-            try {
-                btService.startBtShare(upgradePackage.getSeedPath());
-            } catch (BusinessException e) {
-                LOGGER.error("开始BT服务失败", e);
-            }
-
         }
     }
 
