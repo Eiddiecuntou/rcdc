@@ -60,7 +60,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * 
      * @param request 请求参数，传升级包的id
      * @return 请求结果
-     * @throws BusinessException
+     * @throws BusinessException 业务异常
      */
     DefaultResponse closeOtaUpgradeTask(IdRequest request) throws BusinessException;
 
