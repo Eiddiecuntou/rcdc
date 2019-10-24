@@ -73,7 +73,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         String tempPath = Constants.LINUX_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级
         checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
-        LOGGER.info("init upgrade ceche");
+        LOGGER.info("init linux VDI updatelist cache");
         // 更新Linux VDI 终端缓存中的updatelist
         linuxVDIUpdatelistCacheInit.init();
     }
@@ -84,7 +84,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         String tempPath = Constants.ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级
         checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
-        LOGGER.info("init upgrade ceche");
+        LOGGER.info("init android VDI updatelist cache");
         // 更新android终端缓存中的updatelist
         androidVDIUpdatelistCacheInit.init();
     }
@@ -92,9 +92,9 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
     private void checkAndUpgrade(String pythonScriptPath, TerminalTypeEnums terminalType, String upgradeTempPath) {
         // 添加操作系统判断，使初始化失败不影响开发阶段的调试
         boolean isDevelop = Enviroment.isDevelop();
-        LOGGER.info("enviroment is develope: {}", isDevelop);
+        LOGGER.info("environment is develop: {}", isDevelop);
         if (isDevelop) {
-            LOGGER.info("enviroment is develope, skip upgrade bt share init...");
+            LOGGER.info("environment is develop, skip upgrade bt share init...");
             return;
         }
         // bt服务初始化，判断ip是否变更，如果变化则进行bt服务的初始化操作
