@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbAndroidVDIUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
 /**
  * Description: Function Description
@@ -26,8 +26,8 @@ public class AndroidVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTe
     }
 
     @Override
-    protected TerminalTypeEnums getTerminalType() {
-        return TerminalTypeEnums.VDI_ANDROID;
+    protected CbbTerminalTypeEnums getTerminalType() {
+        return CbbTerminalTypeEnums.VDI_ANDROID;
     }
 
 }

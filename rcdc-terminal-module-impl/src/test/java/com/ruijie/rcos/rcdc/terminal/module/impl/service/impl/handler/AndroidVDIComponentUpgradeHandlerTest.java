@@ -3,8 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbAndroidVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbVDIComponentCommonVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -62,7 +62,7 @@ public class AndroidVDIComponentUpgradeHandlerTest {
             private boolean isFirst = true;
 
             @Mock
-            public CbbAndroidVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
+            public CbbAndroidVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 if (isFirst) {
                     isFirst = false;
                     // 模拟返回空
@@ -73,7 +73,7 @@ public class AndroidVDIComponentUpgradeHandlerTest {
             }
         };
 
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("123");
         request.setValidateMd5("xxx");
@@ -83,7 +83,7 @@ public class AndroidVDIComponentUpgradeHandlerTest {
         TerminalVersionResultDTO terminalVersionResultDTO1 = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(),
                 terminalVersionResultDTO1.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
     /**
@@ -102,7 +102,7 @@ public class AndroidVDIComponentUpgradeHandlerTest {
         updatelist.setOsLimit("1.0.2.1");
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbAndroidVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
+            public CbbAndroidVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -111,11 +111,11 @@ public class AndroidVDIComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("1.1.0.1");
         request.setValidateMd5("123");
         request.setRainOsVersion("1.1.0.1");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
     /**
@@ -135,7 +135,7 @@ public class AndroidVDIComponentUpgradeHandlerTest {
         updatelist.setOsLimit("1.0.2.1");
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbAndroidVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
+            public CbbAndroidVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -144,11 +144,11 @@ public class AndroidVDIComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
         request.setRainOsVersion("111");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
     /**
@@ -175,7 +175,7 @@ public class AndroidVDIComponentUpgradeHandlerTest {
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbAndroidVDIUpdateListDTO get(TerminalTypeEnums terminalType) {
+            public CbbAndroidVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -184,11 +184,11 @@ public class AndroidVDIComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
         request.setRainOsVersion("1.0.0.1");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
     /**

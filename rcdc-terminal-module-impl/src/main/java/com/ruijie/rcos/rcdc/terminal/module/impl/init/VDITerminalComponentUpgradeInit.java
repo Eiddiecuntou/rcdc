@@ -3,9 +3,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
@@ -69,7 +69,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
 
     private void initLinuxVDITerminalComponent() {
         String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_LINUX;
-        TerminalTypeEnums terminalType = TerminalTypeEnums.VDI_LINUX;
+        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI_LINUX;
         String tempPath = Constants.LINUX_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级
         checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
@@ -80,7 +80,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
 
     private void initAndroidVDITerminalComponent() {
         String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID;
-        TerminalTypeEnums terminalType = TerminalTypeEnums.VDI_ANDROID;
+        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI_ANDROID;
         String tempPath = Constants.ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级
         checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
@@ -89,7 +89,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         androidVDIUpdatelistCacheInit.init();
     }
 
-    private void checkAndUpgrade(String pythonScriptPath, TerminalTypeEnums terminalType, String upgradeTempPath) {
+    private void checkAndUpgrade(String pythonScriptPath, CbbTerminalTypeEnums terminalType, String upgradeTempPath) {
         // 添加操作系统判断，使初始化失败不影响开发阶段的调试
         boolean isDevelop = Enviroment.isDevelop();
         LOGGER.info("environment is develop: {}", isDevelop);
@@ -136,7 +136,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         return false;
     }
 
-    private void executeUpdate(String currentIp, String pythonScriptPath, TerminalTypeEnums terminalType) {
+    private void executeUpdate(String currentIp, String pythonScriptPath, CbbTerminalTypeEnums terminalType) {
         LOGGER.info("start invoke pythonScript...");
         ShellCommandRunner runner = new ShellCommandRunner();
         String shellCmd = String.format(INIT_COMMAND, pythonScriptPath, currentIp);
@@ -163,9 +163,9 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
      */
     public class BtShareInitReturnValueResolver implements ReturnValueResolver<String> {
 
-        private TerminalTypeEnums terminalType;
+        private CbbTerminalTypeEnums terminalType;
 
-        public BtShareInitReturnValueResolver(TerminalTypeEnums terminalType) {
+        public BtShareInitReturnValueResolver(CbbTerminalTypeEnums terminalType) {
             Assert.notNull(terminalType, "terminalType cannot be null");
             this.terminalType = terminalType;
         }
@@ -182,10 +182,10 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
             // 更新数据库中的服务器ip
             globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
             // 更新缓存中的updatelist
-            if (terminalType == TerminalTypeEnums.VDI_LINUX) {
+            if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
                 linuxVDIUpdatelistCacheInit.init();
             }
-            if (terminalType == TerminalTypeEnums.VDI_ANDROID) {
+            if (terminalType == CbbTerminalTypeEnums.VDI_ANDROID) {
                 androidVDIUpdatelistCacheInit.init();
             }
             return outStr;

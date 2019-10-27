@@ -3,8 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbAndroidVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -31,15 +31,15 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
         Assert.notNull(request, "request can not be null");
 
         LOGGER.info("Android终端[{}]请求版本号", request.getTerminalId());
-        if (!TerminalUpdateListCacheManager.isCacheReady(TerminalTypeEnums.VDI_ANDROID)) {
+        if (!TerminalUpdateListCacheManager.isCacheReady(CbbTerminalTypeEnums.VDI_ANDROID)) {
             LOGGER.info("Android终端[{}]请求版本号未就绪", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult());
         }
-        CbbAndroidVDIUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(TerminalTypeEnums.VDI_ANDROID);
+        CbbAndroidVDIUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.VDI_ANDROID);
         LOGGER.info("updatelist:{}", JSON.toJSONString(updatelist));
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
-            LOGGER.info("updatelist or component is null, terminalType is [{}]", TerminalTypeEnums.VDI_ANDROID.toString());
+            LOGGER.info("updatelist or component is null, terminalType is [{}]", CbbTerminalTypeEnums.VDI_ANDROID.toString());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult());
         }
         // 判断是否升级

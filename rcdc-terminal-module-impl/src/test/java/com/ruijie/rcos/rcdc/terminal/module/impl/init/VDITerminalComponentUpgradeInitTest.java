@@ -5,8 +5,8 @@ import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.env.Enviroment;
@@ -290,7 +290,7 @@ public class VDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver(TerminalTypeEnums.VDI_LINUX);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
@@ -302,7 +302,7 @@ public class VDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverExitValueNotZero() {
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver(TerminalTypeEnums.VDI_LINUX);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         try {
             resolver.resolve("dsd", 1, "dsd");
             fail();
@@ -318,8 +318,8 @@ public class VDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolver() throws BusinessException {
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI = init.new BtShareInitReturnValueResolver(TerminalTypeEnums.VDI_LINUX);
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI = init.new BtShareInitReturnValueResolver(TerminalTypeEnums.VDI_ANDROID);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
         new MockUp<VDITerminalComponentUpgradeInit>() {
             @Mock
             public String getLocalIP() {
