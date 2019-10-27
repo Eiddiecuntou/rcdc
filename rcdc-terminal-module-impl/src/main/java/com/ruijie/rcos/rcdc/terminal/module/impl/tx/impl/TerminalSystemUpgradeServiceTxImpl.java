@@ -84,24 +84,6 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
     }
 
     /**
-     * 添加刷机任务
-     * 
-     * @param upgradePackage 刷机包对象
-     * @return 刷机任务对象
-     */
-    private TerminalSystemUpgradeEntity addSystemUpgradeTaskEntity(TerminalSystemUpgradePackageEntity upgradePackage) {
-        TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
-        entity.setUpgradePackageId(upgradePackage.getId());
-        entity.setPackageName(upgradePackage.getPackageName());
-        entity.setPackageVersion(upgradePackage.getPackageVersion());
-        entity.setPackageType(upgradePackage.getPackageType());
-        entity.setCreateTime(new Date());
-        entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
-        systemUpgradeDAO.save(entity);
-        return entity;
-    }
-
-    /**
      * 添加刷机终端
      * 
      * @param upgradeTaskId 刷机任务id
@@ -131,6 +113,38 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         }
     }
 
+    /**
+     * 添加刷机任务
+     *
+     * @param upgradePackage 刷机包对象
+     * @return 刷机任务对象
+     */
+    private TerminalSystemUpgradeEntity addSystemUpgradeTaskEntity(TerminalSystemUpgradePackageEntity upgradePackage) {
+        TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
+        entity.setUpgradePackageId(upgradePackage.getId());
+        entity.setPackageName(upgradePackage.getPackageName());
+        entity.setPackageVersion(upgradePackage.getPackageVersion());
+        entity.setPackageType(upgradePackage.getPackageType());
+        entity.setCreateTime(new Date());
+        entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+        systemUpgradeDAO.save(entity);
+        return entity;
+    }
+
+    @Override
+    public void closeSystemUpgradeTask(UUID upgradeTaskId) throws BusinessException {
+        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+        final TerminalSystemUpgradeEntity systemUpgradeTask = getSystemUpgradeTask(upgradeTaskId);
+        if (systemUpgradeTask.getPackageType() == CbbTerminalTypeEnums.VDI_ANDROID) {
+            closeAndroidVDIUpgradeTask(systemUpgradeTask);
+
+        } else if (systemUpgradeTask.getPackageType() == CbbTerminalTypeEnums.VDI_LINUX) {
+            closeLinuxVDIUpgradeTask(systemUpgradeTask);
+        }
+
+    }
+
+
     private void closeAndroidVDIUpgradeTask(TerminalSystemUpgradeEntity systemUpgradeTask) throws BusinessException {
         Assert.notNull(systemUpgradeTask, "systemUpgradeTask can not be null");
         systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
@@ -151,19 +165,6 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
             UPGRADE_TASK_FUTURE.cancel(true);
             UPGRADE_TASK_FUTURE = null;
         }
-    }
-
-    @Override
-    public void closeSystemUpgradeTask(UUID upgradeTaskId) throws BusinessException {
-        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
-        final TerminalSystemUpgradeEntity systemUpgradeTask = getSystemUpgradeTask(upgradeTaskId);
-        if (systemUpgradeTask.getPackageType() == CbbTerminalTypeEnums.VDI_ANDROID) {
-            closeAndroidVDIUpgradeTask(systemUpgradeTask);
-
-        } else if (systemUpgradeTask.getPackageType() == CbbTerminalTypeEnums.VDI_LINUX) {
-            closeLinuxVDIUpgradeTask(systemUpgradeTask);
-        }
-
     }
 
     private void closeLinuxVDIUpgradeTask(TerminalSystemUpgradeEntity systemUpgradeTask) throws BusinessException {
