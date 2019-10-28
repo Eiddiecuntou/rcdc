@@ -1,10 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
-import java.util.List;
-import java.util.UUID;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 
@@ -42,14 +43,6 @@ public interface TerminalSystemUpgradeTerminalDAO extends SkyEngineJpaRepository
      * @return 刷机任务终端列表
      */
     List<TerminalSystemUpgradeTerminalEntity> findBySysUpgradeIdAndState(UUID sysUpgradeId, CbbSystemUpgradeStateEnums state);
-
-    /**
-     * 根据刷机状态统计刷机数量
-     * 
-     * @param state 刷机终端状态
-     * @return 统计数量
-     */
-    int countByState(CbbSystemUpgradeStateEnums state);
 
     /**
      * 统计刷机任务指定状态的终端数量

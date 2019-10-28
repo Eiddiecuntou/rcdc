@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 import java.util.List;
 import java.util.UUID;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 
@@ -19,11 +20,13 @@ public interface TerminalSystemUpgradeDAO extends SkyEngineJpaRepository<Termina
 
     /**
      * 根据任务状态查询升级任务列表
-     * 
+     *
+     * @param packageType 升级包类型
      * @param stateList 任务状态列表
      * @return 任务列表
      */
-    List<TerminalSystemUpgradeEntity> findByStateInOrderByCreateTimeAsc(List<CbbSystemUpgradeTaskStateEnums> stateList);
+    List<TerminalSystemUpgradeEntity> findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums packageType,
+            List<CbbSystemUpgradeTaskStateEnums> stateList);
 
     /**
      * 根据任务状态查询升级任务列表

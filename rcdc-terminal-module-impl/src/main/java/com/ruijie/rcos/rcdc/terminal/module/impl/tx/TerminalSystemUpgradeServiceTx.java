@@ -1,9 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
-import java.util.UUID;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+
+import java.util.UUID;
 
 /**
  * 
@@ -24,6 +25,14 @@ public interface TerminalSystemUpgradeServiceTx {
      * @return 刷机任务id
      */
     UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr);
+
+    /**
+     * 开启OTA升级任务
+     *
+     * @param upgradePackageEntity OTA升级包对象
+     * @throws BusinessException 业务异常
+     */
+    void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackageEntity) throws BusinessException ;
 
     /**
      * 结束刷机任务

@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
 /**
  * 
@@ -25,7 +25,7 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
     /**
      * 刷机包平台类型
      */
-    private CbbTerminalPlatformEnums packageType;
+    private CbbTerminalTypeEnums packageType;
 
     private CbbSystemUpgradePackageOriginEnums origin;
 
@@ -53,11 +53,11 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
         this.name = name;
     }
 
-    public CbbTerminalPlatformEnums getPackageType() {
+    public CbbTerminalTypeEnums getPackageType() {
         return packageType;
     }
 
-    public void setPackageType(CbbTerminalPlatformEnums packageType) {
+    public void setPackageType(CbbTerminalTypeEnums packageType) {
         this.packageType = packageType;
     }
 

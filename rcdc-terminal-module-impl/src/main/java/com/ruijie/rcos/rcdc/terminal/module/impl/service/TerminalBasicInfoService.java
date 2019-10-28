@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -13,6 +14,13 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
  * @author Jarman
  */
 public interface TerminalBasicInfoService {
+
+    /**
+     *
+     * @param terminalId 终端id
+     * @param shineTerminalBasicInfo 终端信息
+     */
+    void saveBasicInfo(String terminalId, ShineTerminalBasicInfo shineTerminalBasicInfo);
 
     /**
      * 修改终端名称
