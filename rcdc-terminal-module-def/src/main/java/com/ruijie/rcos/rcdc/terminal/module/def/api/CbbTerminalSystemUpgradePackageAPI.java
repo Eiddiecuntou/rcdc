@@ -1,9 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageModifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbListTerminalSystemUpgradePackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
@@ -46,16 +49,6 @@ public interface CbbTerminalSystemUpgradePackageAPI {
 
     /**
      * 
-     * 判断是否正在上传刷机包
-     * 
-     * @param request 请求参数
-     * @return 上传文件结果
-     */
-    @NoRollback
-    CbbCheckUploadingResultResponse isUpgradeFileUploading(CbbTerminalPlatformRequest request);
-
-    /**
-     * 
      * 获取系统升级包列表
      * 
      * @param request 请求参数
@@ -87,5 +80,15 @@ public interface CbbTerminalSystemUpgradePackageAPI {
     @NoRollback
     CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request)
             throws BusinessException;
+
+    /**
+     *
+     * @param request 请求参数
+     * @return 请求响应
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    DefaultResponse editUpgradePackage(CbbTerminalUpgradePackageModifyRequest request) throws BusinessException;
+
 
 }
