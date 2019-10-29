@@ -30,7 +30,7 @@ public class CbbCommonUpdatelistDTO<T> implements Serializable {
     }
 
     public CbbCommonUpdatelistDTO(String version, Integer componentSize) {
-        Assert.notNull(version, "version cannot be null");
+        Assert.hasText(version, "version cannot be null");
         Assert.notNull(componentSize, "componentSize cannot be null");
         this.version = version;
         this.componentSize = componentSize;
