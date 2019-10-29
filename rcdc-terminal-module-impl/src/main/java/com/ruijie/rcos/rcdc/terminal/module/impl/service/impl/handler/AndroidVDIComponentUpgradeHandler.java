@@ -73,10 +73,7 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
 
     private boolean isSupportUpgrade(CbbAndroidVDIUpdateListDTO updatelist, GetVersionRequest request) {
         // 终端OTA版本号高于OS_LIMIT则支持升级
-        String rainOsVersion = request.getRainOsVersion();
-        Integer terminalOTAVersion = getVersionFromVerStr(rainOsVersion);
-        LOGGER.info("终端[" + request.getTerminalId() + "]的OTA版本号为[" + rainOsVersion + "]");
-        return terminalOTAVersion == 0 || isVersionBigger(rainOsVersion, updatelist.getOsLimit());
+        return isVersionBigger(request.getRainOsVersion(), updatelist.getOsLimit());
     }
 
     /**
@@ -87,7 +84,7 @@ public class AndroidVDIComponentUpgradeHandler extends AbstractTerminalComponent
      * @return: boolean 是否需要升级结果
      */
     private boolean isNeedToUpgrade(CbbAndroidVDIUpdateListDTO updatelist, GetVersionRequest request) {
-        boolean isVersionEqual = request.getRainOsVersion().equals(updatelist.getVersion());
+        boolean isVersionEqual = request.getRainUpgradeVersion().equals(updatelist.getVersion());
         boolean isMD5Equal = Objects.equals(request.getValidateMd5(), updatelist.getValidateMd5());
         return !isVersionEqual || !isMD5Equal;
     }
