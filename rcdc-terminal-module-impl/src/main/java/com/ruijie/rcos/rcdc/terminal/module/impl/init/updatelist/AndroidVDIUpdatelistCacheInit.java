@@ -4,7 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbAndroidVDI
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
 /**
- * Description: Function Description
+ * Description: android vdi终端updatelist缓存初始化
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019/10/10

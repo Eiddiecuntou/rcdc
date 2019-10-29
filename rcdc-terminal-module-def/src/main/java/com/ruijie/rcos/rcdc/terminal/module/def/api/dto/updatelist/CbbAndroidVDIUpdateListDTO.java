@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
 
 /**
- * Description: Function Description
+ * Description: androidVDI终端组件升级版本信息
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019/10/10
