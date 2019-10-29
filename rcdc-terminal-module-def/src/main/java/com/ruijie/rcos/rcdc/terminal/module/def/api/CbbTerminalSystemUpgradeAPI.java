@@ -62,6 +62,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
+    @NoRollback
     DefaultResponse closeOtaUpgradeTask(IdRequest request) throws BusinessException;
 
     /**
