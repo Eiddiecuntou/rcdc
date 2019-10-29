@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
@@ -108,10 +107,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     @Override
     public DefaultResponse uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        JSONObject jsonObject = request.getCustomData();
-        String platType = jsonObject.getString(PLAT_TYPE);
-        String osType = jsonObject.getString(OS_TYPE);
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(platType, osType);
+        CbbTerminalTypeEnums terminalType = request.getTerminalType();
         // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包
         boolean hasRunningTask = isExistRunningTask(terminalType);
         if (hasRunningTask) {

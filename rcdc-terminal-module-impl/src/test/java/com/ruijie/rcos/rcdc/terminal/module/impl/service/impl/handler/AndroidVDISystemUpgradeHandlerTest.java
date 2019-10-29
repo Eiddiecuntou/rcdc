@@ -1,10 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -86,9 +86,7 @@ public class AndroidVDISystemUpgradeHandlerTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("RG-RainOS_V3.0.32_A.zip");
         request.setFilePath("/temp");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("upgradeMode", "AUTO");
-        request.setCustomData(jsonObject);
+        request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO networkDTO = new BaseNetworkDTO();
         networkDTO.setIp("172.28.109.7");
@@ -142,9 +140,7 @@ public class AndroidVDISystemUpgradeHandlerTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("RG-RainOS_V3.0.32_A.zip");
         request.setFilePath("/temp");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("upgradeMode", "AUTO");
-        request.setCustomData(jsonObject);
+        request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO networkDTO = new BaseNetworkDTO();
         networkDTO.setIp("172.28.109.7");
@@ -196,9 +192,7 @@ public class AndroidVDISystemUpgradeHandlerTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("RG-RainOS_V3.0.32_A.zip");
         request.setFilePath("/temp");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("upgradeMode", "AUTO");
-        request.setCustomData(jsonObject);
+        request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         final String savePath = "{\"seed_path\":\"/opt/ftp/terminal/ota/seed/123.zip.torrent\"}";
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO networkDTO = new BaseNetworkDTO();
@@ -280,9 +274,7 @@ public class AndroidVDISystemUpgradeHandlerTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("RG-RainOS_V3.0.32_A.zip");
         request.setFilePath("/temp");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("upgradeMode", "AUTO");
-        request.setCustomData(jsonObject);
+        request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         final String savePath = "{\"seed_path\":\"/opt/ftp/terminal/ota/seed/123.zip.torrent\"}";
         BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
         BaseNetworkDTO networkDTO = new BaseNetworkDTO();

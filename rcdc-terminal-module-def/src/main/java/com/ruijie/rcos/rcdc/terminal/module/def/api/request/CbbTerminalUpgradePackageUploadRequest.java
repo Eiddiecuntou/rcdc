@@ -1,10 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ruijie.rcos.sk.base.annotation.NotNull;
-import org.springframework.util.Assert;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.util.Assert;
 
 /**
  * 
@@ -27,7 +28,10 @@ public class CbbTerminalUpgradePackageUploadRequest implements Request {
     private String fileMD5;
 
     @NotNull
-    private JSONObject customData;
+    private CbbTerminalTypeEnums terminalType;
+
+    @NotNull
+    private CbbSystemUpgradeModeEnums upgradeMode;
 
     public CbbTerminalUpgradePackageUploadRequest() {
         
@@ -67,11 +71,19 @@ public class CbbTerminalUpgradePackageUploadRequest implements Request {
         this.fileMD5 = fileMD5;
     }
 
-    public JSONObject getCustomData() {
-        return customData;
+    public CbbTerminalTypeEnums getTerminalType() {
+        return terminalType;
     }
 
-    public void setCustomData(JSONObject customData) {
-        this.customData = customData;
+    public void setTerminalType(CbbTerminalTypeEnums terminalType) {
+        this.terminalType = terminalType;
+    }
+
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
     }
 }
