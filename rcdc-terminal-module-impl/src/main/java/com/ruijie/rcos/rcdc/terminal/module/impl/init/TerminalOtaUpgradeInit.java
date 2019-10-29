@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
@@ -22,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -98,11 +98,9 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         String fileName = file.getName();
         String filePath = file.getPath();
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("upgradeMode", CbbSystemUpgradeModeEnums.AUTO);
         request.setFilePath(filePath);
         request.setFileName(fileName);
-        request.setCustomData(jsonObject);
+        request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         return request;
     }
 }
