@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
@@ -98,10 +97,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("123.iso");
         request.setFilePath("/temp");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("platType", "VDI");
-        jsonObject.put("osType", "Linux");
-        request.setCustomData(jsonObject);
+        request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
         new Expectations() {
             {
                 terminalSystemUpgradePackageService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);

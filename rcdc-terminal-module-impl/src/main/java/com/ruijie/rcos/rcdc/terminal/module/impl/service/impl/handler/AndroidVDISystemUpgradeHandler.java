@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
@@ -72,8 +71,7 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
         Assert.notNull(request, "request can not be null");
         String fileName = request.getFileName();
         String filePath = request.getFilePath();
-        JSONObject jsonObject = request.getCustomData();
-        CbbSystemUpgradeModeEnums upgradeMode = jsonObject.getObject(UPGRADE_MODE, CbbSystemUpgradeModeEnums.class);
+        CbbSystemUpgradeModeEnums upgradeMode = request.getUpgradeMode();
         TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(fileName, filePath);
         upgradeInfo.setUpgradeMode(upgradeMode);
         terminalSystemUpgradePackageService.saveTerminalUpgradePackage(upgradeInfo);
