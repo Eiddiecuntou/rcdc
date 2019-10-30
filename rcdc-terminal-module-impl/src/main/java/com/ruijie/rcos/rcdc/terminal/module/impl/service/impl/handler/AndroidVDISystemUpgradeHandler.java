@@ -47,8 +47,6 @@ public class AndroidVDISystemUpgradeHandler implements TerminalSystemUpgradeHand
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AndroidVDISystemUpgradeHandler.class);
 
-    private static final String UPGRADE_MODE = "upgradeMode";
-
     private static final String OTA_SUFFIX = ".zip";
 
     @Autowired

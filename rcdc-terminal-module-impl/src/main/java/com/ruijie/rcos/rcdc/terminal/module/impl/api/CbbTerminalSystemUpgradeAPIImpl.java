@@ -23,7 +23,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
@@ -105,7 +105,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private QueryUpgradeableTerminalListService upgradeableTerminalListService;
 
     @Autowired
-    private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
+    private TerminalSystemPackageUploadingService terminalSystemPackageUploadingService;
 
     @Autowired
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
@@ -159,7 +159,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         // 判断刷机包是否正在上传中
         UUID packageId = upgradePackage.getId();
-        boolean hasLoading = terminalSystemUpgradePackageService.isUpgradeFileUploading(upgradePackage.getPackageType());
+        boolean hasLoading = terminalSystemPackageUploadingService.isUpgradeFileUploading(upgradePackage.getPackageType());
         if (hasLoading) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);
         }

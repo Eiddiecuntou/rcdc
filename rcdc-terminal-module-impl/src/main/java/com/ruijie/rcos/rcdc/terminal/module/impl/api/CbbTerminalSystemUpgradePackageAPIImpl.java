@@ -18,6 +18,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -33,7 +34,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -52,8 +55,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private static final BeanCopier PACKAGE_BEAN_COPIER =
             BeanCopier.create(TerminalSystemUpgradePackageEntity.class, CbbTerminalSystemUpgradePackageInfoDTO.class, false);
 
-    private static final Set<CbbTerminalTypeEnums> SYS_UPGRADE_PACKAGE_UPLOADING = new HashSet<>();
-
     @Autowired
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
 
@@ -69,9 +70,8 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     @Autowired
     private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
 
-    private static final String PLAT_TYPE = "platType";
-
-    private static final String OS_TYPE = "osType";
+    @Autowired
+    private TerminalSystemPackageUploadingService terminalSystemPackageUploadingService;
 
     @Override
     public CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request) throws BusinessException {
@@ -114,7 +114,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
             LOGGER.debug("system upgrade task is running, can not upload file ");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }
-        terminalSystemUpgradePackageService.uploadUpgradePackage(request, terminalType);
+        terminalSystemPackageUploadingService.uploadUpgradePackage(request, terminalType);
         return DefaultResponse.Builder.success();
     }
 
