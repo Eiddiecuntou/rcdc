@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
+import org.springframework.util.Assert;
+
 /**
  * 
  * Description: 终端组件升级请求结果信息
@@ -23,6 +25,11 @@ public class TerminalVersionResultDTO<T> {
     public TerminalVersionResultDTO(Integer result, T updatelist) {
         this.result = result;
         this.updatelist = updatelist;
+    }
+
+    public TerminalVersionResultDTO(Integer result) {
+        Assert.notNull(result, "result cannot be null");
+        this.result = result;
     }
 
     public Integer getResult() {

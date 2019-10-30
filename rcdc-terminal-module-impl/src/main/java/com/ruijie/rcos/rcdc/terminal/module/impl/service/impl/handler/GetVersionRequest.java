@@ -13,11 +13,25 @@ import org.springframework.lang.Nullable;
  */
 public class GetVersionRequest {
 
+    @Nullable
+    private String terminalId;
+
     @NotNull
     private String rainUpgradeVersion;
 
     @Nullable
     private String validateMd5;
+
+    @Nullable
+    private String rainOsVersion;
+
+    public String getTerminalId() {
+        return terminalId;
+    }
+
+    public void setTerminalId(String terminalId) {
+        this.terminalId = terminalId;
+    }
 
     public String getRainUpgradeVersion() {
         return rainUpgradeVersion;
@@ -35,4 +49,14 @@ public class GetVersionRequest {
     public void setValidateMd5(@Nullable String validateMd5) {
         this.validateMd5 = validateMd5;
     }
+
+    @Nullable
+    public String getRainOsVersion() {
+        return rainOsVersion;
+    }
+
+    public void setRainOsVersion(@Nullable String rainOsVersion) {
+        this.rainOsVersion = rainOsVersion;
+    }
+
 }

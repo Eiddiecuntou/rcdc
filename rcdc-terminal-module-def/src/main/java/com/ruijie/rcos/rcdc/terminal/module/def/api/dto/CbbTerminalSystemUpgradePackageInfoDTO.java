@@ -1,11 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
-import java.util.Date;
-import java.util.UUID;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * 

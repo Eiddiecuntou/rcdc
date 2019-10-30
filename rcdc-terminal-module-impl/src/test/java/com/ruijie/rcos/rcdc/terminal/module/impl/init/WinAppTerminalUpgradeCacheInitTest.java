@@ -1,15 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.WinAppTerminalUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
