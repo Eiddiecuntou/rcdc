@@ -1,11 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.TerminalDateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,7 +41,10 @@ public class TerminalOtaUpgradeScheduleService implements Runnable {
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
 
     @Autowired
-    private TerminalSystemUpgradeService systemUpgradeService;
+    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+
+    @Autowired
+    private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
 
     @Autowired
     private TerminalSystemUpgradeServiceTx systemUpgradeServiceTx;
@@ -45,8 +52,11 @@ public class TerminalOtaUpgradeScheduleService implements Runnable {
     @Override
     public void run() {
         LOGGER.debug("开始处理OTA升级定时任务");
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeService
-                .getSystemUpgradeTaskByTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO
+                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
             LOGGER.info("没有OTA升级任务，不查询终端状态");
             return;
