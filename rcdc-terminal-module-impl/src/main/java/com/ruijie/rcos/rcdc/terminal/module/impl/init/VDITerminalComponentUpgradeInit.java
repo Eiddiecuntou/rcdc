@@ -71,22 +71,16 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_LINUX;
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI_LINUX;
         String tempPath = Constants.LINUX_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
-        // 检查环境,判断是否需要升级,需要则进行升级
+        // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
         checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
-        LOGGER.info("init linux VDI updatelist cache");
-        // 更新Linux VDI 终端缓存中的updatelist
-        linuxVDIUpdatelistCacheInit.init();
     }
 
     private void initAndroidVDITerminalComponent() {
         String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID;
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI_ANDROID;
         String tempPath = Constants.ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
-        // 检查环境,判断是否需要升级,需要则进行升级
+        // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
         checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
-        LOGGER.info("init android VDI updatelist cache");
-        // 更新android终端缓存中的updatelist
-        androidVDIUpdatelistCacheInit.init();
     }
 
     private void checkAndUpgrade(String pythonScriptPath, CbbTerminalTypeEnums terminalType, String upgradeTempPath) {
@@ -110,8 +104,20 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
             executeUpdate(currentIp, pythonScriptPath, terminalType);
             return;
         }
+        updateCache(terminalType);
     }
 
+    private void updateCache(CbbTerminalTypeEnums terminalType) {
+        // 更新缓存中的updatelist
+        if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
+            LOGGER.info("init linux VDI updatelist cache");
+            linuxVDIUpdatelistCacheInit.init();
+        }
+        if (terminalType == CbbTerminalTypeEnums.VDI_ANDROID) {
+            LOGGER.info("init android VDI updatelist cache");
+            androidVDIUpdatelistCacheInit.init();
+        }
+    }
 
     private boolean needUpgrade(String currentIp, String upgradeTempPath) {
 
@@ -182,12 +188,7 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
             // 更新数据库中的服务器ip
             globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
             // 更新缓存中的updatelist
-            if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
-                linuxVDIUpdatelistCacheInit.init();
-            }
-            if (terminalType == CbbTerminalTypeEnums.VDI_ANDROID) {
-                androidVDIUpdatelistCacheInit.init();
-            }
+            updateCache(terminalType);
             return outStr;
         }
     }

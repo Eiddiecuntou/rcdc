@@ -274,11 +274,12 @@ public class VDITerminalComponentUpgradeInitTest {
             {
                 globalParameterAPI.findParameter(anyString);
                 times = 2;
-
                 runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
                 times = 2;
                 linuxVDIUpdatelistCacheInit.init();
-                times = 1;
+                times = 0;
+                androidVDIUpdatelistCacheInit.init();
+                times = 0;
             }
         };
     }
