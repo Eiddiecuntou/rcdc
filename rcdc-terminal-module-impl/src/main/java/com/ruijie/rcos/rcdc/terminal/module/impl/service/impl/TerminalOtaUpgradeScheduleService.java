@@ -9,9 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTermin
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.TerminalDateUtil;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +44,6 @@ public class TerminalOtaUpgradeScheduleService implements Runnable {
     @Autowired
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
 
-    @Autowired
-    private TerminalSystemUpgradeServiceTx systemUpgradeServiceTx;
-
     @Override
     public void run() {
         LOGGER.debug("开始处理OTA升级定时任务");
@@ -70,11 +65,6 @@ public class TerminalOtaUpgradeScheduleService implements Runnable {
             if (isTimeout) {
                 upgradeTerminal.setState(CbbSystemUpgradeStateEnums.TIMEOUT);
                 systemUpgradeTerminalDAO.save(upgradeTerminal);
-                try {
-                    systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
-                } catch (BusinessException e) {
-                    LOGGER.error("同步终端状态失败", e);
-                }
             }
         }
     }
