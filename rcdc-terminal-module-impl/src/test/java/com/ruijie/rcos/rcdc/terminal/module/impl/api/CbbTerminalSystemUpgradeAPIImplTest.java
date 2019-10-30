@@ -21,7 +21,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
@@ -109,7 +109,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     private QueryUpgradeableTerminalListService upgradeableTerminalListService;
 
     @Injectable
-    private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
+    private TerminalSystemPackageUploadingService terminalSystemPackageUploadingService;
 
     @Injectable
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
@@ -200,7 +200,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = Optional.of(upgradePackageEntity);
-                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
                 result = true;
             }
         };
@@ -226,7 +226,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = Optional.of(upgradePackageEntity);
-                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
                 result = false;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = true;
@@ -255,7 +255,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = Optional.of(upgradePackageEntity);
-                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
                 result = false;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = false;
@@ -305,7 +305,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = upgradePackageOpt;
-                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
                 result = false;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = false;
@@ -330,7 +330,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 times = 1;
-                terminalSystemUpgradePackageService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
                 times = 1;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 times = 1;
