@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbAndroidVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbVDIComponentCommonVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -23,19 +23,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 /**
- *
  * Description: Function Description
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019年8月10日
+ * Create Time: 2019/10/14
  *
- * @author nt
+ * @author XiaoJiaXin
  */
 @RunWith(SkyEngineRunner.class)
-public class LinuxVDIComponentUpgradeHandlerTest {
+public class AndroidVDIComponentUpgradeHandlerTest {
 
     @Tested
-    private LinuxVDIComponentUpgradeHandler handler;
+    private AndroidVDIComponentUpgradeHandler handler;
 
 
     /**
@@ -46,7 +45,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
     @Test
     public void testGetVersionArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> handler.getVersion(null),
-                "get version request can not be null");
+                "request can not be null");
         Assert.assertTrue(true);
     }
 
@@ -55,7 +54,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionUpdatelistIsNull() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        CbbAndroidVDIUpdateListDTO updatelist = new CbbAndroidVDIUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
 
         new MockUp(TerminalUpdateListCacheManager.class) {
@@ -63,7 +62,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
             private boolean isFirst = true;
 
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbAndroidVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 if (isFirst) {
                     isFirst = false;
                     // 模拟返回空
@@ -74,7 +73,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
             }
         };
 
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("123");
         request.setValidateMd5("xxx");
@@ -84,7 +83,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         TerminalVersionResultDTO terminalVersionResultDTO1 = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(),
                 terminalVersionResultDTO1.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
     /**
@@ -92,7 +91,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionNoUpgrade() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        CbbAndroidVDIUpdateListDTO updatelist = new CbbAndroidVDIUpdateListDTO();
         List<CbbVDIComponentCommonVersionInfoDTO> componentList = new ArrayList<>();
         componentList.add(new CbbVDIComponentCommonVersionInfoDTO());
         updatelist.setComponentList(componentList);
@@ -100,10 +99,10 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         updatelist.setValidateMd5("123");
         updatelist.setComponentSize(1);
         updatelist.setBaseVersion("1.0.1.1");
-
+        updatelist.setOsLimit("1.0.2.1");
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbAndroidVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -111,11 +110,12 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.1.0.1");
         request.setValidateMd5("123");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_LINUX);
+        request.setRainOsVersion("1.1.0.1");
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
     /**
@@ -123,7 +123,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionRainUpgradeVersionIsIllegale() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        CbbAndroidVDIUpdateListDTO updatelist = new CbbAndroidVDIUpdateListDTO();
         List<CbbVDIComponentCommonVersionInfoDTO> componentList = new ArrayList<>();
         componentList.add(new CbbVDIComponentCommonVersionInfoDTO());
         updatelist.setComponentList(componentList);
@@ -132,9 +132,10 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         updatelist.setBaseVersion("1.0.1.1");
         updatelist.setLimitVersion("1.0.0.1");
         updatelist.setValidateMd5("123");
+        updatelist.setOsLimit("1.0.2.1");
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbAndroidVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -142,11 +143,12 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_LINUX);
+        request.setRainOsVersion("111");
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
     /**
@@ -154,7 +156,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionLimitVersion() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        CbbAndroidVDIUpdateListDTO updatelist = new CbbAndroidVDIUpdateListDTO();
         List<CbbVDIComponentCommonVersionInfoDTO> componentList = new ArrayList<>();
         componentList.add(new CbbVDIComponentCommonVersionInfoDTO());
         updatelist.setComponentList(componentList);
@@ -162,6 +164,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         updatelist.setComponentSize(1);
         updatelist.setBaseVersion("1.0.2.1");
         updatelist.setLimitVersion("1.0.1.1");
+        updatelist.setOsLimit("1.0.2.1");
 
         new MockUp(Logger.class) {
             @Mock
@@ -172,7 +175,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbLinuxVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbAndroidVDIUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -180,11 +183,12 @@ public class LinuxVDIComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_LINUX);
+        request.setRainOsVersion("1.0.0.1");
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
     /**
@@ -192,7 +196,7 @@ public class LinuxVDIComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionIsUpdating() {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        CbbAndroidVDIUpdateListDTO updatelist = new CbbAndroidVDIUpdateListDTO();
         List<CbbVDIComponentCommonVersionInfoDTO> componentList = new ArrayList<>();
         componentList.add(new CbbVDIComponentCommonVersionInfoDTO());
         updatelist.setComponentList(componentList);
@@ -209,5 +213,4 @@ public class LinuxVDIComponentUpgradeHandlerTest {
                 terminalVersionResultDTO.getResult().intValue());
 
     }
-
 }

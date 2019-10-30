@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
 
+import org.springframework.util.Assert;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,6 +30,8 @@ public class CbbCommonUpdatelistDTO<T> implements Serializable {
     }
 
     public CbbCommonUpdatelistDTO(String version, Integer componentSize) {
+        Assert.hasText(version, "version cannot be null");
+        Assert.notNull(componentSize, "componentSize cannot be null");
         this.version = version;
         this.componentSize = componentSize;
     }
