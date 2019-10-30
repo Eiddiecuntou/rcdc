@@ -107,18 +107,6 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         updateCache(terminalType);
     }
 
-    private void updateCache(CbbTerminalTypeEnums terminalType) {
-        // 更新缓存中的updatelist
-        if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
-            LOGGER.info("init linux VDI updatelist cache");
-            linuxVDIUpdatelistCacheInit.init();
-        }
-        if (terminalType == CbbTerminalTypeEnums.VDI_ANDROID) {
-            LOGGER.info("init android VDI updatelist cache");
-            androidVDIUpdatelistCacheInit.init();
-        }
-    }
-
     private boolean needUpgrade(String currentIp, String upgradeTempPath) {
 
         String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
@@ -190,6 +178,18 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
             // 更新缓存中的updatelist
             updateCache(terminalType);
             return outStr;
+        }
+    }
+
+    private void updateCache(CbbTerminalTypeEnums terminalType) {
+        // 更新缓存中的updatelist
+        if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
+            LOGGER.info("init linux VDI updatelist cache");
+            linuxVDIUpdatelistCacheInit.init();
+        }
+        if (terminalType == CbbTerminalTypeEnums.VDI_ANDROID) {
+            LOGGER.info("init android VDI updatelist cache");
+            androidVDIUpdatelistCacheInit.init();
         }
     }
 
