@@ -146,7 +146,6 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         LOGGER.info("success invoke [{}] pythonScript...", terminalType.toString());
     }
 
-
     /**
      * Description: Function Description
      * Copyright: Copyright (c) 2018
