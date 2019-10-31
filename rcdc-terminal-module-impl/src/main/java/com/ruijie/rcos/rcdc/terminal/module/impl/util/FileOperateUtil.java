@@ -240,7 +240,15 @@ public class FileOperateUtil {
     public static List<File> listFile(String filePath) {
         Assert.notNull(filePath, "filePath can not be null");
         File file = new File(filePath);
+        if (!file.exists()) {
+            LOGGER.error("filePath is not exist");
+            throw new IllegalArgumentException("filePath:{}" + filePath);
+        }
         List<File> fileList = new ArrayList<File>();
+        if (file.isFile()) {
+            LOGGER.error("filePath is not directory");
+            throw new IllegalArgumentException("filePath:{}" + filePath);
+        }
         File[] fileArr = file.listFiles();
         if (fileArr != null) {
             for (int i = 0; i < fileArr.length; i++) {

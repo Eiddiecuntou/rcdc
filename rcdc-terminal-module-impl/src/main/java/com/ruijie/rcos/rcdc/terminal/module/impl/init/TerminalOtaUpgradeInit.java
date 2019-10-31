@@ -53,12 +53,17 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
 
     @Override
     public void safeInit() {
-        String basePath = Constants.TERMINAL_UPGRADE_OTA;
-        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        if (upgradePackage == null) {
-            initOtaZipFile(basePath);
-        } else {
-            initBtServer(upgradePackage);
+        try {
+            String basePath = Constants.TERMINAL_UPGRADE_OTA;
+            TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO
+                    .findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+            if (upgradePackage == null) {
+                initOtaZipFile(basePath);
+            } else {
+                initBtServer(upgradePackage);
+            }
+        } catch (Exception e) {
+            LOGGER.error("初始化异常", e);
         }
     }
 
