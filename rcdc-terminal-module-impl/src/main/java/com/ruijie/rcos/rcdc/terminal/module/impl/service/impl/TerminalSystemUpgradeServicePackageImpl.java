@@ -1,10 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -12,8 +10,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -39,44 +35,8 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeServicePackageImpl.class);
 
-    private static final Set<CbbTerminalTypeEnums> SYS_UPGRADE_PACKAGE_UPLOADING = new HashSet<>();
-
-    private static final Object LOCK = new Object();
-
-    @Autowired
-    private TerminalSystemUpgradeHandlerFactory handlerFactory;
-
     @Autowired
     private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
-
-    @Override
-    public boolean isUpgradeFileUploading(CbbTerminalTypeEnums terminalType) {
-        Assert.notNull(terminalType, "request can not be null");
-        boolean hasLoading = false;
-        if (SYS_UPGRADE_PACKAGE_UPLOADING.contains(terminalType)) {
-            hasLoading = true;
-        }
-        return hasLoading;
-    }
-
-    @Override
-    public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request, CbbTerminalTypeEnums terminalType) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
-        Assert.notNull(terminalType, "terminalType can not be null");
-        synchronized (LOCK) {
-            if (SYS_UPGRADE_PACKAGE_UPLOADING.contains(terminalType)) {
-                throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);
-            }
-            SYS_UPGRADE_PACKAGE_UPLOADING.add(terminalType);
-        }
-        try {
-            TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
-            handler.uploadUpgradePackage(request);
-        } finally {
-            // 完成清除上传标志缓存内记录
-            SYS_UPGRADE_PACKAGE_UPLOADING.remove(terminalType);
-        }
-    }
 
     @Override
     public void saveTerminalUpgradePackage(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
@@ -104,9 +64,9 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         upgradePackage.setPackageVersion(versionInfo.getVersion());
         upgradePackage.setUploadTime(new Date());
         upgradePackage.setFilePath(versionInfo.getFilePath());
-        upgradePackage.setFileMD5(versionInfo.getFileMD5());
+        upgradePackage.setFileMd5(versionInfo.getFileMD5());
         upgradePackage.setSeedPath(versionInfo.getSeedLink());
-        upgradePackage.setSeedMD5(versionInfo.getFileMD5());
+        upgradePackage.setSeedMd5(versionInfo.getFileMD5());
         upgradePackage.setUpgradeMode(versionInfo.getUpgradeMode());
         upgradePackage.setIsDelete(false);
     }

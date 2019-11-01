@@ -5,16 +5,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributi
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
 
 /**
  * Description: 终端系统升级包实体类
@@ -38,11 +31,11 @@ public class TerminalSystemUpgradePackageEntity {
 
     private String filePath;
 
-    private String fileMD5;
+    private String fileMd5;
 
     private String seedPath;
 
-    private String seedMD5;
+    private String seedMd5;
 
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeModeEnums upgradeMode;
@@ -104,12 +97,12 @@ public class TerminalSystemUpgradePackageEntity {
         this.filePath = filePath;
     }
 
-    public String getFileMD5() {
-        return fileMD5;
+    public String getFileMd5() {
+        return fileMd5;
     }
 
-    public void setFileMD5(String fileMD5) {
-        this.fileMD5 = fileMD5;
+    public void setFileMd5(String fileMd5) {
+        this.fileMd5 = fileMd5;
     }
 
     public String getSeedPath() {
@@ -120,12 +113,12 @@ public class TerminalSystemUpgradePackageEntity {
         this.seedPath = seedPath;
     }
 
-    public String getSeedMD5() {
-        return seedMD5;
+    public String getSeedMd5() {
+        return seedMd5;
     }
 
-    public void setSeedMD5(String seedMD5) {
-        this.seedMD5 = seedMD5;
+    public void setSeedMd5(String seedMd5) {
+        this.seedMd5 = seedMd5;
     }
 
     public CbbSystemUpgradeModeEnums getUpgradeMode() {

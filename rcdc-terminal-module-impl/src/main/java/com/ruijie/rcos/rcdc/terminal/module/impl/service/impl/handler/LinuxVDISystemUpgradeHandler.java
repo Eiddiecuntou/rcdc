@@ -6,12 +6,10 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -39,17 +37,8 @@ public class LinuxVDISystemUpgradeHandler implements TerminalSystemUpgradeHandle
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDISystemUpgradeHandler.class);
 
-
-    @Autowired
-    private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
-
-    @Autowired
-    private TerminalSystemUpgradeService terminalSystemUpgradeService;
-
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
-
-
 
     @Override
     public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {

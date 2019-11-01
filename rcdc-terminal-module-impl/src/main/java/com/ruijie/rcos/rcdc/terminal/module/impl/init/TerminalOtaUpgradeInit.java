@@ -13,7 +13,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
@@ -70,7 +69,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         if (!CollectionUtils.isEmpty(upgradingTaskList)) {
             try {
                 btService.startBtShare(upgradePackage.getSeedPath());
-            } catch (BusinessException e) {
+            } catch (Exception e) {
                 LOGGER.error("开始BT服务失败", e);
             }
         }
@@ -88,7 +87,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
             TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_ANDROID);
             handler.uploadUpgradePackage(request);
             FileOperateUtil.deleteFile(file);
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             LOGGER.error("获取OTA包信息失败", e);
         }
     }

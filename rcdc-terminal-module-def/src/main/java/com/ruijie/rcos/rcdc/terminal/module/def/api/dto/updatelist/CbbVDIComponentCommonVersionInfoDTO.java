@@ -4,14 +4,14 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalResetEnums;
 
 /**
  * 
- * Description: 终端组件升级版本信息
+ * Description: VDI终端组件通用升级版本信息
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年1月21日
  * 
  * @author nt
  */
-public class CbbLinuxVDIComponentVersionInfoDTO extends CbbCommonComponentVersionInfoDTO {
+public class CbbVDIComponentCommonVersionInfoDTO extends CbbCommonComponentVersionInfoDTO {
 
     /**
      * 组件文件名
