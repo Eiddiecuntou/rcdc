@@ -9,7 +9,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
  * 
  * @author nt
  */
-public class CbbLinuxVDIUpdateListDTO extends CbbCommonUpdatelistDTO<CbbLinuxVDIComponentVersionInfoDTO> {
+public class CbbLinuxVDIUpdateListDTO extends CbbCommonUpdatelistDTO<CbbVDIComponentCommonVersionInfoDTO> {
 
     private String baseVersion;
 

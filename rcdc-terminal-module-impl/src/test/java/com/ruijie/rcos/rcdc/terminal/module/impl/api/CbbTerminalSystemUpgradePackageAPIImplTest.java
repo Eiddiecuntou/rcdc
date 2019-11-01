@@ -17,10 +17,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.LinuxVDISystemUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
@@ -63,6 +62,9 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     private TerminalSystemUpgradeService terminalSystemUpgradeService;
 
     @Injectable
+    private TerminalSystemPackageUploadingService terminalSystemPackageUploadingService;
+
+    @Injectable
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
     @Mocked
@@ -93,21 +95,20 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     @Test
     public void testUploadUpgradePackage() throws Exception {
 
-        TerminalSystemUpgradeHandler handler = new LinuxVDISystemUpgradeHandler();
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("123.iso");
         request.setFilePath("/temp");
         request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
         new Expectations() {
             {
-                terminalSystemUpgradePackageService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
             }
         };
 
         upgradePackageAPIImpl.uploadUpgradePackage(request);
         new Verifications() {
             {
-                terminalSystemUpgradePackageService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
                 times = 1;
             }
         };

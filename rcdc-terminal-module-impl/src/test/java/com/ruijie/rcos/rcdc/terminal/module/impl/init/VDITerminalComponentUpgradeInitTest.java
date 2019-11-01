@@ -1,48 +1,45 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
-import org.junit.Test;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
- * 
  * Description: Function Description
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年3月4日
- * 
+ *
  * @author ls
  */
-public class LinuxVDITerminalComponentUpgradeInitTest {
+public class VDITerminalComponentUpgradeInitTest {
 
     @Tested
-    private LinuxVDITerminalComponentUpgradeInit init;
+    private VDITerminalComponentUpgradeInit init;
 
     @Injectable
     private GlobalParameterAPI globalParameterAPI;
 
     @Injectable
     private LinuxVDIUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
+
+    @Injectable
+    private AndroidVDIUpdatelistCacheInit androidVDIUpdatelistCacheInit;
 
     @Mocked
     private ShellCommandRunner runner;
@@ -52,7 +49,7 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
 
     /**
      * 测试safeInit，开发环境
-     * 
+     *
      * @param enviroment mock对象
      * @throws InterruptedException ex
      */
@@ -68,7 +65,7 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
         init.safeInit();
 
         Thread.sleep(1000);
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
@@ -79,9 +76,9 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
 
     /**
      * 测试safeInit，获取本地ip失败
-     * 
+     *
      * @param enviroment mock对象
-     * @throws BusinessException 异常
+     * @throws BusinessException    异常
      * @throws InterruptedException ex
      */
     @Test
@@ -101,7 +98,7 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
         init.safeInit();
 
         Thread.sleep(1000);
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
@@ -112,7 +109,7 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
 
     /**
      * 测试safeInit，ip为空
-     * 
+     *
      * @param enviroment mock对象
      * @throws BusinessException 异常
      */
@@ -137,7 +134,7 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
             init.safeInit();
 
             Thread.sleep(1000);
-            
+
         } catch (Exception e) {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
@@ -146,20 +143,20 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
+                times = 2;
+                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
                 times = 1;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/update.py", "172.12.22.45"));
+                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateAndroidVDI.py", "172.12.22.45"));
                 times = 1;
-                linuxVDIUpdatelistCacheInit.init();
-                times = 0;
             }
         };
     }
 
     /**
      * 测试safeInit，ip和本地ip一致
-     * 
+     *
      * @param enviroment mock对象
-     * @throws BusinessException 异常
+     * @throws BusinessException    异常
      * @throws InterruptedException ex
      */
     @Test
@@ -181,7 +178,7 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
         try {
             init.safeInit();
             Thread.sleep(1000);
-            
+
         } catch (RuntimeException e) {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
@@ -190,7 +187,7 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
-                times = 1;
+                times = 2;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 1;
             }
@@ -199,9 +196,9 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
 
     /**
      * 测试safeInit，ip和本地ip不同,executeUpdate有BusinessException
-     * 
+     *
      * @param enviroment mock对象
-     * @throws BusinessException 异常
+     * @throws BusinessException    异常
      * @throws InterruptedException ex
      */
     @Test
@@ -219,7 +216,7 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
                 result = response;
                 globalParameterAPI.findParameter(anyString);
                 result = "172.22.25.45";
-                runner.execute((LinuxVDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
+                runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
                 result = new BusinessException("key");
             }
         };
@@ -230,24 +227,23 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
         }
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
-                times = 1;
-                runner.execute((LinuxVDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
-                times = 1;
-                linuxVDIUpdatelistCacheInit.init();
-                times = 0;
+                times = 2;
+
+                runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
+                times = 2;
             }
         };
     }
 
     /**
      * 测试safeInit，ip和本地ip不同
-     * 
+     *
      * @param enviroment mock对象
-     * @throws BusinessException 异常
+     * @throws BusinessException    异常
      * @throws InterruptedException ex
      */
     @Test
@@ -273,14 +269,16 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
             fail();
             assertEquals("get localhost address error,", e.getMessage());
         }
-        
+
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
-                times = 1;
-                runner.execute((LinuxVDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
-                times = 1;
+                times = 2;
+                runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
+                times = 2;
                 linuxVDIUpdatelistCacheInit.init();
+                times = 0;
+                androidVDIUpdatelistCacheInit.init();
                 times = 0;
             }
         };
@@ -288,12 +286,12 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
 
     /**
      * 测试BtShareInitReturnValueResolver的resolve方法,参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
-        LinuxVDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
@@ -305,7 +303,7 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverExitValueNotZero() {
-        LinuxVDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         try {
             resolver.resolve("dsd", 1, "dsd");
             fail();
@@ -316,26 +314,30 @@ public class LinuxVDITerminalComponentUpgradeInitTest {
 
     /**
      * 测试BtShareInitReturnValueResolver的resolve方法,
-     * 
+     *
      * @throws BusinessException 异常
      */
     @Test
     public void testBtShareInitReturnValueResolver() throws BusinessException {
-        LinuxVDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver();
-        new MockUp<LinuxVDITerminalComponentUpgradeInit>() {
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
+        new MockUp<VDITerminalComponentUpgradeInit>() {
             @Mock
             public String getLocalIP() {
                 return "192.168.1.2";
             }
         };
 
-        resolver.resolve("dsd", 0, "dsd");
+        resolverLinuxVDI.resolve("dsd", 0, "dsd");
+        resolverAndroidVDI.resolve("dsd", 0, "dsd");
 
         new Verifications() {
             {
                 globalParameterAPI.updateParameter(anyString, "192.168.1.2");
-                times = 1;
+                times = 2;
                 linuxVDIUpdatelistCacheInit.init();
+                times = 1;
+                androidVDIUpdatelistCacheInit.init();
                 times = 1;
             }
         };
