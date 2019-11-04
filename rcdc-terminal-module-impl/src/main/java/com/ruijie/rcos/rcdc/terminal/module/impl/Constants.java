@@ -175,6 +175,12 @@ public interface Constants {
     String ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_android/temp";
 
     /**
+     * Linux IDV 终端组件升级包路径
+     */
+    String LINUX_IDV_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_idv_linux/temp";
+
+
+    /**
      * 终端检测超时时间（单位:秒）
      */
     int TERMINAL_DETECT_TIMEOUT = 120;

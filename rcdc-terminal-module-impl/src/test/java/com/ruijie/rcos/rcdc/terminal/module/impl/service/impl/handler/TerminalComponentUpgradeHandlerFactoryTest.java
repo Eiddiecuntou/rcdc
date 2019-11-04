@@ -55,7 +55,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
     public void testGetHandlerWhileTerminalTypeNotSupport() {
 
         try {
-            handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
+            handlerFactory.getHandler(CbbTerminalTypeEnums.APP_IOS);
             Assert.fail();
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST, e.getKey());

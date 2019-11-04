@@ -19,7 +19,7 @@ logger = getLogger()
 os.umask(022)
 
 # 终端平台信息
-terminalPlatform = "android"
+terminalPlatform = "vdi_android"
 
 
 # 入口函数

@@ -7,6 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxIDVUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.env.Enviroment;
@@ -42,10 +43,12 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
 
     private static final String INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID = "/data/web/rcdc/shell/updateAndroidVDI.py";
 
+    private static final String INIT_PYTHON_SCRIPT_PATH_IDV_LINUX = "/data/web/rcdc/shell/updateLinuxIDV.py";
+
     private static final String INIT_COMMAND = "python %s %s";
 
     private static final ExecutorService EXECUTOR_SERVICE =
-            ThreadExecutors.newBuilder(VDITerminalComponentUpgradeInit.class.getName()).maxThreadNum(2).queueSize(1).build();
+            ThreadExecutors.newBuilder(VDITerminalComponentUpgradeInit.class.getName()).maxThreadNum(3).queueSize(1).build();
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
@@ -57,6 +60,9 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
     private AndroidVDIUpdatelistCacheInit androidVDIUpdatelistCacheInit;
 
     @Autowired
+    private LinuxIDVUpdatelistCacheInit linuxIDVUpdatelistCacheInit;
+
+    @Autowired
     private NetworkAPI networkAPI;
 
     @Override
@@ -65,6 +71,8 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         EXECUTOR_SERVICE.execute(() -> initLinuxVDITerminalComponent());
         LOGGER.info("开始异步执行初始化Android VDI终端升级组件");
         EXECUTOR_SERVICE.execute(() -> initAndroidVDITerminalComponent());
+        LOGGER.info("开始异步执行初始化Linux IDV终端升级组件");
+        EXECUTOR_SERVICE.execute(() -> initLinuxIDVTerminalComponent());
     }
 
     private void initLinuxVDITerminalComponent() {
@@ -79,6 +87,14 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID;
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI_ANDROID;
         String tempPath = Constants.ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
+        // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
+        checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
+    }
+
+    private void initLinuxIDVTerminalComponent() {
+        String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_IDV_LINUX;
+        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.IDV_LINUX;
+        String tempPath = Constants.LINUX_IDV_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
         checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
     }
@@ -190,6 +206,10 @@ public class VDITerminalComponentUpgradeInit implements SafetySingletonInitializ
         if (terminalType == CbbTerminalTypeEnums.VDI_ANDROID) {
             LOGGER.info("init android VDI updatelist cache");
             androidVDIUpdatelistCacheInit.init();
+        }
+        if (terminalType == CbbTerminalTypeEnums.IDV_LINUX) {
+            LOGGER.info("init linux IDV updatelist cache");
+            linuxIDVUpdatelistCacheInit.init();
         }
     }
 

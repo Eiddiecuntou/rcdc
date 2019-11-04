@@ -339,7 +339,7 @@ def md5Calc(file):
     根据终端类型生成路径
 '''
 def generatePath(installPath, torrentPath, terminalPlatform):
-    installPathPrefix = "/opt/upgrade/app/terminal_component/terminal_vdi_"
+    installPathPrefix = "/opt/upgrade/app/terminal_component/terminal_"
     installPath = '%s%s' % (installPathPrefix, terminalPlatform)
 
     torrentPathPrefix = "/opt/ftp/terminal/terminal_component/"
@@ -349,9 +349,9 @@ def generatePath(installPath, torrentPath, terminalPlatform):
     # 根据终端类型生成Dir
 '''
 def generateDir(fullComponentDir, diffComponentDir, terminalPlatform):
-    fullComponentDirPrefix = "/opt/upgrade/app/terminal_component/terminal_vdi_"
+    fullComponentDirPrefix = "/opt/upgrade/app/terminal_component/terminal_"
     fullComponentDirSuffix = "/origin/full/component/"
     fullComponentDir = '%s%s%s' % (fullComponentDirPrefix, terminalPlatform, fullComponentDirSuffix)
-    diffComponentDirPrefix = "/opt/upgrade/app/terminal_component/terminal_vdi_"
+    diffComponentDirPrefix = "/opt/upgrade/app/terminal_component/terminal_"
     diffComponentDirSuffix = "/origin/diff/component/"
     diffComponentDir = '%s%s%s' % (diffComponentDirPrefix, terminalPlatform, diffComponentDirSuffix)

@@ -8,6 +8,7 @@ import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxIDVUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -46,6 +47,9 @@ public class VDITerminalComponentUpgradeInitTest {
 
     @Injectable
     private NetworkAPI networkAPI;
+
+    @Injectable
+    private LinuxIDVUpdatelistCacheInit linuxIDVUpdatelistCacheInit;
 
     /**
      * 测试safeInit，开发环境
@@ -143,7 +147,7 @@ public class VDITerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
-                times = 2;
+                times = 3;
                 runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
                 times = 1;
                 runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateAndroidVDI.py", "172.12.22.45"));
@@ -187,7 +191,7 @@ public class VDITerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
-                times = 2;
+                times = 3;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 1;
             }
@@ -231,10 +235,10 @@ public class VDITerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
-                times = 2;
+                times = 3;
 
                 runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
-                times = 2;
+                times = 3;
             }
         };
     }
@@ -273,9 +277,9 @@ public class VDITerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
-                times = 2;
+                times = 3;
                 runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
-                times = 2;
+                times = 3;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 0;
                 androidVDIUpdatelistCacheInit.init();
@@ -291,7 +295,8 @@ public class VDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init
+                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
@@ -303,7 +308,8 @@ public class VDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverExitValueNotZero() {
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init
+                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         try {
             resolver.resolve("dsd", 1, "dsd");
             fail();
@@ -319,8 +325,12 @@ public class VDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolver() throws BusinessException {
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI = init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI = init
+                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI = init
+                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
+        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxIDV = init
+                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.IDV_LINUX);
         new MockUp<VDITerminalComponentUpgradeInit>() {
             @Mock
             public String getLocalIP() {
@@ -330,15 +340,17 @@ public class VDITerminalComponentUpgradeInitTest {
 
         resolverLinuxVDI.resolve("dsd", 0, "dsd");
         resolverAndroidVDI.resolve("dsd", 0, "dsd");
+        resolverLinuxIDV.resolve("aa", 0, "aa");
 
         new Verifications() {
             {
                 globalParameterAPI.updateParameter(anyString, "192.168.1.2");
-                times = 2;
+                times = 3;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 1;
                 androidVDIUpdatelistCacheInit.init();
                 times = 1;
+                linuxIDVUpdatelistCacheInit.init();
             }
         };
     }

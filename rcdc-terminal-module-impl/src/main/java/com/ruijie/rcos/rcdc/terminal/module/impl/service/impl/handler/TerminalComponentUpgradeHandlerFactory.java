@@ -31,6 +31,7 @@ public class TerminalComponentUpgradeHandlerFactory {
         upgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_LINUX, new LinuxVDIComponentUpgradeHandler());
         upgradeHandlerHolder.put(CbbTerminalTypeEnums.APP_WINDOWS, new WinAppComponentUpgradeHandler());
         upgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_ANDROID, new AndroidVDIComponentUpgradeHandler());
+        upgradeHandlerHolder.put(CbbTerminalTypeEnums.IDV_LINUX, new LinuxIDVComponentUpgradeHandler());
         LOGGER.info("=======================完成注册终端组件升级处理器=================");
     }
 
