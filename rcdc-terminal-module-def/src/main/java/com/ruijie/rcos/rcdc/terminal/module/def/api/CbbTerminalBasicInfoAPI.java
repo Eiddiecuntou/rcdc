@@ -3,8 +3,10 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNetworkInfoResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
@@ -47,4 +49,13 @@ public interface CbbTerminalBasicInfoAPI {
     @NoRollback
     DefaultResponse modifyTerminal(CbbModifyTerminalRequest request) throws BusinessException;
 
+
+    /**
+     *  获取终端网络信息
+     *
+     * @param request 请求参数
+     * @return 终端网络信息
+     */
+    @NoRollback
+    CbbTerminalNetworkInfoResponse getTerminalNetworkInfo(CbbTerminalIdRequest request);
 }

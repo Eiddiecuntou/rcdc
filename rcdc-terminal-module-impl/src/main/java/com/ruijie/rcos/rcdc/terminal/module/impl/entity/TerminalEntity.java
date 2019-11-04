@@ -4,9 +4,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 import java.util.Date;
 import java.util.UUID;
 import javax.persistence.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 
 /**
@@ -85,6 +84,14 @@ public class TerminalEntity {
     private CbbTerminalStateEnums state;
 
     private UUID groupId;
+
+    @Enumerated(EnumType.STRING)
+    private CbbIDVTerminalModeEnums idvTerminalMode;
+
+    private String ssid;
+
+    @Enumerated(EnumType.STRING)
+    private CbbTerminalWirelessAuthModeEnums wirelessAuthMode;
 
     public UUID getId() {
         return id;
@@ -319,4 +326,27 @@ public class TerminalEntity {
         this.groupId = groupId;
     }
 
+    public CbbIDVTerminalModeEnums getIdvTerminalMode() {
+        return idvTerminalMode;
+    }
+
+    public void setIdvTerminalMode(CbbIDVTerminalModeEnums idvTerminalMode) {
+        this.idvTerminalMode = idvTerminalMode;
+    }
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
+
+    public CbbTerminalWirelessAuthModeEnums getWirelessAuthMode() {
+        return wirelessAuthMode;
+    }
+
+    public void setWirelessAuthMode(CbbTerminalWirelessAuthModeEnums wirelessAuthMode) {
+        this.wirelessAuthMode = wirelessAuthMode;
+    }
 }

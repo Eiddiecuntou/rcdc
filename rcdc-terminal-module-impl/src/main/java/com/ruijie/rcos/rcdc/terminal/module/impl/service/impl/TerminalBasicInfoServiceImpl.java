@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
@@ -8,7 +9,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalNetworkInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeHostNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
@@ -21,6 +24,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +52,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Autowired
+    private TerminalNetworkInfoDAO networkInfoDAO;
+
+    @Autowired
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
     private static final int FAIL_TRY_COUNT = 3;
@@ -69,9 +76,36 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         basicInfoEntity.setLastOnlineTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         basicInfoDAO.save(basicInfoEntity);
+
+        // 保存终端网络信息
+        saveTerminalNetworkInfo(shineTerminalBasicInfo);
+
         // 通知其他组件终端为在线状态
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE, terminalId);
         terminalEventNoticeSPI.notify(noticeRequest);
+    }
+
+    private void saveTerminalNetworkInfo(ShineTerminalBasicInfo basicInfo) {
+        // 删除数据库中的网络信息记录，重新添加
+        networkInfoDAO.deleteByTerminalId(basicInfo.getTerminalId());
+
+        CbbTerminalNetworkInfoDTO[] networkInfoArr = basicInfo.getNetworkInfoArr();
+        if (ArrayUtils.isEmpty(networkInfoArr)) {
+            networkInfoArr = buildNetworkInfoArr(basicInfo);
+        }
+
+        for (CbbTerminalNetworkInfoDTO networkInfoDTO : networkInfoArr) {
+            TerminalNetworkInfoEntity networkInfoEntity = new TerminalNetworkInfoEntity();
+            BeanUtils.copyProperties(networkInfoDTO, networkInfoEntity);
+            networkInfoEntity.setTerminalId(basicInfo.getTerminalId());
+            networkInfoDAO.save(networkInfoEntity);
+        }
+    }
+
+    private CbbTerminalNetworkInfoDTO[] buildNetworkInfoArr(ShineTerminalBasicInfo basicInfo) {
+        CbbTerminalNetworkInfoDTO networkInfoDTO = new CbbTerminalNetworkInfoDTO();
+        BeanUtils.copyProperties(basicInfo, networkInfoDTO);
+        return new CbbTerminalNetworkInfoDTO[]{networkInfoDTO};
     }
 
     @Override

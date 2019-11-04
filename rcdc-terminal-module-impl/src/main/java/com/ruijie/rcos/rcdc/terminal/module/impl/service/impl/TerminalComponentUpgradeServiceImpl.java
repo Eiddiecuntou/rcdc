@@ -5,6 +5,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
@@ -40,7 +41,13 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
 
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
         LOGGER.info("获取组件升级处理对象");
-        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(terminalType);
+        TerminalComponentUpgradeHandler handler = null;
+        try {
+            handler = handlerFactory.getHandler(terminalType);
+        } catch (BusinessException e) {
+            LOGGER.error("接入类型为[{}]的终端[{}]，组件升级不支持", terminalType.name(), terminalEntity.getTerminalId());
+            return buildUnSupportResult();
+        }
 
         GetVersionRequest versionRequest = new GetVersionRequest();
         versionRequest.setTerminalId(terminalEntity.getTerminalId());
@@ -48,6 +55,10 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         versionRequest.setRainOsVersion(terminalEntity.getRainOsVersion());
         versionRequest.setValidateMd5(validateMd5);
         return handler.getVersion(versionRequest);
+    }
+
+    private TerminalVersionResultDTO buildUnSupportResult() {
+        return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), null);
     }
 
 }
