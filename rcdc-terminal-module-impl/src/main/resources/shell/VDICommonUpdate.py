@@ -338,6 +338,7 @@ def md5Calc(file):
 '''
     根据终端类型生成路径
 '''
+
 def generatePath(installPath, torrentPath, terminalPlatform):
     installPathPrefix = "/opt/upgrade/app/terminal_component/terminal_"
     installPath = '%s%s' % (installPathPrefix, terminalPlatform)
