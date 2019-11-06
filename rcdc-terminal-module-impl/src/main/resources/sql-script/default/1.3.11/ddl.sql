@@ -15,16 +15,18 @@ ALTER table t_cbb_terminal ADD COLUMN wireless_auth_mode varchar(256);
 CREATE TABLE t_cbb_terminal_network_info (
   "id" uuid NOT NULL
   CONSTRAINT "t_cbb_terminal_network_info_pkey" PRIMARY KEY ,
-  "terminal_id" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
-  "mac_addr" varchar(64) COLLATE "pg_catalog"."default",
-  "ip" varchar(64) COLLATE "pg_catalog"."default",
-  "subnet_mask" varchar(64) COLLATE "pg_catalog"."default",
-  "gateway" varchar(64) COLLATE "pg_catalog"."default",
-  "main_dns" varchar(64) COLLATE "pg_catalog"."default",
-  "second_dns" varchar(64) COLLATE "pg_catalog"."default",
-  "get_ip_mode" varchar(32) COLLATE "pg_catalog"."default",
-  "get_dns_mode" varchar(32) COLLATE "pg_catalog"."default",
-  "network_access_mode" varchar(32) COLLATE "pg_catalog"."default",
+  "terminal_id" varchar(32)  NOT NULL,
+  "mac_addr" varchar(64),
+  "ip" varchar(64),
+  "subnet_mask" varchar(64),
+  "gateway" varchar(64),
+  "main_dns" varchar(64),
+  "second_dns" varchar(64),
+  "get_ip_mode" varchar(32),
+  "get_dns_mode" varchar(32),
+  "network_access_mode" varchar(32),
+  "ssid" varchar(256),
+  "wireless_auth_mode" varchar(256),
   "version" int4 DEFAULT 1
 )
 ;
@@ -50,6 +52,10 @@ COMMENT ON COLUMN t_cbb_terminal_network_info.get_dns_mode IS '获取dns方式�
 COMMENT ON COLUMN t_cbb_terminal_network_info.network_access_mode IS '网络接入方式:无线接入，有线接入';
 
 COMMENT ON COLUMN t_cbb_terminal_network_info.version IS '版本号，实现乐观锁';
+
+COMMENT ON COLUMN t_cbb_terminal_network_info.ssid IS '无线SSID';
+
+COMMENT ON COLUMN t_cbb_terminal_network_info.wireless_auth_mode IS '无线认证模式';
 
 COMMENT ON TABLE t_cbb_terminal_network_info IS '终端网络信息表';
 

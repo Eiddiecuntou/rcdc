@@ -23,6 +23,7 @@ public enum CbbTerminalWirelessAuthModeEnums {
     private String name;
 
     CbbTerminalWirelessAuthModeEnums(String name) {
+        Assert.hasText(name, "name can not be blank");
         this.name = name;
     }
 
