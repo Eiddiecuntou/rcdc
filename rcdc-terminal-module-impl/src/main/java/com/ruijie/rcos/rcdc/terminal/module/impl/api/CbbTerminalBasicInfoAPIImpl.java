@@ -64,6 +64,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         }
         CbbTerminalBasicInfoResponse basicInfoDTO = new CbbTerminalBasicInfoResponse();
         BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO);
+        basicInfoDTO.setTerminalPlatform(basicInfoEntity.getPlatform());
         return basicInfoDTO;
     }
 
