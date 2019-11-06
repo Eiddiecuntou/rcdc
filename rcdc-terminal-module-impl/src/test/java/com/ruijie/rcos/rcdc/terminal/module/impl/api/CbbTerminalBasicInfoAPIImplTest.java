@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -53,6 +54,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     @Injectable
     private TerminalGroupService terminalGroupService;
+
+    @Injectable
+    private TerminalNetworkInfoDAO terminalNetworkInfoDAO;
 
     /**
      * 查找不到数据

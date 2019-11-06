@@ -20,8 +20,8 @@ public interface TerminalNetworkInfoDAO extends SkyEngineJpaRepository<TerminalN
 
     /**
      *  根据终端id删除终端网络信息
-     * @param terminalId
-     * @return
+     * @param terminalId 终端id
+     * @return 影响行数
      */
     @Modifying
     @Transactional

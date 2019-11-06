@@ -8,6 +8,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Date;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -50,6 +52,9 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
+
+    @Injectable
+    private TerminalNetworkInfoDAO networkInfoDAO;
 
     /**
      * 测试修改终端名称成功

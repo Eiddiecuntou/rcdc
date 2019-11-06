@@ -12,6 +12,8 @@ public enum CbbIDVTerminalModeEnums {
 
     PERSONAL,
 
-    PUBLIC
+    PUBLIC,
+
+    INIT
 
 }

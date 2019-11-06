@@ -92,7 +92,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         String terminalId = request.getCbbTerminalId();
         TerminalEntity entity = getTerminalEntity(terminalId);
 
-        //校验终端分组
+        // 校验终端分组
         terminalGroupService.checkGroupExist(request.getGroupId());
 
         // 终端名称有变更，发送名称变更消息给终端
@@ -107,6 +107,9 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
 
         entity.setGroupId(request.getGroupId());
         entity.setTerminalName(request.getTerminalName());
+        if (request.getIdvTerminalMode() != null) {
+            entity.setIdvTerminalMode(request.getIdvTerminalMode());
+        }
         basicInfoDAO.save(entity);
 
         return DefaultResponse.Builder.success();
@@ -118,11 +121,11 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
 
         List<TerminalNetworkInfoEntity> networkInfoList = terminalNetworkInfoDAO.findByTerminalId(request.getTerminalId());
         if (CollectionUtils.isEmpty(networkInfoList)) {
-            return new CbbTerminalNetworkInfoResponse(new CbbTerminalNetworkInfoDTO[]{});
+            return new CbbTerminalNetworkInfoResponse(new CbbTerminalNetworkInfoDTO[] {});
         }
 
         List<CbbTerminalNetworkInfoDTO> dtoList = Lists.newArrayList();
-        for(TerminalNetworkInfoEntity entity : networkInfoList) {
+        for (TerminalNetworkInfoEntity entity : networkInfoList) {
             CbbTerminalNetworkInfoDTO networkInfoDTO = new CbbTerminalNetworkInfoDTO();
             BeanUtils.copyProperties(entity, networkInfoDTO);
             dtoList.add(networkInfoDTO);

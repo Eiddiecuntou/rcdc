@@ -1,8 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbIDVTerminalModeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.lang.Nullable;
 
 import java.util.UUID;
 
@@ -24,6 +26,9 @@ public class CbbModifyTerminalRequest implements Request {
 
     @NotNull
     private UUID groupId;
+
+    @Nullable
+    private CbbIDVTerminalModeEnums idvTerminalMode;
 
     public String getCbbTerminalId() {
         return cbbTerminalId;
@@ -47,5 +52,14 @@ public class CbbModifyTerminalRequest implements Request {
 
     public void setGroupId(UUID groupId) {
         this.groupId = groupId;
+    }
+
+    @Nullable
+    public CbbIDVTerminalModeEnums getIdvTerminalMode() {
+        return idvTerminalMode;
+    }
+
+    public void setIdvTerminalMode(@Nullable CbbIDVTerminalModeEnums idvTerminalMode) {
+        this.idvTerminalMode = idvTerminalMode;
     }
 }

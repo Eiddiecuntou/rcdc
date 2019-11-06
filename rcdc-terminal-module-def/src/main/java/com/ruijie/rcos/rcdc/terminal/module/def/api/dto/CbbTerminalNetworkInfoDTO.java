@@ -1,8 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.serialize.CbbWirelessAuthModeEnumsSerializer;
 
 /**
  * Description: Function Description
@@ -34,6 +36,7 @@ public class CbbTerminalNetworkInfoDTO {
 
     private String ssid;
 
+    @JSONField(serializeUsing = CbbWirelessAuthModeEnumsSerializer.class, deserializeUsing = CbbWirelessAuthModeEnumsSerializer.class)
     private CbbTerminalWirelessAuthModeEnums wirelessAuthMode;
 
     public CbbNetworkModeEnums getNetworkAccessMode() {
