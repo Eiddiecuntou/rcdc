@@ -72,9 +72,9 @@ public class CheckOtaUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             return upgradeInfo;
         }
         upgradeInfo.setOtaVersion(upgradePackage.getPackageVersion());
-        upgradeInfo.setOtaMD5(upgradePackage.getFileMD5());
+        upgradeInfo.setOtaMD5(upgradePackage.getFileMd5());
         upgradeInfo.setOtaSeedLink(upgradePackage.getSeedPath());
-        upgradeInfo.setOtaSeedMD5(upgradePackage.getSeedMD5());
+        upgradeInfo.setOtaSeedMD5(upgradePackage.getSeedMd5());
         upgradeInfo.setUpgradeMode(upgradePackage.getUpgradeMode());
         return upgradeInfo;
     }

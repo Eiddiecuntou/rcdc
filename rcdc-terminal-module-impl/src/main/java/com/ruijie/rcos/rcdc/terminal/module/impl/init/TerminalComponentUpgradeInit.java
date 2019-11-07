@@ -162,7 +162,6 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
         LOGGER.info("success invoke [{}] pythonScript...", terminalType.toString());
     }
 
-
     /**
      * Description: Function Description
      * Copyright: Copyright (c) 2018

@@ -39,7 +39,7 @@ public class TerminalOtaUpgradeScheduleService implements Runnable {
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
 
     @Autowired
-    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
+    private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
 
     @Autowired
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
@@ -47,7 +47,7 @@ public class TerminalOtaUpgradeScheduleService implements Runnable {
     @Override
     public void run() {
         LOGGER.debug("开始处理OTA升级定时任务");
-        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
                 .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
         List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO
