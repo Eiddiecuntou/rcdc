@@ -85,4 +85,9 @@ public interface ShineAction {
      * 同步是否需要OTA升级
      */
     String OTA_UPGRADE_JUDGE = "ota_upgrade_judge";
+
+    /**
+     * 同步LOGO
+     */
+    String SYNC_TERMINAL_BACKGROUND= "sync_terminal_background";
 }
