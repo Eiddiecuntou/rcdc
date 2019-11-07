@@ -20,7 +20,7 @@ logger = getLogger()
 os.umask(022)
 
 # 终端平台信息
-terminalPlatform = "vdi"
+terminalPlatform = "idv"
 osType = "linux"
 
 

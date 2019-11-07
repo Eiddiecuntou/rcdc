@@ -45,6 +45,7 @@ logger = getLogger()
 os.umask(022)
 
 # 路径
+path_underline = "_"
 tempPath = "/opt/upgrade/app/"
 originDirName = "origin"
 tempDirName = "temp"
@@ -55,15 +56,13 @@ installPath = None
 torrentPath = None
 fullComponentDir = None
 diffComponentDir = None
-rpmPackageName = None
-rpmUninstallName = None
 
 # 入口函数
-def VDIUpdate(terminalPlatform):
+def update(terminalPlatform, osType):
     try:
-        logger.info("start upgrade terminal vdi " + terminalPlatform + " package update...")
-        packageUpdate(terminalPlatform)
-        logger.info("finish terminal vdi " + terminalPlatform + " package update")
+        logger.info("start upgrade terminal " + osType + " " + terminalPlatform + " package update...")
+        packageUpdate(terminalPlatform, osType)
+        logger.info("finish terminal " + osType + " " + terminalPlatform + " package update")
     except RJUpgradeException as rjEx:
         logger.error("install failed with rj exception : %s" % rjEx.msg)
         return "fail"
@@ -75,11 +74,16 @@ def VDIUpdate(terminalPlatform):
     return "success"
 
 
-def packageUpdate(terminalPlatform):
+def packageUpdate(terminalPlatform, osType):
     # 根据终端类型生成路径
-    generatePath(installPath, torrentPath, terminalPlatform)
+    generatePath(terminalPlatform, osType)
     # 根据终端类型生成Dir
-    generateDir(fullComponentDir, diffComponentDir, terminalPlatform)
+    generateDir()
+
+    logger.info(installPath);
+    logger.info(torrentPath);
+    logger.info(fullComponentDir);
+    logger.info(diffComponentDir);
 
     logger.info("start update package...")
     # 升级包及包内updatelist路径
@@ -281,6 +285,8 @@ def makeBtSeeds(targetPath, componentList):
         diffFileName = component['incrementalPackageName'] if ('incrementalPackageName' in component.keys()) else None 
         fullPath = '%s%s%s%s' % (targetPath, RAINOS_UPDATE_FULL_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, fileName)
         diffPath = '%s%s%s%s' % (targetPath, RAINOS_UPDATE_DIFF_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, diffFileName)
+        logger.info(fullPath)
+        logger.info(diffPath)
         completeTorrentUrl = btMakeSeedBlock(fullPath, fullSeedSavePath, ip)
         component['completeTorrentUrl'] = getFTPRelatePath(completeTorrentUrl)
         component['completeTorrentMd5'] = md5sum(completeTorrentUrl)
@@ -338,20 +344,21 @@ def md5Calc(file):
 '''
     根据终端类型生成路径
 '''
-def generatePath(installPath, torrentPath, terminalPlatform):
+def generatePath(terminalPlatform, osType):
+    global installPath, torrentPath
     installPathPrefix = "/opt/upgrade/app/terminal_component/terminal_"
-    installPath = '%s%s' % (installPathPrefix, terminalPlatform)
+    installPath = '%s%s%s%s' % (installPathPrefix, terminalPlatform, path_underline, osType)
 
     torrentPathPrefix = "/opt/ftp/terminal/terminal_component/"
-    torrentPathsuffix = "_vdi/torrent"
-    torrentPath = '%s%s%s' % (torrentPathPrefix, terminalPlatform, torrentPathPrefix)
+    torrentPathsuffix = "/torrent"
+    torrentPath = '%s%s%s%s%s' % (torrentPathPrefix, osType, path_underline,terminalPlatform,  torrentPathsuffix)
+
 '''
     # 根据终端类型生成Dir
 '''
-def generateDir(fullComponentDir, diffComponentDir, terminalPlatform):
-    fullComponentDirPrefix = "/opt/upgrade/app/terminal_component/terminal_"
+def generateDir():
+    global fullComponentDir, diffComponentDir, installPath
     fullComponentDirSuffix = "/origin/full/component/"
-    fullComponentDir = '%s%s%s' % (fullComponentDirPrefix, terminalPlatform, fullComponentDirSuffix)
-    diffComponentDirPrefix = "/opt/upgrade/app/terminal_component/terminal_"
+    fullComponentDir = '%s%s' % (installPath, fullComponentDirSuffix)
     diffComponentDirSuffix = "/origin/diff/component/"
-    diffComponentDir = '%s%s%s' % (diffComponentDirPrefix, terminalPlatform, diffComponentDirSuffix)
+    diffComponentDir = '%s%s' % (installPath, diffComponentDirSuffix)

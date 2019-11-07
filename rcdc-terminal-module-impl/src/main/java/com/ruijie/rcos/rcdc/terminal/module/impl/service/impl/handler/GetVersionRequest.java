@@ -22,8 +22,8 @@ public class GetVersionRequest {
     @Nullable
     private String validateMd5;
 
-    @Nullable
-    private String rainOsVersion;
+    @NotNull
+    private String osInnerVersion;
 
     public String getTerminalId() {
         return terminalId;
@@ -50,13 +50,11 @@ public class GetVersionRequest {
         this.validateMd5 = validateMd5;
     }
 
-    @Nullable
-    public String getRainOsVersion() {
-        return rainOsVersion;
+    public String getOsInnerVersion() {
+        return osInnerVersion;
     }
 
-    public void setRainOsVersion(@Nullable String rainOsVersion) {
-        this.rainOsVersion = rainOsVersion;
+    public void setOsInnerVersion(String osInnerVersion) {
+        this.osInnerVersion = osInnerVersion;
     }
-
 }

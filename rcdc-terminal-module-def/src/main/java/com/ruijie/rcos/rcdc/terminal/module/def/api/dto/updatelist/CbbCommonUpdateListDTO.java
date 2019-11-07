@@ -1,14 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
 
 /**
- * Description: androidVDI终端组件升级版本信息
- * Copyright: Copyright (c) 2019
+ * Description: 通用升级updatelistDTO
+ * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/10/10
+ * Create Time: 2019/11/7
  *
- * @author XiaoJiaXin
+ * @author nt
  */
-public class CbbAndroidVDIUpdateListDTO extends CbbCommonUpdatelistDTO<CbbVDIComponentCommonVersionInfoDTO> {
+public class CbbCommonUpdateListDTO extends CbbBaseUpdatelistDTO {
 
     private String baseVersion;
 
@@ -16,24 +16,22 @@ public class CbbAndroidVDIUpdateListDTO extends CbbCommonUpdatelistDTO<CbbVDICom
 
     private String versionLimit;
 
-    public CbbAndroidVDIUpdateListDTO() {
-
-    }
-
-    public String getOsLimit() {
-        return osLimit;
-    }
-
-    public void setOsLimit(String osLimit) {
-        this.osLimit = osLimit;
-    }
-
     public String getBaseVersion() {
         return baseVersion;
     }
 
     public void setBaseVersion(String baseVersion) {
         this.baseVersion = baseVersion;
+    }
+
+    @Override
+    public String getOsLimit() {
+        return osLimit;
+    }
+
+    @Override
+    public void setOsLimit(String osLimit) {
+        this.osLimit = osLimit;
     }
 
     public String getVersionLimit() {

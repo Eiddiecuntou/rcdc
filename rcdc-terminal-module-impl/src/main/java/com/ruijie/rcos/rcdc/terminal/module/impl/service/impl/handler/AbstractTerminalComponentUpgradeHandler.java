@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbVDIComponentCommonVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonComponentVersionInfoDTO;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -15,26 +15,7 @@ import java.util.List;
  */
 public abstract class AbstractTerminalComponentUpgradeHandler implements TerminalComponentUpgradeHandler {
 
-    /**
-     * 转换版本号为数字
-     *
-     * @param version 版本信息
-     * @return 数字版本号
-     */
-    public Integer getVersionFromVerStr(String version) {
-        Assert.hasText(version, "version can not be blank");
-
-        /*
-         * 版本号格式： 1.0.0.1
-         * 版本号约定：4位数，是否升级判断用前3位即可
-         * 第4位用于场景标记（1-云办公，2-云课堂）
-         */
-        int lastIndexOf = version.lastIndexOf(".");
-        if (lastIndexOf == -1) {
-            return 0;
-        }
-        return Integer.valueOf(version.substring(0, lastIndexOf).replace(".", ""));
-    }
+    private static final String VERSION_SPLIT = "\\.";
 
     /**
      * 比较是否第一个版本号大于第二个版本号
@@ -47,9 +28,19 @@ public abstract class AbstractTerminalComponentUpgradeHandler implements Termina
         Assert.hasText(firstVersion, "firstVersion can not be blank");
         Assert.hasText(secondVersion, "secondVersion can not be blank");
 
-        int v1 = getVersionFromVerStr(firstVersion);
-        int v2 = getVersionFromVerStr(secondVersion);
-        return v1 > v2;
+        String[] v1 = firstVersion.split(VERSION_SPLIT);
+        String[] v2 = secondVersion.split(VERSION_SPLIT);
+
+        if (v1.length > v2.length) {
+            return true;
+        }
+
+        for (int i = 0; i< v1.length; i ++) {
+            if (Integer.parseInt(v1[i]) > Integer.parseInt(v2[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -57,9 +48,9 @@ public abstract class AbstractTerminalComponentUpgradeHandler implements Termina
      *
      * @param componentList 组件升级信息
      */
-    protected void clearDifferenceUpgradeInfo(List<CbbVDIComponentCommonVersionInfoDTO> componentList) {
+    protected void clearDifferenceUpgradeInfo(List<CbbCommonComponentVersionInfoDTO> componentList) {
         Assert.notNull(componentList, "componentList cannot be null");
-        for (CbbVDIComponentCommonVersionInfoDTO componentInfo : componentList) {
+        for (CbbCommonComponentVersionInfoDTO componentInfo : componentList) {
             componentInfo.setIncrementalPackageMd5(null);
             componentInfo.setIncrementalPackageName(null);
             componentInfo.setIncrementalTorrentMd5(null);

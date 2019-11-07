@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 public class VDITerminalComponentUpgradeInitTest {
 
     @Tested
-    private VDITerminalComponentUpgradeInit init;
+    private TerminalComponentUpgradeInit init;
 
     @Injectable
     private GlobalParameterAPI globalParameterAPI;
@@ -220,7 +220,7 @@ public class VDITerminalComponentUpgradeInitTest {
                 result = response;
                 globalParameterAPI.findParameter(anyString);
                 result = "172.22.25.45";
-                runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
+                runner.execute((TerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
                 result = new BusinessException("key");
             }
         };
@@ -237,7 +237,7 @@ public class VDITerminalComponentUpgradeInitTest {
                 globalParameterAPI.findParameter(anyString);
                 times = 3;
 
-                runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
+                runner.execute((TerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
                 times = 3;
             }
         };
@@ -278,7 +278,7 @@ public class VDITerminalComponentUpgradeInitTest {
             {
                 globalParameterAPI.findParameter(anyString);
                 times = 3;
-                runner.execute((VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
+                runner.execute((TerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
                 times = 3;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 0;
@@ -295,7 +295,7 @@ public class VDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init
                 .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
@@ -308,7 +308,7 @@ public class VDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverExitValueNotZero() {
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init
                 .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         try {
             resolver.resolve("dsd", 1, "dsd");
@@ -325,13 +325,13 @@ public class VDITerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolver() throws BusinessException {
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI = init
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI = init
                 .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI = init
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI = init
                 .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
-        VDITerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxIDV = init
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxIDV = init
                 .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.IDV_LINUX);
-        new MockUp<VDITerminalComponentUpgradeInit>() {
+        new MockUp<TerminalComponentUpgradeInit>() {
             @Mock
             public String getLocalIP() {
                 return "192.168.1.2";

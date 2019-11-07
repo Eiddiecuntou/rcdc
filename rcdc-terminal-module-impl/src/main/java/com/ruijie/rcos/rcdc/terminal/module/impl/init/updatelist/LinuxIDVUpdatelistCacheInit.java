@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxIDVUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * @author hs
  */
 @Service
-public class LinuxIDVUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbLinuxIDVUpdateListDTO> {
+public class LinuxIDVUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbCommonUpdateListDTO> {
 
     private static final String UPDATE_LIST_PATH = "/opt/upgrade/app/terminal_component/terminal_idv_linux/origin/update.list";
 
@@ -33,7 +33,7 @@ public class LinuxIDVUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemp
      * @param updatelist updatelist信息
      */
     @Override
-    protected void fillUpdateList(CbbLinuxIDVUpdateListDTO updatelist) {
+    protected void fillUpdateList(CbbCommonUpdateListDTO updatelist) {
 
     }
 

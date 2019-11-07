@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import java.util.Collections;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -61,7 +61,7 @@ public class TerminalComponentUpgradeServiceImplTest {
      */
     @Test
     public void testGetVersion() throws BusinessException {
-        CbbLinuxVDIUpdateListDTO updatelist = new CbbLinuxVDIUpdateListDTO();
+        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
 
         TerminalEntity terminalEntity = new TerminalEntity();

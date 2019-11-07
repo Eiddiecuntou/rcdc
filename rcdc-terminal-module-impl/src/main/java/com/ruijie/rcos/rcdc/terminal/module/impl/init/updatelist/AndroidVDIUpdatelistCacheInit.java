@@ -1,7 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbAndroidVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import org.springframework.stereotype.Service;
 
 /**
  * Description: android vdi终端updatelist缓存初始化
@@ -11,7 +12,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
  *
  * @author XiaoJiaXin
  */
-public class AndroidVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbAndroidVDIUpdateListDTO> {
+@Service
+public class AndroidVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbCommonUpdateListDTO> {
 
     private static final String UPDATE_LIST_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_android/origin/update.list";
 
@@ -21,7 +23,7 @@ public class AndroidVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTe
     }
 
     @Override
-    protected void fillUpdateList(CbbAndroidVDIUpdateListDTO updateList) {
+    protected void fillUpdateList(CbbCommonUpdateListDTO updateList) {
 
     }
 

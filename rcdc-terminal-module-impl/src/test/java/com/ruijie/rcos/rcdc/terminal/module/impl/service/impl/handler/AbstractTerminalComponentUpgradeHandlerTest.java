@@ -19,41 +19,6 @@ import org.junit.runner.RunWith;
 @RunWith(SkyEngineRunner.class)
 public class AbstractTerminalComponentUpgradeHandlerTest {
 
-    /**
-     * 测试从版本字符串获取数字版本
-     */
-    @Test
-    public void testGetVersionFromVerStr() {
-        TestedTerminalComponentUpgradeHandler handler = new TestedTerminalComponentUpgradeHandler();
-
-        String versionStr = "2.0.3.1";
-        Integer version = handler.getVersionFromVerStr(versionStr);
-        Assert.assertEquals(203, version.intValue());
-    }
-
-    /**
-     * 测试从版本字符串获取数字版本-字符串无点分隔
-     */
-    @Test
-    public void testGetVersionFromVerStrWhileVesionStrHasNoDot() {
-        TestedTerminalComponentUpgradeHandler handler = new TestedTerminalComponentUpgradeHandler();
-
-        String versionStr = "2031";
-        Integer version = handler.getVersionFromVerStr(versionStr);
-        Assert.assertEquals(0, version.intValue());
-    }
-
-    /**
-     * 测试从版本字符串获取数字版本-版本号为空
-     * 
-     * @throws Exception exception
-     */
-    @Test
-    public void testGetVersionFromVerStrArgIsNull() throws Exception {
-        TestedTerminalComponentUpgradeHandler handler = new TestedTerminalComponentUpgradeHandler();
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.getVersionFromVerStr(null), "version can not be blank");
-        Assert.assertTrue(true);
-    }
 
     /**
      * 测试比较版本

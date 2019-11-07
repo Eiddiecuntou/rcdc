@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbBaseUpdatelistDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -133,7 +133,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
 
         new MockUp(TestedUpdatelistCacheInit.class) {
             @Mock
-            public void fillUpdateList(CbbCommonUpdatelistDTO updatelist) {
+            public void fillUpdateList(CbbBaseUpdatelistDTO updatelist) {
                 throw new RuntimeException("aaa");
             }
         };
@@ -182,13 +182,13 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         new MockUp(JSON.class) {
             @Mock
             public Object parseObject(String content, Class clz) {
-                return new CbbCommonUpdatelistDTO();
+                return new CbbBaseUpdatelistDTO();
             }
         };
 
         new MockUp(TestedUpdatelistCacheInit.class) {
             @Mock
-            public void fillUpdateList(CbbCommonUpdatelistDTO updatelist) {
+            public void fillUpdateList(CbbBaseUpdatelistDTO updatelist) {
                 throw new RuntimeException("aaa");
             }
         };
@@ -260,7 +260,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
      *
      * @author nt
      */
-    class TestedUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbCommonUpdatelistDTO> {
+    class TestedUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbBaseUpdatelistDTO> {
 
         @Override
         protected String getUpdateListPath() {
@@ -268,7 +268,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         }
 
         @Override
-        protected void fillUpdateList(CbbCommonUpdatelistDTO updatelist) {
+        protected void fillUpdateList(CbbBaseUpdatelistDTO updatelist) {
 
         }
 

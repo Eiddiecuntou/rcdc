@@ -9,7 +9,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
  * 
  * @author nt
  */
-public class CbbWinAppUpdateListDTO extends CbbCommonUpdatelistDTO<CbbWinAppComponentVersionInfoDTO> {
+public class CbbWinAppUpdateListDTO extends CbbBaseUpdatelistDTO<CbbWinAppComponentVersionInfoDTO> {
 
     private String name;
 
