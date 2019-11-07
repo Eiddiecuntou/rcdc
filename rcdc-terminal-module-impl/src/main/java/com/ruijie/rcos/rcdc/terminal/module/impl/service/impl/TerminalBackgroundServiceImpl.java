@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -10,7 +11,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -29,6 +29,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.NameRequest;
  *
  * @author songxiang
  */
+@Service
 public class TerminalBackgroundServiceImpl implements TerminalBackgroundService {
 
 
@@ -38,7 +39,7 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
     private SessionManager sessionManager;
 
     private static final ThreadExecutor NOTICE_HANDLER_THREAD_POOL =
-            ThreadExecutors.newBuilder(TerminalLogoService.class.getName()).maxThreadNum(1).queueSize(10).build();
+            ThreadExecutors.newBuilder(TerminalBackgroundService.class.getName()).maxThreadNum(1).queueSize(10).build();
 
     @Override
     public void syncTerminalLogo(String name) throws BusinessException {

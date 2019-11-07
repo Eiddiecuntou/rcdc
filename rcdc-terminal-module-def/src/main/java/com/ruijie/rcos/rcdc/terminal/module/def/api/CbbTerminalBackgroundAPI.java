@@ -23,7 +23,7 @@ public interface CbbTerminalBackgroundAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    void upload(CbbTerminalBackGroundUploadRequest request) throws BusinessException;
+    DefaultResponse upload(CbbTerminalBackGroundUploadRequest request) throws BusinessException;
 
     /**
      * 获取终端背景图的路径

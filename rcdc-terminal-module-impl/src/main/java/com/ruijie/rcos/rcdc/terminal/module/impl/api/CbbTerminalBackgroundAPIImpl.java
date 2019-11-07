@@ -48,7 +48,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     TerminalBackgroundService terminalBackgroundService;
 
     @Override
-    public void upload(CbbTerminalBackGroundUploadRequest request) throws BusinessException {
+    public DefaultResponse upload(CbbTerminalBackGroundUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
 
         deleteImageFile();
@@ -58,6 +58,8 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         saveDB(request);
 
         terminalBackgroundService.syncTerminalLogo(request.getImageName());
+
+        return DefaultResponse.Builder.success();
     }
 
     private void saveDB(CbbTerminalBackGroundUploadRequest cbbTerminalBackGroundUploadRequest) {
