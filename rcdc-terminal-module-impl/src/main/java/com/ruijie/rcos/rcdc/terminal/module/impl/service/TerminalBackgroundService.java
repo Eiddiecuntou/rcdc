@@ -15,5 +15,10 @@ public interface TerminalBackgroundService {
 
     String TERMINAL_BACKGROUND = "terminal_background";
 
+    /**
+     * 发起同步背景图片请求
+     * @param name 图片的名称
+     * @throws BusinessException 因为异常
+     */
     void syncTerminalLogo(String name) throws BusinessException;
 }

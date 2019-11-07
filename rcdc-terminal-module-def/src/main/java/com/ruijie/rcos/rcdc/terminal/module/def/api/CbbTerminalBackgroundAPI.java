@@ -19,7 +19,7 @@ public interface CbbTerminalBackgroundAPI {
 
     /**
      * 上传终端背景图
-     * @param request
+     * @param request 文件信息
      * @throws BusinessException 业务异常
      */
     @NoRollback

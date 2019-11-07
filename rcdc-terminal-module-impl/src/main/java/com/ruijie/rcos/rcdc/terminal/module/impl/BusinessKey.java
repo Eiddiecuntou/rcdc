@@ -315,4 +315,6 @@ public interface BusinessKey {
     String RCDC_TERMINAL_NOT_OTA_UPGRADE_PACKAGE_NOT_EDIT = "rcdc_terminal_not_ota_upgrade_package_not_edit";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
 
+    /************终端背景界面**************************/
+    String RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND = "rcdc_terminal_operate_action_send_background_url";
 }

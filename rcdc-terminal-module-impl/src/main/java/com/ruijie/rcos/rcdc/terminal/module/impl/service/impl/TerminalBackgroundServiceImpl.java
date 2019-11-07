@@ -42,7 +42,7 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
 
     @Override
     public void syncTerminalLogo(String name) throws BusinessException {
-        LOGGER.info("向在线终端下发Logo名");
+        LOGGER.info("向在线终端下发背景桌面");
         NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewBackgroundNameToOnlineTerminal(name));
     }
 
@@ -77,7 +77,7 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
-                    new String[] {LocaleI18nResolver.resolve("aaa", new String[] {})});
+                    new String[] {LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND, new String[] {})});
         }
     }
 }

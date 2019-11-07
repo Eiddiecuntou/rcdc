@@ -6,7 +6,6 @@ import org.springframework.util.Assert;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackGroundUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
@@ -53,7 +52,7 @@ public class SyncTerminalBackgroundSPIImpl implements CbbDispatcherHandlerSPI {
         messageHandlerAPI.response(cbbResponseShineMessage);
     }
 
-    private TerminalSyncBackgroundResponse buildSyncBackgroundResponse(String data){
+    private TerminalSyncBackgroundResponse buildSyncBackgroundResponse(String data) {
         TerminalSyncBackgroundRequest request = JSON.parseObject(data, TerminalSyncBackgroundRequest.class);
         TerminalSyncBackgroundResponse response = new TerminalSyncBackgroundResponse();
         response.setNeedSync(NO_NEED_SYNC);
