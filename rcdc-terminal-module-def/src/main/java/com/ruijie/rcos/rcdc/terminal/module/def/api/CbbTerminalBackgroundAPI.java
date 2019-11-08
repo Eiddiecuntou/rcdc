@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackGroundUploadRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
@@ -31,7 +32,7 @@ public interface CbbTerminalBackgroundAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DtoResponse<CbbTerminalBackgroundImageInfoDTO> getBackgroundImageInfo() throws BusinessException;
+    DtoResponse<CbbTerminalBackgroundImageInfoDTO> getBackgroundImageInfo(DefaultRequest request) throws BusinessException;
 
     /**
      * 初始化背景图
@@ -39,5 +40,5 @@ public interface CbbTerminalBackgroundAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse initBackgroundImage() throws BusinessException;
+    DefaultResponse initBackgroundImage(DefaultRequest request) throws BusinessException;
 }
