@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbBaseUpdatelistDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbBaseUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -75,7 +75,7 @@ public class TerminalUpdateListCacheManagerTest {
      */
     @Test
     public void testGet() {
-        Map<CbbTerminalTypeEnums, CbbBaseUpdatelistDTO> caches =
+        Map<CbbTerminalTypeEnums, CbbBaseUpdateListDTO> caches =
                 Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
         CbbWinAppUpdateListDTO dto = new CbbWinAppUpdateListDTO();
         caches.put(CbbTerminalTypeEnums.APP_WINDOWS, dto);

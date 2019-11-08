@@ -111,7 +111,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.1.0.1");
         request.setValidateMd5("123");
-        request.setRainOsVersion("1.1.0.1");
+        request.setOsInnerVersion("1.1.0.1");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
@@ -146,7 +146,6 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
-        request.setRainOsVersion("111");
         request.setOsInnerVersion("1.1.1.1.1");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
@@ -189,7 +188,6 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         GetVersionRequest request = new GetVersionRequest();
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
-        request.setRainOsVersion("1.0.0.1");
         request.setOsInnerVersion("1.0.1");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);

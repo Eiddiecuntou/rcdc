@@ -1,7 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
+import java.util.List;
 import java.util.Objects;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonComponentVersionInfoDTO;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -53,13 +55,13 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         // 判断是否升级
         if (!isNeedToUpgrade(updatelist, request)) {
             // 版本相同、MD5值相同,不升级
-            LOGGER.info("Android终端[{}]不需升级", request.getTerminalId());
+            LOGGER.debug("终端[{}]不需升级", request.getTerminalId());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), updatelist);
         }
 
         // 判断是否支持升级
         if (!isSupportUpgrade(updatelist, request)) {
-            LOGGER.info("终端[" + request.getTerminalId() + "]的系统版本号低于系统限制版本号[" + updatelist.getOsLimit() + "],不支持升级");
+            LOGGER.debug("终端[" + request.getTerminalId() + "]的系统版本号低于系统限制版本号[" + updatelist.getOsLimit() + "],不支持升级");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), updatelist);
         }
 
@@ -70,7 +72,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         // 判断是否差异升级,终端update.list的版本号(VER)与服务器update.list的BASE版本号相同则为差异升级
         String rainUpgradeVersion = request.getRainUpgradeVersion();
         if (!rainUpgradeVersion.equals(copyUpdateList.getBaseVersion())) {
-            LOGGER.info("Android终端[{}]组件进行非差异升级, 清理差异升级信息", request.getTerminalId());
+            LOGGER.debug("终端[{}]组件进行非差异升级, 清理差异升级信息", request.getTerminalId());
             clearDifferenceUpgradeInfo(copyUpdateList.getComponentList());
         }
 
@@ -84,6 +86,23 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
     private boolean isSupportUpgrade(CbbCommonUpdateListDTO updateList, GetVersionRequest request) {
         // 终端系统版本号高于OS_LIMIT则支持升级
         return isVersionBigger(request.getOsInnerVersion(), updateList.getOsLimit());
+    }
+
+    /**
+     * 清除差异升级信息
+     *
+     * @param componentList 组件升级信息
+     */
+    private void clearDifferenceUpgradeInfo(List<CbbCommonComponentVersionInfoDTO> componentList) {
+        Assert.notNull(componentList, "componentList cannot be null");
+        for (CbbCommonComponentVersionInfoDTO componentInfo : componentList) {
+            componentInfo.setIncrementalPackageMd5(null);
+            componentInfo.setIncrementalPackageName(null);
+            componentInfo.setIncrementalTorrentMd5(null);
+            componentInfo.setIncrementalTorrentUrl(null);
+            componentInfo.setBasePackageName(null);
+            componentInfo.setBasePackageMd5(null);
+        }
     }
 
     /**

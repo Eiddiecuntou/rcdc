@@ -14,7 +14,7 @@ import java.util.List;
  * @param <T> 升级组件版本信息DTO
  * @author nt
  */
-public class CbbBaseUpdatelistDTO<T> implements Serializable {
+public class CbbBaseUpdateListDTO<T> implements Serializable {
 
     private String version;
 
@@ -28,10 +28,10 @@ public class CbbBaseUpdatelistDTO<T> implements Serializable {
 
     private String osLimit;
 
-    public CbbBaseUpdatelistDTO() {
+    public CbbBaseUpdateListDTO() {
     }
 
-    public CbbBaseUpdatelistDTO(String version, Integer componentSize) {
+    public CbbBaseUpdateListDTO(String version, Integer componentSize) {
         Assert.hasText(version, "version cannot be null");
         Assert.notNull(componentSize, "componentSize cannot be null");
         this.version = version;

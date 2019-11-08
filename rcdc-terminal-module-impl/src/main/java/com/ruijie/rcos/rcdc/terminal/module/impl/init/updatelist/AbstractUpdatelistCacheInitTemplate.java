@@ -1,7 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbBaseUpdatelistDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbBaseComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbBaseUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
@@ -25,7 +26,7 @@ import java.nio.charset.Charset;
  *
  * @author nt
  */
-public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbBaseUpdatelistDTO> {
+public abstract class AbstractUpdatelistCacheInitTemplate<T extends CbbBaseUpdateListDTO> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUpdatelistCacheInitTemplate.class);
 

@@ -8,7 +8,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
  *
  * @author nt
  */
-public class CbbCommonUpdateListDTO extends CbbBaseUpdatelistDTO {
+public class CbbCommonUpdateListDTO extends CbbBaseUpdateListDTO<CbbCommonComponentVersionInfoDTO> {
 
     private String baseVersion;
 

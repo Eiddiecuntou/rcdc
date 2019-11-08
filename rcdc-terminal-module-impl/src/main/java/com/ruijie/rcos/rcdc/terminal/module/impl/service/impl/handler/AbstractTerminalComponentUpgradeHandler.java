@@ -1,9 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonComponentVersionInfoDTO;
 import org.springframework.util.Assert;
-
-import java.util.List;
 
 /**
  * Description: Function Description
@@ -28,35 +25,19 @@ public abstract class AbstractTerminalComponentUpgradeHandler implements Termina
         Assert.hasText(firstVersion, "firstVersion can not be blank");
         Assert.hasText(secondVersion, "secondVersion can not be blank");
 
-        String[] v1 = firstVersion.split(VERSION_SPLIT);
-        String[] v2 = secondVersion.split(VERSION_SPLIT);
+        String[] firstVerArr = firstVersion.split(VERSION_SPLIT);
+        String[] secondVerArr = secondVersion.split(VERSION_SPLIT);
 
-        if (v1.length > v2.length) {
+        if (firstVerArr.length > secondVerArr.length) {
             return true;
         }
 
-        for (int i = 0; i< v1.length; i ++) {
-            if (Integer.parseInt(v1[i]) > Integer.parseInt(v2[i])) {
+        for (int i = 0; i < firstVerArr.length; i++) {
+            if (Integer.parseInt(firstVerArr[i]) > Integer.parseInt(secondVerArr[i])) {
                 return true;
             }
         }
         return false;
     }
 
-    /**
-     * VDI终端：清除差异升级信息
-     *
-     * @param componentList 组件升级信息
-     */
-    protected void clearDifferenceUpgradeInfo(List<CbbCommonComponentVersionInfoDTO> componentList) {
-        Assert.notNull(componentList, "componentList cannot be null");
-        for (CbbCommonComponentVersionInfoDTO componentInfo : componentList) {
-            componentInfo.setIncrementalPackageMd5(null);
-            componentInfo.setIncrementalPackageName(null);
-            componentInfo.setIncrementalTorrentMd5(null);
-            componentInfo.setIncrementalTorrentUrl(null);
-            componentInfo.setBasePackageName(null);
-            componentInfo.setBasePackageMd5(null);
-        }
-    }
 }
