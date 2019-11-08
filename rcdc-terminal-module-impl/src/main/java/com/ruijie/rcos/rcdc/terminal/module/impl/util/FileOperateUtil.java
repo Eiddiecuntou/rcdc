@@ -219,7 +219,8 @@ public class FileOperateUtil {
     }
 
 
-    private static File checkAndGetDirectory(final String directoryPath) throws BusinessException {
+    public static File checkAndGetDirectory(final String directoryPath) throws BusinessException {
+        Assert.notNull(directoryPath,"directoryPath not null");
         File packageDir = new File(directoryPath);
         if (!packageDir.exists() || !packageDir.isDirectory()) {
             try {

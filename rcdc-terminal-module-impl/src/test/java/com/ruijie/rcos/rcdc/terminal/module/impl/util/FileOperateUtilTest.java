@@ -5,6 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.File;
+
+import com.ruijie.rcos.sk.commkit.base.AbstractSslChannelInitializer;
+import mockit.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
@@ -13,11 +16,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import mockit.Invocation;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Verifications;
 
 /**
  * 
@@ -32,6 +30,9 @@ public class FileOperateUtilTest {
 
     @Mocked
     private Logger logger;
+
+    @Mocked
+    File mockFile;
 
     /**
      * 初始化
@@ -804,5 +805,61 @@ public class FileOperateUtilTest {
         assertTrue(FileOperateUtil.deleteFile(deleteFile));
     }
 
+    /**
+     * 测试创建文件夹未发生异常
+     * @throws Exception 异常
+     */
+    @Test
+    public void testCheckAndGetDirectory() throws Exception {
 
+        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.checkAndGetDirectory(null), "directoryPath not null");
+        new Expectations(){{
+            mockFile.exists();
+            returns(true,false,true);
+            mockFile.isDirectory();
+            returns(true,false);
+            mockFile.mkdir();
+        }};
+        for (int i=0;i<3;i++){
+            File file = FileOperateUtil.checkAndGetDirectory("abc");
+        }
+        new Verifications(){{
+            mockFile.mkdir();
+            times = 2;
+        }};
+    }
+
+    /**
+     * 测试创建文件夹发生了异常
+     * @throws Exception 异常
+     */
+    @Test
+    public void testCheckAndGetDirectoryWhenException() throws Exception {
+
+        new Expectations(){{
+            mockFile.exists();
+            returns(false,true);
+            mockFile.isDirectory();
+            result = false;
+            mockFile.mkdir();
+            result = new Delegate<File>() {
+                public boolean mkdir() {
+                  throw new RuntimeException("123");
+                };
+            };
+        }};
+        for (int i=0;i<2;i++) {
+
+            try {
+                File file = FileOperateUtil.checkAndGetDirectory("abc");
+                fail();
+            } catch (BusinessException e) {
+                assertEquals(e.getMessage(),BusinessKey.RCDC_FILE_OPERATE_FAIL);
+            }
+        }
+        new Verifications(){{
+            mockFile.mkdir();
+            times = 2;
+        }};
+    }
 }
