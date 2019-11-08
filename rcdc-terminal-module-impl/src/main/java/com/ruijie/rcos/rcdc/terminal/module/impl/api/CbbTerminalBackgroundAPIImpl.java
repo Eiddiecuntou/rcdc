@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import java.io.File;
 import java.io.IOException;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -71,7 +73,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     }
 
     @Override
-    public DtoResponse<CbbTerminalBackgroundImageInfoDTO> getBackgroundImageInfo() throws BusinessException {
+    public DtoResponse<CbbTerminalBackgroundImageInfoDTO> getBackgroundImageInfo(DefaultRequest request) throws BusinessException {
         CbbTerminalBackgroundImageInfoDTO dto = new CbbTerminalBackgroundImageInfoDTO();
         File imageFile = getBackGroundImageFile();
         if (imageFile.exists() == false) {
@@ -85,7 +87,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     }
 
     @Override
-    public DefaultResponse initBackgroundImage() throws BusinessException {
+    public DefaultResponse initBackgroundImage(DefaultRequest request) throws BusinessException {
         if (deleteImageFile()) {
             globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
             terminalBackgroundService.syncTerminalLogo(StringUtils.EMPTY);
@@ -123,17 +125,8 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     private void createBackgroundImageDir() throws BusinessException {
         String backgroundPath = configFacade.read("file.busiz.dir.terminal.background");
 
-        File file = new File(backgroundPath);
-        if (file.isFile()) {
-            LOGGER.error("创建终端背景的文件夹失败,已经存在同名的文件,文件路径:[{}]", backgroundPath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL);
-        }
-        if (file.exists() == false) {
-            if (file.mkdir() == false) {
-                LOGGER.error("创建终端背景的文件夹失败,文件路径:[{}]", backgroundPath);
-                throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL);
-            }
-        }
+        File file = FileOperateUtil.checkAndGetDirectory(backgroundPath);
+
         setFilePrivilege(file);
     }
 
