@@ -1,13 +1,21 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbIDVTerminalModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNetworkInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalNetworkInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -261,6 +269,36 @@ public class CbbTerminalBasicInfoAPIImplTest {
     }
 
     /**
+     * 测试修改终端名称成功
+     */
+    @Test
+    public void testModifyTerminalIdvModeIsNotNull() {
+        new Expectations() {
+            {
+                try {
+                    basicInfoService.modifyTerminalName(anyString, anyString);
+                    basicInfoDAO.save((TerminalEntity) any);
+                } catch (BusinessException e) {
+                    fail();
+                }
+            }
+        };
+
+        try {
+            CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+            request.setCbbTerminalId("123");
+            request.setGroupId(UUID.randomUUID());
+            request.setTerminalName("123");
+            request.setIdvTerminalMode(CbbIDVTerminalModeEnums.PUBLIC);
+            terminalBasicInfoAPI.modifyTerminal(request);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        modifyNameVerifications();
+    }
+
+    /**
      * 测试修改终端名称失败，TerminalEntity为空
      * 
      * @throws BusinessException 异常
@@ -337,5 +375,86 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
     }
+
+    @Test
+    public void testGetTerminalNetworkInfoNetworkInfoIsEmpty() {
+        String terminalId = "111";
+        new Expectations() {
+            {
+                terminalNetworkInfoDAO.findByTerminalId(terminalId);
+                result = Collections.EMPTY_LIST;
+            }
+        };
+
+        CbbTerminalNetworkInfoResponse terminalNetworkInfo = terminalBasicInfoAPI.getTerminalNetworkInfo(new CbbTerminalIdRequest(terminalId));
+        assertEquals(0, terminalNetworkInfo.getItemArr().length);
+    }
+
+    @Test
+    public void testGetTerminalNetworkInfo() {
+        String terminalId = "111";
+        List<TerminalNetworkInfoEntity> networkInfoList = buildNetworkList();
+        CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest(terminalId);
+        new Expectations() {
+            {
+                terminalNetworkInfoDAO.findByTerminalId(terminalId);
+                result = networkInfoList;
+
+            }
+        };
+
+        CbbTerminalNetworkInfoResponse terminalNetworkInfo = terminalBasicInfoAPI.getTerminalNetworkInfo(idRequest);
+        assertEquals(1, terminalNetworkInfo.getItemArr().length);
+        assertEquals(terminalNetworkInfo.getItemArr()[0], getItemArr()[0]);
+
+        new Verifications() {
+            {
+                terminalNetworkInfoDAO.findByTerminalId(terminalId);
+                times = 1;
+
+                terminalBasicInfoAPI.getTerminalNetworkInfo(idRequest);
+                times = 1;
+            }
+        };
+    }
+
+    private CbbTerminalNetworkInfoDTO[] getItemArr() {
+        CbbTerminalNetworkInfoDTO[] itemArr = new CbbTerminalNetworkInfoDTO[1];
+        CbbTerminalNetworkInfoDTO dto = new CbbTerminalNetworkInfoDTO();
+        dto.setGateway("456");
+        dto.setGetDnsMode(CbbGetNetworkModeEnums.AUTO);
+        dto.setGetIpMode(CbbGetNetworkModeEnums.MANUAL);
+        dto.setIp("789");
+        dto.setMacAddr("abc");
+        dto.setSsid("ssid");
+        dto.setMainDns("mainDns");
+        dto.setSecondDns("secondDns");
+        dto.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
+        dto.setSubnetMask("subnetMask");
+        itemArr[0] = dto;
+
+        return itemArr;
+    }
+
+    private List<TerminalNetworkInfoEntity> buildNetworkList() {
+        List<TerminalNetworkInfoEntity> networkInfoList = Lists.newArrayList();
+        TerminalNetworkInfoEntity networkInfoEntity = new TerminalNetworkInfoEntity();
+        networkInfoEntity.setTerminalId("123");
+        networkInfoEntity.setGateway("456");
+        networkInfoEntity.setGetDnsMode(CbbGetNetworkModeEnums.AUTO);
+        networkInfoEntity.setGetIpMode(CbbGetNetworkModeEnums.MANUAL);
+        networkInfoEntity.setIp("789");
+        networkInfoEntity.setMacAddr("abc");
+        networkInfoEntity.setSsid("ssid");
+        networkInfoEntity.setMainDns("mainDns");
+        networkInfoEntity.setSecondDns("secondDns");
+        networkInfoEntity.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
+        networkInfoEntity.setSubnetMask("subnetMask");
+        networkInfoList.add(networkInfoEntity);
+
+        return networkInfoList;
+    }
+
+
 
 }

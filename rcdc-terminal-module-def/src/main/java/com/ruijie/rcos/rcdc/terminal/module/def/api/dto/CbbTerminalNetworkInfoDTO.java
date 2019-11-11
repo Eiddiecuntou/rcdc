@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.serialize.CbbWirelessAuthModeEnumsSerializer;
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
 /**
  * Description: Function Description
@@ -14,7 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.serialize.CbbWirelessA
  *
  * @author nt
  */
-public class CbbTerminalNetworkInfoDTO {
+public class CbbTerminalNetworkInfoDTO extends EqualsHashcodeSupport {
 
     private CbbNetworkModeEnums networkAccessMode;
 

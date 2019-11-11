@@ -9,10 +9,13 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Date;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -391,6 +394,68 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
         assertTrue(basicInfoService.isTerminalOnline("123"));
+    }
+
+    /**
+     *  测试保存终端信息 - 新终端接入
+     */
+    @Test
+    public void testSaveBasicInfoTerminalIsNew() {
+        String terminalId = "123";
+        ShineTerminalBasicInfo basicInfo = buildBasicInfo();
+        new Expectations(){
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = null;
+
+                terminalEventNoticeSPI.notify((CbbNoticeRequest) any);
+            }
+        };
+
+        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 1;
+
+                TerminalEntity saveEntity = new TerminalEntity();
+                basicInfoDAO.save(saveEntity = withCapture());
+                assertEquals(null, saveEntity.getId());
+            }
+        };
+    }
+
+    private ShineTerminalBasicInfo buildBasicInfo() {
+        ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
+        basicInfo.setCpuType("cpuType");
+        basicInfo.setDiskSize(1L);
+        basicInfo.setGateway("gateWay");
+        basicInfo.setGetDnsMode(CbbGetNetworkModeEnums.AUTO);
+        basicInfo.setGetIpMode(CbbGetNetworkModeEnums.MANUAL);
+        basicInfo.setHardwareVersion("hardWareVersion");
+        basicInfo.setIdvTerminalMode(CbbIDVTerminalModeEnums.PERSONAL);
+        basicInfo.setIp("ip");
+        basicInfo.setMacAddr("macAddr");
+        basicInfo.setMainDns("mainDns");
+        basicInfo.setMemorySize(2L);
+        basicInfo.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
+        basicInfo.setPlatform(CbbTerminalPlatformEnums.VDI);
+        basicInfo.setProductType("productType");
+        basicInfo.setRainOsVersion("rainOsVersion");
+        basicInfo.setRainUpgradeVersion("rainUpgradeVersion");
+        basicInfo.setSecondDns("secondDns");
+        basicInfo.setSerialNumber("SerialNumber");
+        basicInfo.setSsid("ssid");
+        basicInfo.setSubnetMask("subnetMask");
+        basicInfo.setTerminalId("123");
+        basicInfo.setTerminalName("terminalName");
+        basicInfo.setTerminalOsType("Linux");
+        basicInfo.setTerminalOsVersion("osVersion");
+        basicInfo.setValidateMd5("validateMd5");
+        basicInfo.setWirelessAuthMode(CbbTerminalWirelessAuthModeEnums.MODE_OPEN);
+
+        return basicInfo;
     }
 }
 

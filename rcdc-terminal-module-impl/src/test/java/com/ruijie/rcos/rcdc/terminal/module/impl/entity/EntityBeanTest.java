@@ -151,4 +151,14 @@ public class EntityBeanTest {
         tester.runTest();
         assertTrue(true);
     }
+
+    /**
+     * 测试TerminalNetworkInfoEntity
+     */
+    @Test
+    public void testTerminalNetworkInfoEntity () {
+        GetSetTester tester = new GetSetTester(TerminalNetworkInfoEntity .class);
+        tester.runTest();
+        assertTrue(true);
+    }
 }
