@@ -20,7 +20,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 
 /**
- * Description: Function Description
+ * Description: 同步终端背景图SPI
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019/11/6

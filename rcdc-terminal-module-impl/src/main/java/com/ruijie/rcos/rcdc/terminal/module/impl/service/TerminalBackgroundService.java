@@ -20,5 +20,5 @@ public interface TerminalBackgroundService {
      * @param name 图片的名称
      * @throws BusinessException 因为异常
      */
-    void syncTerminalLogo(String name) throws BusinessException;
+    void syncTerminalBackground(String name) throws BusinessException;
 }

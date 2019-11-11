@@ -173,6 +173,9 @@ public interface BusinessKey {
      */
     String RCDC_FILE_OPERATE_FAIL = "rcdc_file_operate_fail";
 
+    /** 不合法的文件名后缀 */
+    String RCDC_FILE_INVALID_SUFFIX = "rcdc_file_invalid_suffix";
+
     /**
      * 终端检测超时处理定时任务
      */

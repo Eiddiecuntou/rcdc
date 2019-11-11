@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -22,7 +23,7 @@ import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.comm.NameRequest;
 
 /**
- * Description: Function Description
+ * Description: 终端背景业务类
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019/11/6
@@ -42,7 +43,8 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
             ThreadExecutors.newBuilder(TerminalBackgroundService.class.getName()).maxThreadNum(1).queueSize(10).build();
 
     @Override
-    public void syncTerminalLogo(String name) throws BusinessException {
+    public void syncTerminalBackground(String name) throws BusinessException {
+        Assert.notNull(name,"name must not be null");
         LOGGER.info("向在线终端下发背景桌面");
         NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewBackgroundNameToOnlineTerminal(name));
     }

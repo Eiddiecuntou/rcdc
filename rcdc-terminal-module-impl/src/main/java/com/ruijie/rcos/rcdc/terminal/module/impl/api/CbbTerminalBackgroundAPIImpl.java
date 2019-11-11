@@ -59,7 +59,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
         saveDB(request);
 
-        terminalBackgroundService.syncTerminalLogo(request.getImageName());
+        terminalBackgroundService.syncTerminalBackground(request.getImageName());
 
         return DefaultResponse.Builder.success();
     }
@@ -74,6 +74,8 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
     @Override
     public DtoResponse<CbbTerminalBackgroundImageInfoDTO> getBackgroundImageInfo(DefaultRequest request) throws BusinessException {
+        Assert.notNull(request, "request must not be null");
+
         CbbTerminalBackgroundImageInfoDTO dto = new CbbTerminalBackgroundImageInfoDTO();
         File imageFile = getBackGroundImageFile();
         if (imageFile.exists() == false) {
@@ -88,9 +90,10 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
     @Override
     public DefaultResponse initBackgroundImage(DefaultRequest request) throws BusinessException {
+        Assert.notNull(request, "request must not be null");
         if (deleteImageFile()) {
             globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
-            terminalBackgroundService.syncTerminalLogo(StringUtils.EMPTY);
+            terminalBackgroundService.syncTerminalBackground(StringUtils.EMPTY);
         }
         return DefaultResponse.Builder.success();
     }
@@ -114,7 +117,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     private boolean deleteImageFile() {
 
         File imageFile = getBackGroundImageFile();
-        if (!imageFile.exists()) {
+        if (imageFile.exists() == false) {
             return false;
         }
         SkyengineFile skyengineFile = new SkyengineFile(imageFile);
@@ -127,12 +130,12 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
         File file = FileOperateUtil.checkAndGetDirectory(backgroundPath);
 
-        setFilePrivilege(file);
+        setReadAndExecute(file);
     }
 
     private String getFileNameSuffix(String name) throws BusinessException {
         if (name.lastIndexOf(".") == name.length() - 1 || name.lastIndexOf(".") == -1) {
-            throw new BusinessException("");
+            throw new BusinessException(BusinessKey.RCDC_FILE_INVALID_SUFFIX);
         }
         return name.substring(name.lastIndexOf(".") + 1);
     }
@@ -141,11 +144,11 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         String saveLogoFile = configFacade.read("file.busiz.dir.terminal.background");
         String saveLogoPath = saveLogoFile + TERMINAL_BACKGROUND_NAME;
         File file = new File(saveLogoPath);
-        setFilePrivilege(file);
+        setReadAndExecute(file);
         return file;
     }
 
-    private void setFilePrivilege(File file) {
+    private void setReadAndExecute(File file) {
         file.setReadable(true, false);
         file.setExecutable(true, false);
     }
