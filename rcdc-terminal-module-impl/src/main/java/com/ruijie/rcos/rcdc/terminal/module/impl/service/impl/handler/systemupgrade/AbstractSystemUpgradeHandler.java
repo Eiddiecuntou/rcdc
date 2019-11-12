@@ -46,13 +46,13 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
 
     private boolean isTerminalNeedUpgrade(String terminalId, TerminalSystemUpgradePackageEntity upgradePackage) {
         if (upgradePackage == null || upgradePackage.getIsDelete() == true) {
-            LOGGER.info("终端类型[{}]的可用刷机包不存在", upgradePackage.getPackageType().name());
+            LOGGER.info("终端[{}]的可用刷机包不存在", terminalId);
             return false;
         }
 
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         if (upgradeTask == null) {
-            LOGGER.info("终端类型[{}]无进行中的升级任务", upgradePackage.getPackageType().name());
+            LOGGER.info("终端[{}]无进行中的升级任务", terminalId);
             return false;
         }
 

@@ -6,14 +6,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Stream;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
-import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
-import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
-import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
-import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import org.apache.commons.lang3.ArrayUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.data.domain.Page;
@@ -38,12 +31,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
@@ -52,6 +44,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QueryUpgradeableTe
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -117,6 +110,9 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     @Autowired
     private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
+
+    @Autowired
+    private TerminalSystemUpgradePackageService systemUpgradePackageService;
 
     @Override
     public CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException {
@@ -304,8 +300,17 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     @Override
     public DefaultResponse closeSystemUpgradeTask(IdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
+
         terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getId());
+        doAfterCloseUpgradeTask(request.getId());
         return DefaultResponse.Builder.success();
+    }
+
+    private void doAfterCloseUpgradeTask(UUID upgradeTaskId) throws BusinessException {
+        TerminalSystemUpgradeEntity systemUpgradeTask = terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
+        TerminalSystemUpgradePackageEntity upgradePackage =
+                systemUpgradePackageService.getSystemUpgradePackage(systemUpgradeTask.getUpgradePackageId());
+        systemUpgradeHandlerFactory.getHandler(systemUpgradeTask.getPackageType()).afterCloseSystemUpgrade(upgradePackage);
     }
 
     @Override

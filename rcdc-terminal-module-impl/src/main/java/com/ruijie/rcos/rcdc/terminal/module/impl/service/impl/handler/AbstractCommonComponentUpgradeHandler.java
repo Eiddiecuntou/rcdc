@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonComponentVersionInfoDTO;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -84,6 +85,11 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
     }
 
     private boolean isSupportUpgrade(CbbCommonUpdateListDTO updateList, GetVersionRequest request) {
+        if (StringUtils.isBlank(request.getOsInnerVersion())) {
+            // 支持旧版本终端未上报osInnerVersion场景升级
+            return true;
+        }
+
         // 终端系统版本号高于OS_LIMIT则支持升级
         return isVersionBigger(request.getOsInnerVersion(), updateList.getOsLimit());
     }

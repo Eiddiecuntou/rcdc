@@ -210,7 +210,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
         final List<TerminalSystemUpgradeEntity> upgradingTaskList =
                 systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {

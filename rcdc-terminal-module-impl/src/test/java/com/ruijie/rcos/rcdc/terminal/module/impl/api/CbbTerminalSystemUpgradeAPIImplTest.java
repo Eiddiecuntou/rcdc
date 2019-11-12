@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -115,6 +116,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
+
+    @Injectable
+    private TerminalSystemUpgradePackageService systemUpgradePackageService;
 
     /**
      * 测试升级包上传，参数为空
@@ -353,7 +357,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.CLOSING);
+        upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());

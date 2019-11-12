@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeGlobal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -23,7 +22,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeGlobal;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -50,9 +49,6 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
-
-    @Autowired
-    private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
 
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
@@ -135,10 +131,6 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
         systemUpgradeTask.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
         systemUpgradeDAO.save(systemUpgradeTask);
-
-        TerminalSystemUpgradePackageEntity upgradePackage =
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(systemUpgradeTask.getUpgradePackageId());
-        systemUpgradeHandlerFactory.getHandler(systemUpgradeTask.getPackageType()).afterCloseSystemUpgrade(upgradePackage);
     }
 
     private void setUpgradingTerminalToFail(TerminalSystemUpgradeTerminalEntity upgradingTerminal) throws BusinessException {
