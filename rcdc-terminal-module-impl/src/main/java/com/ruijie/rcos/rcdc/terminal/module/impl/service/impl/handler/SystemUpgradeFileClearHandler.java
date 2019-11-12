@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import java.io.File;
 import java.util.UUID;
+
+import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -68,7 +70,7 @@ public class SystemUpgradeFileClearHandler {
         final File[] fileArr = statusFileDir.listFiles();
         for (File statusFile : fileArr) {
             if (statusFile.isFile()) {
-                statusFile.delete();
+                new SkyengineFile(statusFile).delete(false);
             }
         }
     }

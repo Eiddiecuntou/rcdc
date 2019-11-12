@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -12,7 +12,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
  *
  * @author hs
  */
-public interface TerminalSystemUpgradeHandler {
+public interface TerminalSystemUpgradePackageHandler {
 
     /**
      * 上传系统升级包

@@ -42,9 +42,6 @@ public class SystemUpgradeQuartzHandler implements Runnable {
     private TerminalSystemUpgradeService systemUpgradeService;
 
     @Autowired
-    private SystemUpgradeStartWaitingHandler startWaitingHandler;
-
-    @Autowired
     private SystemUpgradeStateSynctHandler stateSyncHandler;
 
     @Autowired
@@ -96,7 +93,6 @@ public class SystemUpgradeQuartzHandler implements Runnable {
         // 执行刷机终端处理
         confirmHandler.execute(upgradeTerminalList);
         stateSyncHandler.execute(upgradeTerminalList);
-        startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());
 
         // 判断刷机终端是否全部为成功状态，是则将刷机任务设为完成状态
         checkUpgradeTaskSuccessFinish(upgradeTask);

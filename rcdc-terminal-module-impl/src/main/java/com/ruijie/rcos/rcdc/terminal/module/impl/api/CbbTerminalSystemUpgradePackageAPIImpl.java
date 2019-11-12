@@ -5,7 +5,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePack
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageModifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbListTerminalSystemUpgradePackageResponse;
@@ -115,20 +114,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }
         terminalSystemPackageUploadingService.uploadUpgradePackage(request, terminalType);
-        return DefaultResponse.Builder.success();
-    }
-
-    @Override
-    public DefaultResponse editUpgradePackage(CbbTerminalUpgradePackageModifyRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
-        TerminalSystemUpgradePackageEntity packageEntity =
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getPackageId());
-        if (packageEntity.getPackageType() != CbbTerminalTypeEnums.VDI_ANDROID) {
-            LOGGER.debug("only android vdi terminal can be edited");
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_OTA_UPGRADE_PACKAGE_NOT_EDIT);
-        }
-        packageEntity.setUpgradeMode(request.getUpgradeMode());
-        terminalSystemUpgradePackageDAO.save(packageEntity);
         return DefaultResponse.Builder.success();
     }
 

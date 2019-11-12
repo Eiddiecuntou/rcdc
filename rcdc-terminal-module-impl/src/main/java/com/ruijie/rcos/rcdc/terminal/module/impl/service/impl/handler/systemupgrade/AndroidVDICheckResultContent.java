@@ -1,16 +1,18 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.spi.response;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 
+import java.util.UUID;
+
 /**
  * Description: Function Description
- * Copyright: Copyright (c) 2019
+ * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/10/12
+ * Create Time: 2019/11/11
  *
- * @author hs
+ * @author nt
  */
-public class TerminalOtaUpgradeInfo {
+public class AndroidVDICheckResultContent {
 
     private String otaVersion;
 
@@ -21,6 +23,8 @@ public class TerminalOtaUpgradeInfo {
     private String otaSeedMD5;
 
     private CbbSystemUpgradeModeEnums upgradeMode;
+
+    private UUID taskId;
 
     public String getOtaVersion() {
         return otaVersion;
@@ -60,5 +64,13 @@ public class TerminalOtaUpgradeInfo {
 
     public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
         this.upgradeMode = upgradeMode;
+    }
+
+    public UUID getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(UUID taskId) {
+        this.taskId = taskId;
     }
 }

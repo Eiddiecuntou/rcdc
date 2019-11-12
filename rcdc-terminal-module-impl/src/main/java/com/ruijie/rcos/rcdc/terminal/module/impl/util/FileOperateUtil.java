@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.util.Assert;
@@ -109,7 +110,8 @@ public class FileOperateUtil {
 
             if (subFile.isFile()) {
                 LOGGER.debug("delete file[{}]", fileName);
-                subFile.delete();
+                SkyengineFile skyengineFile = new SkyengineFile(subFile);
+                skyengineFile.delete(false);
             }
         }
     }
@@ -193,14 +195,16 @@ public class FileOperateUtil {
         }
 
         if (deleteFile.isFile()) {
-            return deleteFile.delete();
+            SkyengineFile skyengineFile = new SkyengineFile(deleteFile);
+            skyengineFile.delete(false);
+            return skyengineFile.delete();
         } else {
             for (File file : deleteFile.listFiles()) {
                 deleteFile(file);
             }
         }
 
-        return deleteFile.delete();
+        return new SkyengineFile(deleteFile).delete(false);
     }
 
     /**
@@ -214,7 +218,7 @@ public class FileOperateUtil {
             throw new RuntimeException("无法直接删除目录");
         }
         if (file.exists()) {
-            file.delete();
+            new SkyengineFile(file).delete(false);
         }
     }
 

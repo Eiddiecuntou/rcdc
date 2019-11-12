@@ -110,6 +110,11 @@ public interface Constants {
     String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s";
 
     /**
+     *  ISO升级包MD5校验
+     */
+    String SYSTEM_CMD_CHECK_ISO_MD5 = "checkisomd5 %s";
+
+    /**
      * 系统刷机包版本文件属性-包类型
      */
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE = "plat";

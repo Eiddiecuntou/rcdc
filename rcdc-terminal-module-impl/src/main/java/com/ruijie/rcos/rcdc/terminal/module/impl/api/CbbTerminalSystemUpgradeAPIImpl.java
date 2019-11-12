@@ -1,5 +1,25 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Stream;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
+import com.ruijie.rcos.sk.commkit.base.message.Message;
+import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import org.apache.commons.lang3.ArrayUtils;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
@@ -29,8 +49,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockMana
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeTerminalListService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QueryUpgradeableTerminalListService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.SystemUpgradeFileClearHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -38,17 +58,6 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.data.domain.Page;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * 
@@ -63,22 +72,24 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalSystemUpgradeAPIImpl.class);
 
-    private static final BeanCopier TASK_BEAN_COPIER =
-            BeanCopier.create(TerminalSystemUpgradeEntity.class, CbbSystemUpgradeTaskDTO.class, false);
+    private static final BeanCopier TASK_BEAN_COPIER = BeanCopier.create(TerminalSystemUpgradeEntity.class, CbbSystemUpgradeTaskDTO.class, false);
 
     private static final BeanCopier TASK_TERMINAL_BEAN_COPIER =
             BeanCopier.create(TerminalSystemUpgradeTerminalEntity.class, CbbSystemUpgradeTaskTerminalDTO.class, false);
 
     private static final String TERMINAL_STATE_FIELD_NAME = "state";
 
+    private static ExecutorService SINGLE_THREAD_EXECUTOR =
+            ThreadExecutors.newBuilder("singleSystemUpgradeThreadPool").maxThreadNum(1).queueSize(10).build();
+
+    private static final ExecutorService SEND_SYSTEM_UPGRADE_MSG_THREAD_POOL =
+            ThreadExecutors.newBuilder("sendSystemUpgradeMsgThreadPool").maxThreadNum(10).queueSize(1).build();
+
     @Autowired
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
 
     @Autowired
     private TerminalSystemUpgradeService terminalSystemUpgradeService;
-
-    @Autowired
-    private TerminalSystemUpgradeSupportService terminalSystemUpgradeSupportService;
 
     @Autowired
     private TerminalSystemUpgradeServiceTx terminalSystemUpgradeServiceTx;
@@ -96,9 +107,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
 
     @Autowired
-    private SystemUpgradeFileClearHandler upgradeFileClearHandler;
-
-    @Autowired
     private UpgradeTerminalLockManager lockManager;
 
     @Autowired
@@ -108,35 +116,27 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private TerminalSystemPackageUploadingService terminalSystemPackageUploadingService;
 
     @Autowired
-    private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
+    private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
 
-    @Autowired
-    private BtService btService;
-    
     @Override
-    public CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request)
-            throws BusinessException {
+    public CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         UUID packageId = request.getPackageId();
         TerminalSystemUpgradePackageEntity upgradePackage = getUpgradePackageEntity(packageId);
 
-        if (request.getTerminalIdArr().length > CbbTerminalSystemUpgradeAPI.MAX_UPGRADE_NUM_PER_TASK) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_NUM_EXCEED_LIMIT,
-                    String.valueOf(CbbTerminalSystemUpgradeAPI.MAX_UPGRADE_NUM_PER_TASK));
-        }
-
         // 判断刷机包是否允许开启升级任务
         checkAllowCreateTask(upgradePackage);
 
-        UUID upgradeTaskId =
-                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackage, request.getTerminalIdArr());
+        UUID upgradeTaskId = terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackage, request.getTerminalIdArr());
 
-        // 清理终端升级相关文件
-        upgradeFileClearHandler.clear(packageId);
+        // 添加升级任务成功后的处理
+        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.getPackageType());
+        handler.afterAddSystemUpgrade(upgradePackage);
 
-        // 开启刷机相关服务
-        terminalSystemUpgradeSupportService.openSystemUpgradeService(upgradePackage);
+        Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeTaskId, request.getUpgradeMode());
+        // 向在线终端发送升级消息
+        SINGLE_THREAD_EXECUTOR.execute(() -> sendSystemUpgradeMsg(request.getTerminalIdArr(), upgradeMsg));
 
         CbbAddSystemUpgradeTaskResponse response = new CbbAddSystemUpgradeTaskResponse();
         response.setUpgradeTaskId(upgradeTaskId);
@@ -144,15 +144,20 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         return response;
     }
 
-    @Override
-    public DefaultResponse startOtaUpgradeTask(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
-        UUID packageId = request.getId();
-        TerminalSystemUpgradePackageEntity upgradePackage = getUpgradePackageEntity(packageId);
-        // 判断刷机包是否允许开启升级任务
-        checkAllowCreateTask(upgradePackage);
-        terminalSystemUpgradeServiceTx.startOtaUpgradeTask(upgradePackage);
-        return DefaultResponse.Builder.success();
+    private void sendSystemUpgradeMsg(String[] terminalIdArr, Object upgradeMsg) {
+        if (ArrayUtils.isEmpty(terminalIdArr)) {
+            return;
+        }
+
+        for (String terminalId : terminalIdArr) {
+            SEND_SYSTEM_UPGRADE_MSG_THREAD_POOL.execute(() -> {
+                try {
+                    terminalSystemUpgradeService.systemUpgrade(terminalId, upgradeMsg);
+                } catch (BusinessException e) {
+                    LOGGER.error("向终端[" + terminalId + "]发送系统升级消息失败", e);
+                }
+            });
+        }
     }
 
     private void checkAllowCreateTask(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
@@ -175,31 +180,12 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         String filePath = upgradePackage.getFilePath();
         boolean hasExist = Files.exists(new File(filePath).toPath());
         if (!hasExist) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_FILE_NOT_EXIST,
-                    upgradePackage.getPackageName());
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_FILE_NOT_EXIST, upgradePackage.getPackageName());
         }
     }
 
     @Override
-    public DefaultResponse closeOtaUpgradeTask(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
-        UUID packageId = request.getId();
-        TerminalSystemUpgradePackageEntity upgradePackage = getUpgradePackageEntity(packageId);
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-            .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
-        List<TerminalSystemUpgradeEntity> upgradingTaskList =
-            terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
-        if (upgradingTaskList.size() > 0 ) {
-            btService.stopBtShare(upgradePackage.getSeedPath());
-            terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(upgradingTaskList.get(0).getId());
-        }
-        return DefaultResponse.Builder.success();
-    }
-    
-    
-    @Override
-    public CbbTerminalNameResponse addSystemUpgradeTerminal(CbbUpgradeTerminalRequest request)
-            throws BusinessException {
+    public CbbTerminalNameResponse addSystemUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         LOGGER.info("开始追加刷机终端：{} ", request.getTerminalId());
@@ -209,8 +195,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
 
-        final TerminalSystemUpgradeEntity upgradeEntity =
-                terminalSystemUpgradeService.getSystemUpgradeTask(request.getUpgradeTaskId());
+        final TerminalSystemUpgradeEntity upgradeEntity = terminalSystemUpgradeService.getSystemUpgradeTask(request.getUpgradeTaskId());
         checkUpgradeTaskState(upgradeEntity);
         addUpgradeTerminal(upgradeEntity, terminal);
 
@@ -226,22 +211,13 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
     }
 
-    private void addUpgradeTerminal(TerminalSystemUpgradeEntity upgradeEntity, TerminalEntity terminalEntity)
-            throws BusinessException {
+    private void addUpgradeTerminal(TerminalSystemUpgradeEntity upgradeEntity, TerminalEntity terminalEntity) throws BusinessException {
 
         // 判断是否重复添加
-        TerminalSystemUpgradeTerminalEntity upgradeTerminal = systemUpgradeTerminalDAO
-                .findFirstBySysUpgradeIdAndTerminalId(upgradeEntity.getId(), terminalEntity.getTerminalId());
+        TerminalSystemUpgradeTerminalEntity upgradeTerminal =
+                systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeEntity.getId(), terminalEntity.getTerminalId());
         if (upgradeTerminal != null) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_EXIST,
-                    terminalEntity.getTerminalName());
-        }
-
-        // 校验添加升级终端数量是否超过500限制
-        long upgradeTerminalCount = systemUpgradeTerminalDAO.countBySysUpgradeId(upgradeEntity.getId());
-        if (upgradeTerminalCount >= CbbTerminalSystemUpgradeAPI.MAX_UPGRADE_NUM_PER_TASK) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_NUM_EXCEED_LIMIT,
-                    String.valueOf(CbbTerminalSystemUpgradeAPI.MAX_UPGRADE_NUM_PER_TASK));
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_EXIST, terminalEntity.getTerminalName());
         }
 
         upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
@@ -253,12 +229,10 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultPageResponse<CbbSystemUpgradeTaskDTO> listSystemUpgradeTask(PageSearchRequest request)
-            throws BusinessException {
+    public DefaultPageResponse<CbbSystemUpgradeTaskDTO> listSystemUpgradeTask(PageSearchRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        Page<TerminalSystemUpgradeEntity> upgradeTaskPage =
-                querySystemUpgradeListService.pageQuery(request, TerminalSystemUpgradeEntity.class);
+        Page<TerminalSystemUpgradeEntity> upgradeTaskPage = querySystemUpgradeListService.pageQuery(request, TerminalSystemUpgradeEntity.class);
 
         // 将数据转换成dto输出
         final int numberOfElements = upgradeTaskPage.getNumberOfElements();
@@ -273,8 +247,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             dtoArr[i] = dto;
         });
 
-        return DefaultPageResponse.Builder.success(upgradeTaskPage.getSize(), (int) upgradeTaskPage.getTotalElements(),
-                dtoArr);
+        return DefaultPageResponse.Builder.success(upgradeTaskPage.getSize(), (int) upgradeTaskPage.getTotalElements(), dtoArr);
     }
 
     private void fillUpgradeTaskDTO(CbbSystemUpgradeTaskDTO dto) {
@@ -283,12 +256,10 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(IdRequest request)
-            throws BusinessException {
+    public CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(IdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        final TerminalSystemUpgradeEntity upgradeTaskEntity =
-                terminalSystemUpgradeService.getSystemUpgradeTask(request.getId());
+        final TerminalSystemUpgradeEntity upgradeTaskEntity = terminalSystemUpgradeService.getSystemUpgradeTask(request.getId());
         CbbSystemUpgradeTaskDTO upgradeTaskDTO = new CbbSystemUpgradeTaskDTO();
         TASK_BEAN_COPIER.copy(upgradeTaskEntity, upgradeTaskDTO, null);
         upgradeTaskDTO.setUpgradeTaskState(upgradeTaskEntity.getState());
@@ -296,8 +267,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> listSystemUpgradeTaskTerminal(
-            PageSearchRequest request) {
+    public DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> listSystemUpgradeTaskTerminal(PageSearchRequest request) {
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalSystemUpgradeTerminalEntity> upgradeTaskTerminalPage =
@@ -315,8 +285,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             dtoArr[i] = dto;
         });
 
-        return DefaultPageResponse.Builder.success(upgradeTaskTerminalPage.getSize(),
-                (int) upgradeTaskTerminalPage.getTotalElements(), dtoArr);
+        return DefaultPageResponse.Builder.success(upgradeTaskTerminalPage.getSize(), (int) upgradeTaskTerminalPage.getTotalElements(), dtoArr);
     }
 
     /**
@@ -340,8 +309,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultPageResponse<CbbUpgradeableTerminalListDTO> listUpgradeableTerminal(
-            CbbUpgradeableTerminalPageSearchRequest request) throws BusinessException {
+    public DefaultPageResponse<CbbUpgradeableTerminalListDTO> listUpgradeableTerminal(CbbUpgradeableTerminalPageSearchRequest request)
+            throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         setMatchEqualArr(request);
@@ -358,8 +327,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             dtoArr[i] = dto;
         });
 
-        return DefaultPageResponse.Builder.success(upgradeableTerminalPage.getSize(),
-                (int) upgradeableTerminalPage.getTotalElements(), dtoArr);
+        return DefaultPageResponse.Builder.success(upgradeableTerminalPage.getSize(), (int) upgradeableTerminalPage.getTotalElements(), dtoArr);
     }
 
     /**
@@ -423,8 +391,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         if (upgradeTerminalState == null) {
             upgradeTerminalList = systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
         } else {
-            upgradeTerminalList =
-                    systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(upgradeTaskId, upgradeTerminalState);
+            upgradeTerminalList = systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(upgradeTaskId, upgradeTerminalState);
         }
         if (CollectionUtils.isEmpty(upgradeTerminalList)) {
             return new CbbGetTaskUpgradeTerminalResponse(Lists.newArrayList());
@@ -446,8 +413,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbTerminalNameResponse cancelUpgradeTerminal(CbbUpgradeTerminalRequest request)
-            throws BusinessException {
+    public CbbTerminalNameResponse cancelUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         final UUID upgradeTaskId = request.getUpgradeTaskId();
@@ -466,11 +432,9 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     private void checkAndCancelUpgradeTerminal(String terminalId, UUID upgradeTaskId) throws BusinessException {
-        final TerminalSystemUpgradeTerminalEntity upgradeTerminal =
-                checkUpgradeTerminalExist(upgradeTaskId, terminalId);
+        final TerminalSystemUpgradeTerminalEntity upgradeTerminal = checkUpgradeTerminalExist(upgradeTaskId, terminalId);
         if (upgradeTerminal.getState() != CbbSystemUpgradeStateEnums.WAIT) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_CANCEL,
-                    terminalId);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_CANCEL, terminalId);
         }
 
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.UNDO);
@@ -479,14 +443,12 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
 
     @Override
-    public CbbTerminalNameResponse retryUpgradeTerminal(CbbUpgradeTerminalRequest request)
-            throws BusinessException {
+    public CbbTerminalNameResponse retryUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         final UUID upgradeTaskId = request.getUpgradeTaskId();
         final String terminalId = request.getTerminalId();
-        final TerminalSystemUpgradeTerminalEntity upgradeTerminal =
-                checkUpgradeTerminalExist(upgradeTaskId, terminalId);
+        final TerminalSystemUpgradeTerminalEntity upgradeTerminal = checkUpgradeTerminalExist(upgradeTaskId, terminalId);
 
         checkRetryIsAllowed(upgradeTerminal);
 
@@ -497,12 +459,10 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         return response;
     }
 
-    private void checkRetryIsAllowed(final TerminalSystemUpgradeTerminalEntity upgradeTerminal)
-            throws BusinessException {
+    private void checkRetryIsAllowed(final TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {
         final CbbSystemUpgradeStateEnums state = upgradeTerminal.getState();
         if (state != CbbSystemUpgradeStateEnums.FAIL && state != CbbSystemUpgradeStateEnums.UNDO) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_RETRY,
-                    upgradeTerminal.getTerminalId());
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_STATE_NOT_ALLOW_RETRY, upgradeTerminal.getTerminalId());
         }
     }
 
@@ -525,8 +485,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         return startFile.isFile();
     }
 
-    private TerminalSystemUpgradeTerminalEntity checkUpgradeTerminalExist(final UUID upgradeTaskId,
-            final String terminalId) throws BusinessException {
+    private TerminalSystemUpgradeTerminalEntity checkUpgradeTerminalExist(final UUID upgradeTaskId, final String terminalId)
+            throws BusinessException {
         final TerminalSystemUpgradeTerminalEntity upgradeTerminal =
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeTaskId, terminalId);
         if (upgradeTerminal == null) {
@@ -536,8 +496,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     private TerminalSystemUpgradePackageEntity getUpgradePackageEntity(UUID packageId) throws BusinessException {
-        Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt =
-                terminalSystemUpgradePackageDAO.findById(packageId);
+        Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = terminalSystemUpgradePackageDAO.findById(packageId);
         if (!upgradePackageOpt.isPresent() || upgradePackageOpt.get().getIsDelete()) {
             LOGGER.error("terminal system upgrade package not found, package id is: {}", packageId);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_NOT_EXIST);

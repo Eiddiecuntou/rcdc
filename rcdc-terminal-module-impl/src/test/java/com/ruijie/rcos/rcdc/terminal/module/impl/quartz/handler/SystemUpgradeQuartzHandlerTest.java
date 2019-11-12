@@ -43,9 +43,6 @@ public class SystemUpgradeQuartzHandlerTest {
     private TerminalSystemUpgradeService systemUpgradeService;
 
     @Injectable
-    private SystemUpgradeStartWaitingHandler startWaitingHandler;
-
-    @Injectable
     private SystemUpgradeStateSynctHandler stateSyncHandler;
 
     @Injectable
@@ -192,8 +189,6 @@ public class SystemUpgradeQuartzHandlerTest {
                 times = 1;
                 stateSyncHandler.execute(upgradeTerminalList);
                 times = 1;
-                startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());
-                times = 1;
             }
         };
     }
@@ -236,8 +231,6 @@ public class SystemUpgradeQuartzHandlerTest {
                 confirmHandler.execute((List<TerminalSystemUpgradeTerminalEntity>) any);
                 times = 1;
                 stateSyncHandler.execute(upgradeTerminalList);
-                times = 1;
-                startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());
                 times = 1;
             }
         };
