@@ -275,13 +275,14 @@ public class FileOperateUtilTest {
         String directoryPath = "directoryPath";
         String exceptFileName = "exceptFileName";
 
-        File subFile = new File("E:\\data\\deleteFile");
+        String filePath = System.getProperty("user.dir");
+        File subFile = new File(filePath);
 
         new MockUp<SkyengineFileSystemEnvironment>(){
 
             @Mock
             public List<String> getAllowOperatorFolder() {
-                return Lists.newArrayList("E:\\data\\deleteFile");
+                return Lists.newArrayList(filePath);
             }
         };
 
@@ -767,13 +768,14 @@ public class FileOperateUtilTest {
      */
     @Test
     public void testDeleteFileIsFile() throws Exception {
-        File deleteFile = new File("E:\\data\\deleteFile");
+        String filePath = System.getProperty("user.dir");
+        File deleteFile = new File(filePath);
 
         new MockUp<SkyengineFileSystemEnvironment>(){
 
             @Mock
             public List<String> getAllowOperatorFolder() {
-                return Lists.newArrayList("E:\\data\\deleteFile");
+                return Lists.newArrayList(filePath);
             }
         };
 
@@ -807,7 +809,8 @@ public class FileOperateUtilTest {
      */
     @Test
     public void testDeleteFileIsDirectory() throws Exception {
-        File deleteFile = new File("E:\\data\\deleteFile");
+        String filePath = System.getProperty("user.dir");
+        File deleteFile = new File(filePath);
 
         File subFile = new File("1");
         new MockUp<File>() {
@@ -838,7 +841,7 @@ public class FileOperateUtilTest {
 
             @Mock
             public List<String> getAllowOperatorFolder() {
-                return Lists.newArrayList("E:\\data\\deleteFile");
+                return Lists.newArrayList(filePath);
             }
         };
 
