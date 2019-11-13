@@ -5,10 +5,10 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import java.util.Collections;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.GetVersionRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.LinuxVDIComponentUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandlerFactory;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.LinuxVDIComponentUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.*;
@@ -79,7 +79,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         new MockUp<LinuxVDIComponentUpgradeHandler>() {
 
             @Mock
-            public TerminalVersionResultDTO getVersion(GetVersionRequest request) {
+            public TerminalVersionResultDTO getVersion(GetVersionDTO request) {
                 TerminalVersionResultDTO resultDTO = new TerminalVersionResultDTO();
                 resultDTO.setResult(111);
                 resultDTO.setUpdatelist("sss");

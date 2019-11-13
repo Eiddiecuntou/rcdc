@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import java.util.Map;
 

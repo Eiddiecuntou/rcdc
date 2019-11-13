@@ -1,16 +1,18 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.WinAppComponentUpgradeHandler;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.Tested;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,15 +24,19 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 /**
+ *
  * Description: Function Description
- * Copyright: Copyright (c) 2018
+ * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/11/7
+ * Create Time: 2019年8月10日
  *
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
-public class AbstractCommonComponentUpgradeHandlerTest {
+public class WinAppComponentUpgradeHandlerTest {
+
+    @Tested
+    private WinAppComponentUpgradeHandler handler;
 
 
     /**
@@ -40,7 +46,6 @@ public class AbstractCommonComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionArgumentIsNull() throws Exception {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
         ThrowExceptionTester.throwIllegalArgumentException(() -> handler.getVersion(null),
                 "get version request can not be null");
         Assert.assertTrue(true);
@@ -51,9 +56,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionUpdatelistIsNull() {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-
-        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
 
         new MockUp(TerminalUpdateListCacheManager.class) {
@@ -61,7 +64,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
             private boolean isFirst = true;
 
             @Mock
-            public CbbCommonUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 if (isFirst) {
                     isFirst = false;
                     // 模拟返回空
@@ -72,8 +75,8 @@ public class AbstractCommonComponentUpgradeHandlerTest {
             }
         };
 
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
-        GetVersionRequest request = new GetVersionRequest();
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
+        GetVersionDTO request = new GetVersionDTO();
         request.setRainUpgradeVersion("123");
         request.setValidateMd5("xxx");
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
@@ -82,7 +85,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         TerminalVersionResultDTO terminalVersionResultDTO1 = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(),
                 terminalVersionResultDTO1.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
     }
 
     /**
@@ -90,68 +93,62 @@ public class AbstractCommonComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionNoUpgrade() {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-
-        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
-        List<CbbCommonComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbCommonComponentVersionInfoDTO());
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
+        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new CbbWinAppComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setValidateMd5("123");
         updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.1.1");
-        updatelist.setOsLimit("1.0.2.1");
+
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbCommonUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
 
-        GetVersionRequest request = new GetVersionRequest();
+        GetVersionDTO request = new GetVersionDTO();
         request.setRainUpgradeVersion("1.1.0.1");
         request.setValidateMd5("123");
-        request.setOsInnerVersion("1.1.0.1");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
     }
 
     /**
-     * 测试getVersion,版本号长度超过限制版本
+     * 测试getVersion,非法的版本号
      */
     @Test
     public void testGetVersionRainUpgradeVersionIsIllegale() {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-
-        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
-        List<CbbCommonComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbCommonComponentVersionInfoDTO());
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
+        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        CbbWinAppComponentVersionInfoDTO complete = new CbbWinAppComponentVersionInfoDTO();
+        CbbWinAppComponentVersionInfoDTO component = new CbbWinAppComponentVersionInfoDTO();
+        componentList.add(complete);
+        componentList.add(component);
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.1.1");
-        updatelist.setLimitVersion("1.0.0.1");
+        updatelist.setLimitVersion("1.0.1.1");
         updatelist.setValidateMd5("123");
-        updatelist.setOsLimit("1.0.2.1");
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbCommonUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
 
-        GetVersionRequest request = new GetVersionRequest();
+        GetVersionDTO request = new GetVersionDTO();
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
-        request.setOsInnerVersion("1.1.1.1.1");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
     }
 
     /**
@@ -159,41 +156,34 @@ public class AbstractCommonComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionLimitVersion() {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-
-        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
-        List<CbbCommonComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbCommonComponentVersionInfoDTO());
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
+        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        CbbWinAppComponentVersionInfoDTO complete = new CbbWinAppComponentVersionInfoDTO();
+        CbbWinAppComponentVersionInfoDTO component = new CbbWinAppComponentVersionInfoDTO();
+        componentList.add(complete);
+        componentList.add(component);
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.2.1");
         updatelist.setLimitVersion("1.0.1.1");
-        updatelist.setOsLimit("1.0.2");
+        updatelist.setValidateMd5("123");
 
-        new MockUp(Logger.class) {
-            @Mock
-            public boolean isDebugEnabled() {
-                return true;
-            }
-        };
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public CbbCommonUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
 
-        GetVersionRequest request = new GetVersionRequest();
+        GetVersionDTO request = new GetVersionDTO();
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
-        request.setOsInnerVersion("1.0.1");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
     }
 
     /**
@@ -201,18 +191,15 @@ public class AbstractCommonComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionIsUpdating() {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-
-        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
-        List<CbbCommonComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CbbCommonComponentVersionInfoDTO());
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
+        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new CbbWinAppComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.2.1");
         updatelist.setLimitVersion("1.0.1.1");
 
-        GetVersionRequest request = new GetVersionRequest();
+        GetVersionDTO request = new GetVersionDTO();
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
@@ -221,19 +208,4 @@ public class AbstractCommonComponentUpgradeHandlerTest {
 
     }
 
-    /**
-     * Description: 测试类
-     * Copyright: Copyright (c) 2018
-     * Company: Ruijie Co., Ltd.
-     * Create Time: 2019/11/7
-     *
-     * @author nt
-     */
-    private class TestedComponentUpgradeHandler extends AbstractCommonComponentUpgradeHandler {
-
-        @Override
-        protected CbbTerminalTypeEnums getTerminalType() {
-            return CbbTerminalTypeEnums.VDI_ANDROID;
-        }
-    }
 }

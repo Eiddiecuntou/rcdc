@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
@@ -11,7 +11,7 @@ import org.springframework.lang.Nullable;
  *
  * @author nt
  */
-public class GetVersionRequest {
+public class GetVersionDTO {
 
     @Nullable
     private String terminalId;

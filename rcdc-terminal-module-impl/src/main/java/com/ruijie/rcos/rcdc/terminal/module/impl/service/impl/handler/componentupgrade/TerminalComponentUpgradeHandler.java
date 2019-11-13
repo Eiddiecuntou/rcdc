@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 
@@ -17,5 +17,5 @@ public interface TerminalComponentUpgradeHandler {
      * @param request 请求参数
      * @return 升级信息
      */
-    TerminalVersionResultDTO getVersion(GetVersionRequest request);
+    TerminalVersionResultDTO getVersion(GetVersionDTO request);
 }

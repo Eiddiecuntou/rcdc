@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +31,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCommonComponentUpgradeHandler.class);
 
     @Override
-    public TerminalVersionResultDTO<CbbCommonUpdateListDTO> getVersion(GetVersionRequest request) {
+    public TerminalVersionResultDTO<CbbCommonUpdateListDTO> getVersion(GetVersionDTO request) {
         Assert.notNull(request, "get version request can not be null");
 
         CbbTerminalTypeEnums terminalType = getTerminalType();
@@ -84,7 +84,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
     }
 
-    private boolean isSupportUpgrade(CbbCommonUpdateListDTO updateList, GetVersionRequest request) {
+    private boolean isSupportUpgrade(CbbCommonUpdateListDTO updateList, GetVersionDTO request) {
         if (StringUtils.isBlank(request.getOsInnerVersion())) {
             // 支持旧版本终端未上报osInnerVersion场景升级
             return true;
@@ -118,7 +118,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
      * @param：request 终端信息对象
      * @return: boolean 是否需要升级结果
      */
-    private boolean isNeedToUpgrade(CbbCommonUpdateListDTO updatelist, GetVersionRequest request) {
+    private boolean isNeedToUpgrade(CbbCommonUpdateListDTO updatelist, GetVersionDTO request) {
         boolean isVersionEqual = request.getRainUpgradeVersion().equals(updatelist.getVersion());
         boolean isMD5Equal = Objects.equals(request.getValidateMd5(), updatelist.getValidateMd5());
         return !isVersionEqual || !isMD5Equal;

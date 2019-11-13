@@ -10,9 +10,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.GetVersionRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandlerFactory;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -50,7 +50,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         }
 
 
-        GetVersionRequest versionRequest = new GetVersionRequest();
+        GetVersionDTO versionRequest = new GetVersionDTO();
         versionRequest.setTerminalId(terminalEntity.getTerminalId());
         versionRequest.setRainUpgradeVersion(terminalEntity.getRainUpgradeVersion());
         versionRequest.setOsInnerVersion(terminalEntity.getOsInnerVersion());

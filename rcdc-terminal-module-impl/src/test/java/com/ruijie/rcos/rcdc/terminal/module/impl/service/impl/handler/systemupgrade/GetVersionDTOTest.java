@@ -1,5 +1,6 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.GetSetTester;
 import org.junit.Assert;
@@ -15,14 +16,14 @@ import org.junit.runner.RunWith;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
-public class GetVersionRequestTest {
+public class GetVersionDTOTest {
 
     /**
      * 测试GetVersionRequest请求
      */
     @Test
     public void testGetVersionRequest() {
-        GetSetTester tester = new GetSetTester(GetVersionRequest.class);
+        GetSetTester tester = new GetSetTester(GetVersionDTO.class);
         tester.runTest();
         Assert.assertTrue(true);
     }

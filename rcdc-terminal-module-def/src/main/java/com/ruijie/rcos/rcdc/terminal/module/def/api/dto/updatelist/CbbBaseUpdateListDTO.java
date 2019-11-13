@@ -26,8 +26,6 @@ public class CbbBaseUpdateListDTO<T> implements Serializable {
 
     private List<T> componentList;
 
-    private String osLimit;
-
     public CbbBaseUpdateListDTO() {
     }
 
@@ -76,13 +74,5 @@ public class CbbBaseUpdateListDTO<T> implements Serializable {
 
     public void setComponentList(List<T> componentList) {
         this.componentList = componentList;
-    }
-
-    public String getOsLimit() {
-        return osLimit;
-    }
-
-    public void setOsLimit(String osLimit) {
-        this.osLimit = osLimit;
     }
 }

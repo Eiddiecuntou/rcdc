@@ -14,8 +14,6 @@ public class CbbCommonUpdateListDTO extends CbbBaseUpdateListDTO<CbbCommonCompon
 
     private String osLimit;
 
-    private String versionLimit;
-
     public String getBaseVersion() {
         return baseVersion;
     }
@@ -24,21 +22,11 @@ public class CbbCommonUpdateListDTO extends CbbBaseUpdateListDTO<CbbCommonCompon
         this.baseVersion = baseVersion;
     }
 
-    @Override
     public String getOsLimit() {
         return osLimit;
     }
 
-    @Override
     public void setOsLimit(String osLimit) {
         this.osLimit = osLimit;
-    }
-
-    public String getVersionLimit() {
-        return versionLimit;
-    }
-
-    public void setVersionLimit(String versionLimit) {
-        this.versionLimit = versionLimit;
     }
 }

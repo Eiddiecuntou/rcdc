@@ -1,7 +1,8 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.AbstractTerminalComponentUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import org.junit.Assert;
@@ -57,7 +58,7 @@ public class AbstractTerminalComponentUpgradeHandlerTest {
     private class TestedTerminalComponentUpgradeHandler extends AbstractTerminalComponentUpgradeHandler {
 
         @Override
-        public TerminalVersionResultDTO getVersion(GetVersionRequest request) {
+        public TerminalVersionResultDTO getVersion(GetVersionDTO request) {
             // 测试类
             return null;
         }

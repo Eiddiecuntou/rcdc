@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +29,7 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
     private static final Logger LOGGER = LoggerFactory.getLogger(WinAppComponentUpgradeHandler.class);
 
     @Override
-    public TerminalVersionResultDTO<CbbWinAppUpdateListDTO> getVersion(GetVersionRequest request) {
+    public TerminalVersionResultDTO<CbbWinAppUpdateListDTO> getVersion(GetVersionDTO request) {
         Assert.notNull(request, "get version request can not be null");
 
         LOGGER.debug("windows软终端请求版本号");

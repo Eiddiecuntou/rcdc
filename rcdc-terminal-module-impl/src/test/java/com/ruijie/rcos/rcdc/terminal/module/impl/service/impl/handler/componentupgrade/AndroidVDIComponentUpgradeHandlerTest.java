@@ -1,6 +1,7 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.AndroidVDIComponentUpgradeHandler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

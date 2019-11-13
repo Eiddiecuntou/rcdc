@@ -118,8 +118,8 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
     private TerminalUpgradeVersionFileInfo checkVersionInfo(String packagePath) throws BusinessException {
         String versionPath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION;
         Properties prop = new Properties();
-        try {
-            InputStream inputStream = new FileInputStream(versionPath);
+
+        try (InputStream inputStream = new FileInputStream(versionPath)) {
             prop.load(inputStream);
         } catch (IOException e) {
             LOGGER.debug("version file read error, file path[{}]", versionPath);
