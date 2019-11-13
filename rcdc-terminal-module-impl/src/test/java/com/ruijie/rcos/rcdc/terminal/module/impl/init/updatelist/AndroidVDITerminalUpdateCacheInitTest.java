@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbAndroidVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import mockit.Tested;
 import org.junit.Assert;
@@ -35,7 +35,7 @@ public class AndroidVDITerminalUpdateCacheInitTest {
 
     @Test
     public void testFillUpdateList() {
-        cacheInit.fillUpdateList(new CbbAndroidVDIUpdateListDTO());
+        cacheInit.fillUpdateList(new CbbCommonUpdateListDTO());
         assertTrue(true);
     }
 }

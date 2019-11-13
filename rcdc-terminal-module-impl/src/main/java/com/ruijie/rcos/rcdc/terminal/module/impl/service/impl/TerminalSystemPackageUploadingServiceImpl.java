@@ -1,18 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalSystemUpgradeHandlerFactory;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
  * Description: Function Description
@@ -30,7 +31,7 @@ public class TerminalSystemPackageUploadingServiceImpl implements TerminalSystem
     private static final Object LOCK = new Object();
 
     @Autowired
-    private TerminalSystemUpgradeHandlerFactory handlerFactory;
+    private TerminalSystemUpgradePackageHandlerFactory handlerFactory;
 
     @Override
     public boolean isUpgradeFileUploading(CbbTerminalTypeEnums terminalType) {
@@ -53,7 +54,7 @@ public class TerminalSystemPackageUploadingServiceImpl implements TerminalSystem
             SYS_UPGRADE_PACKAGE_UPLOADING.add(terminalType);
         }
         try {
-            TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
+            TerminalSystemUpgradePackageHandler handler = handlerFactory.getHandler(terminalType);
             handler.uploadUpgradePackage(request);
         } finally {
             // 完成清除上传标志缓存内记录

@@ -86,6 +86,8 @@ public class TerminalEntity {
 
     private UUID groupId;
 
+    private String osInnerVersion;
+
     public UUID getId() {
         return id;
     }
@@ -319,4 +321,11 @@ public class TerminalEntity {
         this.groupId = groupId;
     }
 
+    public String getOsInnerVersion() {
+        return osInnerVersion;
+    }
+
+    public void setOsInnerVersion(String osInnerVersion) {
+        this.osInnerVersion = osInnerVersion;
+    }
 }

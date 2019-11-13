@@ -82,6 +82,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL = "rcdc_terminal_upgrade_package_file_illegal";
 
     /**
+     *  ISO升级包md5校验失败
+     */
+    String RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR = "rcdc_terminal_upgrade_package_file_md5_check_error";
+
+    /**
      * 系统升级包正在上传中
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING = "rcdc_terminal_system_upgrade_package_is_uploading";
@@ -112,11 +117,6 @@ public interface BusinessKey {
      * 刷机任务不存在
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_NOT_EXIST = "rcdc_terminal_system_upgrade_task_not_exist";
-
-    /**
-     * 终端刷机任务终端数量超出限制
-     */
-    String RCDC_TERMINAL_SYSTEM_UPGRADE_TERMINAL_NUM_EXCEED_LIMIT = "rcdc_terminal_system_upgrade_terminal_num_exceed_limit";
 
     /**
      * 刷机任务已关闭
@@ -306,13 +306,13 @@ public interface BusinessKey {
     String RCDC_TERMINAL_WINDOWS_APP_UPDATELIST_CACHE_NOT_READY = "rcdc_terminal_windows_app_updatelist_cache_not_ready";
     String RCDC_TERMINAL_COMPONENT_UPDATELIST_CACHE_INCORRECT = "rcdc_terminal_component_updatelist_cache_incorrect";
 
+    /************ 终端系统升级***************/
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_HANDLER_NOT_EXIST = "rcdc_terminal_system_upgrade_handler_not_exist";
+
     /************Android终端OTA升级**************************/
-    String RCDC_TERMINAL_OTA_UPGRADE_HANDLER_NOT_EXIST = "rcdc_terminal_ota_upgrade_handler_not_exist";
-    String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_UPLOAD_FAIL = "rcdc_terminal_ota_upgrade_package_upload_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL = "rcdc_terminal_ota_upgrade_computer_seed_file_md5_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_make_seed_file_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR = "rcdc_terminal_ota_upgrade_package_has_error";
-    String RCDC_TERMINAL_NOT_OTA_UPGRADE_PACKAGE_NOT_EDIT = "rcdc_terminal_not_ota_upgrade_package_not_edit";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
 
 }
