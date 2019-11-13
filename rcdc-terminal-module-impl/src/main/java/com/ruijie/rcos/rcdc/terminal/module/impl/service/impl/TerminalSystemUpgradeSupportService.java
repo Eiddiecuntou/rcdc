@@ -1,22 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.SystemUpgradeQuartzHandler;
@@ -46,8 +40,6 @@ public class TerminalSystemUpgradeSupportService {
 
     private static ScheduledFuture<?> UPGRADE_TASK_FUTURE = null;
 
-    private static ScheduledFuture<?> SUPPORT_SERVICE_FUTURE = null;
-
     private static ThreadExecutor SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL =
             ThreadExecutors.newBuilder("SYSTEM_UPGRADE_SCHEDULED_THREAD").maxThreadNum(2).queueSize(1).build();
 
@@ -56,9 +48,6 @@ public class TerminalSystemUpgradeSupportService {
 
     @Autowired
     private SystemUpgradeQuartzHandler systemUpgradeQuartzHandler;
-
-    @Autowired
-    private TerminalSystemUpgradeDAO systemUpgradeDAO;
 
     /**
      * 关闭刷机相关支持服务
@@ -82,11 +71,6 @@ public class TerminalSystemUpgradeSupportService {
         if (UPGRADE_TASK_FUTURE != null) {
             UPGRADE_TASK_FUTURE.cancel(true);
             UPGRADE_TASK_FUTURE = null;
-        }
-
-        if (SUPPORT_SERVICE_FUTURE != null) {
-            SUPPORT_SERVICE_FUTURE.cancel(true);
-            SUPPORT_SERVICE_FUTURE = null;
         }
     }
 
@@ -118,7 +102,7 @@ public class TerminalSystemUpgradeSupportService {
         }
 
         // 开始定时任务
-        beginSchefuleTask();
+        beginScheduleTask();
     }
 
     private void prepareUpgradeImg(TerminalSystemUpgradePackageEntity packageEntity) throws BusinessException {
@@ -186,68 +170,12 @@ public class TerminalSystemUpgradeSupportService {
     /**
      * 确认开启刷机任务处理定时任务
      */
-    private void beginSchefuleTask() {
+    private void beginScheduleTask() {
         if (UPGRADE_TASK_FUTURE == null) {
             LOGGER.info("开启定时任务");
             UPGRADE_TASK_FUTURE =
                     SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(systemUpgradeQuartzHandler, 0, QUARTZ_PERIOD_SECOND, TimeUnit.SECONDS);
-            SUPPORT_SERVICE_FUTURE = SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL.scheduleAtFixedRate(new SupportServiceQuartzHandler(), 0,
-                    QUARTZ_PERIOD_SECOND, TimeUnit.SECONDS);
         }
     }
 
-    /**
-     * 
-     * Description: 系统刷机任务相关服务处理器
-     * Copyright: Copyright (c) 2018
-     * Company: Ruijie Co., Ltd.
-     * Create Time: 2019年2月20日
-     * 
-     * @author nt
-     */
-    class SupportServiceQuartzHandler implements Runnable {
-
-        @Override
-        public void run() {
-            LOGGER.info("开始处理系统刷机相关服务");
-            boolean isClosed = false;
-            try {
-                isClosed = closeSupportService();
-            } catch (BusinessException e) {
-                LOGGER.error("开闭系统刷机相关服务异常", e);
-            }
-            LOGGER.info("完成处理系统刷机相关服务, 相关服务关闭状态：{} ", isClosed);
-        }
-
-        private boolean closeSupportService() throws BusinessException {
-            List<CbbSystemUpgradeTaskStateEnums> stateList =
-                    Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
-            List<TerminalSystemUpgradeEntity> upgradeTaskList = systemUpgradeDAO
-                    .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
-            if (CollectionUtils.isEmpty(upgradeTaskList)) {
-                LOGGER.info("无正在进行中的刷机任务");
-                // 确认关闭nfs服务，关闭定时任务
-                setClosingTaskToFinish();
-                closeSystemUpgradeService();
-                return true;
-            }
-            return false;
-        }
-
-        private void setClosingTaskToFinish() {
-            List<CbbSystemUpgradeTaskStateEnums> stateList =
-                    Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.CLOSING});
-            List<TerminalSystemUpgradeEntity> closingTaskList = systemUpgradeDAO
-                    .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
-            if (CollectionUtils.isEmpty(closingTaskList)) {
-                LOGGER.info("无正在关闭中的刷机任务");
-                return;
-            }
-            for (TerminalSystemUpgradeEntity upgradeEntity : closingTaskList) {
-                upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
-                systemUpgradeDAO.save(upgradeEntity);
-            }
-        }
-
-    }
 }

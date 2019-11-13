@@ -1,66 +1,146 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
 
-import java.io.Serializable;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalResetEnums;
 
 /**
- * Description: Function Description
+ * 
+ * Description: VDI终端组件通用升级版本信息
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/8/1
- *
+ * Create Time: 2019年1月21日
+ * 
  * @author nt
  */
-public class CbbCommonComponentVersionInfoDTO implements Serializable {
+public class CbbCommonComponentVersionInfoDTO extends CbbBaseComponentVersionInfoDTO {
 
     /**
-     * 组件名
+     * 组件文件名
      */
-    private String name;
+    private String completePackageName;
 
     /**
-     * 组件版本
+     * 差异包文件名
      */
-    private String version;
+    private String incrementalPackageName;
 
     /**
-     * 组件支持类型
+     * 完整组件文件种子下载路径
      */
-    private String platform;
+    private String completeTorrentUrl;
 
     /**
-     * 组件文件MD5
+     * 完整组件文件种子md5
      */
-    private String md5;
+    private String completeTorrentMd5;
 
-    public String getName() {
-        return name;
+    /**
+     * 差异包文件种子下载路径
+     */
+    private String incrementalTorrentUrl;
+
+    /**
+     * 差异包文件种子md5
+     */
+    private String incrementalTorrentMd5;
+
+    /**
+     * 差异包文件md5
+     */
+    private String incrementalPackageMd5;
+
+    /**
+     * 差异升级基线版本包名称
+     */
+    private String basePackageName;
+
+    /**
+     * 差异升级基线版本包md5值
+     */
+    private String basePackageMd5;
+
+    /**
+     * 重启标识(NOW/LATER/NOT)
+     */
+    private CbbTerminalResetEnums restartFlag;
+
+    public String getCompletePackageName() {
+        return completePackageName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCompletePackageName(String completePackageName) {
+        this.completePackageName = completePackageName;
     }
 
-    public String getVersion() {
-        return version;
+    public String getIncrementalPackageName() {
+        return incrementalPackageName;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setIncrementalPackageName(String incrementalPackageName) {
+        this.incrementalPackageName = incrementalPackageName;
     }
 
-    public String getPlatform() {
-        return platform;
+    public String getCompleteTorrentUrl() {
+        return completeTorrentUrl;
     }
 
-    public void setPlatform(String platform) {
-        this.platform = platform;
+    public void setCompleteTorrentUrl(String completeTorrentUrl) {
+        this.completeTorrentUrl = completeTorrentUrl;
     }
 
-    public String getMd5() {
-        return md5;
+    public String getCompleteTorrentMd5() {
+        return completeTorrentMd5;
     }
 
-    public void setMd5(String md5) {
-        this.md5 = md5;
+    public void setCompleteTorrentMd5(String completeTorrentMd5) {
+        this.completeTorrentMd5 = completeTorrentMd5;
     }
+
+    public String getIncrementalTorrentUrl() {
+        return incrementalTorrentUrl;
+    }
+
+    public void setIncrementalTorrentUrl(String incrementalTorrentUrl) {
+        this.incrementalTorrentUrl = incrementalTorrentUrl;
+    }
+
+    public String getIncrementalTorrentMd5() {
+        return incrementalTorrentMd5;
+    }
+
+    public void setIncrementalTorrentMd5(String incrementalTorrentMd5) {
+        this.incrementalTorrentMd5 = incrementalTorrentMd5;
+    }
+
+    public String getIncrementalPackageMd5() {
+        return incrementalPackageMd5;
+    }
+
+    public void setIncrementalPackageMd5(String incrementalPackageMd5) {
+        this.incrementalPackageMd5 = incrementalPackageMd5;
+    }
+
+    public CbbTerminalResetEnums getRestartFlag() {
+        return restartFlag;
+    }
+
+    public void setRestartFlag(CbbTerminalResetEnums restartFlag) {
+        this.restartFlag = restartFlag;
+    }
+
+    public String getBasePackageName() {
+        return basePackageName;
+    }
+
+    public void setBasePackageName(String basePackageName) {
+        this.basePackageName = basePackageName;
+    }
+
+    public String getBasePackageMd5() {
+        return basePackageMd5;
+    }
+
+    public void setBasePackageMd5(String basePackageMd5) {
+        this.basePackageMd5 = basePackageMd5;
+    }
+
 }

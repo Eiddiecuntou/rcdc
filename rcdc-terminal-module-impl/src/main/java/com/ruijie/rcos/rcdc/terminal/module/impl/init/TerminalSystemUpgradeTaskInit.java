@@ -46,7 +46,7 @@ public class TerminalSystemUpgradeTaskInit implements SafetySingletonInitializer
     public void safeInit() {
         LOGGER.info("开始终端刷机服务初始化...");
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING, CbbSystemUpgradeTaskStateEnums.CLOSING});
+                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
         final List<TerminalSystemUpgradeEntity> upgradingTaskList = systemUpgradeDAO.
                 findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {

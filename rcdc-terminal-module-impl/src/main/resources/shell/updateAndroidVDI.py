@@ -10,7 +10,7 @@ import os
 import sys
 
 from Common import getLogger
-from VDICommonUpdate import VDIUpdate
+from CommonUpdate import update
 
 # 日志
 logger = getLogger()
@@ -19,12 +19,13 @@ logger = getLogger()
 os.umask(022)
 
 # 终端平台信息
-terminalPlatform = "android"
+terminalPlatform = "vdi"
+osType = "android"
 
 
 # 入口函数
-def update():
-    result = VDIUpdate(terminalPlatform)
+def do_update():
+    result = update(terminalPlatform, osType)
     return result;
 
 
@@ -35,6 +36,6 @@ if __name__ == '__main__':
         logger.info("ip param can not be null")
         print "fail"
     else:
-        result = update()
+        result = do_update()
         logger.info("update result : %s" % result)
         print result
