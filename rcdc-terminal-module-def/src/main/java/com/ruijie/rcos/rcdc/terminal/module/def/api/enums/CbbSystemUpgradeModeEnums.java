@@ -20,11 +20,6 @@ public enum CbbSystemUpgradeModeEnums {
      */
     MANUAL,
 
-    /**
-     * 关闭升级
-     */
-    CLOSE_UPGRADE
-
 
 
 }

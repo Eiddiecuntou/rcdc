@@ -30,11 +30,6 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 public interface CbbTerminalSystemUpgradeAPI {
 
     /**
-     * 单次刷机任务最大刷机终端数量
-     */
-    long MAX_UPGRADE_NUM_PER_TASK = 500;
-
-    /**
      * 添加刷机任务
      * 
      * @param request 请求参数
@@ -43,27 +38,6 @@ public interface CbbTerminalSystemUpgradeAPI {
      */
     @NoRollback
     CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException;
-
-    /**
-     * 开启OTA升级任务
-     *
-     * @param request 请求参数，传升级包的id
-     * @return 请求结果
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    DefaultResponse startOtaUpgradeTask(IdRequest request) throws BusinessException;
-
-
-    /**
-     * 关闭OTA升级任务
-     * 
-     * @param request 请求参数，传升级包的id
-     * @return 请求结果
-     * @throws BusinessException 业务异常
-     */
-    @NoRollback
-    DefaultResponse closeOtaUpgradeTask(IdRequest request) throws BusinessException;
 
     /**
      * 

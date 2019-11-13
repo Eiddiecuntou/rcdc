@@ -1,44 +1,31 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.SystemUpgradeQuartzHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService.SupportServiceQuartzHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.NfsServiceUtil;
-import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner.ReturnValueResolver;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import mockit.Deencapsulation;
-import mockit.Delegate;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 
 /**
  * 
@@ -85,7 +72,6 @@ public class TerminalSystemUpgradeSupportServiceTest {
             @Injectable ScheduledFuture<?> supportServiceFuture, @Mocked NfsServiceUtil nfsServiceUtil) throws BusinessException {
 
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", upgradeTaskFuture);
-        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SUPPORT_SERVICE_FUTURE", supportServiceFuture);
         service.closeSystemUpgradeService();
 
         new Verifications() {
@@ -93,8 +79,6 @@ public class TerminalSystemUpgradeSupportServiceTest {
                 NfsServiceUtil.shutDownService();
                 times = 1;
                 upgradeTaskFuture.cancel(true);
-                times = 1;
-                supportServiceFuture.cancel(true);
                 times = 1;
             }
         };
@@ -109,7 +93,6 @@ public class TerminalSystemUpgradeSupportServiceTest {
     @Test
     public void testCloseSystemUpgradeService(@Mocked NfsServiceUtil nfsServiceUtil) throws BusinessException {
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", null);
-        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SUPPORT_SERVICE_FUTURE", null);
         service.closeSystemUpgradeService();
         new Verifications() {
             {
@@ -134,17 +117,15 @@ public class TerminalSystemUpgradeSupportServiceTest {
      * 测试openSystemUpgradeService，复制文件失败
      * 
      * @param nfsServiceUtil mock对象
-     * @param handler mock对象
      * @param upgradeTaskFuture mock对象
      * @param supportServiceFuture mock对象
      * @throws BusinessException 异常
      */
     @Test
-    public void testIsTerminalOnlineCopyFileFailed(@Mocked NfsServiceUtil nfsServiceUtil, @Mocked SupportServiceQuartzHandler handler,
-            @Injectable ScheduledFuture<?> upgradeTaskFuture, @Injectable ScheduledFuture<?> supportServiceFuture) throws BusinessException {
+    public void testIsTerminalOnlineCopyFileFailed(@Mocked NfsServiceUtil nfsServiceUtil, @Injectable ScheduledFuture<?> upgradeTaskFuture,
+            @Injectable ScheduledFuture<?> supportServiceFuture) throws BusinessException {
 
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", upgradeTaskFuture);
-        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SUPPORT_SERVICE_FUTURE", supportServiceFuture);
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
         new MockUp<File>() {
             @Mock
@@ -183,16 +164,13 @@ public class TerminalSystemUpgradeSupportServiceTest {
      * 测试openSystemUpgradeService，
      * 
      * @param nfsServiceUtil mock对象
-     * @param handler mock对象
      * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
-    public void testIsTerminalOnline(@Mocked NfsServiceUtil nfsServiceUtil, @Mocked SupportServiceQuartzHandler handler)
-            throws BusinessException, InterruptedException {
+    public void testIsTerminalOnline(@Mocked NfsServiceUtil nfsServiceUtil) throws BusinessException, InterruptedException {
 
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", null);
-        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SUPPORT_SERVICE_FUTURE", null);
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
         new MockUp<File>() {
             @Mock
@@ -217,100 +195,6 @@ public class TerminalSystemUpgradeSupportServiceTest {
             }
         };
     }
-
-    /**
-     * 测试SupportServiceQuartzHandler，无正在进行中的刷机任务
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testSupportServiceQuartzHandlerNoUpgradingTask() throws BusinessException {
-        SupportServiceQuartzHandler handler = service.new SupportServiceQuartzHandler();
-        new Expectations() {
-            {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                result = new ArrayList<>();
-            }
-        };
-        new MockUp<TerminalSystemUpgradeSupportService>() {
-            @Mock
-            public void closeSystemUpgradeService() {
-
-            }
-        };
-        handler.run();
-
-        new Verifications() {
-            {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 2;
-            }
-        };
-    }
-
-    /**
-     * 测试SupportServiceQuartzHandler，出现异常
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testSupportServiceQuartzHandlerNoUpgradingTaskHasBusinessException() throws BusinessException {
-        SupportServiceQuartzHandler handler = service.new SupportServiceQuartzHandler();
-        new Expectations() {
-            {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                result = new ArrayList<>();
-            }
-        };
-        new MockUp<TerminalSystemUpgradeSupportService>() {
-            @Mock
-            public void closeSystemUpgradeService() throws BusinessException {
-                throw new BusinessException("key");
-            }
-        };
-        handler.run();
-
-        new Verifications() {
-            {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 2;
-            }
-        };
-    }
-
-    /**
-     * 测试SupportServiceQuartzHandler，有正在进行中的刷机任务
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testSupportServiceQuartzHandler() throws BusinessException {
-        SupportServiceQuartzHandler handler = service.new SupportServiceQuartzHandler();
-        List<TerminalSystemUpgradeEntity> upgradeTaskList = new ArrayList<>();
-        upgradeTaskList.add(new TerminalSystemUpgradeEntity());
-        new Expectations() {
-            {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                result = upgradeTaskList;
-            }
-        };
-        handler.run();
-
-        new Verifications() {
-            {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 1;
-            }
-        };
-    }
-
-
 
     /**
      * 

@@ -1,13 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import java.util.Date;
+import java.util.UUID;
+
+import javax.persistence.*;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-
-import javax.persistence.*;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Description: 终端系统升级包实体类
@@ -36,9 +36,6 @@ public class TerminalSystemUpgradePackageEntity {
     private String seedPath;
 
     private String seedMd5;
-
-    @Enumerated(EnumType.STRING)
-    private CbbSystemUpgradeModeEnums upgradeMode;
 
     @Enumerated(EnumType.STRING)
     private CbbTerminalTypeEnums packageType;
@@ -119,14 +116,6 @@ public class TerminalSystemUpgradePackageEntity {
 
     public void setSeedMd5(String seedMd5) {
         this.seedMd5 = seedMd5;
-    }
-
-    public CbbSystemUpgradeModeEnums getUpgradeMode() {
-        return upgradeMode;
-    }
-
-    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
-        this.upgradeMode = upgradeMode;
     }
 
     public CbbTerminalTypeEnums getPackageType() {

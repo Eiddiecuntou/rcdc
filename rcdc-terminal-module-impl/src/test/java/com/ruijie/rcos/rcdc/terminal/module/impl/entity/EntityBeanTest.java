@@ -97,7 +97,8 @@ public class EntityBeanTest {
         info.setFileMD5("fileMD5");
         info.setSeedLink("seedLink");
         info.setSeedMD5("seedMD5");
-        info.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
+        info.setFileSaveDir("fileSaveDir");
+        info.setRealFileName("realFileName");
         String result = "TerminalUpgradeVersionFileInfo{" +
                 "packageName='" + "packageName" + '\'' +
                 ", imgName='" + "imgName" + '\'' +
@@ -107,7 +108,8 @@ public class EntityBeanTest {
                 ", fileMD5='" + "fileMD5" + '\'' +
                 ", seedLink='" + "seedLink" + '\'' +
                 ", seedMD5='" + "seedMD5" + '\'' +
-                ", upgradeMode=" + "AUTO" +
+                ", fileSaveDir='" + "fileSaveDir" + '\'' +
+                ", realFileName='" + "realFileName" + '\'' +
                 '}';
         assertEquals(result, info.toString());
     }
