@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.*;
 import org.junit.Test;
@@ -40,13 +41,13 @@ public class CheckUpgradeHandlerSPIImplTest {
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Injectable
-    private CbbTerminalEventNoticeSPI cbbTerminalEventNoticeSPI;
-
-    @Injectable
     private TerminalComponentUpgradeService componentUpgradeService;
 
     @Injectable
     private TerminalBasicInfoService basicInfoService;
+
+    @Injectable
+    private TerminalSystemUpgradeHandlerFactory handlerFactory;
 
 
     /**
@@ -100,10 +101,14 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Test
     public void testDispatchAddTerminalBasicInfo() {
         String terminalId = "123";
+
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        terminalEntity.setTerminalOsType("Linux");
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
-                result = null;
+                result = terminalEntity;
                 basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
                 try {
                     messageHandlerAPI.response((CbbResponseShineMessage) any);
@@ -115,7 +120,7 @@ public class CheckUpgradeHandlerSPIImplTest {
 
         new MockUp(CbbTerminalTypeEnums.class) {
             @Mock
-            public CbbTerminalTypeEnums convert(String typeName) {
+            public CbbTerminalTypeEnums convert(String platform, String osType) {
                 return CbbTerminalTypeEnums.VDI_LINUX;
             }
         };

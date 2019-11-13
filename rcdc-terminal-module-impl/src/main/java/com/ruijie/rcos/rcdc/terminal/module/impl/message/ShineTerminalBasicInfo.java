@@ -66,6 +66,8 @@ public class ShineTerminalBasicInfo {
 
     private String validateMd5;
 
+    private String osInnerVersion;
+
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
@@ -248,5 +250,13 @@ public class ShineTerminalBasicInfo {
 
     public void setValidateMd5(String validateMd5) {
         this.validateMd5 = validateMd5;
+    }
+
+    public String getOsInnerVersion() {
+        return osInnerVersion;
+    }
+
+    public void setOsInnerVersion(String osInnerVersion) {
+        this.osInnerVersion = osInnerVersion;
     }
 }

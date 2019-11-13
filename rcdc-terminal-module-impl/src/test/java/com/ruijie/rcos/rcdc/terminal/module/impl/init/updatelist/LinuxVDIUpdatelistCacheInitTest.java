@@ -2,11 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import static org.junit.Assert.assertTrue;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
@@ -51,7 +51,7 @@ public class LinuxVDIUpdatelistCacheInitTest {
     public void testFillUpdateList() {
 
         // 这个方法啥也没干
-        cacheInit.fillUpdateList(new CbbLinuxVDIUpdateListDTO());
+        cacheInit.fillUpdateList(new CbbCommonUpdateListDTO());
         assertTrue(true);
     }
 }

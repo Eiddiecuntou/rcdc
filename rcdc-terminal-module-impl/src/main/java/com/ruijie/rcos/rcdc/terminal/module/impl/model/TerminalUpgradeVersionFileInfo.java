@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
 /**
@@ -30,7 +29,9 @@ public class TerminalUpgradeVersionFileInfo {
 
     private String seedMD5;
 
-    private CbbSystemUpgradeModeEnums upgradeMode;
+    private String fileSaveDir;
+
+    private String realFileName;
 
     public String getImgName() {
         return imgName;
@@ -96,12 +97,20 @@ public class TerminalUpgradeVersionFileInfo {
         this.seedMD5 = seedMD5;
     }
 
-    public CbbSystemUpgradeModeEnums getUpgradeMode() {
-        return upgradeMode;
+    public String getFileSaveDir() {
+        return fileSaveDir;
     }
 
-    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
-        this.upgradeMode = upgradeMode;
+    public void setFileSaveDir(String fileSaveDir) {
+        this.fileSaveDir = fileSaveDir;
+    }
+
+    public String getRealFileName() {
+        return realFileName;
+    }
+
+    public void setRealFileName(String realFileName) {
+        this.realFileName = realFileName;
     }
 
     @Override
@@ -115,7 +124,8 @@ public class TerminalUpgradeVersionFileInfo {
                 ", fileMD5='" + fileMD5 + '\'' +
                 ", seedLink='" + seedLink + '\'' +
                 ", seedMD5='" + seedMD5 + '\'' +
-                ", upgradeMode=" + upgradeMode +
+                ", fileSaveDir='" + fileSaveDir + '\'' +
+                ", realFileName='" + realFileName + '\'' +
                 '}';
     }
 }

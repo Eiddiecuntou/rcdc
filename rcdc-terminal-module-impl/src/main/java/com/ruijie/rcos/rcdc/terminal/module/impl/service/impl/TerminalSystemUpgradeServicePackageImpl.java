@@ -1,5 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.io.File;
+import java.util.*;
+
+import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
@@ -13,13 +22,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePa
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.io.File;
-import java.util.*;
 
 /**
  * 
@@ -67,7 +69,6 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         upgradePackage.setFileMd5(versionInfo.getFileMD5());
         upgradePackage.setSeedPath(versionInfo.getSeedLink());
         upgradePackage.setSeedMd5(versionInfo.getFileMD5());
-        upgradePackage.setUpgradeMode(versionInfo.getUpgradeMode());
         upgradePackage.setIsDelete(false);
     }
 
@@ -129,7 +130,7 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         }
         File file = new File(filePath);
         if (file.isFile()) {
-            file.delete();
+            new SkyengineFile(file).delete(false);
         }
     }
 
