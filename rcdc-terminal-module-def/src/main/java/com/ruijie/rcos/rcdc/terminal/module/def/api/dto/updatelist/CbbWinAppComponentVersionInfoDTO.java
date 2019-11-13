@@ -9,7 +9,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
  * 
  * @author nt
  */
-public class CbbWinAppComponentVersionInfoDTO extends CbbCommonComponentVersionInfoDTO {
+public class CbbWinAppComponentVersionInfoDTO extends CbbBaseComponentVersionInfoDTO {
 
     /**
      * 组件包文件名

@@ -72,17 +72,13 @@ public interface ShineAction {
 
 
     /**
-     * 检查OTA升级
+     * 检查终端系统升级
      */
-    String CHECK_UPGRADE_OTA = "check_upgrade_ota";
+    String CHECK_SYSTEM_UPGRADE = "check_system_upgrade";
+
 
     /**
-     * OTA升级结果
+     *  终端上报升级状态
      */
-    String OTA_UPGRADE_RESULT = "ota_upgrade_result";
-
-    /**
-     * 同步是否需要OTA升级
-     */
-    String OTA_UPGRADE_JUDGE = "ota_upgrade_judge";
+    String REPORT_SYSTEM_UPGRADE_RESULT = "report_system_upgrade_result";
 }

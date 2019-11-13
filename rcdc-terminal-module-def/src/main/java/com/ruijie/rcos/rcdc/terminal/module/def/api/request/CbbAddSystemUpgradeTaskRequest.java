@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotEmpty;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
@@ -18,6 +20,9 @@ public class CbbAddSystemUpgradeTaskRequest implements Request {
 
     @NotNull
     private UUID packageId;
+
+    @NotNull
+    private CbbSystemUpgradeModeEnums upgradeMode;
 
     @NotEmpty
     private String[] terminalIdArr;
@@ -38,4 +43,11 @@ public class CbbAddSystemUpgradeTaskRequest implements Request {
         this.terminalIdArr = terminalIdArr;
     }
 
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
+    }
 }

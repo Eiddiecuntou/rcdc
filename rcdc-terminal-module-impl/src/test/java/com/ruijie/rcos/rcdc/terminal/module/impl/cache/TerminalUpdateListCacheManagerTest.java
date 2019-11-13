@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdatelistDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbBaseUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -52,7 +52,7 @@ public class TerminalUpdateListCacheManagerTest {
     public void testAdd() {
         CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
         manager.add(CbbTerminalTypeEnums.VDI_LINUX, updatelist);
-        Map<CbbTerminalTypeEnums, CbbLinuxVDIUpdateListDTO> caches =
+        Map<CbbTerminalTypeEnums, CbbCommonUpdateListDTO> caches =
                 Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
         assertEquals(updatelist, caches.get(CbbTerminalTypeEnums.VDI_LINUX));
         caches.remove(CbbTerminalTypeEnums.VDI_LINUX);
@@ -75,7 +75,7 @@ public class TerminalUpdateListCacheManagerTest {
      */
     @Test
     public void testGet() {
-        Map<CbbTerminalTypeEnums, CbbCommonUpdatelistDTO> caches =
+        Map<CbbTerminalTypeEnums, CbbBaseUpdateListDTO> caches =
                 Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_MAP");
         CbbWinAppUpdateListDTO dto = new CbbWinAppUpdateListDTO();
         caches.put(CbbTerminalTypeEnums.APP_WINDOWS, dto);

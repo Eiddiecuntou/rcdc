@@ -27,14 +27,6 @@ public interface TerminalSystemUpgradeServiceTx {
     UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr);
 
     /**
-     * 开启OTA升级任务
-     *
-     * @param upgradePackageEntity OTA升级包对象
-     * @throws BusinessException 业务异常
-     */
-    void startOtaUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackageEntity) throws BusinessException ;
-
-    /**
      * 结束刷机任务
      * 
      * @param upgradeTaskId 刷机任务id
