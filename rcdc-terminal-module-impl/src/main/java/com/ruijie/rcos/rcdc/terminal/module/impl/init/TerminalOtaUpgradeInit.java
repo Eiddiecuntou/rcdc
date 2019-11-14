@@ -99,6 +99,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         Assert.notNull(file, "file can not be null");
         String fileName = file.getName();
         String filePath = file.getPath();
+
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFilePath(filePath);
         request.setFileName(fileName);

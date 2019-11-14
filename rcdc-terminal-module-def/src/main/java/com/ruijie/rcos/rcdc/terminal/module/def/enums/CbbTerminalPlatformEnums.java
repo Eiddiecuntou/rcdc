@@ -44,4 +44,22 @@ public enum CbbTerminalPlatformEnums {
         return false;
     }
 
+    /**
+     * 获取终端对应类型
+     *
+     * @param platformStr 平台类型
+     * @return 终端类型枚举对象
+     */
+    public static CbbTerminalPlatformEnums convert(String platformStr) {
+        Assert.hasText(platformStr, "platformStr can not be blank");
+
+        for (CbbTerminalPlatformEnums type : CbbTerminalPlatformEnums.values()) {
+            if (platformStr.equals(type.name())) {
+                return type;
+            }
+        }
+
+        throw new IllegalArgumentException("终端类型【" + platformStr + "】未定义，不支持该类型的终端");
+    }
+
 }

@@ -33,7 +33,7 @@ def createDirectoty(dirPath):
 '''
 def getLogger():
     reload(sys)
-    sys.setdefaultencoding('gbk')  # @UndefinedVariable
+    sys.setdefaultencoding('utf-8')  # @UndefinedVariable
     logger = logging.getLogger('rj_upgrade')
     logger.setLevel(logging.DEBUG)
     if not logger.handlers:
