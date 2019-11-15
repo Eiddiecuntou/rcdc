@@ -1,9 +1,14 @@
+#encoding=UTF-8
+
 import sys
 
 from BtApiService import startBtShare
 from Common import getLogger
 
 logger = getLogger()
+
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 packagePath = "/opt/upgrade/ota/package/"
 

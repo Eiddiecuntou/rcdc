@@ -23,6 +23,8 @@ os.umask(022)
 terminalPlatform = "idv"
 osType = "linux"
 
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 # 入口函数
 def do_update():

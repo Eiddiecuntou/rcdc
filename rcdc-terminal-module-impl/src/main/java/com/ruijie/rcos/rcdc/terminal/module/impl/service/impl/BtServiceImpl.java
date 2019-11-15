@@ -3,7 +3,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -36,24 +38,24 @@ public class BtServiceImpl implements BtService {
     private static final String STOP_BT_SCRIPT_NAME = "stop_ota_bt_share.py";
 
     @Override
-    public String makeBtSeed(String filePath, String seedSavePath, String ipAddr) throws BusinessException {
+    public SeedFileInfo makeBtSeed(String filePath, String seedSavePath, String ipAddr) throws BusinessException {
         Assert.notNull(filePath, "filePath can not be blank");
         Assert.notNull(seedSavePath, "seedSavePath can not be blank");
         Assert.notNull(ipAddr, "ipAddr can not be blank");
         ShellCommandRunner runner = new ShellCommandRunner();
         String makeBtScriptPath = INIT_PYTHON_SCRIPT_PATH + MAKE_BT_SCRIPT_NAME;
-        String seedPath = null;
+        String seedInfoStr;
         String shellCmd = String.format(MAKE_BT_COMMAND, makeBtScriptPath, filePath, seedSavePath, ipAddr);
         LOGGER.info("excecute shell cmd : {}", shellCmd);
         runner.setCommand(shellCmd);
         try {
-            seedPath = runner.execute();
-            LOGGER.debug("seed path is :{}", seedPath);
+            seedInfoStr = runner.execute();
+            LOGGER.debug("seed info str is :{}", seedInfoStr);
+            return JSON.parseObject(seedInfoStr, SeedFileInfo.class);
         } catch (BusinessException e) {
             LOGGER.error("make seed file error", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL, e);
         }
-        return seedPath;
     }
 
     @Override

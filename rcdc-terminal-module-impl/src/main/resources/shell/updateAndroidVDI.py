@@ -22,6 +22,9 @@ os.umask(022)
 terminalPlatform = "vdi"
 osType = "android"
 
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 
 # 入口函数
 def do_update():

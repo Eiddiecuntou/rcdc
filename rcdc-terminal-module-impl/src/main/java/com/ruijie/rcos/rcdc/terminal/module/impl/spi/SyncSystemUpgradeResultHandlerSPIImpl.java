@@ -90,7 +90,7 @@ public class SyncSystemUpgradeResultHandlerSPIImpl implements CbbDispatcherHandl
 
         updateTerminalUpgradeStatus(terminalId, terminalType, upgradeResultInfo);
         SystemUpgradeGlobal.releaseUpgradeQuota(terminalId);
-        responseTerminal(request, null);
+        responseTerminal(request, new Object());
     }
 
     private void upgradeStart(CbbDispatcherRequest request, CbbTerminalTypeEnums terminalType, SystemUpgradeResultInfo upgradeResultInfo) {

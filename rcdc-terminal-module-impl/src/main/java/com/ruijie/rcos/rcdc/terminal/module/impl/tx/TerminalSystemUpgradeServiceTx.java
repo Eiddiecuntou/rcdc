@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -22,9 +23,10 @@ public interface TerminalSystemUpgradeServiceTx {
      * 
      * @param upgradePackage 刷机包对象
      * @param terminalIdArr 终端id数组
+     * @param  upgradeMode 升级模式
      * @return 刷机任务id
      */
-    UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr);
+    UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr, CbbSystemUpgradeModeEnums upgradeMode);
 
     /**
      * 结束刷机任务

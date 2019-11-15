@@ -10,9 +10,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
  */
 public enum CheckSystemUpgradeResultEnums {
 
-    NEED_UPGRADE(0),
+    NOT_NEED_UPGRADE(0),
 
-    NOT_NEED_UPGRADE(1),
+    NEED_UPGRADE(1),
 
     UNSUPPORT(2);
 

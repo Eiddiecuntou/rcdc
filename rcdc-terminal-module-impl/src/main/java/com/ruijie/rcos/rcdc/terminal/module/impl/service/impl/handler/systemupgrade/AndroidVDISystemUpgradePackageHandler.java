@@ -152,12 +152,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         Assert.notNull(filePath, "filePath can not be null");
         String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
         createFilePath(seedSavePath);
-        String seedPath = btService.makeBtSeed(filePath, seedSavePath, getLocalIP());
-        File seedFile = new File(seedPath);
-        FileOperateUtil.emptyDirectory(Constants.TERMINAL_UPGRADE_OTA_SEED_FILE, seedFile.getName());
-        String seedMD5 = generateFileMD5(seedPath);
-        SeedFileInfo seedFileInfo = new SeedFileInfo(seedPath, seedMD5);
-        return seedFileInfo;
+        return btService.makeBtSeed(filePath, seedSavePath, getLocalIP());
     }
 
     /**
