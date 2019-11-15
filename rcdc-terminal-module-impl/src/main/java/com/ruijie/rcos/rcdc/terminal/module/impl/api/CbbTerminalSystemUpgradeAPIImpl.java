@@ -377,6 +377,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
                 convertMEList.add(osTypeME);
 
                 iterator.remove();
+                break;
             }
         }
 
