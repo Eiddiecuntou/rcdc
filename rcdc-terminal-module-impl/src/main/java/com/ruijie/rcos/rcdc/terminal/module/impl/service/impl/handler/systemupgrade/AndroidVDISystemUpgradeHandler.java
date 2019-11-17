@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -16,6 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 
+import java.io.File;
 import java.util.UUID;
 
 /**
@@ -63,6 +63,8 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
         resultContent.setUpgradeMode(upgradeTask.getUpgradeMode());
         resultContent.setPackageVersion(upgradeTask.getPackageVersion());
         resultContent.setTaskId(upgradeTask.getId());
+        resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName()                                        );
+        resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
 
         SystemUpgradeCheckResult<AndroidVDICheckResultContent> checkResult = new SystemUpgradeCheckResult<>();
         checkResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
@@ -83,6 +85,8 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
         resultContent.setUpgradeMode(upgradeMode);
         resultContent.setPackageVersion(upgradePackage.getPackageVersion());
         resultContent.setTaskId(upgradeTaskId);
+        resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName()                                        );
+        resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
 
         return resultContent;
     }
@@ -93,7 +97,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
 
         //开启BT分享
         LOGGER.info("开启安卓系统升级bt分享");
-        btService.startBtShare(upgradePackage.getSeedPath());
+        btService.startBtShare(upgradePackage.getSeedPath(), upgradePackage.getFilePath());
     }
 
     @Override

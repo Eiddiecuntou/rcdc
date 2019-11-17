@@ -27,7 +27,9 @@ public class BtServiceImpl implements BtService {
 
     private static final String MAKE_BT_COMMAND = "python %s %s %s %s";
 
-    private static final String BT_SHARE_COMMAND = "python %s %s";
+    private static final String START_BT_SHARE_COMMAND = "python %s %s %s";
+
+    private static final String STOP_BT_SHARE_COMMAND = "python %s %s";
 
     private static final String INIT_PYTHON_SCRIPT_PATH = "/data/web/rcdc/shell/";
 
@@ -59,24 +61,29 @@ public class BtServiceImpl implements BtService {
     }
 
     @Override
-    public void startBtShare(String seedFilePath) throws BusinessException {
+    public void startBtShare(String seedFilePath, String filePath) throws BusinessException {
         Assert.hasText(seedFilePath, "seedFilePath can not be blank");
+        Assert.hasText(filePath, "filePath can not be blank");
+
+        LOGGER.info("调用开启分享脚本");
         String startBtScriptPath = INIT_PYTHON_SCRIPT_PATH + START_BT_SCRIPT_NAME;
-        btShare(seedFilePath, startBtScriptPath);
+        String shellCmd = String.format(START_BT_SHARE_COMMAND, startBtScriptPath, seedFilePath, filePath);
+        runShellCmd(shellCmd);
     }
 
     @Override
     public void stopBtShare(String seedFilePath) throws BusinessException {
         Assert.hasText(seedFilePath, "seedFilePath can not be blank");
+
         String stopBtScriptPath = INIT_PYTHON_SCRIPT_PATH + STOP_BT_SCRIPT_NAME;
-        btShare(seedFilePath, stopBtScriptPath);
+        String shellCmd = String.format(STOP_BT_SHARE_COMMAND, stopBtScriptPath, seedFilePath);
+        runShellCmd(shellCmd);
     }
 
-    private void btShare(String seedFilePath, String scriptPath) throws BusinessException {
-        Assert.notNull(seedFilePath, "seedFilePath can not be null");
-        Assert.notNull(scriptPath, "scriptPath can not be null");
+    private void runShellCmd(String shellCmd) throws BusinessException {
+        Assert.hasText(shellCmd, "shellCmd can not be blank");
+
         ShellCommandRunner runner = new ShellCommandRunner();
-        String shellCmd = String.format(BT_SHARE_COMMAND, scriptPath, seedFilePath);
         runner.setCommand(shellCmd);
         runner.execute();
     }

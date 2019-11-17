@@ -147,7 +147,7 @@ public interface Constants {
     /**
      * 出厂OTA包存放目录
      */
-    String TERMINAL_UPGRADE_OTA = "/opt/upgrade/ota/";
+    String TERMINAL_UPGRADE_OTA = "/data/web/terminal/ota/";
 
     /**
      * 解压后OTA包存放目录
