@@ -85,8 +85,8 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
     }
 
     private boolean isSupportUpgrade(CbbCommonUpdateListDTO updateList, GetVersionDTO request) {
-        if (StringUtils.isBlank(request.getOsInnerVersion())) {
-            // 支持旧版本终端未上报osInnerVersion场景升级
+        if (StringUtils.isBlank(request.getOsInnerVersion()) || StringUtils.isBlank(updateList.getOsLimit())) {
+            // 支持旧版本终端未上报osInnerVersion场景升级,或updatelist文件中无oslimit信息的情况
             return true;
         }
 
