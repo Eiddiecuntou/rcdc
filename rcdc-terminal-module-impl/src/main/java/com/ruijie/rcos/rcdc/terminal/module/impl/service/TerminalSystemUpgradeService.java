@@ -1,12 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalSystemUpgradeMsg;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-
-import java.util.List;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
  * 
@@ -26,7 +24,7 @@ public interface TerminalSystemUpgradeService {
      * @param upgradeMsg 升级信息
      * @throws BusinessException 业务异常
      */
-    void systemUpgrade(String terminalId, TerminalSystemUpgradeMsg upgradeMsg) throws BusinessException;
+    void systemUpgrade(String terminalId, Object upgradeMsg) throws BusinessException;
 
     /**
      * 更新刷机任务状态
@@ -54,10 +52,19 @@ public interface TerminalSystemUpgradeService {
     TerminalSystemUpgradeEntity getSystemUpgradeTask(UUID systemUpgradeId) throws BusinessException;
 
     /**
-     * 根据终端类型获取升级任务
-     * @param terminalType 终端类型
-     * @return 返回结果
+     * 获取升级中的刷机任务
+     *
+     * @param packageId 刷机包id
+     * @return 刷机任务实体对象
      */
-    List<TerminalSystemUpgradeEntity> getSystemUpgradeTaskByTerminalType(CbbTerminalTypeEnums terminalType);
+    TerminalSystemUpgradeEntity getUpgradingSystemUpgradeTaskByPackageId(UUID packageId);
 
+    /**
+     * 获取升级任务中的升级终端
+     *
+     * @param terminalId 终端id
+     * @param taskId 升级任务id
+     * @return 升级终端
+     */
+    TerminalSystemUpgradeTerminalEntity getSystemUpgradeTerminalByTaskId(String terminalId, UUID taskId);
 }

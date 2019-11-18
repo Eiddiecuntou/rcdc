@@ -1,9 +1,14 @@
+#encoding=UTF-8
+
 import sys
 
 from BtApiService import stopBtShare
 from Common import getLogger
 
 logger = getLogger()
+
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 def stop_bt_share():
     seedSavePath = sys.argv[1]

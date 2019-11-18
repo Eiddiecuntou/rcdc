@@ -110,6 +110,11 @@ public interface Constants {
     String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s";
 
     /**
+     *  ISO升级包MD5校验
+     */
+    String SYSTEM_CMD_CHECK_ISO_MD5 = "checkisomd5 %s";
+
+    /**
      * 系统刷机包版本文件属性-包类型
      */
     String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE = "plat";
@@ -142,7 +147,7 @@ public interface Constants {
     /**
      * 出厂OTA包存放目录
      */
-    String TERMINAL_UPGRADE_OTA = "/opt/upgrade/ota/";
+    String TERMINAL_UPGRADE_OTA = "/data/web/terminal/ota/";
 
     /**
      * 解压后OTA包存放目录
@@ -173,6 +178,12 @@ public interface Constants {
      * Android VDI 终端组件升级包路径
      */
     String ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_android/temp";
+
+    /**
+     * Linux IDV 终端组件升级包路径
+     */
+    String LINUX_IDV_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_idv_linux/temp";
+
 
     /**
      * 终端检测超时时间（单位:秒）

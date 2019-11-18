@@ -5,9 +5,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.File;
+import java.util.List;
 
-import com.ruijie.rcos.sk.commkit.base.AbstractSslChannelInitializer;
-import mockit.*;
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import com.ruijie.rcos.sk.base.filesystem.SkyengineFileSystemEnvironment;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
@@ -16,6 +18,11 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import mockit.Invocation;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
+import mockit.Verifications;
 
 /**
  * 
@@ -30,9 +37,6 @@ public class FileOperateUtilTest {
 
     @Mocked
     private Logger logger;
-
-    @Mocked
-    File mockFile;
 
     /**
      * 初始化
@@ -271,7 +275,25 @@ public class FileOperateUtilTest {
         String directoryPath = "directoryPath";
         String exceptFileName = "exceptFileName";
 
-        File subFile = new File("sdsd");
+        String filePath = System.getProperty("user.dir");
+        File subFile = new File(filePath);
+
+        new MockUp<SkyengineFileSystemEnvironment>(){
+
+            @Mock
+            public List<String> getAllowOperatorFolder() {
+                return Lists.newArrayList(filePath);
+            }
+        };
+
+        new MockUp<SkyengineFile>(){
+
+            @Mock
+            public boolean delete(boolean isMoveToRecy) {
+                return true;
+            }
+        };
+
         new MockUp<File>() {
             @Mock
             public boolean exists() {
@@ -295,9 +317,11 @@ public class FileOperateUtilTest {
                 return true;
             }
         };
+
         try {
             FileOperateUtil.emptyDirectory(directoryPath, exceptFileName);
         } catch (Exception e) {
+            e.printStackTrace();
             fail();
         }
     }
@@ -744,7 +768,25 @@ public class FileOperateUtilTest {
      */
     @Test
     public void testDeleteFileIsFile() throws Exception {
-        File deleteFile = new File("deleteFile");
+        String filePath = System.getProperty("user.dir");
+        File deleteFile = new File(filePath);
+
+        new MockUp<SkyengineFileSystemEnvironment>(){
+
+            @Mock
+            public List<String> getAllowOperatorFolder() {
+                return Lists.newArrayList(filePath);
+            }
+        };
+
+        new MockUp<SkyengineFile>(){
+
+            @Mock
+            public boolean delete(boolean isMoveToRecy) {
+                return true;
+            }
+        };
+
         new MockUp<File>() {
             @Mock
             public boolean exists() {
@@ -756,10 +798,6 @@ public class FileOperateUtilTest {
                 return true;
             }
 
-            @Mock
-            public boolean delete() {
-                return true;
-            }
         };
         assertTrue(FileOperateUtil.deleteFile(deleteFile));
     }
@@ -771,7 +809,8 @@ public class FileOperateUtilTest {
      */
     @Test
     public void testDeleteFileIsDirectory() throws Exception {
-        File deleteFile = new File("deleteFile");
+        String filePath = System.getProperty("user.dir");
+        File deleteFile = new File(filePath);
 
         File subFile = new File("1");
         new MockUp<File>() {
@@ -791,75 +830,30 @@ public class FileOperateUtilTest {
             }
 
             @Mock
-            public boolean delete() {
-                return true;
-            }
-
-            @Mock
             public File[] listFiles() {
                 File[] fileArr = new File[1];
                 fileArr[0] = subFile;
                 return fileArr;
             }
         };
+
+        new MockUp<SkyengineFileSystemEnvironment>(){
+
+            @Mock
+            public List<String> getAllowOperatorFolder() {
+                return Lists.newArrayList(filePath);
+            }
+        };
+
+        new MockUp<SkyengineFile>(){
+
+            @Mock
+            public boolean delete(boolean isMoveToRecy) {
+                return true;
+            }
+        };
         assertTrue(FileOperateUtil.deleteFile(deleteFile));
     }
 
-    /**
-     * 测试创建文件夹未发生异常
-     * @throws Exception 异常
-     */
-    @Test
-    public void testCheckAndGetDirectory() throws Exception {
 
-        ThrowExceptionTester.throwIllegalArgumentException(() -> FileOperateUtil.checkAndGetDirectory(null), "directoryPath not null");
-        new Expectations(){{
-            mockFile.exists();
-            returns(true,false,true);
-            mockFile.isDirectory();
-            returns(true,false);
-            mockFile.mkdir();
-        }};
-        for (int i=0;i<3;i++){
-            File file = FileOperateUtil.checkAndGetDirectory("abc");
-        }
-        new Verifications(){{
-            mockFile.mkdir();
-            times = 2;
-        }};
-    }
-
-    /**
-     * 测试创建文件夹发生了异常
-     * @throws Exception 异常
-     */
-    @Test
-    public void testCheckAndGetDirectoryWhenException() throws Exception {
-
-        new Expectations(){{
-            mockFile.exists();
-            returns(false,true);
-            mockFile.isDirectory();
-            result = false;
-            mockFile.mkdir();
-            result = new Delegate<File>() {
-                public boolean mkdir() {
-                  throw new RuntimeException("123");
-                };
-            };
-        }};
-        for (int i=0;i<2;i++) {
-
-            try {
-                File file = FileOperateUtil.checkAndGetDirectory("abc");
-                fail();
-            } catch (BusinessException e) {
-                assertEquals(e.getMessage(),BusinessKey.RCDC_FILE_OPERATE_FAIL);
-            }
-        }
-        new Verifications(){{
-            mockFile.mkdir();
-            times = 2;
-        }};
-    }
 }

@@ -4,8 +4,6 @@ Created on 2018年12月11日
 
 @author: nt
 '''
-'''获取logger'''
-#文件路径间隔符号
 
 import hashlib
 import logging
@@ -29,29 +27,44 @@ def createDirectoty(dirPath):
     if not os.path.exists(dirPath):
         os.makedirs(dirPath, 0755)
 
+
+'''
+    获取logger
+'''
 def getLogger():
     reload(sys)
-    sys.setdefaultencoding('gbk')  # @UndefinedVariable
+    sys.setdefaultencoding('utf-8')  # @UndefinedVariable
     logger = logging.getLogger('rj_upgrade')
     logger.setLevel(logging.DEBUG)
-    formatter = logging.Formatter(
-        "%(asctime)s %(levelname)s %(message)s",
-        "%Y-%m-%d %H:%M:%S %Z")
-    console = logging.StreamHandler()
-    console.setFormatter(formatter)
-    logger.addHandler(console)
-    #将日志写入文件
-    logPath = "/var/log/rcdc"
-    if not os.path.exists(LOGGER_PATH):
-        createDirectoty(LOGGER_PATH)
-    filehandler = logging.FileHandler(LOGGER_FILE_PATH)
-    filehandler.setLevel(logging.INFO)
-    filehandler.setFormatter(formatter)
-    logger.addHandler(filehandler)
+    if not logger.handlers:
+        formatter = logging.Formatter(
+            "%(asctime)s %(levelname)s %(message)s",
+            "%Y-%m-%d %H:%M:%S %Z")
+        console = logging.StreamHandler()
+        console.setFormatter(formatter)
+        logger.addHandler(console)
+        #将日志写入文件
+        if not os.path.exists(LOGGER_PATH):
+            createDirectoty(LOGGER_PATH)
+        filehandler = logging.FileHandler(LOGGER_FILE_PATH)
+        filehandler.setLevel(logging.INFO)
+        filehandler.setFormatter(formatter)
+        logger.addHandler(filehandler)
     return logger
 
 #日志
-logger = getLogger() 
+logger = getLogger()
+
+if __name__ == '__main__':
+
+    logger1 = getLogger()
+    logger.info("logger1: hahahaha")
+
+    logger2 = getLogger()
+    logger.info("logger2: wawawawa")
+
+    logger1 = getLogger()
+    logger.info("logger3: xixixixi")
 
 class RJUpgradeException(Exception):
     '''自定义异常'''

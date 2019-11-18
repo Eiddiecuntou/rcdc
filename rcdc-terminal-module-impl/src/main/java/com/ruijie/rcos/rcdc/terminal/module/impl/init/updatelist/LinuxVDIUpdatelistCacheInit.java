@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
 import org.springframework.stereotype.Service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbLinuxVDIUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -16,7 +16,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
  * @author nt
  */
 @Service
-public class LinuxVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbLinuxVDIUpdateListDTO> {
+public class LinuxVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbCommonUpdateListDTO> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDIUpdatelistCacheInit.class);
 
@@ -30,7 +30,7 @@ public class LinuxVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemp
 
 
     @Override
-    protected void fillUpdateList(CbbLinuxVDIUpdateListDTO updatelist) {
+    protected void fillUpdateList(CbbCommonUpdateListDTO updatelist) {
         // 这里无需处理
     }
 
