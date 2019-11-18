@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBackgroundAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackGroundUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUpload;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSyncBackgroundRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
@@ -50,24 +50,24 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     TerminalBackgroundService terminalBackgroundService;
 
     @Override
-    public DefaultResponse upload(CbbTerminalBackGroundUploadRequest request) throws BusinessException {
+    public DefaultResponse upload(CbbTerminalBackgroundUpload request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
 
         deleteImageFile();
 
-        saveBackgroundImageFile(request.getImagePath());
+        String path = saveBackgroundImageFile(request.getImagePath());
 
-        saveDB(request);
+        saveDB(request.getMd5(),path);
 
-        terminalBackgroundService.syncTerminalBackground(request.getImageName());
+        terminalBackgroundService.syncTerminalBackground(path);
 
         return DefaultResponse.Builder.success();
     }
 
-    private void saveDB(CbbTerminalBackGroundUploadRequest cbbTerminalBackGroundUploadRequest) {
+    private void saveDB(String md5,String imagePath) {
         TerminalSyncBackgroundRequest request = new TerminalSyncBackgroundRequest();
-        request.setMd5(cbbTerminalBackGroundUploadRequest.getMd5());
-        request.setName(cbbTerminalBackGroundUploadRequest.getImageName());
+        request.setMd5(md5);
+        request.setImagePath(imagePath);
         String requestText = JSON.toJSONString(request);
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, requestText);
     }
@@ -98,7 +98,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return DefaultResponse.Builder.success();
     }
 
-    private void saveBackgroundImageFile(String temporaryImagePath) throws BusinessException {
+    private String saveBackgroundImageFile(String temporaryImagePath) throws BusinessException {
 
         File temporaryImageFile = new File(temporaryImagePath);
 
@@ -112,6 +112,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
             LOGGER.error("从[{}] 移动文件到[{}]失败", temporaryImagePath, imageFile.getAbsoluteFile());
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
+        return imageFile.getPath();
     }
 
     private boolean deleteImageFile() {

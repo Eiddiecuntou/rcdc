@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundBase;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -20,7 +21,6 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import com.ruijie.rcos.sk.modulekit.api.comm.NameRequest;
 
 /**
  * Description: 终端背景业务类
@@ -43,33 +43,33 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
             ThreadExecutors.newBuilder(TerminalBackgroundService.class.getName()).maxThreadNum(1).queueSize(10).build();
 
     @Override
-    public void syncTerminalBackground(String name) throws BusinessException {
-        Assert.notNull(name,"name must not be null");
+    public void syncTerminalBackground(String imagePath) throws BusinessException {
+        Assert.notNull(imagePath, "imagePath must not be null");
         LOGGER.info("向在线终端下发背景桌面");
-        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewBackgroundNameToOnlineTerminal(name));
+        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendNewBackgroundNameToOnlineTerminal(imagePath));
     }
 
 
 
-    private void sendNewBackgroundNameToOnlineTerminal(String backgroundName) {
+    private void sendNewBackgroundNameToOnlineTerminal(String imagePath) {
         List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
         if (CollectionUtils.isEmpty(onlineTerminalIdList)) {
             LOGGER.info("下发终端背景，找不到在线终端");
             return;
         }
         for (String terminalId : onlineTerminalIdList) {
-            NameRequest request = new NameRequest(backgroundName);
+            CbbTerminalBackgroundBase request = new CbbTerminalBackgroundBase();
+            request.setImagePath(imagePath);
             try {
                 operateTerminal(terminalId, request);
             } catch (Exception e) {
-                LOGGER.error("send new background name to terminal failed, terminalId[" + terminalId + "], backgroundName[" + backgroundName + "]",
-                        e);
+                LOGGER.error("send new background name to terminal failed, terminalId[" + terminalId + "], backgroundName[" + imagePath + "]", e);
             }
         }
 
     }
 
-    private void operateTerminal(String terminalId, NameRequest request) throws BusinessException {
+    private void operateTerminal(String terminalId, CbbTerminalBackgroundBase request) throws BusinessException {
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);

@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackGroundUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUpload;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
@@ -95,7 +95,7 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadExistDeleteFile() throws BusinessException, IOException {
-        CbbTerminalBackGroundUploadRequest request = new CbbTerminalBackGroundUploadRequest();
+        CbbTerminalBackgroundUpload request = new CbbTerminalBackgroundUpload();
         request.setImageName("abc");
         request.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -127,7 +127,7 @@ public class CbbTerminalBackgroundAPIImplTest {
         }
         new Verifications() {
             {
-                terminalBackgroundService.syncTerminalBackground(request.getImageName());
+                terminalBackgroundService.syncTerminalBackground(anyString);
                 times = 1;
             }
         };
@@ -141,7 +141,7 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadNoExistDeleteFile() throws BusinessException, IOException {
-        CbbTerminalBackGroundUploadRequest request = new CbbTerminalBackGroundUploadRequest();
+        CbbTerminalBackgroundUpload request = new CbbTerminalBackgroundUpload();
         request.setImageName("abc");
         request.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -170,7 +170,7 @@ public class CbbTerminalBackgroundAPIImplTest {
         }
         new Verifications() {
             {
-                terminalBackgroundService.syncTerminalBackground(request.getImageName());
+                terminalBackgroundService.syncTerminalBackground(anyString);
                 times = 1;
             }
         };
@@ -312,8 +312,6 @@ public class CbbTerminalBackgroundAPIImplTest {
                 times = 0;
             }
         };
-
-
     }
 
     private void killThreadLocal(String clazzName, String fieldName) {

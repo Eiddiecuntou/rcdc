@@ -42,8 +42,8 @@ public class SyncTerminalBackgroundSPIImplTest {
     @Mocked
     MessageUtils messageUtils;
 
-    private static final String REQUEST_DATA = "{\n" + "        name:\"background.png\", \n" + "        md5:\"sdajklasakldjklas\" \n" + "    }";
-    private static final String GLOBAL_DATA = "{\n" + "        name:\"background1.png\", \n" + "        md5:\"sdajklasakldjklas\" \n" + "    }";
+    private static final String REQUEST_DATA = "{\n" + "imagePath:\"background.png\", \n" + "md5:\"sdajklasakldjklas\" \n" + "    }";
+    private static final String GLOBAL_DATA = "{\n" + "imagePath:\"background1.png\", \n" + "md5:\"sdajklasakldjklas\" \n" + "    }";
 
     /**
      * 测试收到终端的同步请求的时候，全局参数表为空的情况

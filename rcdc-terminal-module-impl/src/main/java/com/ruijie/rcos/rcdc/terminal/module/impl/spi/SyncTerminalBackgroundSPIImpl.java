@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -11,7 +12,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSyncBackgroundRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSyncBackgroundResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -47,15 +47,15 @@ public class SyncTerminalBackgroundSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request, "cbbDispatcherRequest must not be null");
         LOGGER.debug("=====终端同步背景界面报文===={}", request.getData());
 
-        TerminalSyncBackgroundResponse terminalSyncBackgroundResponse = buildSyncBackgroundResponse(request.getData());
+        CbbTerminalBackgroundBase terminalSyncBackgroundResponse = buildSyncBackgroundResponse(request.getData());
         CbbResponseShineMessage cbbResponseShineMessage = MessageUtils.buildResponseMessage(request, terminalSyncBackgroundResponse);
         messageHandlerAPI.response(cbbResponseShineMessage);
     }
 
-    private TerminalSyncBackgroundResponse buildSyncBackgroundResponse(String data) {
+    private CbbTerminalBackgroundBase buildSyncBackgroundResponse(String data) {
         TerminalSyncBackgroundRequest request = JSON.parseObject(data, TerminalSyncBackgroundRequest.class);
-        TerminalSyncBackgroundResponse response = new TerminalSyncBackgroundResponse();
-        response.setNeedSync(NO_NEED_SYNC);
+        CbbTerminalBackgroundBase response = new CbbTerminalBackgroundBase();
+        response.setImagePath(StringUtils.EMPTY);
 
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
         if (StringUtils.isEmpty(parameter)) {
@@ -66,8 +66,8 @@ public class SyncTerminalBackgroundSPIImpl implements CbbDispatcherHandlerSPI {
         if (!cbbTerminalBackGroundUploadRequest.equals(request)) {
             return response;
         }
-        response.setNeedSync(NEED_SYNC);
-        response.setName(cbbTerminalBackGroundUploadRequest.getName());
+
+        response.setImagePath(cbbTerminalBackGroundUploadRequest.getImagePath());
         return response;
     }
 }

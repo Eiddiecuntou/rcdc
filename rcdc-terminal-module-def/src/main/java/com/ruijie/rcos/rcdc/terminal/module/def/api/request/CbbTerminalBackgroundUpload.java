@@ -12,16 +12,13 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  *
  * @author songxiang
  */
-public class CbbTerminalBackGroundUploadRequest implements Request {
+public class CbbTerminalBackgroundUpload extends CbbTerminalBackgroundBase implements Request {
 
     @NotBlank
     private String imageName;
 
     @NotNull
     private Long imageSize;
-
-    @NotNull
-    private String imagePath;
 
     @NotNull
     private String md5;
@@ -40,14 +37,6 @@ public class CbbTerminalBackGroundUploadRequest implements Request {
 
     public void setImageSize(Long imageSize) {
         this.imageSize = imageSize;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
     public String getMd5() {
