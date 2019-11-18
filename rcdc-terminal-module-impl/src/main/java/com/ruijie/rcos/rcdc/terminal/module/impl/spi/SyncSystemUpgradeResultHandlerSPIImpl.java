@@ -83,6 +83,7 @@ public class SyncSystemUpgradeResultHandlerSPIImpl implements CbbDispatcherHandl
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(basicInfoEntity.getPlatform().name(), basicInfoEntity.getTerminalOsType());
 
         SystemUpgradeResultInfo upgradeResultInfo = convertJsonData(request);
+
         if (upgradeResultInfo.getUpgradeState() == CbbSystemUpgradeStateEnums.UPGRADING) {
             upgradeStart(request, terminalType, upgradeResultInfo);
             return;
@@ -90,7 +91,7 @@ public class SyncSystemUpgradeResultHandlerSPIImpl implements CbbDispatcherHandl
 
         updateTerminalUpgradeStatus(terminalId, terminalType, upgradeResultInfo);
         SystemUpgradeGlobal.releaseUpgradeQuota(terminalId);
-        responseTerminal(request, null);
+        responseTerminal(request, new Object());
     }
 
     private void upgradeStart(CbbDispatcherRequest request, CbbTerminalTypeEnums terminalType, SystemUpgradeResultInfo upgradeResultInfo) {
@@ -148,6 +149,7 @@ public class SyncSystemUpgradeResultHandlerSPIImpl implements CbbDispatcherHandl
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeTask.getId(), terminalId);
         if (upgradeTerminal == null) {
             LOGGER.warn("终端[{}]未在升级任务中", terminalId);
+            return;
         }
 
         CbbSystemUpgradeStateEnums state = upgradeResultInfo.getUpgradeState();

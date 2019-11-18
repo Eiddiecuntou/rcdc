@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -21,7 +22,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEnt
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeGlobal;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -50,15 +50,14 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
 
-    @Autowired
-    private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
-
     @Override
-    public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr) {
+    public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr,
+            CbbSystemUpgradeModeEnums upgradeMode) {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notEmpty(terminalIdArr, "terminalIdArr can not be empty");
+        Assert.notNull(upgradeMode, "upgradeMode can not be null");
 
-        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage);
+        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage, upgradeMode);
 
         UUID upgradeTaskId = entity.getId();
         for (String terminalId : terminalIdArr) {
@@ -89,9 +88,11 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
      * 添加刷机任务
      *
      * @param upgradePackage 刷机包对象
+     * @param upgradeMode 升级模式
      * @return 刷机任务对象
      */
-    private TerminalSystemUpgradeEntity addSystemUpgradeTaskEntity(TerminalSystemUpgradePackageEntity upgradePackage) {
+    private TerminalSystemUpgradeEntity addSystemUpgradeTaskEntity(TerminalSystemUpgradePackageEntity upgradePackage,
+            CbbSystemUpgradeModeEnums upgradeMode) {
         TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
         entity.setUpgradePackageId(upgradePackage.getId());
         entity.setPackageName(upgradePackage.getPackageName());
@@ -99,6 +100,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         entity.setPackageType(upgradePackage.getPackageType());
         entity.setCreateTime(new Date());
         entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+        entity.setUpgradeMode(upgradeMode);
         systemUpgradeDAO.save(entity);
         return entity;
     }

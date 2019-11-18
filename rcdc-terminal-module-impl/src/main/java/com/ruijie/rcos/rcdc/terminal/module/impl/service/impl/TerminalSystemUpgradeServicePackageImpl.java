@@ -68,7 +68,7 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         upgradePackage.setFilePath(versionInfo.getFilePath());
         upgradePackage.setFileMd5(versionInfo.getFileMD5());
         upgradePackage.setSeedPath(versionInfo.getSeedLink());
-        upgradePackage.setSeedMd5(versionInfo.getFileMD5());
+        upgradePackage.setSeedMd5(versionInfo.getSeedMD5());
         upgradePackage.setIsDelete(false);
     }
 

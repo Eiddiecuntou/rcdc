@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -13,23 +14,27 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 public interface BtService {
 
     /**
+     *  制作bt种子
      *
      * @param filePath 文件路径
      * @param seedSavePath 种子文件保存路径
      * @param ipAddr ip地址
-     * @return 种子文件路径
+     * @return 种子信息
      * @throws BusinessException 业务异常
      */
-    String makeBtSeed (String filePath, String seedSavePath, String ipAddr) throws BusinessException;
+    SeedFileInfo makeBtSeed (String filePath, String seedSavePath, String ipAddr) throws BusinessException;
 
     /**
+     *  开启bt分享
      *
      * @param seedFilePath 种子文件路径
+     * @param filePath 文件路径
      * @throws BusinessException 业务异常
      */
-    void startBtShare (String seedFilePath) throws BusinessException;
+    void startBtShare (String seedFilePath, String filePath) throws BusinessException;
 
     /**
+     * 关闭bt分享
      *
      * @param seedFilePath 种子文件路径
      * @throws BusinessException 业务异常

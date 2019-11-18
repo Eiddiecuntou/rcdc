@@ -14,48 +14,52 @@ import java.util.UUID;
  */
 public class AndroidVDICheckResultContent {
 
-    private String otaVersion;
+    private String packageName;
 
-    private String otaMD5;
+    private String packageVersion;
 
-    private String otaSeedLink;
+    private String packageMD5;
 
-    private String otaSeedMD5;
+    private String seedLink;
+
+    private String seedName;
+
+    private String seedMD5;
 
     private CbbSystemUpgradeModeEnums upgradeMode;
 
     private UUID taskId;
 
-    public String getOtaVersion() {
-        return otaVersion;
+    public String getPackageVersion() {
+        return packageVersion;
     }
 
-    public void setOtaVersion(String otaVersion) {
-        this.otaVersion = otaVersion;
+    public void setPackageVersion(String packageVersion) {
+        this.packageVersion = packageVersion;
     }
 
-    public String getOtaMD5() {
-        return otaMD5;
+    public String getPackageMD5() {
+        return packageMD5;
     }
 
-    public void setOtaMD5(String otaMD5) {
-        this.otaMD5 = otaMD5;
+    public void setPackageMD5(String packageMD5) {
+        this.packageMD5 = packageMD5;
     }
 
-    public String getOtaSeedLink() {
-        return otaSeedLink;
+    public String getSeedLink() {
+        return seedLink;
     }
 
-    public void setOtaSeedLink(String otaSeedLink) {
-        this.otaSeedLink = otaSeedLink;
+    public void setSeedLink(String seedLink) {
+        this.seedLink = seedLink;
     }
 
-    public String getOtaSeedMD5() {
-        return otaSeedMD5;
+    public String getSeedMD5() {
+        return seedMD5;
     }
 
-    public void setOtaSeedMD5(String otaSeedMD5) {
-        this.otaSeedMD5 = otaSeedMD5;
+    public void setSeedMD5(String seedMD5) {
+        this.seedMD5 = seedMD5;
     }
 
     public CbbSystemUpgradeModeEnums getUpgradeMode() {
@@ -72,5 +76,21 @@ public class AndroidVDICheckResultContent {
 
     public void setTaskId(UUID taskId) {
         this.taskId = taskId;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getSeedName() {
+        return seedName;
+    }
+
+    public void setSeedName(String seedName) {
+        this.seedName = seedName;
     }
 }
