@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 import java.util.HashSet;
 import java.util.Set;
 
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.util.Assert;
 
 /**
@@ -14,6 +16,8 @@ import org.springframework.util.Assert;
  * @author nt
  */
 public class SystemUpgradeGlobal {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeGlobal.class);
 
     /**
      * 最大同时刷机数
@@ -57,6 +61,7 @@ public class SystemUpgradeGlobal {
         Assert.hasText(terminalId, "terminalId can not be blank");
 
         UPGRADING_TERMINAL_SET.remove(terminalId);
+        LOGGER.info("系统升级限制数量：{}", (UPGRADING_MAX_NUM - UPGRADING_TERMINAL_SET.size()));
     }
 
 
