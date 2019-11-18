@@ -21,12 +21,12 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalLi
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTaskUpgradeTerminalResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -70,7 +70,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private static final BeanCopier TASK_TERMINAL_BEAN_COPIER =
             BeanCopier.create(TerminalSystemUpgradeTerminalEntity.class, CbbSystemUpgradeTaskTerminalDTO.class, false);
 
-    private static final String TERMINAL_STATE_FIELD_NAME = "state";
+    private static final String PARAM_FIELD_PACKAGE_ID = "packageId";
+
+    private static final String ENTITY_FILED_PLATFORM = "platform";
+
+    private static final String ENTITY_FILED_TERMINAL_OS_TYPE = "terminalOsType";
 
     private static ExecutorService SINGLE_THREAD_EXECUTOR =
             ThreadExecutors.newBuilder("singleSystemUpgradeThreadPool").maxThreadNum(1).queueSize(10).build();
@@ -124,7 +128,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // 判断刷机包是否允许开启升级任务
         checkAllowCreateTask(upgradePackage);
 
-        UUID upgradeTaskId = terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackage, request.getTerminalIdArr());
+        UUID upgradeTaskId =
+                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackage, request.getTerminalIdArr(), request.getUpgradeMode());
 
         // 添加升级任务成功后的处理
         TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.getPackageType());
@@ -342,19 +347,12 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
      * @throws BusinessException 业务异常
      */
     private void setMatchEqualArr(CbbUpgradeableTerminalPageSearchRequest request) throws BusinessException {
-        // 设置查询终端状态为在线
-        MatchEqual stateMe = new MatchEqual();
-        stateMe.setName(TERMINAL_STATE_FIELD_NAME);
-        stateMe.setValueArr(new CbbTerminalStateEnums[] {CbbTerminalStateEnums.ONLINE});
-
         if (ArrayUtils.isEmpty(request.getMatchEqualArr())) {
-            request.setMatchEqualArr(new MatchEqual[] {stateMe});
             return;
         }
 
         List<MatchEqual> matchEqualList = new ArrayList<>(Arrays.asList(request.getMatchEqualArr()));
         convertPackageId(matchEqualList);
-        matchEqualList.add(stateMe);
         request.setMatchEqualArr(matchEqualList.toArray(new MatchEqual[matchEqualList.size()]));
     }
 
@@ -365,14 +363,25 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
      * @throws BusinessException 业务异常
      */
     private void convertPackageId(List<MatchEqual> matchEqualList) throws BusinessException {
-        for (MatchEqual matchEqual : matchEqualList) {
-            if ("packageId".equals(matchEqual.getName())) {
+        List<MatchEqual> convertMEList = Lists.newArrayList();
+        for (Iterator<MatchEqual> iterator = matchEqualList.iterator(); iterator.hasNext();) {
+            MatchEqual matchEqual = iterator.next();
+            if (PARAM_FIELD_PACKAGE_ID.equals(matchEqual.getName())) {
                 UUID packageId = (UUID) matchEqual.getValueArr()[0];
                 TerminalSystemUpgradePackageEntity packageEntity = getUpgradePackageEntity(packageId);
-                matchEqual.setName("platform");
-                matchEqual.setValueArr(new CbbTerminalTypeEnums[] {packageEntity.getPackageType()});
+                CbbTerminalTypeEnums packageType = packageEntity.getPackageType();
+                MatchEqual platformME = new MatchEqual(ENTITY_FILED_PLATFORM,
+                        new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.convert(packageType.getPlatform())});
+                MatchEqual osTypeME = new MatchEqual(ENTITY_FILED_TERMINAL_OS_TYPE, new String[] {packageType.getOsType()});
+                convertMEList.add(platformME);
+                convertMEList.add(osTypeME);
+
+                iterator.remove();
+                break;
             }
         }
+
+        matchEqualList.addAll(convertMEList);
     }
 
     private void fillTerminalListDTO(CbbUpgradeableTerminalListDTO dto, ViewUpgradeableTerminalEntity viewEntity) {

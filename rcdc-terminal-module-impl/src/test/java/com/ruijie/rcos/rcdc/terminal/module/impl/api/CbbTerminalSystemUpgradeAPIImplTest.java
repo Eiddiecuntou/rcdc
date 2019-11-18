@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeHandler;
 import org.junit.Test;
@@ -265,6 +266,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testAddSystemUpgradeTask(@Mocked LinuxVDISystemUpgradeHandler linuxVDISystemUpgradeHandler) throws BusinessException {
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
         request.setTerminalIdArr(new String[] {"123", "456"});
+        request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
         upgradePackageEntity.setIsDelete(false);
         upgradePackageEntity.setFilePath("/opt");
@@ -279,7 +281,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = false;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = false;
-                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request.getTerminalIdArr());
+                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request.getTerminalIdArr(), CbbSystemUpgradeModeEnums.AUTO);
                 result = upgradeTaskId;
                 systemUpgradeHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = linuxVDISystemUpgradeHandler;
@@ -305,7 +307,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 times = 1;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 times = 1;
-                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request.getTerminalIdArr());
+                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request.getTerminalIdArr(), CbbSystemUpgradeModeEnums.AUTO);
                 times = 1;
             }
         };
