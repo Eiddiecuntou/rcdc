@@ -14,11 +14,15 @@ import java.util.UUID;
  */
 public class AndroidVDICheckResultContent {
 
+    private String packageName;
+
     private String packageVersion;
 
     private String packageMD5;
 
     private String seedLink;
+
+    private String seedName;
 
     private String seedMD5;
 
@@ -72,5 +76,21 @@ public class AndroidVDICheckResultContent {
 
     public void setTaskId(UUID taskId) {
         this.taskId = taskId;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getSeedName() {
+        return seedName;
+    }
+
+    public void setSeedName(String seedName) {
+        this.seedName = seedName;
     }
 }

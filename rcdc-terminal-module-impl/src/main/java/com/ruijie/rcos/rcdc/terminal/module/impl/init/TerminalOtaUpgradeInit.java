@@ -58,8 +58,10 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         String basePath = Constants.TERMINAL_UPGRADE_OTA;
         TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         if (upgradePackage == null) {
+            LOGGER.info("初始化ota升级包");
             initOtaZipFile(basePath);
         } else {
+            LOGGER.info("初始化bt分享");
             initBtServer(upgradePackage);
         }
     }
@@ -71,7 +73,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
         if (!CollectionUtils.isEmpty(upgradingTaskList)) {
             try {
-                btService.startBtShare(upgradePackage.getSeedPath());
+                btService.startBtShare(upgradePackage.getSeedPath(), upgradePackage.getFilePath());
             } catch (Exception e) {
                 LOGGER.error("开始BT服务失败", e);
             }
