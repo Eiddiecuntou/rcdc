@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -65,10 +66,12 @@ public class TerminalSystemUpgradeServiceTxImplTest {
      */
     @Test
     public void testAddSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(null, new String[5]),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(null, new String[5], null),
                 "upgradePackage can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(new TerminalSystemUpgradePackageEntity(), null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(new TerminalSystemUpgradePackageEntity(), null, null),
                 "terminalIdArr can not be empty");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(new TerminalSystemUpgradePackageEntity(), new String[5], null),
+                "upgradeMode can not be null");
         assertTrue(true);
     }
 
@@ -80,7 +83,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         String[] terminalIdArr = new String[1];
         terminalIdArr[0] = "1";
-        serviceTxImpl.addSystemUpgradeTask(upgradePackage, terminalIdArr);
+        serviceTxImpl.addSystemUpgradeTask(upgradePackage, terminalIdArr, CbbSystemUpgradeModeEnums.AUTO);
 
         new Verifications() {
             {

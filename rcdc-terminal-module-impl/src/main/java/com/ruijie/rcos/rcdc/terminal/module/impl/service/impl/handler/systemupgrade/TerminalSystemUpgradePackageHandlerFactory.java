@@ -51,6 +51,7 @@ public class TerminalSystemUpgradePackageHandlerFactory implements SafetySinglet
     public TerminalSystemUpgradePackageHandler getHandler(CbbTerminalTypeEnums terminalType) throws BusinessException {
         Assert.notNull(terminalType, "terminal type can not be null");
 
+        checkReady();
         TerminalSystemUpgradePackageHandler handler = systemUpgradeHandlerHolder.get(terminalType);
 
         if (handler == null) {
@@ -62,5 +63,11 @@ public class TerminalSystemUpgradePackageHandlerFactory implements SafetySinglet
         return handler;
     }
 
-
+    private void checkReady() {
+        if (systemUpgradeHandlerHolder.isEmpty()) {
+            LOGGER.info("系统升级包holder未初始化");
+            safeInit();
+            LOGGER.info("完成系统升级holder初始化");
+        }
+    }
 }

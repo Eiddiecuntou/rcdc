@@ -19,6 +19,9 @@ logger = getLogger()
 # 设置umask
 os.umask(022)
 
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 # 终端平台信息
 terminalPlatform = "vdi"
 osType = "linux"
