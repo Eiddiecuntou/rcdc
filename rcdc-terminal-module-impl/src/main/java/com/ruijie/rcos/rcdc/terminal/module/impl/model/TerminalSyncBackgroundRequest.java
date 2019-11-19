@@ -16,7 +16,7 @@ public class TerminalSyncBackgroundRequest {
 
     private String md5;
 
-    private String imagePath;
+    private String name;
 
     public String getMd5() {
         return md5;
@@ -26,12 +26,12 @@ public class TerminalSyncBackgroundRequest {
         this.md5 = md5;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getName() {
+        return name;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundBase;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -62,8 +63,8 @@ public class SyncTerminalBackgroundSPIImpl implements CbbDispatcherHandlerSPI {
             return response;
         }
 
-        TerminalSyncBackgroundRequest cbbTerminalBackGroundUploadRequest = JSON.parseObject(parameter, TerminalSyncBackgroundRequest.class);
-        if (!cbbTerminalBackGroundUploadRequest.equals(request)) {
+        TerminalBackgroundInfo cbbTerminalBackGroundUploadRequest = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
+        if (!cbbTerminalBackGroundUploadRequest.getMd5().equals(request.getMd5())) {
             return response;
         }
 

@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import java.io.File;
 import java.io.IOException;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBackgroundAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUpload;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSyncBackgroundRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -65,10 +65,10 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     }
 
     private void saveDB(String md5,String imagePath) {
-        TerminalSyncBackgroundRequest request = new TerminalSyncBackgroundRequest();
-        request.setMd5(md5);
-        request.setImagePath(imagePath);
-        String requestText = JSON.toJSONString(request);
+        TerminalBackgroundInfo terminalBackgroundInfo  = new TerminalBackgroundInfo();
+        terminalBackgroundInfo.setMd5(md5);
+        terminalBackgroundInfo.setImagePath(imagePath);
+        String requestText = JSON.toJSONString(terminalBackgroundInfo);
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, requestText);
     }
 
