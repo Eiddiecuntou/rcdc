@@ -10,9 +10,21 @@ import com.ruijie.rcos.sk.base.annotation.NotNull;
  *
  * @author songxiang
  */
-public class CbbTerminalBackgroundBase {
+public class TerminalSyncBackgroundInfo {
+
+    @NotNull
+    private Boolean isNeedSync;
+
     @NotNull
     private String imagePath;
+
+    public Boolean getIsNeedSync() {
+        return isNeedSync;
+    }
+
+    public void setIsNeedSync(Boolean isNeedSync) {
+        this.isNeedSync = isNeedSync;
+    }
 
     public String getImagePath() {
         return imagePath;

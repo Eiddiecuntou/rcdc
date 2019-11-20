@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBackgroundAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUpload;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
@@ -50,7 +50,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     TerminalBackgroundService terminalBackgroundService;
 
     @Override
-    public DefaultResponse upload(CbbTerminalBackgroundUpload request) throws BusinessException {
+    public DefaultResponse upload(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
 
         deleteImageFile();

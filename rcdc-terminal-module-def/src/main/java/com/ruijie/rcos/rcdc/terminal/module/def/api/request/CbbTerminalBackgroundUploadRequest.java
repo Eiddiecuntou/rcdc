@@ -12,7 +12,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  *
  * @author songxiang
  */
-public class CbbTerminalBackgroundUpload extends CbbTerminalBackgroundBase implements Request {
+public class CbbTerminalBackgroundUploadRequest implements Request {
 
     @NotBlank
     private String imageName;
@@ -22,6 +22,8 @@ public class CbbTerminalBackgroundUpload extends CbbTerminalBackgroundBase imple
 
     @NotNull
     private String md5;
+    @NotNull
+    private String imagePath;
 
     public String getImageName() {
         return imageName;
@@ -45,5 +47,13 @@ public class CbbTerminalBackgroundUpload extends CbbTerminalBackgroundBase imple
 
     public void setMd5(String md5) {
         this.md5 = md5;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

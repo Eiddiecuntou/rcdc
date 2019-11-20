@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundBase;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalSyncBackgroundInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -58,8 +58,9 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
             return;
         }
         for (String terminalId : onlineTerminalIdList) {
-            CbbTerminalBackgroundBase request = new CbbTerminalBackgroundBase();
+            TerminalSyncBackgroundInfo request = new TerminalSyncBackgroundInfo();
             request.setImagePath(imagePath);
+            request.setIsNeedSync(true);
             try {
                 operateTerminal(terminalId, request);
             } catch (Exception e) {
@@ -69,7 +70,7 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
 
     }
 
-    private void operateTerminal(String terminalId, CbbTerminalBackgroundBase request) throws BusinessException {
+    private void operateTerminal(String terminalId, TerminalSyncBackgroundInfo request) throws BusinessException {
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);

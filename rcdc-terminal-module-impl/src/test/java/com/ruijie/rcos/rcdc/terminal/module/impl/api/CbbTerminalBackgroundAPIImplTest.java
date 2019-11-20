@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUpload;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
@@ -95,7 +95,7 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadExistDeleteFile() throws BusinessException, IOException {
-        CbbTerminalBackgroundUpload request = new CbbTerminalBackgroundUpload();
+        CbbTerminalBackgroundUploadRequest request = new CbbTerminalBackgroundUploadRequest();
         request.setImageName("abc");
         request.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -141,7 +141,7 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadNoExistDeleteFile() throws BusinessException, IOException {
-        CbbTerminalBackgroundUpload request = new CbbTerminalBackgroundUpload();
+        CbbTerminalBackgroundUploadRequest request = new CbbTerminalBackgroundUploadRequest();
         request.setImageName("abc");
         request.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
