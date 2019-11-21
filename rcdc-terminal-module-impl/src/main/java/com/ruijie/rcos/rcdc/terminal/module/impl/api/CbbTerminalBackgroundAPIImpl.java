@@ -53,8 +53,6 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     public DefaultResponse upload(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
 
-        deleteImageFile();
-
         String path = saveBackgroundImageFile(request.getImagePath());
 
         saveDB(request.getMd5(), request.getImageName(), path);
