@@ -13,6 +13,7 @@ import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
@@ -22,7 +23,6 @@ import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
@@ -127,7 +127,7 @@ public class CbbTerminalBackgroundAPIImplTest {
         }
         new Verifications() {
             {
-                terminalBackgroundService.syncTerminalBackground(anyString);
+                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo) any);
                 times = 1;
             }
         };
@@ -170,7 +170,7 @@ public class CbbTerminalBackgroundAPIImplTest {
         }
         new Verifications() {
             {
-                terminalBackgroundService.syncTerminalBackground(anyString);
+                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo)any);
                 times = 1;
             }
         };
@@ -282,7 +282,7 @@ public class CbbTerminalBackgroundAPIImplTest {
                 times = 1;
                 globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
                 times = 1;
-                terminalBackgroundService.syncTerminalBackground(StringUtils.EMPTY);
+                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo)any);
                 times = 1;
             }
         };
@@ -308,7 +308,7 @@ public class CbbTerminalBackgroundAPIImplTest {
             {
                 globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
                 times = 0;
-                terminalBackgroundService.syncTerminalBackground(StringUtils.EMPTY);
+                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo)any);
                 times = 0;
             }
         };

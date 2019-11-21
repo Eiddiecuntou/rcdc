@@ -3,9 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import java.io.File;
 import java.io.IOException;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -15,13 +12,16 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBackgroundAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
@@ -38,7 +38,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalBackgroundAPIImpl.class);
 
-    private static final String TERMINAL_BACKGROUND_NAME = "background.png";
+    private static final String TERMINAL_BACKGROUND_NAME = "background";
 
     @Autowired
     private ConfigFacade configFacade;
@@ -57,17 +57,28 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
         String path = saveBackgroundImageFile(request.getImagePath());
 
-        saveDB(request.getMd5(),path);
+        saveDB(request.getMd5(), request.getImageName(), path);
 
-        terminalBackgroundService.syncTerminalBackground(path);
+        TerminalBackgroundInfo terminalSyncBackgroundInfo = buildSyncTerminalBackgroundInfo(request, path);
+
+        terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
 
         return DefaultResponse.Builder.success();
     }
 
-    private void saveDB(String md5,String imagePath) {
-        TerminalBackgroundInfo terminalBackgroundInfo  = new TerminalBackgroundInfo();
+    private TerminalBackgroundInfo buildSyncTerminalBackgroundInfo(CbbTerminalBackgroundUploadRequest request, String path) {
+        TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
+        terminalSyncBackgroundInfo.setImageName(request.getImageName());
+        terminalSyncBackgroundInfo.setImagePath(path);
+        terminalSyncBackgroundInfo.setMd5(request.getMd5());
+        return terminalSyncBackgroundInfo;
+    }
+
+    private void saveDB(String md5, String imageName, String imagePath) {
+        TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
         terminalBackgroundInfo.setMd5(md5);
         terminalBackgroundInfo.setImagePath(imagePath);
+        terminalBackgroundInfo.setImageName(imageName);
         String requestText = JSON.toJSONString(terminalBackgroundInfo);
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, requestText);
     }
@@ -81,7 +92,12 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         if (imageFile.exists() == false) {
             return DtoResponse.empty();
         }
-        dto.setSuffix(getFileNameSuffix(imageFile.getName()));
+        String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+        if(StringUtils.isEmpty(parameter)){
+            return DtoResponse.empty();
+        }
+        TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
+        dto.setSuffix(getFileNameSuffix(terminalBackgroundInfo.getImageName()));
         dto.setImageName(Files.getNameWithoutExtension(imageFile.getName()));
         dto.setImagePath(imageFile.getAbsolutePath());
 
@@ -93,7 +109,11 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         Assert.notNull(request, "request must not be null");
         if (deleteImageFile()) {
             globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
-            terminalBackgroundService.syncTerminalBackground(StringUtils.EMPTY);
+            TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
+            terminalSyncBackgroundInfo.setImagePath(StringUtils.EMPTY);
+            terminalSyncBackgroundInfo.setImageName(StringUtils.EMPTY);
+            terminalSyncBackgroundInfo.setMd5(StringUtils.EMPTY);
+            terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
         }
         return DefaultResponse.Builder.success();
     }

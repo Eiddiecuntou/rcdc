@@ -14,6 +14,8 @@ public class TerminalBackgroundInfo {
 
     private String imagePath;
 
+    private String imageName;
+
     public String getMd5() {
         return md5;
     }
@@ -28,5 +30,13 @@ public class TerminalBackgroundInfo {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 }

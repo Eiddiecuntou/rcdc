@@ -5,17 +5,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hamcrest.CustomMatcher;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
@@ -25,7 +27,6 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
-import org.junit.runner.RunWith;
 
 /**
  * Description: 终端背景业务测试类
@@ -58,7 +59,7 @@ public class TerminalBackgroundServiceImplTest {
     @Test
     public void testParamNullError() {
         try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> terminalBackgroundService.syncTerminalBackground(null), "imagePath must not be null");
+            ThrowExceptionTester.throwIllegalArgumentException(() -> terminalBackgroundService.syncTerminalBackground(null), "TerminalBackgroundInfo must not be null");
         } catch (Exception e) {
             Assert.fail();
         }
@@ -78,7 +79,11 @@ public class TerminalBackgroundServiceImplTest {
                 result = Collections.EMPTY_LIST;
             }
         };
-        terminalBackgroundService.syncTerminalBackground("abc");
+        TerminalBackgroundInfo TerminalBackgroundInfo = new TerminalBackgroundInfo();
+        TerminalBackgroundInfo.setImageName("background.png");
+        TerminalBackgroundInfo.setImagePath("C:/");
+        TerminalBackgroundInfo.setMd5("md5");
+        terminalBackgroundService.syncTerminalBackground(TerminalBackgroundInfo);
         Thread.sleep(1000);
         new Verifications() {
             {
@@ -106,7 +111,11 @@ public class TerminalBackgroundServiceImplTest {
                 result = null;
             }
         };
-        terminalBackgroundService.syncTerminalBackground("abc");
+        TerminalBackgroundInfo TerminalBackgroundInfo = new TerminalBackgroundInfo();
+        TerminalBackgroundInfo.setImageName("background.png");
+        TerminalBackgroundInfo.setImagePath("C:/");
+        TerminalBackgroundInfo.setMd5("md5");
+        terminalBackgroundService.syncTerminalBackground(TerminalBackgroundInfo);
         Thread.sleep(1000);
         new Verifications() {
             {
@@ -147,7 +156,11 @@ public class TerminalBackgroundServiceImplTest {
                 result = new RuntimeException("");
             }
         };
-        terminalBackgroundService.syncTerminalBackground("abc");
+        TerminalBackgroundInfo TerminalBackgroundInfo = new TerminalBackgroundInfo();
+        TerminalBackgroundInfo.setImageName("background.png");
+        TerminalBackgroundInfo.setImagePath("C:/");
+        TerminalBackgroundInfo.setMd5("md5");
+        terminalBackgroundService.syncTerminalBackground(TerminalBackgroundInfo);
         Thread.sleep(1000);
         new Verifications() {
             {
@@ -190,7 +203,11 @@ public class TerminalBackgroundServiceImplTest {
 
             }
         };
-        terminalBackgroundService.syncTerminalBackground("abc");
+        TerminalBackgroundInfo TerminalBackgroundInfo = new TerminalBackgroundInfo();
+        TerminalBackgroundInfo.setImageName("background.png");
+        TerminalBackgroundInfo.setImagePath("C:/");
+        TerminalBackgroundInfo.setMd5("md5");
+        terminalBackgroundService.syncTerminalBackground(TerminalBackgroundInfo);
         Thread.sleep(1000);
         new Verifications() {
             {

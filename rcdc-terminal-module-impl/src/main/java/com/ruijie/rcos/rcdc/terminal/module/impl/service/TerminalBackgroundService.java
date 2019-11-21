@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -17,8 +17,8 @@ public interface TerminalBackgroundService {
 
     /**
      * 发起同步背景图片请求
-     * @param name 图片的名称
+     * @param terminalSyncBackgroundInfo 向终端同步图片的信息
      * @throws BusinessException 因为异常
      */
-    void syncTerminalBackground(String name) throws BusinessException;
+    void syncTerminalBackground(TerminalBackgroundInfo terminalSyncBackgroundInfo) throws BusinessException;
 }
