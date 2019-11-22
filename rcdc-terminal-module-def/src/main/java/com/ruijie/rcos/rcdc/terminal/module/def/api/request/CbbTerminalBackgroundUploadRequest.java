@@ -22,6 +22,7 @@ public class CbbTerminalBackgroundUploadRequest implements Request {
 
     @NotNull
     private String md5;
+
     @NotNull
     private String imagePath;
 

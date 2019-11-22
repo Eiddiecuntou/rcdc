@@ -1,16 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.util;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.util.Assert;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.util.Assert;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
 /**
  * 
@@ -222,7 +224,12 @@ public class FileOperateUtil {
         }
     }
 
-
+    /**
+     * 检查并创建文件夹
+     * @param directoryPath 路径
+     * @return 创建的文件夹
+     * @throws BusinessException 业务异常
+     */
     public static File checkAndGetDirectory(final String directoryPath) throws BusinessException {
         Assert.notNull(directoryPath,"directoryPath not null");
         File packageDir = new File(directoryPath);

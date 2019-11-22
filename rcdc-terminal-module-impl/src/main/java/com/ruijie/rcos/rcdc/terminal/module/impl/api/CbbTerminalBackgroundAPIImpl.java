@@ -91,7 +91,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
             return DtoResponse.empty();
         }
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-        if(StringUtils.isEmpty(parameter)){
+        if (StringUtils.isEmpty(parameter)) {
             return DtoResponse.empty();
         }
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);

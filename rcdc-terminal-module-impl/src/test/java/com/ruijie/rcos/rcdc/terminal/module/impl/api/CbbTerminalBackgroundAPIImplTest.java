@@ -100,13 +100,12 @@ public class CbbTerminalBackgroundAPIImplTest {
         request.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
         Deencapsulation.setField(cbbTerminalBackgroundAPI, "LOGGER", logger);
-        new Expectations(File.class) {
+        new Expectations(Files.class) {
             {
                 configFacade.read(CONFIG_FACADE);
                 result = FileUtils.getTempDirectoryPath();
                 mockFile.exists();
                 result = true;
-                mockSkyengineFile.delete(false);
                 Files.move((File) any, (File) any);
                 returns(new Delegate<Files>() {
                     public void move(File from, File to) throws IOException {
@@ -134,49 +133,6 @@ public class CbbTerminalBackgroundAPIImplTest {
     }
 
     /**
-     * 测试上传背景图片不需要删除的情况
-     * 
-     * @throws BusinessException 业务异常
-     * @throws IOException IO异常
-     */
-    @Test
-    public void testUploadNoExistDeleteFile() throws BusinessException, IOException {
-        CbbTerminalBackgroundUploadRequest request = new CbbTerminalBackgroundUploadRequest();
-        request.setImageName("abc");
-        request.setImagePath("123");
-        killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
-        Deencapsulation.setField(cbbTerminalBackgroundAPI, "LOGGER", logger);
-        new Expectations(File.class) {
-            {
-                configFacade.read(CONFIG_FACADE);
-                result = FileUtils.getTempDirectoryPath();
-                mockFile.exists();
-                result = false;
-                Files.move((File) any, (File) any);
-                returns(new Delegate<Files>() {
-                    public void move(File from, File to) throws IOException {}
-                }, new Delegate<Files>() {
-                    public void move(File from, File to) throws IOException {
-                        throw new IOException("abc");
-                    }
-                });
-            }
-        };
-        cbbTerminalBackgroundAPI.upload(request);
-        try {
-            cbbTerminalBackgroundAPI.upload(request);
-        } catch (BusinessException e) {
-            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_OPERATE_FAIL);
-        }
-        new Verifications() {
-            {
-                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo)any);
-                times = 1;
-            }
-        };
-    }
-
-    /**
      * 测试获取背景图片时，文件后缀不合法
      *
      * @throws BusinessException 业务异常
@@ -189,41 +145,24 @@ public class CbbTerminalBackgroundAPIImplTest {
                 result = true;
                 configFacade.read(CONFIG_FACADE);
                 result = FileUtils.getTempDirectoryPath();
+                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+                returns("{'md5':'123','imageName':'123.','imagePath':'abc/background'}",
+                        "{'md5':'123','imageName':'123','imagePath':'abc/background'}");
             }
         };
-        new MockUp<File>(){
-            @Mock
-            public String getName(){
-                return "abc";
+        for (int i = 0; i < 2; i++) {
+            try {
+                cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
+                Assert.fail();
+            } catch (BusinessException e) {
+                Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
             }
-        };
-
-        DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse = null;
-        try {
-            cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
-            Assert.fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(e.getMessage(),BusinessKey.RCDC_FILE_INVALID_SUFFIX);
         }
-        new MockUp<File>(){
-            @Mock
-            public String getName(){
-                return "abc.";
-            }
-        };
-
-        try {
-            cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
-            Assert.fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(e.getMessage(),BusinessKey.RCDC_FILE_INVALID_SUFFIX);
-        }
-
     }
 
     /**
-
-    /**
+     * 
+     * /**
      * 测试获取背景图片不存在的情况
      * 
      * @throws BusinessException 业务异常
@@ -238,6 +177,16 @@ public class CbbTerminalBackgroundAPIImplTest {
         };
         DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse = cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
         Assert.assertEquals(dtoResponse.isEmpty(), true);
+        new Expectations() {
+            {
+                mockFile.exists();
+                result = true;
+                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+                result = null;
+            }
+        };
+        DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse1 = cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
+        Assert.assertEquals(dtoResponse1.isEmpty(), true);
     }
 
     /**
@@ -253,6 +202,8 @@ public class CbbTerminalBackgroundAPIImplTest {
                 result = true;
                 configFacade.read(CONFIG_FACADE);
                 result = FileUtils.getTempDirectoryPath();
+                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+                result = "{'md5':'123','imageName':'123.png','imagePath':'abc/background.png'}";
             }
         };
         DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse = cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
@@ -282,7 +233,7 @@ public class CbbTerminalBackgroundAPIImplTest {
                 times = 1;
                 globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
                 times = 1;
-                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo)any);
+                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo) any);
                 times = 1;
             }
         };
@@ -308,7 +259,7 @@ public class CbbTerminalBackgroundAPIImplTest {
             {
                 globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
                 times = 0;
-                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo)any);
+                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo) any);
                 times = 0;
             }
         };

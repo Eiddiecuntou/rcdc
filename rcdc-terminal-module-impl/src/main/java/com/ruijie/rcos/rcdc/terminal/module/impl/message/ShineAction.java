@@ -78,12 +78,12 @@ public interface ShineAction {
 
 
     /**
-     *  终端上报升级状态
+     * 终端上报升级状态
      */
     String REPORT_SYSTEM_UPGRADE_RESULT = "report_system_upgrade_result";
 
     /**
      * 同步LOGO
      */
-    String SYNC_TERMINAL_BACKGROUND= "sync_terminal_background";
+    String SYNC_TERMINAL_BACKGROUND = "sync_terminal_background";
 }

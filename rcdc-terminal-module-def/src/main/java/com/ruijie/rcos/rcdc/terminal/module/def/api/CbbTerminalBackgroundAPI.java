@@ -21,6 +21,7 @@ public interface CbbTerminalBackgroundAPI {
     /**
      * 上传终端背景图
      * @param request 文件信息
+     * @return DefaultResponse
      * @throws BusinessException 业务异常
      */
     @NoRollback
@@ -28,6 +29,7 @@ public interface CbbTerminalBackgroundAPI {
 
     /**
      * 获取终端背景图的路径
+     * @param request 默认请求
      * @return DefaultResponse
      * @throws BusinessException 业务异常
      */
@@ -36,6 +38,7 @@ public interface CbbTerminalBackgroundAPI {
 
     /**
      * 初始化背景图
+     * @param request 默认请求
      * @return DefaultResponse
      * @throws BusinessException 业务异常
      */

@@ -59,7 +59,8 @@ public class TerminalBackgroundServiceImplTest {
     @Test
     public void testParamNullError() {
         try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> terminalBackgroundService.syncTerminalBackground(null), "TerminalBackgroundInfo must not be null");
+            ThrowExceptionTester.throwIllegalArgumentException(() -> terminalBackgroundService.syncTerminalBackground(null),
+                    "terminalSyncBackgroundInfo must not be null");
         } catch (Exception e) {
             Assert.fail();
         }
