@@ -186,7 +186,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
     private File createFilePath(String filePath) {
         File file = new File(filePath);
         if (!file.exists()) {
-            file.mkdir();
+            file.mkdirs();
             file.setReadable(true, false);
             file.setExecutable(true, false);
         }
