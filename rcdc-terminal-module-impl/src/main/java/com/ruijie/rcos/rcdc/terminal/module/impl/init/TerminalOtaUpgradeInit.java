@@ -1,15 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
+import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -18,7 +10,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
@@ -27,6 +18,15 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Description: Function Description
@@ -51,7 +51,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
 
     @Autowired
-    private BtService btService;
+    private BtClientAPI btClientAPI;
 
     @Override
     public void safeInit() {
@@ -73,7 +73,10 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
         if (!CollectionUtils.isEmpty(upgradingTaskList)) {
             try {
-                btService.startBtShare(upgradePackage.getSeedPath(), upgradePackage.getFilePath());
+                BaseStartBtShareRequest apiRequest = new BaseStartBtShareRequest();
+                apiRequest.setSeedFilePath(upgradePackage.getSeedPath());
+                apiRequest.setFilePath(upgradePackage.getFilePath());
+                btClientAPI.startBtShare(apiRequest);
             } catch (Exception e) {
                 LOGGER.error("开始BT服务失败", e);
             }
