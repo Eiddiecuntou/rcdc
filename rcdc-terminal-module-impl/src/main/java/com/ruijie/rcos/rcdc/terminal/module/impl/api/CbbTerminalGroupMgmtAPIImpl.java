@@ -178,13 +178,13 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public CbbCreateTerminalGroupResponse createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException {
+    public DtoResponse<TerminalGroupDTO> createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         TerminalGroupDTO saveGroup = new TerminalGroupDTO(null, request.getGroupName(), request.getParentGroupId());
         TerminalGroupEntity entity = terminalGroupService.saveTerminalGroup(saveGroup);
         saveGroup.setId(entity.getId());
-        return new CbbCreateTerminalGroupResponse(saveGroup);
+        return DtoResponse.success(saveGroup);
     }
 
     @Override
