@@ -1,19 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
+import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 
 import java.io.File;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
     private TerminalSystemUpgradeService systemUpgradeService;
 
     @Autowired
-    private BtService btService;
+    private BtClientAPI btClientAPI;
 
     @Override
     protected TerminalSystemUpgradeService getSystemUpgradeService() {
@@ -97,7 +98,10 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
 
         //开启BT分享
         LOGGER.info("开启安卓系统升级bt分享");
-        btService.startBtShare(upgradePackage.getSeedPath(), upgradePackage.getFilePath());
+        BaseStartBtShareRequest apiRequest = new BaseStartBtShareRequest();
+        apiRequest.setSeedFilePath(upgradePackage.getSeedPath());
+        apiRequest.setFilePath(upgradePackage.getFilePath());
+        btClientAPI.startBtShare(apiRequest);
     }
 
     @Override
@@ -106,7 +110,9 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
 
         //关闭BT分享
         LOGGER.info("关闭安卓系统升级bt分享");
-        btService.stopBtShare(upgradePackage.getSeedPath());
+        BaseStopBtShareRequest apiRequest = new BaseStopBtShareRequest();
+        apiRequest.setSeedFilePath(upgradePackage.getSeedPath());
+        btClientAPI.stopBtShare(apiRequest);
     }
 
     @Override

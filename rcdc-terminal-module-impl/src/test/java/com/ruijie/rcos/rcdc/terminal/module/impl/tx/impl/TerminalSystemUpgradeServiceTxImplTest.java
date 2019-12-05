@@ -11,7 +11,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTermin
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
