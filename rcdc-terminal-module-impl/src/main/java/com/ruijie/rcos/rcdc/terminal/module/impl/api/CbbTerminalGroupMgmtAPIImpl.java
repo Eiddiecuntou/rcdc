@@ -18,7 +18,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTermi
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCreateTerminalGroupResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
@@ -30,6 +29,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 
 /**
