@@ -62,7 +62,7 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
             try {
                 operateTerminal(terminalId, backgroundInfo);
             } catch (Exception e) {
-                LOGGER.error("向终端发送背景图错误, terminalId[" + terminalId + "], backgroundName[" + backgroundInfo.getImageName() + "]", e);
+                LOGGER.error("向终端发送背景图错误, terminalId[" + terminalId + "]", e);
             }
         }
 

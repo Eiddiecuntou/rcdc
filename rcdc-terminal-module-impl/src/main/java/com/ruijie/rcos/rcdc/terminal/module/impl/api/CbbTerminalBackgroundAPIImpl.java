@@ -53,11 +53,12 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     public DefaultResponse upload(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
 
-        String path = saveBackgroundImageFile(request.getImagePath());
+        saveBackgroundImageFile(request.getImagePath());
 
-        saveDB(request.getMd5(), request.getImageName(), path);
+        String ftpPath = configFacade.read("file.busiz.dir.shine.ftp.background");
+        saveDB(request, ftpPath);
 
-        TerminalBackgroundInfo terminalSyncBackgroundInfo = buildSyncTerminalBackgroundInfo(request, path);
+        TerminalBackgroundInfo terminalSyncBackgroundInfo = buildSyncTerminalBackgroundInfo(request, ftpPath);
 
         terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
 
@@ -66,19 +67,20 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
     private TerminalBackgroundInfo buildSyncTerminalBackgroundInfo(CbbTerminalBackgroundUploadRequest request, String path) {
         TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
-        terminalSyncBackgroundInfo.setImageName(request.getImageName());
-        terminalSyncBackgroundInfo.setImagePath(path);
-        terminalSyncBackgroundInfo.setMd5(request.getMd5());
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo backgroundDetailInfo = terminalSyncBackgroundInfo.new TerminalBackgroundDetailInfo();
+        terminalSyncBackgroundInfo.setIsDefaultImage(false);
+        backgroundDetailInfo.setImageName(request.getImageName());
+        backgroundDetailInfo.setFtpPath(path);
+        backgroundDetailInfo.setMd5(request.getMd5());
+        terminalSyncBackgroundInfo.setDetailInfo(backgroundDetailInfo);
         return terminalSyncBackgroundInfo;
     }
 
-    private void saveDB(String md5, String imageName, String imagePath) {
-        TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
-        terminalBackgroundInfo.setMd5(md5);
-        terminalBackgroundInfo.setImagePath(imagePath);
-        terminalBackgroundInfo.setImageName(imageName);
+    private TerminalBackgroundInfo saveDB(CbbTerminalBackgroundUploadRequest request, String path) {
+        TerminalBackgroundInfo terminalBackgroundInfo = buildSyncTerminalBackgroundInfo(request, path);
         String requestText = JSON.toJSONString(terminalBackgroundInfo);
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, requestText);
+        return terminalBackgroundInfo;
     }
 
     @Override
@@ -95,7 +97,8 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
             return DtoResponse.empty();
         }
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
-        dto.setSuffix(getFileNameSuffix(terminalBackgroundInfo.getImageName()));
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo detailInfo = terminalBackgroundInfo.getDetailInfo();
+        dto.setSuffix(getFileNameSuffix(detailInfo.getImageName()));
         dto.setImageName(Files.getNameWithoutExtension(imageFile.getName()));
         dto.setImagePath(imageFile.getAbsolutePath());
 
@@ -108,15 +111,13 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         if (deleteImageFile()) {
             globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
             TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
-            terminalSyncBackgroundInfo.setImagePath(StringUtils.EMPTY);
-            terminalSyncBackgroundInfo.setImageName(StringUtils.EMPTY);
-            terminalSyncBackgroundInfo.setMd5(StringUtils.EMPTY);
+            terminalSyncBackgroundInfo.setIsDefaultImage(true);
             terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
         }
         return DefaultResponse.Builder.success();
     }
 
-    private String saveBackgroundImageFile(String temporaryImagePath) throws BusinessException {
+    private void saveBackgroundImageFile(String temporaryImagePath) throws BusinessException {
 
         File temporaryImageFile = new File(temporaryImagePath);
 
@@ -130,7 +131,6 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
             LOGGER.error("从[{}] 移动文件到[{}]失败", temporaryImagePath, imageFile.getAbsoluteFile());
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
-        return imageFile.getPath();
     }
 
     private boolean deleteImageFile() {

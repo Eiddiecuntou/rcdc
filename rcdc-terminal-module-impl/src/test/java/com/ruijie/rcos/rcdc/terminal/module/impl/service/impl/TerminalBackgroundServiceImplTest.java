@@ -81,9 +81,10 @@ public class TerminalBackgroundServiceImplTest {
             }
         };
         TerminalBackgroundInfo TerminalBackgroundInfo = new TerminalBackgroundInfo();
-        TerminalBackgroundInfo.setImageName("background.png");
-        TerminalBackgroundInfo.setImagePath("C:/");
-        TerminalBackgroundInfo.setMd5("md5");
+       TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = TerminalBackgroundInfo.new TerminalBackgroundDetailInfo();
+        terminalBackgroundDetailInfo.setImageName("background.png");
+        terminalBackgroundDetailInfo.setFtpPath("C:/");
+        terminalBackgroundDetailInfo.setMd5("md5");
         terminalBackgroundService.syncTerminalBackground(TerminalBackgroundInfo);
         Thread.sleep(1000);
         new Verifications() {
@@ -112,11 +113,12 @@ public class TerminalBackgroundServiceImplTest {
                 result = null;
             }
         };
-        TerminalBackgroundInfo TerminalBackgroundInfo = new TerminalBackgroundInfo();
-        TerminalBackgroundInfo.setImageName("background.png");
-        TerminalBackgroundInfo.setImagePath("C:/");
-        TerminalBackgroundInfo.setMd5("md5");
-        terminalBackgroundService.syncTerminalBackground(TerminalBackgroundInfo);
+        TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = terminalBackgroundInfo.new TerminalBackgroundDetailInfo();
+        terminalBackgroundDetailInfo.setImageName("background.png");
+        terminalBackgroundDetailInfo.setFtpPath("C:/");
+        terminalBackgroundDetailInfo.setMd5("md5");
+        terminalBackgroundService.syncTerminalBackground(terminalBackgroundInfo);
         Thread.sleep(1000);
         new Verifications() {
             {
@@ -157,11 +159,12 @@ public class TerminalBackgroundServiceImplTest {
                 result = new RuntimeException("");
             }
         };
-        TerminalBackgroundInfo TerminalBackgroundInfo = new TerminalBackgroundInfo();
-        TerminalBackgroundInfo.setImageName("background.png");
-        TerminalBackgroundInfo.setImagePath("C:/");
-        TerminalBackgroundInfo.setMd5("md5");
-        terminalBackgroundService.syncTerminalBackground(TerminalBackgroundInfo);
+        TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = terminalBackgroundInfo.new TerminalBackgroundDetailInfo();
+        terminalBackgroundDetailInfo.setImageName("background.png");
+        terminalBackgroundDetailInfo.setFtpPath("C:/");
+        terminalBackgroundDetailInfo.setMd5("md5");
+        terminalBackgroundService.syncTerminalBackground(terminalBackgroundInfo);
         Thread.sleep(1000);
         new Verifications() {
             {
@@ -204,11 +207,12 @@ public class TerminalBackgroundServiceImplTest {
 
             }
         };
-        TerminalBackgroundInfo TerminalBackgroundInfo = new TerminalBackgroundInfo();
-        TerminalBackgroundInfo.setImageName("background.png");
-        TerminalBackgroundInfo.setImagePath("C:/");
-        TerminalBackgroundInfo.setMd5("md5");
-        terminalBackgroundService.syncTerminalBackground(TerminalBackgroundInfo);
+        TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = terminalBackgroundInfo.new TerminalBackgroundDetailInfo();
+        terminalBackgroundDetailInfo.setImageName("background.png");
+        terminalBackgroundDetailInfo.setFtpPath("C:/");
+        terminalBackgroundDetailInfo.setMd5("md5");
+        terminalBackgroundService.syncTerminalBackground(terminalBackgroundInfo);
         Thread.sleep(1000);
         new Verifications() {
             {

@@ -10,33 +10,56 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.model;
  */
 public class TerminalBackgroundInfo {
 
-    private String md5;
+    private TerminalBackgroundDetailInfo detailInfo;
 
-    private String imagePath;
+    private Boolean isDefaultImage;
 
-    private String imageName;
-
-    public String getMd5() {
-        return md5;
+    public TerminalBackgroundDetailInfo getDetailInfo() {
+        return detailInfo;
     }
 
-    public void setMd5(String md5) {
-        this.md5 = md5;
+    public void setDetailInfo(TerminalBackgroundDetailInfo detailInfo) {
+        this.detailInfo = detailInfo;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public Boolean getIsDefaultImage() {
+        return isDefaultImage;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setIsDefaultImage(Boolean isDefaultImage) {
+        this.isDefaultImage = isDefaultImage;
     }
 
-    public String getImageName() {
-        return imageName;
-    }
+    public class TerminalBackgroundDetailInfo {
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+        private String md5;
+
+        private String ftpPath;
+
+        private String imageName;
+
+        public String getMd5() {
+            return md5;
+        }
+
+        public void setMd5(String md5) {
+            this.md5 = md5;
+        }
+
+        public String getFtpPath() {
+            return ftpPath;
+        }
+
+        public void setFtpPath(String ftpPath) {
+            this.ftpPath = ftpPath;
+        }
+
+        public String getImageName() {
+            return imageName;
+        }
+
+        public void setImageName(String imageName) {
+            this.imageName = imageName;
+        }
     }
 }

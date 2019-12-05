@@ -52,19 +52,14 @@ public class SyncTerminalBackgroundSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private TerminalBackgroundInfo buildSyncBackgroundResponse() {
-        TerminalBackgroundInfo response = new TerminalBackgroundInfo();
-        response.setImagePath(StringUtils.EMPTY);
-        response.setImageName(StringUtils.EMPTY);
-        response.setMd5(StringUtils.EMPTY);
+        TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
+        terminalBackgroundInfo.setIsDefaultImage(true);
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
         if (StringUtils.isEmpty(parameter)) {
             LOGGER.info("终端同步背景界面:检测到数据库中的值为空，需要初始化终端背景图片");
-            return response;
+            return terminalBackgroundInfo;
         }
-        TerminalBackgroundInfo cbbTerminalBackGroundUploadRequest = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
-        response.setImagePath(cbbTerminalBackGroundUploadRequest.getImagePath());
-        response.setMd5(cbbTerminalBackGroundUploadRequest.getMd5());
-        response.setImageName(cbbTerminalBackGroundUploadRequest.getImageName());
-        return response;
+        terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
+        return terminalBackgroundInfo;
     }
 }
