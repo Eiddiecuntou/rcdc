@@ -146,8 +146,8 @@ public class CbbTerminalBackgroundAPIImplTest {
                 configFacade.read(CONFIG_FACADE);
                 result = FileUtils.getTempDirectoryPath();
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-                returns("{'md5':'123','imageName':'123.','imagePath':'abc/background'}",
-                        "{'md5':'123','imageName':'123','imagePath':'abc/background'}");
+                returns(result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123','imagePath':'abc/background.png'}}",
+                        result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.','imagePath':'abc/background.png'}}");
             }
         };
         for (int i = 0; i < 2; i++) {
@@ -203,7 +203,7 @@ public class CbbTerminalBackgroundAPIImplTest {
                 configFacade.read(CONFIG_FACADE);
                 result = FileUtils.getTempDirectoryPath();
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-                result = "{'md5':'123','imageName':'123.png','imagePath':'abc/background.png'}";
+                result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png'}}";
             }
         };
         DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse = cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
