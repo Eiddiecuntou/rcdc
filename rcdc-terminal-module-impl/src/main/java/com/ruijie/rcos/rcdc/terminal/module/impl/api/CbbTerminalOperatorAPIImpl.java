@@ -2,8 +2,10 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.io.File;
 import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
@@ -152,6 +154,22 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             cache = new CollectLogCache(CbbCollectLogStateEnums.FAILURE);
         }
         return cache;
+    }
+
+    /**
+     * 获取终端收集日志路径
+     *
+     * @param request 请求参数
+     * @return 终端收集日志路径
+     * @throws BusinessException 业务异常
+     */
+    @Override
+    public DefaultResponse idvDiskClear(CbbTerminalIdRequest request) throws BusinessException {
+        Assert.notNull(request,"request can not be null");
+
+        String terminalId = request.getTerminalId();
+        operatorService.diskClear(terminalId);
+        return DefaultResponse.Builder.success();
     }
 
 }

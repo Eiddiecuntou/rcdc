@@ -315,4 +315,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR = "rcdc_terminal_ota_upgrade_package_has_error";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
 
+    /************ idv终端数据盘清空***************/
+    String RCDC_TERMINAL_DESKTOP_RUNNING_CANNOT_CLEAR_DISK = "rcdc_terminal_desktop_running_cannot_clear_disk";
+    String RCDC_TERMINAL_CLEAR_DISK_MSG_SEND_FAIL = "rcdc_terminal_clear_disk_msg_send_fail";
+    String RCDC_TERMINAL_NOT_EXIST = "rcdc_terminal_not_exist";
+    String RCDC_TERMINAL_NOT_IDV_CANNOT_CLEAR_DISK = "rcdc_terminal_not_idv_cannot_clear_disk";
+    String RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK = "rcdc_terminal_operate_action_clear_disk";
+    String RCDC_TERMINAL_OFFLINE_CANNOT_CLEAR_DISK = "rcdc_terminal_offline_cannot_clear_disk";
 }

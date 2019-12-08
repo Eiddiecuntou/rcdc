@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -87,4 +89,13 @@ public interface CbbTerminalOperatorAPI {
     @NoRollback
     CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalLogNameRequest request) throws BusinessException;
 
+    /**
+     * 获取终端收集日志路径
+     *
+     * @param request 请求参数
+     * @return 终端收集日志路径
+     * @throws BusinessException 业务异常
+     */
+    @NoRollback
+    DefaultResponse idvDiskClear(CbbTerminalIdRequest request) throws BusinessException;
 }
