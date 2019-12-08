@@ -1,11 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSON;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBackgroundAPI;
@@ -15,7 +9,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
-import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -25,6 +18,11 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Description: Function Description
@@ -38,10 +36,20 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalBackgroundAPIImpl.class);
 
-    private static final String TERMINAL_BACKGROUND_NAME = "background";
+    /**
+     * 背景图名称，不带后缀
+     */
+    private static final String BACKGROUND_IMAGE_NAME = "background";
 
-    @Autowired
-    private ConfigFacade configFacade;
+    /**
+     * 背景图保存的目录
+     */
+    private static final String BACKGROUND_IMAGE_FTP_DIR = "/opt/ftp/terminal/background/";
+
+    /**
+     * 背景图保存的文件相对路径 background是不带后缀名的图片文件名
+     */
+    private static final String BACKGROUND_IMAGE_FTP_RELATIVE_PATH = "/background/" + BACKGROUND_IMAGE_NAME;
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
@@ -55,29 +63,28 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
         saveBackgroundImageFile(request.getImagePath());
 
-        String ftpPath = configFacade.read("file.busiz.dir.shine.ftp.background");
-        saveDB(request, ftpPath);
+        saveBackgroundImageConfig(request);
 
-        TerminalBackgroundInfo terminalSyncBackgroundInfo = buildSyncTerminalBackgroundInfo(request, ftpPath);
+        TerminalBackgroundInfo terminalSyncBackgroundInfo = buildTerminalBackgroundInfo(request);
 
         terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
 
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo buildSyncTerminalBackgroundInfo(CbbTerminalBackgroundUploadRequest request, String path) {
+    private TerminalBackgroundInfo buildTerminalBackgroundInfo(CbbTerminalBackgroundUploadRequest request) {
         TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
-        TerminalBackgroundInfo.TerminalBackgroundDetailInfo backgroundDetailInfo = terminalSyncBackgroundInfo.new TerminalBackgroundDetailInfo();
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo backgroundDetailInfo = new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
         terminalSyncBackgroundInfo.setIsDefaultImage(false);
         backgroundDetailInfo.setImageName(request.getImageName());
-        backgroundDetailInfo.setFtpPath(path);
+        backgroundDetailInfo.setFtpPath(BACKGROUND_IMAGE_FTP_RELATIVE_PATH);
         backgroundDetailInfo.setMd5(request.getMd5());
         terminalSyncBackgroundInfo.setDetailInfo(backgroundDetailInfo);
         return terminalSyncBackgroundInfo;
     }
 
-    private TerminalBackgroundInfo saveDB(CbbTerminalBackgroundUploadRequest request, String path) {
-        TerminalBackgroundInfo terminalBackgroundInfo = buildSyncTerminalBackgroundInfo(request, path);
+    private TerminalBackgroundInfo saveBackgroundImageConfig(CbbTerminalBackgroundUploadRequest request) {
+        TerminalBackgroundInfo terminalBackgroundInfo = buildTerminalBackgroundInfo(request);
         String requestText = JSON.toJSONString(terminalBackgroundInfo);
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, requestText);
         return terminalBackgroundInfo;
@@ -118,14 +125,10 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     }
 
     private void saveBackgroundImageFile(String temporaryImagePath) throws BusinessException {
-
-        File temporaryImageFile = new File(temporaryImagePath);
-
+        FileOperateUtil.checkAndGetDirectory(BACKGROUND_IMAGE_FTP_DIR);
         File imageFile = getBackGroundImageFile();
-
-        createBackgroundImageDir();
-
         try {
+            File temporaryImageFile = new File(temporaryImagePath);
             Files.move(temporaryImageFile, imageFile);
         } catch (IOException e) {
             LOGGER.error("从[{}] 移动文件到[{}]失败", temporaryImagePath, imageFile.getAbsoluteFile());
@@ -134,7 +137,6 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     }
 
     private boolean deleteImageFile() {
-
         File imageFile = getBackGroundImageFile();
         if (imageFile.exists() == false) {
             return false;
@@ -144,13 +146,6 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return true;
     }
 
-    private void createBackgroundImageDir() throws BusinessException {
-        String backgroundPath = configFacade.read("file.busiz.dir.terminal.background");
-
-        File file = FileOperateUtil.checkAndGetDirectory(backgroundPath);
-
-        setReadAndExecute(file);
-    }
 
     private String getFileNameSuffix(String name) throws BusinessException {
         if (name.lastIndexOf(".") == name.length() - 1 || name.lastIndexOf(".") == -1) {
@@ -160,16 +155,8 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     }
 
     private File getBackGroundImageFile() {
-        String saveLogoFile = configFacade.read("file.busiz.dir.terminal.background");
-        String saveLogoPath = saveLogoFile + TERMINAL_BACKGROUND_NAME;
-        File file = new File(saveLogoPath);
-        setReadAndExecute(file);
+        String saveBackgroundImagePath = BACKGROUND_IMAGE_FTP_DIR + BACKGROUND_IMAGE_NAME;
+        File file = new File(saveBackgroundImagePath);
         return file;
     }
-
-    private void setReadAndExecute(File file) {
-        file.setReadable(true, false);
-        file.setExecutable(true, false);
-    }
-
 }

@@ -30,7 +30,7 @@ public class TerminalBackgroundInfo {
         this.isDefaultImage = isDefaultImage;
     }
 
-    public class TerminalBackgroundDetailInfo {
+    public static class TerminalBackgroundDetailInfo {
 
         private String md5;
 

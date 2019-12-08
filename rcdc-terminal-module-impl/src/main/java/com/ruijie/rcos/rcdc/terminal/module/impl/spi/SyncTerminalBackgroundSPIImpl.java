@@ -46,20 +46,19 @@ public class SyncTerminalBackgroundSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request, "cbbDispatcherRequest must not be null");
         LOGGER.debug("=====终端同步背景界面报文===={}", request.getData());
 
-        TerminalBackgroundInfo terminalSyncBackgroundResponse = buildSyncBackgroundResponse();
+        TerminalBackgroundInfo terminalSyncBackgroundResponse = buildBackgroundResponse();
         CbbResponseShineMessage cbbResponseShineMessage = MessageUtils.buildResponseMessage(request, terminalSyncBackgroundResponse);
         messageHandlerAPI.response(cbbResponseShineMessage);
     }
 
-    private TerminalBackgroundInfo buildSyncBackgroundResponse() {
-        TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
-        terminalBackgroundInfo.setIsDefaultImage(true);
+    private TerminalBackgroundInfo buildBackgroundResponse() {
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
         if (StringUtils.isEmpty(parameter)) {
             LOGGER.info("终端同步背景界面:检测到数据库中的值为空，需要初始化终端背景图片");
+            TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
+            terminalBackgroundInfo.setIsDefaultImage(true);
             return terminalBackgroundInfo;
         }
-        terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
-        return terminalBackgroundInfo;
+        return JSON.parseObject(parameter, TerminalBackgroundInfo.class);
     }
 }
