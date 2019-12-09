@@ -218,18 +218,11 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         //FIXME 暂时不确定开启本地磁盘字段放在哪个表里，该检查需要进行补充
         //检查终端是否存在，是否为IDV终端，是否在线,是否开启本地磁盘
         checkTerminal(terminalId);
-        try {
-            int responseCode = operateTerminal(terminalId, SendTerminalEventEnums.CLEAR_DATA, "",
-                    BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK);
-            //云桌面运行中,不能清空数据盘
-            if (responseCode == -1) {
-                throw new BusinessException(BusinessKey.RCDC_TERMINAL_DESKTOP_RUNNING_CANNOT_CLEAR_DISK, terminalId);
-            }
-        } catch (Exception e) {
-            if (e instanceof BusinessException) {
-                throw new BusinessException(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_MSG_SEND_FAIL,e);
-            }
-            throw new IllegalArgumentException("发送清空数据盘请求失败", e);
+        int responseCode = operateTerminal(terminalId, SendTerminalEventEnums.CLEAR_DATA, "",
+                BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK);
+        //云桌面运行中,不能清空数据盘
+        if (responseCode == -1) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_DESKTOP_RUNNING_CANNOT_CLEAR_DISK, terminalId);
         }
     }
 
@@ -239,7 +232,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_EXIST, terminalId);
         }
         if (entity.getState() != CbbTerminalStateEnums.ONLINE) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_CLEAR_DISK,
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK,
                     new String[] {entity.getTerminalName(), terminalId});
         }
         if (entity.getPlatform() != CbbTerminalPlatformEnums.IDV) {
