@@ -90,10 +90,10 @@ public interface CbbTerminalOperatorAPI {
     CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalLogNameRequest request) throws BusinessException;
 
     /**
-     * 获取终端收集日志路径
+     * 终端数据盘清空
      *
      * @param request 请求参数
-     * @return 终端收集日志路径
+     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback

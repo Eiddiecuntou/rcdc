@@ -156,13 +156,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         return cache;
     }
 
-    /**
-     * 获取终端收集日志路径
-     *
-     * @param request 请求参数
-     * @return 终端收集日志路径
-     * @throws BusinessException 业务异常
-     */
+
     @Override
     public DefaultResponse idvDiskClear(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request,"request can not be null");
