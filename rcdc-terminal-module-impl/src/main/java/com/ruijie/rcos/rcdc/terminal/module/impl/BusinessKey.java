@@ -315,4 +315,7 @@ public interface BusinessKey {
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR = "rcdc_terminal_ota_upgrade_package_has_error";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
 
+    /************终端离线登录设置**************************/
+    String RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG = "rcdc_terminal_operate_action_send_offline_login_config";
+
 }

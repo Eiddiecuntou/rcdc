@@ -81,4 +81,9 @@ public interface ShineAction {
      *  终端上报升级状态
      */
     String REPORT_SYSTEM_UPGRADE_RESULT = "report_system_upgrade_result";
+
+    /**
+     *  终端请同步前离线登录设置
+     */
+    String REQUEST_OFFLINE_CONFIG = "request_offline_config";
 }
