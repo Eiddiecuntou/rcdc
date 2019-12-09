@@ -3,9 +3,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import org.springframework.util.Assert;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.DataDiskClearResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -24,6 +24,8 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ClearDataDiskResultHandlerSPIImpl.class);
 
+    private static final String RESULT_KEY = "result";
+
     /**
      * 消息分发方法
      *
@@ -36,8 +38,9 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
         Assert.notNull(request.getData(), "报文消息体不能为空");
 
         String data = request.getData();
-        DataDiskClearResult result = JSON.parseObject(data, DataDiskClearResult.class);
-        if (result.getResult().equals(0)) {
+        JSONObject jsonObject = JSON.parseObject(data);
+        Integer result = jsonObject.getInteger(RESULT_KEY);
+        if (result.equals(0)) {
             LOGGER.warn("终端数据盘清空成功,terminalId = [{}]", request.getTerminalId());
         } else {
             LOGGER.error("终端数据盘清空失败,terminalId = [{}]", request.getTerminalId());
