@@ -214,9 +214,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     @Override
     public void diskClear(String terminalId) throws BusinessException {
         Assert.notNull(terminalId,"request can not be null");
-
-        //FIXME 暂时不确定开启本地磁盘字段放在哪个表里，该检查需要进行补充
-        //检查终端是否存在，是否为IDV终端，是否在线,是否开启本地磁盘
+        //检查终端是否存在，是否为IDV终端，是否在线
         checkTerminal(terminalId);
         int responseCode = operateTerminal(terminalId, SendTerminalEventEnums.CLEAR_DATA, "",
                 BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK);
