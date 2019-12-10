@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -156,12 +157,14 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             LOGGER.debug("无在线终端");
             return;
         }
+        //用于存储异常日志的list，一次性输出便于定位
+        List<String> errorList = Lists.newArrayList();
         // 向在线IDV终端发送离线登录设置
         for (String terminalId : onlineTerminalIdList) {
             TerminalEntity entity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(terminalId);
             if (entity == null) {
                 LOGGER.error("terminal not exist can not send offline login config to terminal , terminalId[" + terminalId + "]");
-                return;
+                continue;
             }
             //判定是否为IDV终端
             if (entity.getPlatform() == CbbTerminalPlatformEnums.IDV) {
@@ -171,9 +174,13 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
                     operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG, configRequest,
                             BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG);
                 } catch (Exception e) {
+                    errorList.add("send offline login config to terminal failed, terminalId[" + terminalId + "] reason is" + e.getMessage());
                     LOGGER.error("send offline login config to terminal failed, terminalId[" + terminalId + "]", e);
                 }
             }
+        }
+        if (!errorList.isEmpty()) {
+            LOGGER.error(errorList.toString());
         }
     }
 
