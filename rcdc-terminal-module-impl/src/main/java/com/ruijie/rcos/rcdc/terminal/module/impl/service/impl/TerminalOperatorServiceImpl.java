@@ -120,6 +120,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     private void sendNewPwdToOnlineTerminal(String password) {
         LOGGER.debug("向在线终端发送管理员密码改变通知");
         List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
+
         if (CollectionUtils.isEmpty(onlineTerminalIdList)) {
             LOGGER.debug("无在线终端");
             return;
@@ -157,15 +158,19 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         }
         // 向在线IDV终端发送离线登录设置
         for (String terminalId : onlineTerminalIdList) {
-            //判定是否为IDV终端
             TerminalEntity entity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+            if (entity == null) {
+                LOGGER.error("terminal not exist can not send offline login config to terminal , terminalId[" + terminalId + "]");
+                return;
+            }
+            //判定是否为IDV终端
             if (entity.getPlatform() == CbbTerminalPlatformEnums.IDV) {
                 try {
                     ChangeOfflineLoginConfigRequest configRequest =
                             new ChangeOfflineLoginConfigRequest(request.getOfflineAutoLocked());
                     operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG, configRequest,
                             BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG);
-                } catch (BusinessException e) {
+                } catch (Exception e) {
                     LOGGER.error("send offline login config to terminal failed, terminalId[" + terminalId + "]", e);
                 }
             }
