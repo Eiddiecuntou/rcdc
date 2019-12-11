@@ -92,10 +92,10 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 终端数据盘清空
      *
-     * @param request 请求参数
+     * @param idRequest 请求参数
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse idvDiskClear(CbbTerminalIdRequest request) throws BusinessException;
+    DefaultResponse clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException;
 }

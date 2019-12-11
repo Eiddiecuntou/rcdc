@@ -158,10 +158,10 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
 
     @Override
-    public DefaultResponse idvDiskClear(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request,"request can not be null");
+    public DefaultResponse clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException {
+        Assert.notNull(idRequest,"idRequest can not be null");
 
-        String terminalId = request.getTerminalId();
+        String terminalId = idRequest.getTerminalId();
         operatorService.diskClear(terminalId);
         return DefaultResponse.Builder.success();
     }
