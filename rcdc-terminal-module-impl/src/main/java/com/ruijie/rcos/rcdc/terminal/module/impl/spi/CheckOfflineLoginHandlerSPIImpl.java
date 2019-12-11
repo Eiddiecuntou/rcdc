@@ -29,6 +29,9 @@ public class CheckOfflineLoginHandlerSPIImpl implements CbbDispatcherHandlerSPI 
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CheckOfflineLoginHandlerSPIImpl.class);
 
+    //当offlineAutoLocked为0时，对终端离线登录时间不做限制
+    private static final String NOLIMIT = "0";
+
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
 
@@ -41,7 +44,7 @@ public class CheckOfflineLoginHandlerSPIImpl implements CbbDispatcherHandlerSPI 
         String offlineAutoLocked = globalParameterAPI.findParameter(Constants.OFFLINE_LOGIN_TIME_KEY);
         if (offlineAutoLocked == null) {
             LOGGER.debug("离线登录设置参数不存在");
-            return;
+            offlineAutoLocked = NOLIMIT;
         }
         try {
             OfflineLoginConfig offlineLoginConfig = new OfflineLoginConfig(Integer.valueOf(offlineAutoLocked));
