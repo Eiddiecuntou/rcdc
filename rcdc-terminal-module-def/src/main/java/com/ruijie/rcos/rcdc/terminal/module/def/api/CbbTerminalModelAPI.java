@@ -4,8 +4,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalMode
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalProductIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCpuTypeResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
@@ -29,12 +29,12 @@ public interface CbbTerminalModelAPI {
 
 
     /**
-     *  根据终端类型查询支持的cpu型号
+     *  根据终端型号id查询终端型号
      *
      * @param request 请求参数
-     * @return cpu型号列表
+     * @return 终端型号信息
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    CbbTerminalCpuTypeResponse queryCpuTypeByProductId(CbbTerminalProductIdRequest request) throws BusinessException;
+    DtoResponse<CbbTerminalModelDTO> queryByProductId(CbbTerminalProductIdRequest request) throws BusinessException;
 }

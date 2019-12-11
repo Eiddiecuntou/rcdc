@@ -26,9 +26,9 @@ public interface TerminalModelService {
      *  根据终端类型查询支持的cpu型号
      *
      * @param productId 终端型号id
-     * @return cpu型号
+     * @return CbbTerminalModelDTO
      * @throws BusinessException 业务异常
      */
-    String queryCpuTypeByProductId(String productId) throws BusinessException;
+    CbbTerminalModelDTO queryByProductId(String productId) throws BusinessException;
 
 }

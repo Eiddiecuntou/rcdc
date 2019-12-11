@@ -5,9 +5,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalMode
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalProductIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCpuTypeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalModelService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -33,11 +33,11 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
     }
 
     @Override
-    public CbbTerminalCpuTypeResponse queryCpuTypeByProductId(CbbTerminalProductIdRequest request) throws BusinessException {
+    public DtoResponse<CbbTerminalModelDTO> queryByProductId(CbbTerminalProductIdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        String cpuType = terminalModelService.queryCpuTypeByProductId(request.getProductId());
-        return new CbbTerminalCpuTypeResponse(cpuType);
+        CbbTerminalModelDTO terminalModelDTO = terminalModelService.queryByProductId(request.getProductId());
+        return DtoResponse.success(terminalModelDTO);
     }
 
 }

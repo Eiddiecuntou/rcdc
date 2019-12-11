@@ -64,7 +64,7 @@ public class TerminalModelServiceImpl implements TerminalModelService {
     }
 
     @Override
-    public String queryCpuTypeByProductId(String productId) throws BusinessException {
+    public CbbTerminalModelDTO queryByProductId(String productId) throws BusinessException {
         Assert.hasText(productId, "productId can not be null");
 
         List<TerminalModelDriverEntity> entityList = terminalModelDriverDAO.findByProductId(productId);
@@ -72,7 +72,9 @@ public class TerminalModelServiceImpl implements TerminalModelService {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_MODEL_NOT_EXIST_ERROR, new String[] {productId});
         }
 
-        return entityList.get(0).getCpuType();
+        CbbTerminalModelDTO terminalModelDTO = new CbbTerminalModelDTO();
+        BeanUtils.copyProperties(entityList.get(0), terminalModelDTO);
+        return terminalModelDTO;
     }
 
 }
