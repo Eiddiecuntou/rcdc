@@ -9,7 +9,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileI
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
-import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
 
 /**
  * Description: 终端操作接口
@@ -99,5 +98,5 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultWebResponse offlineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
+    DefaultResponse offlineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
 }

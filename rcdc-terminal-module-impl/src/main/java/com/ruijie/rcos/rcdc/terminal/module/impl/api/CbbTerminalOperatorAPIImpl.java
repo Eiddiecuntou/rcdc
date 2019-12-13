@@ -24,7 +24,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.webmvc.api.response.DefaultWebResponse;
 
 /**
  * Description: 终端操作实现类
@@ -166,10 +165,10 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @Override
-    public DefaultWebResponse offlineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException {
+    public DefaultResponse offlineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         operatorService.offlineLoginSetting(request.getOfflineAutoLocked());
-        return DefaultWebResponse.Builder.success();
+        return DefaultResponse.Builder.success();
     }
 
 }
