@@ -81,7 +81,7 @@ public class TerminalBackgroundServiceImplTest {
             }
         };
         TerminalBackgroundInfo TerminalBackgroundInfo = new TerminalBackgroundInfo();
-       TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = TerminalBackgroundInfo.new TerminalBackgroundDetailInfo();
+       TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
         terminalBackgroundDetailInfo.setImageName("background.png");
         terminalBackgroundDetailInfo.setFtpPath("C:/");
         terminalBackgroundDetailInfo.setMd5("md5");
@@ -114,7 +114,7 @@ public class TerminalBackgroundServiceImplTest {
             }
         };
         TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
-        TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = terminalBackgroundInfo.new TerminalBackgroundDetailInfo();
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
         terminalBackgroundDetailInfo.setImageName("background.png");
         terminalBackgroundDetailInfo.setFtpPath("C:/");
         terminalBackgroundDetailInfo.setMd5("md5");
@@ -160,7 +160,7 @@ public class TerminalBackgroundServiceImplTest {
             }
         };
         TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
-        TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = terminalBackgroundInfo.new TerminalBackgroundDetailInfo();
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
         terminalBackgroundDetailInfo.setImageName("background.png");
         terminalBackgroundDetailInfo.setFtpPath("C:/");
         terminalBackgroundDetailInfo.setMd5("md5");
@@ -208,7 +208,7 @@ public class TerminalBackgroundServiceImplTest {
             }
         };
         TerminalBackgroundInfo terminalBackgroundInfo = new TerminalBackgroundInfo();
-        TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo = terminalBackgroundInfo.new TerminalBackgroundDetailInfo();
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo terminalBackgroundDetailInfo =  new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
         terminalBackgroundDetailInfo.setImageName("background.png");
         terminalBackgroundDetailInfo.setFtpPath("C:/");
         terminalBackgroundDetailInfo.setMd5("md5");

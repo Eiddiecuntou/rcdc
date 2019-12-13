@@ -19,7 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
-import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -102,8 +101,6 @@ public class CbbTerminalBackgroundAPIImplTest {
         Deencapsulation.setField(cbbTerminalBackgroundAPI, "LOGGER", logger);
         new Expectations(Files.class) {
             {
-                configFacade.read(CONFIG_FACADE);
-                result = FileUtils.getTempDirectoryPath();
                 mockFile.exists();
                 result = true;
                 Files.move((File) any, (File) any);
@@ -143,8 +140,6 @@ public class CbbTerminalBackgroundAPIImplTest {
             {
                 mockFile.exists();
                 result = true;
-                configFacade.read(CONFIG_FACADE);
-                result = FileUtils.getTempDirectoryPath();
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
                 returns(result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123','imagePath':'abc/background.png'}}",
                         result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.','imagePath':'abc/background.png'}}");
@@ -200,8 +195,6 @@ public class CbbTerminalBackgroundAPIImplTest {
             {
                 mockFile.exists();
                 result = true;
-                configFacade.read(CONFIG_FACADE);
-                result = FileUtils.getTempDirectoryPath();
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
                 result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png'}}";
             }

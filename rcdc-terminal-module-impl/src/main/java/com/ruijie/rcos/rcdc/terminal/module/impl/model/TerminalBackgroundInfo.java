@@ -30,6 +30,9 @@ public class TerminalBackgroundInfo {
         this.isDefaultImage = isDefaultImage;
     }
 
+    /**
+     * 终端背景图的详情
+     */
     public static class TerminalBackgroundDetailInfo {
 
         private String md5;
