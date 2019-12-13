@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -73,8 +72,8 @@ public interface TerminalOperatorService {
     /**
      * 终端离线登录设置
      *
-     * @param request 离线设置请求
+     * @param offlineAutoLocked 离线设置参数
      * @throws BusinessException 业务异常
      */
-    void offlineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
+    void offlineLoginSetting(Integer offlineAutoLocked) throws BusinessException;
 }

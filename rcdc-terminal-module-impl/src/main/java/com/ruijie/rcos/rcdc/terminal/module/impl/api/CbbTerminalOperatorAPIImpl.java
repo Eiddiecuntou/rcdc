@@ -168,7 +168,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public DefaultWebResponse offlineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
-        operatorService.offlineLoginSetting(request);
+        operatorService.offlineLoginSetting(request.getOfflineAutoLocked());
         return DefaultWebResponse.Builder.success();
     }
 

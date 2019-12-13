@@ -11,7 +11,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -140,43 +139,52 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
 
     @Override
-    public void offlineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException {
-        Assert.notNull(request, "request 不能为空");
+    public void offlineLoginSetting(Integer offlineAutoLocked) throws BusinessException {
+        Assert.notNull(offlineAutoLocked, "request 不能为空");
 
-        String offlineAutoLocked = Integer.toString(request.getOfflineAutoLocked());
         // 更新全局离线登录设置
-        globalParameterAPI.updateParameter(Constants.OFFLINE_LOGIN_TIME_KEY, offlineAutoLocked);
+        globalParameterAPI.updateParameter(Constants.OFFLINE_LOGIN_TIME_KEY, offlineAutoLocked.toString());
+        // 获取在线IDV终端
+        List<String> onlineIdvTerminalIdList = getOnlineIdvTerminal();
         // 向在线IDV终端发送离线登录设置
-        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendOfflineSettingToOnlineIdvTerminal(request));
+        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendOfflineSettingToOnlineIdvTerminal(offlineAutoLocked, onlineIdvTerminalIdList));
     }
 
-    private void sendOfflineSettingToOnlineIdvTerminal(OfflineLoginSettingRequest request) {
-        LOGGER.debug("向IDV终端发送离线登录设置");
+    private List<String> getOnlineIdvTerminal() {
+        List<String> onlineIdvTerminalIdList = Lists.newArrayList();
         List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
         if (CollectionUtils.isEmpty(onlineTerminalIdList)) {
             LOGGER.debug("无在线终端");
-            return;
+            return onlineIdvTerminalIdList;
         }
-        //用于存储异常日志的list，一次性输出便于定位
-        List<String> errorList = Lists.newArrayList();
-        // 向在线IDV终端发送离线登录设置
         for (String terminalId : onlineTerminalIdList) {
             TerminalEntity entity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(terminalId);
             if (entity == null) {
-                LOGGER.error("terminal not exist can not send offline login config to terminal , terminalId[" + terminalId + "]");
+                LOGGER.error("terminal not exist, terminalId[" + terminalId + "]");
                 continue;
             }
-            //判定是否为IDV终端
             if (entity.getPlatform() == CbbTerminalPlatformEnums.IDV) {
-                try {
-                    ChangeOfflineLoginConfigRequest configRequest =
-                            new ChangeOfflineLoginConfigRequest(request.getOfflineAutoLocked());
-                    operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG, configRequest,
-                            BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG);
-                } catch (Exception e) {
-                    errorList.add("send offline login config to terminal failed, terminalId[" + terminalId + "] reason is" + e.getMessage());
-                    LOGGER.error("send offline login config to terminal failed, terminalId[" + terminalId + "]", e);
-                }
+                onlineIdvTerminalIdList.add(terminalId);
+            }
+
+        }
+        return onlineIdvTerminalIdList;
+    }
+
+    private void sendOfflineSettingToOnlineIdvTerminal(Integer offlineAutoLocked, List<String> onlineIdvterminalIdList) {
+        LOGGER.debug("向IDV终端发送离线登录设置");
+        //用于存储异常日志的list，一次性输出便于定位
+        List<String> errorList = Lists.newArrayList();
+        // 向在线IDV终端发送离线登录设置
+        for (String terminalId : onlineIdvterminalIdList) {
+            try {
+                ChangeOfflineLoginConfigRequest configRequest =
+                        new ChangeOfflineLoginConfigRequest(offlineAutoLocked);
+                operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG, configRequest,
+                        BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG);
+            } catch (Exception e) {
+                errorList.add("send offline login config to terminal failed, terminalId[" + terminalId + "] reason is" + e.getMessage());
+                LOGGER.error("send offline login config to terminal failed, terminalId[" + terminalId + "]", e);
             }
         }
         if (!errorList.isEmpty()) {
