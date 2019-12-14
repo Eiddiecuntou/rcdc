@@ -1,14 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
+import java.util.Date;
+import java.util.UUID;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Description: Function Description
@@ -47,7 +49,7 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
     private String productType;
 
     @Enumerated(EnumType.STRING)
-    private CbbTerminalPlatformEnums terminalPlatform;
+    private CbbTerminalPlatformEnums platform;
 
     private String serialNumber;
 
@@ -177,12 +179,12 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
         this.productType = productType;
     }
 
-    public CbbTerminalPlatformEnums getTerminalPlatform() {
-        return terminalPlatform;
+    public CbbTerminalPlatformEnums getPlatform() {
+        return platform;
     }
 
-    public void setTerminalPlatform(CbbTerminalPlatformEnums terminalPlatform) {
-        this.terminalPlatform = terminalPlatform;
+    public void setPlatform(CbbTerminalPlatformEnums platform) {
+        this.platform = platform;
     }
 
     public String getSerialNumber() {
