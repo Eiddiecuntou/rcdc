@@ -31,10 +31,6 @@ public class SyncTerminalBackgroundSPIImpl implements CbbDispatcherHandlerSPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncTerminalLogoHandlerSPIImpl.class);
 
-    private static final Integer NO_NEED_SYNC = 0;
-
-    private static final Integer NEED_SYNC = 1;
-
     @Autowired
     GlobalParameterAPI globalParameterAPI;
 
