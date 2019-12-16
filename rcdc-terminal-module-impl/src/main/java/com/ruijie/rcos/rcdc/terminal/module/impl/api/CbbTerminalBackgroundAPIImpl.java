@@ -75,7 +75,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo saveBackgroundImageConfig(CbbTerminalBackgroundUploadRequest request) {
+    private TerminalBackgroundInfo saveBackgroundImageConfig(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
         TerminalBackgroundInfo terminalBackgroundInfo = buildTerminalBackgroundInfo(request);
         String requestText = JSON.toJSONString(terminalBackgroundInfo);
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, requestText);
@@ -112,11 +112,12 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo buildTerminalBackgroundInfo(CbbTerminalBackgroundUploadRequest request) {
+    private TerminalBackgroundInfo buildTerminalBackgroundInfo(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
         TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
         TerminalBackgroundInfo.TerminalBackgroundDetailInfo backgroundDetailInfo = new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
         terminalSyncBackgroundInfo.setIsDefaultImage(false);
-        backgroundDetailInfo.setImageName(request.getImageName());
+        File backGroundImageFile = getBackGroundImageFile(request.getImageName());
+        backgroundDetailInfo.setImageName(backGroundImageFile.getName());
         backgroundDetailInfo.setFtpPath(BACKGROUND_IMAGE_FTP_RELATIVE_PATH);
         backgroundDetailInfo.setMd5(request.getMd5());
         terminalSyncBackgroundInfo.setDetailInfo(backgroundDetailInfo);
