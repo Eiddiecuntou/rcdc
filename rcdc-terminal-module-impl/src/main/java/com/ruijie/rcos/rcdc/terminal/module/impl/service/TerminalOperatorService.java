@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbOfflineAutoLockedEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -75,5 +76,5 @@ public interface TerminalOperatorService {
      * @param offlineAutoLocked 离线设置参数
      * @throws BusinessException 业务异常
      */
-    void offlineLoginSetting(Integer offlineAutoLocked) throws BusinessException;
+    void offlineLoginSetting(CbbOfflineAutoLockedEnums offlineAutoLocked) throws BusinessException;
 }

@@ -12,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbOfflineAutoLockedEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -139,8 +140,8 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
 
     @Override
-    public void offlineLoginSetting(Integer offlineAutoLocked) throws BusinessException {
-        Assert.notNull(offlineAutoLocked, "request 不能为空");
+    public void offlineLoginSetting(CbbOfflineAutoLockedEnums offlineAutoLocked) throws BusinessException {
+        Assert.notNull(offlineAutoLocked, "offlineAutoLocked 不能为空");
 
         // 更新全局离线登录设置
         globalParameterAPI.updateParameter(Constants.OFFLINE_LOGIN_TIME_KEY, offlineAutoLocked.toString());
@@ -171,7 +172,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         return onlineIdvTerminalIdList;
     }
 
-    private void sendOfflineSettingToOnlineIdvTerminal(Integer offlineAutoLocked, List<String> onlineIdvterminalIdList) {
+    private void sendOfflineSettingToOnlineIdvTerminal(CbbOfflineAutoLockedEnums offlineAutoLocked, List<String> onlineIdvterminalIdList) {
         LOGGER.debug("向IDV终端发送离线登录设置");
         //用于存储异常日志的list，一次性输出便于定位
         List<String> errorList = Lists.newArrayList();

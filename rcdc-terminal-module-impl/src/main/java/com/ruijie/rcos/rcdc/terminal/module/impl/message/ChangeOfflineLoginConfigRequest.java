@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbOfflineAutoLockedEnums;
+
 /**
  * Description: 修改离线登录配置报文
  * Copyright: Copyright (c) 2019
@@ -10,17 +12,17 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
  */
 public class ChangeOfflineLoginConfigRequest {
 
-    private Integer offlineAutoLocked;
+    private CbbOfflineAutoLockedEnums offlineAutoLocked;
 
-    public ChangeOfflineLoginConfigRequest(Integer offlineAutoLocked) {
+    public ChangeOfflineLoginConfigRequest(CbbOfflineAutoLockedEnums offlineAutoLocked) {
         this.offlineAutoLocked = offlineAutoLocked;
     }
 
-    public Integer getOfflineAutoLocked() {
+    public CbbOfflineAutoLockedEnums getOfflineAutoLocked() {
         return offlineAutoLocked;
     }
 
-    public void setOfflineAutoLocked(Integer offlineAutoLocked) {
+    public void setOfflineAutoLocked(CbbOfflineAutoLockedEnums offlineAutoLocked) {
         this.offlineAutoLocked = offlineAutoLocked;
     }
 }

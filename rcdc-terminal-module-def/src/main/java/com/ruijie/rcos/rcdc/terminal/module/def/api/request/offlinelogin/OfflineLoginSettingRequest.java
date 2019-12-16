@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbOfflineAutoLockedEnums;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
-import com.ruijie.rcos.sk.base.annotation.Range;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
@@ -15,18 +15,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 public class OfflineLoginSettingRequest implements Request {
 
     @NotNull
-    @Range(min = "0",max = "365")
-    private Integer offlineAutoLocked;
+    private CbbOfflineAutoLockedEnums offlineAutoLocked;
 
-    public OfflineLoginSettingRequest(Integer offlineAutoLocked) {
+    public OfflineLoginSettingRequest(CbbOfflineAutoLockedEnums offlineAutoLocked) {
         this.offlineAutoLocked = offlineAutoLocked;
     }
 
-    public Integer getOfflineAutoLocked() {
+    public CbbOfflineAutoLockedEnums getOfflineAutoLocked() {
         return offlineAutoLocked;
     }
 
-    public void setOfflineAutoLocked(Integer offlineAutoLocked) {
+    public void setOfflineAutoLocked(CbbOfflineAutoLockedEnums offlineAutoLocked) {
         this.offlineAutoLocked = offlineAutoLocked;
     }
 }
