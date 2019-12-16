@@ -50,7 +50,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     /**
      * 背景图保存的文件相对路径 background是不带后缀名的图片文件名
      */
-    private static final String BACKGROUND_IMAGE_FTP_RELATIVE_PATH = "/background/" + BACKGROUND_IMAGE_NAME;
+    private static final String BACKGROUND_IMAGE_FTP_RELATIVE_DIR = "/background/";
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
@@ -64,7 +64,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
         deleteImageFile();
 
-        saveBackgroundImageFile(request.getImagePath(),request.getImageName());
+        saveBackgroundImageFile(request.getImagePath(), request.getImageName());
 
         saveBackgroundImageConfig(request);
 
@@ -118,13 +118,13 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         terminalSyncBackgroundInfo.setIsDefaultImage(false);
         File backGroundImageFile = getBackGroundImageFile(request.getImageName());
         backgroundDetailInfo.setImageName(backGroundImageFile.getName());
-        backgroundDetailInfo.setFtpPath(BACKGROUND_IMAGE_FTP_RELATIVE_PATH);
+        backgroundDetailInfo.setFtpPath(BACKGROUND_IMAGE_FTP_RELATIVE_DIR + backGroundImageFile.getName());
         backgroundDetailInfo.setMd5(request.getMd5());
         terminalSyncBackgroundInfo.setDetailInfo(backgroundDetailInfo);
         return terminalSyncBackgroundInfo;
     }
 
-    private void saveBackgroundImageFile(String temporaryImagePath,String imageName) throws BusinessException {
+    private void saveBackgroundImageFile(String temporaryImagePath, String imageName) throws BusinessException {
         FileOperateUtil.checkAndGetDirectory(BACKGROUND_IMAGE_FTP_DIR);
         File imageFile = getBackGroundImageFile(imageName);
         try {
@@ -138,13 +138,13 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
     private boolean deleteImageFile() throws BusinessException {
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-        if(parameter == null){
+        if (parameter == null) {
             return false;
         }
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
         File imageFile = getBackGroundImageFile(terminalBackgroundInfo.getDetailInfo().getImageName());
         if (imageFile.exists() == false) {
-            globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND,null);
+            globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
             return false;
         }
         SkyengineFile skyengineFile = new SkyengineFile(imageFile);
