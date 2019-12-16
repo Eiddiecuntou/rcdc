@@ -14,8 +14,6 @@ public class CbbTerminalBackgroundImageInfoDTO {
 
     private String imageName;
 
-    private String suffix;
-
     public String getImagePath() {
         return imagePath;
     }
@@ -30,13 +28,5 @@ public class CbbTerminalBackgroundImageInfoDTO {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
-    }
-
-    public String getSuffix() {
-        return suffix;
-    }
-
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
     }
 }

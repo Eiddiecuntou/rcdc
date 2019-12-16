@@ -62,7 +62,9 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     public DefaultResponse upload(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
 
-        saveBackgroundImageFile(request.getImagePath());
+        deleteImageFile();
+
+        saveBackgroundImageFile(request.getImagePath(),request.getImageName());
 
         saveBackgroundImageConfig(request);
 
@@ -85,20 +87,16 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         Assert.notNull(request, "request must not be null");
 
         CbbTerminalBackgroundImageInfoDTO dto = new CbbTerminalBackgroundImageInfoDTO();
-        File imageFile = getBackGroundImageFile();
-        if (imageFile.exists() == false) {
-            return DtoResponse.empty();
-        }
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
         if (StringUtils.isEmpty(parameter)) {
             return DtoResponse.empty();
         }
+
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
         TerminalBackgroundInfo.TerminalBackgroundDetailInfo detailInfo = terminalBackgroundInfo.getDetailInfo();
-        dto.setSuffix(getFileNameSuffix(detailInfo.getImageName()));
-        dto.setImageName(Files.getNameWithoutExtension(imageFile.getName()));
-        dto.setImagePath(imageFile.getAbsolutePath());
-
+        File backGroundImageFile = getBackGroundImageFile(detailInfo.getImageName());
+        dto.setImageName(detailInfo.getImageName());
+        dto.setImagePath(backGroundImageFile.getAbsolutePath());
         return DtoResponse.success(dto);
     }
 
@@ -125,9 +123,9 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return terminalSyncBackgroundInfo;
     }
 
-    private void saveBackgroundImageFile(String temporaryImagePath) throws BusinessException {
+    private void saveBackgroundImageFile(String temporaryImagePath,String imageName) throws BusinessException {
         FileOperateUtil.checkAndGetDirectory(BACKGROUND_IMAGE_FTP_DIR);
-        File imageFile = getBackGroundImageFile();
+        File imageFile = getBackGroundImageFile(imageName);
         try {
             File temporaryImageFile = new File(temporaryImagePath);
             Files.move(temporaryImageFile, imageFile);
@@ -137,9 +135,15 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         }
     }
 
-    private boolean deleteImageFile() {
-        File imageFile = getBackGroundImageFile();
+    private boolean deleteImageFile() throws BusinessException {
+        String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+        if(parameter == null){
+            return false;
+        }
+        TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
+        File imageFile = getBackGroundImageFile(terminalBackgroundInfo.getDetailInfo().getImageName());
         if (imageFile.exists() == false) {
+            globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND,null);
             return false;
         }
         SkyengineFile skyengineFile = new SkyengineFile(imageFile);
@@ -152,11 +156,12 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         if (name.lastIndexOf(".") == name.length() - 1 || name.lastIndexOf(".") == -1) {
             throw new BusinessException(BusinessKey.RCDC_FILE_INVALID_SUFFIX);
         }
-        return name.substring(name.lastIndexOf(".") + 1);
+        return name.substring(name.lastIndexOf("."));
     }
 
-    private File getBackGroundImageFile() {
-        String saveBackgroundImagePath = BACKGROUND_IMAGE_FTP_DIR + BACKGROUND_IMAGE_NAME;
+    private File getBackGroundImageFile(String imageName) throws BusinessException {
+        String fileNameSuffix = getFileNameSuffix(imageName);
+        String saveBackgroundImagePath = BACKGROUND_IMAGE_FTP_DIR + BACKGROUND_IMAGE_NAME + fileNameSuffix;
         File file = new File(saveBackgroundImagePath);
         return file;
     }
