@@ -1,5 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
 import com.alibaba.fastjson.JSON;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBackgroundAPI;
@@ -18,11 +24,6 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Description: Function Description
@@ -72,17 +73,6 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo buildTerminalBackgroundInfo(CbbTerminalBackgroundUploadRequest request) {
-        TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
-        TerminalBackgroundInfo.TerminalBackgroundDetailInfo backgroundDetailInfo = new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
-        terminalSyncBackgroundInfo.setIsDefaultImage(false);
-        backgroundDetailInfo.setImageName(request.getImageName());
-        backgroundDetailInfo.setFtpPath(BACKGROUND_IMAGE_FTP_RELATIVE_PATH);
-        backgroundDetailInfo.setMd5(request.getMd5());
-        terminalSyncBackgroundInfo.setDetailInfo(backgroundDetailInfo);
-        return terminalSyncBackgroundInfo;
-    }
-
     private TerminalBackgroundInfo saveBackgroundImageConfig(CbbTerminalBackgroundUploadRequest request) {
         TerminalBackgroundInfo terminalBackgroundInfo = buildTerminalBackgroundInfo(request);
         String requestText = JSON.toJSONString(terminalBackgroundInfo);
@@ -122,6 +112,17 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
             terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
         }
         return DefaultResponse.Builder.success();
+    }
+
+    private TerminalBackgroundInfo buildTerminalBackgroundInfo(CbbTerminalBackgroundUploadRequest request) {
+        TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
+        TerminalBackgroundInfo.TerminalBackgroundDetailInfo backgroundDetailInfo = new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
+        terminalSyncBackgroundInfo.setIsDefaultImage(false);
+        backgroundDetailInfo.setImageName(request.getImageName());
+        backgroundDetailInfo.setFtpPath(BACKGROUND_IMAGE_FTP_RELATIVE_PATH);
+        backgroundDetailInfo.setMd5(request.getMd5());
+        terminalSyncBackgroundInfo.setDetailInfo(backgroundDetailInfo);
+        return terminalSyncBackgroundInfo;
     }
 
     private void saveBackgroundImageFile(String temporaryImagePath) throws BusinessException {

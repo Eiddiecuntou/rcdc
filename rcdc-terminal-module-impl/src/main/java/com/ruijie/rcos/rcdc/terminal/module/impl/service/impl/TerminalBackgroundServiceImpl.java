@@ -75,7 +75,7 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
         }
         Message message = new Message<>(Constants.SYSTEM_TYPE, SendTerminalEventEnums.CHANGE_TERMINAL_BACKGROUND.getName(), request);
         try {
-            sender.syncRequest(message);
+            sender.request(message);
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,

@@ -145,7 +145,7 @@ public class TerminalBackgroundServiceImplTest {
                 result = onlineTerminalIdList;
                 sessionManager.getRequestMessageSender(anyString);
                 result = sender;
-                sender.syncRequest(withArgThat(new CustomMatcher<Message>("") {
+                sender.request(withArgThat(new CustomMatcher<Message>("") {
                     @Override
                     public boolean matches(Object o) {
                         Assert.assertNotNull(o);
@@ -170,7 +170,7 @@ public class TerminalBackgroundServiceImplTest {
             {
                 sessionManager.getOnlineTerminalId();
                 times = 1;
-                sender.syncRequest((Message) any);
+                sender.request((Message) any);
                 times = 1;
             }
         };
@@ -193,7 +193,7 @@ public class TerminalBackgroundServiceImplTest {
                 result = onlineTerminalIdList;
                 sessionManager.getRequestMessageSender(anyString);
                 result = sender;
-                sender.syncRequest(withArgThat(new CustomMatcher<Message>("") {
+                sender.request(withArgThat(new CustomMatcher<Message>("") {
                     @Override
                     public boolean matches(Object o) {
                         Assert.assertNotNull(o);
@@ -218,7 +218,7 @@ public class TerminalBackgroundServiceImplTest {
             {
                 sessionManager.getOnlineTerminalId();
                 times = 1;
-                sender.syncRequest((Message) any);
+                sender.request((Message) any);
                 times = 1;
             }
         };
