@@ -95,6 +95,11 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
         TerminalBackgroundInfo.TerminalBackgroundDetailInfo detailInfo = terminalBackgroundInfo.getDetailInfo();
         File backGroundImageFile = getBackGroundImageFile(detailInfo.getImageName());
+
+        if (!backGroundImageFile.exists()) {
+            globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
+            return DtoResponse.empty();
+        }
         dto.setImageName(detailInfo.getImageName());
         dto.setImagePath(backGroundImageFile.getAbsolutePath());
         return DtoResponse.success(dto);
@@ -152,18 +157,20 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return true;
     }
 
+    private File getBackGroundImageFile(String imageName) throws BusinessException {
+        String fileNameSuffix = getFileNameSuffix(imageName);
+        String saveBackgroundImagePath = BACKGROUND_IMAGE_FTP_DIR + BACKGROUND_IMAGE_NAME + fileNameSuffix;
+        File file = new File(saveBackgroundImagePath);
+        // 必须给文件加上读和可执行权限,让其他用户可读、可执行，否则会导致ftp账号没有权限下载:
+        file.setReadable(true, false);
+        file.setExecutable(true, false);
+        return file;
+    }
 
     private String getFileNameSuffix(String name) throws BusinessException {
         if (name.lastIndexOf(".") == name.length() - 1 || name.lastIndexOf(".") == -1) {
             throw new BusinessException(BusinessKey.RCDC_FILE_INVALID_SUFFIX);
         }
         return name.substring(name.lastIndexOf("."));
-    }
-
-    private File getBackGroundImageFile(String imageName) throws BusinessException {
-        String fileNameSuffix = getFileNameSuffix(imageName);
-        String saveBackgroundImagePath = BACKGROUND_IMAGE_FTP_DIR + BACKGROUND_IMAGE_NAME + fileNameSuffix;
-        File file = new File(saveBackgroundImagePath);
-        return file;
     }
 }
