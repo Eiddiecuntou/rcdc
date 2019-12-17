@@ -39,7 +39,7 @@ public class TerminalBackgroundInfo {
 
         private String ftpPath;
 
-        private String imageName;
+        private String filePath;
 
         public String getMd5() {
             return md5;
@@ -57,12 +57,12 @@ public class TerminalBackgroundInfo {
             this.ftpPath = ftpPath;
         }
 
-        public String getImageName() {
-            return imageName;
+        public String getFilePath() {
+            return filePath;
         }
 
-        public void setImageName(String imageName) {
-            this.imageName = imageName;
+        public void setFilePath(String filePath) {
+            this.filePath = filePath;
         }
     }
 }

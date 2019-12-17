@@ -64,19 +64,17 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
         deleteImageFile();
 
-        saveBackgroundImageFile(request.getImagePath(), request.getImageName());
+        File imageFile = saveBackgroundImageFile(request.getImagePath(), request.getImageName());
 
-        saveBackgroundImageConfig(request);
-
-        TerminalBackgroundInfo terminalSyncBackgroundInfo = buildTerminalBackgroundInfo(request);
+        TerminalBackgroundInfo terminalSyncBackgroundInfo = saveBackgroundImageConfig(imageFile,request.getMd5());
 
         terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
 
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo saveBackgroundImageConfig(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
-        TerminalBackgroundInfo terminalBackgroundInfo = buildTerminalBackgroundInfo(request);
+    private TerminalBackgroundInfo saveBackgroundImageConfig(File imageFile,String md5) throws BusinessException {
+        TerminalBackgroundInfo terminalBackgroundInfo = buildTerminalBackgroundInfo(imageFile,md5);
         String requestText = JSON.toJSONString(terminalBackgroundInfo);
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, requestText);
         return terminalBackgroundInfo;
@@ -94,42 +92,47 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
 
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
         TerminalBackgroundInfo.TerminalBackgroundDetailInfo detailInfo = terminalBackgroundInfo.getDetailInfo();
-        File backGroundImageFile = getBackGroundImageFile(detailInfo.getImageName());
-
-        if (!backGroundImageFile.exists()) {
-            globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
+        File imageFile = new File(detailInfo.getFilePath());
+        if(imageFile.exists() == false) {
             return DtoResponse.empty();
         }
-        dto.setImageName(detailInfo.getImageName());
-        dto.setImagePath(backGroundImageFile.getAbsolutePath());
+        dto.setImagePath(imageFile.getAbsolutePath());
+        dto.setImageName(imageFile.getName());
         return DtoResponse.success(dto);
     }
 
     @Override
     public DefaultResponse initBackgroundImage(DefaultRequest request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
-        if (deleteImageFile()) {
-            globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
-            TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
-            terminalSyncBackgroundInfo.setIsDefaultImage(true);
-            terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
+        String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+        if (StringUtils.isEmpty(parameter)) {
+            return DefaultResponse.Builder.success();
         }
+        TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
+        File imageFile = new File(terminalBackgroundInfo.getDetailInfo().getFilePath());
+        if(imageFile.exists()) {
+            SkyengineFile skyengineFile = new SkyengineFile(imageFile);
+            skyengineFile.delete(false);
+        }
+        globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
+        TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
+        terminalSyncBackgroundInfo.setIsDefaultImage(true);
+        terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo buildTerminalBackgroundInfo(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
+    private TerminalBackgroundInfo buildTerminalBackgroundInfo(File imageFile,String md5) throws BusinessException {
         TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
         TerminalBackgroundInfo.TerminalBackgroundDetailInfo backgroundDetailInfo = new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
         terminalSyncBackgroundInfo.setIsDefaultImage(false);
-        File backGroundImageFile = getBackGroundImageFile(request.getImageName());
-        backgroundDetailInfo.setImageName(backGroundImageFile.getName());
-        backgroundDetailInfo.setFtpPath(BACKGROUND_IMAGE_FTP_RELATIVE_DIR + backGroundImageFile.getName());
-        backgroundDetailInfo.setMd5(request.getMd5());
+        backgroundDetailInfo.setFilePath(imageFile.getAbsolutePath());
+        backgroundDetailInfo.setFtpPath(BACKGROUND_IMAGE_FTP_RELATIVE_DIR + imageFile.getName());
+        backgroundDetailInfo.setMd5(md5);
         terminalSyncBackgroundInfo.setDetailInfo(backgroundDetailInfo);
         return terminalSyncBackgroundInfo;
     }
 
-    private void saveBackgroundImageFile(String temporaryImagePath, String imageName) throws BusinessException {
+    private File saveBackgroundImageFile(String temporaryImagePath, String imageName) throws BusinessException {
         FileOperateUtil.checkAndGetDirectory(BACKGROUND_IMAGE_FTP_DIR);
         File imageFile = getBackGroundImageFile(imageName);
         try {
@@ -139,22 +142,21 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
             LOGGER.error("从[{}] 移动文件到[{}]失败", temporaryImagePath, imageFile.getAbsoluteFile());
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
+        return imageFile;
     }
 
-    private boolean deleteImageFile() throws BusinessException {
+    private void deleteImageFile() throws BusinessException {
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
         if (parameter == null) {
-            return false;
+            return;
         }
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
-        File imageFile = getBackGroundImageFile(terminalBackgroundInfo.getDetailInfo().getImageName());
+        File imageFile = new File(terminalBackgroundInfo.getDetailInfo().getFilePath());
         if (imageFile.exists() == false) {
-            globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
-            return false;
+            return;
         }
         SkyengineFile skyengineFile = new SkyengineFile(imageFile);
         skyengineFile.delete(false);
-        return true;
     }
 
     private File getBackGroundImageFile(String imageName) throws BusinessException {
