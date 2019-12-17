@@ -1,11 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
+import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -21,6 +25,9 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  */
 @DispatcherImplemetion(ShineAction.CLEAR_DATA_DISK_RESULT)
 public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSPI {
+
+    @Autowired
+    private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ClearDataDiskResultHandlerSPIImpl.class);
 
@@ -41,8 +48,12 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
         JSONObject jsonObject = JSON.parseObject(data);
         Integer result = jsonObject.getInteger(RESULT_KEY);
         if (result.equals(0)) {
+            baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_SUCCESS,
+                    request.getTerminalId()));
             LOGGER.warn("终端数据盘清空成功,terminalId = [{}]", request.getTerminalId());
         } else {
+            baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_SUCCESS,
+                    request.getTerminalId()));
             LOGGER.error("终端数据盘清空失败,terminalId = [{}]", request.getTerminalId());
         }
     }
