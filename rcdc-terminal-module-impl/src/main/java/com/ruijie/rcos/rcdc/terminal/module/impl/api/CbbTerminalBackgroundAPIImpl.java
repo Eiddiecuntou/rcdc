@@ -62,19 +62,18 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     public DefaultResponse upload(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
 
-        deleteImageFile();
-
-        File imageFile = saveBackgroundImageFile(request.getImagePath(), request.getImageName());
-
-        TerminalBackgroundInfo terminalSyncBackgroundInfo = saveBackgroundImageConfig(imageFile,request.getMd5());
+        TerminalBackgroundInfo terminalSyncBackgroundInfo = saveBackgroundImageConfig(request);
 
         terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
 
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo saveBackgroundImageConfig(File imageFile,String md5) throws BusinessException {
-        TerminalBackgroundInfo terminalBackgroundInfo = buildTerminalBackgroundInfo(imageFile,md5);
+    private TerminalBackgroundInfo saveBackgroundImageConfig(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
+        deleteImageFile();
+        File imageFile = getBackGroundImageFile(request.getImageName());
+        saveBackgroundImageFile(request.getImagePath(), imageFile);
+        TerminalBackgroundInfo terminalBackgroundInfo = buildTerminalBackgroundInfo(imageFile, request.getMd5());
         String requestText = JSON.toJSONString(terminalBackgroundInfo);
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, requestText);
         return terminalBackgroundInfo;
@@ -93,7 +92,8 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
         TerminalBackgroundInfo.TerminalBackgroundDetailInfo detailInfo = terminalBackgroundInfo.getDetailInfo();
         File imageFile = new File(detailInfo.getFilePath());
-        if(imageFile.exists() == false) {
+
+        if (imageFile.exists() == false) {
             return DtoResponse.empty();
         }
         dto.setImagePath(imageFile.getAbsolutePath());
@@ -110,7 +110,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         }
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
         File imageFile = new File(terminalBackgroundInfo.getDetailInfo().getFilePath());
-        if(imageFile.exists()) {
+        if (imageFile.exists()) {
             SkyengineFile skyengineFile = new SkyengineFile(imageFile);
             skyengineFile.delete(false);
         }
@@ -121,7 +121,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo buildTerminalBackgroundInfo(File imageFile,String md5) throws BusinessException {
+    private TerminalBackgroundInfo buildTerminalBackgroundInfo(File imageFile, String md5) {
         TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
         TerminalBackgroundInfo.TerminalBackgroundDetailInfo backgroundDetailInfo = new TerminalBackgroundInfo.TerminalBackgroundDetailInfo();
         terminalSyncBackgroundInfo.setIsDefaultImage(false);
@@ -132,12 +132,14 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return terminalSyncBackgroundInfo;
     }
 
-    private File saveBackgroundImageFile(String temporaryImagePath, String imageName) throws BusinessException {
+    private File saveBackgroundImageFile(String temporaryImagePath, File imageFile) throws BusinessException {
         FileOperateUtil.checkAndGetDirectory(BACKGROUND_IMAGE_FTP_DIR);
-        File imageFile = getBackGroundImageFile(imageName);
         try {
             File temporaryImageFile = new File(temporaryImagePath);
             Files.move(temporaryImageFile, imageFile);
+            // 必须给文件加上读和可执行权限,让其他用户可读、可执行，否则会导致ftp账号没有权限下载:
+            imageFile.setReadable(true, false);
+            imageFile.setExecutable(true, false);
         } catch (IOException e) {
             LOGGER.error("从[{}] 移动文件到[{}]失败", temporaryImagePath, imageFile.getAbsoluteFile());
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
@@ -145,9 +147,9 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         return imageFile;
     }
 
-    private void deleteImageFile() throws BusinessException {
+    private void deleteImageFile() {
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-        if (parameter == null) {
+        if (StringUtils.isEmpty(parameter)) {
             return;
         }
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
@@ -163,9 +165,6 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         String fileNameSuffix = getFileNameSuffix(imageName);
         String saveBackgroundImagePath = BACKGROUND_IMAGE_FTP_DIR + BACKGROUND_IMAGE_NAME + fileNameSuffix;
         File file = new File(saveBackgroundImagePath);
-        // 必须给文件加上读和可执行权限,让其他用户可读、可执行，否则会导致ftp账号没有权限下载:
-        file.setReadable(true, false);
-        file.setExecutable(true, false);
         return file;
     }
 

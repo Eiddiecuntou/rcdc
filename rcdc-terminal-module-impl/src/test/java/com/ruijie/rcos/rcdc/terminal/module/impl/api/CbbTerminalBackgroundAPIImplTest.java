@@ -72,9 +72,8 @@ public class CbbTerminalBackgroundAPIImplTest {
     private static final String CONFIG_FACADE = "file.busiz.dir.terminal.background";
 
     private static final String REQUEST_DATA =
-            "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png'}}";
-    private static final String GLOBAL_DATA =
-            "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png'}}";
+            "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png','filePath':'/opt/ftp/terminal/background/background.png'}}";
+
 
     /**
      * 测试参数为空
@@ -137,30 +136,6 @@ public class CbbTerminalBackgroundAPIImplTest {
     }
 
     /**
-     * 测试获取背景图片时，文件后缀不合法
-     *
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testGetBackgroundImageInfoWhenFileSuffixInvalid() throws BusinessException {
-        new Expectations() {
-            {
-                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-                returns(result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123','imagePath':'abc/background.png'}}",
-                        result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.','imagePath':'abc/background.png'}}");
-            }
-        };
-        for (int i = 0; i < 2; i++) {
-            try {
-                cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
-                Assert.fail();
-            } catch (BusinessException e) {
-                Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
-            }
-        }
-    }
-
-    /**
      * 
      * /**
      * 测试获取背景图片不存在的情况
@@ -192,12 +167,6 @@ public class CbbTerminalBackgroundAPIImplTest {
 
         DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse2 = cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
         Assert.assertEquals(dtoResponse2.isEmpty(), true);
-        new Verifications() {
-            {
-                globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
-                times = 1;
-            }
-        };
     }
 
 
@@ -214,7 +183,7 @@ public class CbbTerminalBackgroundAPIImplTest {
                 mockFile.exists();
                 result = true;
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-                result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png'}}";
+                result = REQUEST_DATA;
             }
         };
         DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse = cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
@@ -234,7 +203,7 @@ public class CbbTerminalBackgroundAPIImplTest {
                 result = true;
                 mockSkyengineFile.delete(false);
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-                result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png'}}";
+                result = REQUEST_DATA;
             }
         };
 
@@ -267,7 +236,7 @@ public class CbbTerminalBackgroundAPIImplTest {
                 mockFile.exists();
                 result = false;
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-                result = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png'}}";
+                result = REQUEST_DATA;
                 globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
             }
         };
@@ -280,10 +249,10 @@ public class CbbTerminalBackgroundAPIImplTest {
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
                 times = 1;
                 terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo) any);
-                times = 0;
+                times = 1;
             }
         };
-        // 当数据库中不存在
+        // 当数据库中不存在时，不需要同步
         new Expectations() {
             {
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
@@ -300,9 +269,155 @@ public class CbbTerminalBackgroundAPIImplTest {
                 times = 0;
             }
         };
+    }
+
+    @Test
+    public void testUploadNoNeedDelete() throws IOException, BusinessException {
+        CbbTerminalBackgroundUploadRequest request = new CbbTerminalBackgroundUploadRequest();
+        request.setImageName("abc.png");
+        request.setImagePath("123");
+        killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
+        Deencapsulation.setField(cbbTerminalBackgroundAPI, "LOGGER", logger);
+        Delegate<Files> delegateNormal = new Delegate<Files>() {
+            public void move(File from, File to) throws IOException {
+
+            }
+        };
+        Delegate<Files> delegateException = new Delegate<Files>() {
+            public void move(File from, File to) throws IOException {
+                throw new IOException("abc");
+            }
+        };
+        new Expectations(Files.class) {
+            {
+                // 前两次返回空，不需要删除图片，后两次文件不存在。
+                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+                returns(null, REQUEST_DATA, null, REQUEST_DATA);
+                Files.move((File) any, (File) any);
+                returns(delegateNormal, delegateNormal, delegateException, delegateException);
+                mockFile.exists();
+                result = false;
+            }
+        };
+
+        for (int i = 0; i < 2; i++) {
+            cbbTerminalBackgroundAPI.upload(request);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            try {
+                cbbTerminalBackgroundAPI.upload(request);
+                Assert.fail();
+            } catch (BusinessException e) {
+                Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_OPERATE_FAIL);
+            }
+        }
+
+
+        new Verifications() {
+            {
+                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo) any);
+                times = 2;
+            }
+        };
+    }
 
 
 
+    /**
+     * 测试上传时，需要删除文件的情况,文件名后缀异常
+     *
+     * @throws BusinessException 业务异常
+     * @throws IOException IO异常
+     */
+    @Test
+    public void testUploadExistDeleteFileWhenFileSuffixException() throws BusinessException, IOException {
+        CbbTerminalBackgroundUploadRequest request1 = new CbbTerminalBackgroundUploadRequest();
+        request1.setImageName("abc.");
+        request1.setImagePath("123");
+        CbbTerminalBackgroundUploadRequest request2 = new CbbTerminalBackgroundUploadRequest();
+        request2.setImageName("abc");
+        request2.setImagePath("123");
+        killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
+        Deencapsulation.setField(cbbTerminalBackgroundAPI, "LOGGER", logger);
+        new Expectations(Files.class) {
+            {
+                mockFile.exists();
+                result = true;
+                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+                result = REQUEST_DATA;
+            }
+        };
+        try {
+            cbbTerminalBackgroundAPI.upload(request1);
+            Assert.fail();
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
+        }
+        try {
+            cbbTerminalBackgroundAPI.upload(request2);
+            Assert.fail();
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
+        }
+
+
+        new Verifications() {
+            {
+                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+                times = 2;
+            }
+        };
+    }
+
+    /**
+     * 测试上传文件的时候，文件后缀错误
+     * 
+     * @throws IOException IO异常
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testUploadNoNeedDeleteWhenFileSuffixError() throws IOException, BusinessException {
+        CbbTerminalBackgroundUploadRequest request1 = new CbbTerminalBackgroundUploadRequest();
+        request1.setImageName("abc.");
+        request1.setImagePath("123");
+        CbbTerminalBackgroundUploadRequest request2 = new CbbTerminalBackgroundUploadRequest();
+        request2.setImageName("abc");
+        request2.setImagePath("123");
+        killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
+        Deencapsulation.setField(cbbTerminalBackgroundAPI, "LOGGER", logger);
+        new Expectations(Files.class) {
+            {
+                // 前两次返回空，不需要删除图片，后两次文件不存在。
+                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+                returns(null, REQUEST_DATA, null, REQUEST_DATA);
+                mockFile.exists();
+                result = false;
+            }
+        };
+
+        for (int i = 0; i < 2; i++) {
+            try {
+                cbbTerminalBackgroundAPI.upload(request1);
+                Assert.fail();
+            } catch (BusinessException e) {
+                Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
+            }
+        }
+        for (int i = 0; i < 2; i++) {
+            try {
+                cbbTerminalBackgroundAPI.upload(request2);
+                Assert.fail();
+            } catch (BusinessException e) {
+                Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
+            }
+        }
+        new Verifications() {
+            {
+                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
+                times = 4;
+            }
+        };
     }
 
     private void killThreadLocal(String clazzName, String fieldName) {
