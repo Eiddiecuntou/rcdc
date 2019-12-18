@@ -8,9 +8,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMess
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeOfflineLoginConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.OfflineLoginConfig;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
@@ -47,8 +47,8 @@ public class CheckOfflineLoginHandlerSPIImpl implements CbbDispatcherHandlerSPI 
             offlineAutoLocked = NOLIMIT;
         }
         try {
-            OfflineLoginConfig offlineLoginConfig = new OfflineLoginConfig(Integer.valueOf(offlineAutoLocked));
-            CbbResponseShineMessage<OfflineLoginConfig> responseMessage = MessageUtils.buildResponseMessage(request, offlineLoginConfig);
+            ChangeOfflineLoginConfig offlineLoginConfig = new ChangeOfflineLoginConfig(Integer.valueOf(offlineAutoLocked));
+            CbbResponseShineMessage<ChangeOfflineLoginConfig> responseMessage = MessageUtils.buildResponseMessage(request, offlineLoginConfig);
             messageHandlerAPI.response(responseMessage);
         } catch (Exception e) {
             LOGGER.error("终端请求离线登录设置消息应答失败", e);

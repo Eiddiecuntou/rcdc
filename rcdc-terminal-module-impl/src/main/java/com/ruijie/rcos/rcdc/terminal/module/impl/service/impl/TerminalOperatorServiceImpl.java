@@ -12,7 +12,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbOfflineAutoLockedEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -25,7 +24,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeOfflineLoginConfigRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeOfflineLoginConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
@@ -140,7 +139,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
 
     @Override
-    public void offlineLoginSetting(CbbOfflineAutoLockedEnums offlineAutoLocked) throws BusinessException {
+    public void offlineLoginSetting(Integer offlineAutoLocked) throws BusinessException {
         Assert.notNull(offlineAutoLocked, "offlineAutoLocked 不能为空");
 
         // 更新全局离线登录设置
@@ -172,24 +171,18 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         return onlineIdvTerminalIdList;
     }
 
-    private void sendOfflineSettingToOnlineIdvTerminal(CbbOfflineAutoLockedEnums offlineAutoLocked, List<String> onlineIdvterminalIdList) {
+    private void sendOfflineSettingToOnlineIdvTerminal(Integer offlineAutoLocked, List<String> onlineIdvterminalIdList) {
         LOGGER.debug("向IDV终端发送离线登录设置");
-        //用于存储异常日志的list，一次性输出便于定位
-        List<String> errorList = Lists.newArrayList();
         // 向在线IDV终端发送离线登录设置
         for (String terminalId : onlineIdvterminalIdList) {
             try {
-                ChangeOfflineLoginConfigRequest configRequest =
-                        new ChangeOfflineLoginConfigRequest(offlineAutoLocked);
+                ChangeOfflineLoginConfig configRequest =
+                        new ChangeOfflineLoginConfig(offlineAutoLocked);
                 operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG, configRequest,
                         BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG);
             } catch (Exception e) {
-                errorList.add("send offline login config to terminal failed, terminalId[" + terminalId + "] reason is" + e.getMessage());
                 LOGGER.error("send offline login config to terminal failed, terminalId[" + terminalId + "]", e);
             }
-        }
-        if (!errorList.isEmpty()) {
-            LOGGER.error(errorList.toString());
         }
     }
 
