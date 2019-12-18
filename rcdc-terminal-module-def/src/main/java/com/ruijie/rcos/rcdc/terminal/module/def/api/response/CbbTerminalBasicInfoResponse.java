@@ -49,7 +49,7 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
     private String productType;
 
     @Enumerated(EnumType.STRING)
-    private CbbTerminalPlatformEnums platform;
+    private CbbTerminalPlatformEnums terminalPlatform;
 
     private String serialNumber;
 
@@ -179,12 +179,12 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
         this.productType = productType;
     }
 
-    public CbbTerminalPlatformEnums getPlatform() {
-        return platform;
+    public CbbTerminalPlatformEnums getTerminalPlatform() {
+        return terminalPlatform;
     }
 
-    public void setPlatform(CbbTerminalPlatformEnums platform) {
-        this.platform = platform;
+    public void setTerminalPlatform(CbbTerminalPlatformEnums terminalPlatform) {
+        this.terminalPlatform = terminalPlatform;
     }
 
     public String getSerialNumber() {
