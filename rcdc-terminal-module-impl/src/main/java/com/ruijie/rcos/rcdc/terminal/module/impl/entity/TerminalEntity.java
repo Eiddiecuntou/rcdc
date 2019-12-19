@@ -85,6 +85,8 @@ public class TerminalEntity {
 
     private UUID groupId;
 
+    private String osInnerVersion;
+
     @Enumerated(EnumType.STRING)
     private CbbIDVTerminalModeEnums idvTerminalMode;
 
@@ -326,6 +328,13 @@ public class TerminalEntity {
         this.groupId = groupId;
     }
 
+    public String getOsInnerVersion() {
+        return osInnerVersion;
+    }
+
+    public void setOsInnerVersion(String osInnerVersion) {
+        this.osInnerVersion = osInnerVersion;
+    }
     public CbbIDVTerminalModeEnums getIdvTerminalMode() {
         return idvTerminalMode;
     }

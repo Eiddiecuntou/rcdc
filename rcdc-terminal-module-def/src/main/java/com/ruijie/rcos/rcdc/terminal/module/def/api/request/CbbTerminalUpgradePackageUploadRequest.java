@@ -30,8 +30,6 @@ public class CbbTerminalUpgradePackageUploadRequest implements Request {
     @NotNull
     private CbbTerminalTypeEnums terminalType;
 
-    @NotNull
-    private CbbSystemUpgradeModeEnums upgradeMode;
 
     public CbbTerminalUpgradePackageUploadRequest() {
         
@@ -79,11 +77,4 @@ public class CbbTerminalUpgradePackageUploadRequest implements Request {
         this.terminalType = terminalType;
     }
 
-    public CbbSystemUpgradeModeEnums getUpgradeMode() {
-        return upgradeMode;
-    }
-
-    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
-        this.upgradeMode = upgradeMode;
-    }
 }

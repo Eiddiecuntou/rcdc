@@ -10,9 +10,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.GetVersionRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalComponentUpgradeHandlerFactory;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -35,7 +35,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
     private TerminalComponentUpgradeHandlerFactory handlerFactory;
 
     @Override
-    public TerminalVersionResultDTO getVersion(TerminalEntity terminalEntity, @Nullable String validateMd5) throws BusinessException {
+    public TerminalVersionResultDTO getVersion(TerminalEntity terminalEntity, @Nullable String validateMd5) {
         Assert.notNull(terminalEntity, "terminalEntity can not be null");
         Assert.notNull(terminalEntity.getPlatform(), "platform can not be null");
 
@@ -49,10 +49,11 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
             return buildUnSupportResult();
         }
 
-        GetVersionRequest versionRequest = new GetVersionRequest();
+
+        GetVersionDTO versionRequest = new GetVersionDTO();
         versionRequest.setTerminalId(terminalEntity.getTerminalId());
         versionRequest.setRainUpgradeVersion(terminalEntity.getRainUpgradeVersion());
-        versionRequest.setRainOsVersion(terminalEntity.getRainOsVersion());
+        versionRequest.setOsInnerVersion(terminalEntity.getOsInnerVersion());
         versionRequest.setValidateMd5(validateMd5);
         return handler.getVersion(versionRequest);
     }

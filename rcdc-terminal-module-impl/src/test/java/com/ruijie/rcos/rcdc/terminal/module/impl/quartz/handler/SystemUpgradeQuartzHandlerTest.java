@@ -43,9 +43,6 @@ public class SystemUpgradeQuartzHandlerTest {
     private TerminalSystemUpgradeService systemUpgradeService;
 
     @Injectable
-    private SystemUpgradeStartWaitingHandler startWaitingHandler;
-
-    @Injectable
     private SystemUpgradeStateSynctHandler stateSyncHandler;
 
     @Injectable
@@ -105,7 +102,7 @@ public class SystemUpgradeQuartzHandlerTest {
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 times = 1;
                 systemUpgradeService.modifySystemUpgradeState((TerminalSystemUpgradeEntity) any);
-                times = 1;
+                times = 0;
                 confirmHandler.execute((List<TerminalSystemUpgradeTerminalEntity>) any);
                 times = 0;
             }
@@ -129,8 +126,6 @@ public class SystemUpgradeQuartzHandlerTest {
                 result = upgradeTaskList;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 result = null;
-                systemUpgradeService.modifySystemUpgradeState((TerminalSystemUpgradeEntity) any);
-                result = new BusinessException("key");
             }
         };
         handler.run();
@@ -141,8 +136,6 @@ public class SystemUpgradeQuartzHandlerTest {
                         .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
-                times = 1;
-                systemUpgradeService.modifySystemUpgradeState((TerminalSystemUpgradeEntity) any);
                 times = 1;
                 confirmHandler.execute((List<TerminalSystemUpgradeTerminalEntity>) any);
                 times = 0;
@@ -185,14 +178,12 @@ public class SystemUpgradeQuartzHandlerTest {
                         .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
-                times = 2;
+                times = 1;
                 systemUpgradeService.modifySystemUpgradeState((TerminalSystemUpgradeEntity) any);
                 times = 0;
                 confirmHandler.execute((List<TerminalSystemUpgradeTerminalEntity>) any);
                 times = 1;
                 stateSyncHandler.execute(upgradeTerminalList);
-                times = 1;
-                startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());
                 times = 1;
             }
         };
@@ -230,14 +221,10 @@ public class SystemUpgradeQuartzHandlerTest {
                         .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
-                times = 2;
-                systemUpgradeService.modifySystemUpgradeState((TerminalSystemUpgradeEntity) any);
                 times = 1;
                 confirmHandler.execute((List<TerminalSystemUpgradeTerminalEntity>) any);
                 times = 1;
                 stateSyncHandler.execute(upgradeTerminalList);
-                times = 1;
-                startWaitingHandler.execute(upgradeTerminalList, upgradeTask.getUpgradePackageId());
                 times = 1;
             }
         };

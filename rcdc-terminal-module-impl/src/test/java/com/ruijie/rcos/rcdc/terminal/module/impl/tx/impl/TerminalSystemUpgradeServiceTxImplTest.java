@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -10,9 +11,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTermin
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalOtaUpgradeScheduleService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.*;
@@ -52,10 +53,10 @@ public class TerminalSystemUpgradeServiceTxImplTest {
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Injectable
-    private BtService btService;
+    private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
     @Injectable
-    private TerminalOtaUpgradeScheduleService terminalOtaUpgradeScheduleService;
+    private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
 
     /**
      * 测试addSystemUpgradeTask，参数为空
@@ -64,10 +65,12 @@ public class TerminalSystemUpgradeServiceTxImplTest {
      */
     @Test
     public void testAddSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(null, new String[5]),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(null, new String[5], null),
                 "upgradePackage can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(new TerminalSystemUpgradePackageEntity(), null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(new TerminalSystemUpgradePackageEntity(), null, null),
                 "terminalIdArr can not be empty");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(new TerminalSystemUpgradePackageEntity(), new String[5], null),
+                "upgradeMode can not be null");
         assertTrue(true);
     }
 
@@ -79,7 +82,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         String[] terminalIdArr = new String[1];
         terminalIdArr[0] = "1";
-        serviceTxImpl.addSystemUpgradeTask(upgradePackage, terminalIdArr);
+        serviceTxImpl.addSystemUpgradeTask(upgradePackage, terminalIdArr, CbbSystemUpgradeModeEnums.AUTO);
 
         new Verifications() {
             {

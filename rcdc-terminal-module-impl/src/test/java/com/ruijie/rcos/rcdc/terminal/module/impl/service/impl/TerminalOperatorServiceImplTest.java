@@ -1,15 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -26,13 +25,11 @@ import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
+import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -78,6 +75,11 @@ public class TerminalOperatorServiceImplTest {
      */
     @Test
     public void testShutdownSuccess() throws IOException, InterruptedException {
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {
             {
                 try {
@@ -86,6 +88,8 @@ public class TerminalOperatorServiceImplTest {
                 } catch (BusinessException e) {
                     result = sender;
                 }
+                sender.syncRequest((Message) any);
+                result = baseMessage;
             }
         };
         String terminalId = "123";
@@ -142,6 +146,11 @@ public class TerminalOperatorServiceImplTest {
      */
     @Test
     public void testRestart() throws IOException, InterruptedException {
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {
             {
                 try {
@@ -150,6 +159,8 @@ public class TerminalOperatorServiceImplTest {
                 } catch (BusinessException e) {
                     result = sender;
                 }
+                sender.syncRequest((Message) any);
+                result = baseMessage;
             }
         };
         String terminalId = "123";
@@ -193,18 +204,28 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试收集日志不存在并且状态为正在进行
+     *
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
-    public void testCollectLogNoExistsAndIsDoing() {
+    public void testCollectLogNoExistsAndIsDoing() throws IOException, InterruptedException {
         String terminalId = "123";
         CollectLogCache logCache = new CollectLogCache();
         logCache.setState(CbbCollectLogStateEnums.DOING);
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {
             {
                 collectLogCacheManager.getCache(terminalId);
                 result = null;
                 collectLogCacheManager.addCache(terminalId);
                 result = logCache;
+                sender.syncRequest((Message) any);
+                result = baseMessage;
             }
         };
 
@@ -226,6 +247,11 @@ public class TerminalOperatorServiceImplTest {
     public void testCollectLogSend() throws BusinessException, IOException, InterruptedException {
         CollectLogCache logCache = new CollectLogCache();
         logCache.setState(CbbCollectLogStateEnums.DONE);
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {
             {
                 collectLogCacheManager.getCache(anyString);
@@ -233,7 +259,7 @@ public class TerminalOperatorServiceImplTest {
                 sessionManager.getRequestMessageSender(anyString);
                 result = sender;
                 sender.syncRequest((Message) any);
-
+                result = baseMessage;
             }
         };
 
