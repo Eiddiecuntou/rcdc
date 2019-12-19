@@ -4,9 +4,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.io.File;
 import org.junit.Test;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
-import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -64,18 +63,11 @@ public class TerminalComponentUpgradeInitTest {
     /**
      * 测试safeInit，开发环境
      *
-     * @param enviroment mock对象
      * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitIsDevelop(@Mocked Enviroment enviroment) throws InterruptedException {
-
-        new Expectations() {
-            {
-                Enviroment.isDevelop();
-                result = true;
-            }
-        };
+    public void testSafeInitIsDevelop() throws InterruptedException {
+        setEnviromentDevelop(true);
         init.safeInit();
 
         Thread.sleep(1000);
@@ -91,22 +83,37 @@ public class TerminalComponentUpgradeInitTest {
     /**
      * 测试safeInit，获取本地ip失败
      *
-     * @param enviroment mock对象
      * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitGetLocalAddrFail(@Mocked Enviroment enviroment) throws BusinessException, InterruptedException {
-        BaseDetailNetworkInfoResponse response = new BaseDetailNetworkInfoResponse();
-        BaseNetworkDTO dto = new BaseNetworkDTO();
-        dto.setIp("172.12.22.45");
-        response.setNetworkDTO(dto);
+    public void testSafeInitGetLocalAddrFail() throws BusinessException, InterruptedException {
+        setEnviromentDevelop(false);
         new Expectations() {
             {
-                Enviroment.isDevelop();
-                result = false;
                 cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
                 result = null;
+            }
+        };
+        try {
+            init.safeInit();
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            fail();
+        }
+
+        new Verifications() {
+            {
+                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
+                times = 0;
+            }
+        };
+
+        // 获取本地IP抛异常
+        new Expectations() {
+            {
+                cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
+                result = new BusinessException("key", "args");
             }
         };
         try {
@@ -127,17 +134,15 @@ public class TerminalComponentUpgradeInitTest {
     /**
      * 测试safeInit，ip为空
      *
-     * @param enviroment mock对象
      * @throws BusinessException 异常
      */
     @Test
-    public void testSafeInitIpIsBlank(@Mocked Enviroment enviroment) throws BusinessException {
+    public void testSafeInitIpIsBlank() throws BusinessException {
+        setEnviromentDevelop(false);
         ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
         dto.setClusterVirtualIpIp("172.12.22.45");
         new Expectations() {
             {
-                Enviroment.isDevelop();
-                result = false;
                 cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
                 result = DtoResponse.success(dto);
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
@@ -167,18 +172,16 @@ public class TerminalComponentUpgradeInitTest {
     /**
      * 测试safeInit，ip和本地ip一致
      *
-     * @param enviroment mock对象
      * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitIpEqualsCurrentIp(@Mocked Enviroment enviroment) throws BusinessException, InterruptedException {
+    public void testSafeInitIpEqualsCurrentIp() throws BusinessException, InterruptedException {
+        setEnviromentDevelop(false);
         ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
         dto.setClusterVirtualIpIp("172.12.22.45");
         new Expectations() {
             {
-                Enviroment.isDevelop();
-                result = false;
                 cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
                 result = DtoResponse.success(dto);
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
@@ -211,21 +214,63 @@ public class TerminalComponentUpgradeInitTest {
     }
 
     /**
-     * 测试safeInit，ip和本地ip不同,executeUpdate有BusinessException
+     * 测试safeInit，ip和本地ip一致，upgradeTempPath不是目录
      *
-     * @param enviroment mock对象
      * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitIpDifferentCurrentIpExecuteUpdateHasBusinessException(@Mocked Enviroment enviroment)
+    public void testSafeInitIpEqualsCurrentIpButNotDirectory() throws BusinessException, InterruptedException {
+        setEnviromentDevelop(false);
+        ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
+        dto.setClusterVirtualIpIp("172.12.22.45");
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return true;
+            }
+        };
+        new Expectations() {
+            {
+                cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
+                result = DtoResponse.success(dto);
+                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
+                result = dto.getClusterVirtualIpIp();
+            }
+        };
+        try {
+            init.safeInit();
+            Thread.sleep(1000);
+        } catch (RuntimeException e) {
+            fail();
+        }
+
+        new Verifications() {
+            {
+                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
+                times = 3;
+                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
+                times = 1;
+                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateAndroidVDI.py", "172.12.22.45"));
+                times = 1;
+            }
+        };
+    }
+    
+    /**
+     * 测试safeInit，ip和本地ip不同,executeUpdate有BusinessException
+     *
+     * @throws BusinessException 异常
+     * @throws InterruptedException ex
+     */
+    @Test
+    public void testSafeInitIpDifferentCurrentIpExecuteUpdateHasBusinessException()
             throws BusinessException, InterruptedException {
+        setEnviromentDevelop(false);
         ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
         dto.setClusterVirtualIpIp("172.12.22.45");
         new Expectations() {
             {
-                Enviroment.isDevelop();
-                result = false;
                 cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
                 result = DtoResponse.success(dto);
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
@@ -257,22 +302,20 @@ public class TerminalComponentUpgradeInitTest {
             }
         };
     }
-
+    
     /**
      * 测试safeInit，ip和本地ip不同
      *
-     * @param enviroment mock对象
      * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitIpDifferentCurrentIp(@Mocked Enviroment enviroment) throws BusinessException, InterruptedException {
+    public void testSafeInitIpDifferentCurrentIp() throws BusinessException, InterruptedException {
+        setEnviromentDevelop(false);
         ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
         dto.setClusterVirtualIpIp("172.12.22.45");
         new Expectations() {
             {
-                Enviroment.isDevelop();
-                result = false;
                 cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
                 result = DtoResponse.success(dto);
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
@@ -366,6 +409,15 @@ public class TerminalComponentUpgradeInitTest {
                 times = 1;
                 linuxIDVUpdatelistCacheInit.init();
                 times = 1;
+            }
+        };
+    }
+    
+    private void setEnviromentDevelop(boolean isDevelop) {
+        new MockUp<Enviroment>() {
+            @Mock
+            public boolean isDevelop() {
+                return isDevelop;
             }
         };
     }
