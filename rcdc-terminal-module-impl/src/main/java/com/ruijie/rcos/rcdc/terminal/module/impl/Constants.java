@@ -56,7 +56,7 @@ public interface Constants {
 
 
     /** rcdc服务器密码全局参数表key */
-    String RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY = "rcdc_server_ip";
+    String RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY = "cluster_virtual_ip";
 
     /**
      * 存在终端系统刷机包的根路径
