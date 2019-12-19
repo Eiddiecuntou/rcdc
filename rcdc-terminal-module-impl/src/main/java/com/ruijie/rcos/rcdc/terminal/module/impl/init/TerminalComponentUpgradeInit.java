@@ -155,11 +155,10 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
         try {
             String outStr = runner.execute(new BtShareInitReturnValueResolver(terminalType));
             LOGGER.debug("out String is :{}", outStr);
+            LOGGER.info("success invoke [{}] pythonScript...", terminalType.toString());
         } catch (BusinessException e) {
             LOGGER.error("bt share init error", e);
         }
-
-        LOGGER.info("success invoke [{}] pythonScript...", terminalType.toString());
     }
 
     /**
