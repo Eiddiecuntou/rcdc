@@ -92,7 +92,7 @@ public class TerminalComponentUpgradeInitTest {
      * 测试safeInit，获取本地ip失败
      *
      * @param enviroment mock对象
-     * @throws BusinessException    异常
+     * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
@@ -109,13 +109,16 @@ public class TerminalComponentUpgradeInitTest {
                 result = null;
             }
         };
-        init.safeInit();
-
-        Thread.sleep(1000);
+        try {
+            init.safeInit();
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            fail();
+        }
 
         new Verifications() {
             {
-                globalParameterAPI.findParameter(anyString);
+                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
                 times = 0;
             }
         };
@@ -144,12 +147,9 @@ public class TerminalComponentUpgradeInitTest {
 
         try {
             init.safeInit();
-
             Thread.sleep(1000);
-
         } catch (Exception e) {
             fail();
-            assertEquals("get localhost address error,", e.getMessage());
         }
 
         new Verifications() {
@@ -168,7 +168,7 @@ public class TerminalComponentUpgradeInitTest {
      * 测试safeInit，ip和本地ip一致
      *
      * @param enviroment mock对象
-     * @throws BusinessException    异常
+     * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
@@ -214,7 +214,7 @@ public class TerminalComponentUpgradeInitTest {
      * 测试safeInit，ip和本地ip不同,executeUpdate有BusinessException
      *
      * @param enviroment mock对象
-     * @throws BusinessException    异常
+     * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
@@ -239,7 +239,6 @@ public class TerminalComponentUpgradeInitTest {
             Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
-            assertEquals("get localhost address error,", e.getMessage());
         }
 
         new Verifications() {
@@ -263,7 +262,7 @@ public class TerminalComponentUpgradeInitTest {
      * 测试safeInit，ip和本地ip不同
      *
      * @param enviroment mock对象
-     * @throws BusinessException    异常
+     * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
@@ -285,7 +284,6 @@ public class TerminalComponentUpgradeInitTest {
             Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
-            assertEquals("get localhost address error,", e.getMessage());
         }
 
         new Verifications() {
@@ -311,8 +309,8 @@ public class TerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init
-                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver =
+                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
@@ -324,8 +322,8 @@ public class TerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverExitValueNotZero() {
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver = init
-                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver =
+                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         try {
             resolver.resolve("dsd", 1, "dsd");
             fail();
@@ -341,12 +339,12 @@ public class TerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolver() throws BusinessException {
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI = init
-                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI = init
-                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxIDV = init
-                .new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.IDV_LINUX);
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI =
+                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI =
+                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxIDV =
+                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.IDV_LINUX);
         new MockUp<TerminalComponentUpgradeInit>() {
             @Mock
             public String getLocalIP() {
@@ -360,13 +358,14 @@ public class TerminalComponentUpgradeInitTest {
 
         new Verifications() {
             {
-                globalParameterAPI.updateParameter(anyString, "192.168.1.2");
+                globalParameterAPI.updateParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY, "192.168.1.2");
                 times = 3;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 1;
                 androidVDIUpdatelistCacheInit.init();
                 times = 1;
                 linuxIDVUpdatelistCacheInit.init();
+                times = 1;
             }
         };
     }
