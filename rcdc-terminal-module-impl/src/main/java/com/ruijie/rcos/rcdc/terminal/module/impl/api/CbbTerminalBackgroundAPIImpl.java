@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBackgroundAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundSaveRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
@@ -59,17 +59,17 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     TerminalBackgroundService terminalBackgroundService;
 
     @Override
-    public DefaultResponse upload(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
+    public DefaultResponse saveBackgroundImageConfig(CbbTerminalBackgroundSaveRequest request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
 
-        TerminalBackgroundInfo terminalSyncBackgroundInfo = saveBackgroundImageConfig(request);
+        TerminalBackgroundInfo terminalSyncBackgroundInfo = saveBackgroundImageInfo(request);
 
         terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
 
         return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo saveBackgroundImageConfig(CbbTerminalBackgroundUploadRequest request) throws BusinessException {
+    private TerminalBackgroundInfo saveBackgroundImageInfo(CbbTerminalBackgroundSaveRequest request) throws BusinessException {
         deleteImageFile();
         File imageFile = getBackGroundImageFile(request.getImageName());
         saveBackgroundImageFile(request.getImagePath(), imageFile);

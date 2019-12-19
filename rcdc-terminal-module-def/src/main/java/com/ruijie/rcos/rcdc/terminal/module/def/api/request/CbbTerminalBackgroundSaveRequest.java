@@ -12,7 +12,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  *
  * @author songxiang
  */
-public class CbbTerminalBackgroundUploadRequest implements Request {
+public class CbbTerminalBackgroundSaveRequest implements Request {
 
     @NotBlank
     private String imageName;

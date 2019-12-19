@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundSaveRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
@@ -25,7 +25,7 @@ public interface CbbTerminalBackgroundAPI {
      * @throws BusinessException 业务异常
      */
     @NoRollback
-    DefaultResponse upload(CbbTerminalBackgroundUploadRequest request) throws BusinessException;
+    DefaultResponse saveBackgroundImageConfig(CbbTerminalBackgroundSaveRequest request) throws BusinessException;
 
     /**
      * 获取终端背景图的路径

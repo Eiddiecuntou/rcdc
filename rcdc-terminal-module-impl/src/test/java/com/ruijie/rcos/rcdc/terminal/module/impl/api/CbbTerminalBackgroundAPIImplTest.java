@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundSaveRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
@@ -81,7 +81,7 @@ public class CbbTerminalBackgroundAPIImplTest {
     @Test
     public void testParamNullError() {
         try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> cbbTerminalBackgroundAPI.upload(null), "request must not be null");
+            ThrowExceptionTester.throwIllegalArgumentException(() -> cbbTerminalBackgroundAPI.saveBackgroundImageConfig(null), "request must not be null");
             ThrowExceptionTester.throwIllegalArgumentException(() -> cbbTerminalBackgroundAPI.getBackgroundImageInfo(null),
                     "request must not be null");
             ThrowExceptionTester.throwIllegalArgumentException(() -> cbbTerminalBackgroundAPI.initBackgroundImage(null), "request must not be null");
@@ -98,7 +98,7 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadExistDeleteFile() throws BusinessException, IOException {
-        CbbTerminalBackgroundUploadRequest request = new CbbTerminalBackgroundUploadRequest();
+        CbbTerminalBackgroundSaveRequest request = new CbbTerminalBackgroundSaveRequest();
         request.setImageName("abc.png");
         request.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -121,9 +121,9 @@ public class CbbTerminalBackgroundAPIImplTest {
                 result = REQUEST_DATA;
             }
         };
-        cbbTerminalBackgroundAPI.upload(request);
+        cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request);
         try {
-            cbbTerminalBackgroundAPI.upload(request);
+            cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request);
         } catch (BusinessException e) {
             Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_OPERATE_FAIL);
         }
@@ -273,7 +273,7 @@ public class CbbTerminalBackgroundAPIImplTest {
 
     @Test
     public void testUploadNoNeedDelete() throws IOException, BusinessException {
-        CbbTerminalBackgroundUploadRequest request = new CbbTerminalBackgroundUploadRequest();
+        CbbTerminalBackgroundSaveRequest request = new CbbTerminalBackgroundSaveRequest();
         request.setImageName("abc.png");
         request.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -301,12 +301,12 @@ public class CbbTerminalBackgroundAPIImplTest {
         };
 
         for (int i = 0; i < 2; i++) {
-            cbbTerminalBackgroundAPI.upload(request);
+            cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request);
         }
 
         for (int i = 0; i < 2; i++) {
             try {
-                cbbTerminalBackgroundAPI.upload(request);
+                cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request);
                 Assert.fail();
             } catch (BusinessException e) {
                 Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_OPERATE_FAIL);
@@ -332,10 +332,10 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadExistDeleteFileWhenFileSuffixException() throws BusinessException, IOException {
-        CbbTerminalBackgroundUploadRequest request1 = new CbbTerminalBackgroundUploadRequest();
+        CbbTerminalBackgroundSaveRequest request1 = new CbbTerminalBackgroundSaveRequest();
         request1.setImageName("abc.");
         request1.setImagePath("123");
-        CbbTerminalBackgroundUploadRequest request2 = new CbbTerminalBackgroundUploadRequest();
+        CbbTerminalBackgroundSaveRequest request2 = new CbbTerminalBackgroundSaveRequest();
         request2.setImageName("abc");
         request2.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -349,13 +349,13 @@ public class CbbTerminalBackgroundAPIImplTest {
             }
         };
         try {
-            cbbTerminalBackgroundAPI.upload(request1);
+            cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request1);
             Assert.fail();
         } catch (BusinessException e) {
             Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
         }
         try {
-            cbbTerminalBackgroundAPI.upload(request2);
+            cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request2);
             Assert.fail();
         } catch (BusinessException e) {
             Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
@@ -378,10 +378,10 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadNoNeedDeleteWhenFileSuffixError() throws IOException, BusinessException {
-        CbbTerminalBackgroundUploadRequest request1 = new CbbTerminalBackgroundUploadRequest();
+        CbbTerminalBackgroundSaveRequest request1 = new CbbTerminalBackgroundSaveRequest();
         request1.setImageName("abc.");
         request1.setImagePath("123");
-        CbbTerminalBackgroundUploadRequest request2 = new CbbTerminalBackgroundUploadRequest();
+        CbbTerminalBackgroundSaveRequest request2 = new CbbTerminalBackgroundSaveRequest();
         request2.setImageName("abc");
         request2.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -398,7 +398,7 @@ public class CbbTerminalBackgroundAPIImplTest {
 
         for (int i = 0; i < 2; i++) {
             try {
-                cbbTerminalBackgroundAPI.upload(request1);
+                cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request1);
                 Assert.fail();
             } catch (BusinessException e) {
                 Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
@@ -406,7 +406,7 @@ public class CbbTerminalBackgroundAPIImplTest {
         }
         for (int i = 0; i < 2; i++) {
             try {
-                cbbTerminalBackgroundAPI.upload(request2);
+                cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request2);
                 Assert.fail();
             } catch (BusinessException e) {
                 Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_FILE_INVALID_SUFFIX);
