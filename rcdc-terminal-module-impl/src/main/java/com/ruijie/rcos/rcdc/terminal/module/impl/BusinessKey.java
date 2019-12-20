@@ -173,6 +173,9 @@ public interface BusinessKey {
      */
     String RCDC_FILE_OPERATE_FAIL = "rcdc_file_operate_fail";
 
+    /** 不合法的文件名后缀 */
+    String RCDC_FILE_INVALID_SUFFIX = "rcdc_file_invalid_suffix";
+
     /**
      * 终端检测超时处理定时任务
      */
@@ -324,6 +327,9 @@ public interface BusinessKey {
     String RCDC_TERMINAL_CONFIRM_TO_CLEAR_DISK = "rcdc_terminal_confirm_to_clear_disk";
     String RCDC_TERMINAL_CLEAR_DISK_SUCCESS = "rcdc_terminal_clear_disk_success";
     String RCDC_TERMINAL_CLEAR_DISK_FAIL = "rcdc_terminal_clear_disk_fail";
+
+    /************终端背景界面**************************/
+    String RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND = "rcdc_terminal_operate_action_send_background_url";
     /************终端离线登录设置**************************/
     String RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG = "rcdc_terminal_operate_action_send_offline_login_config";
 
