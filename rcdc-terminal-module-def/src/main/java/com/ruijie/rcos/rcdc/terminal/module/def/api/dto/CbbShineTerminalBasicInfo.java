@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.message;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -6,7 +6,6 @@ import javax.persistence.Enumerated;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbIDVTerminalModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.serialize.CbbWirelessAuthModeEnumsSerializer;
@@ -20,7 +19,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
  *
  * @author Jarman
  */
-public class ShineTerminalBasicInfo {
+public class CbbShineTerminalBasicInfo {
 
     private String terminalName;
 
@@ -74,7 +73,7 @@ public class ShineTerminalBasicInfo {
 
     private String osInnerVersion;
 
-    private CbbIDVTerminalModeEnums idvTerminalMode;
+    private String idvTerminalMode;
 
     private String ssid;
 
@@ -275,11 +274,11 @@ public class ShineTerminalBasicInfo {
         this.osInnerVersion = osInnerVersion;
     }
 
-    public CbbIDVTerminalModeEnums getIdvTerminalMode() {
+    public String getIdvTerminalMode() {
         return idvTerminalMode;
     }
 
-    public void setIdvTerminalMode(CbbIDVTerminalModeEnums idvTerminalMode) {
+    public void setIdvTerminalMode(String idvTerminalMode) {
         this.idvTerminalMode = idvTerminalMode;
     }
 

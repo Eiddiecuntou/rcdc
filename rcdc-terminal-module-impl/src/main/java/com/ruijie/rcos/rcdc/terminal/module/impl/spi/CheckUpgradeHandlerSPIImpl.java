@@ -15,7 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
@@ -63,7 +63,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         LOGGER.info("组件升级处理请求开始处理。。。");
         // 保存终端基本信息
         String terminalId = request.getTerminalId();
-        ShineTerminalBasicInfo basicInfo = convertJsondata(request);
+        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
         basicInfoService.saveBasicInfo(terminalId, basicInfo);
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
@@ -113,9 +113,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return systemUpgradeCheckResult;
     }
 
-    private ShineTerminalBasicInfo convertJsondata(CbbDispatcherRequest request) {
+    private CbbShineTerminalBasicInfo convertJsondata(CbbDispatcherRequest request) {
         String jsonData = String.valueOf(request.getData());
-        ShineTerminalBasicInfo basicInfo = JSON.parseObject(jsonData, ShineTerminalBasicInfo.class);
+        CbbShineTerminalBasicInfo basicInfo = JSON.parseObject(jsonData, CbbShineTerminalBasicInfo.class);
         return basicInfo;
     }
 

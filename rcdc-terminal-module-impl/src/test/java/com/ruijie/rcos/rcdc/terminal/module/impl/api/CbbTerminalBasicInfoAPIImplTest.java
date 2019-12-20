@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbIDVTerminalModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNetworkInfoResponse;
@@ -289,7 +288,6 @@ public class CbbTerminalBasicInfoAPIImplTest {
             request.setCbbTerminalId("123");
             request.setGroupId(UUID.randomUUID());
             request.setTerminalName("123");
-            request.setIdvTerminalMode(CbbIDVTerminalModeEnums.PUBLIC);
             terminalBasicInfoAPI.modifyTerminal(request);
         } catch (BusinessException e) {
             fail();

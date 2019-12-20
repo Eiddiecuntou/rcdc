@@ -5,11 +5,10 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAP
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
@@ -64,7 +63,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         entity.setPlatform(CbbTerminalPlatformEnums.VDI);
         new Expectations() {
             {
-                basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, (CbbShineTerminalBasicInfo) any);
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 result = entity;
                 try {
@@ -109,7 +108,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 result = terminalEntity;
-                basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, (CbbShineTerminalBasicInfo) any);
                 try {
                     messageHandlerAPI.response((CbbResponseShineMessage) any);
                 } catch (Exception e) {
@@ -141,7 +140,7 @@ public class CheckUpgradeHandlerSPIImplTest {
     private void saveVerifications() {
         new Verifications() {
             {
-                basicInfoService.saveBasicInfo(anyString, (ShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, (CbbShineTerminalBasicInfo) any);
                 times = 1;
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
@@ -151,7 +150,7 @@ public class CheckUpgradeHandlerSPIImplTest {
 
 
     private String generateJson() {
-        ShineTerminalBasicInfo info = new ShineTerminalBasicInfo();
+        CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
         info.setTerminalId("123");
         info.setTerminalName("t-box2");
         info.setCpuType("intel5");

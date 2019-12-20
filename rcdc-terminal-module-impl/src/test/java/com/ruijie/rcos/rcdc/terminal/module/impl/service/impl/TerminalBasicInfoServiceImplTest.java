@@ -13,7 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
@@ -402,7 +402,7 @@ public class TerminalBasicInfoServiceImplTest {
     @Test
     public void testSaveBasicInfoTerminalIsNew() {
         String terminalId = "123";
-        ShineTerminalBasicInfo basicInfo = buildBasicInfo();
+        CbbShineTerminalBasicInfo basicInfo = buildBasicInfo();
         new Expectations(){
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
@@ -426,15 +426,15 @@ public class TerminalBasicInfoServiceImplTest {
         };
     }
 
-    private ShineTerminalBasicInfo buildBasicInfo() {
-        ShineTerminalBasicInfo basicInfo = new ShineTerminalBasicInfo();
+    private CbbShineTerminalBasicInfo buildBasicInfo() {
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
         basicInfo.setCpuType("cpuType");
         basicInfo.setDiskSize(1L);
         basicInfo.setGateway("gateWay");
         basicInfo.setGetDnsMode(CbbGetNetworkModeEnums.AUTO);
         basicInfo.setGetIpMode(CbbGetNetworkModeEnums.MANUAL);
         basicInfo.setHardwareVersion("hardWareVersion");
-        basicInfo.setIdvTerminalMode(CbbIDVTerminalModeEnums.PERSONAL);
+        basicInfo.setIdvTerminalMode("PERSONAL");
         basicInfo.setIp("ip");
         basicInfo.setMacAddr("macAddr");
         basicInfo.setMainDns("mainDns");

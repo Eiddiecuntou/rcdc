@@ -87,9 +87,6 @@ public class TerminalEntity {
 
     private String osInnerVersion;
 
-    @Enumerated(EnumType.STRING)
-    private CbbIDVTerminalModeEnums idvTerminalMode;
-
     private String ssid;
 
     @Enumerated(EnumType.STRING)
@@ -334,13 +331,6 @@ public class TerminalEntity {
 
     public void setOsInnerVersion(String osInnerVersion) {
         this.osInnerVersion = osInnerVersion;
-    }
-    public CbbIDVTerminalModeEnums getIdvTerminalMode() {
-        return idvTerminalMode;
-    }
-
-    public void setIdvTerminalMode(CbbIDVTerminalModeEnums idvTerminalMode) {
-        this.idvTerminalMode = idvTerminalMode;
     }
 
     public String getSsid() {

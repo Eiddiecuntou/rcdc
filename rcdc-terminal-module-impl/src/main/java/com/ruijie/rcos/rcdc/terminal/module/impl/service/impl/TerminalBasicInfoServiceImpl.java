@@ -15,7 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalNetworkInfoEntit
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeHostNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
@@ -60,7 +60,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private static final int FAIL_TRY_COUNT = 3;
 
     @Override
-    public void saveBasicInfo(String terminalId, ShineTerminalBasicInfo shineTerminalBasicInfo) {
+    public void saveBasicInfo(String terminalId, CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(shineTerminalBasicInfo, "终端信息不能为空");
 
@@ -81,11 +81,12 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         saveTerminalNetworkInfo(shineTerminalBasicInfo);
 
         // 通知其他组件终端为在线状态
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE, terminalId);
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
+        noticeRequest.setTerminalBasicInfo(shineTerminalBasicInfo);
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 
-    private void saveTerminalNetworkInfo(ShineTerminalBasicInfo basicInfo) {
+    private void saveTerminalNetworkInfo(CbbShineTerminalBasicInfo basicInfo) {
         // 删除数据库中的网络信息记录，重新添加
         networkInfoDAO.deleteByTerminalId(basicInfo.getTerminalId());
 
@@ -102,7 +103,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         }
     }
 
-    private CbbTerminalNetworkInfoDTO[] buildNetworkInfoArr(ShineTerminalBasicInfo basicInfo) {
+    private CbbTerminalNetworkInfoDTO[] buildNetworkInfoArr(CbbShineTerminalBasicInfo basicInfo) {
         CbbTerminalNetworkInfoDTO networkInfoDTO = new CbbTerminalNetworkInfoDTO();
         BeanUtils.copyProperties(basicInfo, networkInfoDTO);
         return new CbbTerminalNetworkInfoDTO[]{networkInfoDTO};
