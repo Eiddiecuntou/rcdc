@@ -19,7 +19,7 @@ import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 public interface CbbTerminalBackgroundAPI {
 
     /**
-     * 上传终端背景图
+     * 上传终端背景图,保存背景图的相关配置，并且向在线终端同步背景图
      * @param request 文件信息
      * @return DefaultResponse
      * @throws BusinessException 业务异常
