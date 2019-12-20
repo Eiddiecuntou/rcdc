@@ -83,7 +83,17 @@ public interface ShineAction {
     String REPORT_SYSTEM_UPGRADE_RESULT = "report_system_upgrade_result";
 
     /**
-     *  终端请同步前离线登录设置
+     *  上报IDV终端清空数据盘确认响应
+     */
+    String CONFIRM_CLEAR_DATA = "confirm_clear_data";
+
+    /**
+     *  上报IDV终端清空数据盘结果
+     */
+    String CLEAR_DATA_DISK_RESULT = "clear_data_disk_result";
+
+    /**
+     *  终端请求同步离线登录设置
      */
     String REQUEST_OFFLINE_CONFIG = "request_offline_config";
 }

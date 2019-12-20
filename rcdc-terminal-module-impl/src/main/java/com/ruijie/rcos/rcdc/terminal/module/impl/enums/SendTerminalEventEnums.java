@@ -56,6 +56,12 @@ public enum SendTerminalEventEnums {
     CHANGE_TERMINAL_LOGO("change_terminal_logo"),
 
     /**
+     * 清空idv终端数据盘
+     */
+    CLEAR_DATA("clear_data");
+    CHANGE_TERMINAL_LOGO("change_terminal_logo"),
+
+    /**
      * 更新离线登录设置
      */
     CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG("change_offline_login_config");

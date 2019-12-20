@@ -157,6 +157,16 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         return cache;
     }
 
+
+    @Override
+    public DefaultResponse clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException {
+        Assert.notNull(idRequest,"idRequest can not be null");
+
+        String terminalId = idRequest.getTerminalId();
+        operatorService.diskClear(terminalId);
+        return DefaultResponse.Builder.success();
+    }
+
     /**
      * IDV终端离线登录设置
      *

@@ -1,12 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -18,17 +16,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -316,6 +311,19 @@ public class CbbTerminalOperatorAPIImplTest {
         assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("", response.getSuffix());
+    }
+    
+    
+    /**
+     *测试清空数据盘
+     *
+     *@throws BusinessException 业务异常
+     */
+    @Test
+    public void testClearIdvTerminalDataDisk() throws BusinessException {
+        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+        DefaultResponse response = terminalOperatorAPI.clearIdvTerminalDataDisk(request);
+        assertEquals(response.getStatus(),Status.SUCCESS);
     }
 
 }
