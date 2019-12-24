@@ -205,8 +205,8 @@ CREATE TABLE t_cbb_sys_upgrade_terminal (
   "state" varchar(32) ,
   "create_time" timestamp(0),
   "version" int4 DEFAULT 1
-)
-;
+);
+
 COMMENT ON COLUMN t_cbb_sys_upgrade_terminal.sys_upgrade_id IS '刷机任务id';
 COMMENT ON COLUMN t_cbb_sys_upgrade_terminal.terminal_id IS '刷机终端id';
 COMMENT ON COLUMN t_cbb_sys_upgrade_terminal.start_time IS '开始刷机时间';
