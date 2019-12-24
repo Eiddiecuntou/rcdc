@@ -102,15 +102,15 @@ create table t_cbb_terminal_detection
 (
   "id" uuid NOT NULL,
   "ip_conflict" int2,
-  "ip_conflict_mac" varchar(32) COLLATE "pg_catalog"."default",
+  "ip_conflict_mac" varchar(32) ,
   "access_internet" int2,
   "bandwidth" float4,
   "packet_loss_rate" int2,
   "network_delay" int4,
   "detect_time" timestamp(6),
-  "terminal_id" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
-  "detect_state" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
-  "detect_fail_msg" varchar(128) COLLATE "pg_catalog"."default",
+  "terminal_id" varchar(32)  NOT NULL,
+  "detect_state" varchar(64)  NOT NULL,
+  "detect_fail_msg" varchar(128) ,
   "version" int4 DEFAULT 1
 );
 
@@ -149,21 +149,18 @@ is '版本号，实现乐观锁';
 
 ALTER TABLE t_cbb_terminal_detection ADD CONSTRAINT "t_terminal_detection_pkey" PRIMARY KEY ("id");
 
-alter table t_cbb_terminal_detection
-  owner to postgres;
-
 /** 终端系统升级包*/
 CREATE TABLE t_cbb_sys_upgrade_package (
   "id" uuid NOT NULL,
-  "img_name" varchar(64) COLLATE "pg_catalog"."default",
-  "package_type" varchar(32) COLLATE "pg_catalog"."default",
+  "img_name" varchar(64) ,
+  "package_type" varchar(32) ,
   "upload_time" timestamp(6),
-  "package_version" varchar(64) COLLATE "pg_catalog"."default",
+  "package_version" varchar(64) ,
   "version" int4 NOT NULL DEFAULT 0,
-  "origin" varchar(32) COLLATE "pg_catalog"."default",
-  "distribution_mode" varchar(32) COLLATE "pg_catalog"."default",
-  "package_name" varchar(128) COLLATE "pg_catalog"."default",
-  "file_path" varchar(128) COLLATE "pg_catalog"."default"
+  "origin" varchar(32) ,
+  "distribution_mode" varchar(32) ,
+  "package_name" varchar(128) ,
+  "file_path" varchar(128) 
 );
 
 COMMENT ON COLUMN t_cbb_sys_upgrade_package.img_name IS '升级包名称';
@@ -184,10 +181,10 @@ ALTER TABLE t_cbb_sys_upgrade_package ADD CONSTRAINT "t_termianl_system_upgrade_
 CREATE TABLE t_cbb_sys_upgrade (
   "id" uuid NOT NULL,
   "upgrade_package_id" uuid NOT NULL,
-  "package_version" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
-  "package_name" varchar(64) COLLATE "pg_catalog"."default",
+  "package_version" varchar(32)  NOT NULL,
+  "package_name" varchar(64) ,
   "create_time" timestamp(0) NOT NULL,
-  "state" varchar(32) COLLATE "pg_catalog"."default",
+  "state" varchar(32) ,
   "version" int4 DEFAULT 1
 )
 ;
@@ -203,9 +200,9 @@ ALTER TABLE t_cbb_sys_upgrade ADD CONSTRAINT "t_cbb_sys_upgrade_pkey" PRIMARY KE
 CREATE TABLE t_cbb_sys_upgrade_terminal (
   "id" uuid NOT NULL,
   "sys_upgrade_id" uuid NOT NULL,
-  "terminal_id" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
+  "terminal_id" varchar(64)  NOT NULL,
   "start_time" timestamp(0),
-  "state" varchar(32) COLLATE "pg_catalog"."default",
+  "state" varchar(32) ,
   "create_time" timestamp(0),
   "version" int4 DEFAULT 1
 )
