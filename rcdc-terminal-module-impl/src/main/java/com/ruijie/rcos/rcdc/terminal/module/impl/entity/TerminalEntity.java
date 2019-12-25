@@ -88,6 +88,8 @@ public class TerminalEntity {
 
     private String osInnerVersion;
 
+    private String productId;
+
     public UUID getId() {
         return id;
     }
@@ -327,5 +329,13 @@ public class TerminalEntity {
 
     public void setOsInnerVersion(String osInnerVersion) {
         this.osInnerVersion = osInnerVersion;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }
