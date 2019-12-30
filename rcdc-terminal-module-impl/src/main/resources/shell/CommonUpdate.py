@@ -116,7 +116,7 @@ def packageUpdate(terminalPlatform, osType):
     oldVersion = None if (oldUpdateList == None) else oldUpdateList['version']
     if newUpdateList['version'] == oldVersion:
         logger.info("upgrade version is same")
-        doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform)
+        doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform, osType)
         return;
     
     # 非初始安装则更新基线版本
@@ -160,7 +160,7 @@ def packageUpdate(terminalPlatform, osType):
     2、 用新的组件包重新制作差异文件及种子
     
 '''
-def doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform):
+def doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform, osType):
     componentList = oldUpdateList['componentList']
 
     # 关闭原bt分享
@@ -173,7 +173,7 @@ def doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform):
         os.rename(basePath, originPath)
 
     # 重新制作差异文件及种子
-    packageUpdate(terminalPlatform)
+    packageUpdate(terminalPlatform, osType)
 
 
         
