@@ -23,7 +23,7 @@ def make_bt():
     ip = sys.argv[3]
     seedPath = btMakeSeedBlock(filePath, seedSavePath, ip)
     md5 = md5sum(seedPath)
-    return BtInfo(seedPath, md5);
+    return BtInfo(seedPath, md5)
 
 
 if __name__ == '__main__':
