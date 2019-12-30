@@ -93,9 +93,10 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         Assert.hasText(zipfilePath, "filePath can not be blank");
         Assert.hasText(savePackageName, "unZipFilePath can not be blank");
         String unZipFilePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE;
+        File unZipFile = new File(unZipFilePath);
         String savePackagePath = unZipFilePath + savePackageName;
         File zipFile = new File(zipfilePath);
-        File unZipFile = createFilePath(unZipFilePath);
+        FileOperateUtil.createFileDirectory(unZipFile);
         try {
             ZipUtil.unzipFile(zipFile, unZipFile);
         } catch (IOException e) {
@@ -151,7 +152,8 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
     private SeedFileInfo makeBtSeed(String filePath) throws BusinessException {
         Assert.notNull(filePath, "filePath can not be null");
         String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
-        createFilePath(seedSavePath);
+        File seedFile = new File(seedSavePath);
+        FileOperateUtil.createFileDirectory(seedFile);
         return btService.makeBtSeed(filePath, seedSavePath, getLocalIP());
     }
 
@@ -181,16 +183,6 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         BaseDetailNetworkRequest request = new BaseDetailNetworkRequest();
         BaseDetailNetworkInfoResponse response = networkAPI.detailNetwork(request);
         return response.getNetworkDTO().getIp();
-    }
-
-    private File createFilePath(String filePath) {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.mkdir();
-            file.setReadable(true, false);
-            file.setExecutable(true, false);
-        }
-        return file;
     }
 
 }
