@@ -1,14 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.UUID;
-
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -81,11 +87,34 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         String mountCmd = String.format(Constants.SYSTEM_CMD_CHECK_ISO_MD5, filePath);
 
         LOGGER.debug("check iso md5, cmd : {}", mountCmd);
-        String outStr = runShellCommand(mountCmd);
+        String outStr = executeCommand(mountCmd);
+        LOGGER.info("check iso md5, outStr: {}", outStr);
+
         if (StringUtils.isBlank(outStr) || !outStr.contains(ISO_FILE_MD5_CHECK_SUCCESS_FLAG) ) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
         }
         LOGGER.info("check iso md5 success");
+    }
+
+    private String executeCommand(String mountCmd) throws BusinessException {
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        PumpStreamHandler psh = new PumpStreamHandler(stdout);
+        CommandLine cl = CommandLine.parse(mountCmd);
+        DefaultExecutor exec = new DefaultExecutor();
+        exec.setStreamHandler(psh);
+        try {
+            exec.execute(cl);
+            return stdout.toString();
+        } catch (IOException e) {
+            LOGGER.error("exec.execute [{}] has IOException", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e);
+        } finally {
+            try {
+                stdout.close();
+            } catch (IOException e) {
+                LOGGER.error("stdout.close() has IOException", e);
+            }
+        }
     }
 
     private TerminalUpgradeVersionFileInfo readPackageInfo(String fileName, String filePath) throws BusinessException {
