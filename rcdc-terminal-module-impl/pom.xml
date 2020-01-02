@@ -36,5 +36,9 @@
             <artifactId>base-sysmanage-module-def</artifactId>
             <version>${base-sysmanage-module.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+        </dependency>
     </dependencies>
 </project>

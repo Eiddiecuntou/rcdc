@@ -8,13 +8,14 @@ import java.nio.file.Files;
 import java.util.Properties;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -49,10 +50,10 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
     @Autowired
-    private NetworkAPI networkAPI;
+    private BtService btService;
 
     @Autowired
-    private BtService btService;
+    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     @Override
     protected TerminalSystemUpgradePackageService getSystemUpgradePackageService() {
@@ -179,10 +180,12 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
      *
      * @return ip
      */
+
     private String getLocalIP() throws BusinessException {
-        BaseDetailNetworkRequest request = new BaseDetailNetworkRequest();
-        BaseDetailNetworkInfoResponse response = networkAPI.detailNetwork(request);
-        return response.getNetworkDTO().getIp();
+        DtoResponse<ClusterVirtualIpDTO> response = cloudPlatformMgmtAPI.getClusterVirtualIp(new DefaultRequest());
+        Assert.notNull(response, "response can not be null");
+
+        return response.getDto().getClusterVirtualIpIp();
     }
 
 }
