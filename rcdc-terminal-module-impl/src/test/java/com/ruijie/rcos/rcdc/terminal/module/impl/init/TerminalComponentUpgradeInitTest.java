@@ -395,9 +395,9 @@ public class TerminalComponentUpgradeInitTest {
             }
         };
 
-        resolverLinuxVDI.resolve("dsd", 0, "dsd");
-        resolverAndroidVDI.resolve("dsd", 0, "dsd");
-        resolverLinuxIDV.resolve("aa", 0, "aa");
+        resolverLinuxVDI.resolve("dsd", 0, "success");
+        resolverAndroidVDI.resolve("dsd", 0, "success");
+        resolverLinuxIDV.resolve("aa", 0, "success");
 
         new Verifications() {
             {
