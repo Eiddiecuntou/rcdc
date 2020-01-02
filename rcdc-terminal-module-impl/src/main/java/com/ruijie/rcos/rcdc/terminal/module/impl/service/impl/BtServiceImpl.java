@@ -39,6 +39,8 @@ public class BtServiceImpl implements BtService {
 
     private static final String STOP_BT_SCRIPT_NAME = "stop_ota_bt_share.py";
 
+    private static final String EXECUTE_SHELL_SUCCESS_RESULT = "success";
+
     @Override
     public SeedFileInfo makeBtSeed(String filePath, String seedSavePath, String ipAddr) throws BusinessException {
         Assert.notNull(filePath, "filePath can not be blank");
@@ -52,6 +54,7 @@ public class BtServiceImpl implements BtService {
         runner.setCommand(shellCmd);
         try {
             seedInfoStr = runner.execute();
+            checkResp(seedInfoStr);
             LOGGER.debug("seed info str is :{}", seedInfoStr);
             return JSON.parseObject(seedInfoStr, SeedFileInfo.class);
         } catch (BusinessException e) {
@@ -85,6 +88,17 @@ public class BtServiceImpl implements BtService {
 
         ShellCommandRunner runner = new ShellCommandRunner();
         runner.setCommand(shellCmd);
-        runner.execute();
+        String responseStr = runner.execute();
+        checkResp(responseStr);
+    }
+
+    private void checkResp(String responseStr) throws BusinessException {
+        Assert.hasText(responseStr, "response can not be blank");
+
+        if (EXECUTE_SHELL_SUCCESS_RESULT.equals(responseStr.toLowerCase())) {
+            return;
+        }
+
+        throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL);
     }
 }
