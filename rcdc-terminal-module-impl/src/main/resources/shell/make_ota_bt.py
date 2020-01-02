@@ -31,8 +31,17 @@ if __name__ == '__main__':
     if len(sys.argv) < 4:
         logger.info("param is not be null")
         print "fail"
-    else:
+        return
+
+    try:
         result = make_bt()
         reqJsonStr = json.dumps(result, default=lambda o:o.__dict__, sort_keys=True, indent=4)
         logger.info("result : %s" % reqJsonStr)
         print reqJsonStr
+    except:
+        logger.error("make bt failed")
+        logger.exception(traceback.format_exc())
+        print "fail"
+
+
+

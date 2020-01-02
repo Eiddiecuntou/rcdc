@@ -2,9 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -46,6 +48,8 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
     private static final String INIT_PYTHON_SCRIPT_PATH_IDV_LINUX = "/data/web/rcdc/shell/updateLinuxIDV.py";
 
     private static final String INIT_COMMAND = "python %s %s";
+
+    private static final String EXECUTE_SHELL_SUCCESS_RESULT = "success";
 
     private static final ExecutorService EXECUTOR_SERVICE =
             ThreadExecutors.newBuilder(TerminalComponentUpgradeInit.class.getName()).maxThreadNum(3).queueSize(1).build();
@@ -183,7 +187,8 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
             Assert.hasText(command, "command can not be null");
             Assert.notNull(exitValue, "existValue can not be null");
             Assert.hasText(outStr, "outStr can not be null");
-            if (exitValue.intValue() != 0) {
+
+            if (exitValue.intValue() != 0 || !EXECUTE_SHELL_SUCCESS_RESULT.equals(outStr.toLowerCase())) {
                 LOGGER.error("bt share init python script execute error, exitValue: {}, outStr: {}", exitValue, outStr);
                 throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
             }
