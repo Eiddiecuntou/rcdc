@@ -164,4 +164,12 @@ if __name__ == '__main__':
     path = sys.argv[1]
     seedSavePath = sys.argv[2]
     logger.info("param path : [%s], param seedSavePath : [%s]" %(path, seedSavePath))
-    btMakeSeedBlock(path, seedSavePath)
+    try:
+        btMakeSeedBlock(path, seedSavePath)
+        logger.error("make bt failed")
+        print "success"
+    except:
+        logger.error("make bt failed")
+        logger.exception(traceback.format_exc())
+        print "fail"
+
