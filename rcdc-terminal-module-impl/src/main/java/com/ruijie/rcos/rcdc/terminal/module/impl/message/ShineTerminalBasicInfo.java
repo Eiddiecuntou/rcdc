@@ -68,6 +68,8 @@ public class ShineTerminalBasicInfo {
 
     private String osInnerVersion;
 
+    private String productId;
+
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
@@ -258,5 +260,13 @@ public class ShineTerminalBasicInfo {
 
     public void setOsInnerVersion(String osInnerVersion) {
         this.osInnerVersion = osInnerVersion;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }
