@@ -63,7 +63,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         // 判断是否支持升级
         if (!isSupportUpgrade(updatelist, request)) {
             LOGGER.debug("终端[" + request.getTerminalId() + "]的系统版本号低于系统限制版本号[" + updatelist.getOsLimit() + "],不支持升级");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(), updatelist);
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT_FOR_LOWER_OS_VERSION.getResult(), updatelist);
         }
 
         // 深拷贝对象
