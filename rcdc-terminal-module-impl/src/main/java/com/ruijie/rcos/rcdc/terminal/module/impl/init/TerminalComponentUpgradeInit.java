@@ -188,7 +188,7 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
             Assert.notNull(exitValue, "existValue can not be null");
             Assert.hasText(outStr, "outStr can not be null");
 
-            if (exitValue.intValue() != 0 || !EXECUTE_SHELL_SUCCESS_RESULT.equals(outStr.toLowerCase())) {
+            if (exitValue.intValue() != 0 || !EXECUTE_SHELL_SUCCESS_RESULT.equals(outStr.toLowerCase().trim())) {
                 LOGGER.error("bt share init python script execute error, exitValue: {}, outStr: {}", exitValue, outStr);
                 throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
             }
