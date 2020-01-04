@@ -1,13 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.UUID;
+
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -15,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -67,6 +64,8 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         //使用checkisomd5校验升级包
         checkISOMd5(filePath);
 
+        checkNecessaryDirExist();
+
         // 读取ISO升级包中的升级信息
         TerminalUpgradeVersionFileInfo versionInfo = readPackageInfo(fileName, filePath);
 
@@ -80,6 +79,21 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         versionInfo.setFileSaveDir(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI);
 
         return versionInfo;
+    }
+
+    private void checkNecessaryDirExist() {
+        // iso挂载路径
+        File mountDir = new File(Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
+        if (!mountDir.isDirectory()) {
+            mountDir.mkdirs();
+        }
+
+        // linux ISO存放路径
+        File linuxVDIPackageDir = new File(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI);
+        if (!linuxVDIPackageDir.isDirectory()) {
+            linuxVDIPackageDir.mkdirs();
+        }
+
     }
 
     private void checkISOMd5(String filePath) throws BusinessException {
