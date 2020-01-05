@@ -58,7 +58,7 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new CbbWinAppUpdateListDTO());
         }
 
-        if (isVersionBigger(updatelist.getLimitVersion(), rainUpgradeVersion)) {
+        if (isVersionNotLess(updatelist.getLimitVersion(), rainUpgradeVersion)) {
             LOGGER.debug("版本号小于服务端版本号，需要进行完整升级");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getCompleteUpgradeResult(updatelist));
         }

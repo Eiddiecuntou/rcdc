@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -145,9 +146,12 @@ public class WinAppComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
-        TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
-                terminalVersionResultDTO.getResult().intValue());
+        try {
+            handler.getVersion(request);
+            fail();
+        } catch (Exception e) {
+            assertEquals("版本格式不一致，无法进行比较", e.getMessage());
+        }
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
     }
 

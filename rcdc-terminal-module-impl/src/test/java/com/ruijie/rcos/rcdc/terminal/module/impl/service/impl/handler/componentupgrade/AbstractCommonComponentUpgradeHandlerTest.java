@@ -1,7 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
@@ -9,17 +20,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+
 import mockit.Mock;
 import mockit.MockUp;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Description: Function Description
@@ -41,8 +44,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
     @Test
     public void testGetVersionArgumentIsNull() throws Exception {
         TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.getVersion(null),
-                "get version request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handler.getVersion(null), "get version request can not be null");
         Assert.assertTrue(true);
     }
 
@@ -77,11 +79,9 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("123");
         request.setValidateMd5("xxx");
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(),
-                terminalVersionResultDTO.getResult().intValue());
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO.getResult().intValue());
         TerminalVersionResultDTO terminalVersionResultDTO1 = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(),
-                terminalVersionResultDTO1.getResult().intValue());
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO1.getResult().intValue());
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
@@ -114,8 +114,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         request.setOsInnerVersion("1.1.0.1");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(),
-                terminalVersionResultDTO.getResult().intValue());
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), terminalVersionResultDTO.getResult().intValue());
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
@@ -148,9 +147,12 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         request.setValidateMd5("123");
         request.setOsInnerVersion("1.1.1.1.1");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
-        TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
-                terminalVersionResultDTO.getResult().intValue());
+        try {
+            handler.getVersion(request);
+            fail();
+        } catch (Exception e) {
+            assertEquals("版本格式不一致，无法进行比较", e.getMessage());
+        }
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 
@@ -223,8 +225,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(),
-                terminalVersionResultDTO.getResult().intValue());
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), terminalVersionResultDTO.getResult().intValue());
 
     }
 

@@ -91,7 +91,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         }
 
         // 终端系统版本号高于OS_LIMIT则支持升级
-        return isVersionBigger(request.getOsInnerVersion(), updateList.getOsLimit());
+        return isVersionNotLess(request.getOsInnerVersion(), updateList.getOsLimit());
     }
 
     /**
