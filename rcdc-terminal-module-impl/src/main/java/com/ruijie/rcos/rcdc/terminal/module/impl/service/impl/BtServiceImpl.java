@@ -39,6 +39,8 @@ public class BtServiceImpl implements BtService {
 
     private static final String STOP_BT_SCRIPT_NAME = "stop_ota_bt_share.py";
 
+    private static final String EXECUTE_SHELL_FAIL_RESULT = "fail";
+
     @Override
     public SeedFileInfo makeBtSeed(String filePath, String seedSavePath, String ipAddr) throws BusinessException {
         Assert.notNull(filePath, "filePath can not be blank");
@@ -52,7 +54,8 @@ public class BtServiceImpl implements BtService {
         runner.setCommand(shellCmd);
         try {
             seedInfoStr = runner.execute();
-            LOGGER.debug("seed info str is :{}", seedInfoStr);
+            checkResp(seedInfoStr, BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL);
+            LOGGER.info("seed info str is :{}", seedInfoStr);
             return JSON.parseObject(seedInfoStr, SeedFileInfo.class);
         } catch (BusinessException e) {
             LOGGER.error("make seed file error", e);
@@ -68,7 +71,7 @@ public class BtServiceImpl implements BtService {
         LOGGER.info("调用开启分享脚本");
         String startBtScriptPath = INIT_PYTHON_SCRIPT_PATH + START_BT_SCRIPT_NAME;
         String shellCmd = String.format(START_BT_SHARE_COMMAND, startBtScriptPath, seedFilePath, filePath);
-        runShellCmd(shellCmd);
+        runShellCmd(shellCmd, BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_BT_SHARE_SEED_FILE_FAIL);
     }
 
     @Override
@@ -77,14 +80,25 @@ public class BtServiceImpl implements BtService {
 
         String stopBtScriptPath = INIT_PYTHON_SCRIPT_PATH + STOP_BT_SCRIPT_NAME;
         String shellCmd = String.format(STOP_BT_SHARE_COMMAND, stopBtScriptPath, seedFilePath);
-        runShellCmd(shellCmd);
+        runShellCmd(shellCmd, BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_STOP_SHARE_SEED_FILE_FAIL);
     }
 
-    private void runShellCmd(String shellCmd) throws BusinessException {
+    private void runShellCmd(String shellCmd, String businessKey) throws BusinessException {
         Assert.hasText(shellCmd, "shellCmd can not be blank");
 
+        LOGGER.info("shellCmd: {}", shellCmd);
         ShellCommandRunner runner = new ShellCommandRunner();
         runner.setCommand(shellCmd);
-        runner.execute();
+        String responseStr = runner.execute();
+        LOGGER.info("responseStr: {}", responseStr);
+        checkResp(responseStr, businessKey);
+    }
+
+    private void checkResp(String responseStr, String businessKey) throws BusinessException {
+        Assert.hasText(responseStr, "response can not be blank");
+
+        if (EXECUTE_SHELL_FAIL_RESULT.equals(responseStr.toLowerCase())) {
+            throw new BusinessException(businessKey);
+        }
     }
 }

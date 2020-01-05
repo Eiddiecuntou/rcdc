@@ -1,6 +1,7 @@
 #encoding=UTF-8
 
 import sys
+import traceback
 
 from BtApiService import stopBtShare
 from Common import getLogger
@@ -14,13 +15,20 @@ def stop_bt_share():
     seedSavePath = sys.argv[1]
     stopBtShare(seedSavePath)
 
-
-if __name__ == '__main__':
-
+def main():
     if len(sys.argv) < 2:
         logger.info("seedSavePath param can not be null")
         print "fail"
-    else:
+        return
+
+    try:
         result = stop_bt_share()
         logger.info("result : %s" % result)
         print result
+    except:
+        logger.error("stop bt failed")
+        logger.exception(traceback.format_exc())
+        print "fail"
+
+if __name__ == '__main__':
+    main()

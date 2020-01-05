@@ -1,6 +1,7 @@
 #encoding=UTF-8
 
 import sys
+import traceback
 
 from BtApiService import startBtShare
 from Common import getLogger
@@ -16,13 +17,23 @@ def start_bt_share():
     startBtShare(seedPath, packagePath)
     return seedPath
 
-
-if __name__ == '__main__':
-
+def main():
     if len(sys.argv) < 3:
         logger.info(" seedSavePath param is not be null")
         print "fail"
-    else:
+        return
+
+    try:
         result = start_bt_share()
         logger.info("result : %s" % result)
         print result
+    except:
+        logger.error("start bt failed")
+        logger.exception(traceback.format_exc())
+        print "fail"
+
+
+if __name__ == '__main__':
+
+    main()
+

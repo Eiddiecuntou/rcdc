@@ -31,6 +31,11 @@ public enum CbbTerminalComponentUpgradeResultEnums {
     PREPARING(3),
 
     /**
+     *  系统版本过低,不支持升级
+     */
+    NOT_SUPPORT_FOR_LOWER_OS_VERSION(4),
+
+    /**
      * 服务器环境异常
      */
     ABNORMAL(-1);

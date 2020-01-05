@@ -6,8 +6,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUp
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.AbstractCommonComponentUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -193,7 +191,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         request.setOsInnerVersion("1.0.1");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT.getResult(),
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT_FOR_LOWER_OS_VERSION.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
@@ -204,6 +202,13 @@ public class AbstractCommonComponentUpgradeHandlerTest {
     @Test
     public void testGetVersionIsUpdating() {
         TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
+
+        new MockUp<TerminalUpdateListCacheManager>() {
+            @Mock
+            public boolean isCacheReady(CbbTerminalTypeEnums terminalType) {
+                return false;
+            }
+        };
 
         CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
         List<CbbCommonComponentVersionInfoDTO> componentList = new ArrayList<>();

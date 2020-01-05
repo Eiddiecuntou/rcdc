@@ -2,6 +2,7 @@
 
 import sys
 import json
+import traceback
 
 from BtApiService import btMakeSeedBlock
 from Common import getLogger, md5sum
@@ -25,14 +26,25 @@ def make_bt():
     md5 = md5sum(seedPath)
     return BtInfo(seedPath, md5)
 
-
-if __name__ == '__main__':
-
+def main():
     if len(sys.argv) < 4:
         logger.info("param is not be null")
         print "fail"
-    else:
+        return
+
+    try:
         result = make_bt()
         reqJsonStr = json.dumps(result, default=lambda o:o.__dict__, sort_keys=True, indent=4)
         logger.info("result : %s" % reqJsonStr)
         print reqJsonStr
+    except:
+        logger.error("make bt failed")
+        logger.exception(traceback.format_exc())
+        print "fail"
+
+if __name__ == '__main__':
+
+    main()
+
+
+
