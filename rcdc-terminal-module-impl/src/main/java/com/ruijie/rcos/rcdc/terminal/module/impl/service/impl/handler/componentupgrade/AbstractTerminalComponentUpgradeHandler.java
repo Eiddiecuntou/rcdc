@@ -41,9 +41,7 @@ public abstract class AbstractTerminalComponentUpgradeHandler implements Termina
                 return true;
             }
 
-            if (intVer1 < intVer2) {
-                return false;
-            }
+            return false;
         }
 
         return true;
