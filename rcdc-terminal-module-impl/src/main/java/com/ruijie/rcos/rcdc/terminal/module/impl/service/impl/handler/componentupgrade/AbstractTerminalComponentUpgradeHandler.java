@@ -28,7 +28,7 @@ public abstract class AbstractTerminalComponentUpgradeHandler implements Termina
         String[] firstVerArr = firstVersion.split(VERSION_SPLIT);
         String[] secondVerArr = secondVersion.split(VERSION_SPLIT);
 
-        Assert.isTrue(firstVerArr.length == secondVerArr.length, "版本格式不一致，无法进行比较");
+        Assert.isTrue(firstVerArr.length == secondVerArr.length, "版本格式不一致，无法进行比较，版本号为：" + firstVersion + "及" + secondVersion);
 
         for (int i = 0; i < firstVerArr.length; i++) {
             int intVer1 = Integer.parseInt(firstVerArr[i]);

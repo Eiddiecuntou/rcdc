@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -147,12 +146,8 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         request.setValidateMd5("123");
         request.setOsInnerVersion("1.1.1.1.1");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
-        try {
-            handler.getVersion(request);
-            fail();
-        } catch (Exception e) {
-            assertEquals("版本格式不一致，无法进行比较", e.getMessage());
-        }
+        TerminalVersionResultDTO<CbbCommonUpdateListDTO> version = handler.getVersion(request);
+        assertEquals(0, version.getResult().intValue());
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
     }
 

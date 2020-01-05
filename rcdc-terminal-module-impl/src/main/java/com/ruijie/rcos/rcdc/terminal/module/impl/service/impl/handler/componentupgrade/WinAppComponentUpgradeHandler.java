@@ -58,12 +58,21 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new CbbWinAppUpdateListDTO());
         }
 
-        if (isVersionNotLess(updatelist.getLimitVersion(), rainUpgradeVersion)) {
-            LOGGER.debug("版本号小于服务端版本号，需要进行完整升级");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getCompleteUpgradeResult(updatelist));
+        boolean isVersionNotLess;
+        try {
+            isVersionNotLess = isVersionNotLess(rainUpgradeVersion, updatelist.getLimitVersion());
+        } catch (Exception e) {
+            LOGGER.error("比较osLimit版本失败", e);
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new CbbWinAppUpdateListDTO());
         }
 
-        return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getIncrementUpgradeResult(updatelist));
+        if (isVersionNotLess) {
+            LOGGER.debug("版本号不小于服务端版本号，需要进行组件升级");
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getIncrementUpgradeResult(updatelist));
+        }
+
+        LOGGER.debug("版本号小于服务端版本号，需要进行完整升级");
+        return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getCompleteUpgradeResult(updatelist));
     }
 
     private CbbWinAppUpdateListDTO getCompleteUpgradeResult(CbbWinAppUpdateListDTO updatelist) {

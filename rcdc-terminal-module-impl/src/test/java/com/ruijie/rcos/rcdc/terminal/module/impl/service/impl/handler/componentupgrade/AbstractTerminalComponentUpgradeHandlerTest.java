@@ -48,7 +48,7 @@ public class AbstractTerminalComponentUpgradeHandlerTest {
             handler.isVersionNotLess(versionStr1, versionStr2);
             fail();
         } catch (Exception e) {
-            Assert.assertEquals("版本格式不一致，无法进行比较", e.getMessage());
+            Assert.assertEquals("版本格式不一致，无法进行比较，版本号为：2.0.3.1及1.9.4", e.getMessage());
         }
     }
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
@@ -61,7 +62,15 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         }
 
         // 判断是否支持升级
-        if (!isSupportUpgrade(updatelist, request)) {
+        boolean isSupport;
+        try {
+            isSupport = isSupportUpgrade(updatelist, request);
+        } catch (Exception e) {
+            LOGGER.error("比较osLimit版本失败", e);
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new CbbWinAppUpdateListDTO());
+        }
+
+        if (!isSupport) {
             LOGGER.debug("终端[" + request.getTerminalId() + "]的系统版本号低于系统限制版本号[" + updatelist.getOsLimit() + "],不支持升级");
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT_FOR_LOWER_OS_VERSION.getResult(), updatelist);
         }
