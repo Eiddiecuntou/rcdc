@@ -1,27 +1,25 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalGroupDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeGlobal;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -50,22 +48,57 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
 
-    @Override
-    public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr,
-            CbbSystemUpgradeModeEnums upgradeMode) {
-        Assert.notNull(upgradePackage, "upgradePackage can not be null");
-        Assert.notEmpty(terminalIdArr, "terminalIdArr can not be empty");
-        Assert.notNull(upgradeMode, "upgradeMode can not be null");
+    @Autowired
+    private TerminalSystemUpgradeTerminalGroupDAO systemUpgradeTerminalGroupDAO;
 
-        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage, upgradeMode);
+    @Autowired
+    private TerminalGroupService terminalGroupService;
+
+    @Override
+    public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, CbbAddSystemUpgradeTaskRequest request) {
+        Assert.notNull(upgradePackage, "upgradePackage can not be null");
+        Assert.notNull(request, "request can not be null");
+
+        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage, request.getUpgradeMode());
 
         UUID upgradeTaskId = entity.getId();
-        for (String terminalId : terminalIdArr) {
-            TerminalSystemUpgradeTerminalEntity upgradeTerminal = addSystemUpgradeTerminal(upgradeTaskId, terminalId);
-            // 将终端状态设置为升级中。在终端转换为最终态时将终端设为离线（终端在线则状态不变）
-            syncTerminalState(upgradeTerminal);
+        if (ArrayUtils.isNotEmpty(request.getTerminalIdArr())) {
+            Arrays.stream(request.getTerminalIdArr()).forEach(terminalId -> {
+                TerminalSystemUpgradeTerminalEntity upgradeTerminal = addSystemUpgradeTerminal(upgradeTaskId, terminalId);
+                // 将终端状态设置为升级中。在终端转换为最终态时将终端设为离线（终端在线则状态不变）
+                syncTerminalState(upgradeTerminal);
+            });
         }
+
+        if (ArrayUtils.isNotEmpty(request.getTerminalGroupIdArr())) {
+            Arrays.stream(request.getTerminalGroupIdArr()).forEach(terminalGroupId -> {
+                addSystemUpgradeGroup(upgradeTaskId, terminalGroupId);
+            });
+        }
+
         return upgradeTaskId;
+    }
+
+    @Override
+    public void editUpgradeGroup(TerminalSystemUpgradeEntity upgradeEntity, UUID[] terminalGroupIdArr) {
+        Assert.notNull(upgradeEntity, "TerminalSystemUpgradeEntity can not be null");
+        Assert.notNull(terminalGroupIdArr, "terminalGroupIdArr can not be null");
+
+        // 删除后再添加
+        systemUpgradeTerminalGroupDAO.deleteBySysUpgradeId(upgradeEntity.getId());
+
+        for (UUID groupId : terminalGroupIdArr) {
+            addSystemUpgradeGroup(upgradeEntity.getId(), groupId);
+        }
+    }
+
+    private void addSystemUpgradeGroup(UUID sysUpgradeId, UUID terminalGroupId) {
+        TerminalSystemUpgradeTerminalGroupEntity saveUpgradeGroupEntity = new TerminalSystemUpgradeTerminalGroupEntity();
+        saveUpgradeGroupEntity.setSysUpgradeId(sysUpgradeId);
+        saveUpgradeGroupEntity.setTerminalGroupId(terminalGroupId);
+        saveUpgradeGroupEntity.setCreateTime(new Date());
+
+        systemUpgradeTerminalGroupDAO.save(saveUpgradeGroupEntity);
     }
 
     /**

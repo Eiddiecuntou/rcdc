@@ -112,4 +112,11 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
     protected boolean upgradingNumLimit() {
         return SystemUpgradeGlobal.isUpgradingNumExceedLimit();
     }
+
+    @Override
+    public void releaseUpgradeQuota(String terminalId) {
+        Assert.hasText(terminalId, "terminalId can not be blank");
+
+        SystemUpgradeGlobal.releaseUpgradeQuota(terminalId);
+    }
 }
