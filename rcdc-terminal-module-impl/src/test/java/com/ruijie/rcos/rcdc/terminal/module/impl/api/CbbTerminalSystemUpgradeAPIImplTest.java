@@ -13,9 +13,6 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
@@ -29,6 +26,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
@@ -42,13 +40,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.UpgradeTerminalLockManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeTerminalListService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QueryUpgradeableTerminalListService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeFileClearHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
@@ -120,6 +114,12 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private TerminalSystemUpgradePackageService systemUpgradePackageService;
+
+    @Injectable
+    private QuerySystemUpgradeTerminalGroupListService querySystemUpgradeTerminalGroupListService;
+
+    @Injectable
+    private TerminalGroupService terminalGroupService;
 
     /**
      * 测试升级包上传，参数为空
@@ -281,7 +281,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = false;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = false;
-                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request.getTerminalIdArr(), CbbSystemUpgradeModeEnums.AUTO);
+                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request);
                 result = upgradeTaskId;
                 systemUpgradeHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = linuxVDISystemUpgradeHandler;
@@ -307,7 +307,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 times = 1;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 times = 1;
-                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request.getTerminalIdArr(), CbbSystemUpgradeModeEnums.AUTO);
+                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request);
                 times = 1;
             }
         };

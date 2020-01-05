@@ -83,6 +83,8 @@ public interface CbbTerminalSystemUpgradeAPI {
      *
      * @param request 请求参数
      * @return 刷机终端分组列表
+     *
+     * @throws BusinessException 业务异常
      */
     @NoRollback
     DefaultPageResponse<TerminalGroupDTO> listSystemUpgradeTaskTerminalGroup(PageSearchRequest request) throws BusinessException;

@@ -70,7 +70,7 @@ public interface TerminalSystemUpgradeHandler<T> {
      *
      * @param terminalEntity 终端id
      * @param terminalType 终端类型
-     * @return
+     * @return boolean
      */
     boolean isTerminalEnableUpgrade(TerminalEntity terminalEntity, CbbTerminalTypeEnums terminalType);
 

@@ -58,6 +58,8 @@ public interface TerminalSystemUpgradeServiceTx {
      *
      * @param upgradeEntity 升级任务对象
      * @param terminalGroupIdArr 分组id数组
+     *
+     * @throws BusinessException 业务异常
      */
     void editUpgradeGroup(TerminalSystemUpgradeEntity upgradeEntity, UUID[] terminalGroupIdArr) throws BusinessException;
 }

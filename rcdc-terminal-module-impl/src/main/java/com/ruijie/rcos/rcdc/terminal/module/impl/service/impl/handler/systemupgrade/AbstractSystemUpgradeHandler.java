@@ -95,17 +95,16 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
     }
 
     private boolean notInTask(TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity, boolean isGroupInUpgrade) {
-        // TODO 优化
-        if (upgradeTerminalEntity != null) {
-            if (upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.WAIT) {
-                LOGGER.info("终端[{}]处于准备升级状态", upgradeTerminalEntity.getTerminalId());
-                return false;
-            }
-
-            return true;
+        if (upgradeTerminalEntity == null) {
+            return !isGroupInUpgrade;
         }
 
-        return !isGroupInUpgrade;
+        if (upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.WAIT) {
+            LOGGER.info("终端[{}]处于准备升级状态", upgradeTerminalEntity.getTerminalId());
+            return false;
+        }
+
+        return true;
     }
 
     private SystemUpgradeCheckResult<T> buildNoNeedCheckResult() {
