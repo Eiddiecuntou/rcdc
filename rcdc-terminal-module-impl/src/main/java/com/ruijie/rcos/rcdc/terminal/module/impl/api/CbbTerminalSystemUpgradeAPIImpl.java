@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Stream;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
@@ -212,18 +213,18 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     public DefaultResponse editSystemUpgradeTerminalGroup(CbbUpgradeTerminalGroupRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        LOGGER.info("编辑刷机终端分组：{} ", request.getTerminalGroupIdArr());
+        LOGGER.info("编辑刷机终端分组：{} ", JSON.toJSONString(request.getTerminalGroupIdArr()));
 
         final TerminalSystemUpgradeEntity upgradeEntity = terminalSystemUpgradeService.getSystemUpgradeTask(request.getUpgradeTaskId());
         checkUpgradeTaskState(upgradeEntity);
 
-        checGroupExist(request.getTerminalGroupIdArr());
+        checkGroupExist(request.getTerminalGroupIdArr());
         terminalSystemUpgradeServiceTx.editUpgradeGroup(upgradeEntity, request.getTerminalGroupIdArr());
 
         return DefaultResponse.Builder.success();
     }
 
-    private void checGroupExist(UUID[] terminalGroupIdArr) throws BusinessException {
+    private void checkGroupExist(UUID[] terminalGroupIdArr) throws BusinessException {
         if (ArrayUtils.isEmpty(terminalGroupIdArr)) {
             return;
         }

@@ -60,6 +60,16 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
             return false;
         }
 
+        // TODO 需优化
+        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageType(terminalType);
+        TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
+        TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
+                getSystemUpgradeService().getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeTask.getId());
+        if (upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.WAIT) {
+            LOGGER.info("终端[{}]处于准备升级状态", upgradeTerminalEntity.getTerminalId());
+            return false;
+        }
+
         return true;
     }
 
@@ -97,11 +107,6 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
     private boolean notInTask(TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity, boolean isGroupInUpgrade) {
         if (upgradeTerminalEntity == null) {
             return !isGroupInUpgrade;
-        }
-
-        if (upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.WAIT) {
-            LOGGER.info("终端[{}]处于准备升级状态", upgradeTerminalEntity.getTerminalId());
-            return false;
         }
 
         return true;
