@@ -23,7 +23,7 @@ CREATE TABLE t_cbb_sys_upgrade_terminal_group (
   "terminal_group_id" uuid NOT NULL,
   "create_time" timestamp(0),
   "version" int4 DEFAULT 1,
-  CONSTRAINT "t_cbb_sys_upgrade_terminal_group" PRIMARY KEY ("id")
+  CONSTRAINT "t_cbb_sys_upgrade_terminal_group_pkey" PRIMARY KEY ("id")
 );
 
 COMMENT ON COLUMN t_cbb_sys_upgrade_terminal_group.sys_upgrade_id IS '刷机任务id';
