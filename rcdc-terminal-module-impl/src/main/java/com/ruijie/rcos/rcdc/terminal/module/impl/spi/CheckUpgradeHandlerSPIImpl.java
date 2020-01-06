@@ -72,7 +72,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
 
-        SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalId, terminalType);
+        SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalType);
 
         // 构建组件升级和系统升级检测结果对象
         TerminalUpgradeResult terminalUpgradeResult = buildTerminalUpgradeResult(versionResult, systemUpgradeCheckResult);
@@ -98,11 +98,11 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return upgradeResult;
     }
 
-    private SystemUpgradeCheckResult getSystemUpgradeCheckResult(String terminalId, CbbTerminalTypeEnums terminalType) {
+    private SystemUpgradeCheckResult getSystemUpgradeCheckResult(TerminalEntity terminalEntity, CbbTerminalTypeEnums terminalType) {
         SystemUpgradeCheckResult systemUpgradeCheckResult;
         try {
             TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
-            systemUpgradeCheckResult = handler.checkSystemUpgrade(terminalType, terminalId);
+            systemUpgradeCheckResult = handler.checkSystemUpgrade(terminalType, terminalEntity);
         } catch (BusinessException e) {
             // 这里有不支持系统升级的终端接入，如软终端，为避免大量的日志级别改为debug
             LOGGER.debug("获取终端系统升级处理对象异常，不支持升级", e);

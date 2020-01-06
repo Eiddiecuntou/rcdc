@@ -16,8 +16,10 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.TerminalOffLineException;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
@@ -54,6 +56,9 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     @Autowired
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
 
+    @Autowired
+    private TerminalSystemUpgradeTerminalGroupDAO systemUpgradeTerminalGroupDAO;
+
     @Override
     public void systemUpgrade(String terminalId, Object upgradeMsg) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
@@ -81,8 +86,8 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     }
 
     private boolean hasUpgradingTask(UUID upgradePackageId) {
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<CbbSystemUpgradeTaskStateEnums> stateList =
+                Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
         List<TerminalSystemUpgradeEntity> upgradingTaskList = null;
 
         upgradingTaskList = terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
@@ -130,10 +135,10 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     public TerminalSystemUpgradeEntity getUpgradingSystemUpgradeTaskByPackageId(UUID packageId) {
         Assert.notNull(packageId, "packageId can not be null");
 
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO
-                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
+        List<CbbSystemUpgradeTaskStateEnums> stateList =
+                Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<TerminalSystemUpgradeEntity> upgradingTaskList =
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
 
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
             // 无进行中的升级任务，则返回null
@@ -152,4 +157,14 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         return systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(taskId, terminalId);
     }
 
+    @Override
+    public boolean isGroupInUpgradeTask(UUID upgradeTaskId, UUID groupId) {
+        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+        Assert.notNull(groupId, "groupId can not be null");
+
+        TerminalSystemUpgradeTerminalGroupEntity upgradeGroup =
+                systemUpgradeTerminalGroupDAO.findBySysUpgradeIdAndTerminalGroupId(upgradeTaskId, groupId);
+
+        return upgradeGroup != null;
+    }
 }
