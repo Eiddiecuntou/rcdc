@@ -67,10 +67,10 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
                 getSystemUpgradeService().getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeTask.getId());
         if (upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.WAIT) {
             LOGGER.info("终端[{}]处于准备升级状态", upgradeTerminalEntity.getTerminalId());
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     @Override
@@ -109,7 +109,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
             return !isGroupInUpgrade;
         }
 
-        return true;
+        return false;
     }
 
     private SystemUpgradeCheckResult<T> buildNoNeedCheckResult() {
