@@ -3,11 +3,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 import java.io.File;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
@@ -26,6 +26,12 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
  */
 @Service
 public class SystemUpgradeFileClearHandler {
+
+    private static final String PXE_SAMBA_LINUX_VDI_UPGRADE_BEGIN_FILE_PATH = "/opt/samba/pxeuser/linux_vdi/mac_begin/";
+
+    private static final String PXE_SAMBA_LINUX_VDI_UPGRADE_SUCCESS_FILE_PATH = "/opt/samba/pxeuser/linux_vdi/mac_end/";
+
+    private static final String PXE_SAMBA_LINUX_VDI_ISO_PATH = "/opt/samba/pxeuser/linux_vdi/";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeFileClearHandler.class);
 
@@ -50,8 +56,8 @@ public class SystemUpgradeFileClearHandler {
      * 
      */
     private void deleteStatusFile() {
-        deleteMacNameFile(Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH);
-        deleteMacNameFile(Constants.TERMINAL_UPGRADE_END_SATTUS_FILE_PATH);
+        deleteMacNameFile(PXE_SAMBA_LINUX_VDI_UPGRADE_BEGIN_FILE_PATH);
+        deleteMacNameFile(PXE_SAMBA_LINUX_VDI_UPGRADE_SUCCESS_FILE_PATH);
     }
 
     /**
@@ -63,9 +69,10 @@ public class SystemUpgradeFileClearHandler {
         // 删除刷机状态文件夹内的状态文件
         File statusFileDir = new File(fileDir);
         if (!statusFileDir.isDirectory()) {
-            LOGGER.error("刷机状态文件夹不存在，路径：{} ", fileDir);
+            statusFileDir.mkdirs();
             return;
         }
+
         final File[] fileArr = statusFileDir.listFiles();
         for (File statusFile : fileArr) {
             if (statusFile.isFile()) {
@@ -82,8 +89,8 @@ public class SystemUpgradeFileClearHandler {
      */
     private void deleteUpgradeImg(UUID packageId) throws BusinessException {
         TerminalSystemUpgradePackageEntity packageEntity = terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
-        final String imgName = packageEntity.getImgName();
-        String upgradeImgFileDir = Constants.ISO_IMG_MOUNT_PATH + imgName;
-        FileOperateUtil.deleteFile(new File(upgradeImgFileDir));
+        if (packageEntity.getPackageType() == CbbTerminalTypeEnums.VDI_LINUX) {
+            FileOperateUtil.deleteFile(new File(PXE_SAMBA_LINUX_VDI_ISO_PATH));
+        }
     }
 }

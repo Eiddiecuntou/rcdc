@@ -28,7 +28,7 @@ public interface TerminalSystemUpgradeHandler<T> {
      * @param terminalEntity 终端id
      * @return 终端系统升级检测结果
      */
-    SystemUpgradeCheckResult<T> checkSystemUpgrade(CbbTerminalTypeEnums terminalType, TerminalEntity terminalEntity);
+    SystemUpgradeCheckResult<T> checkSystemUpgrade(CbbTerminalTypeEnums terminalType, TerminalEntity terminalEntity) throws BusinessException;
 
 
     /**

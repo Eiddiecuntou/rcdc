@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 
 /**
  * Description: Function Description
@@ -30,6 +30,19 @@ public class LinuxVDICheckResultContent {
     private CbbSystemUpgradeModeEnums upgradeMode;
 
     private UUID taskId;
+
+    /** samba 信息 */
+    private String sambaUserName;
+
+    private String sambaPassword;
+
+    private String sambaIp;
+
+    private String sambaPort;
+
+    private String sambaFilePath;
+
+    private String upgradePackageName;
 
     public String getImgName() {
         return imgName;
@@ -61,5 +74,53 @@ public class LinuxVDICheckResultContent {
 
     public void setTaskId(UUID taskId) {
         this.taskId = taskId;
+    }
+
+    public String getSambaUserName() {
+        return sambaUserName;
+    }
+
+    public void setSambaUserName(String sambaUserName) {
+        this.sambaUserName = sambaUserName;
+    }
+
+    public String getSambaPassword() {
+        return sambaPassword;
+    }
+
+    public void setSambaPassword(String sambaPassword) {
+        this.sambaPassword = sambaPassword;
+    }
+
+    public String getSambaIp() {
+        return sambaIp;
+    }
+
+    public void setSambaIp(String sambaIp) {
+        this.sambaIp = sambaIp;
+    }
+
+    public String getSambaPort() {
+        return sambaPort;
+    }
+
+    public void setSambaPort(String sambaPort) {
+        this.sambaPort = sambaPort;
+    }
+
+    public String getSambaFilePath() {
+        return sambaFilePath;
+    }
+
+    public void setSambaFilePath(String sambaFilePath) {
+        this.sambaFilePath = sambaFilePath;
+    }
+
+    public String getUpgradePackageName() {
+        return upgradePackageName;
+    }
+
+    public void setUpgradePackageName(String upgradePackageName) {
+        this.upgradePackageName = upgradePackageName;
     }
 }

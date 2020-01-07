@@ -25,6 +25,11 @@ public interface Constants {
     String TERMINAL_ADMIN_PASSWORD_AES_KEY = "ADMINPASSWORDKEY";
 
     /**
+     * 终端管理员密码aes加密key值
+     */
+    String TERMINAL_PXE_SAMBA_PASSWORD_AES_KEY = "PXESAMBAPASSWORDKEY";
+
+    /**
      * 系统默认编码
      */
     String RCDC_DEFAULT_ENCODE = "UTF-8";

@@ -30,7 +30,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSystemUpgradeHandler.class);
 
     @Override
-    public SystemUpgradeCheckResult<T> checkSystemUpgrade(CbbTerminalTypeEnums terminalType, TerminalEntity terminalEntity) {
+    public SystemUpgradeCheckResult<T> checkSystemUpgrade(CbbTerminalTypeEnums terminalType, TerminalEntity terminalEntity) throws BusinessException {
         Assert.notNull(terminalType, "terminalType can not be null");
         Assert.notNull(terminalEntity, "terminalEntity can not be blank");
         Assert.hasText(terminalEntity.getTerminalId(), "terminalId can not be blank");
@@ -145,7 +145,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
     }
 
     protected abstract SystemUpgradeCheckResult<T> getCheckResult(TerminalSystemUpgradePackageEntity upgradePackage,
-            TerminalSystemUpgradeEntity upgradeTask);
+            TerminalSystemUpgradeEntity upgradeTask) throws BusinessException;
 
     protected abstract TerminalSystemUpgradeService getSystemUpgradeService();
 

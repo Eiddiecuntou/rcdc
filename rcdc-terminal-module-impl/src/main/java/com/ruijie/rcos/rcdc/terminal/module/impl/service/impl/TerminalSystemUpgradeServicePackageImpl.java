@@ -35,6 +35,10 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 @Service
 public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUpgradePackageService {
 
+    private static final String PXE_SAMBA_LINUX_VDI_UPGRADE_BEGIN_FILE_PATH = "/opt/samba/pxeuser/linux_vdi/mac_begin/";
+
+    private static final String PXE_SAMBA_LINUX_VDI_UPGRADE_SUCCESS_FILE_PATH = "/opt/samba/pxeuser/linux_vdi/mac_end/";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeServicePackageImpl.class);
 
     @Autowired
@@ -74,12 +78,12 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
 
     @Override
     public List<TerminalSystemUpgradeInfo> readSystemUpgradeSuccessStateFromFile() throws BusinessException {
-        return getStatusFromFile(Constants.TERMINAL_UPGRADE_END_SATTUS_FILE_PATH, CbbSystemUpgradeStateEnums.SUCCESS);
+        return getStatusFromFile(PXE_SAMBA_LINUX_VDI_UPGRADE_BEGIN_FILE_PATH, CbbSystemUpgradeStateEnums.SUCCESS);
     }
 
     @Override
     public List<TerminalSystemUpgradeInfo> readSystemUpgradeStartStateFromFile() throws BusinessException {
-        return getStatusFromFile(Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH, CbbSystemUpgradeStateEnums.UPGRADING);
+        return getStatusFromFile(PXE_SAMBA_LINUX_VDI_UPGRADE_SUCCESS_FILE_PATH, CbbSystemUpgradeStateEnums.UPGRADING);
     }
 
     private List<TerminalSystemUpgradeInfo> getStatusFromFile(String fileDir, CbbSystemUpgradeStateEnums state) throws BusinessException {
