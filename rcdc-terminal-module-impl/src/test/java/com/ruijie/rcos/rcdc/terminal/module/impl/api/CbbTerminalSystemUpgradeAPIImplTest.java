@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
@@ -43,7 +44,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeFileClearHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeFileClearHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -98,7 +99,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     private CbbTerminalSystemUpgradePackageAPI systemUpgradePackageAPI;
 
     @Injectable
-    private SystemUpgradeFileClearHandler upgradeFileClearHandler;
+    private LinuxVDISystemUpgradeFileClearHandler upgradeFileClearHandler;
 
     @Injectable
     private UpgradeTerminalLockManager lockManager;
@@ -1018,6 +1019,11 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setId(UUID.randomUUID());
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
+        upgradeTerminal.setTerminalId(request.getTerminalId());
+
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        terminalEntity.setTerminalOsType("Linux");
 
         new Expectations() {
             {
@@ -1028,6 +1034,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
                 basicInfoDAO.getTerminalNameByTerminalId(request.getTerminalId());
                 result = "ccc";
+
+                basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
+                result = terminalEntity;
             }
         };
 
@@ -1051,6 +1060,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
                 basicInfoDAO.getTerminalNameByTerminalId(request.getTerminalId());
                 times = 1;
+
+                basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
+                times = 1;
             }
         };
     }
@@ -1071,6 +1083,11 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         upgradeTerminal.setId(UUID.randomUUID());
         upgradeTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
+        upgradeTerminal.setTerminalId(request.getTerminalId());
+
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        terminalEntity.setTerminalOsType("Linux");
 
         new Expectations() {
             {
@@ -1081,6 +1098,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
                 basicInfoDAO.getTerminalNameByTerminalId(request.getTerminalId());
                 result = "ccc";
+
+                basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
+                result = terminalEntity;
             }
         };
 
@@ -1104,6 +1124,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 times = 1;
 
                 basicInfoDAO.getTerminalNameByTerminalId(request.getTerminalId());
+                times = 1;
+
+                basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
                 times = 1;
             }
         };

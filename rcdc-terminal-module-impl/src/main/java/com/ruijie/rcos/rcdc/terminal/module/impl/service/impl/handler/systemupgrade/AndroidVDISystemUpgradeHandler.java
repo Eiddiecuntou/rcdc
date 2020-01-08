@@ -52,7 +52,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
 
     @Override
     protected SystemUpgradeCheckResult<AndroidVDICheckResultContent> getCheckResult(TerminalSystemUpgradePackageEntity upgradePackage,
-            TerminalSystemUpgradeEntity upgradeTask) {
+            TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTask, "upgradeTask can not be null");
 

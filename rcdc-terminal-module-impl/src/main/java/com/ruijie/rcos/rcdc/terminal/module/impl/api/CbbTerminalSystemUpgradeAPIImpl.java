@@ -547,10 +547,17 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     private boolean checkTerminalStartUpgrade(String terminalId) {
-        String startFilePath = Constants.TERMINAL_UPGRADE_START_SATTUS_FILE_PATH + terminalId;
-        File startFile = new File(startFilePath);
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        Assert.notNull(terminalEntity, "terminalId can not be null");
 
-        return startFile.isFile();
+        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
+        if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
+            String startFilePath = Constants.PXE_SAMBA_LINUX_VDI_UPGRADE_BEGIN_FILE_PATH + terminalId;
+            File startFile = new File(startFilePath);
+            return startFile.isFile();
+        }
+
+        return false;
     }
 
     private TerminalSystemUpgradeTerminalEntity checkUpgradeTerminalExist(final UUID upgradeTaskId, final String terminalId)
