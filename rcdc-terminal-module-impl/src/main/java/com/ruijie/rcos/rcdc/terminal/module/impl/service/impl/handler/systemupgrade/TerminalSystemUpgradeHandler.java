@@ -27,6 +27,7 @@ public interface TerminalSystemUpgradeHandler<T> {
      * @param terminalType 终端类型
      * @param terminalEntity 终端id
      * @return 终端系统升级检测结果
+     * @throws BusinessException 业务异常
      */
     SystemUpgradeCheckResult<T> checkSystemUpgrade(CbbTerminalTypeEnums terminalType, TerminalEntity terminalEntity) throws BusinessException;
 
@@ -54,8 +55,11 @@ public interface TerminalSystemUpgradeHandler<T> {
      * @param upgradeTaskId 升级任务id
      * @param upgradeMode 升级模式
      * @return 升级消息对象
+     *
+     * @throws BusinessException 业务异常
      */
-    Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId, CbbSystemUpgradeModeEnums upgradeMode);
+    Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId, CbbSystemUpgradeModeEnums upgradeMode)
+            throws BusinessException;
 
     /**
      * 检验是否可以开始升级

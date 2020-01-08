@@ -20,9 +20,14 @@ public class LinuxVDICheckResultContent {
     private String imgName;
 
     /**
-     * 版本号
+     * 版本号 （保留兼容旧版本）
      */
     private String isoVersion;
+
+    /**
+     * 版本号
+     */
+    private String packageVersion;
 
     /**
      * 升级方式
@@ -122,5 +127,13 @@ public class LinuxVDICheckResultContent {
 
     public void setUpgradePackageName(String upgradePackageName) {
         this.upgradePackageName = upgradePackageName;
+    }
+
+    public String getPackageVersion() {
+        return packageVersion;
+    }
+
+    public void setPackageVersion(String packageVersion) {
+        this.packageVersion = packageVersion;
     }
 }

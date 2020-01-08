@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -23,7 +24,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTer
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.TerminalOffLineException;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeFileClearHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeFileClearHandler;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -51,7 +52,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
 
     @Autowired
-    private SystemUpgradeFileClearHandler upgradeFileClearHandler;
+    private LinuxVDISystemUpgradeFileClearHandler upgradeFileClearHandler;
 
     @Autowired
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
@@ -113,9 +114,9 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         systemUpgradeEntity.setState(state);
         terminalSystemUpgradeDAO.save(systemUpgradeEntity);
 
-        if (state == CbbSystemUpgradeTaskStateEnums.FINISH) {
+        if (state == CbbSystemUpgradeTaskStateEnums.FINISH && systemUpgradeEntity.getPackageType() == CbbTerminalTypeEnums.VDI_LINUX) {
             // 刷机关闭则清理服务端文件
-            upgradeFileClearHandler.clear(systemUpgradeEntity.getUpgradePackageId());
+            upgradeFileClearHandler.clear();
         }
     }
 

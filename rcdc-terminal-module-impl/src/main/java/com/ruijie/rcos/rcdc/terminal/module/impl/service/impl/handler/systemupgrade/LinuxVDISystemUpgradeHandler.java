@@ -1,22 +1,23 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import java.io.File;
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.SambaInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.SambaInfoService;
-import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.SambaInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.SambaInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService;
+import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -30,8 +31,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 @Service
 public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<LinuxVDICheckResultContent> {
 
-    private static final String PXE_ISO_SAMBA_RELATE_PATH = "/linux_vdi/package/";
-
     @Autowired
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
 
@@ -39,7 +38,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
     private TerminalSystemUpgradeService systemUpgradeService;
 
     @Autowired
-    private SystemUpgradeFileClearHandler upgradeFileClearHandler;
+    private LinuxVDISystemUpgradeFileClearHandler upgradeFileClearHandler;
 
     @Autowired
     private TerminalSystemUpgradeSupportService terminalSystemUpgradeSupportService;
@@ -65,17 +64,8 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
 
         SambaInfoDTO pxeSambaInfo = sambaInfoService.getPxeSambaInfo();
 
-        LinuxVDICheckResultContent resultContent = new LinuxVDICheckResultContent();
-        resultContent.setImgName(upgradePackage.getImgName());
-        resultContent.setIsoVersion(upgradePackage.getPackageVersion());
-        resultContent.setUpgradeMode(upgradeTask.getUpgradeMode());
-        resultContent.setTaskId(upgradeTask.getId());
-        resultContent.setSambaIp(pxeSambaInfo.getIp());
-        resultContent.setSambaPassword(AesUtil.encrypt(pxeSambaInfo.getPassword(), Constants.TERMINAL_PXE_SAMBA_PASSWORD_AES_KEY));
-        resultContent.setSambaPort(pxeSambaInfo.getPort());
-        resultContent.setSambaUserName(pxeSambaInfo.getUserName());
-        resultContent.setSambaFilePath(pxeSambaInfo.getFilePath() + PXE_ISO_SAMBA_RELATE_PATH);
-        resultContent.setUpgradePackageName(upgradePackage.getPackageName());
+        LinuxVDICheckResultContent resultContent =
+                buildLinuxVDICheckResultContent(upgradePackage, upgradeTask.getId(), upgradeTask.getUpgradeMode(), pxeSambaInfo);
 
         SystemUpgradeCheckResult<LinuxVDICheckResultContent> checkResult = new SystemUpgradeCheckResult<>();
         checkResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
@@ -89,7 +79,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
         Assert.notNull(upgradePackage.getId(), "packageId can not be null");
 
         // 清理终端升级相关文件
-        upgradeFileClearHandler.clear(upgradePackage.getId());
+        upgradeFileClearHandler.clear();
 
         // 开启刷机相关服务
         terminalSystemUpgradeSupportService.openSystemUpgradeService(upgradePackage);
@@ -104,17 +94,33 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
     }
 
     @Override
-    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId, CbbSystemUpgradeModeEnums upgradeMode) {
+    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId, CbbSystemUpgradeModeEnums upgradeMode)
+            throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
         Assert.notNull(upgradeMode, "upgradeMode can not be null");
 
+        SambaInfoDTO pxeSambaInfo = sambaInfoService.getPxeSambaInfo();
+
+        LinuxVDICheckResultContent resultContent = buildLinuxVDICheckResultContent(upgradePackage, upgradeTaskId, upgradeMode, pxeSambaInfo);
+
+        return resultContent;
+    }
+
+    private LinuxVDICheckResultContent buildLinuxVDICheckResultContent(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId,
+            CbbSystemUpgradeModeEnums upgradeMode, SambaInfoDTO pxeSambaInfo) {
         LinuxVDICheckResultContent resultContent = new LinuxVDICheckResultContent();
         resultContent.setImgName(upgradePackage.getImgName());
         resultContent.setIsoVersion(upgradePackage.getPackageVersion());
+        resultContent.setPackageVersion(upgradePackage.getPackageVersion());
         resultContent.setUpgradeMode(upgradeMode);
         resultContent.setTaskId(upgradeTaskId);
-
+        resultContent.setSambaIp(pxeSambaInfo.getIp());
+        resultContent.setSambaPassword(AesUtil.encrypt(pxeSambaInfo.getPassword(), Constants.TERMINAL_PXE_SAMBA_PASSWORD_AES_KEY));
+        resultContent.setSambaPort(pxeSambaInfo.getPort());
+        resultContent.setSambaUserName(pxeSambaInfo.getUserName());
+        resultContent.setSambaFilePath(File.separator + pxeSambaInfo.getFilePath() + Constants.PXE_ISO_SAMBA_LINUX_VDI_RELATE_PATH);
+        resultContent.setUpgradePackageName(upgradePackage.getPackageName());
         return resultContent;
     }
 

@@ -112,7 +112,7 @@ public class TerminalSystemUpgradeSupportService {
         File destPath = obtainPxeLinuxVdiIsoPath(packageEntity.getPackageName());
 
         try {
-            Files.move(isoImgFile.toPath(), destPath.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(isoImgFile.toPath(), destPath.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             LOGGER.error("复制升级文件至刷机目录失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPEN_SYSTEM_UPGRADE_TASK_ERROR_FOR_COPY_PACKAGE, e);

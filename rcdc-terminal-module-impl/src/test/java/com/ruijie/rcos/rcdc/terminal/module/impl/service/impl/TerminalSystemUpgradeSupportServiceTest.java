@@ -3,12 +3,19 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
 
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -31,6 +38,7 @@ import mockit.*;
  * 
  * @author ls
  */
+@RunWith(SkyEngineRunner.class)
 public class TerminalSystemUpgradeSupportServiceTest {
 
     @Tested
@@ -59,20 +67,17 @@ public class TerminalSystemUpgradeSupportServiceTest {
      * 
      * @param upgradeTaskFuture mock对象
      * @param supportServiceFuture mock对象
-     * @param nfsServiceUtil mock对象
      * @throws BusinessException 异常
      */
     @Test
     public void testCloseSystemUpgradeServiceAllIsNotNull(@Injectable ScheduledFuture<?> upgradeTaskFuture,
-            @Injectable ScheduledFuture<?> supportServiceFuture, @Mocked NfsServiceUtil nfsServiceUtil) throws BusinessException {
+            @Injectable ScheduledFuture<?> supportServiceFuture) throws BusinessException {
 
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", upgradeTaskFuture);
         service.closeSystemUpgradeService();
 
         new Verifications() {
             {
-                NfsServiceUtil.shutDownService();
-                times = 1;
                 upgradeTaskFuture.cancel(true);
                 times = 1;
             }
@@ -82,17 +87,16 @@ public class TerminalSystemUpgradeSupportServiceTest {
     /**
      * 测试closeSystemUpgradeService,upgradeTaskFuture和supportServiceFuture都为空
      * 
-     * @param nfsServiceUtil mock对象
      * @throws BusinessException 异常
      */
     @Test
-    public void testCloseSystemUpgradeService(@Mocked NfsServiceUtil nfsServiceUtil) throws BusinessException {
+    public void testCloseSystemUpgradeService(@Mocked ScheduledFuture UPGRADE_TASK_FUTURE) throws BusinessException {
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", null);
         service.closeSystemUpgradeService();
         new Verifications() {
             {
-                NfsServiceUtil.shutDownService();
-                times = 1;
+                UPGRADE_TASK_FUTURE.cancel(true);
+                times = 0;
             }
         };
     }
@@ -109,75 +113,44 @@ public class TerminalSystemUpgradeSupportServiceTest {
     }
 
     /**
-     * 测试openSystemUpgradeService，复制文件失败
-     * 
-     * @param nfsServiceUtil mock对象
-     * @param upgradeTaskFuture mock对象
-     * @param supportServiceFuture mock对象
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testIsTerminalOnlineCopyFileFailed(@Mocked NfsServiceUtil nfsServiceUtil, @Injectable ScheduledFuture<?> upgradeTaskFuture,
-            @Injectable ScheduledFuture<?> supportServiceFuture) throws BusinessException {
-
-        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", upgradeTaskFuture);
-        TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
-        new MockUp<File>() {
-            @Mock
-            public boolean exists() {
-                return true;
-            }
-        };
-        new Expectations() {
-            {
-                runner.execute((SimpleCmdReturnValueResolver) any);
-                result = new Delegate<ShellCommandRunner>() {
-                    int i = 0;
-
-                    String execute(ReturnValueResolver<String> arg0) throws BusinessException {
-                        if (i == 1) {
-                            i++;
-                            throw new BusinessException("key");
-                        }
-                        i++;
-                        return "ss";
-                    }
-                };
-            }
-        };
-        service.openSystemUpgradeService(packageEntity);
-
-        new Verifications() {
-            {
-                runner.execute((SimpleCmdReturnValueResolver) any);
-                times = 3;
-            }
-        };
-    }
-
-    /**
      * 测试openSystemUpgradeService，
      * 
-     * @param nfsServiceUtil mock对象
      * @throws BusinessException 异常
      * @throws InterruptedException ex
      */
     @Test
-    public void testIsTerminalOnline(@Mocked NfsServiceUtil nfsServiceUtil) throws BusinessException, InterruptedException {
+    public void testOpenSystemUpgradeService() throws BusinessException, InterruptedException, IOException {
 
         Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", null);
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
-        new MockUp<File>() {
+        packageEntity.setFilePath("/a/b.iso");
+
+        new MockUp<Files>() {
             @Mock
-            public boolean exists() {
-                return false;
+            public Path copy(Path source, Path target, CopyOption... options) {
+                // test
+                return null;
+            }
+        };
+
+        new MockUp<File>() {
+
+            @Mock
+            public boolean isFile() {
+                return true;
             }
 
             @Mock
-            public boolean mkdir() {
+            public boolean isDirectory() {
+                return true;
+            }
+
+            @Mock
+            public boolean mkdirs() {
                 return true;
             }
         };
+
 
         service.openSystemUpgradeService(packageEntity);
 
@@ -185,8 +158,8 @@ public class TerminalSystemUpgradeSupportServiceTest {
 
         new Verifications() {
             {
-                runner.execute((SimpleCmdReturnValueResolver) any);
-                times = 3;
+                Files.copy((Path) any, (Path) any, (CopyOption) any);
+                times = 1;
             }
         };
     }

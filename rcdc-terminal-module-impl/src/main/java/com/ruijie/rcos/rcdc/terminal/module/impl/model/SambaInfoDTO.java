@@ -1,5 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
+/**
+ *
+ * Description: samba信息
+ * Copyright: Copyright (c) 2018
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2020年1月8日
+ *
+ * @author nt
+ */
 public class SambaInfoDTO {
 
     /** samba 信息 */
