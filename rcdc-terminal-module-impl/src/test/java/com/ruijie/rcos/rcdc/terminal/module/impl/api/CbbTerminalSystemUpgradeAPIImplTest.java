@@ -1131,4 +1131,61 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
     }
+
+    /**
+     * 测试重试终端刷机 - 非linux_vdi升级任务
+     *
+     * @throws BusinessException
+     *         业务异常
+     */
+    @Test
+    public void testRetryUpgradeTerminalTaskNotLinuxVDI() throws BusinessException {
+
+        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        request.setUpgradeTaskId(UUID.randomUUID());
+        request.setTerminalId("aaa");
+
+        TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
+        upgradeTerminal.setId(UUID.randomUUID());
+        upgradeTerminal.setState(CbbSystemUpgradeStateEnums.FAIL);
+        upgradeTerminal.setTerminalId(request.getTerminalId());
+
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        terminalEntity.setTerminalOsType("Android");
+
+        new Expectations() {
+            {
+                systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(request.getUpgradeTaskId(), request.getTerminalId());
+                result = upgradeTerminal;
+
+                terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
+
+                basicInfoDAO.getTerminalNameByTerminalId(request.getTerminalId());
+                result = "ccc";
+
+                basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
+                result = terminalEntity;
+            }
+        };
+
+        CbbTerminalNameResponse response = upgradeAPIImpl.retryUpgradeTerminal(request);
+        assertEquals("ccc", response.getTerminalName());
+
+        new Verifications() {
+            {
+                systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(request.getUpgradeTaskId(), request.getTerminalId());
+                times = 1;
+
+                terminalSystemUpgradeServiceTx.modifySystemUpgradeTerminalState((TerminalSystemUpgradeTerminalEntity) any);
+                times = 1;
+
+                basicInfoDAO.getTerminalNameByTerminalId(request.getTerminalId());
+                times = 1;
+
+                basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
+                times = 1;
+            }
+        };
+    }
 }

@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 import java.util.UUID;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
 /**
  * Description: Function Description
@@ -12,7 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEn
  *
  * @author nt
  */
-public class LinuxVDICheckResultContent {
+public class LinuxVDICheckResultContent extends EqualsHashcodeSupport {
 
     /**
      * 升级镜像名称

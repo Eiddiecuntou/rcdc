@@ -8,6 +8,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.*;
 import org.junit.Test;
@@ -251,6 +253,137 @@ public class TerminalSystemUpgradeServicePackageImplTest {
             {
                 termianlSystemUpgradePackageDAO.findById(upgradePackageId);
                 times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试软删除升级包
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testDeleteSoft() throws BusinessException {
+
+        UUID upgradePackageId = UUID.randomUUID();
+        TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
+        Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = Optional.of(upgradePackageEntity);
+        new Expectations() {
+            {
+                termianlSystemUpgradePackageDAO.findById(upgradePackageId);
+                result = upgradePackageOpt;
+            }
+        };
+
+        servicePackageImpl.deleteSoft(upgradePackageId);
+
+        new Verifications() {
+            {
+                termianlSystemUpgradePackageDAO.findById(upgradePackageId);
+                times = 1;
+
+                TerminalSystemUpgradePackageEntity saveEntity;
+                termianlSystemUpgradePackageDAO.save(saveEntity = withCapture());
+                assertEquals(upgradePackageEntity, saveEntity);
+                assertTrue(saveEntity.getIsDelete());
+            }
+        };
+    }
+
+    /**
+     * 测试软删除升级包 - 升级包文件存在
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testDeleteSoftPackageFileExist() throws BusinessException {
+
+        UUID upgradePackageId = UUID.randomUUID();
+        TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
+        upgradePackageEntity.setFilePath("/aaa/bb/iso");
+        Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = Optional.of(upgradePackageEntity);
+        new Expectations() {
+            {
+                termianlSystemUpgradePackageDAO.findById(upgradePackageId);
+                result = upgradePackageOpt;
+            }
+        };
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isFile() {
+                return true;
+            }
+        };
+
+        new MockUp<FileUtils>() {
+            @Mock
+            public boolean isValidPath(File file) {
+                return true;
+            }
+        };
+
+        new MockUp<SkyengineFile>() {
+            @Mock
+            public boolean delete(boolean isMoveTo) {
+                return true;
+            }
+        };
+
+
+
+        servicePackageImpl.deleteSoft(upgradePackageId);
+
+        new Verifications() {
+            {
+                termianlSystemUpgradePackageDAO.findById(upgradePackageId);
+                times = 1;
+
+                TerminalSystemUpgradePackageEntity saveEntity;
+                termianlSystemUpgradePackageDAO.save(saveEntity = withCapture());
+                assertEquals(upgradePackageEntity, saveEntity);
+                assertTrue(saveEntity.getIsDelete());
+            }
+        };
+    }
+
+    /**
+     * 测试软删除升级包 - 升级包文件不存在
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testDeleteSoftPackageFileNotExist() throws BusinessException {
+
+        UUID upgradePackageId = UUID.randomUUID();
+        TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
+        upgradePackageEntity.setFilePath("/aaa/bb/iso");
+        Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = Optional.of(upgradePackageEntity);
+        new Expectations() {
+            {
+                termianlSystemUpgradePackageDAO.findById(upgradePackageId);
+                result = upgradePackageOpt;
+            }
+        };
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isFile() {
+                return false;
+            }
+        };
+
+        servicePackageImpl.deleteSoft(upgradePackageId);
+
+        new Verifications() {
+            {
+                termianlSystemUpgradePackageDAO.findById(upgradePackageId);
+                times = 1;
+
+                TerminalSystemUpgradePackageEntity saveEntity;
+                termianlSystemUpgradePackageDAO.save(saveEntity = withCapture());
+                assertEquals(upgradePackageEntity, saveEntity);
+                assertTrue(saveEntity.getIsDelete());
             }
         };
     }

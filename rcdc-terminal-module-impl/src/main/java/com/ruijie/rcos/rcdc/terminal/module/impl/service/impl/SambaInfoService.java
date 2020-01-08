@@ -9,8 +9,6 @@ import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SambaInfoDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 
@@ -25,8 +23,6 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
  */
 @Service
 public class SambaInfoService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SambaInfoService.class);
 
     @Value("${samba.pxe.username}")
     private String sambaPxeUserName;
@@ -44,7 +40,7 @@ public class SambaInfoService {
     private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     /**
-     *  获取pxe刷机samba信息
+     * 获取pxe刷机samba信息
      *
      * @return SambaInfoDTO samba信息
      * @throws BusinessException 业务异常

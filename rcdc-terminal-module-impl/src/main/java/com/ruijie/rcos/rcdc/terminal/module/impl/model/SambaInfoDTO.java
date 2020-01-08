@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
+
 /**
  *
  * Description: samba信息
@@ -9,7 +11,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.model;
  *
  * @author nt
  */
-public class SambaInfoDTO {
+public class SambaInfoDTO extends EqualsHashcodeSupport {
 
     /** samba 信息 */
     private String userName;

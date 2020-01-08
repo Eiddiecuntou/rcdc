@@ -7,12 +7,10 @@ import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.*;
 
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,11 +18,11 @@ import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.SystemUpgradeQuartzHandler;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
-import com.ruijie.rcos.sk.base.shell.ShellCommandRunner.ReturnValueResolver;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 
 import mockit.*;
@@ -163,6 +161,116 @@ public class TerminalSystemUpgradeSupportServiceTest {
             }
         };
     }
+
+    /**
+     * 测试openSystemUpgradeService，iso文件不存在
+     *
+     * @throws BusinessException 异常
+     * @throws InterruptedException ex
+     */
+    @Test
+    public void testOpenSystemUpgradeServiceIsoFileNotExist(@Mocked ThreadExecutor threadPool)
+            throws BusinessException, InterruptedException, IOException {
+        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", null);
+        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL", threadPool);
+        TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
+        packageEntity.setFilePath("/a/b.iso");
+
+        new MockUp<File>() {
+
+            @Mock
+            public boolean isFile() {
+                return false;
+            }
+
+            @Mock
+            public boolean isDirectory() {
+                return false;
+            }
+
+            @Mock
+            public boolean mkdirs() {
+                return true;
+            }
+        };
+
+        new MockUp<Files>() {
+            @Mock
+            public Path copy(Path source, Path target, CopyOption... options) {
+                // test
+                return null;
+            }
+        };
+
+
+        service.openSystemUpgradeService(packageEntity);
+
+
+        new Verifications() {
+            {
+                Files.copy((Path) any, (Path) any, (CopyOption) any);
+                times = 0;
+
+                threadPool.scheduleAtFixedRate(systemUpgradeQuartzHandler, 0, 15, TimeUnit.SECONDS);
+                times = 1;
+            }
+        };
+    }
+
+
+    /**
+     * 测试openSystemUpgradeService，iso文件不存在
+     *
+     * @throws BusinessException 异常
+     * @throws InterruptedException ex
+     */
+    @Test
+    public void testOpenSystemUpgradeServiceFileCopyHasException(@Mocked ThreadExecutor threadPool)
+            throws BusinessException, InterruptedException, IOException {
+
+        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "UPGRADE_TASK_FUTURE", null);
+        Deencapsulation.setField(TerminalSystemUpgradeSupportService.class, "SYSTEM_UPGRADE_SCHEDULED_THREAD_POOL", threadPool);
+        TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
+        packageEntity.setFilePath("/a/b.iso");
+
+        new MockUp<Files>() {
+            @Mock
+            public Path copy(Path source, Path target, CopyOption... options) throws IOException {
+                // test
+                throw new IOException("123");
+            }
+        };
+
+        new MockUp<File>() {
+
+            @Mock
+            public boolean isFile() {
+                return true;
+            }
+
+            @Mock
+            public boolean isDirectory() {
+                return true;
+            }
+
+            @Mock
+            public boolean mkdirs() {
+                return true;
+            }
+        };
+
+
+        service.openSystemUpgradeService(packageEntity);
+
+
+        new Verifications() {
+            {
+                threadPool.scheduleAtFixedRate(systemUpgradeQuartzHandler, 0, 15, TimeUnit.SECONDS);
+                times = 1;
+            }
+        };
+    }
+
 
     /**
      * 
