@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -90,6 +91,8 @@ public class TerminalSystemUpgradeSupportService {
      */
     private void openSupportService(TerminalSystemUpgradePackageEntity packageEntity) {
         try {
+            // 创建升级状态目录
+            createUpgradeStatusFile();
             // 复制镜像文件到samba刷机路径
             prepareUpgradeImg(packageEntity);
         } catch (Exception e) {
@@ -98,6 +101,18 @@ public class TerminalSystemUpgradeSupportService {
 
         // 开始定时任务
         beginScheduleTask();
+    }
+
+    private void createUpgradeStatusFile() {
+        File startStatusDir = new File(Constants.PXE_SAMBA_LINUX_VDI_UPGRADE_BEGIN_FILE_PATH);
+        if (!startStatusDir.isDirectory()) {
+            startStatusDir.mkdirs();
+        }
+
+        File successStatusDir = new File(Constants.PXE_SAMBA_LINUX_VDI_UPGRADE_SUCCESS_FILE_PATH);
+        if (!successStatusDir.isDirectory()) {
+            successStatusDir.mkdirs();
+        }
     }
 
     private void prepareUpgradeImg(TerminalSystemUpgradePackageEntity packageEntity) throws BusinessException {
