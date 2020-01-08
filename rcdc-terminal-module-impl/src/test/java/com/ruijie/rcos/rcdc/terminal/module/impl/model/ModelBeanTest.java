@@ -64,4 +64,14 @@ public class ModelBeanTest {
         tester.runTest();
         assertTrue(true);
     }
+
+    /**
+     * 测试SambaInfoDTO
+     */
+    @Test
+    public void testSambaInfoDTO() {
+        GetSetTester tester = new GetSetTester(SambaInfoDTO.class);
+        tester.runTest();
+        assertTrue(true);
+    }
 }

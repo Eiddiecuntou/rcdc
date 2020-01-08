@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018
@@ -10,7 +12,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
  *
  * @author nt
  */
-public class SystemUpgradeCheckResult<T> {
+public class SystemUpgradeCheckResult<T> extends EqualsHashcodeSupport {
 
     private Integer systemUpgradeCode;
 

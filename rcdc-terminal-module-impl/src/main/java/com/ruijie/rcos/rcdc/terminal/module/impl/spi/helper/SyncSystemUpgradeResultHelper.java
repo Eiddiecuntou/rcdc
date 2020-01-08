@@ -164,7 +164,7 @@ public class SyncSystemUpgradeResultHelper {
         Assert.notNull(upgradeResultInfo.getUpgradeState(), "upgradeResultInfo.getOtaVersion() can not be null");
 
         LOGGER.info("upgrading task info : {}", JSON.toJSONString(upgradingTask));
-        if (upgradingTask.getId() != upgradeResultInfo.getTaskId()) {
+        if (!upgradingTask.getId().equals(upgradeResultInfo.getTaskId())) {
             LOGGER.info("没有升级中的系统升级任务或升级任务id不一致，不更新终端状态");
             return;
         }
