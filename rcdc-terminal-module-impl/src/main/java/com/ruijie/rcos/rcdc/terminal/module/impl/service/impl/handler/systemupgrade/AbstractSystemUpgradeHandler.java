@@ -97,7 +97,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         boolean isGroupInUpgrade = getSystemUpgradeService().isGroupInUpgradeTask(upgradeTask.getId(), terminalEntity.getGroupId());
 
         if (notInTask(upgradeTerminalEntity, isGroupInUpgrade)) {
-            LOGGER.info("终端[{}]不在任务中", upgradeTerminalEntity.getTerminalId());
+            LOGGER.info("终端[{}]不在任务中", terminalId);
             return false;
         }
 

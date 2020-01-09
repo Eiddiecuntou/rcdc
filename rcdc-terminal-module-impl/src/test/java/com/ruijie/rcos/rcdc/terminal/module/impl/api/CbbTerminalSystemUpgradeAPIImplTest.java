@@ -14,6 +14,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
@@ -1184,6 +1185,191 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 times = 1;
 
                 basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     *  测试编辑系统升级终端分组 - 参数为空
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testEditSystemUpgradeTerminalGroupArgsIsNull() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.editSystemUpgradeTerminalGroup(null), "request can not be null");
+        assertTrue(true);
+    }
+
+    /**
+     *  测试编辑系统升级终端分组 - 升级任务不在升级中状态
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testEditSystemUpgradeTerminalGroupUpgradeTaskIsNotUpgrading() throws Exception {
+        UUID upgradeTaskId = UUID.randomUUID();
+
+        CbbUpgradeTerminalGroupRequest request = new CbbUpgradeTerminalGroupRequest();
+        request.setUpgradeTaskId(upgradeTaskId);
+        request.setTerminalGroupIdArr(new UUID[]{UUID.randomUUID()});
+
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+        upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.FINISH);
+
+        new Expectations() {
+            {
+                terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
+                result = upgradeEntity;
+            }
+        };
+
+        try {
+            upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_HAS_CLOSED, e.getKey());
+        }
+
+        new Verifications() {
+            {
+                terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
+                times = 1;
+
+                terminalGroupService.checkGroupExist((UUID) any);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     *  测试编辑系统升级终端分组 - 分组id数组为空
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testEditSystemUpgradeTerminalGroupNoGroupId() throws Exception {
+        UUID upgradeTaskId = UUID.randomUUID();
+
+        CbbUpgradeTerminalGroupRequest request = new CbbUpgradeTerminalGroupRequest();
+        request.setUpgradeTaskId(upgradeTaskId);
+        request.setTerminalGroupIdArr(new UUID[0]);
+
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+        upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+
+        new Expectations() {
+            {
+                terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
+                result = upgradeEntity;
+            }
+        };
+
+        DefaultResponse defaultResponse = upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
+        assertEquals(Status.SUCCESS, defaultResponse.getStatus());
+
+        new Verifications() {
+            {
+                terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
+                times = 1;
+
+                terminalGroupService.checkGroupExist((UUID) any);
+                times = 0;
+
+                terminalSystemUpgradeServiceTx.editUpgradeGroup(upgradeEntity, request.getTerminalGroupIdArr());
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     *  测试编辑系统升级终端分组 - 分组id数组为空
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testEditSystemUpgradeTerminalGroup() throws Exception {
+        UUID upgradeTaskId = UUID.randomUUID();
+
+        CbbUpgradeTerminalGroupRequest request = new CbbUpgradeTerminalGroupRequest();
+        request.setUpgradeTaskId(upgradeTaskId);
+        request.setTerminalGroupIdArr(new UUID[]{UUID.randomUUID()});
+
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+        upgradeEntity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+
+        new Expectations() {
+            {
+                terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
+                result = upgradeEntity;
+            }
+        };
+
+        DefaultResponse defaultResponse = upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
+        assertEquals(Status.SUCCESS, defaultResponse.getStatus());
+
+        new Verifications() {
+            {
+                terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
+                times = 1;
+
+                terminalGroupService.checkGroupExist(request.getTerminalGroupIdArr()[0]);
+                times = 1;
+
+                terminalSystemUpgradeServiceTx.editUpgradeGroup(upgradeEntity, request.getTerminalGroupIdArr());
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     *  测试获取系统升级终端分组列表
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testListSystemUpgradeTaskTerminalGroup() throws Exception {
+
+        TerminalSystemUpgradeTerminalGroupEntity upgradeGroup = new TerminalSystemUpgradeTerminalGroupEntity();
+        upgradeGroup.setTerminalGroupId(UUID.randomUUID());
+        List<TerminalSystemUpgradeTerminalGroupEntity> upgradeGroupList = Lists.newArrayList(upgradeGroup);
+        Pageable page = new PageRequest(0, 10);
+        Page<TerminalSystemUpgradeTerminalGroupEntity> upgradeTaskTerminalPage = new PageImpl(upgradeGroupList, page, 1L);
+
+        PageSearchRequest request = new PageSearchRequest();
+
+        TerminalGroupEntity terminalGroupEntity = new TerminalGroupEntity();
+        terminalGroupEntity.setId(upgradeGroup.getTerminalGroupId());
+        terminalGroupEntity.setName("123");
+        terminalGroupEntity.setParentId(UUID.randomUUID());
+
+        new Expectations() {
+            {
+                querySystemUpgradeTerminalGroupListService.pageQuery(request, TerminalSystemUpgradeTerminalGroupEntity.class);
+                result = upgradeTaskTerminalPage;
+
+                terminalGroupService.getTerminalGroup(upgradeGroup.getTerminalGroupId());
+                result = terminalGroupEntity;
+            }
+        };
+
+        TerminalGroupDTO expectedGroupDTO = new TerminalGroupDTO();
+        expectedGroupDTO.setId(terminalGroupEntity.getId());
+        expectedGroupDTO.setGroupName(terminalGroupEntity.getName());
+        expectedGroupDTO.setParentGroupId(terminalGroupEntity.getParentId());
+
+        DefaultPageResponse<TerminalGroupDTO> response = upgradeAPIImpl.listSystemUpgradeTaskTerminalGroup(request);
+        TerminalGroupDTO[] itemArr = response.getItemArr();
+        assertEquals(Status.SUCCESS, response.getStatus());
+        assertEquals(1, itemArr.length);
+        assertEquals(expectedGroupDTO, itemArr[0]);
+
+        new Verifications() {
+            {
+                querySystemUpgradeTerminalGroupListService.pageQuery(request, TerminalSystemUpgradeTerminalGroupEntity.class);
+                times = 1;
+
+                terminalGroupService.getTerminalGroup(upgradeGroup.getTerminalGroupId());
                 times = 1;
             }
         };

@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
  *
  * @author nt
  */
-public class AndroidVDICheckResultContent {
+public class AndroidVDICheckResultContent extends EqualsHashcodeSupport {
 
     private String packageName;
 

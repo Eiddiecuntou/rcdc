@@ -225,6 +225,122 @@ public class AbstractCommonComponentUpgradeHandlerTest {
     }
 
     /**
+     * 测试getVersion - 进行差异升级
+     */
+    @Test
+    public void testGetVersionStartDiffUpgrade() {
+        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
+
+        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
+        List<CbbCommonComponentVersionInfoDTO> componentList = getCbbCommonComponentVersionInfoDTOS();
+        updatelist.setComponentList(componentList);
+        updatelist.setVersion("1.1.0.1");
+        updatelist.setComponentSize(1);
+        updatelist.setBaseVersion("1.0.2.1");
+        updatelist.setLimitVersion("1.0.1.1");
+        updatelist.setOsLimit("1.0.2");
+
+        new MockUp(Logger.class) {
+            @Mock
+            public boolean isDebugEnabled() {
+                return true;
+            }
+        };
+
+        new MockUp(TerminalUpdateListCacheManager.class) {
+            @Mock
+            public CbbCommonUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+                return updatelist;
+            }
+        };
+
+        GetVersionDTO request = new GetVersionDTO();
+        request.setRainUpgradeVersion("1.0.2.1");
+        request.setValidateMd5("123");
+        request.setOsInnerVersion("1.0.2");
+
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalVersionResultDTO<CbbCommonUpdateListDTO> terminalVersionResultDTO = handler.getVersion(request);
+
+        CbbCommonComponentVersionInfoDTO expectComponent = new CbbCommonComponentVersionInfoDTO();
+        expectComponent.setCompletePackageName("abc");
+        expectComponent.setIncrementalPackageMd5("123");
+        expectComponent.setIncrementalPackageName("234");
+        expectComponent.setIncrementalTorrentMd5("345");
+        expectComponent.setIncrementalTorrentUrl("456");
+        expectComponent.setBasePackageName("567");
+        expectComponent.setBasePackageMd5("678");
+
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
+                terminalVersionResultDTO.getResult().intValue());
+        assertEquals(1, terminalVersionResultDTO.getUpdatelist().getComponentList().size());
+        assertEquals(expectComponent, terminalVersionResultDTO.getUpdatelist().getComponentList().get(0));
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
+    }
+
+    /**
+     * 测试getVersion - 进行完整升级
+     */
+    @Test
+    public void testGetVersionStartCompleteUpgrade() {
+        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
+
+        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
+        List<CbbCommonComponentVersionInfoDTO> componentList = getCbbCommonComponentVersionInfoDTOS();
+        updatelist.setComponentList(componentList);
+        updatelist.setVersion("1.1.0.1");
+        updatelist.setComponentSize(1);
+        updatelist.setBaseVersion("1.0.3.1");
+        updatelist.setLimitVersion("1.0.1.1");
+        updatelist.setOsLimit("1.0.2");
+
+        new MockUp(Logger.class) {
+            @Mock
+            public boolean isDebugEnabled() {
+                return true;
+            }
+        };
+
+        new MockUp(TerminalUpdateListCacheManager.class) {
+            @Mock
+            public CbbCommonUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+                return updatelist;
+            }
+        };
+
+        GetVersionDTO request = new GetVersionDTO();
+        request.setRainUpgradeVersion("1.0.2.1");
+        request.setValidateMd5("123");
+        request.setOsInnerVersion("1.0.2");
+
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalVersionResultDTO<CbbCommonUpdateListDTO> terminalVersionResultDTO = handler.getVersion(request);
+
+        CbbCommonComponentVersionInfoDTO expectComponent = new CbbCommonComponentVersionInfoDTO();
+        expectComponent.setCompletePackageName("abc");
+
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
+                terminalVersionResultDTO.getResult().intValue());
+        assertEquals(1, terminalVersionResultDTO.getUpdatelist().getComponentList().size());
+        assertEquals(expectComponent, terminalVersionResultDTO.getUpdatelist().getComponentList().get(0));
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.VDI_ANDROID);
+    }
+
+    private List<CbbCommonComponentVersionInfoDTO> getCbbCommonComponentVersionInfoDTOS() {
+        List<CbbCommonComponentVersionInfoDTO> componentList = new ArrayList<>();
+        CbbCommonComponentVersionInfoDTO component = new CbbCommonComponentVersionInfoDTO();
+        component.setCompletePackageName("abc");
+        component.setIncrementalPackageMd5("123");
+        component.setIncrementalPackageName("234");
+        component.setIncrementalTorrentMd5("345");
+        component.setIncrementalTorrentUrl("456");
+        component.setBasePackageName("567");
+        component.setBasePackageMd5("678");
+        componentList.add(component);
+        return componentList;
+    }
+
+    /**
      * Description: 测试类
      * Copyright: Copyright (c) 2018
      * Company: Ruijie Co., Ltd.

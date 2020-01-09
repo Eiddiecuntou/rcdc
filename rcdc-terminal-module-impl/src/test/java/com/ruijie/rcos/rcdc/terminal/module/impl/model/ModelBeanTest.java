@@ -74,4 +74,24 @@ public class ModelBeanTest {
         tester.runTest();
         assertTrue(true);
     }
+
+    /**
+     * 测试AndroidSystemUpgradeInfo
+     */
+    @Test
+    public void testAndroidSystemUpgradeInfo() {
+        GetSetTester tester = new GetSetTester(AndroidSystemUpgradeInfo.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试SeedFileInfo
+     */
+    @Test
+    public void testSeedFileInfo() {
+        GetSetTester tester = new GetSetTester(SeedFileInfo.class);
+        tester.runTest();
+        assertTrue(true);
+    }
 }

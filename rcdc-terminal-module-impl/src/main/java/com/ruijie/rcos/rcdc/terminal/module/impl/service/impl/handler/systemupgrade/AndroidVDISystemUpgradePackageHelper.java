@@ -1,0 +1,175 @@
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Properties;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
+import com.ruijie.rcos.sk.base.api.util.ZipUtil;
+import com.ruijie.rcos.sk.base.crypto.Md5Builder;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.util.StringUtils;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
+
+/**
+ * Description: Function Description
+ * Copyright: Copyright (c) 2019
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2019/10/10
+ *
+ * @author hs
+ */
+@Service
+public class AndroidVDISystemUpgradePackageHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AndroidVDISystemUpgradePackageHelper.class);
+
+    @Autowired
+    private BtService btService;
+
+    @Autowired
+    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
+
+    /**
+     * 解压文件
+     *
+     * @param zipfilePath ota包路径
+     * @param savePackageName 保存文件名称
+     * @return 保存路径
+     * @throws BusinessException 业务异常
+     */
+    public String unZipPackage(String zipfilePath, String savePackageName) throws BusinessException {
+        Assert.hasText(zipfilePath, "filePath can not be blank");
+        Assert.hasText(savePackageName, "unZipFilePath can not be blank");
+
+        String unZipFilePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE;
+        File unZipFile = new File(unZipFilePath);
+        String savePackagePath = unZipFilePath + savePackageName;
+        File zipFile = new File(zipfilePath);
+        FileOperateUtil.createFileDirectory(unZipFile);
+        try {
+            ZipUtil.unzipFile(zipFile, unZipFile);
+        } catch (IOException e) {
+            LOGGER.debug("version file read error, file path[{}]", zipFile);
+            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+        }
+        File rainrcdFile = new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP);
+        File savePackageFile = new File(savePackagePath);
+        try {
+            Files.move(rainrcdFile.toPath(), savePackageFile.toPath());
+        } catch (IOException e) {
+            LOGGER.debug("move upgrade file to target directory fail");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL, e);
+        }
+
+        return savePackagePath;
+
+    }
+
+    /**
+     * 校验版本
+     *
+     * @param packagePath zip包路径
+     * @param versionPath 版本文件路径
+     * @return OTA版本信息
+     * @throws BusinessException 业务异常
+     */
+    public TerminalUpgradeVersionFileInfo checkVersionInfo(String packagePath, String versionPath) throws BusinessException {
+        Assert.hasText(packagePath, "packagePath can not be blank");
+        Assert.hasText(versionPath, "versionPath can not be blank");
+
+        Properties prop = new Properties();
+
+        try (InputStream inputStream = new FileInputStream(versionPath)) {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            LOGGER.debug("version file read error, file path[{}]", versionPath);
+            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+        }
+        String fileMD5 = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5);
+        String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT);
+        String version = prop.getProperty(Constants.TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION);
+        // 校验OTA包
+        checkOtaUpgradePackage(platType, fileMD5, packagePath);
+        TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
+        upgradeInfo.setFileMD5(fileMD5);
+        upgradeInfo.setVersion(version);
+        return upgradeInfo;
+    }
+
+    private void checkOtaUpgradePackage(String platType, String fileMD5, String packagePath) throws BusinessException {
+        Assert.notNull(platType, "platType can not be null");
+        Assert.notNull(fileMD5, "fileMD5 can not be null");
+        Assert.notNull(packagePath, "packagePath can not be null");
+        String packageMD5 = generateFileMD5(packagePath);
+        if (!fileMD5.equals(packageMD5) || !platType.equals(Constants.TERMINAL_UPGRADE_OTA_PLATFORM_TYPE)) {
+            LOGGER.error("terminal ota upgrade package has error, fileMD5[{}], platType[{}]", fileMD5, platType);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR);
+        }
+
+    }
+
+    /**
+     * 制作BT种子
+     *
+     * @param filePath OTA包文件路径
+     * @return 种子信息
+     * @throws BusinessException 业务异常
+     */
+    public SeedFileInfo makeBtSeed(String filePath) throws BusinessException {
+        Assert.notNull(filePath, "filePath can not be null");
+
+        String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
+        File seedFile = new File(seedSavePath);
+        FileOperateUtil.createFileDirectory(seedFile);
+        return btService.makeBtSeed(filePath, seedSavePath, getLocalIP());
+    }
+
+    /**
+     * 计算MD5值
+     */
+    private String generateFileMD5(String filePath) throws BusinessException {
+
+        File seedFile = new File(filePath);
+        String seedMD5 = null;
+        try {
+            seedMD5 = StringUtils.bytes2Hex(Md5Builder.computeFileMd5(seedFile));
+        } catch (IOException e) {
+            LOGGER.error("compute seed file md5 fail, seed file path[{}]", filePath);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL, e);
+        }
+        return seedMD5;
+
+    }
+
+    /**
+     * 获取ip
+     *
+     * @return ip
+     */
+
+    private String getLocalIP() throws BusinessException {
+        DtoResponse<ClusterVirtualIpDTO> response = cloudPlatformMgmtAPI.getClusterVirtualIp(new DefaultRequest());
+        Assert.notNull(response, "response can not be null");
+
+        return response.getDto().getClusterVirtualIpIp();
+    }
+
+}

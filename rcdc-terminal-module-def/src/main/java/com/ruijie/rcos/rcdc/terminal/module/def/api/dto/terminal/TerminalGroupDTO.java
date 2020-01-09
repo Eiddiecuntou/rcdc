@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal;
 
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
+
 import java.util.UUID;
 
 /**
@@ -11,7 +13,7 @@ import java.util.UUID;
  * 
  * @author chenzj
  */
-public class TerminalGroupDTO {
+public class TerminalGroupDTO extends EqualsHashcodeSupport {
 
     /**
      * 终端分组id
