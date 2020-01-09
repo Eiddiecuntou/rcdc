@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -119,17 +120,7 @@ public class WinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionRainUpgradeVersionIsIllegale() {
-        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
-        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
-        CbbWinAppComponentVersionInfoDTO complete = new CbbWinAppComponentVersionInfoDTO();
-        CbbWinAppComponentVersionInfoDTO component = new CbbWinAppComponentVersionInfoDTO();
-        componentList.add(complete);
-        componentList.add(component);
-        updatelist.setComponentList(componentList);
-        updatelist.setVersion("1.1.0.1");
-        updatelist.setComponentSize(1);
-        updatelist.setLimitVersion("1.0.1.1");
-        updatelist.setValidateMd5("123");
+        CbbWinAppUpdateListDTO updatelist = getCbbWinAppUpdateListDTO();
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
             public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
@@ -150,18 +141,40 @@ public class WinAppComponentUpgradeHandlerTest {
      * 测试getVersion,低于最低支持版本
      */
     @Test
-    public void testGetVersionLimitVersion() {
-        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
-        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
-        CbbWinAppComponentVersionInfoDTO complete = new CbbWinAppComponentVersionInfoDTO();
-        CbbWinAppComponentVersionInfoDTO component = new CbbWinAppComponentVersionInfoDTO();
-        componentList.add(complete);
-        componentList.add(component);
-        updatelist.setComponentList(componentList);
-        updatelist.setVersion("1.1.0.1");
-        updatelist.setComponentSize(1);
-        updatelist.setLimitVersion("1.0.1.1");
-        updatelist.setValidateMd5("123");
+    public void testGetVersionLessThanLimitVersion() {
+        CbbWinAppUpdateListDTO updateList = getCbbWinAppUpdateListDTO();
+
+
+        new MockUp(TerminalUpdateListCacheManager.class) {
+            @Mock
+            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+                return updateList;
+            }
+        };
+
+        GetVersionDTO request = new GetVersionDTO();
+        request.setRainUpgradeVersion("1.0.0.1");
+        request.setValidateMd5("123");
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
+
+        CbbWinAppUpdateListDTO expectUpdatelist = getCbbWinAppUpdateListDTO();
+        expectUpdatelist.setComponentList(Collections.emptyList());
+        expectUpdatelist.setComponentSize(0);
+
+        TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(), terminalVersionResultDTO.getResult().intValue());
+        CbbWinAppUpdateListDTO returnUpdateList = (CbbWinAppUpdateListDTO) terminalVersionResultDTO.getUpdatelist();
+        assertEquals(expectUpdatelist, returnUpdateList);
+
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
+    }
+
+    /**
+     * 测试getVersion, 不低于最低支持版本
+     */
+    @Test
+    public void testGetVersion() {
+        CbbWinAppUpdateListDTO updatelist = getCbbWinAppUpdateListDTO();
 
 
         new MockUp(TerminalUpdateListCacheManager.class) {
@@ -171,12 +184,22 @@ public class WinAppComponentUpgradeHandlerTest {
             }
         };
 
+        CbbWinAppUpdateListDTO expectUpdatelist = getCbbWinAppUpdateListDTO();
+        expectUpdatelist.setName(StringUtils.EMPTY);
+        expectUpdatelist.setCompletePackageName(StringUtils.EMPTY);
+        expectUpdatelist.setCompletePackageUrl(StringUtils.EMPTY);
+        expectUpdatelist.setMd5(StringUtils.EMPTY);
+
         GetVersionDTO request = new GetVersionDTO();
-        request.setRainUpgradeVersion("1.0.0.1");
+        request.setRainUpgradeVersion("1.0.1.1");
         request.setValidateMd5("123");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
+        CbbWinAppUpdateListDTO returnUpdateList = (CbbWinAppUpdateListDTO) terminalVersionResultDTO.getUpdatelist();
+
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(), terminalVersionResultDTO.getResult().intValue());
+        assertEquals(expectUpdatelist, returnUpdateList);
+
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
     }
 
@@ -199,6 +222,21 @@ public class WinAppComponentUpgradeHandlerTest {
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), terminalVersionResultDTO.getResult().intValue());
 
+    }
+
+    private CbbWinAppUpdateListDTO getCbbWinAppUpdateListDTO() {
+        CbbWinAppUpdateListDTO updatelist = new CbbWinAppUpdateListDTO();
+        List<CbbWinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        CbbWinAppComponentVersionInfoDTO complete = new CbbWinAppComponentVersionInfoDTO();
+        CbbWinAppComponentVersionInfoDTO component = new CbbWinAppComponentVersionInfoDTO();
+        componentList.add(complete);
+        componentList.add(component);
+        updatelist.setComponentList(componentList);
+        updatelist.setVersion("1.1.0.1");
+        updatelist.setComponentSize(1);
+        updatelist.setLimitVersion("1.0.1.1");
+        updatelist.setValidateMd5("123");
+        return updatelist;
     }
 
 }

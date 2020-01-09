@@ -57,7 +57,7 @@ public class BtServiceImpl implements BtService {
             checkResp(seedInfoStr, BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL);
             LOGGER.info("seed info str is :{}", seedInfoStr);
             return JSON.parseObject(seedInfoStr, SeedFileInfo.class);
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             LOGGER.error("make seed file error", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL, e);
         }
@@ -97,7 +97,7 @@ public class BtServiceImpl implements BtService {
     private void checkResp(String responseStr, String businessKey) throws BusinessException {
         Assert.hasText(responseStr, "response can not be blank");
 
-        if (EXECUTE_SHELL_FAIL_RESULT.equals(responseStr.toLowerCase())) {
+        if (EXECUTE_SHELL_FAIL_RESULT.equals(responseStr.toLowerCase().trim())) {
             throw new BusinessException(businessKey);
         }
     }

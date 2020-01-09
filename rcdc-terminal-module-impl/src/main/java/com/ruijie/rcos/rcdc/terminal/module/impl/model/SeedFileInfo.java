@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 import org.springframework.util.Assert;
 
 /**
@@ -10,11 +11,14 @@ import org.springframework.util.Assert;
  *
  * @author hs
  */
-public class SeedFileInfo {
+public class SeedFileInfo extends EqualsHashcodeSupport {
 
     private String seedFilePath;
 
     private String seedFileMD5;
+
+    public SeedFileInfo() {
+    }
 
     public SeedFileInfo(String seedFilePath, String seedFileMD5) {
         Assert.notNull(seedFileMD5, "seedFileMD5 can not be null");
