@@ -59,7 +59,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         checkDefault(parentGroupId);
         checkGroupNum();
         checkSubGroupNum(parentGroupId);
-        checkGroupName(terminalGroup);
+        checkGroupNameUnique(terminalGroup);
         checkGroupLevel(parentGroupId, 1);
 
         TerminalGroupEntity entity = buildTerminalGroupEntity(terminalGroup);
@@ -85,6 +85,10 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         Assert.hasText(terminalGroup.getGroupName(), "terminal group name can not be blank");
 
         String groupName = terminalGroup.getGroupName();
+        if (getDefaultGroupNameList().contains(groupName)) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME, groupName);
+        }
+
         UUID groupId = terminalGroup.getId();
         UUID parentGroupId = terminalGroup.getParentGroupId();
         List<TerminalGroupEntity> subList =
@@ -99,9 +103,12 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
                 continue;
             }
             if (groupName.equals(group.getName())) {
-                return false;
+                LOGGER.error("terminal group name has exist, group name[{}], parent group id[{}]", groupName,
+                        terminalGroup.getParentGroupId());
+                throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE, groupName);
             }
         }
+
         return true;
     }
 
@@ -132,7 +139,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         }
 
         // 检验分组名称是否同级唯一
-        checkGroupName(terminalGroup);
+        checkGroupNameUnique(terminalGroup);
         modifyGroupNameAndParent(id, groupName, parentGroupId);
     }
 
@@ -232,27 +239,6 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         Collections.reverse(groupNameList);
         groupNameList.toArray(groupNameArr);
         return groupNameArr;
-    }
-
-    /**
-     * 检验分组名是否同级唯一
-     *
-     * @param terminalGroup 分组对象
-     * @throws BusinessException 业务异常
-     */
-    private void checkGroupName(TerminalGroupDTO terminalGroup) throws BusinessException {
-        // 校验分组名称是否为默认名称
-        String groupName = terminalGroup.getGroupName();
-        if (getDefaultGroupNameList().contains(groupName)) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME, groupName);
-        }
-
-        boolean enableUnique = checkGroupNameUnique(terminalGroup);
-        if (!enableUnique) {
-            LOGGER.error("terminal group name has exist, group name[{}], parent group id[{}]", groupName,
-                    terminalGroup.getParentGroupId());
-            throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE, groupName);
-        }
     }
 
     private List<String> getDefaultGroupNameList() {
