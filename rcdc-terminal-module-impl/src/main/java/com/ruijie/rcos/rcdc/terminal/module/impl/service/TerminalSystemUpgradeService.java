@@ -67,4 +67,13 @@ public interface TerminalSystemUpgradeService {
      * @return 升级终端
      */
     TerminalSystemUpgradeTerminalEntity getSystemUpgradeTerminalByTaskId(String terminalId, UUID taskId);
+
+    /**
+     * 判断终端分组是否在升级任务中
+     *
+     * @param upgradeTaskId 升级任务id
+     * @param groupId 终端分组id
+     * @return boolean
+     */
+    boolean isGroupInUpgradeTask(UUID upgradeTaskId, UUID groupId);
 }

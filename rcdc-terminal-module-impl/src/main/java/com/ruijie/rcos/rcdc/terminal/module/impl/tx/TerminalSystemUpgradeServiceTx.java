@@ -1,11 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-
-import java.util.UUID;
 
 /**
  * 
@@ -22,11 +23,10 @@ public interface TerminalSystemUpgradeServiceTx {
      * 添加终端刷机任务
      * 
      * @param upgradePackage 刷机包对象
-     * @param terminalIdArr 终端id数组
-     * @param  upgradeMode 升级模式
+     * @param request 终端id数组
      * @return 刷机任务id
      */
-    UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, String[] terminalIdArr, CbbSystemUpgradeModeEnums upgradeMode);
+    UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, CbbAddSystemUpgradeTaskRequest request);
 
     /**
      * 结束刷机任务
@@ -53,5 +53,13 @@ public interface TerminalSystemUpgradeServiceTx {
      */
     void modifySystemUpgradeTerminalState(TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException;
 
-
+    /**
+     * 编辑终端升级任务的终端分组
+     *
+     * @param upgradeEntity 升级任务对象
+     * @param terminalGroupIdArr 分组id数组
+     *
+     * @throws BusinessException 业务异常
+     */
+    void editUpgradeGroup(TerminalSystemUpgradeEntity upgradeEntity, UUID[] terminalGroupIdArr) throws BusinessException;
 }

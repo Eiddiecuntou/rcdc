@@ -5,7 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.logo.CbbGetLogoPath
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 
 
@@ -26,7 +26,7 @@ public interface CbbTerminalLogoAPI {
      * @return 上传Logo结果
      * @throws BusinessException 请求异常
      */
-    @NoRollback
+    
     DefaultResponse uploadLogo(CbbUploadLogoRequest request) throws BusinessException;
 
     /**
@@ -36,7 +36,7 @@ public interface CbbTerminalLogoAPI {
      * @return 获取Logo路径结果
      * @throws BusinessException 请求异常
      */
-    @NoRollback
+    
     CbbGetLogoPathResponse getLogoPath(DefaultRequest request) throws BusinessException;
 
     /**
@@ -46,7 +46,7 @@ public interface CbbTerminalLogoAPI {
      * @return 初始化Logo结果
      * @throws BusinessException 请求异常
      */
-    @NoRollback
+    
     DefaultResponse initLogo(DefaultRequest request) throws BusinessException;
 }
 

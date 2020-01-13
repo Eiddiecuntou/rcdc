@@ -16,6 +16,8 @@ import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
 
+import java.util.List;
+
 /**
  * 
  * Description: Function Description
@@ -32,6 +34,16 @@ public class QuerySystemUpgradeListServiceTest {
 
     @Injectable
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
+
+    /**
+     *  获取查询字段
+     */
+    @Test
+    public void testGetSearchColumn() {
+        List<String> searchColumnList = service.getSearchColumn();
+        assertEquals(1, searchColumnList.size());
+        assertEquals("packageName", searchColumnList.get(0));
+    }
 
     /**
      * 测试getDefaultDataSort

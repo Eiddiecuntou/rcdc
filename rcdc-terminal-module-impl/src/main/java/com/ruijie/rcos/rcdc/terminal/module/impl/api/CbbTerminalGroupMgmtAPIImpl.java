@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalGroupNameDuplicationRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -207,5 +209,20 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
         CbbObtainGroupNamePathResponse response = new CbbObtainGroupNamePathResponse();
         response.setGroupNameArr(terminalGroupService.getTerminalGroupNameArr(request.getId()));
         return response;
+    }
+
+    @Override
+    public CheckGroupNameDuplicationResponse checkUseGroupNameDuplication(TerminalGroupNameDuplicationRequest request) throws BusinessException {
+        Assert.notNull(request, "Param [TerminalGroupNameDuplicationRequest] must not be null");
+
+        boolean isNameUnique;
+        try {
+            isNameUnique = terminalGroupService.checkGroupNameUnique(new TerminalGroupDTO(request.getId(),
+                    request.getGroupName(), request.getParentId()));
+        } catch (BusinessException e) {
+            isNameUnique = false;
+        }
+
+        return new CheckGroupNameDuplicationResponse(!isNameUnique);
     }
 }

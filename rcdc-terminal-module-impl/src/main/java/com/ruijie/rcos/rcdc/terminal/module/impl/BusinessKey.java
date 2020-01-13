@@ -308,10 +308,13 @@ public interface BusinessKey {
 
     /************ 终端系统升级***************/
     String RCDC_TERMINAL_SYSTEM_UPGRADE_HANDLER_NOT_EXIST = "rcdc_terminal_system_upgrade_handler_not_exist";
+    String RCDC_TERMINAL_OPEN_SYSTEM_UPGRADE_TASK_ERROR_FOR_COPY_PACKAGE = "rcdc_terminal_open_system_upgrade_task_error_for_copy_package";
 
     /************Android终端OTA升级**************************/
     String RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL = "rcdc_terminal_ota_upgrade_computer_seed_file_md5_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_make_seed_file_fail";
+    String RCDC_TERMINAL_OTA_UPGRADE_BT_SHARE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_bt_share_file_fail";
+    String RCDC_TERMINAL_OTA_UPGRADE_STOP_SHARE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_stop_share_file_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR = "rcdc_terminal_ota_upgrade_package_has_error";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
 

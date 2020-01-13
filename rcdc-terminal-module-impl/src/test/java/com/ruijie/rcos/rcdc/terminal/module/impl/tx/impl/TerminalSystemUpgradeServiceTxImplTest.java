@@ -1,31 +1,34 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import mockit.*;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalGroupDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+
+import mockit.*;
 
 /**
  * 
@@ -59,6 +62,9 @@ public class TerminalSystemUpgradeServiceTxImplTest {
     @Injectable
     private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
 
+    @Injectable
+    private TerminalSystemUpgradeTerminalGroupDAO systemUpgradeTerminalGroupDAO;
+
     /**
      * 测试addSystemUpgradeTask，参数为空
      * 
@@ -66,12 +72,9 @@ public class TerminalSystemUpgradeServiceTxImplTest {
      */
     @Test
     public void testAddSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(null, new String[5], null),
-                "upgradePackage can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(new TerminalSystemUpgradePackageEntity(), null, null),
-                "terminalIdArr can not be empty");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(new TerminalSystemUpgradePackageEntity(), new String[5], null),
-                "upgradeMode can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(null, null), "upgradePackage can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.addSystemUpgradeTask(new TerminalSystemUpgradePackageEntity(), null),
+                "request can not be null");
         assertTrue(true);
     }
 
@@ -81,9 +84,14 @@ public class TerminalSystemUpgradeServiceTxImplTest {
     @Test
     public void testAddSystemUpgradeTask() {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
         String[] terminalIdArr = new String[1];
         terminalIdArr[0] = "1";
-        serviceTxImpl.addSystemUpgradeTask(upgradePackage, terminalIdArr, CbbSystemUpgradeModeEnums.AUTO);
+        CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        request.setTerminalIdArr(terminalIdArr);
+        request.setPackageId(UUID.randomUUID());
+        request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
+        serviceTxImpl.addSystemUpgradeTask(upgradePackage, request);
 
         new Verifications() {
             {
@@ -231,7 +239,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         ThrowExceptionTester.throwIllegalArgumentException(() -> serviceTxImpl.modifySystemUpgradeTerminalState(null),
                 "upgradeTerminal can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(
-            () -> serviceTxImpl.modifySystemUpgradeTerminalState(new TerminalSystemUpgradeTerminalEntity()), "upgradeTaskId can not be null");
+                () -> serviceTxImpl.modifySystemUpgradeTerminalState(new TerminalSystemUpgradeTerminalEntity()), "upgradeTaskId can not be null");
 
         TerminalSystemUpgradeTerminalEntity entity = new TerminalSystemUpgradeTerminalEntity();
 

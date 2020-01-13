@@ -53,6 +53,14 @@ public class TerminalCollectLogCleanQuartzTaskTest {
                 return key;
             }
         };
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return false;
+            }
+        };
+
         quartz.run();
         new Verifications() {
             {

@@ -10,7 +10,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 /**
  * 
@@ -31,7 +31,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 上传文件结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException;
 
     /**
@@ -42,7 +42,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbUpgradePackageNameResponse deleteUpgradePackage(IdRequest request)
             throws BusinessException;
 
@@ -55,7 +55,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 升级包列表
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbListTerminalSystemUpgradePackageResponse listSystemUpgradePackage(DefaultRequest request)
             throws BusinessException;
 
@@ -66,7 +66,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 终端升级包信息
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbUpgradePackageResponse getById(IdRequest request) throws BusinessException;
 
     /**
@@ -76,7 +76,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request)
             throws BusinessException;
 

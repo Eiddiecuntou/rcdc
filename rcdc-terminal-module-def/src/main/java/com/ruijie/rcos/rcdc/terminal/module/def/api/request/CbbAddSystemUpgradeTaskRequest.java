@@ -2,10 +2,12 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import java.util.UUID;
 
+import org.springframework.lang.Nullable;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.sk.base.annotation.NotEmpty;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+
 
 /**
  * 
@@ -24,8 +26,11 @@ public class CbbAddSystemUpgradeTaskRequest implements Request {
     @NotNull
     private CbbSystemUpgradeModeEnums upgradeMode;
 
-    @NotEmpty
+    @Nullable
     private String[] terminalIdArr;
+
+    @Nullable
+    private UUID[] terminalGroupIdArr;
 
     public UUID getPackageId() {
         return packageId;
@@ -35,11 +40,12 @@ public class CbbAddSystemUpgradeTaskRequest implements Request {
         this.packageId = packageId;
     }
 
+    @Nullable
     public String[] getTerminalIdArr() {
         return terminalIdArr;
     }
 
-    public void setTerminalIdArr(String[] terminalIdArr) {
+    public void setTerminalIdArr(@Nullable String[] terminalIdArr) {
         this.terminalIdArr = terminalIdArr;
     }
 
@@ -49,5 +55,14 @@ public class CbbAddSystemUpgradeTaskRequest implements Request {
 
     public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
         this.upgradeMode = upgradeMode;
+    }
+
+    @Nullable
+    public UUID[] getTerminalGroupIdArr() {
+        return terminalGroupIdArr;
+    }
+
+    public void setTerminalGroupIdArr(@Nullable UUID[] terminalGroupIdArr) {
+        this.terminalGroupIdArr = terminalGroupIdArr;
     }
 }

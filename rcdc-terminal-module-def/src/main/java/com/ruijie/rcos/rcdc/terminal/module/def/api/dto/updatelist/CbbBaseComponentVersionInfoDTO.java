@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
 
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
+
 import java.io.Serializable;
 
 /**
@@ -10,7 +12,7 @@ import java.io.Serializable;
  *
  * @author nt
  */
-public class CbbBaseComponentVersionInfoDTO implements Serializable {
+public class CbbBaseComponentVersionInfoDTO extends EqualsHashcodeSupport implements Serializable {
 
     /**
      * 组件名

@@ -8,7 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoRespon
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 /**
  * Description: 检测记录API
@@ -27,7 +27,7 @@ public interface CbbTerminalDetectRecordAPI {
      * @return 检测记录分页列表
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException;
 
     /**
@@ -37,7 +37,7 @@ public interface CbbTerminalDetectRecordAPI {
      * @return 检测记录信息
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbDetectInfoResponse getRecentDetect(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
@@ -46,6 +46,6 @@ public interface CbbTerminalDetectRecordAPI {
      * @param request 检测结果请求参数
      * @return 终端检测结果
      */
-    @NoRollback
+    
     CbbDetectResultResponse getDetectResult(CbbTerminalDetectResultRequest request);
 }
