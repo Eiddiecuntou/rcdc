@@ -96,5 +96,6 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
+    @NoRollback
     CheckGroupNameDuplicationResponse checkUseGroupNameDuplication(TerminalGroupNameDuplicationRequest request) throws BusinessException;
 }

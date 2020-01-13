@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response.group;
 
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018
@@ -8,7 +10,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.response.group;
  *
  * @author chen zj
  */
-public class CheckGroupNameDuplicationResponse {
+public class CheckGroupNameDuplicationResponse extends DefaultResponse {
 
     private boolean hasDuplication;
 
