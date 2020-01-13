@@ -13,7 +13,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 /**
  * 
@@ -33,7 +33,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException;
 
     /**
@@ -44,7 +44,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 添加结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalNameResponse addSystemUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException;
 
     /**
@@ -55,7 +55,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 添加结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse editSystemUpgradeTerminalGroup(CbbUpgradeTerminalGroupRequest request) throws BusinessException;
 
     /**
@@ -66,7 +66,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 任务列表
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultPageResponse<CbbSystemUpgradeTaskDTO> listSystemUpgradeTask(PageSearchRequest request) throws BusinessException;
 
     /**
@@ -75,7 +75,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @param request 请求参数
      * @return 刷机终端列表
      */
-    @NoRollback
+    
     DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> listSystemUpgradeTaskTerminal(PageSearchRequest request);
 
     /**
@@ -86,7 +86,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      *
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultPageResponse<TerminalGroupDTO> listSystemUpgradeTaskTerminalGroup(PageSearchRequest request) throws BusinessException;
 
     /**
@@ -96,7 +96,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse closeSystemUpgradeTask(IdRequest request) throws BusinessException;
 
     /**
@@ -106,7 +106,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 终端列表
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultPageResponse<CbbUpgradeableTerminalListDTO> listUpgradeableTerminal(CbbUpgradeableTerminalPageSearchRequest apiRequest)
             throws BusinessException;
 
@@ -116,7 +116,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @param request 请求参数
      * @return 刷机终端信息列表
      */
-    @NoRollback
+    
     CbbGetTaskUpgradeTerminalResponse getUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalRequest request);
 
     /**
@@ -126,7 +126,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalNameResponse cancelUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException;
 
     /**
@@ -136,7 +136,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalNameResponse retryUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException;
 
     /**
@@ -146,7 +146,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(IdRequest request) throws BusinessException;
 
 }
