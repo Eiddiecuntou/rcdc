@@ -284,6 +284,7 @@ public class FileOperateUtil {
         file.mkdir();
         file.setReadable(true, false);
         file.setExecutable(true, false);
+        file.setWritable(true, false);
     }
 
 
