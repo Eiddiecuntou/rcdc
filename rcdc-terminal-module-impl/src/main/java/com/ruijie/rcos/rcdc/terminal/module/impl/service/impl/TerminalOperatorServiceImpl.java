@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -143,6 +144,8 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         Assert.hasText(terminalId, "terminalId不能为空");
         checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_COLLECT_LOG);
 
+        checkStoreLogDirExist();
+
         CollectLogCache collectLogCache = collectLogCacheManager.getCache(terminalId);
         if (collectLogCache != null && CbbCollectLogStateEnums.DOING == collectLogCache.getState()) {
             LOGGER.info("终端[{}]正在收集日志中，不允许重复收集", terminalId);
@@ -155,6 +158,13 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         } catch (BusinessException e) {
             collectLogCacheManager.removeCache(terminalId);
             throw e;
+        }
+    }
+
+    private void checkStoreLogDirExist() {
+        File storeLogDir = new File(Constants.STORE_TERMINAL_LOG_PATH);
+        if (!storeLogDir.isDirectory()) {
+            storeLogDir.mkdirs();
         }
     }
 

@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 /**
  * Description: Function Description
@@ -22,7 +22,7 @@ public interface TerminalSystemPackageUploadingService {
      * @param terminalType 终端类型
      * @return 上传文件结果
      */
-    @NoRollback
+    
     boolean isUpgradeFileUploading(CbbTerminalTypeEnums terminalType);
 
     /**
@@ -31,6 +31,6 @@ public interface TerminalSystemPackageUploadingService {
      * @param terminalType 终端类型
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request, CbbTerminalTypeEnums terminalType) throws BusinessException;
 }

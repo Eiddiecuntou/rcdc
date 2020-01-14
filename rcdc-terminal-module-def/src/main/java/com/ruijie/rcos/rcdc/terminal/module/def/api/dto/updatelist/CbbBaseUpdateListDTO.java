@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist;
 
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -14,7 +15,7 @@ import java.util.List;
  * @param <T> 升级组件版本信息DTO
  * @author nt
  */
-public class CbbBaseUpdateListDTO<T> implements Serializable {
+public class CbbBaseUpdateListDTO<T> extends EqualsHashcodeSupport implements Serializable {
 
     private String version;
 

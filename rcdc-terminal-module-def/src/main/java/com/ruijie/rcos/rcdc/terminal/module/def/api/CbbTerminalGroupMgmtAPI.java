@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalGroupNameDuplicationRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
@@ -8,11 +9,12 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGro
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 /**
  * 
@@ -28,12 +30,12 @@ public interface CbbTerminalGroupMgmtAPI {
     
     /**
      * 加载终端组树形结构(单层)
-     * 
+     *
      * @param request 加载终端树
      * @return UserGroupTreeResponse 终端组DTO
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbGetTerminalGroupTreeResponse loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeRequest request) throws BusinessException;
     
     /**
@@ -43,7 +45,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 校验结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalGroupResponse getByName(CbbTerminalGroupRequest request) throws BusinessException;
 
     /**
@@ -53,7 +55,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return CbbTerminalGroupResponse 终端组DTO
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalGroupResponse loadById(IdRequest request) throws BusinessException;
 
     /**
@@ -62,7 +64,6 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return  创建终端组详细信息
      * @throws BusinessException 业务异常
      */
-    @NoRollback
     DtoResponse<TerminalGroupDTO> createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException;
 
     /**
@@ -71,7 +72,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return Response
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse editTerminalGroup(CbbEditTerminalGroupRequest request) throws BusinessException;
 
     /**
@@ -80,7 +81,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return Response
      * @throws BusinessException 业务异常.
      */
-    @NoRollback
+    
     DefaultResponse deleteTerminalGroup(CbbDeleteTerminalGroupRequest request) throws BusinessException;
 
     /**
@@ -90,7 +91,15 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbObtainGroupNamePathResponse obtainGroupNamePathArr(IdRequest request) throws BusinessException;
 
+    /**
+     * 判断分组名称是否存在
+     * @param request 请求参数
+     * @return 请求响应
+     * @throws BusinessException 业务异常
+     */
+    
+    CheckGroupNameDuplicationResponse checkUseGroupNameDuplication(TerminalGroupNameDuplicationRequest request) throws BusinessException;
 }

@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
 /**
  * 
@@ -11,7 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
  * 
  * @author nt
  */
-public class TerminalUpgradeVersionFileInfo {
+public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
 
     private String packageName;
 

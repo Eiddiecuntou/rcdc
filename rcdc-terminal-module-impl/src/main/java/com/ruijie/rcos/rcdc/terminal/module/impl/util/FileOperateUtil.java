@@ -273,5 +273,26 @@ public class FileOperateUtil {
 
     }
 
+    /**
+     * 创建多级目录，并设置文件可执行可读权限
+     *
+     * @param file 文件
+     */
+    public static void createFileDirectory(File file) {
+        Assert.notNull(file, "file can not be null");
+        if (file.getParentFile().exists()) {
+            createFile(file);
+        } else {
+            createFileDirectory(file.getParentFile());
+            createFile(file);
+        }
+    }
+
+    private static void createFile(File file) {
+        file.mkdir();
+        file.setReadable(true, false);
+        file.setExecutable(true, false);
+    }
+
 
 }

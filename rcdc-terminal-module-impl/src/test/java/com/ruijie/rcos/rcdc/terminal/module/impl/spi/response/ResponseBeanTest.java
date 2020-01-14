@@ -47,4 +47,24 @@ public class ResponseBeanTest {
         tester.runTest();
         assertTrue(true);
     }
+
+    /**
+     * 测试TerminalUpgradeResult
+     */
+    @Test
+    public void testTerminalUpgradeResult() {
+        GetSetTester tester = new GetSetTester(TerminalUpgradeResult.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试StartSystemUpgradeResult
+     */
+    @Test
+    public void testStartSystemUpgradeResult() {
+        GetSetTester tester = new GetSetTester(StartSystemUpgradeResult.class);
+        tester.runTest();
+        assertTrue(true);
+    }
 }
