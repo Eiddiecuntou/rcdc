@@ -21,23 +21,30 @@ public abstract class AbstractTerminalComponentUpgradeHandler implements Termina
      * @param secondVersion 版本2
      * @return 比较结果
      */
-    public boolean isVersionBigger(String firstVersion, String secondVersion) {
+    public boolean isVersionNotLess(String firstVersion, String secondVersion) {
         Assert.hasText(firstVersion, "firstVersion can not be blank");
         Assert.hasText(secondVersion, "secondVersion can not be blank");
 
         String[] firstVerArr = firstVersion.split(VERSION_SPLIT);
         String[] secondVerArr = secondVersion.split(VERSION_SPLIT);
 
-        if (firstVerArr.length > secondVerArr.length) {
-            return true;
-        }
+        Assert.isTrue(firstVerArr.length == secondVerArr.length, "版本格式不一致，无法进行比较，版本号为：" + firstVersion + "及" + secondVersion);
 
         for (int i = 0; i < firstVerArr.length; i++) {
-            if (Integer.parseInt(firstVerArr[i]) > Integer.parseInt(secondVerArr[i])) {
+            int intVer1 = Integer.parseInt(firstVerArr[i]);
+            int intVer2 = Integer.parseInt(secondVerArr[i]);
+            if (intVer1 == intVer2) {
+                continue;
+            }
+
+            if (intVer1 > intVer2) {
                 return true;
             }
+
+            return false;
         }
-        return false;
+
+        return true;
     }
 
 }

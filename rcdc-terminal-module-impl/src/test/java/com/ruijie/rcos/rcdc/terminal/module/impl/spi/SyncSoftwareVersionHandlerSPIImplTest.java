@@ -3,21 +3,19 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.ruijie.rcos.base.sysmanage.module.def.api.SystemUpgradeAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.upgrade.BaseObtainSystemReleaseVersionRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.upgrade.BaseObtainSystemReleaseVersionResponse;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.SoftwareVersionResponseContent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.SystemVersionMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalPassword;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.SoftwareVersionResponseContent;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 import mockit.*;
 import mockit.integration.junit4.JMockit;
@@ -39,13 +37,13 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
 
     @Injectable
-    private SystemUpgradeAPI systemUpgradeAPI;
+    private SystemVersionMgmtAPI systemVersionMgmtAPI;
 
     /**
      * 测试dispatch,参数为空
      * 
      * @throws Exception
-     *             异常
+     *         异常
      */
     @Test
     public void testDispatchArgumentIsNull() throws Exception {
@@ -57,20 +55,19 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
      * 测试dispatch
      * 
      * @param utils
-     *            mock MessageUtils
+     *        mock MessageUtils
      * @throws BusinessException
-     *             异常
+     *         异常
      */
     @Test
     public void testDispatch(@Mocked MessageUtils utils) throws BusinessException {
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         CbbResponseShineMessage responseMessage = new CbbResponseShineMessage<>();
 
-        BaseObtainSystemReleaseVersionResponse versionResponse = new BaseObtainSystemReleaseVersionResponse();
-        versionResponse.setSystemReleaseVersion("123");
+        DtoResponse<String> versionResponse = DtoResponse.success("123");
         new Expectations() {
             {
-                systemUpgradeAPI.obtainSystemReleaseVersion((BaseObtainSystemReleaseVersionRequest) any);
+                systemVersionMgmtAPI.obtainSystemReleaseVersion((Request) any);
                 result = versionResponse;
                 MessageUtils.buildResponseMessage(request, any);
                 result = responseMessage;
@@ -82,7 +79,7 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
                 SoftwareVersionResponseContent content;
                 MessageUtils.buildResponseMessage(request, content = withCapture());
                 times = 1;
-                assertEquals("123", versionResponse.getSystemReleaseVersion());
+                assertEquals("123", versionResponse.getDto());
                 messageHandlerAPI.response(responseMessage);
                 times = 1;
             }
@@ -93,20 +90,19 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
      * 测试dispatch，响应失败
      *
      * @param utils
-     *            mock MessageUtils
+     *        mock MessageUtils
      * @throws BusinessException
-     *             异常
+     *         异常
      */
     @Test
     public void testDispatchFail(@Mocked MessageUtils utils) throws BusinessException {
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         CbbResponseShineMessage responseMessage = new CbbResponseShineMessage<>();
 
-        BaseObtainSystemReleaseVersionResponse versionResponse = new BaseObtainSystemReleaseVersionResponse();
-        versionResponse.setSystemReleaseVersion("123");
+        DtoResponse<String> versionResponse = DtoResponse.success("123");
         new Expectations() {
             {
-                systemUpgradeAPI.obtainSystemReleaseVersion((BaseObtainSystemReleaseVersionRequest) any);
+                systemVersionMgmtAPI.obtainSystemReleaseVersion((Request) any);
                 result = versionResponse;
 
                 MessageUtils.buildResponseMessage(request, any);
@@ -122,7 +118,7 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
                 SoftwareVersionResponseContent content;
                 MessageUtils.buildResponseMessage(request, content = withCapture());
                 times = 1;
-                assertEquals("123", versionResponse.getSystemReleaseVersion());
+                assertEquals("123", versionResponse.getDto());
                 messageHandlerAPI.response(responseMessage);
                 times = 1;
             }
@@ -133,7 +129,7 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
      * 测试dispatch失败，获取版本号异常
      * 
      * @throws BusinessException
-     *             异常
+     *         异常
      */
     @Test
     public void testDispatchGetVersionFail() throws BusinessException {
@@ -142,7 +138,7 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
 
         new Expectations() {
             {
-                systemUpgradeAPI.obtainSystemReleaseVersion((BaseObtainSystemReleaseVersionRequest) any);
+                systemVersionMgmtAPI.obtainSystemReleaseVersion((Request) any);
                 result = new BusinessException("key");
             }
         };
@@ -156,7 +152,7 @@ public class SyncSoftwareVersionHandlerSPIImplTest {
         spiImpl.dispatch(request);
         new Verifications() {
             {
-                systemUpgradeAPI.obtainSystemReleaseVersion((BaseObtainSystemReleaseVersionRequest) any);
+                systemVersionMgmtAPI.obtainSystemReleaseVersion((Request) any);
                 times = 1;
 
                 MessageUtils.buildErrorResponseMessage((CbbDispatcherRequest) any);

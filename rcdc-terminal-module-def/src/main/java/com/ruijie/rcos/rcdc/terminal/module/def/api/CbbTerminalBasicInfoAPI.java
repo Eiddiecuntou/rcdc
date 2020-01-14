@@ -5,7 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalReq
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 /**
  * Description: 终端基本信息操作接口
@@ -24,7 +24,7 @@ public interface CbbTerminalBasicInfoAPI {
      * @return 返回成功失败状态
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse delete(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
@@ -34,7 +34,7 @@ public interface CbbTerminalBasicInfoAPI {
      * @return 终端基本信息DTO
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalBasicInfoResponse findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
@@ -44,7 +44,7 @@ public interface CbbTerminalBasicInfoAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse modifyTerminal(CbbModifyTerminalRequest request) throws BusinessException;
 
 }

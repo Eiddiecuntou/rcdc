@@ -80,10 +80,10 @@ def packageUpdate(terminalPlatform, osType):
     # 根据终端类型生成Dir
     generateDir()
 
-    logger.info(installPath);
-    logger.info(torrentPath);
-    logger.info(fullComponentDir);
-    logger.info(diffComponentDir);
+    logger.info(installPath)
+    logger.info(torrentPath)
+    logger.info(fullComponentDir)
+    logger.info(diffComponentDir)
 
     logger.info("start update package...")
     # 升级包及包内updatelist路径
@@ -101,7 +101,7 @@ def packageUpdate(terminalPlatform, osType):
         if(os.path.exists(originPath)):
             logger.info("origin file exist, remake and start bt share")
             remakeBtShare(originPath, originUpdateListPath)
-        return;
+        return
     
     # 获取升级包及目标安装路径update.list
     oldUpdateList = None
@@ -116,14 +116,14 @@ def packageUpdate(terminalPlatform, osType):
     oldVersion = None if (oldUpdateList == None) else oldUpdateList['version']
     if newUpdateList['version'] == oldVersion:
         logger.info("upgrade version is same")
-        doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform)
-        return;
+        doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform, osType)
+        return
     
     # 非初始安装则更新基线版本
     if(oldVersion != None):
         newUpdateList['baseVersion'] = oldVersion
     # 计算updatelist初始MD5
-    newUpdateList['validateMd5'] = md5Calc(srcUpdateListPath);
+    newUpdateList['validateMd5'] = md5Calc(srcUpdateListPath)
 
     # 创建升级临时目录 
     createUpdateTempDirectory(tempDir)
@@ -160,7 +160,7 @@ def packageUpdate(terminalPlatform, osType):
     2、 用新的组件包重新制作差异文件及种子
     
 '''
-def doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform):
+def doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform, osType):
     componentList = oldUpdateList['componentList']
 
     # 关闭原bt分享
@@ -173,7 +173,7 @@ def doSameVersionUpgrade(oldUpdateList, originPath, basePath, terminalPlatform):
         os.rename(basePath, originPath)
 
     # 重新制作差异文件及种子
-    packageUpdate(terminalPlatform)
+    packageUpdate(terminalPlatform, osType)
 
 
         
@@ -183,7 +183,7 @@ def remakeBtShare(originPath, originUpdateListPath):
     newUpdateList = json.loads(updatelistStr)
     if newUpdateList == None or newUpdateList['componentList'] == None:
         logger.info("updatelist file not exist or content incorrect : %s" % updatelistStr)
-        return;
+        return
     
     componentList = newUpdateList['componentList']
     #关闭原bt分享
@@ -214,7 +214,7 @@ def startAllBtShare(componentList):
 
 def makeBakFile(originPath, basePath):
     if not os.path.exists(originPath):
-        return;
+        return
     os.rename(originPath, basePath)
 
 def completeUpdatePackage(originPath, tempDir, newComponentList, oldComponentList):

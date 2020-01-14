@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +64,8 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         //使用checkisomd5校验升级包
         checkISOMd5(filePath);
 
+        checkNecessaryDirExist();
+
         // 读取ISO升级包中的升级信息
         TerminalUpgradeVersionFileInfo versionInfo = readPackageInfo(fileName, filePath);
 
@@ -76,16 +81,54 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         return versionInfo;
     }
 
+    private void checkNecessaryDirExist() {
+        // iso挂载路径
+        File mountDir = new File(Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
+        if (!mountDir.isDirectory()) {
+            mountDir.mkdirs();
+        }
+
+        // linux ISO存放路径
+        File linuxVDIPackageDir = new File(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI);
+        if (!linuxVDIPackageDir.isDirectory()) {
+            linuxVDIPackageDir.mkdirs();
+        }
+
+    }
+
     private void checkISOMd5(String filePath) throws BusinessException {
         LOGGER.debug("check iso md5，file path: {}", filePath);
         String mountCmd = String.format(Constants.SYSTEM_CMD_CHECK_ISO_MD5, filePath);
 
         LOGGER.debug("check iso md5, cmd : {}", mountCmd);
-        String outStr = runShellCommand(mountCmd);
+        String outStr = executeCommand(mountCmd);
+        LOGGER.info("check iso md5, outStr: {}", outStr);
+
         if (StringUtils.isBlank(outStr) || !outStr.contains(ISO_FILE_MD5_CHECK_SUCCESS_FLAG) ) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
         }
         LOGGER.info("check iso md5 success");
+    }
+
+    private String executeCommand(String mountCmd) throws BusinessException {
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        PumpStreamHandler psh = new PumpStreamHandler(stdout);
+        CommandLine cl = CommandLine.parse(mountCmd);
+        DefaultExecutor exec = new DefaultExecutor();
+        exec.setStreamHandler(psh);
+        try {
+            exec.execute(cl);
+            return stdout.toString();
+        } catch (IOException e) {
+            LOGGER.error("exec.execute [{}] has IOException", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e);
+        } finally {
+            try {
+                stdout.close();
+            } catch (IOException e) {
+                LOGGER.error("stdout.close() has IOException", e);
+            }
+        }
     }
 
     private TerminalUpgradeVersionFileInfo readPackageInfo(String fileName, String filePath) throws BusinessException {

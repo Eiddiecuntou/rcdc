@@ -1,8 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -18,13 +24,9 @@ import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner.ReturnValueResolver;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.io.File;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Description: 终端组件升级bt服务初始化
@@ -47,6 +49,8 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
 
     private static final String INIT_COMMAND = "python %s %s";
 
+    private static final String EXECUTE_SHELL_SUCCESS_RESULT = "success";
+
     private static final ExecutorService EXECUTOR_SERVICE =
             ThreadExecutors.newBuilder(TerminalComponentUpgradeInit.class.getName()).maxThreadNum(3).queueSize(1).build();
 
@@ -63,7 +67,7 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
     private LinuxIDVUpdatelistCacheInit linuxIDVUpdatelistCacheInit;
 
     @Autowired
-    private NetworkAPI networkAPI;
+    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     @Override
     public void safeInit() {
@@ -125,7 +129,7 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
 
     private boolean needUpgrade(String currentIp, String upgradeTempPath) {
 
-        String ip = globalParameterAPI.findParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY);
+        String ip = globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
 
         if (StringUtils.isBlank(ip)) {
             // 第一次启动时，制作新版本的升级业务
@@ -155,11 +159,10 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
         try {
             String outStr = runner.execute(new BtShareInitReturnValueResolver(terminalType));
             LOGGER.debug("out String is :{}", outStr);
+            LOGGER.info("success invoke [{}] pythonScript...", terminalType.toString());
         } catch (BusinessException e) {
             LOGGER.error("bt share init error", e);
         }
-
-        LOGGER.info("success invoke [{}] pythonScript...", terminalType.toString());
     }
 
     /**
@@ -184,12 +187,13 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
             Assert.hasText(command, "command can not be null");
             Assert.notNull(exitValue, "existValue can not be null");
             Assert.hasText(outStr, "outStr can not be null");
-            if (exitValue.intValue() != 0) {
+
+            if (exitValue.intValue() != 0 || !EXECUTE_SHELL_SUCCESS_RESULT.equals(outStr.toLowerCase().trim())) {
                 LOGGER.error("bt share init python script execute error, exitValue: {}, outStr: {}", exitValue, outStr);
                 throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
             }
             // 更新数据库中的服务器ip
-            globalParameterAPI.updateParameter(Constants.RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
+            globalParameterAPI.updateParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
             // 更新缓存中的updatelist
             updateCache(terminalType);
             return outStr;
@@ -218,8 +222,9 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
      * @return ip
      */
     private String getLocalIP() throws BusinessException {
-        BaseDetailNetworkRequest request = new BaseDetailNetworkRequest();
-        BaseDetailNetworkInfoResponse response = networkAPI.detailNetwork(request);
-        return response.getNetworkDTO().getIp();
+        DtoResponse<ClusterVirtualIpDTO> response = cloudPlatformMgmtAPI.getClusterVirtualIp(new DefaultRequest());
+        Assert.notNull(response, "response can not be null");
+
+        return response.getDto().getClusterVirtualIpIp();
     }
 }

@@ -16,6 +16,11 @@
             <version>${project.version}</version>
         </dependency>
 
+		<dependency>
+            <groupId>com.ruijie.rcos.rcdc.hciadapter.module</groupId>
+            <artifactId>rcdc-hciadapter-module-def</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.ruijie.rcos.sk.commkit</groupId>
             <artifactId>sk-commkit-server</artifactId>
@@ -30,6 +35,10 @@
             <groupId>com.ruijie.rcos.base.sysmanage.module</groupId>
             <artifactId>base-sysmanage-module-def</artifactId>
             <version>${base-sysmanage-module.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
         </dependency>
     </dependencies>
 </project>

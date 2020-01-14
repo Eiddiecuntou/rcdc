@@ -1,13 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.SystemVersionMgmtAPI;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.base.sysmanage.module.def.api.SystemUpgradeAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.upgrade.BaseObtainSystemReleaseVersionRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.upgrade.BaseObtainSystemReleaseVersionResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
@@ -36,7 +36,7 @@ public class SyncSoftwareVersionHandlerSPIImpl implements CbbDispatcherHandlerSP
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
 
     @Autowired
-    private SystemUpgradeAPI systemUpgradeAPI;
+    private SystemVersionMgmtAPI systemVersionMgmtAPI;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncSoftwareVersionHandlerSPIImpl.class);
 
@@ -45,10 +45,9 @@ public class SyncSoftwareVersionHandlerSPIImpl implements CbbDispatcherHandlerSP
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
 
         // 获取rcdc版本信息
-        BaseObtainSystemReleaseVersionRequest obtainVersionReq = new BaseObtainSystemReleaseVersionRequest();
-        BaseObtainSystemReleaseVersionResponse versionResponse = null;
+        DtoResponse<String> versionResponse;
         try {
-            versionResponse = systemUpgradeAPI.obtainSystemReleaseVersion(obtainVersionReq);
+            versionResponse = systemVersionMgmtAPI.obtainSystemReleaseVersion(new DefaultRequest());
         } catch (BusinessException e) {
             LOGGER.error("获取系统版本号异常", e);
             responseError(request);
@@ -56,7 +55,7 @@ public class SyncSoftwareVersionHandlerSPIImpl implements CbbDispatcherHandlerSP
         }
 
         SoftwareVersionResponseContent softwareVersionResponseContent =
-                new SoftwareVersionResponseContent(versionResponse.getSystemReleaseVersion());
+                new SoftwareVersionResponseContent(versionResponse.getDto());
         CbbResponseShineMessage responseMessage =
                 MessageUtils.buildResponseMessage(request, softwareVersionResponseContent);
         doResponseMessage(responseMessage);
