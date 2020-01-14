@@ -116,6 +116,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
 
         if (state == CbbSystemUpgradeTaskStateEnums.FINISH && systemUpgradeEntity.getPackageType() == CbbTerminalTypeEnums.VDI_LINUX) {
             // 刷机关闭则清理服务端文件
+            LOGGER.info("关闭linux-vdi升级任务，清理刷机目录文件");
             upgradeFileClearHandler.clear();
         }
     }

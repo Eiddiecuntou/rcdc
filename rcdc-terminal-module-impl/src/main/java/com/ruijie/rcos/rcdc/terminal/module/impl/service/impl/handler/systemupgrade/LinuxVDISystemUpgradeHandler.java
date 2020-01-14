@@ -120,7 +120,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
         resultContent.setSambaPort(pxeSambaInfo.getPort());
         resultContent.setSambaUserName(pxeSambaInfo.getUserName());
         resultContent.setSambaFilePath(File.separator + pxeSambaInfo.getFilePath() + Constants.PXE_ISO_SAMBA_LINUX_VDI_RELATE_PATH);
-        resultContent.setUpgradePackageName(upgradePackage.getPackageName());
+        resultContent.setUpgradePackageName(new File(upgradePackage.getFilePath()).getName());
         return resultContent;
     }
 

@@ -247,6 +247,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         upgradeEntity.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         upgradeEntity.setId(UUID.randomUUID());
         upgradeEntity.setPackageVersion("1.1.1");
+        upgradeEntity.setPackageName("aa.zip");
 
         return upgradeEntity;
     }
@@ -276,7 +277,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         resultContent.setSambaPort(pxeSambaInfo.getPort());
         resultContent.setSambaUserName(pxeSambaInfo.getUserName());
         resultContent.setSambaFilePath(File.separator + pxeSambaInfo.getFilePath() + Constants.PXE_ISO_SAMBA_LINUX_VDI_RELATE_PATH);
-        resultContent.setUpgradePackageName(upgradePackage.getPackageName());
+        resultContent.setUpgradePackageName(new File(upgradePackage.getFilePath()).getName());
         return resultContent;
     }
 

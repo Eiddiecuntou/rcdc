@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -12,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -71,12 +72,12 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
         // 将新升级文件移动到目录下
         String storePackageName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
-        final String toPath = Constants.TERMINAL_UPGRADE_ISO_PATH_VDI + storePackageName;
+        final String toPath = Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH + storePackageName;
         final String packagePath = moveUpgradePackage(toPath, filePath);
         // 更新升级包信息入库
         versionInfo.setFilePath(packagePath);
         versionInfo.setRealFileName(storePackageName);
-        versionInfo.setFileSaveDir(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI);
+        versionInfo.setFileSaveDir(Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH);
 
         return versionInfo;
     }
@@ -89,7 +90,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         }
 
         // linux ISO存放路径
-        File linuxVDIPackageDir = new File(Constants.TERMINAL_UPGRADE_ISO_PATH_VDI);
+        File linuxVDIPackageDir = new File(Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH);
         if (!linuxVDIPackageDir.isDirectory()) {
             linuxVDIPackageDir.mkdirs();
         }
@@ -272,7 +273,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         }
 
         try {
-            Files.move(from, to);
+            Files.move(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             LOGGER.debug("move upgrade file to target directory fail");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e);
@@ -283,7 +284,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     private boolean checkPackageDiskSpaceIsEnough(Long fileSize) {
-        File packageDir = new File(Constants.TERMINAL_UPGRADE_PACKAGE_PATH);
+        File packageDir = new File(Constants.PXE_SAMBA_PACKAGE_PATH);
         final long usableSpace = packageDir.getUsableSpace();
         if (usableSpace >= fileSize) {
             return true;
