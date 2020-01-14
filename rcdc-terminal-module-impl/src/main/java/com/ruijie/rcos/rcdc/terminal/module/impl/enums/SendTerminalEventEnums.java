@@ -53,7 +53,18 @@ public enum SendTerminalEventEnums {
     /**
      * 同步终端Logo
      */
-    CHANGE_TERMINAL_LOGO("change_terminal_logo");
+    CHANGE_TERMINAL_LOGO("change_terminal_logo"),
+
+    /**
+     * 清空idv终端数据盘
+     */
+    CLEAR_DATA("clear_data"),
+
+    /**
+     * 同步终端背景
+     */
+    CHANGE_TERMINAL_BACKGROUND("change_terminal_background");
+
 
     private String name;
 

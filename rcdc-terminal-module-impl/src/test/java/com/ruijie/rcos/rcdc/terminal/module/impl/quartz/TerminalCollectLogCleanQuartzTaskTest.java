@@ -60,7 +60,6 @@ public class TerminalCollectLogCleanQuartzTaskTest {
                 return false;
             }
         };
-
         quartz.run();
         new Verifications() {
             {

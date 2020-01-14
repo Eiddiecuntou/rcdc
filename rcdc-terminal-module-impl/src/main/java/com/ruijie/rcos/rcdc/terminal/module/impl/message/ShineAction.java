@@ -81,4 +81,19 @@ public interface ShineAction {
      *  终端上报升级状态
      */
     String REPORT_SYSTEM_UPGRADE_RESULT = "report_system_upgrade_result";
+
+    /**
+     *  上报IDV终端清空数据盘确认响应
+     */
+    String CONFIRM_CLEAR_DATA = "confirm_clear_data";
+
+    /**
+     *  上报IDV终端清空数据盘结果
+     */
+    String CLEAR_DATA_DISK_RESULT = "clear_data_disk_result";
+
+    /**
+     * 同步背景图
+     */
+    String SYNC_TERMINAL_BACKGROUND = "sync_terminal_background";
 }

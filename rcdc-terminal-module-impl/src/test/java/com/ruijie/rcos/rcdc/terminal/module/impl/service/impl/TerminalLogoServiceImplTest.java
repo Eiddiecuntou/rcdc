@@ -49,7 +49,7 @@ public class TerminalLogoServiceImplTest {
     private DefaultRequestMessageSender sender;
 
     /**
-     * syncTerminalLogo，onlineTerminalIdList为空
+     * syncTerminalBackground，onlineTerminalIdList为空
      *
      * @throws BusinessException 异常
      * @throws InterruptedException ex
@@ -78,7 +78,7 @@ public class TerminalLogoServiceImplTest {
     }
 
     /**
-     * syncTerminalLogo，DefaultRequestMessageSender为空
+     * syncTerminalBackground，DefaultRequestMessageSender为空
      *
      * @throws BusinessException 异常
      * @throws InterruptedException ex
@@ -111,7 +111,7 @@ public class TerminalLogoServiceImplTest {
     }
 
     /**
-     * syncTerminalLogo
+     * syncTerminalBackground
      *
      * @throws BusinessException 异常
      * @throws IOException 异常
@@ -155,7 +155,7 @@ public class TerminalLogoServiceImplTest {
     }
 
     /**
-     * syncTerminalLogo， 成功
+     * syncTerminalBackground， 成功
      *
      * @throws BusinessException 异常
      * @throws IOException 异常
