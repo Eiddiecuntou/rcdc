@@ -97,7 +97,6 @@ public interface CbbTerminalOperatorAPI {
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    @NoRollback
     DefaultResponse idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
 
     /**
