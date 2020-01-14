@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -157,7 +158,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     private void checkStoreLogDirExist() {
         File storeLogDir = new File(Constants.STORE_TERMINAL_LOG_PATH);
         if (!storeLogDir.isDirectory()) {
-            storeLogDir.mkdirs();
+            FileOperateUtil.createFileDirectory(storeLogDir);
         }
     }
 
