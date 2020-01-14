@@ -333,6 +333,9 @@ public interface BusinessKey {
 
     /************终端背景界面**************************/
     String RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND = "rcdc_terminal_operate_action_send_background_url";
+    /************终端离线登录设置**************************/
+    String RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG = "rcdc_terminal_operate_action_send_offline_login_config";
+
     /************终端型号**************************/
     String RCDC_TERMINAL_MODEL_NOT_EXIST_ERROR = "rcdc_terminal_model_not_exist_error";
 }

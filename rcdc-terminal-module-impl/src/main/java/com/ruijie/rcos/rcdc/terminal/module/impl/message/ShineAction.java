@@ -96,4 +96,9 @@ public interface ShineAction {
      * 同步背景图
      */
     String SYNC_TERMINAL_BACKGROUND = "sync_terminal_background";
+
+    /**
+     *  终端请求同步离线登录设置
+     */
+    String REQUEST_OFFLINE_CONFIG = "request_offline_config";
 }
