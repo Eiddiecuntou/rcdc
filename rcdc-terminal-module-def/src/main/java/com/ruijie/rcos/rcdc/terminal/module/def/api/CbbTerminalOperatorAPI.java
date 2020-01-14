@@ -5,7 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectL
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 /**
  * Description: 终端操作接口
@@ -24,7 +24,7 @@ public interface CbbTerminalOperatorAPI {
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse shutdown(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
@@ -34,7 +34,7 @@ public interface CbbTerminalOperatorAPI {
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse restart(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
@@ -44,7 +44,7 @@ public interface CbbTerminalOperatorAPI {
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse changePassword(CbbChangePasswordRequest request) throws BusinessException;
 
     /**
@@ -54,7 +54,7 @@ public interface CbbTerminalOperatorAPI {
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse collectLog(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
@@ -64,7 +64,7 @@ public interface CbbTerminalOperatorAPI {
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse singleDetect(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
@@ -74,7 +74,7 @@ public interface CbbTerminalOperatorAPI {
      * @return 终端日志收集状态信息
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalCollectLogStatusResponse getCollectLog(CbbTerminalIdRequest idRequest) throws BusinessException;
 
     /**
@@ -84,7 +84,7 @@ public interface CbbTerminalOperatorAPI {
      * @return 终端收集日志路径
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalLogNameRequest request) throws BusinessException;
 
 }

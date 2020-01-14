@@ -6,7 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalProductId
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 /**
  * Description: Function Description
@@ -24,7 +24,7 @@ public interface CbbTerminalModelAPI {
      * @param request 请求参数
      * @return 终端类型列表
      */
-    @NoRollback
+    
     CbbItemArrResponse<CbbTerminalModelDTO> listTerminalModel(CbbTerminalPlatformRequest request);
 
 
@@ -35,6 +35,6 @@ public interface CbbTerminalModelAPI {
      * @return 终端型号信息
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DtoResponse<CbbTerminalModelDTO> queryByProductId(CbbTerminalProductIdRequest request) throws BusinessException;
 }

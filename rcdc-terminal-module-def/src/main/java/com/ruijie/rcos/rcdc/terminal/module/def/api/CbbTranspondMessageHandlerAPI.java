@@ -6,7 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResp
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 import java.io.IOException;
 
 /**
@@ -26,7 +26,7 @@ public interface CbbTranspondMessageHandlerAPI {
      * @return 返回成功失败状态
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse request(CbbShineMessageRequest msg) throws BusinessException;
 
     /**
@@ -38,7 +38,7 @@ public interface CbbTranspondMessageHandlerAPI {
      * @throws IOException 请求超时
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbShineMessageResponse syncRequest(CbbShineMessageRequest msg) throws InterruptedException, IOException, BusinessException;
 
     /**
@@ -49,7 +49,7 @@ public interface CbbTranspondMessageHandlerAPI {
      * @return 返回成功失败状态
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse asyncRequest(CbbShineMessageRequest msg, CbbTerminalCallback requestCallback) throws BusinessException;
 
     /**
@@ -58,7 +58,7 @@ public interface CbbTranspondMessageHandlerAPI {
      * @param msg shine消息请参数
      * @return 返回成功失败状态
      */
-    @NoRollback
+    
     DefaultResponse response(CbbResponseShineMessage msg);
 
 }

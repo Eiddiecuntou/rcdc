@@ -9,7 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CheckGroupNam
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
+
 
 /**
  * 
@@ -30,7 +30,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return UserGroupTreeResponse 终端组DTO
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbGetTerminalGroupTreeResponse loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeRequest request) throws BusinessException;
     
     /**
@@ -40,7 +40,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 校验结果
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalGroupResponse getByName(CbbTerminalGroupRequest request) throws BusinessException;
 
     /**
@@ -50,7 +50,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return CbbTerminalGroupResponse 终端组DTO
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbTerminalGroupResponse loadById(IdRequest request) throws BusinessException;
 
     /**
@@ -59,7 +59,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return Response
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException;
 
     /**
@@ -68,7 +68,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return Response
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     DefaultResponse editTerminalGroup(CbbEditTerminalGroupRequest request) throws BusinessException;
 
     /**
@@ -77,7 +77,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return Response
      * @throws BusinessException 业务异常.
      */
-    @NoRollback
+    
     DefaultResponse deleteTerminalGroup(CbbDeleteTerminalGroupRequest request) throws BusinessException;
 
     /**
@@ -87,7 +87,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CbbObtainGroupNamePathResponse obtainGroupNamePathArr(IdRequest request) throws BusinessException;
 
     /**
@@ -96,6 +96,6 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    @NoRollback
+    
     CheckGroupNameDuplicationResponse checkUseGroupNameDuplication(TerminalGroupNameDuplicationRequest request) throws BusinessException;
 }
