@@ -94,8 +94,12 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         String[] fileNameArr = upgradeSuccessDir.list();
         for (String fileName : fileNameArr) {
             String fileNameWithoutSuffix = getFileNameWithoutSuffix(fileName);
+            if (StringUtils.isBlank(fileNameWithoutSuffix)) {
+                continue;
+            }
+
             TerminalSystemUpgradeInfo upgradeInfo = new TerminalSystemUpgradeInfo();
-            upgradeInfo.setTerminalId(fileNameWithoutSuffix);
+            upgradeInfo.setTerminalId(fileNameWithoutSuffix.toLowerCase());
             upgradeInfo.setState(state);
             upgradeInfoList.add(upgradeInfo);
         }
