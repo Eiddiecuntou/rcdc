@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalGroupNameDuplicationRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CheckGroupNameDuplicationResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -212,8 +212,8 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public CheckGroupNameDuplicationResponse checkUseGroupNameDuplication(TerminalGroupNameDuplicationRequest request) throws BusinessException {
-        Assert.notNull(request, "Param [TerminalGroupNameDuplicationRequest] must not be null");
+    public CbbCheckGroupNameDuplicationResponse checkUseGroupNameDuplication(CbbTerminalGroupNameDuplicationRequest request) {
+        Assert.notNull(request, "Param [CbbTerminalGroupNameDuplicationRequest] must not be null");
 
         boolean isNameUnique;
         try {
@@ -223,6 +223,6 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
             isNameUnique = false;
         }
 
-        return new CheckGroupNameDuplicationResponse(!isNameUnique);
+        return new CbbCheckGroupNameDuplicationResponse(!isNameUnique);
     }
 }

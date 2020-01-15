@@ -2,10 +2,12 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
@@ -15,11 +17,13 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -373,5 +377,92 @@ public class CbbTerminalGroupMgmtAPIImplTest {
     }
 
 
+    @Test
+    public void testCheckUseGroupNameDuplicationParam()  throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(()-> api.checkUseGroupNameDuplication(null), "Param [CbbTerminalGroupNameDuplicationRequest] must not be null");
+        Assert.assertTrue(true);
+    }
 
+    @Test
+    public void testCheckUseGroupNameDuplicationWhenNameUnique() throws BusinessException {
+        UUID id = UUID.randomUUID();
+        String grpuName = "groupName";
+        UUID parentId = UUID.randomUUID();
+
+        CbbTerminalGroupNameDuplicationRequest request = new CbbTerminalGroupNameDuplicationRequest(id, parentId,
+                grpuName);
+
+        new Expectations(){
+            {
+                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                result = false;
+            }
+        };
+
+        CbbCheckGroupNameDuplicationResponse response = api.checkUseGroupNameDuplication(request);
+        Assert.assertTrue(response.isHasDuplication());
+
+        new Verifications() {
+            {
+                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                times = 1;
+            }
+        };
+    }
+
+
+    @Test
+    public void testCheckUseGroupNameDuplicationWhenNameNotUnique() throws BusinessException {
+        UUID id = UUID.randomUUID();
+        String grpuName = "groupName";
+        UUID parentId = UUID.randomUUID();
+
+        CbbTerminalGroupNameDuplicationRequest request = new CbbTerminalGroupNameDuplicationRequest(id, parentId,
+                grpuName);
+
+        new Expectations(){
+            {
+                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                result = true;
+            }
+        };
+
+        CbbCheckGroupNameDuplicationResponse response = api.checkUseGroupNameDuplication(request);
+        Assert.assertFalse(response.isHasDuplication());
+
+        new Verifications() {
+            {
+                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                times = 1;
+            }
+        };
+    }
+
+
+    @Test
+    public void testCheckUseGroupNameDuplicationWhenException() throws BusinessException {
+        UUID id = UUID.randomUUID();
+        String grpuName = "groupName";
+        UUID parentId = UUID.randomUUID();
+
+        CbbTerminalGroupNameDuplicationRequest request = new CbbTerminalGroupNameDuplicationRequest(id, parentId,
+                grpuName);
+
+        new Expectations(){
+            {
+                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                result = new BusinessException("error");
+            }
+        };
+
+        CbbCheckGroupNameDuplicationResponse response = api.checkUseGroupNameDuplication(request);
+        Assert.assertTrue(response.isHasDuplication());
+
+        new Verifications() {
+            {
+                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                times = 1;
+            }
+        };
+    }
 }
