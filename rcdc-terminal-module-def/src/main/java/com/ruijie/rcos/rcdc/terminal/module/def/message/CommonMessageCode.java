@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.spi;
+package com.ruijie.rcos.rcdc.terminal.module.def.message;
 
 /**
  * Description: Function Description
