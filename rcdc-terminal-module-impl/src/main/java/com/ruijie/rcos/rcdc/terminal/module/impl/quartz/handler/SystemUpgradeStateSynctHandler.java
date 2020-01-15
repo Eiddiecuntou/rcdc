@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler;
 
 import java.util.Iterator;
 import java.util.List;
+
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeGlobal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -88,6 +90,9 @@ public class SystemUpgradeStateSynctHandler {
             upgradeTerminal.setState(matchInfo.getState());
             systemUpgradeServiceTx.modifySystemUpgradeTerminalState(upgradeTerminal);
             count++;
+
+            // 释放刷机位置
+            SystemUpgradeGlobal.releaseUpgradeQuota(upgradeTerminal.getTerminalId());
         }
 
         LOGGER.info("完成刷机终端成功状态同步处理，处理成功刷机终端{}台", count);

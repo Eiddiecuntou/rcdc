@@ -1,17 +1,21 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SambaInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
@@ -45,6 +49,9 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
 
     @Autowired
     private SambaInfoService sambaInfoService;
+
+    @Autowired
+    private TerminalSystemUpgradeTerminalDAO terminalSystemUpgradeTerminalDAO;
 
     @Override
     protected TerminalSystemUpgradeService getSystemUpgradeService() {
@@ -86,11 +93,22 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
     }
 
     @Override
-    public void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
+    public void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage, TerminalSystemUpgradeEntity upgradeEntity)
+            throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
+        Assert.notNull(upgradeEntity, "upgradeEntity can not be null");
+        Assert.notNull(upgradeEntity.getId(), "upgradeTask id can not be null");
 
-        // 开启刷机相关服务
+        // 关闭刷机相关服务
         terminalSystemUpgradeSupportService.closeSystemUpgradeService();
+
+        // 释放占用升级位置
+        List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = terminalSystemUpgradeTerminalDAO.findBySysUpgradeId(upgradeEntity.getId());
+        if (CollectionUtils.isEmpty(upgradeTerminalList)) {
+            return;
+        }
+
+        upgradeTerminalList.forEach(upgradeTerminal -> releaseUpgradeQuota(upgradeTerminal.getTerminalId()));
     }
 
     @Override
