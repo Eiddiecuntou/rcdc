@@ -48,7 +48,7 @@ public class LinuxVDISystemUpgradeFileClearHandlerTest {
         new Verifications() {
             {
                 FileOperateUtil.deleteFile((File) any);
-                times = 1;
+                times = 2;
             }
         };
     }

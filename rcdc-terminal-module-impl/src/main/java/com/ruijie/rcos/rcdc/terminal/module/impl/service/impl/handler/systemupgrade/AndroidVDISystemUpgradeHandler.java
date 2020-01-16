@@ -106,8 +106,10 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
     }
 
     @Override
-    public void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
+    public void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage, TerminalSystemUpgradeEntity upgradeEntity)
+            throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
+        Assert.notNull(upgradeEntity, "upgradeEntity can not be null");
 
         // 关闭BT分享
         LOGGER.info("关闭安卓系统升级bt分享");

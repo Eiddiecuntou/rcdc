@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import mockit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,9 @@ public class LinuxVDISystemUpgradeHandlerTest {
 
     @Injectable
     private SambaInfoService sambaInfoService;
+
+    @Injectable
+    private TerminalSystemUpgradeTerminalDAO terminalSystemUpgradeTerminalDAO;
 
     /**
      * 测试获取系统升级service
@@ -175,12 +179,17 @@ public class LinuxVDISystemUpgradeHandlerTest {
     @Test
     public void testAfterCloseSystemUpgrade() throws BusinessException {
         TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
+        upgradeEntity.setId(UUID.randomUUID());
 
-        handler.afterCloseSystemUpgrade(packageEntity);
+        handler.afterCloseSystemUpgrade(packageEntity, upgradeEntity);
 
         new Verifications() {
             {
                 terminalSystemUpgradeSupportService.closeSystemUpgradeService();
+                times = 1;
+
+                terminalSystemUpgradeTerminalDAO.findBySysUpgradeId(upgradeEntity.getId());
                 times = 1;
             }
         };
@@ -247,6 +256,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         upgradeEntity.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         upgradeEntity.setId(UUID.randomUUID());
         upgradeEntity.setPackageVersion("1.1.1");
+        upgradeEntity.setPackageName("aa.zip");
 
         return upgradeEntity;
     }
@@ -276,7 +286,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         resultContent.setSambaPort(pxeSambaInfo.getPort());
         resultContent.setSambaUserName(pxeSambaInfo.getUserName());
         resultContent.setSambaFilePath(File.separator + pxeSambaInfo.getFilePath() + Constants.PXE_ISO_SAMBA_LINUX_VDI_RELATE_PATH);
-        resultContent.setUpgradePackageName(upgradePackage.getPackageName());
+        resultContent.setUpgradePackageName(new File(upgradePackage.getFilePath()).getName());
         return resultContent;
     }
 

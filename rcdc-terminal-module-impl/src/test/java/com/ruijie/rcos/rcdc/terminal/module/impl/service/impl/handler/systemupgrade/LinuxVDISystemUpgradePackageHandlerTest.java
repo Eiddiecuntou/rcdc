@@ -6,12 +6,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.PumpStreamHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -402,7 +404,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
         String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
         new MockUp<Files>() {
             @Mock
-            public void move(File from, File to) throws IOException {
+            public Path move(Path from, Path to, CopyOption... options) throws IOException {
                 throw new IOException();
             }
         };
@@ -469,8 +471,9 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
         };
         new MockUp<Files>() {
             @Mock
-            public void move(File from, File to) throws IOException {
-
+            public Path move(Path from, Path to, CopyOption... options) throws IOException {
+                // for test
+                return null;
             }
         };
         new MockUp<LinuxVDISystemUpgradePackageHandler>() {
@@ -495,7 +498,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
 
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
-        request.setFilePath("dsdsd");
+        request.setFilePath("/aaa/sdsds.iso");
         handler.uploadUpgradePackage(request);
         new Verifications() {
             {
@@ -523,8 +526,9 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
         };
         new MockUp<Files>() {
             @Mock
-            public void move(File from, File to) throws IOException {
-
+            public Path move(Path from, Path to, CopyOption... options) throws IOException {
+                // for test
+                return null;
             }
         };
         new MockUp<LinuxVDISystemUpgradePackageHandler>() {
