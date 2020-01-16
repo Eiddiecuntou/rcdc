@@ -78,45 +78,6 @@ public class AbstractSystemUpgradeHandlerTest {
     }
 
     /**
-     * 测试CheckSystemUpgrade - 升级终端数超出限制
-     */
-    @Test
-    public void testCheckSystemUpgradeUpgradeTerminalExceedLimit() throws BusinessException {
-        TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
-
-        TerminalEntity terminalEntity = buildTerminalEntity();
-
-        new MockUp<TestedSystemUpgradeHandler>() {
-            @Mock
-            public boolean isTerminalEnableUpgrade(TerminalEntity terminal, CbbTerminalTypeEnums terminalType) {
-                return true;
-            }
-
-            @Mock
-            public boolean upgradingNumLimit() {
-                return true;
-            }
-        };
-
-        SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, terminalEntity);
-
-        SystemUpgradeCheckResult expectedResult = new SystemUpgradeCheckResult();
-        expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult());
-        expectedResult.setContent(null);
-        assertEquals(expectedResult, checkResult);
-
-        new Verifications() {
-            {
-                systemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                times = 0;
-
-                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId((UUID) any);
-                times = 0;
-            }
-        };
-    }
-
-    /**
      * 测试CheckSystemUpgrade
      */
     @Test
@@ -476,7 +437,8 @@ public class AbstractSystemUpgradeHandlerTest {
     public void testAfterCloseystemUpgrade() throws BusinessException {
         TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
         TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
-        handler.afterCloseSystemUpgrade(packageEntity);
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
+        handler.afterCloseSystemUpgrade(packageEntity, upgradeEntity);
 
         // 空实现，直接校验通过
         assertTrue(true);

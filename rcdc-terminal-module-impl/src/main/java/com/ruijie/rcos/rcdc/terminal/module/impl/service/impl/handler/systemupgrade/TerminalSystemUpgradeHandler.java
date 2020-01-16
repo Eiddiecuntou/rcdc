@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -44,9 +45,11 @@ public interface TerminalSystemUpgradeHandler<T> {
      * 关闭升级任务后进行的处理
      *
      * @param upgradePackage 升级包对象
+     * @param upgradeEntity 升级对象
      * @throws BusinessException 业务异常
      */
-    void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException;
+    void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage, TerminalSystemUpgradeEntity upgradeEntity)
+            throws BusinessException;
 
     /**
      * 获取下发终端升级消息
