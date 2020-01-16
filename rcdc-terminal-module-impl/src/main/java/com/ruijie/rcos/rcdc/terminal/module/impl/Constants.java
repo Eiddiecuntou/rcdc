@@ -100,6 +100,11 @@ public interface Constants {
     String PXE_SAMBA_LINUX_VDI_ISO_PATH = "/opt/samba/pxeuser/linux_vdi/";
 
     /**
+     *  linux vdi刷机ISO文件路径
+     */
+    String PXE_SAMBA_PACKAGE_PATH = "/opt/samba/pxeuser/";
+
+    /**
      *  linux vdi刷机samba相对路径
      */
     String PXE_ISO_SAMBA_LINUX_VDI_RELATE_PATH = "/linux_vdi/";

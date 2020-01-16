@@ -32,7 +32,8 @@ public class LinuxVDISystemUpgradeFileClearHandler {
     public void clear() {
         // 清除刷机目录文件
         LOGGER.info("开始清理刷机目录文件");
-        FileOperateUtil.deleteFile(new File(Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH));
+        FileOperateUtil.deleteFile(new File(Constants.PXE_SAMBA_LINUX_VDI_UPGRADE_BEGIN_FILE_PATH));
+        FileOperateUtil.deleteFile(new File(Constants.PXE_SAMBA_LINUX_VDI_UPGRADE_SUCCESS_FILE_PATH));
         LOGGER.info("完成清理刷机目录文件");
     }
 

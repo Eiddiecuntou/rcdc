@@ -139,7 +139,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
      * @return 磁盘空间是否足够
      */
     private boolean checkPackageDiskSpaceIsEnough(Long fileSize) {
-        File packageDir = new File(Constants.TERMINAL_UPGRADE_PACKAGE_PATH);
+        File packageDir = new File(Constants.PXE_SAMBA_PACKAGE_PATH);
         final long usableSpace = packageDir.getUsableSpace();
         if (usableSpace >= fileSize) {
             return true;

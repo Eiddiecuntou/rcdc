@@ -6,12 +6,16 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -57,9 +61,13 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
         TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage, request.getUpgradeMode());
 
+        // 获取分组下的终端与选择的终端合并去重
+        String[] terminalIdUnderGroupArr = obtainTerminalUnderGroup(request.getTerminalGroupIdArr(), upgradePackage.getPackageType());
+        List<String> totalTerminalIdList = mergeTerminalId(request.getTerminalIdArr(), terminalIdUnderGroupArr);
+
         UUID upgradeTaskId = entity.getId();
-        if (ArrayUtils.isNotEmpty(request.getTerminalIdArr())) {
-            Arrays.stream(request.getTerminalIdArr()).forEach(terminalId -> {
+        if (!CollectionUtils.isEmpty(totalTerminalIdList)) {
+            totalTerminalIdList.forEach(terminalId -> {
                 TerminalSystemUpgradeTerminalEntity upgradeTerminal = addSystemUpgradeTerminal(upgradeTaskId, terminalId);
                 // 将终端状态设置为升级中。在终端转换为最终态时将终端设为离线（终端在线则状态不变）
                 syncTerminalState(upgradeTerminal);
@@ -73,6 +81,47 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         }
 
         return upgradeTaskId;
+    }
+
+    private List<String> mergeTerminalId(String[] terminalIdArr, String[] terminalIdUnderGroupArr) {
+        if (ArrayUtils.isEmpty(terminalIdArr)) {
+            return Lists.newArrayList(terminalIdUnderGroupArr);
+        }
+
+        if (ArrayUtils.isEmpty(terminalIdUnderGroupArr)) {
+            return Lists.newArrayList(terminalIdArr);
+        }
+
+        List<String> manualTerminalList = Lists.newArrayList(terminalIdArr);
+        Arrays.stream(terminalIdUnderGroupArr).forEach(terminalIdUnderGroup -> {
+            if (manualTerminalList.contains(terminalIdUnderGroup)) {
+                // 去除重复
+                return;
+            }
+
+            manualTerminalList.add(terminalIdUnderGroup);
+        });
+
+        return manualTerminalList;
+    }
+
+    private String[] obtainTerminalUnderGroup(UUID[] terminalGroupIdArr, CbbTerminalTypeEnums terminalType) {
+        if (ArrayUtils.isEmpty(terminalGroupIdArr)) {
+            return new String[0];
+        }
+
+        List<TerminalEntity> terminalList = Lists.newArrayList();
+        Arrays.stream(terminalGroupIdArr).forEach(terminalGroupId -> {
+            List<TerminalEntity> underGroupTerminalList = basicInfoDAO.findByGroupIdAndPlatformAndTerminalOsType(terminalGroupId,
+                    CbbTerminalPlatformEnums.convert(terminalType.getPlatform()), terminalType.getOsType());
+            if (CollectionUtils.isEmpty(underGroupTerminalList)) {
+                return;
+            }
+
+            terminalList.addAll(underGroupTerminalList);
+        });
+
+        return terminalList.stream().map(terminalEntity -> terminalEntity.getTerminalId()).toArray(String[]::new);
     }
 
     @Override
