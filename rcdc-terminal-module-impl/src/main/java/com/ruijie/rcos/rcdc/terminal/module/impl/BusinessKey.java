@@ -327,6 +327,7 @@ public interface BusinessKey {
     String RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK = "rcdc_terminal_operate_action_clear_disk";
     String RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK = "rcdc_terminal_not_online_cannot_clear_disk";
     String RCDC_TERMINAL_CONFIRM_TO_CLEAR_DISK = "rcdc_terminal_confirm_to_clear_disk";
+    String RCDC_TERMINAL_CANCEL_CLEAR_DISK = "rcdc_terminal_cancel_clear_disk";
     String RCDC_TERMINAL_CLEAR_DISK_SUCCESS = "rcdc_terminal_clear_disk_success";
     String RCDC_TERMINAL_CLEAR_DISK_FAIL = "rcdc_terminal_clear_disk_fail";
 

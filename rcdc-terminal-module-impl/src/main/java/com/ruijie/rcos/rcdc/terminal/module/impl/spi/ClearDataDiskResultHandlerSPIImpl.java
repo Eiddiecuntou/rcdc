@@ -52,7 +52,7 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
                     request.getTerminalId()));
             LOGGER.warn("终端数据盘清空成功,terminalId = [{}]", request.getTerminalId());
         } else {
-            baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_SUCCESS,
+            baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_FAIL,
                     request.getTerminalId()));
             LOGGER.error("终端数据盘清空失败,terminalId = [{}]", request.getTerminalId());
         }

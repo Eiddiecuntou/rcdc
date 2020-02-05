@@ -83,9 +83,14 @@ public interface ShineAction {
     String REPORT_SYSTEM_UPGRADE_RESULT = "report_system_upgrade_result";
 
     /**
-     *  上报IDV终端清空数据盘确认响应
+     *  上报IDV终端确认清空数据盘响应
      */
     String CONFIRM_CLEAR_DATA = "confirm_clear_data";
+
+    /**
+     *  上报IDV终端取消清空数据盘响应
+     */
+    String CANCEL_CLEAR_DATA = "cancel_clear_data";
 
     /**
      *  上报IDV终端清空数据盘结果
