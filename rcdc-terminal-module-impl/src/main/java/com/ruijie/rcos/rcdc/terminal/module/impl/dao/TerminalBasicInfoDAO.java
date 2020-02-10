@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,4 +100,14 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @return 终端列表
      */
     List<TerminalEntity> findByGroupId(UUID groupId);
+
+    /**
+     *  根据分组id、平台类型、系统类型查询终端
+     *
+     * @param groupId 分组id
+     * @param platform 平台类型
+     * @param osType 系统类型
+     * @return 终端列表
+     */
+    List<TerminalEntity> findByGroupIdAndPlatformAndTerminalOsType(UUID groupId, CbbTerminalPlatformEnums platform, String osType);
 }

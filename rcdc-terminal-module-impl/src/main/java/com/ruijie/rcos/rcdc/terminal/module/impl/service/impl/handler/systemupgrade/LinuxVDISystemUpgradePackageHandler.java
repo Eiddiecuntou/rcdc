@@ -61,7 +61,6 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
             LOGGER.debug("terminal system upgrade file type error, file name [{}] ", fileName);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR);
         }
-
         //使用checkisomd5校验升级包
         checkISOMd5(filePath);
 
@@ -73,6 +72,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         // 将新升级文件移动到目录下
         String storePackageName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
         final String toPath = Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH + storePackageName;
+
         final String packagePath = moveUpgradePackage(toPath, filePath);
         // 更新升级包信息入库
         versionInfo.setFilePath(packagePath);
@@ -278,7 +278,6 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
             LOGGER.debug("move upgrade file to target directory fail");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e);
         }
-        LOGGER.info("完成移动刷机包");
 
         return toPath;
     }
