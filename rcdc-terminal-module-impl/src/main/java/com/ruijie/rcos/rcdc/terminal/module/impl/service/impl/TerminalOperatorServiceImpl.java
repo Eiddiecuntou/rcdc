@@ -1,14 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
+import com.google.common.collect.Lists;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -26,6 +30,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeOfflineLoginConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
@@ -122,6 +127,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     private void sendNewPwdToOnlineTerminal(String password) {
         LOGGER.debug("向在线终端发送管理员密码改变通知");
         List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
+
         if (CollectionUtils.isEmpty(onlineTerminalIdList)) {
             LOGGER.debug("无在线终端");
             return;
@@ -138,10 +144,61 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         }
     }
 
+
+    @Override
+    public void offlineLoginSetting(Integer offlineAutoLocked) throws BusinessException {
+        Assert.notNull(offlineAutoLocked, "offlineAutoLocked 不能为空");
+
+        // 更新全局离线登录设置
+        globalParameterAPI.updateParameter(Constants.OFFLINE_LOGIN_TIME_KEY, offlineAutoLocked.toString());
+        // 获取在线IDV终端
+        List<String> onlineIdvTerminalIdList = getOnlineIdvTerminal();
+        // 向在线IDV终端发送离线登录设置
+        NOTICE_HANDLER_THREAD_POOL.execute(() -> sendOfflineSettingToOnlineIdvTerminal(offlineAutoLocked, onlineIdvTerminalIdList));
+    }
+
+    private List<String> getOnlineIdvTerminal() {
+        List<String> onlineIdvTerminalIdList = Lists.newArrayList();
+        List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
+        if (CollectionUtils.isEmpty(onlineTerminalIdList)) {
+            LOGGER.debug("无在线终端");
+            return onlineIdvTerminalIdList;
+        }
+        for (String terminalId : onlineTerminalIdList) {
+            TerminalEntity entity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+            if (entity == null) {
+                LOGGER.error("terminal not exist, terminalId[" + terminalId + "]");
+                continue;
+            }
+            if (entity.getPlatform() == CbbTerminalPlatformEnums.IDV) {
+                onlineIdvTerminalIdList.add(terminalId);
+            }
+
+        }
+        return onlineIdvTerminalIdList;
+    }
+
+    private void sendOfflineSettingToOnlineIdvTerminal(Integer offlineAutoLocked, List<String> onlineIdvterminalIdList) {
+        LOGGER.debug("向IDV终端发送离线登录设置");
+        // 向在线IDV终端发送离线登录设置
+        for (String terminalId : onlineIdvterminalIdList) {
+            try {
+                ChangeOfflineLoginConfig configRequest =
+                        new ChangeOfflineLoginConfig(offlineAutoLocked);
+                operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG, configRequest,
+                        BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG);
+            } catch (Exception e) {
+                LOGGER.error("send offline login config to terminal failed, terminalId[" + terminalId + "]", e);
+            }
+        }
+    }
+
     @Override
     public void collectLog(final String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
         checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_COLLECT_LOG);
+
+        checkStoreLogDirExist();
 
         CollectLogCache collectLogCache = collectLogCacheManager.getCache(terminalId);
         if (collectLogCache != null && CbbCollectLogStateEnums.DOING == collectLogCache.getState()) {
@@ -155,6 +212,13 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         } catch (BusinessException e) {
             collectLogCacheManager.removeCache(terminalId);
             throw e;
+        }
+    }
+
+    private void checkStoreLogDirExist() {
+        File storeLogDir = new File(Constants.STORE_TERMINAL_LOG_PATH);
+        if (!storeLogDir.isDirectory()) {
+            FileOperateUtil.createFileDirectory(storeLogDir);
         }
     }
 

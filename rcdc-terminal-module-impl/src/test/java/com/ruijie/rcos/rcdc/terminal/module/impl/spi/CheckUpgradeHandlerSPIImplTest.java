@@ -1,5 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
@@ -12,12 +18,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
+import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeResult;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import mockit.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import static org.junit.Assert.fail;
+import mockit.*;
 
 /**
  * Description: Function Description
@@ -135,6 +140,60 @@ public class CheckUpgradeHandlerSPIImplTest {
         } catch (Exception e) {
             fail();
         }
+    }
+
+    /**
+     * 测试检查组件升级- 获取系统升级处理对象异常
+     */
+    @Test
+    public void testDispatchGetHandlerhasException() throws BusinessException {
+        String terminalId = "123";
+
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        terminalEntity.setTerminalOsType("Linux");
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = terminalEntity;
+                basicInfoService.saveBasicInfo(anyString, (CbbShineTerminalBasicInfo) any);
+
+                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                result = new BusinessException("123");
+
+                try {
+                    messageHandlerAPI.response((CbbResponseShineMessage) any);
+                } catch (Exception e) {
+                    fail();
+                }
+            }
+        };
+
+        try {
+            CbbDispatcherRequest request = new CbbDispatcherRequest();
+            request.setTerminalId(terminalId);
+            request.setRequestId("4567");
+            request.setData(generateJson());
+            checkUpgradeHandler.dispatch(request);
+        } catch (Exception e) {
+            fail();
+        }
+
+        saveVerifications();
+
+        new Verifications() {
+            {
+                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                times = 1;
+
+                CbbResponseShineMessage cbbShineMessageRequest;
+                messageHandlerAPI.response(cbbShineMessageRequest = withCapture());
+                times = 1;
+                TerminalUpgradeResult terminalUpgradeResult = (TerminalUpgradeResult) cbbShineMessageRequest.getContent();
+                assertEquals(2, terminalUpgradeResult.getSystemUpgradeCode().intValue());
+                assertEquals(null, terminalUpgradeResult.getSystemUpgradeInfo());
+            }
+        };
     }
 
     private void saveVerifications() {

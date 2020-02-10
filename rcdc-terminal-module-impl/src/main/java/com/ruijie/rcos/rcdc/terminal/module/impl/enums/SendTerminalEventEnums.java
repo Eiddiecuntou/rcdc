@@ -63,8 +63,12 @@ public enum SendTerminalEventEnums {
     /**
      * 同步终端背景
      */
-    CHANGE_TERMINAL_BACKGROUND("change_terminal_background");
+    CHANGE_TERMINAL_BACKGROUND("change_terminal_background"),
 
+    /**
+     * 更新离线登录设置
+     */
+    CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG("change_offline_login_config");
 
     private String name;
 

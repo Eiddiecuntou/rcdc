@@ -92,6 +92,8 @@ public class TerminalEntity {
     @Enumerated(EnumType.STRING)
     private CbbTerminalWirelessAuthModeEnums wirelessAuthMode;
 
+    private String productId;
+
     public UUID getId() {
         return id;
     }
@@ -331,6 +333,14 @@ public class TerminalEntity {
 
     public void setOsInnerVersion(String osInnerVersion) {
         this.osInnerVersion = osInnerVersion;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public String getSsid() {

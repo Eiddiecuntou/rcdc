@@ -82,6 +82,8 @@ public class CbbShineTerminalBasicInfo {
 
     private CbbTerminalNetworkInfoDTO[] networkInfoArr;
 
+    private String productId;
+
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
@@ -304,5 +306,13 @@ public class CbbShineTerminalBasicInfo {
 
     public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoArr) {
         this.networkInfoArr = networkInfoArr;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }

@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -150,6 +149,26 @@ public class EntityBeanTest {
     @Test
     public void testViewUpgradeableTerminalEntity() {
         GetSetTester tester = new GetSetTester(ViewUpgradeableTerminalEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试TerminalSystemUpgradeTerminalGroupEntity
+     */
+    @Test
+    public void testTerminalSystemUpgradeTerminalGroupEntity() {
+        GetSetTester tester = new GetSetTester(TerminalSystemUpgradeTerminalGroupEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
+    /**
+     * 测试TerminalModelDriverEntity
+     */
+    @Test
+    public void testTerminalModelDriverEntity() {
+        GetSetTester tester = new GetSetTester(TerminalModelDriverEntity.class);
         tester.runTest();
         assertTrue(true);
     }

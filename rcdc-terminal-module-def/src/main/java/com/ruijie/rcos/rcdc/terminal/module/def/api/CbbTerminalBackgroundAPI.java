@@ -6,7 +6,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
 
 /**
  * Description: Function Description
@@ -24,7 +23,6 @@ public interface CbbTerminalBackgroundAPI {
      * @return DefaultResponse
      * @throws BusinessException 业务异常
      */
-    @NoRollback
     DefaultResponse saveBackgroundImageConfig(CbbTerminalBackgroundSaveRequest request) throws BusinessException;
 
     /**
@@ -33,7 +31,6 @@ public interface CbbTerminalBackgroundAPI {
      * @return DefaultResponse
      * @throws BusinessException 业务异常
      */
-    @NoRollback
     DtoResponse<CbbTerminalBackgroundImageInfoDTO> getBackgroundImageInfo(DefaultRequest request) throws BusinessException;
 
     /**
@@ -42,6 +39,5 @@ public interface CbbTerminalBackgroundAPI {
      * @return DefaultResponse
      * @throws BusinessException 业务异常
      */
-    @NoRollback
     DefaultResponse initBackgroundImage(DefaultRequest request) throws BusinessException;
 }

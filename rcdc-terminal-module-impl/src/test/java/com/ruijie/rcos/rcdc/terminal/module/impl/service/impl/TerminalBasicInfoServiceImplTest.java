@@ -1,34 +1,36 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.Date;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalModelDriverDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalModelDriverEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+
 import mockit.*;
-import mockit.integration.junit4.JMockit;
 
 /**
  * Description: Function Description
@@ -38,7 +40,7 @@ import mockit.integration.junit4.JMockit;
  *
  * @author Jarman
  */
-@RunWith(JMockit.class)
+@RunWith(SkyEngineRunner.class)
 public class TerminalBasicInfoServiceImplTest {
 
     @Tested
@@ -55,6 +57,9 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
+
+    @Injectable
+    private TerminalModelDriverDAO terminalModelDriverDAO;
 
     @Injectable
     private TerminalNetworkInfoDAO networkInfoDAO;
@@ -397,13 +402,243 @@ public class TerminalBasicInfoServiceImplTest {
     }
 
     /**
-     *  测试保存终端信息 - 新终端接入
+     * 测试保存终端基本信息
+     */
+    @Test
+    public void testSaveBasicInfo() {
+        String terminalId = "123";
+
+        TerminalEntity terminalEntity = buildTerminalEntity();
+
+        CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = terminalEntity;
+            }
+        };
+
+        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 1;
+
+                TerminalEntity saveEntity;
+                basicInfoDAO.save(saveEntity = withCapture());
+                times = 1;
+                assertEquals(213L, saveEntity.getMemorySize().longValue());
+                assertEquals("gateway", saveEntity.getGateway());
+                assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
+                assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
+
+                terminalModelDriverDAO.findByProductId(anyString);
+                times = 0;
+
+                terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
+                times = 0;
+
+                CbbNoticeRequest noticeRequest;
+                terminalEventNoticeSPI.notify(noticeRequest = withCapture());
+                times = 1;
+                assertEquals(CbbNoticeEventEnums.ONLINE.getName(), noticeRequest.getDispatcherKey());
+                assertEquals(terminalId, noticeRequest.getTerminalBasicInfo().getTerminalId());
+            }
+        };
+    }
+
+    /**
+     * 测试保存终端基本信息 - 终端类型已存在
+     */
+    @Test
+    public void testSaveBasicInfoProductExist() {
+        String terminalId = "123";
+
+        TerminalEntity terminalEntity = buildTerminalEntity();
+
+        TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
+
+        CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
+        basicInfo.setProductId("aaaa");
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = terminalEntity;
+
+                terminalModelDriverDAO.findByProductId("aaaa");
+                result = Lists.newArrayList(modelDriverEntity);
+
+            }
+        };
+
+        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 1;
+
+                TerminalEntity saveEntity;
+                basicInfoDAO.save(saveEntity = withCapture());
+                times = 1;
+                assertEquals(213L, saveEntity.getMemorySize().longValue());
+                assertEquals("gateway", saveEntity.getGateway());
+                assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
+                assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
+
+                terminalModelDriverDAO.findByProductId("aaaa");
+                times = 1;
+
+                terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
+                times = 0;
+
+                CbbNoticeRequest noticeRequest;
+                terminalEventNoticeSPI.notify(noticeRequest = withCapture());
+                times = 1;
+                assertEquals(CbbNoticeEventEnums.ONLINE.getName(), noticeRequest.getDispatcherKey());
+                assertEquals(terminalId, noticeRequest.getTerminalBasicInfo().getTerminalId());
+            }
+        };
+    }
+
+    /**
+     * 测试保存终端基本信息 - 终端类型为新类型
+     */
+    @Test
+    public void testSaveBasicInfoProductNotExist() {
+        String terminalId = "123";
+
+        TerminalEntity terminalEntity = buildTerminalEntity();
+
+        TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
+
+        CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
+        basicInfo.setProductId("aaaa");
+        basicInfo.setProductType("bbbb");
+        basicInfo.setCpuType("cccc");
+        basicInfo.setPlatform(CbbTerminalPlatformEnums.VDI);
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = terminalEntity;
+
+                terminalModelDriverDAO.findByProductId("aaaa");
+                result = Lists.newArrayList();
+
+            }
+        };
+
+        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 1;
+
+                TerminalEntity saveEntity;
+                basicInfoDAO.save(saveEntity = withCapture());
+                times = 1;
+                assertEquals(213L, saveEntity.getMemorySize().longValue());
+                assertEquals("gateway", saveEntity.getGateway());
+                assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
+                assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
+
+                terminalModelDriverDAO.findByProductId("aaaa");
+                times = 1;
+
+                TerminalModelDriverEntity driverEntity;
+                terminalModelDriverDAO.save(driverEntity = withCapture());
+                times = 1;
+                assertEquals("aaaa", driverEntity.getProductId());
+                assertEquals("bbbb", driverEntity.getProductModel());
+                assertEquals("cccc", driverEntity.getCpuType());
+                assertEquals(CbbTerminalPlatformEnums.VDI, driverEntity.getPlatform());
+
+                CbbNoticeRequest noticeRequest;
+                terminalEventNoticeSPI.notify(noticeRequest = withCapture());
+                times = 1;
+                assertEquals(CbbNoticeEventEnums.ONLINE.getName(), noticeRequest.getDispatcherKey());
+                assertEquals(terminalId, noticeRequest.getTerminalBasicInfo().getTerminalId());
+            }
+        };
+    }
+
+    /**
+     * 测试保存终端基本信息 - 新接入终端
+     */
+    @Test
+    public void testSaveBasicInfoIsNewTerminal() {
+        String terminalId = "123";
+
+        CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = null;
+            }
+        };
+
+        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 1;
+
+                TerminalEntity saveEntity;
+                basicInfoDAO.save(saveEntity = withCapture());
+                times = 1;
+                assertEquals(213L, saveEntity.getMemorySize().longValue());
+                assertEquals("gateway", saveEntity.getGateway());
+                assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
+                assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
+                assertEquals(Constants.DEFAULT_TERMINAL_GROUP_UUID, saveEntity.getGroupId());
+
+                terminalModelDriverDAO.findByProductId(anyString);
+                times = 0;
+
+                terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
+                times = 0;
+
+                CbbNoticeRequest noticeRequest;
+                terminalEventNoticeSPI.notify(noticeRequest = withCapture());
+                times = 1;
+                assertEquals(CbbNoticeEventEnums.ONLINE.getName(), noticeRequest.getDispatcherKey());
+                assertEquals(terminalId, noticeRequest.getTerminalBasicInfo().getTerminalId());
+            }
+        };
+    }
+
+    private CbbShineTerminalBasicInfo buildShineTerminalBasicInfo() {
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+        basicInfo.setGateway("gateway");
+        basicInfo.setTerminalId("123");
+        basicInfo.setMemorySize(213L);
+        basicInfo.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
+
+        return basicInfo;
+    }
+
+    private TerminalEntity buildTerminalEntity() {
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setTerminalId("123");
+
+        return terminalEntity;
+    }
+
+    /**
+     * 测试保存终端信息 - 新终端接入
      */
     @Test
     public void testSaveBasicInfoTerminalIsNew() {
         String terminalId = "123";
         CbbShineTerminalBasicInfo basicInfo = buildBasicInfo();
-        new Expectations(){
+        new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = null;

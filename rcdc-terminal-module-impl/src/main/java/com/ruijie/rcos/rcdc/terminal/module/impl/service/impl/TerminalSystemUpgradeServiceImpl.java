@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -16,12 +17,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.TerminalOffLineException;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeFileClearHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeFileClearHandler;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -49,10 +52,13 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
 
     @Autowired
-    private SystemUpgradeFileClearHandler upgradeFileClearHandler;
+    private LinuxVDISystemUpgradeFileClearHandler upgradeFileClearHandler;
 
     @Autowired
     private TerminalSystemUpgradeTerminalDAO systemUpgradeTerminalDAO;
+
+    @Autowired
+    private TerminalSystemUpgradeTerminalGroupDAO systemUpgradeTerminalGroupDAO;
 
     @Override
     public void systemUpgrade(String terminalId, Object upgradeMsg) throws BusinessException {
@@ -81,8 +87,8 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     }
 
     private boolean hasUpgradingTask(UUID upgradePackageId) {
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<CbbSystemUpgradeTaskStateEnums> stateList =
+                Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
         List<TerminalSystemUpgradeEntity> upgradingTaskList = null;
 
         upgradingTaskList = terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
@@ -108,9 +114,10 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         systemUpgradeEntity.setState(state);
         terminalSystemUpgradeDAO.save(systemUpgradeEntity);
 
-        if (state == CbbSystemUpgradeTaskStateEnums.FINISH) {
+        if (state == CbbSystemUpgradeTaskStateEnums.FINISH && systemUpgradeEntity.getPackageType() == CbbTerminalTypeEnums.VDI_LINUX) {
             // 刷机关闭则清理服务端文件
-            upgradeFileClearHandler.clear(systemUpgradeEntity.getUpgradePackageId());
+            LOGGER.info("关闭linux-vdi升级任务，清理刷机目录文件");
+            upgradeFileClearHandler.clear();
         }
     }
 
@@ -130,10 +137,10 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
     public TerminalSystemUpgradeEntity getUpgradingSystemUpgradeTaskByPackageId(UUID packageId) {
         Assert.notNull(packageId, "packageId can not be null");
 
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO
-                .findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
+        List<CbbSystemUpgradeTaskStateEnums> stateList =
+                Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<TerminalSystemUpgradeEntity> upgradingTaskList =
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
 
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
             // 无进行中的升级任务，则返回null
@@ -152,4 +159,14 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         return systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(taskId, terminalId);
     }
 
+    @Override
+    public boolean isGroupInUpgradeTask(UUID upgradeTaskId, UUID groupId) {
+        Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+        Assert.notNull(groupId, "groupId can not be null");
+
+        TerminalSystemUpgradeTerminalGroupEntity upgradeGroup =
+                systemUpgradeTerminalGroupDAO.findBySysUpgradeIdAndTerminalGroupId(upgradeTaskId, groupId);
+
+        return upgradeGroup != null;
+    }
 }

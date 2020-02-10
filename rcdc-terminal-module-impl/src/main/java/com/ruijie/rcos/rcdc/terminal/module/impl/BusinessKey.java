@@ -315,6 +315,8 @@ public interface BusinessKey {
     /************Android终端OTA升级**************************/
     String RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL = "rcdc_terminal_ota_upgrade_computer_seed_file_md5_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_make_seed_file_fail";
+    String RCDC_TERMINAL_OTA_UPGRADE_BT_SHARE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_bt_share_file_fail";
+    String RCDC_TERMINAL_OTA_UPGRADE_STOP_SHARE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_stop_share_file_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR = "rcdc_terminal_ota_upgrade_package_has_error";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
 
@@ -330,4 +332,9 @@ public interface BusinessKey {
 
     /************终端背景界面**************************/
     String RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND = "rcdc_terminal_operate_action_send_background_url";
+    /************终端离线登录设置**************************/
+    String RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG = "rcdc_terminal_operate_action_send_offline_login_config";
+
+    /************终端型号**************************/
+    String RCDC_TERMINAL_MODEL_NOT_EXIST_ERROR = "rcdc_terminal_model_not_exist_error";
 }

@@ -1,5 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import java.io.File;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
@@ -12,12 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeSe
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.io.File;
-import java.util.UUID;
 
 /**
  * Description: Function Description
@@ -53,7 +54,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
 
     @Override
     protected SystemUpgradeCheckResult<AndroidVDICheckResultContent> getCheckResult(TerminalSystemUpgradePackageEntity upgradePackage,
-            TerminalSystemUpgradeEntity upgradeTask) {
+            TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTask, "upgradeTask can not be null");
 
@@ -64,7 +65,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
         resultContent.setUpgradeMode(upgradeTask.getUpgradeMode());
         resultContent.setPackageVersion(upgradeTask.getPackageVersion());
         resultContent.setTaskId(upgradeTask.getId());
-        resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName()                                        );
+        resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
 
         SystemUpgradeCheckResult<AndroidVDICheckResultContent> checkResult = new SystemUpgradeCheckResult<>();
@@ -86,7 +87,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
         resultContent.setUpgradeMode(upgradeMode);
         resultContent.setPackageVersion(upgradePackage.getPackageVersion());
         resultContent.setTaskId(upgradeTaskId);
-        resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName()                                        );
+        resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
 
         return resultContent;
@@ -96,7 +97,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
     public void afterAddSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
 
-        //开启BT分享
+        // 开启BT分享
         LOGGER.info("开启安卓系统升级bt分享");
         BaseStartBtShareRequest apiRequest = new BaseStartBtShareRequest();
         apiRequest.setSeedFilePath(upgradePackage.getSeedPath());
@@ -105,10 +106,12 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
     }
 
     @Override
-    public void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
+    public void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage, TerminalSystemUpgradeEntity upgradeEntity)
+            throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
+        Assert.notNull(upgradeEntity, "upgradeEntity can not be null");
 
-        //关闭BT分享
+        // 关闭BT分享
         LOGGER.info("关闭安卓系统升级bt分享");
         BaseStopBtShareRequest apiRequest = new BaseStopBtShareRequest();
         apiRequest.setSeedFilePath(upgradePackage.getSeedPath());

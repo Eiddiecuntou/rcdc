@@ -91,4 +91,14 @@ public class MessageBeanTest {
         tester.runTest();
         assertTrue(true);
     }
+
+    /**
+     * 测试SystemUpgradeResultInfo
+     */
+    @Test
+    public void testSystemUpgradeResultInfo() {
+        GetSetTester tester = new GetSetTester(SystemUpgradeResultInfo.class);
+        tester.runTest();
+        assertTrue(true);
+    }
 }

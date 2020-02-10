@@ -1,14 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 
-import static org.junit.Assert.*;
-
-import java.util.*;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -21,8 +13,26 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
+import mockit.Verifications;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import mockit.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -52,6 +62,25 @@ public class TerminalGroupServiceImplTest {
     private GroupTotalNumChecker groupTotalNumChecker;
 
 
+    @Before
+    public void before() {
+
+        new MockUp<LocaleI18nResolver>() {
+
+            /**
+             *
+             * @param key key
+             * @param args args
+             * @return key
+             */
+            @Mock
+            public String resolve(String key, String... args) {
+                return key;
+            }
+
+        };
+    }
+
     /**
      * 测试保存终端分组 - 分组名为保留分组
      * 
@@ -80,62 +109,6 @@ public class TerminalGroupServiceImplTest {
 
                 groupSubNumChecker.check(group, 1);
                 times = 0;
-
-                groupHierarchyChecker.check(groupDTO.getParentGroupId(), 1);
-                times = 0;
-            }
-        };
-    }
-
-    /**
-     * 测试保存终端分组 - 分组名同级下已存在
-     *
-     * @throws BusinessException exception
-     */
-    @Test
-    public void testSaveTerminalGroupGroupNameNotUnique() throws BusinessException {
-        TerminalGroupDTO groupDTO = new TerminalGroupDTO(UUID.randomUUID(), "name123", UUID.randomUUID());
-        TerminalGroupEntity group = new TerminalGroupEntity();
-        group.setParentId(UUID.randomUUID());
-        new Expectations() {
-            {
-                terminalGroupDAO.findById((UUID) any);
-                returns(Optional.of(group), Optional.of(group), Optional.of(new TerminalGroupEntity()));
-            }
-        };
-
-        new MockUp<TerminalGroupServiceImpl>() {
-
-            @Mock
-            public boolean checkGroupNameUnique(TerminalGroupDTO terminalGroup) throws BusinessException {
-                return false;
-            }
-        };
-
-        new MockUp<LocaleI18nResolver>() {
-            @Mock
-            public String resolve(String key, String... args) {
-                return "总览";
-            }
-        };
-
-        try {
-            terminalGroupService.saveTerminalGroup(groupDTO);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE, e.getKey());
-        }
-
-        new Verifications() {
-            {
-                terminalGroupDAO.save((TerminalGroupEntity) any);
-                times = 0;
-
-                groupTotalNumChecker.check(1);
-                times = 1;
-
-                groupSubNumChecker.check(group, 1);
-                times = 1;
 
                 groupHierarchyChecker.check(groupDTO.getParentGroupId(), 1);
                 times = 0;
@@ -467,8 +440,11 @@ public class TerminalGroupServiceImplTest {
             }
         };
 
-        boolean enableUnique = terminalGroupService.checkGroupNameUnique(terminalGroup);
-        Assert.assertFalse(enableUnique);
+        try {
+            terminalGroupService.checkGroupNameUnique(terminalGroup);
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE);
+        }
 
         new Verifications() {
             {

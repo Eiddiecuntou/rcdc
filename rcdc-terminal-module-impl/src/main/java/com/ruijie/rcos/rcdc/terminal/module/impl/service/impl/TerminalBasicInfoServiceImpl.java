@@ -1,5 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -9,13 +21,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalModelDriverDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalModelDriverEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalNetworkInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeHostNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
@@ -24,13 +37,6 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.util.Date;
 
 /**
  * Description: Function Description
@@ -57,6 +63,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     @Autowired
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
+    @Autowired
+    private TerminalModelDriverDAO terminalModelDriverDAO;
+
     private static final int FAIL_TRY_COUNT = 3;
 
     @Override
@@ -76,6 +85,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         basicInfoEntity.setLastOnlineTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         basicInfoDAO.save(basicInfoEntity);
+
+        // 自学习终端型号
+        saveTerminalModel(shineTerminalBasicInfo);
 
         // 保存终端网络信息
         saveTerminalNetworkInfo(shineTerminalBasicInfo);
@@ -106,7 +118,27 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private CbbTerminalNetworkInfoDTO[] buildNetworkInfoArr(CbbShineTerminalBasicInfo basicInfo) {
         CbbTerminalNetworkInfoDTO networkInfoDTO = new CbbTerminalNetworkInfoDTO();
         BeanUtils.copyProperties(basicInfo, networkInfoDTO);
-        return new CbbTerminalNetworkInfoDTO[]{networkInfoDTO};
+        return new CbbTerminalNetworkInfoDTO[] {networkInfoDTO};
+    }
+
+    private void saveTerminalModel(CbbShineTerminalBasicInfo basicInfo) {
+        if (StringUtils.isEmpty(basicInfo.getProductId())) {
+            // 无产品id, 一般为软终端
+            return;
+        }
+
+        List<TerminalModelDriverEntity> modelEntityList = terminalModelDriverDAO.findByProductId(basicInfo.getProductId());
+        if (!CollectionUtils.isEmpty(modelEntityList)) {
+            // 已存在，不需处理
+            return;
+        }
+
+        TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
+        modelDriverEntity.setProductId(basicInfo.getProductId());
+        modelDriverEntity.setCpuType(basicInfo.getCpuType());
+        modelDriverEntity.setProductModel(basicInfo.getProductType());
+        modelDriverEntity.setPlatform(basicInfo.getPlatform());
+        terminalModelDriverDAO.save(modelDriverEntity);
     }
 
     @Override
@@ -123,8 +155,8 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             sender.syncRequest(message);
         } catch (Exception e) {
             LOGGER.error("发送修改终端名称消息给终端[" + terminalId + "]失败", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e, new String[] {
-                    LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_MODIFY_NAME, new String[] {})});
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
+                    new String[] {LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_MODIFY_NAME, new String[] {})});
         }
     }
 

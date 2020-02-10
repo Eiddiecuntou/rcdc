@@ -13,6 +13,7 @@ import com.google.common.base.Objects;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
@@ -48,6 +49,9 @@ public class TerminalGroupServiceTxImpl implements TerminalGroupServiceTx {
     @Autowired
     private DeleteTerminalGroupValidator validator;
 
+    @Autowired
+    private TerminalSystemUpgradeTerminalGroupDAO systemUpgradeTerminalGroupDAO;
+
     @Override
     public void deleteGroup(UUID id, @Nullable UUID moveGroupId) throws BusinessException {
         Assert.notNull(id, "terminal group id can not be null");
@@ -55,8 +59,11 @@ public class TerminalGroupServiceTxImpl implements TerminalGroupServiceTx {
         LOGGER.warn("delete terminal group, id[{}]", id);
 
         validator.validate(id, moveGroupId);
-        TerminalGroupEntity groupEntity = terminalGroupService.checkGroupExist(id);
+        terminalGroupService.checkGroupExist(id);
         deleteAndMoveGroup(id, moveGroupId);
+
+        // 删除升级任务的终端分组记录
+        systemUpgradeTerminalGroupDAO.deleteByTerminalGroupId(id);
     }
 
     private void deleteAndMoveGroup(UUID id, UUID moveGroupId) {

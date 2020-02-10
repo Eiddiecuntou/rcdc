@@ -25,9 +25,9 @@ public interface Constants {
     String TERMINAL_ADMIN_PASSWORD_AES_KEY = "ADMINPASSWORDKEY";
 
     /**
-     * 系统默认编码
+     * samba刷机aes加密key值
      */
-    String RCDC_DEFAULT_ENCODE = "UTF-8";
+    String TERMINAL_PXE_SAMBA_PASSWORD_AES_KEY = "PXESAMBAPASSWORD";
 
     /**
      * 存放终端日志的目录
@@ -56,7 +56,7 @@ public interface Constants {
 
 
     /** rcdc服务器密码全局参数表key */
-    String RCDC_SERVER_IP_GLOBAL_PARAMETER_KEY = "rcdc_server_ip";
+    String RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY = "cluster_virtual_ip";
 
     /**
      * 存在终端系统刷机包的根路径
@@ -67,11 +67,6 @@ public interface Constants {
      * 存放终端系统vdi刷机包路径
      */
     String TERMINAL_UPGRADE_ISO_PATH_VDI = "/opt/upgrade/linux_vdi/";
-
-    /**
-     * 刷机时刷机包mount相对路径
-     */
-    String MOUNT_RELATE_DIR = "mount_dir/";
 
 
     /**
@@ -92,12 +87,27 @@ public interface Constants {
     /**
      * 系统刷机开始状态文件路径
      */
-    String TERMINAL_UPGRADE_START_SATTUS_FILE_PATH = "/opt/pxeuser/mac_begin/";
+    String PXE_SAMBA_LINUX_VDI_UPGRADE_BEGIN_FILE_PATH = "/opt/samba/pxeuser/linux_vdi/mac_begin/";
 
     /**
      * 系统刷机成功状态文件路径
      */
-    String TERMINAL_UPGRADE_END_SATTUS_FILE_PATH = "/opt/pxeuser/mac_end/";
+    String PXE_SAMBA_LINUX_VDI_UPGRADE_SUCCESS_FILE_PATH = "/opt/samba/pxeuser/linux_vdi/mac_end/";
+
+    /**
+     *  linux vdi刷机ISO文件路径
+     */
+    String PXE_SAMBA_LINUX_VDI_ISO_PATH = "/opt/samba/pxeuser/linux_vdi/";
+
+    /**
+     *  linux vdi刷机ISO文件路径
+     */
+    String PXE_SAMBA_PACKAGE_PATH = "/opt/samba/pxeuser/";
+
+    /**
+     *  linux vdi刷机samba相对路径
+     */
+    String PXE_ISO_SAMBA_LINUX_VDI_RELATE_PATH = "/linux_vdi/";
 
     /**
      * 系统镜像挂载指令
@@ -194,11 +204,6 @@ public interface Constants {
      * 文件后缀名分隔符
      */
     String FILE_SUFFIX_DOT = ".";
-
-    /**
-     * 刷机镜像刷机文件存放路径
-     */
-    String ISO_IMG_MOUNT_PATH = "/opt/pxeuser/";
     
     /** 终端默认分组UUID */
     UUID DEFAULT_TERMINAL_GROUP_UUID = UUID.fromString("7769c0c6-473c-4d4c-9f47-5a62bdeb30ba");
@@ -211,5 +216,8 @@ public interface Constants {
 
     /** 终端组最大子分组数量 */
     int TERMINAL_GROUP_MAX_SUB_GROUP_NUM = 200;
+
+    /** IDV终端最大离线登录时间全局参数表key */
+    String OFFLINE_LOGIN_TIME_KEY = "offline_time";
 
 }
