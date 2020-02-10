@@ -11,6 +11,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.message;
 public interface CommonMessageCode {
 
     int SUCCESS = 0;
-    
+
     int CODE_ERR_OTHER = 99;
 }
