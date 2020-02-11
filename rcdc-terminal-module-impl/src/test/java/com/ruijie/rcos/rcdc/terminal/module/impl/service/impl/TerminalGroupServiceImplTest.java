@@ -116,11 +116,6 @@ public class TerminalGroupServiceImplTest {
         };
     }
 
-    @Test
-    public void testCheckGroupNameUniqueWhenDefaultGroupName() {
-
-    }
-
     /**
      * 测试保存终端分组
      *
@@ -457,6 +452,17 @@ public class TerminalGroupServiceImplTest {
                 times = 1;
             }
         };
+    }
+
+    @Test
+    public void testCheckGroupNameUniqueWhenDefaultGroupName() {
+        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(UUID.randomUUID(), "总览", null);
+
+        try {
+            terminalGroupService.checkGroupNameUnique(terminalGroup);
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME);
+        }
     }
 
     private List<TerminalGroupEntity> buildHasSameNameList(UUID groupId) {
