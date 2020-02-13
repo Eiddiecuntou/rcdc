@@ -180,6 +180,36 @@ public interface Constants {
     String TERMINAL_UPGRADE_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/";
 
     /**
+     * 出厂Linux IDV OTA包保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA = "/data/web/terminal/linux_idv/";
+
+    /**
+     * Linux IDV OTA包保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE = "/opt/upgrade/linux_idv/";
+
+    /**
+     * Linux IDV ISO包挂载目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH = "/opt/upgrade/mount_dir_idv/";
+
+    /**
+     * Linux IDV ISO包中OTA文件列表路径
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_LIST_PATH = "/filelist/ota.list";
+
+    /**
+     * Linux IDV OTA包种子文件保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE = "/opt/ftp/terminal/linux_idv/seed/";
+
+    /**
+     * Linux IDV OTA脚本文件保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_FILE = "/opt/ftp/terminal/linux_idv/ota/";
+
+    /**
      * 终端组件升级包路径
      */
     String LINUX_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_linux/temp";

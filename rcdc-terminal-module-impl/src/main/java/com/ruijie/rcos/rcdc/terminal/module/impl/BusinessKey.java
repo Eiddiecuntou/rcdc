@@ -66,6 +66,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT = "rcdc_terminal_system_upgrade_upload_file_package_type_unsupport";
 
     /**
+     * 升级包类型错误
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_ERROR = "rcdc_terminal_system_upgrade_upload_file_package_type_error";
+
+    /**
      * 上传系统升级文件失败
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL = "rcdc_terminal_system_upgrade_upload_file_fail";
@@ -102,6 +107,15 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT = "rcdc_terminal_system_upgrade_package_version_file_incorrect";
 
+    /**
+     * 系统OTA升级文件列表解析错误
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_LIST_INCORRECT = "rcdc_terminal_system_upgrade_package_ota_list_incorrect";
+
+    /**
+     * 系统升级包版本文件不完整
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_INCOMPLETE = "rcdc_terminal_system_upgrade_package_file_incomplete";
 
     /**
      * 系统刷机包磁盘空间不足

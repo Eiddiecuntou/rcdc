@@ -34,6 +34,10 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
 
     private String realFileName;
 
+    private String otaScriptPath;
+
+    private String otaScriptMD5;
+
     public String getImgName() {
         return imgName;
     }
@@ -114,6 +118,22 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
         this.realFileName = realFileName;
     }
 
+    public String getOtaScriptPath() {
+        return otaScriptPath;
+    }
+
+    public void setOtaScriptPath(String otaScriptPath) {
+        this.otaScriptPath = otaScriptPath;
+    }
+
+    public String getOtaScriptMD5() {
+        return otaScriptMD5;
+    }
+
+    public void setOtaScriptMD5(String otaScriptMD5) {
+        this.otaScriptMD5 = otaScriptMD5;
+    }
+
     @Override
     public String toString() {
         return "TerminalUpgradeVersionFileInfo{" +
@@ -127,6 +147,8 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
                 ", seedMD5='" + seedMD5 + '\'' +
                 ", fileSaveDir='" + fileSaveDir + '\'' +
                 ", realFileName='" + realFileName + '\'' +
+                ", otaScriptPath='" + otaScriptPath + '\'' +
+                ", otaScriptMD5='" + otaScriptMD5 + '\'' +
                 '}';
     }
 }

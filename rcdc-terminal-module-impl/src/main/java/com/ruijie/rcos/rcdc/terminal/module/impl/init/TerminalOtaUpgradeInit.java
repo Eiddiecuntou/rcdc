@@ -55,11 +55,17 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
 
     @Override
     public void safeInit() {
-        String basePath = Constants.TERMINAL_UPGRADE_OTA;
-        TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        // 初始化VDI Android的OTA包
+        init(Constants.TERMINAL_UPGRADE_OTA, CbbTerminalTypeEnums.VDI_ANDROID);
+        // 初始化IDV Linux的OTA包
+        init(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA, CbbTerminalTypeEnums.IDV_LINUX);
+    }
+
+    private void init(String basePath, CbbTerminalTypeEnums type) {
+        TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(type);
         if (upgradePackage == null) {
             LOGGER.info("初始化ota升级包");
-            initOtaZipFile(basePath);
+            initOtaZipFile(basePath, type);
         } else {
             LOGGER.info("初始化bt分享");
             initBtServer(upgradePackage);
@@ -83,7 +89,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         }
     }
 
-    private void initOtaZipFile(String basePath) {
+    private void initOtaZipFile(String basePath, CbbTerminalTypeEnums type) {
         try {
             List<File> fileList = FileOperateUtil.listFile(basePath);
             if (CollectionUtils.isEmpty(fileList)) {
@@ -91,8 +97,8 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
                 return;
             }
             File file = fileList.get(0);
-            CbbTerminalUpgradePackageUploadRequest request = generateRequest(file);
-            TerminalSystemUpgradePackageHandler handler = handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_ANDROID);
+            CbbTerminalUpgradePackageUploadRequest request = generateRequest(file, type);
+            TerminalSystemUpgradePackageHandler handler = handlerFactory.getHandler(type);
             handler.uploadUpgradePackage(request);
             FileOperateUtil.deleteFile(file);
         } catch (Exception e) {
@@ -100,7 +106,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         }
     }
 
-    private CbbTerminalUpgradePackageUploadRequest generateRequest(File file) throws IOException {
+    private CbbTerminalUpgradePackageUploadRequest generateRequest(File file, CbbTerminalTypeEnums type) throws IOException {
         Assert.notNull(file, "file can not be null");
         String fileName = file.getName();
         String filePath = file.getPath();
@@ -108,7 +114,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFilePath(filePath);
         request.setFileName(fileName);
-        request.setTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
+        request.setTerminalType(type);
         request.setFileMD5(StringUtils.bytes2Hex(Md5Builder.computeFileMd5(file)));
         return request;
     }
