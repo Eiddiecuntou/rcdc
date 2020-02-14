@@ -1,12 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.message;
 
 /**
- * Description: Function Description
- * Copyright: Copyright (c) 2018
+ * Description: 终端通信返回码基础类
+ * Copyright: Copyright (c) 2020
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/1/16
+ * Create Time: 2020/2/6
  *
- * @author Jarman
+ * @author lintingling
  */
 public interface CommonMessageCode {
 
