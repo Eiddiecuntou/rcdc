@@ -1,12 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.io.File;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
@@ -19,6 +12,12 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeSe
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.util.UUID;
 
 /**
  * Description: Function Description
@@ -29,9 +28,9 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
  * @author nt
  */
 @Service
-public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<AndroidVDICheckResultContent> {
+public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaCheckResultContent> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AndroidVDISystemUpgradeHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemOtaUpgradeHandler.class);
 
     @Autowired
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
@@ -53,12 +52,12 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
     }
 
     @Override
-    protected SystemUpgradeCheckResult<AndroidVDICheckResultContent> getCheckResult(TerminalSystemUpgradePackageEntity upgradePackage,
-            TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
+    protected SystemUpgradeCheckResult<OtaCheckResultContent> getCheckResult(TerminalSystemUpgradePackageEntity upgradePackage,
+                                                                             TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTask, "upgradeTask can not be null");
 
-        AndroidVDICheckResultContent resultContent = new AndroidVDICheckResultContent();
+        OtaCheckResultContent resultContent = new OtaCheckResultContent();
         resultContent.setPackageMD5(upgradePackage.getFileMd5());
         resultContent.setSeedLink(upgradePackage.getSeedPath());
         resultContent.setSeedMD5(upgradePackage.getSeedMd5());
@@ -67,8 +66,10 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
         resultContent.setTaskId(upgradeTask.getId());
         resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
+        resultContent.setOtaScriptPath(upgradePackage.getOtaScriptPath());
+        resultContent.setOtaScriptMD5(upgradePackage.getOtaScriptMd5());
 
-        SystemUpgradeCheckResult<AndroidVDICheckResultContent> checkResult = new SystemUpgradeCheckResult<>();
+        SystemUpgradeCheckResult<OtaCheckResultContent> checkResult = new SystemUpgradeCheckResult<>();
         checkResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
         checkResult.setContent(resultContent);
         return checkResult;
@@ -80,7 +81,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
         Assert.notNull(upgradeMode, "upgradeMode can not be null");
 
-        AndroidVDICheckResultContent resultContent = new AndroidVDICheckResultContent();
+        OtaCheckResultContent resultContent = new OtaCheckResultContent();
         resultContent.setPackageMD5(upgradePackage.getFileMd5());
         resultContent.setSeedLink(upgradePackage.getSeedPath());
         resultContent.setSeedMD5(upgradePackage.getSeedMd5());
@@ -89,6 +90,8 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
         resultContent.setTaskId(upgradeTaskId);
         resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
+        resultContent.setOtaScriptPath(upgradePackage.getOtaScriptPath());
+        resultContent.setOtaScriptMD5(upgradePackage.getOtaScriptMd5());
 
         return resultContent;
     }

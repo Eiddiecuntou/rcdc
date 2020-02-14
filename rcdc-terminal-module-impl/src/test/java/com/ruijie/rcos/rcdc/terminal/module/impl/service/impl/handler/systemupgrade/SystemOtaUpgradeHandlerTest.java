@@ -1,10 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.util.UUID;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -16,6 +11,13 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.Injectable;
 import mockit.Tested;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Description: Function Description
@@ -26,10 +28,10 @@ import mockit.Tested;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
-public class AndroidVDISystemUpgradeHandlerTest {
+public class SystemOtaUpgradeHandlerTest {
 
     @Tested
-    private AndroidVDISystemUpgradeHandler handler;
+    private SystemOtaUpgradeHandler handler;
 
     @Injectable
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
@@ -69,10 +71,10 @@ public class AndroidVDISystemUpgradeHandlerTest {
         TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
         TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
 
-        SystemUpgradeCheckResult<AndroidVDICheckResultContent> checkResult = handler.getCheckResult(packageEntity, upgradeEntity);
+        SystemUpgradeCheckResult<OtaCheckResultContent> checkResult = handler.getCheckResult(packageEntity, upgradeEntity);
 
-        SystemUpgradeCheckResult<AndroidVDICheckResultContent> expectedResult = new SystemUpgradeCheckResult<>();
-        AndroidVDICheckResultContent content = buildExpectedAndroidVDICheckResultContent(upgradeEntity);
+        SystemUpgradeCheckResult<OtaCheckResultContent> expectedResult = new SystemUpgradeCheckResult<>();
+        OtaCheckResultContent content = buildExpectedAndroidVDICheckResultContent(upgradeEntity);
         expectedResult.setContent(content);
         expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
 
@@ -87,10 +89,10 @@ public class AndroidVDISystemUpgradeHandlerTest {
         TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
         TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
 
-        AndroidVDICheckResultContent result =
-                (AndroidVDICheckResultContent) handler.getSystemUpgradeMsg(packageEntity, upgradeEntity.getId(), upgradeEntity.getUpgradeMode());
+        OtaCheckResultContent result =
+                (OtaCheckResultContent) handler.getSystemUpgradeMsg(packageEntity, upgradeEntity.getId(), upgradeEntity.getUpgradeMode());
 
-        AndroidVDICheckResultContent expectContent = buildExpectedAndroidVDICheckResultContent(upgradeEntity);
+        OtaCheckResultContent expectContent = buildExpectedAndroidVDICheckResultContent(upgradeEntity);
 
         assertEquals(expectContent, result);
     }
@@ -109,8 +111,8 @@ public class AndroidVDISystemUpgradeHandlerTest {
         assertTrue(!isExceedLimit);
     }
 
-    private AndroidVDICheckResultContent buildExpectedAndroidVDICheckResultContent(TerminalSystemUpgradeEntity upgradeEntity) {
-        AndroidVDICheckResultContent content = new AndroidVDICheckResultContent();
+    private OtaCheckResultContent buildExpectedAndroidVDICheckResultContent(TerminalSystemUpgradeEntity upgradeEntity) {
+        OtaCheckResultContent content = new OtaCheckResultContent();
         content.setPackageMD5("abc");
         content.setPackageName("aa.zip");
         content.setPackageVersion("1.1.1");

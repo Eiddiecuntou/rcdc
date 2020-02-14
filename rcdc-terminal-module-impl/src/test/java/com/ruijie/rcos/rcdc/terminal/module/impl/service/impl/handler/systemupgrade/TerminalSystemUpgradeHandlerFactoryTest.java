@@ -1,17 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-
 import mockit.Injectable;
 import mockit.Tested;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Description: Function Description
@@ -31,7 +29,7 @@ public class TerminalSystemUpgradeHandlerFactoryTest {
     private LinuxVDISystemUpgradeHandler linuxVDISystemUpgradeHandler;
 
     @Injectable
-    private AndroidVDISystemUpgradeHandler androidVDISystemUpgradeHandler;
+    private SystemOtaUpgradeHandler systemOtaUpgradeHandler;
 
     /**
      * 获取版本升级处理器参数为空
