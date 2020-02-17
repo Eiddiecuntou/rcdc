@@ -136,16 +136,6 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
         return outStr;
     }
 
-    protected boolean checkDiskSpaceIsEnough(Long expectedFileSize, String targetDirPath) {
-        File packageDir = new File(targetDirPath);
-        final long usableSpace = packageDir.getUsableSpace();
-        if (usableSpace >= expectedFileSize) {
-            return true;
-        }
-
-        return false;
-    }
-
     protected SeedFileInfoDTO makeBtSeed(String filePath, String seedSavePath) throws BusinessException {
         Assert.notNull(filePath, "filePath can not be null");
         createFilePath(seedSavePath);

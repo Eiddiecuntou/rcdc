@@ -20,7 +20,6 @@ import org.springframework.util.Assert;
 import java.io.*;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
 
 /**
  * Description: Linux IDV 终端系统升级包处理类
@@ -49,17 +48,11 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
      */
     private static final String OTA_SCRIPT_NAME = "OTAPreRunFun.bash";
 
-    /**
-     * OTA文件列表分隔符
-     */
-    private static final String OTA_LIST_SEPARATOR = " ";
-
-    private static final Integer FILE_MD5_INDEX = 0;
-
-    private static final Integer FILE_PATH_INDEX = 1;
-
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
+
+    @Autowired
+    private LinuxIDVSystemUpgradePackageHelper helper;
 
     @Override
     protected TerminalSystemUpgradePackageService getSystemUpgradePackageService() {
@@ -77,14 +70,16 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
         // 解析ISO文件
         prepareDirectories();
-        mountUpgradePackage(fileName, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
+        mountUpgradePackage(filePath, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
         readVersionFile(versionInfo);
         readOtaList(versionInfo);
 
-        // 取消ISO挂载、删除
+        // 取消ISO挂载、删除（此处不删除出厂自带的ISO）
         umountUpgradePackage(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
-        FileOperateUtil.deleteFile(new File(filePath));
+        if (!filePath.contains(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA)) {
+            FileOperateUtil.deleteFile(new File(filePath));
+        }
 
         // 制作OTA包种子文件
         SeedFileInfoDTO seedInfo = makeBtSeed(versionInfo.getFilePath(), Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE);
@@ -99,8 +94,8 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
     private void prepareDirectories() {
         checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
-        checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE);
-        checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_FILE);
+        checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR);
+        checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR);
     }
 
     private void checkAndMakeDirs(String dirPath) {
@@ -134,7 +129,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         }
 
         CbbTerminalPlatformEnums platType = CbbTerminalPlatformEnums.
-                valueOf(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE));
+                convert(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE));
         if (platType != CbbTerminalPlatformEnums.IDV) {
             LOGGER.debug("升级包类型错误，期望[IDV]，实际[{}]", platType);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_ERROR,
@@ -167,71 +162,24 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         for (String otaListItem : otaFileList) {
             if (otaListItem.endsWith(OTA_PACKAGE_NAME)) {
                 // 解析OTA包文件信息，并复制到对应目录
-                String[] messagesArr = handleOtaListItem(otaListItem, Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE, OTA_PACKAGE_NAME);
-                versionInfo.setFileMD5(messagesArr[FILE_MD5_INDEX]);
-                versionInfo.setFilePath(messagesArr[FILE_PATH_INDEX]);
-                versionInfo.setFileSaveDir(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE);
+                LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
+                        helper.handleOtaListItem(otaListItem, Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR, OTA_PACKAGE_NAME);
+                versionInfo.setFileMD5(otaFileInfo.getMd5());
+                versionInfo.setFilePath(otaFileInfo.getFilePath());
+                versionInfo.setFileSaveDir(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR);
                 versionInfo.setRealFileName(OTA_PACKAGE_NAME);
+
             } else if (otaListItem.endsWith(OTA_SCRIPT_NAME)) {
                 // 解析OTA脚本文件信息，并复制到对应目录
-                String[] messagesArr = handleOtaListItem(otaListItem, Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_FILE, OTA_SCRIPT_NAME);
-                versionInfo.setOtaScriptMD5(messagesArr[FILE_MD5_INDEX]);
-                versionInfo.setOtaScriptPath(messagesArr[FILE_PATH_INDEX]);
+                LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
+                        helper.handleOtaListItem(otaListItem, Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR, OTA_SCRIPT_NAME);
+                versionInfo.setOtaScriptMD5(otaFileInfo.getMd5());
+                versionInfo.setOtaScriptPath(otaFileInfo.getFilePath());
+
             } else {
                 LOGGER.error("ota file list content is incorrect!");
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_LIST_INCORRECT);
             }
         }
     }
-
-    private String[] handleOtaListItem(String otaListItem, String fileSaveDirPath, String fileName) throws BusinessException {
-        // 获取文件MD5、路径
-        String[] messagesArr = resolveOtaListItem(otaListItem);
-
-        File srcFile = new File(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH + messagesArr[FILE_PATH_INDEX]);
-        if (!srcFile.isFile()) {
-            LOGGER.error("ISO file is incomplete, [{}] not found!", srcFile.getPath());
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_INCOMPLETE, srcFile.getPath());
-        }
-
-        // 将文件从ISO中复制到对应文件夹
-        File destFile = copyAndCoverFile(fileSaveDirPath, fileName, srcFile);
-
-        messagesArr[FILE_PATH_INDEX] = destFile.getPath();
-        return messagesArr;
-    }
-
-    private File copyAndCoverFile(String destFileSaveDir, String fileName, File srcFile) throws BusinessException {
-        if (!checkDiskSpaceIsEnough(srcFile.length(), destFileSaveDir)) {
-            LOGGER.error("disk space not enough, required space: {}bytes", srcFile.length());
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH);
-        }
-
-        String saveFileName = UUID.randomUUID().toString() + fileName.substring(fileName.lastIndexOf("."));
-        File destFile = new File(destFileSaveDir + saveFileName);
-        try {
-            FileOperateUtil.copyfile(srcFile.getPath(), destFile.getPath());
-            Assert.isTrue(destFile.exists(), "destination file not exist!");
-        } catch (Exception e) {
-            LOGGER.error("error in copy file!", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e);
-        }
-        return destFile;
-    }
-
-    private String[] resolveOtaListItem(String fileInfo) throws BusinessException {
-        String fileMD5;
-        String filePathInIso;
-        try {
-            String[] messagesArr = fileInfo.split(OTA_LIST_SEPARATOR);
-            fileMD5 = messagesArr[0];
-            filePathInIso = messagesArr[messagesArr.length - 1];
-            Assert.isTrue(!fileMD5.equals(filePathInIso), "ota file list is invalid!");
-        } catch (Exception e) {
-            LOGGER.error("ota file list content is incorrect!");
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_LIST_INCORRECT, e);
-        }
-        return new String[]{fileMD5, filePathInIso};
-    }
-
 }

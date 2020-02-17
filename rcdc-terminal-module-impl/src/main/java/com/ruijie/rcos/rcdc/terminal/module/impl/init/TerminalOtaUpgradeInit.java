@@ -65,7 +65,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(type);
         if (upgradePackage == null) {
             LOGGER.info("初始化ota升级包");
-            initOtaZipFile(basePath, type);
+            initOtaFile(basePath, type);
         } else {
             LOGGER.info("初始化bt分享");
             initBtServer(upgradePackage);
@@ -89,7 +89,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         }
     }
 
-    private void initOtaZipFile(String basePath, CbbTerminalTypeEnums type) {
+    private void initOtaFile(String basePath, CbbTerminalTypeEnums type) {
         try {
             List<File> fileList = FileOperateUtil.listFile(basePath);
             if (CollectionUtils.isEmpty(fileList)) {

@@ -190,7 +190,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         File from = new File(fromPath);
 
         // 再次校验磁盘空间是否足够
-        final boolean isEnough = checkDiskSpaceIsEnough(from.length(), Constants.PXE_SAMBA_PACKAGE_PATH);
+        final boolean isEnough = checkPackageDiskSpaceIsEnough(from.length());
 
         if (!isEnough) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH);
@@ -204,6 +204,16 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         }
 
         return toPath;
+    }
+
+    private boolean checkPackageDiskSpaceIsEnough(Long fileSize) {
+        File packageDir = new File(Constants.PXE_SAMBA_PACKAGE_PATH);
+        final long usableSpace = packageDir.getUsableSpace();
+        if (usableSpace >= fileSize) {
+            return true;
+        }
+
+        return false;
     }
 
 }

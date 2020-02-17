@@ -187,7 +187,7 @@ public interface Constants {
     /**
      * Linux IDV OTA包保存目录
      */
-    String TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE = "/opt/upgrade/linux_idv/";
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR = "/opt/upgrade/linux_idv/";
 
     /**
      * Linux IDV ISO包挂载目录
@@ -207,7 +207,7 @@ public interface Constants {
     /**
      * Linux IDV OTA脚本文件保存目录
      */
-    String TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_FILE = "/opt/ftp/terminal/linux_idv/ota/";
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR = "/opt/ftp/terminal/linux_idv/ota/";
 
     /**
      * 终端组件升级包路径
