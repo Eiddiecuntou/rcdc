@@ -128,12 +128,11 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
 
-        CbbTerminalPlatformEnums platType = CbbTerminalPlatformEnums.
-                convert(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE));
-        if (platType != CbbTerminalPlatformEnums.IDV) {
+        String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE);
+        if (!StringUtils.hasText(platType) || !platType.equals(CbbTerminalPlatformEnums.IDV.name())) {
             LOGGER.debug("升级包类型错误，期望[IDV]，实际[{}]", platType);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_ERROR,
-                    CbbTerminalPlatformEnums.IDV.name(), platType.name());
+                    CbbTerminalPlatformEnums.IDV.name(), platType);
         }
 
         versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION));
