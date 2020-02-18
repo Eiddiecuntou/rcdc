@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.ruijie.rcos.sk.root</groupId>
         <artifactId>sk-root-api</artifactId>
-       	<version>2.4.16-SNAPSHOT</version>
+       	<version>2.5.0-SNAPSHOT</version>
     </parent>
     <version>1.7.0-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
@@ -18,8 +18,8 @@
     </modules>
     
     <properties>
-    	<base-aaa-module.version>1.4.16-SNAPSHOT</base-aaa-module.version>
-    	<base-sysmanage-module.version>1.4.16-SNAPSHOT</base-sysmanage-module.version>
+    	<base-aaa-module.version>1.5.0-SNAPSHOT</base-aaa-module.version>
+    	<base-sysmanage-module.version>1.5.0-SNAPSHOT</base-sysmanage-module.version>
     </properties>
 
     <!--定义依赖包版本号-->
