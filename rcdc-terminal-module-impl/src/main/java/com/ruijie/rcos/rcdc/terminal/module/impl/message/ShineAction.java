@@ -88,11 +88,6 @@ public interface ShineAction {
     String CONFIRM_CLEAR_DATA = "confirm_clear_data";
 
     /**
-     *  上报IDV终端取消清空数据盘响应
-     */
-    String CANCEL_CLEAR_DATA = "cancel_clear_data";
-
-    /**
      *  上报IDV终端清空数据盘结果
      */
     String CLEAR_DATA_DISK_RESULT = "clear_data_disk_result";

@@ -47,14 +47,18 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
         String data = request.getData();
         JSONObject jsonObject = JSON.parseObject(data);
         Integer result = jsonObject.getInteger(RESULT_KEY);
-        if (result.equals(0)) {
-            baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_SUCCESS,
-                    request.getTerminalId()));
-            LOGGER.warn("终端数据盘清空成功,terminalId = [{}]", request.getTerminalId());
+        if (result != null) {
+            if (result.equals(0)) {
+                baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_SUCCESS,
+                        request.getTerminalId()));
+                LOGGER.warn("终端数据盘清空成功,terminalId = [{}]", request.getTerminalId());
+            } else {
+                baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_FAIL,
+                        request.getTerminalId()));
+                LOGGER.error("终端数据盘清空失败,terminalId = [{}]", request.getTerminalId());
+            }
         } else {
-            baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_FAIL,
-                    request.getTerminalId()));
-            LOGGER.error("终端数据盘清空失败,terminalId = [{}]", request.getTerminalId());
+            LOGGER.error("终端返回清空数据盘是否成功值为null，terminalId = [{}]",request.getTerminalId());
         }
     }
 }
