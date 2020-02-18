@@ -15,6 +15,7 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.*;
@@ -29,6 +30,7 @@ import java.util.Properties;
  *
  * @author zhangyichi
  */
+@Service
 public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePackageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxIDVSystemUpgradePackageHandler.class);

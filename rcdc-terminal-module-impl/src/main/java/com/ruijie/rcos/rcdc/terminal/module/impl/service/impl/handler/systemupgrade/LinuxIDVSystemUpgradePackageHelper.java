@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import java.util.UUID;
  *
  * @author zhangyichi
  */
+@Service
 public class LinuxIDVSystemUpgradePackageHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxIDVSystemUpgradePackageHelper.class);
