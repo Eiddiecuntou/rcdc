@@ -43,7 +43,7 @@ public class ConfirmClearDataSPIImpl implements CbbDispatcherHandlerSPI {
         String data = request.getData();
         JSONObject jsonObject = JSON.parseObject(data);
         Boolean enableClear = jsonObject.getBoolean(RESULT_KEY);
-        if (enableClear != null) {
+        if (enableClear == null) {
             LOGGER.error("终端返回是否清空数据盘值为null，terminalId = [{}]",request.getTerminalId());
             return;
         }
