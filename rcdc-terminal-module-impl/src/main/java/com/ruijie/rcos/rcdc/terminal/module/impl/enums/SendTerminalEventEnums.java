@@ -53,7 +53,12 @@ public enum SendTerminalEventEnums {
     /**
      * 同步终端Logo
      */
-    CHANGE_TERMINAL_LOGO("change_terminal_logo");
+    CHANGE_TERMINAL_LOGO("change_terminal_logo"),
+
+    /**
+     * 解除故障
+     */
+    RELIEVE_FAULT("relieve_fault");
 
     private String name;
 
