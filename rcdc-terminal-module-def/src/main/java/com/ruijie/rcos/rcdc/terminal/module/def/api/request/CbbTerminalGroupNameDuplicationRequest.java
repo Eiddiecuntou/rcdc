@@ -14,7 +14,7 @@ import java.util.UUID;
  *
  * @author chen zj
  */
-public class TerminalGroupNameDuplicationRequest implements Request {
+public class CbbTerminalGroupNameDuplicationRequest implements Request {
 
     @Nullable
     private UUID id;
@@ -25,7 +25,7 @@ public class TerminalGroupNameDuplicationRequest implements Request {
     @NotBlank
     private String groupName;
 
-    public TerminalGroupNameDuplicationRequest(UUID id, UUID parentId, String groupName) {
+    public CbbTerminalGroupNameDuplicationRequest(UUID id, UUID parentId, String groupName) {
         this.id = id;
         this.parentId = parentId;
         this.groupName = groupName;
