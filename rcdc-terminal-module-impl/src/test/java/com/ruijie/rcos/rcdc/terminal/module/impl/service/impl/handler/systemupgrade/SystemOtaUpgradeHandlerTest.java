@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
+import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
@@ -11,6 +13,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.Injectable;
 import mockit.Tested;
+import mockit.Verifications;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -142,4 +145,43 @@ public class SystemOtaUpgradeHandlerTest {
         return packageEntity;
     }
 
+    /**
+     * 添加系统升级任务后
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testAfterAddSystemUpgrade() throws BusinessException {
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setFilePath("filePath");
+        upgradePackage.setSeedPath("seedPath");
+
+        handler.afterAddSystemUpgrade(upgradePackage);
+
+        new Verifications() {
+            {
+                btClientAPI.startBtShare((BaseStartBtShareRequest) any);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 关闭系统升级任务后
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testAfterCloseSystemUpgrade() throws BusinessException {
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setSeedPath("seedPath");
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+
+        handler.afterCloseSystemUpgrade(upgradePackage, upgradeEntity);
+
+        new Verifications() {
+            {
+                btClientAPI.stopBtShare((BaseStopBtShareRequest) any);
+                times = 1;
+            }
+        };
+    }
 }

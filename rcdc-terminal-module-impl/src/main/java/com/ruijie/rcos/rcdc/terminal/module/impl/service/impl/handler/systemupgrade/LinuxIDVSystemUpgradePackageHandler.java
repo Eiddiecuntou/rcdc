@@ -116,7 +116,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     private void readVersionFile(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
-        String versionFilePath = Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH;
+        String versionFilePath = getVersionFilePath();
         Properties prop = new Properties();
         try (InputStream in = new FileInputStream(versionFilePath)) {
             prop.load(in);
@@ -138,15 +138,19 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION));
     }
 
+    private String getVersionFilePath() {
+        return Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH;
+    }
+
     private void readOtaList(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
-        String otaListPath = Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_LIST_PATH;
+        String otaListPath = getOtaListPath();
 
         // 读取OTA文件列表
         List<String> otaFileList = Lists.newArrayList();
         try (FileReader reader = new FileReader(otaListPath);
              BufferedReader buffer = new BufferedReader(reader)) {
             String line;
-            if ((line = buffer.readLine()) != null && StringUtils.isNotBlank(line)) {
+            while ((line = buffer.readLine()) != null && StringUtils.isNotBlank(line)) {
                 otaFileList.add(line.trim());
             }
         } catch (FileNotFoundException e) {
@@ -180,5 +184,9 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_LIST_INCORRECT);
             }
         }
+    }
+
+    private String getOtaListPath() {
+        return Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_LIST_PATH;
     }
 }

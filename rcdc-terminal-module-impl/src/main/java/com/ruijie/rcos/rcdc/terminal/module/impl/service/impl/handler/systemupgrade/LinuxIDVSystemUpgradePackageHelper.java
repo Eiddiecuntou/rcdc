@@ -28,10 +28,6 @@ public class LinuxIDVSystemUpgradePackageHelper {
      */
     private static final String OTA_LIST_SEPARATOR = " ";
 
-    private static final Integer FILE_MD5_INDEX = 0;
-
-    private static final Integer FILE_PATH_INDEX = 1;
-
     /**
      * 解析OTA文件列表项，并复制到指定目录
      * @param otaListItem OTA文件列表项
