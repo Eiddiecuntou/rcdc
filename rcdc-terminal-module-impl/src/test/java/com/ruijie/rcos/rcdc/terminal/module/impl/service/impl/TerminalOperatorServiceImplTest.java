@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -848,5 +849,108 @@ public class TerminalOperatorServiceImplTest {
         };
         operatorService.sendDetectRequest(entity);
         fail();
+    }
+
+
+    /**
+     *测试idv终端离线登录设置,，向在线IDV终端发送离线登录设置异常
+     *
+     *@throws BusinessException 业务异常
+     */
+    @Test
+    public void testOfflineLoginSettingWithException() throws BusinessException {
+        List<String> onlineTerminalIdList = Lists.newArrayList();
+        onlineTerminalIdList.add("terminalOne");
+        onlineTerminalIdList.add("terminalTwo");
+        onlineTerminalIdList.add("terminalThree");
+        TerminalEntity firstEntity = new TerminalEntity();
+        TerminalEntity secondEntity = new TerminalEntity();
+        secondEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new Expectations() {
+            {
+                sessionManager.getOnlineTerminalId();
+                result = onlineTerminalIdList;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                returns(null, firstEntity, secondEntity);
+            }
+        };
+        operatorService.offlineLoginSetting(0);
+        new Verifications() {
+            {
+                sessionManager.getOnlineTerminalId();
+                times = 1;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 3;
+            }
+        };
+    }
+
+    /**
+     *测试idv终端离线登录设置，不存在在线idv终端
+     *
+     *@throws BusinessException 业务异常
+     */
+    @Test
+    public void testOfflineLoginSettingWithNoOnlineIdv() throws BusinessException {
+        List<String> onlineTerminalIdList = Lists.newArrayList();
+        new Expectations() {
+            {
+                sessionManager.getOnlineTerminalId();
+                result = onlineTerminalIdList;
+            }
+        };
+        operatorService.offlineLoginSetting(0);
+        new Verifications() {
+            {
+                sessionManager.getOnlineTerminalId();
+                times = 1;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     *测试idv终端离线登录设置
+     *
+     * @throws Exception exception
+     */
+    @Test
+    public void testOfflineLoginSetting() throws Exception {
+        List<String> onlineTerminalIdList = Lists.newArrayList();
+        onlineTerminalIdList.add("terminalOne");
+        TerminalEntity entity = new TerminalEntity();
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+
+        String action = "action";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+                } catch (BusinessException e) {
+                    result = sender;
+                }
+                sender.syncRequest((Message) any);
+                result = baseMessage;
+                sessionManager.getOnlineTerminalId();
+                result = onlineTerminalIdList;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.offlineLoginSetting(0);
+        Thread.sleep(1000);
+        new Verifications() {
+            {
+                sessionManager.getOnlineTerminalId();
+                times = 1;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 1;
+            }
+        };
     }
 }

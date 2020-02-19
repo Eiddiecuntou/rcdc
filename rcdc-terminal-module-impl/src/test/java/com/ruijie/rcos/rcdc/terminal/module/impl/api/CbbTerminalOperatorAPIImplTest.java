@@ -9,6 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
@@ -323,6 +324,19 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testClearIdvTerminalDataDisk() throws BusinessException {
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
         DefaultResponse response = terminalOperatorAPI.clearIdvTerminalDataDisk(request);
+        assertEquals(response.getStatus(),Status.SUCCESS);
+    }
+
+
+    /**
+     *测试IDV终端离线登录设置
+     *
+     *@throws BusinessException 业务异常
+     */
+    @Test
+    public void testIdvOfflineLoginSetting() throws BusinessException {
+        OfflineLoginSettingRequest request = new OfflineLoginSettingRequest(0);
+        DefaultResponse response = terminalOperatorAPI.idvOfflineLoginSetting(request);
         assertEquals(response.getStatus(),Status.SUCCESS);
     }
 
