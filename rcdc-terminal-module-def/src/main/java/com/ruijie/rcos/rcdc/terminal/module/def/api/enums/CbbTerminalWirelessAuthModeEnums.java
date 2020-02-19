@@ -36,7 +36,7 @@ public enum CbbTerminalWirelessAuthModeEnums {
         Assert.hasText(name, "name can not be blank");
 
         for (CbbTerminalWirelessAuthModeEnums value : CbbTerminalWirelessAuthModeEnums.values()) {
-            if (value.getName().equals(name)) {
+            if (value.getName().equalsIgnoreCase(name)) {
                 return value;
             }
         }

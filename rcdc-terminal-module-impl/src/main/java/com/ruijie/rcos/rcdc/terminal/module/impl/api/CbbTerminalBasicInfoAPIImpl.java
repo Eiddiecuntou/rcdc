@@ -2,23 +2,21 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNetworkInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalNetworkInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
@@ -51,9 +49,6 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     @Autowired
     private TerminalGroupService terminalGroupService;
 
-    @Autowired
-    private TerminalNetworkInfoDAO terminalNetworkInfoDAO;
-
     @Override
     public CbbTerminalBasicInfoResponse findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
@@ -61,10 +56,33 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
+
         CbbTerminalBasicInfoResponse basicInfoDTO = new CbbTerminalBasicInfoResponse();
         BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO);
         basicInfoDTO.setTerminalPlatform(basicInfoEntity.getPlatform());
+        basicInfoDTO.setNetworkInfoArr(obtainNetworkInfo(basicInfoEntity.getNetworkInfos()));
         return basicInfoDTO;
+    }
+
+    private CbbTerminalNetworkInfoDTO[] obtainNetworkInfo(String networkInfos) throws BusinessException {
+        if (StringUtils.isBlank(networkInfos)) {
+            return new CbbTerminalNetworkInfoDTO[0];
+        }
+
+        List<CbbTerminalNetworkInfoDTO> networkInfoDTOList;
+        LOGGER.debug("终端网络信息：{}", networkInfos);
+        try {
+            networkInfoDTOList = JSON.parseArray(networkInfos, CbbTerminalNetworkInfoDTO.class);
+        } catch (Exception e) {
+            LOGGER.error("终端网络信息异常", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NETWORK_INFO_ERROR, e);
+        }
+
+        if (CollectionUtils.isEmpty(networkInfoDTOList)) {
+            return new CbbTerminalNetworkInfoDTO[0];
+        }
+
+        return networkInfoDTOList.toArray(new CbbTerminalNetworkInfoDTO[networkInfoDTOList.size()]);
     }
 
     @Override
@@ -110,24 +128,6 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         basicInfoDAO.save(entity);
 
         return DefaultResponse.Builder.success();
-    }
-
-    @Override
-    public CbbTerminalNetworkInfoResponse getTerminalNetworkInfo(CbbTerminalIdRequest request) {
-        Assert.notNull(request, "request can not be null");
-
-        List<TerminalNetworkInfoEntity> networkInfoList = terminalNetworkInfoDAO.findByTerminalId(request.getTerminalId());
-        if (CollectionUtils.isEmpty(networkInfoList)) {
-            return new CbbTerminalNetworkInfoResponse(new CbbTerminalNetworkInfoDTO[] {});
-        }
-
-        List<CbbTerminalNetworkInfoDTO> dtoList = Lists.newArrayList();
-        for (TerminalNetworkInfoEntity entity : networkInfoList) {
-            CbbTerminalNetworkInfoDTO networkInfoDTO = new CbbTerminalNetworkInfoDTO();
-            BeanUtils.copyProperties(entity, networkInfoDTO);
-            dtoList.add(networkInfoDTO);
-        }
-        return new CbbTerminalNetworkInfoResponse(dtoList.toArray(new CbbTerminalNetworkInfoDTO[dtoList.size()]));
     }
 
     private TerminalEntity getTerminalEntity(String terminalId) throws BusinessException {

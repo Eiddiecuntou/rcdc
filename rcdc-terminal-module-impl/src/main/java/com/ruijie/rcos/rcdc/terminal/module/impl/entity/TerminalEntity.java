@@ -2,9 +2,12 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.*;
 
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 
@@ -93,6 +96,8 @@ public class TerminalEntity {
     private CbbTerminalWirelessAuthModeEnums wirelessAuthMode;
 
     private String productId;
+
+    private String networkInfos;
 
     public UUID getId() {
         return id;
@@ -357,5 +362,13 @@ public class TerminalEntity {
 
     public void setWirelessAuthMode(CbbTerminalWirelessAuthModeEnums wirelessAuthMode) {
         this.wirelessAuthMode = wirelessAuthMode;
+    }
+
+    public String getNetworkInfos() {
+        return networkInfos;
+    }
+
+    public void setNetworkInfos(String networkInfos) {
+        this.networkInfos = networkInfos;
     }
 }

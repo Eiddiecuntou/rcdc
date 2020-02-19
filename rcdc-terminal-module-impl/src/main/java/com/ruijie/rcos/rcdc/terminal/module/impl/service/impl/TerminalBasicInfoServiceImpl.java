@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalModelDriverDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalModelDriverEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalNetworkInfoEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeHostNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
@@ -58,9 +57,6 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Autowired
-    private TerminalNetworkInfoDAO networkInfoDAO;
-
-    @Autowired
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
     @Autowired
@@ -84,13 +80,12 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity);
         basicInfoEntity.setLastOnlineTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
+        CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
+        basicInfoEntity.setNetworkInfos(JSON.toJSONString(networkInfoDTOArr));
         basicInfoDAO.save(basicInfoEntity);
 
         // 自学习终端型号
         saveTerminalModel(shineTerminalBasicInfo);
-
-        // 保存终端网络信息
-        saveTerminalNetworkInfo(shineTerminalBasicInfo);
 
         // 通知其他组件终端为在线状态
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
@@ -98,21 +93,14 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 
-    private void saveTerminalNetworkInfo(CbbShineTerminalBasicInfo basicInfo) {
-        // 删除数据库中的网络信息记录，重新添加
-        networkInfoDAO.deleteByTerminalId(basicInfo.getTerminalId());
-
+    private CbbTerminalNetworkInfoDTO[] obtainNetworkInfo(CbbShineTerminalBasicInfo basicInfo) {
         CbbTerminalNetworkInfoDTO[] networkInfoArr = basicInfo.getNetworkInfoArr();
         if (ArrayUtils.isEmpty(networkInfoArr)) {
-            networkInfoArr = buildNetworkInfoArr(basicInfo);
+            // 兼容旧版本终端将网络信息保存在基本信息中
+            return buildNetworkInfoArr(basicInfo);
         }
 
-        for (CbbTerminalNetworkInfoDTO networkInfoDTO : networkInfoArr) {
-            TerminalNetworkInfoEntity networkInfoEntity = new TerminalNetworkInfoEntity();
-            BeanUtils.copyProperties(networkInfoDTO, networkInfoEntity);
-            networkInfoEntity.setTerminalId(basicInfo.getTerminalId());
-            networkInfoDAO.save(networkInfoEntity);
-        }
+        return networkInfoArr;
     }
 
     private CbbTerminalNetworkInfoDTO[] buildNetworkInfoArr(CbbShineTerminalBasicInfo basicInfo) {

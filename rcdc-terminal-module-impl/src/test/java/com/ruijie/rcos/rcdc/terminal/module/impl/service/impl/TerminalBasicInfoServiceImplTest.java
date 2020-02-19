@@ -19,7 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalModelDriverDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalModelDriverEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
@@ -60,9 +59,6 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private TerminalModelDriverDAO terminalModelDriverDAO;
-
-    @Injectable
-    private TerminalNetworkInfoDAO networkInfoDAO;
 
     /**
      * 测试修改终端名称成功

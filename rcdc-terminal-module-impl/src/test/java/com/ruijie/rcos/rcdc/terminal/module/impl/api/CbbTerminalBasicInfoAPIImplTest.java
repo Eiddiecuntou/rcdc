@@ -3,37 +3,28 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
-import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNetworkInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalNetworkInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalNetworkInfoEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -61,9 +52,6 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
     @Injectable
     private TerminalGroupService terminalGroupService;
-
-    @Injectable
-    private TerminalNetworkInfoDAO terminalNetworkInfoDAO;
 
     /**
      * 查找不到数据
@@ -374,47 +362,8 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
     }
 
-    @Test
-    public void testGetTerminalNetworkInfoNetworkInfoIsEmpty() {
-        String terminalId = "111";
-        new Expectations() {
-            {
-                terminalNetworkInfoDAO.findByTerminalId(terminalId);
-                result = Collections.EMPTY_LIST;
-            }
-        };
 
-        CbbTerminalNetworkInfoResponse terminalNetworkInfo = terminalBasicInfoAPI.getTerminalNetworkInfo(new CbbTerminalIdRequest(terminalId));
-        assertEquals(0, terminalNetworkInfo.getItemArr().length);
-    }
 
-    @Test
-    public void testGetTerminalNetworkInfo() {
-        String terminalId = "111";
-        List<TerminalNetworkInfoEntity> networkInfoList = buildNetworkList();
-        CbbTerminalIdRequest idRequest = new CbbTerminalIdRequest(terminalId);
-        new Expectations() {
-            {
-                terminalNetworkInfoDAO.findByTerminalId(terminalId);
-                result = networkInfoList;
-
-            }
-        };
-
-        CbbTerminalNetworkInfoResponse terminalNetworkInfo = terminalBasicInfoAPI.getTerminalNetworkInfo(idRequest);
-        assertEquals(1, terminalNetworkInfo.getItemArr().length);
-        assertEquals(terminalNetworkInfo.getItemArr()[0], getItemArr()[0]);
-
-        new Verifications() {
-            {
-                terminalNetworkInfoDAO.findByTerminalId(terminalId);
-                times = 1;
-
-                terminalBasicInfoAPI.getTerminalNetworkInfo(idRequest);
-                times = 1;
-            }
-        };
-    }
 
     private CbbTerminalNetworkInfoDTO[] getItemArr() {
         CbbTerminalNetworkInfoDTO[] itemArr = new CbbTerminalNetworkInfoDTO[1];
@@ -433,26 +382,6 @@ public class CbbTerminalBasicInfoAPIImplTest {
 
         return itemArr;
     }
-
-    private List<TerminalNetworkInfoEntity> buildNetworkList() {
-        List<TerminalNetworkInfoEntity> networkInfoList = Lists.newArrayList();
-        TerminalNetworkInfoEntity networkInfoEntity = new TerminalNetworkInfoEntity();
-        networkInfoEntity.setTerminalId("123");
-        networkInfoEntity.setGateway("456");
-        networkInfoEntity.setGetDnsMode(CbbGetNetworkModeEnums.AUTO);
-        networkInfoEntity.setGetIpMode(CbbGetNetworkModeEnums.MANUAL);
-        networkInfoEntity.setIp("789");
-        networkInfoEntity.setMacAddr("abc");
-        networkInfoEntity.setSsid("ssid");
-        networkInfoEntity.setMainDns("mainDns");
-        networkInfoEntity.setSecondDns("secondDns");
-        networkInfoEntity.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
-        networkInfoEntity.setSubnetMask("subnetMask");
-        networkInfoList.add(networkInfoEntity);
-
-        return networkInfoList;
-    }
-
 
 
 }
