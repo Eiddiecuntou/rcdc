@@ -1,26 +1,24 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
-import mockit.Verifications;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -153,16 +151,19 @@ public class SystemOtaUpgradeHandlerTest {
     public void testAfterAddSystemUpgrade() throws BusinessException {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         upgradePackage.setFilePath("filePath");
-        upgradePackage.setSeedPath("seedPath");
+        upgradePackage.setSeedPath("seedPath.torrent");
 
-        handler.afterAddSystemUpgrade(upgradePackage);
-
-        new Verifications() {
+        new Expectations(BtClientUtil.class) {
             {
-                btClientAPI.startBtShare((BaseStartBtShareRequest) any);
-                times = 1;
+                BtClientUtil.startBtShare(anyString, anyString);
             }
         };
+
+        try {
+            handler.afterAddSystemUpgrade(upgradePackage);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 
     /**
@@ -172,16 +173,19 @@ public class SystemOtaUpgradeHandlerTest {
     @Test
     public void testAfterCloseSystemUpgrade() throws BusinessException {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
-        upgradePackage.setSeedPath("seedPath");
+        upgradePackage.setSeedPath("seedPath.torrent");
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
 
-        handler.afterCloseSystemUpgrade(upgradePackage, upgradeEntity);
-
-        new Verifications() {
+        new Expectations(BtClientUtil.class) {
             {
-                btClientAPI.stopBtShare((BaseStopBtShareRequest) any);
-                times = 1;
+                BtClientUtil.stopBtShare(anyString);
             }
         };
+
+        try {
+            handler.afterCloseSystemUpgrade(upgradePackage, upgradeEntity);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 }

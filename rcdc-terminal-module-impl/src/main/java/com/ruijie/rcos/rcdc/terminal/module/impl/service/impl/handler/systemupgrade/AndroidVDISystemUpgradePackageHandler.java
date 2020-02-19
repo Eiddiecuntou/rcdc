@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -53,7 +54,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
             TerminalUpgradeVersionFileInfo upgradeInfo =
                     systemUpgradePackageHelper.checkVersionInfo(packagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
             // 制作Bt种子
-            SeedFileInfoDTO seedFileInfo = makeBtSeed(packagePath, Constants.TERMINAL_UPGRADE_OTA_SEED_FILE);
+            SeedFileInfoDTO seedFileInfo = BtClientUtil.makeBtSeed(packagePath, Constants.TERMINAL_UPGRADE_OTA_SEED_FILE);
 
             upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
             upgradeInfo.setPackageName(fileName);

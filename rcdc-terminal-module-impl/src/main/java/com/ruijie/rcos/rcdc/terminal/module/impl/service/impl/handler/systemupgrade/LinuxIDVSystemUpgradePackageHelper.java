@@ -1,15 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.util.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.io.File;
+import java.io.*;
+import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -92,6 +96,50 @@ public class LinuxIDVSystemUpgradePackageHelper {
         File packageDir = new File(targetDirPath);
         final long usableSpace = packageDir.getUsableSpace();
         return usableSpace >= expectedFileSize;
+    }
+
+    /**
+     * 读取升级包版本文件
+     * @param versionFilePath 版本文件路径
+     * @return 升级包版本信息
+     * @throws BusinessException 业务异常
+     */
+    Properties getVersionProperties(String versionFilePath) throws BusinessException {
+        Properties prop = new Properties();
+        try (InputStream in = new FileInputStream(versionFilePath)) {
+            prop.load(in);
+        } catch (FileNotFoundException e) {
+            LOGGER.debug("version file not found, file path[{}]", versionFilePath);
+            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST, e);
+        } catch (IOException e) {
+            LOGGER.debug("version file read error, file path[{}]", versionFilePath);
+            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+        }
+        return prop;
+    }
+
+    /**
+     * 读取OTA文件列表信息
+     * @param otaListPath 文件列表路径
+     * @return 文件列表项
+     * @throws BusinessException 业务异常
+     */
+    List<String> getOtaFilesInfo(String otaListPath) throws BusinessException {
+        List<String> otaFileList = Lists.newArrayList();
+        try (FileReader reader = new FileReader(otaListPath);
+             BufferedReader buffer = new BufferedReader(reader)) {
+            String line;
+            while ((line = buffer.readLine()) != null && StringUtils.isNotBlank(line)) {
+                otaFileList.add(line.trim());
+            }
+        } catch (FileNotFoundException e) {
+            LOGGER.debug("ota list file not found, file path[{}]", otaListPath);
+            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST, e);
+        } catch (IOException e) {
+            LOGGER.debug("ota list file read error, file path[{}]", otaListPath);
+            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+        }
+        return otaFileList;
     }
 
     /**

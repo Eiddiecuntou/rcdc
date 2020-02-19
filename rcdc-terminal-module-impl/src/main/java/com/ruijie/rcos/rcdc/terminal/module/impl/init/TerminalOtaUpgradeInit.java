@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -12,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEnt
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -50,9 +49,6 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
     @Autowired
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
 
-    @Autowired
-    private BtClientAPI btClientAPI;
-
     @Override
     public void safeInit() {
         // 初始化VDI Android的OTA包
@@ -79,10 +75,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
         if (!CollectionUtils.isEmpty(upgradingTaskList)) {
             try {
-                BaseStartBtShareRequest apiRequest = new BaseStartBtShareRequest();
-                apiRequest.setSeedFilePath(upgradePackage.getSeedPath());
-                apiRequest.setFilePath(upgradePackage.getFilePath());
-                btClientAPI.startBtShare(apiRequest);
+                BtClientUtil.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
             } catch (Exception e) {
                 LOGGER.error("开始BT服务失败", e);
             }

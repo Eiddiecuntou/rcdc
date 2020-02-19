@@ -1,21 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
-import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import mockit.*;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -24,7 +21,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -66,11 +66,7 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
     public void after() {
         String rootPath = this.getClass().getResource("/").getPath();
         String isoFilePath = rootPath + "IDVSystemPackage.iso";
-        String versionFilePath = rootPath + "version.properties";
-        String otaListPath = rootPath + "ots.list";
         new File(isoFilePath).delete();
-        new File(versionFilePath).delete();
-        new File(otaListPath).delete();
     }
     /**
      * 获取systemUpgradePackageService
@@ -95,25 +91,22 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         isoFile.createNewFile();
 
         String versionFilePath = rootPath + "version.properties";
-        try (FileOutputStream fos = new FileOutputStream(versionFilePath)) {
-            fos.write("plat=IDV\nversion=1.0".getBytes());
-        }
-
         String otaListPath = rootPath + "ots.list";
-        try (FileOutputStream fos = new FileOutputStream(otaListPath)) {
-            fos.write("packageMD5 /rainos-img.squashfs\nscriptMD5 /OTAPreRunFun.bash".getBytes());
-        }
+
+        Properties prop = new Properties();
+        prop.setProperty("plat", "IDV");
+        prop.setProperty("version", "1.0");
+
+        List<String> otaFileInfoList = Lists.newArrayList();
+        otaFileInfoList.add("packageMD5 /rainos-img.squashfs");
+        otaFileInfoList.add("scriptMD5 /OTAPreRunFun.bash");
 
         LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
                 new LinuxIDVSystemUpgradePackageHelper.OtaFileInfo("filePath", "md5");
-        BaseDetailNetworkInfoResponse networkInfoResponse = new BaseDetailNetworkInfoResponse();
-        BaseNetworkDTO networkDTO = new BaseNetworkDTO();
-        networkDTO.setIp("0.0.0.0");
-        networkInfoResponse.setNetworkDTO(networkDTO);
-        SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedFilePath", "seedFileMD5");
-        DtoResponse<SeedFileInfoDTO> seedResponse = DtoResponse.success(seedFileInfoDTO);
 
-        new Expectations(FileOperateUtil.class) {
+        SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedFilePath", "seedFileMD5");
+
+        new Expectations(FileOperateUtil.class, BtClientUtil.class) {
             {
                 byteArrayOutputStream.toString();
                 result = "PASS";
@@ -121,12 +114,14 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
                 result = 0;
                 shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
                 result = "PASS";
+                helper.getVersionProperties(versionFilePath);
+                result = prop;
+                helper.getOtaFilesInfo(otaListPath);
+                result = otaFileInfoList;
                 helper.handleOtaListItem(anyString, anyString, anyString);
                 result = otaFileInfo;
-                networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
-                result = networkInfoResponse;
-                btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
-                result = seedResponse;
+                BtClientUtil.makeBtSeed(anyString, anyString);
+                result = seedFileInfoDTO;
                 FileOperateUtil.deleteFile((File) any);
             }
         };
@@ -181,101 +176,6 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
     }
 
     /**
-     * 获取升级包信息，版本文件不存在
-     * @throws BusinessException 异常
-     * @throws IOException 异常
-     */
-    @Test(expected = BusinessException.class)
-    public void testGetPackageInfoVersionFileNotExist() throws BusinessException, IOException {
-        String rootPath = this.getClass().getResource("/").getPath();
-
-        String isoFilePath = rootPath + "IDVSystemPackage.iso";
-        File isoFile = new File(isoFilePath);
-        isoFile.createNewFile();
-
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
-            }
-        };
-
-        new MockUp<File>() {
-            @Mock
-            boolean isDirectory() {
-                return false;
-            }
-
-            @Mock
-            boolean mkdirs() {
-                return true;
-            }
-        };
-
-        handler.getPackageInfo(isoFile.getName(), isoFile.getPath());
-
-        Assert.fail();
-    }
-
-    /**
-     * 获取升级包信息，读取版本文件异常
-     * @throws BusinessException 异常
-     * @throws IOException 异常
-     */
-    @Test(expected = BusinessException.class)
-    public void testGetPackageInfoVersionFileException() throws BusinessException, IOException {
-        String rootPath = this.getClass().getResource("/").getPath();
-
-        String isoFilePath = rootPath + "IDVSystemPackage.iso";
-        File isoFile = new File(isoFilePath);
-        isoFile.createNewFile();
-
-        String versionFilePath = rootPath + "version.properties";
-        File versionFile = new File(versionFilePath);
-        versionFile.createNewFile();
-
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
-            }
-        };
-
-        new MockUp<LinuxIDVSystemUpgradePackageHandler>() {
-            @Mock
-            String getVersionFilePath() {
-                return versionFilePath;
-            }
-        };
-
-        new MockUp<Properties>() {
-            @Mock
-            void load(InputStream inStream) throws IOException {
-                throw new IOException();
-            }
-        };
-
-        new MockUp<File>() {
-            @Mock
-            boolean isDirectory() {
-                return true;
-            }
-        };
-
-        handler.getPackageInfo(isoFile.getName(), isoFile.getPath());
-
-        Assert.fail();
-    }
-
-    /**
      * 获取升级包信息，升级包类型错误
      * @throws BusinessException 异常
      * @throws IOException 异常
@@ -289,9 +189,10 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         isoFile.createNewFile();
 
         String versionFilePath = rootPath + "version.properties";
-        try (FileOutputStream fos = new FileOutputStream(versionFilePath)) {
-            fos.write("plat=VDI\nversion=1.0".getBytes());
-        }
+
+        Properties prop = new Properties();
+        prop.setProperty("plat", "VDI");
+        prop.setProperty("version", "1.0");
 
         new Expectations() {
             {
@@ -301,6 +202,8 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
                 result = 0;
                 shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
                 result = "PASS";
+                helper.getVersionProperties(versionFilePath);
+                result = prop;
             }
         };
 
@@ -337,9 +240,9 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         isoFile.createNewFile();
 
         String versionFilePath = rootPath + "version.properties";
-        try (FileOutputStream fos = new FileOutputStream(versionFilePath)) {
-            fos.write("version=1.0".getBytes());
-        }
+
+        Properties prop = new Properties();
+        prop.setProperty("version", "1.0");
 
         new Expectations() {
             {
@@ -349,6 +252,8 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
                 result = 0;
                 shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
                 result = "PASS";
+                helper.getVersionProperties(versionFilePath);
+                result = prop;
             }
         };
 
@@ -356,119 +261,6 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
             @Mock
             String getVersionFilePath() {
                 return versionFilePath;
-            }
-        };
-
-        new MockUp<File>() {
-            @Mock
-            boolean isDirectory() {
-                return true;
-            }
-        };
-
-        handler.getPackageInfo(isoFile.getName(), isoFile.getPath());
-
-        Assert.fail();
-    }
-
-    /**
-     * 获取升级包信息，OTA文件列表不存在
-     * @throws BusinessException 异常
-     * @throws IOException 异常
-     */
-    @Test(expected = BusinessException.class)
-    public void testGetPackageInfoOtaListNotExist() throws BusinessException, IOException {
-        String rootPath = this.getClass().getResource("/").getPath();
-
-        String isoFilePath = rootPath + "IDVSystemPackage.iso";
-        File isoFile = new File(isoFilePath);
-        isoFile.createNewFile();
-
-        String versionFilePath = rootPath + "version.properties";
-        try (FileOutputStream fos = new FileOutputStream(versionFilePath)) {
-            fos.write("plat=IDV\nversion=1.0".getBytes());
-        }
-
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
-            }
-        };
-
-        new MockUp<LinuxIDVSystemUpgradePackageHandler>() {
-            @Mock
-            String getVersionFilePath() {
-                return versionFilePath;
-            }
-        };
-
-        new MockUp<File>() {
-            @Mock
-            boolean isDirectory() {
-                return true;
-            }
-        };
-
-        handler.getPackageInfo(isoFile.getName(), isoFile.getPath());
-
-        Assert.fail();
-    }
-
-    /**
-     * 获取升级包信息，OTA文件列表读取错误
-     * @throws BusinessException 异常
-     * @throws IOException 异常
-     */
-    @Test(expected = BusinessException.class)
-    public void testGetPackageInfoOtaListException() throws BusinessException, IOException {
-        String rootPath = this.getClass().getResource("/").getPath();
-
-        String isoFilePath = rootPath + "IDVSystemPackage.iso";
-        File isoFile = new File(isoFilePath);
-        isoFile.createNewFile();
-
-        String versionFilePath = rootPath + "version.properties";
-        try (FileOutputStream fos = new FileOutputStream(versionFilePath)) {
-            fos.write("plat=IDV\nversion=1.0".getBytes());
-        }
-
-        String otaListPath = rootPath + "ots.list";
-        try (FileOutputStream fos = new FileOutputStream(otaListPath)) {
-            fos.write("packageMD5 /rainos-img.squashfs\nscriptMD5 /OTAPreRunFun.bash".getBytes());
-        }
-
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
-            }
-        };
-
-        new MockUp<LinuxIDVSystemUpgradePackageHandler>() {
-            @Mock
-            String getVersionFilePath() {
-                return versionFilePath;
-            }
-
-            @Mock
-            String getOtaListPath() {
-                return otaListPath;
-            }
-        };
-
-        new MockUp<BufferedReader>() {
-            @Mock
-            String readLine() throws IOException {
-                throw new IOException();
             }
         };
 
@@ -498,14 +290,15 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         isoFile.createNewFile();
 
         String versionFilePath = rootPath + "version.properties";
-        try (FileOutputStream fos = new FileOutputStream(versionFilePath)) {
-            fos.write("plat=IDV\nversion=1.0".getBytes());
-        }
-
         String otaListPath = rootPath + "ots.list";
-        try (FileOutputStream fos = new FileOutputStream(otaListPath)) {
-            fos.write("packageMD5 /rainos-img\nscriptMD5 /OTAPreRunFun".getBytes());
-        }
+
+        Properties prop = new Properties();
+        prop.setProperty("plat", "IDV");
+        prop.setProperty("version", "1.0");
+
+        List<String> otaFileInfoList = Lists.newArrayList();
+        otaFileInfoList.add("packageMD5 /rainos-img");
+        otaFileInfoList.add("scriptMD5 /OTAPreRunFun");
 
         new Expectations() {
             {
@@ -515,6 +308,74 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
                 result = 0;
                 shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
                 result = "PASS";
+                helper.getVersionProperties(versionFilePath);
+                result = prop;
+                helper.getOtaFilesInfo(otaListPath);
+                result = otaFileInfoList;
+            }
+        };
+
+        new MockUp<LinuxIDVSystemUpgradePackageHandler>() {
+            @Mock
+            String getVersionFilePath() {
+                return versionFilePath;
+            }
+
+            @Mock
+            String getOtaListPath() {
+                return otaListPath;
+            }
+        };
+
+        new MockUp<File>() {
+            @Mock
+            boolean isDirectory() {
+                return true;
+            }
+        };
+
+        handler.getPackageInfo(isoFile.getName(), isoFile.getPath());
+
+        Assert.fail();
+    }
+
+    /**
+     * 获取升级包信息，OTA文件列表项数量错误
+     * @throws BusinessException 异常
+     * @throws IOException 异常
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetPackageInfoOtaListItemQualityError() throws BusinessException, IOException {
+        String rootPath = this.getClass().getResource("/").getPath();
+
+        String isoFilePath = rootPath + "IDVSystemPackage.iso";
+        File isoFile = new File(isoFilePath);
+        isoFile.createNewFile();
+
+        String versionFilePath = rootPath + "version.properties";
+        String otaListPath = rootPath + "ots.list";
+
+        Properties prop = new Properties();
+        prop.setProperty("plat", "IDV");
+        prop.setProperty("version", "1.0");
+
+        List<String> otaFileInfoList = Lists.newArrayList();
+        otaFileInfoList.add("packageMD5 /rainos-img");
+        otaFileInfoList.add("scriptMD5 /OTAPreRunFun");
+        otaFileInfoList.add("scriptMD5 /OTAPreRunFun");
+
+        new Expectations() {
+            {
+                byteArrayOutputStream.toString();
+                result = "PASS";
+                defaultExecutor.execute((CommandLine)any);
+                result = 0;
+                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
+                result = "PASS";
+                helper.getVersionProperties(versionFilePath);
+                result = prop;
+                helper.getOtaFilesInfo(otaListPath);
+                result = otaFileInfoList;
             }
         };
 
@@ -556,25 +417,21 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         isoFile.createNewFile();
 
         String versionFilePath = rootPath + "version.properties";
-        try (FileOutputStream fos = new FileOutputStream(versionFilePath)) {
-            fos.write("plat=IDV\nversion=1.0".getBytes());
-        }
-
         String otaListPath = rootPath + "ots.list";
-        try (FileOutputStream fos = new FileOutputStream(otaListPath)) {
-            fos.write("packageMD5 /rainos-img.squashfs\nscriptMD5 /OTAPreRunFun.bash".getBytes());
-        }
+
+        Properties prop = new Properties();
+        prop.setProperty("plat", "IDV");
+        prop.setProperty("version", "1.0");
+
+        List<String> otaFileInfoList = Lists.newArrayList();
+        otaFileInfoList.add("packageMD5 /rainos-img.squashfs");
+        otaFileInfoList.add("scriptMD5 /OTAPreRunFun.bash");
 
         LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
                 new LinuxIDVSystemUpgradePackageHelper.OtaFileInfo("filePath", "md5");
-        BaseDetailNetworkInfoResponse networkInfoResponse = new BaseDetailNetworkInfoResponse();
-        BaseNetworkDTO networkDTO = new BaseNetworkDTO();
-        networkDTO.setIp("0.0.0.0");
-        networkInfoResponse.setNetworkDTO(networkDTO);
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedFilePath", "seedFileMD5");
-        DtoResponse<SeedFileInfoDTO> seedResponse = DtoResponse.success(seedFileInfoDTO);
 
-        new Expectations() {
+        new Expectations(BtClientUtil.class) {
             {
                 byteArrayOutputStream.toString();
                 result = "PASS";
@@ -584,10 +441,12 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
                 result = "PASS";
                 helper.handleOtaListItem(anyString, anyString, anyString);
                 result = otaFileInfo;
-                networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
-                result = networkInfoResponse;
-                btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
-                result = seedResponse;
+                helper.getVersionProperties(versionFilePath);
+                result = prop;
+                helper.getOtaFilesInfo(otaListPath);
+                result = otaFileInfoList;
+                BtClientUtil.makeBtSeed(anyString, anyString);
+                result = seedFileInfoDTO;
             }
         };
 

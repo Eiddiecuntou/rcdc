@@ -1,8 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -12,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEnt
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -47,9 +46,6 @@ public class TerminalOtaUpgradeInitTest {
 
     @Injectable
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
-
-    @Injectable
-    private BtClientAPI btClientAPI;
 
     @Mocked
     private TerminalSystemUpgradePackageHandler handler;
@@ -180,8 +176,6 @@ public class TerminalOtaUpgradeInitTest {
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any,
                         (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 2;
-                btClientAPI.startBtShare((BaseStartBtShareRequest) any);
-                times = 0;
             }
         };
     }
@@ -200,13 +194,14 @@ public class TerminalOtaUpgradeInitTest {
         List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
         TerminalSystemUpgradeEntity terminalSystemUpgradeEntity = new TerminalSystemUpgradeEntity();
         upgradingTaskList.add(terminalSystemUpgradeEntity);
-        new Expectations() {
+        new Expectations(BtClientUtil.class) {
             {
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(id,
                         (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradingTaskList;
+                BtClientUtil.startBtShare("filePath", "seedPath");
             }
         };
 
@@ -219,11 +214,6 @@ public class TerminalOtaUpgradeInitTest {
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any,
                         (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 2;
-
-                BaseStartBtShareRequest request;
-                btClientAPI.startBtShare(request = withCapture());
-                Assert.assertEquals("seedPath", request.getSeedFilePath());
-                Assert.assertEquals("filePath", request.getFilePath());
             }
         };
     }
@@ -242,14 +232,14 @@ public class TerminalOtaUpgradeInitTest {
         List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
         TerminalSystemUpgradeEntity terminalSystemUpgradeEntity = new TerminalSystemUpgradeEntity();
         upgradingTaskList.add(terminalSystemUpgradeEntity);
-        new Expectations() {
+        new Expectations(BtClientUtil.class) {
             {
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(id,
                         (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradingTaskList;
-                btClientAPI.startBtShare((BaseStartBtShareRequest) any);
+                BtClientUtil.startBtShare(anyString, anyString);
                 result = new Exception("xxx");
             }
         };
@@ -262,8 +252,6 @@ public class TerminalOtaUpgradeInitTest {
                 times = 2;
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any,
                         (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 2;
-                btClientAPI.startBtShare((BaseStartBtShareRequest) any);
                 times = 2;
             }
         };

@@ -8,11 +8,14 @@ import mockit.Expectations;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Tested;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.File;
+import java.io.*;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Description: Function Description
@@ -27,6 +30,15 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     @Tested
     private LinuxIDVSystemUpgradePackageHelper helper;
+
+    @After
+    public void after() {
+        String rootPath = this.getClass().getResource("/").getPath();
+        String versionFilePath = rootPath + "version.properties";
+        String otaListPath = rootPath + "ots.list";
+        new File(versionFilePath).delete();
+        new File(otaListPath).delete();
+    }
 
     /**
      * 处理OTA文件列表项，正常流程
@@ -190,6 +202,124 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
         };
 
         helper.handleOtaListItem(otaListItem, rootPath, destFileName);
+
+        Assert.fail();
+    }
+
+    /**
+     * 读取版本文件，正常流程
+     * @throws IOException 异常
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testGetVersionProperties() throws IOException, BusinessException {
+        String rootPath = this.getClass().getResource("/").getPath();
+        String versionFilePath = rootPath + "version.properties";
+        try (FileOutputStream fos = new FileOutputStream(versionFilePath)) {
+            fos.write("plat=IDV\nversion=1.0".getBytes());
+        }
+
+        Properties versionProperties = helper.getVersionProperties(versionFilePath);
+
+        Assert.assertEquals("IDV", versionProperties.getProperty("plat"));
+        Assert.assertEquals("1.0", versionProperties.getProperty("version"));
+    }
+
+    /**
+     * 读取版本文件，文件不存在
+     * @throws IOException 异常
+     * @throws BusinessException 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testGetVersionPropertiesNotExist() throws IOException, BusinessException {
+        String rootPath = this.getClass().getResource("/").getPath();
+        String versionFilePath = rootPath + "version.properties";
+
+        helper.getVersionProperties(versionFilePath);
+
+        Assert.fail();
+    }
+
+    /**
+     * 读取版本文件，异常
+     * @throws IOException 异常
+     * @throws BusinessException 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testGetVersionPropertiesException() throws IOException, BusinessException {
+        String rootPath = this.getClass().getResource("/").getPath();
+        String versionFilePath = rootPath + "version.properties";
+        File versionFile = new File(versionFilePath);
+        versionFile.createNewFile();
+
+        new MockUp<Properties>() {
+            @Mock
+            void load(InputStream inStream) throws IOException {
+                throw new IOException();
+            }
+        };
+
+        helper.getVersionProperties(versionFilePath);
+
+        Assert.fail();
+    }
+
+    /**
+     * 读取OTA文件列表，正常流程
+     * @throws IOException 异常
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testGetOtaFilesInfo() throws IOException, BusinessException {
+        String rootPath = this.getClass().getResource("/").getPath();
+        String otaListPath = rootPath + "ots.list";
+        try (FileOutputStream fos = new FileOutputStream(otaListPath)) {
+            fos.write("packageMD5 /rainos-img.squashfs\nscriptMD5 /OTAPreRunFun.bash".getBytes());
+        }
+
+        List<String> otaFilesInfoList = helper.getOtaFilesInfo(otaListPath);
+
+        Assert.assertEquals(2, otaFilesInfoList.size());
+        Assert.assertTrue(otaFilesInfoList.get(0).endsWith("rainos-img.squashfs"));
+        Assert.assertTrue(otaFilesInfoList.get(1).endsWith("OTAPreRunFun.bash"));
+    }
+
+    /**
+     * 读取OTA文件列表，列表不存在
+     * @throws IOException 异常
+     * @throws BusinessException 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testGetOtaFilesInfoNotExist() throws IOException, BusinessException {
+        String rootPath = this.getClass().getResource("/").getPath();
+        String otaListPath = rootPath + "ots.list";
+
+        helper.getOtaFilesInfo(otaListPath);
+
+        Assert.fail();
+    }
+
+    /**
+     * 读取OTA文件列表，列表读取错误
+     * @throws IOException 异常
+     * @throws BusinessException 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testGetOtaFilesInfoException() throws IOException, BusinessException {
+        String rootPath = this.getClass().getResource("/").getPath();
+        String otaListPath = rootPath + "ots.list";
+        try (FileOutputStream fos = new FileOutputStream(otaListPath)) {
+            fos.write("packageMD5 /rainos-img.squashfs\nscriptMD5 /OTAPreRunFun.bash".getBytes());
+        }
+
+        new MockUp<BufferedReader>() {
+            @Mock
+            String readLine() throws IOException {
+                throw new IOException();
+            }
+        };
+
+        helper.getOtaFilesInfo(otaListPath);
 
         Assert.fail();
     }

@@ -1,14 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -37,9 +35,6 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
 
     @Autowired
     private TerminalSystemUpgradeService systemUpgradeService;
-
-    @Autowired
-    private BtClientAPI btClientAPI;
 
     @Override
     protected TerminalSystemUpgradeService getSystemUpgradeService() {
@@ -102,10 +97,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
 
         // 开启BT分享
         LOGGER.info("开启安卓系统升级bt分享");
-        BaseStartBtShareRequest apiRequest = new BaseStartBtShareRequest();
-        apiRequest.setSeedFilePath(upgradePackage.getSeedPath());
-        apiRequest.setFilePath(upgradePackage.getFilePath());
-        btClientAPI.startBtShare(apiRequest);
+        BtClientUtil.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
     }
 
     @Override
@@ -116,9 +108,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
 
         // 关闭BT分享
         LOGGER.info("关闭安卓系统升级bt分享");
-        BaseStopBtShareRequest apiRequest = new BaseStopBtShareRequest();
-        apiRequest.setSeedFilePath(upgradePackage.getSeedPath());
-        btClientAPI.stopBtShare(apiRequest);
+        BtClientUtil.stopBtShare(upgradePackage.getSeedPath());
     }
 
     @Override

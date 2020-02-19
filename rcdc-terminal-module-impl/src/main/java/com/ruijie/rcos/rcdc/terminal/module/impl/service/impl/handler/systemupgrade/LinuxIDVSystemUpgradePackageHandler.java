@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.google.common.collect.Lists;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -9,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.io.*;
+import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
@@ -84,7 +84,8 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         }
 
         // 制作OTA包种子文件
-        SeedFileInfoDTO seedInfo = makeBtSeed(versionInfo.getFilePath(), Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE);
+        SeedFileInfoDTO seedInfo =
+                BtClientUtil.makeBtSeed(versionInfo.getFilePath(), Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE);
 
         // 组装升级包信息
         versionInfo.setPackageType(CbbTerminalTypeEnums.IDV_LINUX);
@@ -119,16 +120,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
     private void readVersionFile(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
         String versionFilePath = getVersionFilePath();
-        Properties prop = new Properties();
-        try (InputStream in = new FileInputStream(versionFilePath)) {
-            prop.load(in);
-        } catch (FileNotFoundException e) {
-            LOGGER.debug("version file not found, file path[{}]", versionFilePath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST, e);
-        } catch (IOException e) {
-            LOGGER.debug("version file read error, file path[{}]", versionFilePath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
-        }
+        Properties prop = helper.getVersionProperties(versionFilePath);
 
         String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE);
         if (!StringUtils.hasText(platType) || !platType.equals(CbbTerminalPlatformEnums.IDV.name())) {
@@ -148,20 +140,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         String otaListPath = getOtaListPath();
 
         // 读取OTA文件列表
-        List<String> otaFileList = Lists.newArrayList();
-        try (FileReader reader = new FileReader(otaListPath);
-             BufferedReader buffer = new BufferedReader(reader)) {
-            String line;
-            while ((line = buffer.readLine()) != null && StringUtils.isNotBlank(line)) {
-                otaFileList.add(line.trim());
-            }
-        } catch (FileNotFoundException e) {
-            LOGGER.debug("ota list file not found, file path[{}]", otaListPath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST, e);
-        } catch (IOException e) {
-            LOGGER.debug("ota list file read error, file path[{}]", otaListPath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
-        }
+        List<String> otaFileList = helper.getOtaFilesInfo(otaListPath);
 
         Assert.isTrue(otaFileList.size() == OTA_FILE_LIST_SIZE, "ota file list is invalid!");
         for (String otaListItem : otaFileList) {
