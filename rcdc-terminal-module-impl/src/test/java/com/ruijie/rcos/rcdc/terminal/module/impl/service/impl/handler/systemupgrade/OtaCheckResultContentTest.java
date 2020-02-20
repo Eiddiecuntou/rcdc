@@ -1,12 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.test.GetSetTester;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.test.GetSetTester;
 
 /**
  * Description: Function Description
@@ -17,14 +15,14 @@ import com.ruijie.rcos.sk.base.test.GetSetTester;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
-public class AndroidVDICheckResultContentTest {
+public class OtaCheckResultContentTest {
 
     /**
      * 测试GetVersionRequest请求
      */
     @Test
     public void testAndroidVDICheckResultContent() {
-        GetSetTester tester = new GetSetTester(AndroidVDICheckResultContent.class);
+        GetSetTester tester = new GetSetTester(OtaCheckResultContent.class);
         tester.runTest();
         Assert.assertTrue(true);
     }

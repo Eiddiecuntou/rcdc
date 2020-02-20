@@ -1,32 +1,29 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.UUID;
-
-import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
+import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
 import mockit.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -96,8 +93,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
         SeedFileInfo seedFileInfo = new SeedFileInfo("/abc/seed.torrent", "123aaa");
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("/abc/seed.torrent", "123aaa");
-        DtoResponse<SeedFileInfoDTO> dtoDtoResponse= DtoResponse.success(seedFileInfoDTO);
-        new Expectations() {
+        new Expectations(BtClientUtil.class) {
             {
                 systemUpgradePackageHelper.unZipPackage(filePath, savePackageName);
                 result = savePackagePath;
@@ -105,8 +101,8 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
                 systemUpgradePackageHelper.checkVersionInfo(savePackagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
                 result = upgradeInfo;
 
-                btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
-                result = dtoDtoResponse;
+                BtClientUtil.makeBtSeed(anyString, anyString);
+                result = seedFileInfoDTO;
                 
                 
             }
@@ -181,8 +177,6 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
                 systemUpgradePackageHelper.checkVersionInfo(savePackagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
                 result = upgradeInfo;
-                btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
-                result = null;
 
             }
         };
@@ -191,7 +185,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
             handler.getPackageInfo("123.zip", filePath);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_BT_MAKE_SEED_FILE_FAIL, e.getKey());
         }
 
         new Verifications() {

@@ -1,31 +1,26 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.Properties;
-import java.util.UUID;
-
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
+import com.ruijie.rcos.sk.base.util.IsoFileUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.Properties;
+import java.util.UUID;
 
 /**
  * Description: Function Description
@@ -39,8 +34,6 @@ import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePackageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDISystemUpgradePackageHandler.class);
-
-    private static final String ISO_FILE_MD5_CHECK_SUCCESS_FLAG = "PASS";
 
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
@@ -62,7 +55,9 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR);
         }
         //使用checkisomd5校验升级包
-        checkISOMd5(filePath);
+        if (!IsoFileUtil.checkISOMd5(filePath)) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
+        }
 
         checkNecessaryDirExist();
 
@@ -97,46 +92,11 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
     }
 
-    private void checkISOMd5(String filePath) throws BusinessException {
-        LOGGER.debug("check iso md5，file path: {}", filePath);
-        String mountCmd = String.format(Constants.SYSTEM_CMD_CHECK_ISO_MD5, filePath);
-
-        LOGGER.debug("check iso md5, cmd : {}", mountCmd);
-        String outStr = executeCommand(mountCmd);
-        LOGGER.info("check iso md5, outStr: {}", outStr);
-
-        if (StringUtils.isBlank(outStr) || !outStr.contains(ISO_FILE_MD5_CHECK_SUCCESS_FLAG) ) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
-        }
-        LOGGER.info("check iso md5 success");
-    }
-
-    private String executeCommand(String mountCmd) throws BusinessException {
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        PumpStreamHandler psh = new PumpStreamHandler(stdout);
-        CommandLine cl = CommandLine.parse(mountCmd);
-        DefaultExecutor exec = new DefaultExecutor();
-        exec.setStreamHandler(psh);
-        try {
-            exec.execute(cl);
-            return stdout.toString();
-        } catch (IOException e) {
-            LOGGER.error("exec.execute [{}] has IOException", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e);
-        } finally {
-            try {
-                stdout.close();
-            } catch (IOException e) {
-                LOGGER.error("stdout.close() has IOException", e);
-            }
-        }
-    }
-
     private TerminalUpgradeVersionFileInfo readPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.notNull(fileName, "fileName can not be null");
         Assert.notNull(filePath, "filePath can not be null");
         // 挂载升级包文件
-        mountUpgradePackage(filePath);
+        IsoFileUtil.mountISOFile(filePath, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
 
         TerminalUpgradeVersionFileInfo versionInfo = null;
         try {
@@ -147,7 +107,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e);
         } finally {
             // 取消挂载
-            umountUpgradePackage();
+            IsoFileUtil.unmountISOFile(Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
         }
 
         versionInfo.setPackageName(fileName);
@@ -163,39 +123,6 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
             return true;
         }
         return false;
-    }
-
-    private void mountUpgradePackage(final String filePath) throws BusinessException {
-        LOGGER.debug("mount package, path is [{}]", filePath);
-        String mountCmd = String.format(Constants.SYSTEM_CMD_MOUNT_UPGRADE_ISO, filePath, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
-
-        LOGGER.info("mount package, cmd : {}", mountCmd);
-        runShellCommand(mountCmd);
-        LOGGER.info("mount package success");
-    }
-
-    private void umountUpgradePackage() throws BusinessException {
-        LOGGER.debug("umount package, path is [{}]", Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
-        String umountCmd = String.format(Constants.SYSTEM_CMD_UMOUNT_UPGRADE_ISO, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
-
-        LOGGER.info("umount package, cmd : {}", umountCmd);
-        runShellCommand(umountCmd);
-        LOGGER.info("umount package success");
-    }
-
-    private String runShellCommand(String cmd) throws BusinessException {
-        ShellCommandRunner runner = new ShellCommandRunner();
-        runner.setCommand(cmd);
-        String outStr;
-        try {
-            outStr = runner.execute(new SimpleCmdReturnValueResolver());
-            LOGGER.debug("out String is :{}", outStr);
-        } catch (BusinessException e) {
-            LOGGER.error("shell command execute error", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e);
-        }
-
-        return outStr;
     }
 
     private TerminalUpgradeVersionFileInfo checkVersionFile() throws BusinessException {

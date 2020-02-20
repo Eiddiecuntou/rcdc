@@ -66,6 +66,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT = "rcdc_terminal_system_upgrade_upload_file_package_type_unsupport";
 
     /**
+     * 升级包类型错误
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_ERROR = "rcdc_terminal_system_upgrade_upload_file_package_type_error";
+
+    /**
      * 上传系统升级文件失败
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL = "rcdc_terminal_system_upgrade_upload_file_fail";
@@ -102,6 +107,15 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT = "rcdc_terminal_system_upgrade_package_version_file_incorrect";
 
+    /**
+     * 系统OTA升级文件列表解析错误
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_LIST_INCORRECT = "rcdc_terminal_system_upgrade_package_ota_list_incorrect";
+
+    /**
+     * 系统升级包版本文件不完整
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_INCOMPLETE = "rcdc_terminal_system_upgrade_package_file_incomplete";
 
     /**
      * 系统刷机包磁盘空间不足
@@ -314,9 +328,6 @@ public interface BusinessKey {
 
     /************Android终端OTA升级**************************/
     String RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL = "rcdc_terminal_ota_upgrade_computer_seed_file_md5_fail";
-    String RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_make_seed_file_fail";
-    String RCDC_TERMINAL_OTA_UPGRADE_BT_SHARE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_bt_share_file_fail";
-    String RCDC_TERMINAL_OTA_UPGRADE_STOP_SHARE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_stop_share_file_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR = "rcdc_terminal_ota_upgrade_package_has_error";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
 
@@ -341,4 +352,9 @@ public interface BusinessKey {
 
     /************终端网络信息**************************/
     String RCDC_TERMINAL_NETWORK_INFO_ERROR = "rcdc_terminal_network_info_error";
+
+    /************BT服务操作**************************/
+    String RCDC_TERMINAL_BT_MAKE_SEED_FILE_FAIL = "rcdc_terminal_bt_make_seed_file_fail";
+    String RCDC_TERMINAL_BT_START_SHARE_SEED_FILE_FAIL = "rcdc_terminal_bt_start_share_seed_file_fail";
+    String RCDC_TERMINAL_BT_STOP_SHARE_SEED_FILE_FAIL = "rcdc_terminal_bt_stop_share_seed_file_fail";
 }

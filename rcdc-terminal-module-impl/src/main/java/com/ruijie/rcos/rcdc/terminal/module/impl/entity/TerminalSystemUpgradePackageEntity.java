@@ -1,13 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
-import java.util.Date;
-import java.util.UUID;
-
-import javax.persistence.*;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Description: 终端系统升级包实体类
@@ -36,6 +35,10 @@ public class TerminalSystemUpgradePackageEntity {
     private String seedPath;
 
     private String seedMd5;
+
+    private String otaScriptPath;
+
+    private String otaScriptMd5;
 
     @Enumerated(EnumType.STRING)
     private CbbTerminalTypeEnums packageType;
@@ -179,4 +182,19 @@ public class TerminalSystemUpgradePackageEntity {
         this.isDelete = isDelete;
     }
 
+    public String getOtaScriptPath() {
+        return otaScriptPath;
+    }
+
+    public void setOtaScriptPath(String otaScriptPath) {
+        this.otaScriptPath = otaScriptPath;
+    }
+
+    public String getOtaScriptMd5() {
+        return otaScriptMd5;
+    }
+
+    public void setOtaScriptMd5(String otaScriptMd5) {
+        this.otaScriptMd5 = otaScriptMd5;
+    }
 }

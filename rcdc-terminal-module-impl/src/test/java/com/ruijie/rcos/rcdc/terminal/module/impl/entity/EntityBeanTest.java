@@ -87,6 +87,8 @@ public class EntityBeanTest {
         info.setFileMD5("fileMD5");
         info.setSeedLink("seedLink");
         info.setSeedMD5("seedMD5");
+        info.setOtaScriptPath("otaScriptPath");
+        info.setOtaScriptMD5("otaScriptMD5");
         info.setFileSaveDir("fileSaveDir");
         info.setRealFileName("realFileName");
         String result = "TerminalUpgradeVersionFileInfo{" +
@@ -100,6 +102,8 @@ public class EntityBeanTest {
                 ", seedMD5='" + "seedMD5" + '\'' +
                 ", fileSaveDir='" + "fileSaveDir" + '\'' +
                 ", realFileName='" + "realFileName" + '\'' +
+                ", otaScriptPath='" + "otaScriptPath" + '\'' +
+                ", otaScriptMD5='" + "otaScriptMD5" + '\'' +
                 '}';
         assertEquals(result, info.toString());
     }
