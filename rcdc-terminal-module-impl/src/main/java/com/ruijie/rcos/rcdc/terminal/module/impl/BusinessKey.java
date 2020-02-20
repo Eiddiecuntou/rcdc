@@ -338,6 +338,7 @@ public interface BusinessKey {
     String RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK = "rcdc_terminal_operate_action_clear_disk";
     String RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK = "rcdc_terminal_not_online_cannot_clear_disk";
     String RCDC_TERMINAL_CONFIRM_TO_CLEAR_DISK = "rcdc_terminal_confirm_to_clear_disk";
+    String RCDC_TERMINAL_CANCEL_CLEAR_DISK = "rcdc_terminal_cancel_clear_disk";
     String RCDC_TERMINAL_CLEAR_DISK_SUCCESS = "rcdc_terminal_clear_disk_success";
     String RCDC_TERMINAL_CLEAR_DISK_FAIL = "rcdc_terminal_clear_disk_fail";
 
@@ -348,6 +349,9 @@ public interface BusinessKey {
 
     /************终端型号**************************/
     String RCDC_TERMINAL_MODEL_NOT_EXIST_ERROR = "rcdc_terminal_model_not_exist_error";
+
+    /************终端网络信息**************************/
+    String RCDC_TERMINAL_NETWORK_INFO_ERROR = "rcdc_terminal_network_info_error";
 
     /************BT服务操作**************************/
     String RCDC_TERMINAL_BT_MAKE_SEED_FILE_FAIL = "rcdc_terminal_bt_make_seed_file_fail";

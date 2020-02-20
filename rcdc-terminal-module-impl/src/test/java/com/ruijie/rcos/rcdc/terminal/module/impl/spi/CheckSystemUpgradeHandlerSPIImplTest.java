@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,7 +16,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeCheckResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
@@ -167,7 +167,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
 
 
     private String generateJson() {
-        ShineTerminalBasicInfo info = new ShineTerminalBasicInfo();
+        CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
         info.setTerminalId("123");
         info.setTerminalName("t-box2");
         info.setCpuType("intel5");

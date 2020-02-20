@@ -1,10 +1,15 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.message;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.serialize.CbbWirelessAuthModeEnumsSerializer;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 
 /**
  * Description: shine上传的终端基本信息
@@ -14,7 +19,7 @@ import javax.persistence.Enumerated;
  *
  * @author Jarman
  */
-public class ShineTerminalBasicInfo {
+public class CbbShineTerminalBasicInfo {
 
     private String terminalName;
 
@@ -67,6 +72,15 @@ public class ShineTerminalBasicInfo {
     private String validateMd5;
 
     private String osInnerVersion;
+
+    private String idvTerminalMode;
+
+    private String ssid;
+
+    @JSONField(serializeUsing = CbbWirelessAuthModeEnumsSerializer.class, deserializeUsing = CbbWirelessAuthModeEnumsSerializer.class)
+    private CbbTerminalWirelessAuthModeEnums wirelessAuthMode;
+
+    private CbbTerminalNetworkInfoDTO[] networkInfoArr;
 
     private String productId;
 
@@ -260,6 +274,38 @@ public class ShineTerminalBasicInfo {
 
     public void setOsInnerVersion(String osInnerVersion) {
         this.osInnerVersion = osInnerVersion;
+    }
+
+    public String getIdvTerminalMode() {
+        return idvTerminalMode;
+    }
+
+    public void setIdvTerminalMode(String idvTerminalMode) {
+        this.idvTerminalMode = idvTerminalMode;
+    }
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
+
+    public CbbTerminalWirelessAuthModeEnums getWirelessAuthMode() {
+        return wirelessAuthMode;
+    }
+
+    public void setWirelessAuthMode(CbbTerminalWirelessAuthModeEnums wirelessAuthMode) {
+        this.wirelessAuthMode = wirelessAuthMode;
+    }
+
+    public CbbTerminalNetworkInfoDTO[] getNetworkInfoArr() {
+        return networkInfoArr;
+    }
+
+    public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoArr) {
+        this.networkInfoArr = networkInfoArr;
     }
 
     public String getProductId() {

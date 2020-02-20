@@ -1,10 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 
 /**
  * Description: Function Description
@@ -21,14 +23,15 @@ public class CbbNoticeRequest implements Request {
     private String dispatcherKey;
 
     @Nullable
-    private String terminalId;
+    private CbbShineTerminalBasicInfo terminalBasicInfo;
 
     public CbbNoticeRequest() {
     }
 
-    public CbbNoticeRequest(CbbNoticeEventEnums noticeEvent, String terminalId) {
+    public CbbNoticeRequest(CbbNoticeEventEnums noticeEvent) {
+        Assert.notNull(noticeEvent, "noticeEvent can not be null");
+
         this.dispatcherKey = noticeEvent.getName();
-        this.terminalId = terminalId;
     }
 
     public String getDispatcherKey() {
@@ -39,11 +42,12 @@ public class CbbNoticeRequest implements Request {
         this.dispatcherKey = dispatcherKey;
     }
 
-    public String getTerminalId() {
-        return terminalId;
+    @Nullable
+    public CbbShineTerminalBasicInfo getTerminalBasicInfo() {
+        return terminalBasicInfo;
     }
 
-    public void setTerminalId(String terminalId) {
-        this.terminalId = terminalId;
+    public void setTerminalBasicInfo(@Nullable CbbShineTerminalBasicInfo terminalBasicInfo) {
+        this.terminalBasicInfo = terminalBasicInfo;
     }
 }

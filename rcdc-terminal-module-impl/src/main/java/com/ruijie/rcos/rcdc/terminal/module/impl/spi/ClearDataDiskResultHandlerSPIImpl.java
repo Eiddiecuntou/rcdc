@@ -31,7 +31,7 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ClearDataDiskResultHandlerSPIImpl.class);
 
-    private static final String RESULT_KEY = "result";
+    private static final String RESULT_KEY = "isClearSuccess";
 
     /**
      * 消息分发方法
@@ -46,13 +46,17 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
 
         String data = request.getData();
         JSONObject jsonObject = JSON.parseObject(data);
-        Integer result = jsonObject.getInteger(RESULT_KEY);
-        if (result.equals(0)) {
+        Boolean isClearSuccess = jsonObject.getBoolean(RESULT_KEY);
+        if (isClearSuccess == null) {
+            LOGGER.error("终端返回清空数据盘是否成功值为null，terminalId = [{}]",request.getTerminalId());
+            return;
+        }
+        if (isClearSuccess) {
             baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_SUCCESS,
                     request.getTerminalId()));
             LOGGER.warn("终端数据盘清空成功,terminalId = [{}]", request.getTerminalId());
         } else {
-            baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_SUCCESS,
+            baseSystemLogMgmtAPI.createSystemLog(new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_CLEAR_DISK_FAIL,
                     request.getTerminalId()));
             LOGGER.error("终端数据盘清空失败,terminalId = [{}]", request.getTerminalId());
         }

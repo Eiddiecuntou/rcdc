@@ -60,15 +60,6 @@ public class EntityBeanTest {
         assertEquals("msg", detectDTO.getCheckState().getMessage());
     }
 
-    /**
-     * 测试TerminalEntity
-     */
-    @Test
-    public void testTerminalEntity() {
-        GetSetTester tester = new GetSetTester(TerminalEntity.class);
-        tester.runTest();
-        assertTrue(true);
-    }
 
     /**
      * 测试TerminalSystemUpgradePackageEntity
@@ -176,4 +167,5 @@ public class EntityBeanTest {
         tester.runTest();
         assertTrue(true);
     }
+
 }
