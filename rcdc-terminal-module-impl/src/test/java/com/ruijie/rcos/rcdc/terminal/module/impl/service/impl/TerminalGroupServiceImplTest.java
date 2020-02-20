@@ -116,11 +116,6 @@ public class TerminalGroupServiceImplTest {
         };
     }
 
-    @Test
-    public void testCheckGroupNameUniqueWhenDefaultGroupName() {
-
-    }
-
     /**
      * 测试保存终端分组
      *

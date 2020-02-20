@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
@@ -24,7 +28,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalModelDriverEntit
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeHostNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
@@ -47,6 +50,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalBasicInfoServiceImpl.class);
 
+
     @Autowired
     private SessionManager sessionManager;
 
@@ -62,7 +66,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private static final int FAIL_TRY_COUNT = 3;
 
     @Override
-    public void saveBasicInfo(String terminalId, ShineTerminalBasicInfo shineTerminalBasicInfo) {
+    public void saveBasicInfo(String terminalId, CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(shineTerminalBasicInfo, "终端信息不能为空");
 
@@ -74,20 +78,39 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             basicInfoEntity.setCreateTime(now);
             basicInfoEntity.setGroupId(Constants.DEFAULT_TERMINAL_GROUP_UUID);
         }
-        BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity);
+        BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity, TerminalEntity.BEAN_COPY_IGNORE_NETWORK_INFO_ARR);
         basicInfoEntity.setLastOnlineTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
+        CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
+        basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
         basicInfoDAO.save(basicInfoEntity);
 
         // 自学习终端型号
         saveTerminalModel(shineTerminalBasicInfo);
 
         // 通知其他组件终端为在线状态
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE, terminalId);
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
+        noticeRequest.setTerminalBasicInfo(shineTerminalBasicInfo);
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 
-    private void saveTerminalModel(ShineTerminalBasicInfo basicInfo) {
+    private CbbTerminalNetworkInfoDTO[] obtainNetworkInfo(CbbShineTerminalBasicInfo basicInfo) {
+        CbbTerminalNetworkInfoDTO[] networkInfoArr = basicInfo.getNetworkInfoArr();
+        if (ArrayUtils.isEmpty(networkInfoArr)) {
+            // 兼容旧版本终端将网络信息保存在基本信息中
+            return buildNetworkInfoArr(basicInfo);
+        }
+
+        return networkInfoArr;
+    }
+
+    private CbbTerminalNetworkInfoDTO[] buildNetworkInfoArr(CbbShineTerminalBasicInfo basicInfo) {
+        CbbTerminalNetworkInfoDTO networkInfoDTO = new CbbTerminalNetworkInfoDTO();
+        BeanUtils.copyProperties(basicInfo, networkInfoDTO);
+        return new CbbTerminalNetworkInfoDTO[] {networkInfoDTO};
+    }
+
+    private void saveTerminalModel(CbbShineTerminalBasicInfo basicInfo) {
         if (StringUtils.isEmpty(basicInfo.getProductId())) {
             // 无产品id, 一般为软终端
             return;

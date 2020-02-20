@@ -9,7 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.SyncServerTimeResponse;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -127,9 +127,9 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
     private void bindSession(ResponseMessageSender sender, Object message) {
         Assert.notNull(message, "终端信息不能为空");
         String data = String.valueOf(message);
-        ShineTerminalBasicInfo basicInfo;
+        CbbShineTerminalBasicInfo basicInfo;
         try {
-            basicInfo = JSON.parseObject(data, ShineTerminalBasicInfo.class);
+            basicInfo = JSON.parseObject(data, CbbShineTerminalBasicInfo.class);
         } catch (Exception e) {
             throw new IllegalArgumentException("接收到的报文格式错误;data:" + data, e);
         }

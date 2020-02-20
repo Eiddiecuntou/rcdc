@@ -1,31 +1,30 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.util.Date;
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -257,6 +256,35 @@ public class CbbTerminalBasicInfoAPIImplTest {
     }
 
     /**
+     * 测试修改终端名称成功
+     */
+    @Test
+    public void testModifyTerminalIdvModeIsNotNull() {
+        new Expectations() {
+            {
+                try {
+                    basicInfoService.modifyTerminalName(anyString, anyString);
+                    basicInfoDAO.save((TerminalEntity) any);
+                } catch (BusinessException e) {
+                    fail();
+                }
+            }
+        };
+
+        try {
+            CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+            request.setCbbTerminalId("123");
+            request.setGroupId(UUID.randomUUID());
+            request.setTerminalName("123");
+            terminalBasicInfoAPI.modifyTerminal(request);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        modifyNameVerifications();
+    }
+
+    /**
      * 测试修改终端名称失败，TerminalEntity为空
      * 
      * @throws BusinessException 异常
@@ -333,5 +361,27 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
     }
+
+
+
+
+    private CbbTerminalNetworkInfoDTO[] getItemArr() {
+        CbbTerminalNetworkInfoDTO[] itemArr = new CbbTerminalNetworkInfoDTO[1];
+        CbbTerminalNetworkInfoDTO dto = new CbbTerminalNetworkInfoDTO();
+        dto.setGateway("456");
+        dto.setGetDnsMode(CbbGetNetworkModeEnums.AUTO);
+        dto.setGetIpMode(CbbGetNetworkModeEnums.MANUAL);
+        dto.setIp("789");
+        dto.setMacAddr("abc");
+        dto.setSsid("ssid");
+        dto.setMainDns("mainDns");
+        dto.setSecondDns("secondDns");
+        dto.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
+        dto.setSubnetMask("subnetMask");
+        itemArr[0] = dto;
+
+        return itemArr;
+    }
+
 
 }
