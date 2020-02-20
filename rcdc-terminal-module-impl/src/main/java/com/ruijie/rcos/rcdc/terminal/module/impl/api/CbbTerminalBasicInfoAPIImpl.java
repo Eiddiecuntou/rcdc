@@ -58,31 +58,10 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         }
 
         CbbTerminalBasicInfoResponse basicInfoDTO = new CbbTerminalBasicInfoResponse();
-        BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO);
+        BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO, TerminalEntity.BEAN_COPY_IGNORE_NETWORK_INFO_ARR);
         basicInfoDTO.setTerminalPlatform(basicInfoEntity.getPlatform());
-        basicInfoDTO.setNetworkInfoArr(obtainNetworkInfo(basicInfoEntity.getNetworkInfos()));
+        basicInfoDTO.setNetworkInfoArr(basicInfoEntity.getNetworkInfoArr());
         return basicInfoDTO;
-    }
-
-    private CbbTerminalNetworkInfoDTO[] obtainNetworkInfo(String networkInfos) throws BusinessException {
-        if (StringUtils.isBlank(networkInfos)) {
-            return new CbbTerminalNetworkInfoDTO[0];
-        }
-
-        List<CbbTerminalNetworkInfoDTO> networkInfoDTOList;
-        LOGGER.debug("终端网络信息：{}", networkInfos);
-        try {
-            networkInfoDTOList = JSON.parseArray(networkInfos, CbbTerminalNetworkInfoDTO.class);
-        } catch (Exception e) {
-            LOGGER.error("终端网络信息异常", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NETWORK_INFO_ERROR, e);
-        }
-
-        if (CollectionUtils.isEmpty(networkInfoDTOList)) {
-            return new CbbTerminalNetworkInfoDTO[0];
-        }
-
-        return networkInfoDTOList.toArray(new CbbTerminalNetworkInfoDTO[networkInfoDTOList.size()]);
     }
 
     @Override

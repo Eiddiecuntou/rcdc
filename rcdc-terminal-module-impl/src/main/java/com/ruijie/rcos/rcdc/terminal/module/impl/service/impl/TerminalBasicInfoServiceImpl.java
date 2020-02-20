@@ -50,6 +50,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalBasicInfoServiceImpl.class);
 
+
     @Autowired
     private SessionManager sessionManager;
 
@@ -77,11 +78,11 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             basicInfoEntity.setCreateTime(now);
             basicInfoEntity.setGroupId(Constants.DEFAULT_TERMINAL_GROUP_UUID);
         }
-        BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity);
+        BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity, TerminalEntity.BEAN_COPY_IGNORE_NETWORK_INFO_ARR);
         basicInfoEntity.setLastOnlineTime(now);
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
-        basicInfoEntity.setNetworkInfos(JSON.toJSONString(networkInfoDTOArr));
+        basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
         basicInfoDAO.save(basicInfoEntity);
 
         // 自学习终端型号
