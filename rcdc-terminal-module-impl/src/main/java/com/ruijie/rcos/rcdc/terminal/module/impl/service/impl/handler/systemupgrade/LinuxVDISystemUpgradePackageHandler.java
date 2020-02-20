@@ -10,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePa
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.util.IsoFileUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,9 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR);
         }
         //使用checkisomd5校验升级包
-        checkISOMd5(filePath);
+        if (!IsoFileUtil.checkISOMd5(filePath)) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
+        }
 
         checkNecessaryDirExist();
 
@@ -93,7 +96,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         Assert.notNull(fileName, "fileName can not be null");
         Assert.notNull(filePath, "filePath can not be null");
         // 挂载升级包文件
-        mountUpgradePackage(filePath, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
+        IsoFileUtil.mountISOFile(filePath, Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
 
         TerminalUpgradeVersionFileInfo versionInfo = null;
         try {
@@ -104,7 +107,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e);
         } finally {
             // 取消挂载
-            umountUpgradePackage(Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
+            IsoFileUtil.unmountISOFile(Constants.TERMINAL_UPGRADE_ISO_MOUNT_PATH);
         }
 
         versionInfo.setPackageName(fileName);

@@ -5,7 +5,6 @@ import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
@@ -13,8 +12,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
+import com.ruijie.rcos.sk.base.util.IsoFileUtil;
 import mockit.*;
-import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.junit.After;
 import org.junit.Assert;
@@ -106,14 +105,10 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
 
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedFilePath", "seedFileMD5");
 
-        new Expectations(FileOperateUtil.class, BtClientUtil.class) {
+        new Expectations(FileOperateUtil.class, BtClientUtil.class, IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
                 helper.getOtaFilesInfo(otaListPath);
@@ -194,14 +189,10 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         prop.setProperty("plat", "VDI");
         prop.setProperty("version", "1.0");
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
             }
@@ -244,14 +235,10 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         Properties prop = new Properties();
         prop.setProperty("version", "1.0");
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
             }
@@ -300,14 +287,10 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         otaFileInfoList.add("packageMD5 /rainos-img");
         otaFileInfoList.add("scriptMD5 /OTAPreRunFun");
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
                 helper.getOtaFilesInfo(otaListPath);
@@ -364,14 +347,10 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         otaFileInfoList.add("scriptMD5 /OTAPreRunFun");
         otaFileInfoList.add("scriptMD5 /OTAPreRunFun");
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
                 helper.getOtaFilesInfo(otaListPath);
@@ -431,14 +410,10 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
                 new LinuxIDVSystemUpgradePackageHelper.OtaFileInfo("filePath", "md5");
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedFilePath", "seedFileMD5");
 
-        new Expectations(BtClientUtil.class) {
+        new Expectations(BtClientUtil.class, IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
                 helper.handleOtaListItem(anyString, anyString, anyString);
                 result = otaFileInfo;
                 helper.getVersionProperties(versionFilePath);

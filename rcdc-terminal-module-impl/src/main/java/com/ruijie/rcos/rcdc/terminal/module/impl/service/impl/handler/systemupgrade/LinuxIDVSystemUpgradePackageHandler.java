@@ -13,6 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.util.IsoFileUtil;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,17 +69,19 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
         // 校验ISO文件
         checkFileType(fileName);
-        checkISOMd5(filePath);
+        if (!IsoFileUtil.checkISOMd5(filePath)) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
+        }
 
         // 解析ISO文件
         prepareDirectories();
-        mountUpgradePackage(filePath, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
+        IsoFileUtil.mountISOFile(filePath, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
         readVersionFile(versionInfo);
         readOtaList(versionInfo);
 
         // 取消ISO挂载、删除（此处不删除出厂自带的ISO）
-        umountUpgradePackage(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
+        IsoFileUtil.unmountISOFile(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
         if (!filePath.contains(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA)) {
             FileOperateUtil.deleteFile(new File(filePath));
         }

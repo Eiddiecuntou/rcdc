@@ -9,7 +9,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImplTest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
@@ -17,8 +16,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
+import com.ruijie.rcos.sk.base.util.IsoFileUtil;
 import mockit.*;
-import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -107,14 +106,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
             }
         };
 
@@ -143,14 +138,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
             }
         };
 
@@ -189,13 +180,11 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
+                IsoFileUtil.mountISOFile(anyString, anyString);
                 result = new BusinessException("key");
             }
         };
@@ -206,7 +195,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e.getKey());
+            assertEquals("key", e.getKey());
         }
     }
 
@@ -226,14 +215,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
             }
         };
 
@@ -275,12 +260,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
             }
         };
 
@@ -305,14 +288,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     public void testUploadUpgradeFileVersionFail() throws BusinessException, IOException {
         String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
             }
         };
         new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
@@ -374,14 +353,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
             }
         };
 
@@ -431,12 +406,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
             }
         };
 
@@ -462,14 +435,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     public void testUploadUpgradeFile(@Mocked FileOperateUtil util) throws BusinessException, IOException {
         String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+                IsoFileUtil.checkISOMd5(anyString);
+                result = true;
             }
         };
         new MockUp<Files>() {
@@ -521,10 +490,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     public void testUploadUpgradeFileWithCheckMD5Error(@Mocked FileOperateUtil util) throws BusinessException, IOException {
         String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                defaultExecutor.execute((CommandLine)any);
-                result = new IOException();
+                IsoFileUtil.checkISOMd5(anyString);
+                result = false;
             }
         };
         new MockUp<Files>() {
@@ -561,7 +530,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR, e.getKey());
         }
         new Verifications() {
             {
@@ -569,36 +538,5 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 times = 0;
             }
         };
-        
-        // 校验结果返回为空或不包含PASS
-        new Expectations() {
-            {
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                byteArrayOutputStream.toString();
-                result = "";
-            }
-        };
-        try {
-            handler.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR, e.getKey());
-        }
-        
-        new Expectations() {
-            {
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                byteArrayOutputStream.toString();
-                result = "aaaaa";
-            }
-        };
-        try {
-            handler.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR, e.getKey());
-        }
     }
 }
