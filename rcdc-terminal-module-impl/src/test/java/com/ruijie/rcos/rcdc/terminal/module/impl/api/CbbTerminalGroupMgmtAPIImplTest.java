@@ -1,5 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
@@ -16,19 +25,13 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-import java.util.ArrayList;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Description: Function Description
@@ -69,12 +72,11 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         new Expectations() {
             {
                 terminalGroupService.findAll();
-                result = null;
+                result = groupList;
             }
         };
 
-        CbbGetTerminalGroupTreeResponse response = api.loadTerminalGroupCompleteTree(new CbbGetTerminalGroupCompleteTreeRequest());
-        assertEquals(0, response.getItemArr().length);
+        api.getAllTerminalGroup(new DefaultRequest());
 
         new Verifications() {
             {
