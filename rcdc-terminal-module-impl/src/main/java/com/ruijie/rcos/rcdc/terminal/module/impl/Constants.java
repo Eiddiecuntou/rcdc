@@ -13,11 +13,6 @@ import java.util.UUID;
  */
 public interface Constants {
 
-    int SUCCESS = 0;
-
-    int FAILURE = 99;
-
-
     String SYSTEM_TYPE = "rcdc";
 
     /**
@@ -96,12 +91,12 @@ public interface Constants {
     String PXE_SAMBA_LINUX_VDI_UPGRADE_SUCCESS_FILE_PATH = "/opt/samba/pxeuser/linux_vdi/mac_end/";
 
     /**
-     *  linux vdi刷机ISO文件路径
+     * linux vdi刷机ISO文件路径
      */
     String PXE_SAMBA_LINUX_VDI_ISO_PATH = "/opt/samba/pxeuser/linux_vdi/";
 
     /**
-     *  linux vdi刷机samba相对路径
+     * linux vdi刷机samba相对路径
      */
     String PXE_ISO_SAMBA_LINUX_VDI_RELATE_PATH = "/linux_vdi/";
 
@@ -116,7 +111,7 @@ public interface Constants {
     String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s";
 
     /**
-     *  ISO升级包MD5校验
+     * ISO升级包MD5校验
      */
     String SYSTEM_CMD_CHECK_ISO_MD5 = "checkisomd5 %s";
 
@@ -143,12 +138,12 @@ public interface Constants {
     /**
      * OTA包版本号
      */
-    String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION = "VER";
+    String TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION = "VER";
 
     /**
      * OTA包版本号
      */
-    String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT = "PLAT";
+    String TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT = "PLAT";
 
     /**
      * 出厂OTA包存放目录
@@ -200,7 +195,7 @@ public interface Constants {
      * 文件后缀名分隔符
      */
     String FILE_SUFFIX_DOT = ".";
-    
+
     /** 终端默认分组UUID */
     UUID DEFAULT_TERMINAL_GROUP_UUID = CbbTerminalGroupMgmtAPI.DEFAULT_TERMINAL_GROUP_ID;
 
