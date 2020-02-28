@@ -78,6 +78,64 @@ public class AbstractSystemUpgradeHandlerTest {
     }
 
     /**
+     * 测试CheckSystemUpgrade - 可以升级，并且是新接入终端
+     */
+    @Test
+    public void testCheckSystemUpgradeCanUpgradeAndIsNewTerminal() throws BusinessException {
+        TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
+
+        TerminalEntity terminalEntity = buildTerminalEntity();
+
+        TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
+
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
+
+        new MockUp<TestedSystemUpgradeHandler>() {
+            @Mock
+            public boolean isTerminalEnableUpgrade(TerminalEntity terminal, CbbTerminalTypeEnums terminalType) {
+                return true;
+            }
+
+        };
+
+
+        new Expectations() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                result = packageEntity;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                result = upgradeEntity;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                result = null;
+
+            }
+        };
+
+        SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, terminalEntity);
+
+        SystemUpgradeCheckResult expectedResult = new SystemUpgradeCheckResult();
+        expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
+        expectedResult.setContent(null);
+        assertEquals(expectedResult, checkResult);
+
+        new Verifications() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                times = 2;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                times = 2;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                times = 1;
+            }
+        };
+    }
+
+
+    /**
      * 测试CheckSystemUpgrade
      */
     @Test
