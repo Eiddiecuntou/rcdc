@@ -324,8 +324,8 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testRelieveFaultValidateParams() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null), "request can not be " +
-                "null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null),
+                "CbbTerminalIdRequest不能为空");
         assertTrue(true);
     }
 
