@@ -631,4 +631,33 @@ public class TerminalOperatorServiceImplTest {
         }
         assertEquals("123", operatorService.getTerminalPassword());
     }
+
+    @Test
+    public void testRelieveFault() throws IOException, InterruptedException {
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+                } catch (BusinessException e) {
+                    result = sender;
+                }
+            }
+        };
+        String terminalId = "123";
+
+        try {
+            operatorService.relieveFault(terminalId);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        new Verifications() {
+            {
+                Message message;
+                sender.syncRequest(message = withCapture());
+                assertEquals(message.getAction(), SendTerminalEventEnums.RELIEVE_FAULT.getName());
+            }
+        };
+    }
 }

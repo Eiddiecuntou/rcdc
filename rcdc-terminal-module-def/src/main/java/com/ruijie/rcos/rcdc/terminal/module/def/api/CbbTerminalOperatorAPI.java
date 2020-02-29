@@ -5,8 +5,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectL
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.tx.NoRollback;
-
 
 /**
  * Description: 终端操作接口
