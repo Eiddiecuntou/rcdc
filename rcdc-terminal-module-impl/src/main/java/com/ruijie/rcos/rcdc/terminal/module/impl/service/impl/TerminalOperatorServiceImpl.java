@@ -5,16 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.google.common.collect.Lists;
-
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
@@ -28,12 +26,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DataDiskClearResponseEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeOfflineLoginConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
@@ -283,9 +283,14 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         int responseCode = operateTerminal(terminalId, SendTerminalEventEnums.CLEAR_DATA, "",
                 BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK);
         //云桌面运行中,不能清空数据盘
-        if (responseCode == -1) {
+        if (responseCode == DataDiskClearResponseEnums.DESKTOP_ON_RUNNING.getCode()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_DESKTOP_RUNNING_CANNOT_CLEAR_DISK, terminalId);
         }
+        //通知shine前端失败，不能清空数据盘
+        if (responseCode == DataDiskClearResponseEnums.NOTIFY_SHINE_WEB_FAIL.getCode()) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOTIFY_SHINE_WEB_FAIL, terminalId);
+        }
+
     }
 
     private void checkTerminal (String terminalId) throws BusinessException {
