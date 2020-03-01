@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.File;
+
+import com.ruijie.rcos.sk.base.log.LoggerImpl;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
@@ -92,7 +94,7 @@ public class TerminalComponentUpgradeInitTest {
         new Expectations() {
             {
                 cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
-                result = null;
+                result = new BusinessException("123");
             }
         };
         try {
@@ -104,7 +106,10 @@ public class TerminalComponentUpgradeInitTest {
 
         new Verifications() {
             {
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
+                globalParameterAPI.findParameter(anyString);
+                times = 0;
+
+                globalParameterAPI.updateParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY, anyString);
                 times = 0;
             }
         };
@@ -401,8 +406,6 @@ public class TerminalComponentUpgradeInitTest {
 
         new Verifications() {
             {
-                globalParameterAPI.updateParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY, "192.168.1.2");
-                times = 3;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 1;
                 androidVDIUpdatelistCacheInit.init();

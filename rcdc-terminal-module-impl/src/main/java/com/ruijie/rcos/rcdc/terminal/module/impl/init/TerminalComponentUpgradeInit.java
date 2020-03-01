@@ -51,6 +51,12 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
 
     private static final String EXECUTE_SHELL_SUCCESS_RESULT = "success";
 
+    private static final String TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX = "terminal_component_package_init_status_";
+
+    private static final String TERMINAL_COMPONENT_PACKAGE_INIT_SUCCESS = "success";
+
+    private static final String TERMINAL_COMPONENT_PACKAGE_INIT_FAIL = "fail";
+
     private static final ExecutorService EXECUTOR_SERVICE =
             ThreadExecutors.newBuilder(TerminalComponentUpgradeInit.class.getName()).maxThreadNum(3).queueSize(1).build();
 
@@ -77,6 +83,13 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
         EXECUTOR_SERVICE.execute(() -> initAndroidVDITerminalComponent());
         LOGGER.info("开始异步执行初始化Linux IDV终端升级组件");
         EXECUTOR_SERVICE.execute(() -> initLinuxIDVTerminalComponent());
+
+        // 更新数据库中终端组件升级包使用的服务器ip
+        try {
+            globalParameterAPI.updateParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
+        } catch (BusinessException e) {
+            LOGGER.error("更新终端组件升级包使用的服务器ip异常", e);
+        }
     }
 
     private void initLinuxVDITerminalComponent() {
@@ -120,14 +133,17 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
             LOGGER.error("obtain host ip error, can not make init bt server.", e);
             return;
         }
-        if (needUpgrade(currentIp, upgradeTempPath)) {
+
+        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + terminalType.name().toLowerCase();
+        String lastUpgradeStatus = globalParameterAPI.findParameter(globalParameterKey);
+        if (needUpgrade(currentIp, upgradeTempPath, lastUpgradeStatus)) {
             executeUpdate(currentIp, pythonScriptPath, terminalType);
             return;
         }
         updateCache(terminalType);
     }
 
-    private boolean needUpgrade(String currentIp, String upgradeTempPath) {
+    private boolean needUpgrade(String currentIp, String upgradeTempPath, String lastUpgradeStatus) {
 
         String ip = globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
 
@@ -147,7 +163,7 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
             return true;
         }
 
-        return false;
+        return TERMINAL_COMPONENT_PACKAGE_INIT_FAIL.equals(lastUpgradeStatus);
     }
 
     private void executeUpdate(String currentIp, String pythonScriptPath, CbbTerminalTypeEnums terminalType) {
@@ -156,13 +172,19 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
         String shellCmd = String.format(INIT_COMMAND, pythonScriptPath, currentIp);
         LOGGER.info("execute shell cmd : {}", shellCmd);
         runner.setCommand(shellCmd);
+
+        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + terminalType.name().toLowerCase();
         try {
             String outStr = runner.execute(new BtShareInitReturnValueResolver(terminalType));
             LOGGER.debug("out String is :{}", outStr);
             LOGGER.info("success invoke [{}] pythonScript...", terminalType.toString());
         } catch (BusinessException e) {
             LOGGER.error("bt share init error", e);
+            globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_FAIL);
+            return;
         }
+
+        globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_SUCCESS);
     }
 
     /**
@@ -192,8 +214,7 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
                 LOGGER.error("bt share init python script execute error, exitValue: {}, outStr: {}", exitValue, outStr);
                 throw new BusinessException(BusinessKey.RCDC_SYSTEM_CMD_EXECUTE_FAIL);
             }
-            // 更新数据库中的服务器ip
-            globalParameterAPI.updateParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
+
             // 更新缓存中的updatelist
             updateCache(terminalType);
             return outStr;
