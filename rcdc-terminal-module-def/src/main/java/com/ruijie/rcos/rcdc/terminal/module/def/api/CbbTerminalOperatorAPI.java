@@ -6,7 +6,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileI
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
-
 /**
  * Description: 终端操作接口
  * Copyright: Copyright (c) 2018
@@ -87,4 +86,12 @@ public interface CbbTerminalOperatorAPI {
     
     CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalLogNameRequest request) throws BusinessException;
 
+    /**
+     * 解除故障
+     *
+     * @param request 终端id请求参数对象
+     * @return 返回成功失败
+     * @throws BusinessException 业务异常
+     */
+    DefaultResponse relieveFault(CbbTerminalIdRequest request) throws BusinessException;
 }

@@ -69,4 +69,10 @@ public interface TerminalOperatorService {
      */
     String getTerminalPassword() throws BusinessException;
 
+    /**
+     * 解除报障
+     * @param terminalId 终端id
+     * @throws BusinessException 业务异常
+     */
+    void relieveFault(String terminalId) throws BusinessException;
 }
