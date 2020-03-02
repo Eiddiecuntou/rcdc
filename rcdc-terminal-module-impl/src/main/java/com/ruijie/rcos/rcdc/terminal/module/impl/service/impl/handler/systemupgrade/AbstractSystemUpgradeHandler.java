@@ -55,22 +55,23 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
             return false;
         }
 
-        if (upgradingNumLimit()) {
-            LOGGER.info("正在升级中的终端数量超出限制");
-            return false;
-        }
-
         // TODO 需优化
         TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageType(terminalType);
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
                 getSystemUpgradeService().getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeTask.getId());
-        if (upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.WAIT) {
-            LOGGER.info("终端[{}]处于准备升级状态", upgradeTerminalEntity.getTerminalId());
+        if (upgradeTerminalEntity == null) {
+            // 终端是在升级任务开启之后接入的
             return true;
         }
 
-        return false;
+        CbbSystemUpgradeStateEnums state = upgradeTerminalEntity.getState();
+        if (state == CbbSystemUpgradeStateEnums.SUCCESS || state == CbbSystemUpgradeStateEnums.UNDO) {
+            LOGGER.info("终端[{}]处于[{}]升级状态", upgradeTerminalEntity.getTerminalId(), state.name());
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -127,8 +128,10 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
     }
 
     @Override
-    public void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
+    public void afterCloseSystemUpgrade(TerminalSystemUpgradePackageEntity upgradePackage, TerminalSystemUpgradeEntity upgradeEntity)
+            throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
+        Assert.notNull(upgradeEntity, "upgradeEntity can not be null");
 
         // 不处理，仅为子类提供默认实现
     }

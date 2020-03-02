@@ -78,13 +78,17 @@ public class AbstractSystemUpgradeHandlerTest {
     }
 
     /**
-     * 测试CheckSystemUpgrade - 升级终端数超出限制
+     * 测试CheckSystemUpgrade - 可以升级，并且是新接入终端
      */
     @Test
-    public void testCheckSystemUpgradeUpgradeTerminalExceedLimit() throws BusinessException {
+    public void testCheckSystemUpgradeCanUpgradeAndIsNewTerminal() throws BusinessException {
         TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
 
         TerminalEntity terminalEntity = buildTerminalEntity();
+
+        TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
+
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
 
         new MockUp<TestedSystemUpgradeHandler>() {
             @Mock
@@ -92,29 +96,44 @@ public class AbstractSystemUpgradeHandlerTest {
                 return true;
             }
 
-            @Mock
-            public boolean upgradingNumLimit() {
-                return true;
+        };
+
+
+        new Expectations() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                result = packageEntity;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                result = upgradeEntity;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                result = null;
+
             }
         };
 
         SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, terminalEntity);
 
         SystemUpgradeCheckResult expectedResult = new SystemUpgradeCheckResult();
-        expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult());
+        expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
         expectedResult.setContent(null);
         assertEquals(expectedResult, checkResult);
 
         new Verifications() {
             {
-                systemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                times = 0;
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                times = 2;
 
-                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId((UUID) any);
-                times = 0;
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                times = 2;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                times = 1;
             }
         };
     }
+
 
     /**
      * 测试CheckSystemUpgrade
@@ -476,7 +495,8 @@ public class AbstractSystemUpgradeHandlerTest {
     public void testAfterCloseystemUpgrade() throws BusinessException {
         TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
         TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
-        handler.afterCloseSystemUpgrade(packageEntity);
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
+        handler.afterCloseSystemUpgrade(packageEntity, upgradeEntity);
 
         // 空实现，直接校验通过
         assertTrue(true);

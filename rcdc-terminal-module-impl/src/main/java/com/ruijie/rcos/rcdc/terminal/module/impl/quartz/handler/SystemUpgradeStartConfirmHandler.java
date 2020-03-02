@@ -71,7 +71,7 @@ public class SystemUpgradeStartConfirmHandler {
         }
 
         for (Iterator<TerminalSystemUpgradeTerminalEntity> iterator = terminalList.iterator(); iterator.hasNext();) {
-            TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = (TerminalSystemUpgradeTerminalEntity) iterator.next();
+            TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = iterator.next();
             if (upgradeTerminalEntity.getState() != CbbSystemUpgradeStateEnums.UPGRADING) {
                 LOGGER.debug("非进行中的刷机终端不做开始刷机状态判断");
                 iterator.remove();
