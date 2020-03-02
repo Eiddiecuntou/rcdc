@@ -10,11 +10,11 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  *
  * @author chen zj
  */
-public class CheckGroupNameDuplicationResponse extends DefaultResponse {
+public class CbbCheckGroupNameDuplicationResponse extends DefaultResponse {
 
     private boolean hasDuplication;
 
-    public CheckGroupNameDuplicationResponse(boolean hasDuplication) {
+    public CbbCheckGroupNameDuplicationResponse(boolean hasDuplication) {
         this.hasDuplication = hasDuplication;
     }
 

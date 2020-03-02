@@ -127,8 +127,9 @@ public class AndroidVDISystemUpgradeHandlerTest {
     @Test
     public void testAfterCloseSystemUpgrade() throws BusinessException {
         TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
 
-        handler.afterCloseSystemUpgrade(packageEntity);
+        handler.afterCloseSystemUpgrade(packageEntity, upgradeEntity);
 
         new Verifications() {
             {
