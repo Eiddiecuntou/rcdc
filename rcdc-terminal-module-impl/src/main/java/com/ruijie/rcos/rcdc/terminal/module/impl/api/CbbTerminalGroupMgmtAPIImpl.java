@@ -22,6 +22,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGro
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalGroupOperNotifySPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalGroupOperNotifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
@@ -53,6 +55,9 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
 
     @Autowired
     private TerminalGroupServiceTx terminalGroupServiceTx;
+
+    @Autowired
+    private CbbTerminalGroupOperNotifySPI cbbTerminalGroupOperNotifySPI;
 
     @Override
     public DtoResponse<List<TerminalGroupDTO>> getAllTerminalGroup(DefaultRequest request) {
@@ -226,6 +231,10 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
         Assert.notNull(request, "request can not be null");
 
         terminalGroupServiceTx.deleteGroup(request.getId(), request.getMoveGroupId());
+        CbbTerminalGroupOperNotifyRequest cbbTerminalGroupOperNotifyRequest = new CbbTerminalGroupOperNotifyRequest();
+        cbbTerminalGroupOperNotifyRequest.setId(request.getId());
+        cbbTerminalGroupOperNotifyRequest.setMoveGroupId(request.getMoveGroupId());
+        cbbTerminalGroupOperNotifySPI.notifyTerminalGroupChange(cbbTerminalGroupOperNotifyRequest);
         return DefaultResponse.Builder.success();
     }
 
