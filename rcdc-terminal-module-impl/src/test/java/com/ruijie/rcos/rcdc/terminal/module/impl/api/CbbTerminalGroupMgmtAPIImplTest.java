@@ -21,6 +21,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroup
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalGroupOperNotifySPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalGroupOperNotifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
@@ -36,8 +38,6 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Description: Function Description
@@ -59,6 +59,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
     @Injectable
     private TerminalGroupServiceTx terminalGroupServiceTx;
 
+    @Injectable
+    private CbbTerminalGroupOperNotifySPI cbbTerminalGroupOperNotifySPI;
 
     /**
      *  测试getAllTerminalGroup()
@@ -374,17 +376,23 @@ public class CbbTerminalGroupMgmtAPIImplTest {
      */
     @Test
     public void testDeleteTerminalGroup() throws BusinessException {
+        final CbbDeleteTerminalGroupRequest deleteTerminalGroupRequest = new CbbDeleteTerminalGroupRequest();
+        deleteTerminalGroupRequest.setId(UUID.randomUUID());
+        deleteTerminalGroupRequest.setMoveGroupId(UUID.randomUUID());
         new Expectations() {
             {
                 terminalGroupServiceTx.deleteGroup((UUID) any, (UUID) any);
+                cbbTerminalGroupOperNotifySPI.notifyTerminalGroupChange((CbbTerminalGroupOperNotifyRequest) any);
             }
         };
 
-        api.deleteTerminalGroup(new CbbDeleteTerminalGroupRequest());
+        api.deleteTerminalGroup(deleteTerminalGroupRequest);
 
         new Verifications() {
             {
                 terminalGroupServiceTx.deleteGroup((UUID) any, (UUID) any);
+                times = 1;
+                cbbTerminalGroupOperNotifySPI.notifyTerminalGroupChange((CbbTerminalGroupOperNotifyRequest) any);
                 times = 1;
             }
         };
