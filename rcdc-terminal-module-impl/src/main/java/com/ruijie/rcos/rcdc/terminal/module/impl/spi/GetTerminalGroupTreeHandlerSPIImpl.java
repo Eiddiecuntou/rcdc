@@ -52,6 +52,8 @@ public class GetTerminalGroupTreeHandlerSPIImpl implements CbbDispatcherHandlerS
             messageHandlerAPI.response(shineMessage);
         } catch (Exception e) {
             LOGGER.error("获取终端组列表失败", e);
+            CbbResponseShineMessage shineMessage = MessageUtils.buildErrorResponseMessage(request);
+            messageHandlerAPI.response(shineMessage);
         }
     }
 }

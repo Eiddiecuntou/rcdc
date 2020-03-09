@@ -7,6 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMess
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -14,6 +15,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -69,8 +71,9 @@ public class GetTerminalGroupTreeHandlerSPIImplTest {
             {
                 cbbTerminalGroupMgmtAPI.loadTerminalGroupCompleteTree((CbbGetTerminalGroupCompleteTreeRequest) any);
                 times = 1;
-                messageHandlerAPI.response((CbbResponseShineMessage) any);
-                times = 1;
+                CbbResponseShineMessage shineMessage;
+                messageHandlerAPI.response(shineMessage = withCapture());
+                Assert.assertEquals(Constants.SUCCESS, shineMessage.getCode().intValue());
             }
         };
 
@@ -92,8 +95,9 @@ public class GetTerminalGroupTreeHandlerSPIImplTest {
             {
                 cbbTerminalGroupMgmtAPI.loadTerminalGroupCompleteTree((CbbGetTerminalGroupCompleteTreeRequest) any);
                 times = 0;
-                messageHandlerAPI.response((CbbResponseShineMessage) any);
-                times = 0;
+                CbbResponseShineMessage shineMessage;
+                messageHandlerAPI.response(shineMessage = withCapture());
+                Assert.assertEquals(Constants.FAILURE, shineMessage.getCode().intValue());
             }
         };
 
