@@ -8,7 +8,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.enums;
  *
  * @author conghaifeng
  */
-public enum DataDiskClearResponseEnums {
+public enum DataDiskClearCodeEnums {
 
     /** 终端云桌面正在运行，不可清空数据盘 */
     DESKTOP_ON_RUNNING(-1),
@@ -19,7 +19,7 @@ public enum DataDiskClearResponseEnums {
     /**shine返回状态码 */
     private int code;
 
-    DataDiskClearResponseEnums(int code) {
+    DataDiskClearCodeEnums(int code) {
         this.code = code;
     }
 

@@ -26,7 +26,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DataDiskClearResponseEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DataDiskClearCodeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeOfflineLoginConfig;
@@ -283,11 +283,11 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         int responseCode = operateTerminal(terminalId, SendTerminalEventEnums.CLEAR_DATA, "",
                 BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK);
         //云桌面运行中,不能清空数据盘
-        if (responseCode == DataDiskClearResponseEnums.DESKTOP_ON_RUNNING.getCode()) {
+        if (responseCode == DataDiskClearCodeEnums.DESKTOP_ON_RUNNING.getCode()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_DESKTOP_RUNNING_CANNOT_CLEAR_DISK, terminalId);
         }
         //通知shine前端失败，不能清空数据盘
-        if (responseCode == DataDiskClearResponseEnums.NOTIFY_SHINE_WEB_FAIL.getCode()) {
+        if (responseCode == DataDiskClearCodeEnums.NOTIFY_SHINE_WEB_FAIL.getCode()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOTIFY_SHINE_WEB_FAIL, terminalId);
         }
 
