@@ -22,6 +22,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DataDiskClearCodeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
@@ -786,7 +787,34 @@ public class TerminalOperatorServiceImplTest {
             @Mock
             int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
                     throws BusinessException {
-                return -1;
+                return DataDiskClearCodeEnums.DESKTOP_ON_RUNNING.getCode();
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
+     *测试清空数据盘,通知shine前端失败，不能清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearNotifyShineWebFail(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return DataDiskClearCodeEnums.NOTIFY_SHINE_WEB_FAIL.getCode();
             }
         };
         new Expectations() {

@@ -24,7 +24,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  *
  * @author conghaifeng
  */
-@DispatcherImplemetion(ShineAction.CONFIRM_CLEAR_DATA)
+@DispatcherImplemetion(ShineAction.CLEAR_DATA_DISK_CHOICE)
 public class ConfirmClearDataSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired
