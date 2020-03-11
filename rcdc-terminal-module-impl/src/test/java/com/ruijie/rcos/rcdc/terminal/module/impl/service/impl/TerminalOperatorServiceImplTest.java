@@ -22,6 +22,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DataDiskClearCodeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
@@ -786,7 +787,7 @@ public class TerminalOperatorServiceImplTest {
             @Mock
             int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
                     throws BusinessException {
-                return -1;
+                return DataDiskClearCodeEnums.DESKTOP_ON_RUNNING.getCode();
             }
         };
         new Expectations() {
@@ -813,7 +814,7 @@ public class TerminalOperatorServiceImplTest {
             @Mock
             int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
                     throws BusinessException {
-                return -2;
+                return DataDiskClearCodeEnums.NOTIFY_SHINE_WEB_FAIL.getCode();
             }
         };
         new Expectations() {
