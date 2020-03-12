@@ -1,20 +1,24 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalGroupHandler;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * Description: 获取终端组树型结构列表
@@ -30,7 +34,10 @@ public class GetTerminalGroupTreeHandlerSPIImpl implements CbbDispatcherHandlerS
     private static final Logger LOGGER = LoggerFactory.getLogger(GetTerminalGroupTreeHandlerSPIImpl.class);
 
     @Autowired
-    private CbbTerminalGroupMgmtAPI cbbTerminalGroupMgmtAPI;
+    private TerminalGroupService terminalGroupService;
+
+    @Autowired
+    private TerminalGroupHandler terminalGroupHandler;
 
     @Autowired
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
@@ -38,22 +45,27 @@ public class GetTerminalGroupTreeHandlerSPIImpl implements CbbDispatcherHandlerS
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "request cannot be null!");
-        Assert.hasText(request.getData(), "data in request cannot be null!");
 
         try {
-            CbbGetTerminalGroupCompleteTreeRequest apiRequest =
-                    JSONObject.parseObject(request.getData(), CbbGetTerminalGroupCompleteTreeRequest.class);
-            Assert.notNull(apiRequest, "parse data in request fail! data:[" + request.getData() + "]");
+            CbbGetTerminalGroupTreeResponse groupTreeResponse = loadTerminalGroupCompleteTree();
+            Assert.notNull(groupTreeResponse.getItemArr(), "items in groupTreeResponse is null!");
 
-            CbbGetTerminalGroupTreeResponse apiResponse = cbbTerminalGroupMgmtAPI.loadTerminalGroupCompleteTree(apiRequest);
-            Assert.notNull(apiResponse, "apiResponse is null!");
-
-            CbbResponseShineMessage shineMessage = MessageUtils.buildResponseMessage(request, apiResponse);
+            CbbResponseShineMessage shineMessage = MessageUtils.buildResponseMessage(request, groupTreeResponse);
             messageHandlerAPI.response(shineMessage);
         } catch (Exception e) {
             LOGGER.error("获取终端组列表失败", e);
             CbbResponseShineMessage shineMessage = MessageUtils.buildErrorResponseMessage(request);
             messageHandlerAPI.response(shineMessage);
         }
+    }
+
+    private CbbGetTerminalGroupTreeResponse loadTerminalGroupCompleteTree() {
+        List<TerminalGroupEntity> groupList = terminalGroupService.findAll();
+        if (CollectionUtils.isEmpty(groupList)) {
+            return new CbbGetTerminalGroupTreeResponse(new TerminalGroupTreeNodeDTO[0]);
+        }
+        // 不过滤任何分组（包括"未分组"）
+        TerminalGroupTreeNodeDTO[] dtoArr = terminalGroupHandler.assembleGroupTree(null, groupList, null);
+        return new CbbGetTerminalGroupTreeResponse(dtoArr);
     }
 }

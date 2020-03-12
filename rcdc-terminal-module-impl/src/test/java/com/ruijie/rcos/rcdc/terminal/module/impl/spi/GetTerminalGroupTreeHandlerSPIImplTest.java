@@ -1,15 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalGroupServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalGroupHandler;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -36,32 +37,39 @@ public class GetTerminalGroupTreeHandlerSPIImplTest {
     private GetTerminalGroupTreeHandlerSPIImpl handlerSPI;
 
     @Injectable
-    private CbbTerminalGroupMgmtAPI cbbTerminalGroupMgmtAPI;
+    private TerminalGroupServiceImpl terminalGroupService;
+
+    @Injectable
+    private TerminalGroupHandler terminalGroupHandler;
 
     @Injectable
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
 
     /**
      * 获取终端组树状列表
-     * @throws BusinessException 异常
      */
     @Test
-    public void testDispatch() throws BusinessException {
+    public void testDispatch() {
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setDispatcherKey(ShineAction.GET_TERMINAL_GROUP_LIST);
-        request.setData("{\"enableFilterDefaultGroup\":true}");
+
+        TerminalGroupEntity entity = new TerminalGroupEntity();
+        List<TerminalGroupEntity> groupList = Lists.newArrayList();
+        groupList.add(entity);
 
         TerminalGroupTreeNodeDTO nodeDTO = new TerminalGroupTreeNodeDTO();
         nodeDTO.setId(UUID.randomUUID());
         nodeDTO.setParentId(UUID.randomUUID());
         nodeDTO.setEnableDefault(true);
         nodeDTO.setLabel("label");
-        CbbGetTerminalGroupTreeResponse apiResponse = new CbbGetTerminalGroupTreeResponse(new TerminalGroupTreeNodeDTO[]{nodeDTO});
+        TerminalGroupTreeNodeDTO[] nodeDTOArr = {nodeDTO};
 
         new Expectations() {
             {
-                cbbTerminalGroupMgmtAPI.loadTerminalGroupCompleteTree((CbbGetTerminalGroupCompleteTreeRequest) any);
-                result = apiResponse;
+                terminalGroupService.findAll();
+                result = groupList;
+                terminalGroupHandler.assembleGroupTree((UUID) any, (List<TerminalGroupEntity>) any, (UUID) any);
+                result = nodeDTOArr;
             }
         };
 
@@ -69,8 +77,6 @@ public class GetTerminalGroupTreeHandlerSPIImplTest {
 
         new Verifications() {
             {
-                cbbTerminalGroupMgmtAPI.loadTerminalGroupCompleteTree((CbbGetTerminalGroupCompleteTreeRequest) any);
-                times = 1;
                 CbbResponseShineMessage shineMessage;
                 messageHandlerAPI.response(shineMessage = withCapture());
                 Assert.assertEquals(Constants.SUCCESS, shineMessage.getCode().intValue());
@@ -81,19 +87,24 @@ public class GetTerminalGroupTreeHandlerSPIImplTest {
 
     /**
      * 获取终端组树状列表，参数错误
-     * @throws BusinessException 异常
      */
     @Test
-    public void testDispatchArgError() throws BusinessException {
+    public void testDispatchArgError() {
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setDispatcherKey(ShineAction.GET_TERMINAL_GROUP_LIST);
-        request.setData("123456");
+
+        new Expectations() {
+            {
+                terminalGroupService.findAll();
+                result = new Exception("xxx");
+            }
+        };
 
         handlerSPI.dispatch(request);
 
         new Verifications() {
             {
-                cbbTerminalGroupMgmtAPI.loadTerminalGroupCompleteTree((CbbGetTerminalGroupCompleteTreeRequest) any);
+                terminalGroupHandler.assembleGroupTree((UUID) any, (List<TerminalGroupEntity>) any, (UUID) any);
                 times = 0;
                 CbbResponseShineMessage shineMessage;
                 messageHandlerAPI.response(shineMessage = withCapture());
