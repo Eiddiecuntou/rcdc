@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGr
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalGroupHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -44,6 +45,9 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
     @Injectable
     private TerminalGroupService terminalGroupService;
+
+    @Injectable
+    private TerminalGroupHandler terminalGroupHandler;
 
     @Injectable
     private TerminalGroupServiceTx terminalGroupServiceTx;
@@ -97,11 +101,14 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         request.setEnableFilterDefaultGroup(true);
         request.setFilterGroupId(filterGroup.getId());
         CbbGetTerminalGroupTreeResponse response = api.loadTerminalGroupCompleteTree(request);
-        assertEquals(2, response.getItemArr().length);
 
         new Verifications() {
             {
                 terminalGroupService.findAll();
+                times = 1;
+                terminalGroupHandler.filterDefaultGroup((List<TerminalGroupEntity>) any);
+                times = 1;
+                terminalGroupHandler.assembleGroupTree((UUID) any, (List<TerminalGroupEntity>) any, (UUID) any);
                 times = 1;
             }
         };
@@ -126,11 +133,14 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbGetTerminalGroupCompleteTreeRequest request = new CbbGetTerminalGroupCompleteTreeRequest();
         request.setEnableFilterDefaultGroup(false);
         CbbGetTerminalGroupTreeResponse response = api.loadTerminalGroupCompleteTree(request);
-        assertEquals(3, response.getItemArr().length);
 
         new Verifications() {
             {
                 terminalGroupService.findAll();
+                times = 1;
+                terminalGroupHandler.filterDefaultGroup((List<TerminalGroupEntity>) any);
+                times = 0;
+                terminalGroupHandler.assembleGroupTree((UUID) any, (List<TerminalGroupEntity>) any, (UUID) any);
                 times = 1;
             }
         };

@@ -101,4 +101,9 @@ public interface ShineAction {
      *  终端请求同步离线登录设置
      */
     String REQUEST_OFFLINE_CONFIG = "request_offline_config";
+
+    /**
+     *  终端请求终端组列表
+     */
+    String GET_TERMINAL_GROUP_LIST = "get_terminal_ group_list";
 }
