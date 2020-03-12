@@ -58,7 +58,7 @@ public enum SendTerminalEventEnums {
     /**
      * 清空idv终端数据盘
      */
-    CLEAR_DATA("clear_data"),
+    CLEAR_DATA("clear_data_disk"),
 
     /**
      * 同步终端背景

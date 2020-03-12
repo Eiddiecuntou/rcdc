@@ -85,7 +85,7 @@ public interface ShineAction {
     /**
      *  上报IDV终端确认清空数据盘响应
      */
-    String CONFIRM_CLEAR_DATA = "confirm_clear_data";
+    String CLEAR_DATA_DISK_CHOICE = "clear_data_disk_choice";
 
     /**
      *  上报IDV终端清空数据盘结果
