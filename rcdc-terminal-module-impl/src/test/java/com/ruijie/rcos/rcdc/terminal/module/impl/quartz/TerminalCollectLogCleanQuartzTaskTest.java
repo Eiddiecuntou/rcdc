@@ -1,23 +1,25 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
 import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.text.ParseException;
 import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
-
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
+import mockit.Tested;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -66,7 +68,7 @@ public class TerminalCollectLogCleanQuartzTaskTest {
                 BaseCreateSystemLogRequest request;
                 baseSystemLogMgmtAPI.createSystemLog(request = withCapture());
                 times = 1;
-                assertEquals(request.getContent(), BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_FAIL_SYSTEM_LOG);
+                assertEquals(request.getKey(), BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_FAIL_SYSTEM_LOG);
             }
         };
     }
@@ -242,7 +244,7 @@ public class TerminalCollectLogCleanQuartzTaskTest {
                 BaseCreateSystemLogRequest request;
                 baseSystemLogMgmtAPI.createSystemLog(request = withCapture());
                 times = 1;
-                assertEquals(request.getContent(), BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG);
+                assertEquals(request.getKey(), BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG);
             }
         };
     }
