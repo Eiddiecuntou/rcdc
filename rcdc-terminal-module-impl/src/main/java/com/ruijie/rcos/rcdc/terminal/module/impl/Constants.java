@@ -214,4 +214,7 @@ public interface Constants {
     /** 终端组最大子分组数量 */
     int TERMINAL_GROUP_MAX_SUB_GROUP_NUM = 200;
 
+    /** IDV终端最大离线登录时间全局参数表key */
+    String OFFLINE_LOGIN_TIME_KEY = "offline_time";
+
 }

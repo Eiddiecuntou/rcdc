@@ -12,21 +12,15 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
-import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.util.StringUtils;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 
 import mockit.*;
 
@@ -43,12 +37,6 @@ public class AndroidVDISystemUpgradePackageHelperTest {
 
     @Tested
     private AndroidVDISystemUpgradePackageHelper helper;
-
-    @Injectable
-    private BtService btService;
-
-    @Injectable
-    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     /**
      * 测试获取系统升级包信息
@@ -392,53 +380,4 @@ public class AndroidVDISystemUpgradePackageHelperTest {
         }
 
     }
-
-    /**
-     * 测试制作bt种子
-     *
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testMakeBtSeed() throws BusinessException {
-
-        new MockUp<FileOperateUtil>() {
-            @Mock
-            public void createFileDirectory(File file) {
-                return;
-            }
-        };
-
-        String filePath = "/aa/sss";
-        String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
-        String ip = "172.1.1.1";
-
-        ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
-        dto.setClusterVirtualIpIp(ip);
-        DtoResponse<ClusterVirtualIpDTO> response = DtoResponse.success(dto);
-
-        SeedFileInfo seedFileInfo = new SeedFileInfo("/aa/bb/sss.torrent", "abc");
-        new Expectations() {
-            {
-                cloudPlatformMgmtAPI.getClusterVirtualIp((DefaultRequest) any);
-                result = response;
-
-                btService.makeBtSeed(filePath, seedSavePath, ip);
-                result = seedFileInfo;
-            }
-        };
-
-        SeedFileInfo result = helper.makeBtSeed(filePath);
-        assertEquals(seedFileInfo, result);
-
-        new Verifications() {
-            {
-                cloudPlatformMgmtAPI.getClusterVirtualIp((DefaultRequest) any);
-                times = 1;
-
-                btService.makeBtSeed(filePath, seedSavePath, ip);
-                times = 1;
-            }
-        };
-    }
-
 }

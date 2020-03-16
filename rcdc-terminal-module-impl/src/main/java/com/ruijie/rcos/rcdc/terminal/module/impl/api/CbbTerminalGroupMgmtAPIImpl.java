@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -14,10 +18,10 @@ import com.google.common.base.Objects;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
@@ -208,13 +212,13 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public DefaultResponse createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException {
+    public DtoResponse<TerminalGroupDTO> createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         TerminalGroupDTO saveGroup = new TerminalGroupDTO(null, request.getGroupName(), request.getParentGroupId());
-        terminalGroupService.saveTerminalGroup(saveGroup);
-
-        return DefaultResponse.Builder.success();
+        TerminalGroupEntity entity = terminalGroupService.saveTerminalGroup(saveGroup);
+        saveGroup.setId(entity.getId());
+        return DtoResponse.success(saveGroup);
     }
 
     @Override

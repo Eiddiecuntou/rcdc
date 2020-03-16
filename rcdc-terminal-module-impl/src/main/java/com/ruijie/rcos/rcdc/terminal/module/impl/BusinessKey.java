@@ -173,6 +173,9 @@ public interface BusinessKey {
      */
     String RCDC_FILE_OPERATE_FAIL = "rcdc_file_operate_fail";
 
+    /** 不合法的文件名后缀 */
+    String RCDC_FILE_INVALID_SUFFIX = "rcdc_file_invalid_suffix";
+
     /**
      * 终端检测超时处理定时任务
      */
@@ -316,6 +319,21 @@ public interface BusinessKey {
     String RCDC_TERMINAL_OTA_UPGRADE_STOP_SHARE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_stop_share_file_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR = "rcdc_terminal_ota_upgrade_package_has_error";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
+
+    /************ idv终端数据盘清空***************/
+    String RCDC_TERMINAL_DESKTOP_RUNNING_CANNOT_CLEAR_DISK = "rcdc_terminal_desktop_running_cannot_clear_disk";
+    String RCDC_TERMINAL_NOT_EXIST = "rcdc_terminal_not_exist";
+    String RCDC_TERMINAL_NOT_IDV_CANNOT_CLEAR_DISK = "rcdc_terminal_not_idv_cannot_clear_disk";
+    String RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK = "rcdc_terminal_operate_action_clear_disk";
+    String RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK = "rcdc_terminal_not_online_cannot_clear_disk";
+    String RCDC_TERMINAL_CONFIRM_TO_CLEAR_DISK = "rcdc_terminal_confirm_to_clear_disk";
+    String RCDC_TERMINAL_CLEAR_DISK_SUCCESS = "rcdc_terminal_clear_disk_success";
+    String RCDC_TERMINAL_CLEAR_DISK_FAIL = "rcdc_terminal_clear_disk_fail";
+
+    /************终端背景界面**************************/
+    String RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND = "rcdc_terminal_operate_action_send_background_url";
+    /************终端离线登录设置**************************/
+    String RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG = "rcdc_terminal_operate_action_send_offline_login_config";
 
     /************终端型号**************************/
     String RCDC_TERMINAL_MODEL_NOT_EXIST_ERROR = "rcdc_terminal_model_not_exist_error";

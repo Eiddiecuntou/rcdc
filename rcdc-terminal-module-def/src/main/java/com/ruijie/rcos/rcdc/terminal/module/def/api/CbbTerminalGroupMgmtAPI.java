@@ -78,11 +78,10 @@ public interface CbbTerminalGroupMgmtAPI {
     /**
      * @description 创建终端组
      * @param request 页面请求创建终端组参数
-     * @return Response
+     * @return 创建终端组详细信息
      * @throws BusinessException 业务异常
      */
-    
-    DefaultResponse createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException;
+    DtoResponse<TerminalGroupDTO> createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException;
 
     /**
      * @description 编辑终端组

@@ -2,13 +2,16 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.io.File;
 import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
@@ -160,6 +163,29 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
         operatorService.relieveFault(terminalId);
+        return DefaultResponse.Builder.success();
+    }
+
+    @Override
+    public DefaultResponse clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException {
+        Assert.notNull(idRequest,"idRequest can not be null");
+
+        String terminalId = idRequest.getTerminalId();
+        operatorService.diskClear(terminalId);
+        return DefaultResponse.Builder.success();
+    }
+
+    /**
+     * IDV终端离线登录设置
+     *
+     * @param request 请求参数
+     * @return 返回成功失败
+     * @throws BusinessException 业务异常
+     */
+    @Override
+    public DefaultResponse idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+        operatorService.offlineLoginSetting(request.getOfflineAutoLocked());
         return DefaultResponse.Builder.success();
     }
 
