@@ -22,9 +22,13 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTermi
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalGroupOperNotifySPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalGroupOperNotifyRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
@@ -32,7 +36,10 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
+import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 
 /**
  * 终端组管理API接口实现.
@@ -52,6 +59,31 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
 
     @Autowired
     private TerminalGroupServiceTx terminalGroupServiceTx;
+
+    @Autowired
+    private CbbTerminalGroupOperNotifySPI cbbTerminalGroupOperNotifySPI;
+
+    @Override
+    public DtoResponse<List<TerminalGroupDTO>> getAllTerminalGroup(DefaultRequest request) {
+        Assert.notNull(request, "request can not be null");
+
+        List<TerminalGroupEntity> groupList = terminalGroupService.findAll();
+        List<TerminalGroupDTO> dtoList = new ArrayList<>();
+        for (TerminalGroupEntity entity : groupList) {
+            TerminalGroupDTO dto = new TerminalGroupDTO();
+            dto.setId(entity.getId());
+            dto.setGroupName(entity.getName());
+            dto.setParentGroupId(entity.getParentId());
+            if (Constants.DEFAULT_TERMINAL_GROUP_UUID.equals(dto.getId())) {
+                dto.setEnableDefault(true);
+            } else {
+                dto.setEnableDefault(false);
+            }
+            dtoList.add(dto);
+        }
+
+        return DtoResponse.success(dtoList);
+    }
 
     @Override
     public CbbGetTerminalGroupTreeResponse loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeRequest request) throws BusinessException {
@@ -203,6 +235,10 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
         Assert.notNull(request, "request can not be null");
 
         terminalGroupServiceTx.deleteGroup(request.getId(), request.getMoveGroupId());
+        CbbTerminalGroupOperNotifyRequest cbbTerminalGroupOperNotifyRequest = new CbbTerminalGroupOperNotifyRequest();
+        cbbTerminalGroupOperNotifyRequest.setId(request.getId());
+        cbbTerminalGroupOperNotifyRequest.setMoveGroupId(request.getMoveGroupId());
+        cbbTerminalGroupOperNotifySPI.notifyTerminalGroupChange(cbbTerminalGroupOperNotifyRequest);
         return DefaultResponse.Builder.success();
     }
 

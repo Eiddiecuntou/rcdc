@@ -326,4 +326,41 @@ public class CbbTerminalOperatorAPIImplTest {
         assertEquals(response.getStatus(),Status.SUCCESS);
     }
 
+    /**
+     * 测试 relieveFault 方法入参
+     * @throws Exception
+     */
+    @Test
+    public void testRelieveFaultValidateParams() throws Exception {
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null),
+                "CbbTerminalIdRequest不能为空");
+        assertTrue(true);
+    }
+
+    /**
+     * 测试 relieveFault 方法
+     */
+    @Test
+    public void testRelieveFault() {
+        try {
+            String terminalId = "123";
+            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
+            request.setTerminalId(terminalId);
+            terminalOperatorAPI.relieveFault(request);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        new Verifications() {
+            {
+                try {
+                    operatorService.relieveFault(anyString);
+                    times = 1;
+                } catch (BusinessException e) {
+                    fail();
+                }
+            }
+        };
+    }
+
 }

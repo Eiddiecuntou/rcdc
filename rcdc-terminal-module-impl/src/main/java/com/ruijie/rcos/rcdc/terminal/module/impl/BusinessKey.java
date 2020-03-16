@@ -337,4 +337,10 @@ public interface BusinessKey {
 
     /************终端型号**************************/
     String RCDC_TERMINAL_MODEL_NOT_EXIST_ERROR = "rcdc_terminal_model_not_exist_error";
+
+    /***********PC纳管*************************/
+    /**
+     * 终端操作-解除故障
+     */
+    String RCDC_TERMINAL_OPERATE_ACTION_RELIEVE_FAULT = "rcdc_terminal_operate_action_relieve_fault";
 }

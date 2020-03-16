@@ -56,6 +56,11 @@ public enum SendTerminalEventEnums {
     CHANGE_TERMINAL_LOGO("change_terminal_logo"),
 
     /**
+     * 解除故障
+     */
+    RELIEVE_FAULT("relieve_fault"),
+
+    /**
      * 清空idv终端数据盘
      */
     CLEAR_DATA("clear_data"),

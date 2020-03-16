@@ -1,6 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
@@ -11,6 +21,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroup
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalGroupOperNotifySPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalGroupOperNotifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
@@ -18,19 +30,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Description: Function Description
@@ -51,6 +58,41 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
     @Injectable
     private TerminalGroupServiceTx terminalGroupServiceTx;
+
+    @Injectable
+    private CbbTerminalGroupOperNotifySPI cbbTerminalGroupOperNotifySPI;
+
+    /**
+     *  测试getAllTerminalGroup()
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testGetAllTerminalGroup() throws BusinessException {
+
+        List<TerminalGroupEntity> groupList = new ArrayList<>();
+        TerminalGroupEntity entity = new TerminalGroupEntity();
+        entity.setId(CbbTerminalGroupMgmtAPI.DEFAULT_TERMINAL_GROUP_ID);
+        groupList.add(entity);
+        TerminalGroupEntity entity2 = new TerminalGroupEntity();
+        entity2.setId(UUID.randomUUID());
+        groupList.add(entity2);
+
+        new Expectations() {
+            {
+                terminalGroupService.findAll();
+                result = groupList;
+            }
+        };
+
+        api.getAllTerminalGroup(new DefaultRequest());
+
+        new Verifications() {
+            {
+                terminalGroupService.findAll();
+                times = 1;
+            }
+        };
+    }
 
     /**
      *  测试加载终端分组树-无终端分组
@@ -334,17 +376,23 @@ public class CbbTerminalGroupMgmtAPIImplTest {
      */
     @Test
     public void testDeleteTerminalGroup() throws BusinessException {
+        final CbbDeleteTerminalGroupRequest deleteTerminalGroupRequest = new CbbDeleteTerminalGroupRequest();
+        deleteTerminalGroupRequest.setId(UUID.randomUUID());
+        deleteTerminalGroupRequest.setMoveGroupId(UUID.randomUUID());
         new Expectations() {
             {
                 terminalGroupServiceTx.deleteGroup((UUID) any, (UUID) any);
+                cbbTerminalGroupOperNotifySPI.notifyTerminalGroupChange((CbbTerminalGroupOperNotifyRequest) any);
             }
         };
 
-        api.deleteTerminalGroup(new CbbDeleteTerminalGroupRequest());
+        api.deleteTerminalGroup(deleteTerminalGroupRequest);
 
         new Verifications() {
             {
                 terminalGroupServiceTx.deleteGroup((UUID) any, (UUID) any);
+                times = 1;
+                cbbTerminalGroupOperNotifySPI.notifyTerminalGroupChange((CbbTerminalGroupOperNotifyRequest) any);
                 times = 1;
             }
         };
@@ -466,3 +514,4 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         };
     }
 }
+

@@ -60,6 +60,11 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
                 getSystemUpgradeService().getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeTask.getId());
+        if (upgradeTerminalEntity == null) {
+            // 终端是在升级任务开启之后接入的
+            return true;
+        }
+
         CbbSystemUpgradeStateEnums state = upgradeTerminalEntity.getState();
         if (state == CbbSystemUpgradeStateEnums.SUCCESS || state == CbbSystemUpgradeStateEnums.UNDO) {
             LOGGER.info("终端[{}]处于[{}]升级状态", upgradeTerminalEntity.getTerminalId(), state.name());

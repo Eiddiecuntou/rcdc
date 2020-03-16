@@ -35,6 +35,7 @@ public class TerminalGroupDTO extends EqualsHashcodeSupport {
      */
     private String parentGroupName;
 
+    private Boolean enableDefault;
 
     public TerminalGroupDTO() {
 
@@ -76,5 +77,13 @@ public class TerminalGroupDTO extends EqualsHashcodeSupport {
 
     public void setParentGroupName(String parentGroupName) {
         this.parentGroupName = parentGroupName;
+    }
+
+    public Boolean getEnableDefault() {
+        return enableDefault;
+    }
+
+    public void setEnableDefault(Boolean enableDefault) {
+        this.enableDefault = enableDefault;
     }
 }

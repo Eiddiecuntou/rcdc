@@ -25,7 +25,12 @@ public enum CbbTerminalPlatformEnums {
     /**
      * 软终端
      */
-    APP;
+    APP,
+    
+    /**
+     * PC
+     */
+    PC;
 
     /**
      * 判断平台字符串是否为平台枚举成员
