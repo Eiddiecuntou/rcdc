@@ -11,7 +11,7 @@ import os
 import sys
 
 from Common import getLogger
-
+from Consts import *
 
 # bt服务so库路径
 BT_SERVICE_SO_PATH = "/usr/local/lib/libsysabslayer_linux.so"
@@ -21,7 +21,6 @@ BT_SERVICE_SO_PATH = "/usr/local/lib/libsysabslayer_linux.so"
 RJ_API_RESPONSE_CODE = "code";
 RJ_API_RESPONSE_CODE_SUCCESS = "RJSUCCESS-0";
 RJ_API_RESPONSE_CODE_NO_TASK = "RJFAIL-15005";
-
 
 #日志
 logger = getLogger()
