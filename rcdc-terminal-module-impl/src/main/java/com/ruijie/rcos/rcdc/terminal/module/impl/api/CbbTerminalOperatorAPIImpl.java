@@ -157,6 +157,14 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         return cache;
     }
 
+    @Override
+    public DefaultResponse relieveFault(CbbTerminalIdRequest request) throws BusinessException {
+        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
+        Assert.hasText(request.getTerminalId(), "terminalId不能为空");
+        String terminalId = request.getTerminalId();
+        operatorService.relieveFault(terminalId);
+        return DefaultResponse.Builder.success();
+    }
 
     @Override
     public DefaultResponse clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException {

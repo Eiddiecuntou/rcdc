@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import java.util.UUID;
 
 /**
@@ -11,11 +12,6 @@ import java.util.UUID;
  * @author Jarman
  */
 public interface Constants {
-
-    int SUCCESS = 0;
-
-    int FAILURE = 99;
-
 
     String SYSTEM_TYPE = "rcdc";
 
@@ -95,19 +91,35 @@ public interface Constants {
     String PXE_SAMBA_LINUX_VDI_UPGRADE_SUCCESS_FILE_PATH = "/opt/samba/pxeuser/linux_vdi/mac_end/";
 
     /**
-     *  linux vdi刷机ISO文件路径
+     * linux vdi刷机ISO文件路径
      */
     String PXE_SAMBA_LINUX_VDI_ISO_PATH = "/opt/samba/pxeuser/linux_vdi/";
 
     /**
      *  linux vdi刷机ISO文件路径
      */
+
     String PXE_SAMBA_PACKAGE_PATH = "/opt/samba/pxeuser/";
 
     /**
      *  linux vdi刷机samba相对路径
      */
     String PXE_ISO_SAMBA_LINUX_VDI_RELATE_PATH = "/linux_vdi/";
+
+    /**
+     * 系统镜像挂载指令
+     */
+    String SYSTEM_CMD_MOUNT_UPGRADE_ISO = "mount %s %s";
+
+    /**
+     * 系统镜像解除挂载指令
+     */
+    String SYSTEM_CMD_UMOUNT_UPGRADE_ISO = "umount %s";
+
+    /**
+     * ISO升级包MD5校验
+     */
+    String SYSTEM_CMD_CHECK_ISO_MD5 = "checkisomd5 %s";
 
     /**
      * 系统刷机包版本文件属性-包类型
@@ -132,12 +144,12 @@ public interface Constants {
     /**
      * OTA包版本号
      */
-    String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION = "VER";
+    String TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_VERSION = "VER";
 
     /**
      * OTA包版本号
      */
-    String  TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT = "PLAT";
+    String TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT = "PLAT";
 
     /**
      * 出厂OTA包存放目录
@@ -219,9 +231,9 @@ public interface Constants {
      * 文件后缀名分隔符
      */
     String FILE_SUFFIX_DOT = ".";
-    
+
     /** 终端默认分组UUID */
-    UUID DEFAULT_TERMINAL_GROUP_UUID = UUID.fromString("7769c0c6-473c-4d4c-9f47-5a62bdeb30ba");
+    UUID DEFAULT_TERMINAL_GROUP_UUID = CbbTerminalGroupMgmtAPI.DEFAULT_TERMINAL_GROUP_ID;
 
     /** 分组最大层级 */
     int TERMINAL_GROUP_MAX_LEVEL = 9;

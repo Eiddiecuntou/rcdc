@@ -664,6 +664,38 @@ public class TerminalOperatorServiceImplTest {
         assertEquals("123", operatorService.getTerminalPassword());
     }
 
+    @Test
+    public void testRelieveFault() throws Exception {
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+                } catch (BusinessException e) {
+                    result = sender;
+                }
+                sender.syncRequest((Message) any);
+                result = baseMessage;
+            }
+        };
+        String terminalId = "123";
+
+        operatorService.relieveFault(terminalId);
+
+        new Verifications() {
+            {
+                sessionManager.getRequestMessageSender(anyString);
+                times = 1;
+                sender.syncRequest((Message) any);
+                times = 1;
+            }
+        };
+    }
 
     /**
      *测试正常清空数据盘

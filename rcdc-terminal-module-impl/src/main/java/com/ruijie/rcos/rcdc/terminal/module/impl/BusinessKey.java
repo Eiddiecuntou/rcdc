@@ -358,4 +358,9 @@ public interface BusinessKey {
     String RCDC_TERMINAL_BT_MAKE_SEED_FILE_FAIL = "rcdc_terminal_bt_make_seed_file_fail";
     String RCDC_TERMINAL_BT_START_SHARE_SEED_FILE_FAIL = "rcdc_terminal_bt_start_share_seed_file_fail";
     String RCDC_TERMINAL_BT_STOP_SHARE_SEED_FILE_FAIL = "rcdc_terminal_bt_stop_share_seed_file_fail";
+    /***********PC纳管*************************/
+    /**
+     * 终端操作-解除故障
+     */
+    String RCDC_TERMINAL_OPERATE_ACTION_RELIEVE_FAULT = "rcdc_terminal_operate_action_relieve_fault";
 }
