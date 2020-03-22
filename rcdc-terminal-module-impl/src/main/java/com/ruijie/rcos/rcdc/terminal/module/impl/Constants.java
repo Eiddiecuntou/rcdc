@@ -13,6 +13,10 @@ import java.util.UUID;
  */
 public interface Constants {
 
+    int SUCCESS = 0;
+
+    int FAILURE = 99;
+
     String SYSTEM_TYPE = "rcdc";
 
     /**
