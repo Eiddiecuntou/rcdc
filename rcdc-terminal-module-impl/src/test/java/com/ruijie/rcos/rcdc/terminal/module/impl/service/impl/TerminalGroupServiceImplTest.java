@@ -454,6 +454,17 @@ public class TerminalGroupServiceImplTest {
         };
     }
 
+    @Test
+    public void testCheckGroupNameUniqueWhenDefaultGroupName() {
+        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(UUID.randomUUID(), "总览", null);
+
+        try {
+            terminalGroupService.checkGroupNameUnique(terminalGroup);
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME);
+        }
+    }
+
     private List<TerminalGroupEntity> buildHasSameNameList(UUID groupId) {
         List<TerminalGroupEntity> groupList = new ArrayList<TerminalGroupEntity>();
         for (int i = 0; i < 2; i++) {

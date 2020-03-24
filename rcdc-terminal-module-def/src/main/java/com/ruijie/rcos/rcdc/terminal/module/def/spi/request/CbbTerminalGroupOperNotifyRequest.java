@@ -1,0 +1,40 @@
+package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
+
+import java.util.UUID;
+import org.springframework.lang.Nullable;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
+import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+
+/**
+ * 
+ * Description: Function Description
+ * Copyright: Copyright (c) 2020
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2020年1月7日
+ * 
+ * @author wjp
+ */
+public class CbbTerminalGroupOperNotifyRequest implements Request {
+
+    @NotNull
+    private UUID id;
+
+    @Nullable
+    private UUID moveGroupId;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getMoveGroupId() {
+        return moveGroupId;
+    }
+
+    public void setMoveGroupId(UUID moveGroupId) {
+        this.moveGroupId = moveGroupId;
+    }
+}

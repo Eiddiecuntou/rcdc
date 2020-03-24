@@ -1,26 +1,24 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
-import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.text.ParseException;
 import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 import mockit.integration.junit4.JMockit;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -266,7 +264,7 @@ public class TerminalCollectLogCleanQuartzTaskTest {
             quartz.safeInit();
             Assert.fail();
         } catch (Exception e) {
-            Assert.assertEquals(e.getMessage(), "定时任务[" + quartz.getClass() + "]cron表达式[0 0 2 * * ? *]解析异常");
+            assertEquals(e.getMessage(), "定时任务[" + quartz.getClass() + "]cron表达式[0 0 2 * * ? *]解析异常");
         }
 
         new Verifications() {

@@ -70,6 +70,13 @@ public interface TerminalOperatorService {
     String getTerminalPassword() throws BusinessException;
 
     /**
+     * 解除报障
+     * @param terminalId 终端id
+     * @throws BusinessException 业务异常
+     */
+    void relieveFault(String terminalId) throws BusinessException;
+
+    /**
      * 终端离线登录设置
      *
      * @param offlineAutoLocked 离线设置参数
