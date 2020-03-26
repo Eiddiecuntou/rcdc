@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.*;
 
 import com.google.common.collect.Lists;
@@ -105,7 +106,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
             if (groupName.equals(group.getName())) {
                 LOGGER.error("terminal group name has exist, group name[{}], parent group id[{}]", groupName,
                         terminalGroup.getParentGroupId());
-                throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE, groupName);
+                throw new BusinessException(PublicBusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE, groupName);
             }
         }
 
