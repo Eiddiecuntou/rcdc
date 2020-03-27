@@ -472,7 +472,7 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         new MockUp<File>() {
             @Mock
             boolean isDirectory() {
-                return true;
+                return false;
             }
 
             @Mock
