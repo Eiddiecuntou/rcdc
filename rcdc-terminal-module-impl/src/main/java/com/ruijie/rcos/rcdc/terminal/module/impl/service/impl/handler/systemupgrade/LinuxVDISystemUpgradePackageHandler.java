@@ -55,9 +55,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_TYPE_ERROR);
         }
         //使用checkisomd5校验升级包
-        if (!IsoFileUtil.checkISOMd5(filePath)) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
-        }
+        checkISOMd5(filePath);
 
         checkNecessaryDirExist();
 

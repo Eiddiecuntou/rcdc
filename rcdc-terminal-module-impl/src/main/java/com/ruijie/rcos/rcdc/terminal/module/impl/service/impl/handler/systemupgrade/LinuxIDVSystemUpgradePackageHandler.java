@@ -7,8 +7,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -57,6 +57,9 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     @Autowired
     private LinuxIDVSystemUpgradePackageHelper helper;
 
+    @Autowired
+    private BtClientService btClientService;
+
     @Override
     protected TerminalSystemUpgradePackageService getSystemUpgradePackageService() {
         return terminalSystemUpgradePackageService;
@@ -69,9 +72,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
         // 校验ISO文件
         checkFileType(fileName);
-        if (!IsoFileUtil.checkISOMd5(filePath)) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
-        }
+        checkISOMd5(filePath);
 
         // 解析ISO文件
         prepareDirectories();
@@ -88,7 +89,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
         // 制作OTA包种子文件
         SeedFileInfoDTO seedInfo =
-                BtClientUtil.makeBtSeed(versionInfo.getFilePath(), Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE);
+                btClientService.makeBtSeed(versionInfo.getFilePath(), Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE);
 
         // 组装升级包信息
         versionInfo.setPackageType(CbbTerminalTypeEnums.IDV_LINUX);
@@ -101,6 +102,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     private void prepareDirectories() {
         checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
         checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR);
+        checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE);
         checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR);
     }
 

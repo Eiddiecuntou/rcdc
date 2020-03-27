@@ -8,9 +8,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -49,6 +49,9 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
     @Autowired
     private TerminalSystemUpgradeDAO terminalSystemUpgradeDAO;
 
+    @Autowired
+    private BtClientService btClientService;
+
     @Override
     public void safeInit() {
         // 初始化VDI Android的OTA包
@@ -75,7 +78,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
         if (!CollectionUtils.isEmpty(upgradingTaskList)) {
             try {
-                BtClientUtil.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
+                btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
             } catch (Exception e) {
                 LOGGER.error("开始BT服务失败", e);
             }

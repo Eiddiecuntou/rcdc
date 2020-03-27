@@ -1,19 +1,21 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.util;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.File;
@@ -26,17 +28,18 @@ import java.io.File;
  *
  * @author zhangyichi
  */
-public class BtClientUtil {
+@Service
+public class BtClientServiceImpl implements BtClientService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BtClientUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BtClientServiceImpl.class);
 
     private static final String SEED_FILE_FORMAT = ".torrent";
 
     @Autowired
-    private static NetworkAPI networkAPI;
+    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     @Autowired
-    private static BtClientAPI btClientAPI;
+    private BtClientAPI btClientAPI;
 
     /**
      * 开启目标文件的BT分享服务
@@ -44,7 +47,7 @@ public class BtClientUtil {
      * @param seedPath 对应的种子文件路径
      * @throws BusinessException 业务异常
      */
-    public static void startBtShare(String filePath, String seedPath) throws BusinessException {
+    public void startBtShare(String filePath, String seedPath) throws BusinessException {
         Assert.hasText(filePath, "filePath cannot be blank!");
         Assert.hasText(seedPath, "seedPath cannot be blank!");
 
@@ -69,7 +72,7 @@ public class BtClientUtil {
      * @param seedPath 种子文件路径
      * @throws BusinessException 业务异常
      */
-    public static void stopBtShare(String seedPath) throws BusinessException {
+    public void stopBtShare(String seedPath) throws BusinessException {
         Assert.hasText(seedPath, "seedPath cannot be blank!");
 
         LOGGER.info("关闭BT分享服务，种子文件[{}]", seedPath);
@@ -93,7 +96,7 @@ public class BtClientUtil {
      * @return 制作完成的种子文件信息
      * @throws BusinessException 业务异常
      */
-    public static SeedFileInfoDTO makeBtSeed(String filePath, String seedSavePath) throws BusinessException {
+    public SeedFileInfoDTO makeBtSeed(String filePath, String seedSavePath) throws BusinessException {
         Assert.hasText(filePath, "filePath cannot be blank!");
         Assert.hasText(seedSavePath, "seedSavePath cannot be blank!");
 
@@ -118,12 +121,12 @@ public class BtClientUtil {
         }
     }
 
-    private static void validateTargetFile(String targetFilePath) {
+    private void validateTargetFile(String targetFilePath) {
         File file = new File(targetFilePath);
         Assert.isTrue(file.exists(), "target file not exist");
     }
 
-    private static void validateSeedFile(String seedPath) {
+    private void validateSeedFile(String seedPath) {
         String lowerCaseSeedPath = seedPath.trim().toLowerCase();
         Assert.isTrue(lowerCaseSeedPath.endsWith(SEED_FILE_FORMAT), "illegal seed file format!");
         File file = new File(seedPath);
@@ -135,18 +138,15 @@ public class BtClientUtil {
      *
      * @return ip
      */
-    private static String getLocalIP() throws BusinessException {
-        BaseDetailNetworkRequest request = new BaseDetailNetworkRequest();
-        BaseDetailNetworkInfoResponse response = networkAPI.detailNetwork(request);
-        String localIp = response.getNetworkDTO().getIp();
-        Assert.hasText(localIp, "localIp is blank!");
-        return localIp;
+    private String getLocalIP() throws BusinessException {
+        DtoResponse<ClusterVirtualIpDTO> resp = cloudPlatformMgmtAPI.getClusterVirtualIp(new DefaultRequest());
+        return resp.getDto().getClusterVirtualIpIp();
     }
 
-    private static void createFilePath(String filePath) {
+    private void createFilePath(String filePath) {
         File file = new File(filePath);
         if (!file.exists()) {
-            file.mkdir();
+            file.mkdirs();
             file.setReadable(true, false);
             file.setExecutable(true, false);
         }

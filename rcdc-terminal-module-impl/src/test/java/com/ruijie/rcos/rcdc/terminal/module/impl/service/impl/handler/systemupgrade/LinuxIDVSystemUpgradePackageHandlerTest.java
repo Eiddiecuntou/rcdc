@@ -6,13 +6,12 @@ import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
-import com.ruijie.rcos.sk.base.util.IsoFileUtil;
 import mockit.*;
 import org.apache.commons.exec.DefaultExecutor;
 import org.junit.After;
@@ -51,6 +50,9 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
 
     @Injectable
     private BtClientAPI btClientAPI;
+    
+    @Injectable
+    private BtClientService btClientService;
 
     @Mocked
     private ShellCommandRunner shellCommandRunner;
@@ -105,19 +107,24 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
 
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedFilePath", "seedFileMD5");
 
-        new Expectations(FileOperateUtil.class, BtClientUtil.class, IsoFileUtil.class) {
+        new Expectations(FileOperateUtil.class) {
             {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
                 helper.getOtaFilesInfo(otaListPath);
                 result = otaFileInfoList;
                 helper.handleOtaListItem(anyString, anyString, anyString);
                 result = otaFileInfo;
-                BtClientUtil.makeBtSeed(anyString, anyString);
+                btClientService.makeBtSeed(anyString, anyString);
                 result = seedFileInfoDTO;
                 FileOperateUtil.deleteFile((File) any);
+            }
+        };
+
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 
@@ -189,12 +196,17 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         prop.setProperty("plat", "VDI");
         prop.setProperty("version", "1.0");
 
-        new Expectations(IsoFileUtil.class) {
+        new Expectations() {
             {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
+            }
+        };
+
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 
@@ -235,12 +247,17 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         Properties prop = new Properties();
         prop.setProperty("version", "1.0");
 
-        new Expectations(IsoFileUtil.class) {
+        new Expectations() {
             {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
+            }
+        };
+
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 
@@ -287,14 +304,19 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         otaFileInfoList.add("packageMD5 /rainos-img");
         otaFileInfoList.add("scriptMD5 /OTAPreRunFun");
 
-        new Expectations(IsoFileUtil.class) {
+        new Expectations() {
             {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
                 helper.getOtaFilesInfo(otaListPath);
                 result = otaFileInfoList;
+            }
+        };
+
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 
@@ -347,14 +369,19 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         otaFileInfoList.add("scriptMD5 /OTAPreRunFun");
         otaFileInfoList.add("scriptMD5 /OTAPreRunFun");
 
-        new Expectations(IsoFileUtil.class) {
+        new Expectations() {
             {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
                 helper.getOtaFilesInfo(otaListPath);
                 result = otaFileInfoList;
+            }
+        };
+
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 
@@ -410,18 +437,23 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
                 new LinuxIDVSystemUpgradePackageHelper.OtaFileInfo("filePath", "md5");
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedFilePath", "seedFileMD5");
 
-        new Expectations(BtClientUtil.class, IsoFileUtil.class) {
+        new Expectations() {
             {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
                 helper.handleOtaListItem(anyString, anyString, anyString);
                 result = otaFileInfo;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;
                 helper.getOtaFilesInfo(otaListPath);
                 result = otaFileInfoList;
-                BtClientUtil.makeBtSeed(anyString, anyString);
+                btClientService.makeBtSeed(anyString, anyString);
                 result = seedFileInfoDTO;
+            }
+        };
+
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 

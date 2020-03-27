@@ -5,8 +5,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -35,6 +35,9 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
 
     @Autowired
     private TerminalSystemUpgradeService systemUpgradeService;
+
+    @Autowired
+    private BtClientService btClientService;
 
     @Override
     protected TerminalSystemUpgradeService getSystemUpgradeService() {
@@ -97,7 +100,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
 
         // 开启BT分享
         LOGGER.info("开启安卓系统升级bt分享");
-        BtClientUtil.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
+        btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
     }
 
     @Override
@@ -108,7 +111,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
 
         // 关闭BT分享
         LOGGER.info("关闭安卓系统升级bt分享");
-        BtClientUtil.stopBtShare(upgradePackage.getSeedPath());
+        btClientService.stopBtShare(upgradePackage.getSeedPath());
     }
 
     @Override

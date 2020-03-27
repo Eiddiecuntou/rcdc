@@ -11,8 +11,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEnt
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.BtClientServiceImpl;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -51,7 +52,8 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
     @Injectable
     private NetworkAPI networkAPI;
 
-
+    @Injectable
+    private BtClientService btClientService;
 
     /**
      * 测试获取系统升级包service
@@ -93,7 +95,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
         SeedFileInfo seedFileInfo = new SeedFileInfo("/abc/seed.torrent", "123aaa");
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("/abc/seed.torrent", "123aaa");
-        new Expectations(BtClientUtil.class) {
+        new Expectations(BtClientServiceImpl.class) {
             {
                 systemUpgradePackageHelper.unZipPackage(filePath, savePackageName);
                 result = savePackagePath;
@@ -101,7 +103,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
                 systemUpgradePackageHelper.checkVersionInfo(savePackagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
                 result = upgradeInfo;
 
-                BtClientUtil.makeBtSeed(anyString, anyString);
+                btClientService.makeBtSeed(anyString, anyString);
                 result = seedFileInfoDTO;
                 
                 
@@ -177,6 +179,9 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
                 systemUpgradePackageHelper.checkVersionInfo(savePackagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
                 result = upgradeInfo;
+
+                btClientService.makeBtSeed(anyString, anyString);
+                result = new BusinessException(BusinessKey.RCDC_TERMINAL_BT_MAKE_SEED_FILE_FAIL);
 
             }
         };

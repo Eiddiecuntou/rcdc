@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -106,10 +105,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
 
-        new Expectations(IsoFileUtil.class) {
-            {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 
@@ -129,21 +128,20 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
      */
     @Test
     public void testUploadUpgradeFileSystemUpgradePackageVersionIOException() throws BusinessException, IOException {
-        new MockUp<FileInputStream>() {
+        new MockUp<ByteArrayOutputStream>() {
             @Mock
-            public void $init(String filePath) throws IOException {
-                throw new IOException();
+            public String toString() {
+                return "PASS";
+            }
+        };
+        new MockUp<AbstractSystemUpgradePackageHandler>() {
+            @Mock
+            void checkISOMd5(String filePath) throws BusinessException {
             }
         };
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
-        new Expectations(IsoFileUtil.class) {
-            {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
-            }
-        };
 
         try {
             handler.uploadUpgradePackage(request);
@@ -168,6 +166,11 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 return path;
             }
         };
+        new MockUp<AbstractSystemUpgradePackageHandler>() {
+            @Mock
+            void checkISOMd5(String filePath) throws BusinessException {
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -182,8 +185,6 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
 
         new Expectations(IsoFileUtil.class) {
             {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
                 IsoFileUtil.mountISOFile(anyString, anyString);
                 result = new BusinessException("key");
             }
@@ -215,10 +216,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        new Expectations(IsoFileUtil.class) {
-            {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 
@@ -248,6 +249,11 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 return path;
             }
         };
+        new MockUp<AbstractSystemUpgradePackageHandler>() {
+            @Mock
+            void checkISOMd5(String filePath) throws BusinessException {
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -257,13 +263,6 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             @Mock
             public String[] list() {
                 return new String[0];
-            }
-        };
-
-        new Expectations(IsoFileUtil.class) {
-            {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
             }
         };
 
@@ -288,10 +287,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     public void testUploadUpgradeFileVersionFail() throws BusinessException, IOException {
         String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
 
-        new Expectations(IsoFileUtil.class) {
-            {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
         new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
@@ -339,6 +338,11 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 return path;
             }
         };
+        new MockUp<AbstractSystemUpgradePackageHandler>() {
+            @Mock
+            void checkISOMd5(String filePath) throws BusinessException {
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -350,13 +354,6 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 String[] fileArr = new String[1];
                 fileArr[0] = "dfd";
                 return fileArr;
-            }
-        };
-
-        new Expectations(IsoFileUtil.class) {
-            {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
             }
         };
 
@@ -392,6 +389,12 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 return path;
             }
         };
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -403,13 +406,6 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 String[] fileArr = new String[1];
                 fileArr[0] = "dfd";
                 return fileArr;
-            }
-        };
-
-        new Expectations(IsoFileUtil.class) {
-            {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
             }
         };
 
@@ -435,10 +431,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     public void testUploadUpgradeFile(@Mocked FileOperateUtil util) throws BusinessException, IOException {
         String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
 
-        new Expectations(IsoFileUtil.class) {
-            {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = true;
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
         new MockUp<Files>() {
@@ -490,12 +486,6 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     public void testUploadUpgradeFileWithCheckMD5Error(@Mocked FileOperateUtil util) throws BusinessException, IOException {
         String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
 
-        new Expectations(IsoFileUtil.class) {
-            {
-                IsoFileUtil.checkISOMd5(anyString);
-                result = false;
-            }
-        };
         new MockUp<Files>() {
             @Mock
             public Path move(Path from, Path to, CopyOption... options) throws IOException {
