@@ -6,8 +6,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.BtClientUtil;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.BtClientServiceImpl;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.Expectations;
@@ -43,6 +44,8 @@ public class SystemOtaUpgradeHandlerTest {
     @Injectable
     private BtClientAPI btClientAPI;
 
+    @Injectable
+    private BtClientService btClientService;
 
     /**
      * 测试获取系统升级service
@@ -153,9 +156,9 @@ public class SystemOtaUpgradeHandlerTest {
         upgradePackage.setFilePath("filePath");
         upgradePackage.setSeedPath("seedPath.torrent");
 
-        new Expectations(BtClientUtil.class) {
+        new Expectations() {
             {
-                BtClientUtil.startBtShare(anyString, anyString);
+                btClientService.startBtShare(anyString, anyString);
             }
         };
 
@@ -176,9 +179,9 @@ public class SystemOtaUpgradeHandlerTest {
         upgradePackage.setSeedPath("seedPath.torrent");
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
 
-        new Expectations(BtClientUtil.class) {
+        new Expectations(BtClientServiceImpl.class) {
             {
-                BtClientUtil.stopBtShare(anyString);
+                btClientService.stopBtShare(anyString);
             }
         };
 

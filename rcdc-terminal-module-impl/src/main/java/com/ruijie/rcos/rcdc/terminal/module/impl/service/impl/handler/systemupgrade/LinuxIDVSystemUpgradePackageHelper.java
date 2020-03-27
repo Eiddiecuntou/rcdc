@@ -14,7 +14,6 @@ import org.springframework.util.Assert;
 import java.io.*;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
 
 /**
  * Description: IDV终端系统升级包上传帮助类
@@ -80,8 +79,7 @@ public class LinuxIDVSystemUpgradePackageHelper {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH);
         }
 
-        String saveFileName = UUID.randomUUID().toString() + fileName.substring(fileName.lastIndexOf("."));
-        File destFile = new File(destFileSaveDir + saveFileName);
+        File destFile = new File(destFileSaveDir + fileName);
         try {
             FileOperateUtil.copyfile(srcFile.getPath(), destFile.getPath());
             Assert.isTrue(destFile.exists(), "destination file not exist!");

@@ -1,17 +1,16 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.util;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
-import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseNetworkDTO;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -33,18 +32,18 @@ import java.io.IOException;
  * @author zhangyichi
  */
 @RunWith(SkyEngineRunner.class)
-public class BtClientUtilTest {
+public class BtClientServiceImplTest {
 
     private static final String ROOT_PATH = Thread.currentThread().getClass().getResource("/").getPath();
 
     @Tested
-    private BtClientUtil btClientUtil;
+    private BtClientServiceImpl btClientService;
 
     @Injectable
     private BtClientAPI btClientAPI;
 
     @Injectable
-    private NetworkAPI networkAPI;
+    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     /**
      * 开启BT分享，正常流程
@@ -62,7 +61,7 @@ public class BtClientUtilTest {
         seedFile.createNewFile();
 
         try {
-            BtClientUtil.startBtShare(filePath, seedPath);
+            btClientService.startBtShare(filePath, seedPath);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
@@ -92,7 +91,7 @@ public class BtClientUtilTest {
         seedFile.createNewFile();
 
         try {
-            BtClientUtil.startBtShare(filePath, seedPath);
+            btClientService.startBtShare(filePath, seedPath);
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_BT_START_SHARE_SEED_FILE_FAIL, e.getKey());
         } finally {
@@ -121,7 +120,7 @@ public class BtClientUtilTest {
         String seedPath = ROOT_PATH + "seed.torrent";
 
         try {
-            BtClientUtil.startBtShare(filePath, seedPath);
+            btClientService.startBtShare(filePath, seedPath);
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_BT_START_SHARE_SEED_FILE_FAIL, e.getKey());
         } finally {
@@ -152,7 +151,7 @@ public class BtClientUtilTest {
         seedFile.createNewFile();
 
         try {
-            BtClientUtil.startBtShare(filePath, seedPath);
+            btClientService.startBtShare(filePath, seedPath);
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_BT_START_SHARE_SEED_FILE_FAIL, e.getKey());
         } finally {
@@ -180,7 +179,7 @@ public class BtClientUtilTest {
         seedFile.createNewFile();
 
         try {
-            BtClientUtil.stopBtShare(seedPath);
+            btClientService.stopBtShare(seedPath);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         } finally {
@@ -207,7 +206,7 @@ public class BtClientUtilTest {
         seedFile.createNewFile();
 
         try {
-            BtClientUtil.stopBtShare(seedPath);
+            btClientService.stopBtShare(seedPath);
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_BT_STOP_SHARE_SEED_FILE_FAIL, e.getKey());
         } finally {
@@ -240,22 +239,21 @@ public class BtClientUtilTest {
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedPath", "seedMD5");
         DtoResponse<SeedFileInfoDTO> seedInfoResponse = DtoResponse.success(seedFileInfoDTO);
 
-        BaseDetailNetworkInfoResponse networkInfoResponse = new BaseDetailNetworkInfoResponse();
-        BaseNetworkDTO baseNetworkDTO = new BaseNetworkDTO();
-        baseNetworkDTO.setIp("0.0.0.0");
-        networkInfoResponse.setNetworkDTO(baseNetworkDTO);
+        ClusterVirtualIpDTO ipDTO = new ClusterVirtualIpDTO();
+        ipDTO.setClusterVirtualIpIp("0.0.0.0");
+        DtoResponse<ClusterVirtualIpDTO> resp = DtoResponse.success(ipDTO);
 
         new Expectations() {
             {
                 btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
                 result = seedInfoResponse;
-                networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
-                result = networkInfoResponse;
+                cloudPlatformMgmtAPI.getClusterVirtualIp((DefaultRequest) any);
+                result = resp;
             }
         };
 
         try {
-            SeedFileInfoDTO resultDto = BtClientUtil.makeBtSeed(filePath, seedSaveDirPath);
+            SeedFileInfoDTO resultDto = btClientService.makeBtSeed(filePath, seedSaveDirPath);
             Assert.assertEquals("seedPath", resultDto.getSeedFilePath());
             Assert.assertEquals("seedMD5", resultDto.getSeedFileMD5());
         } catch (Exception e) {
@@ -288,22 +286,21 @@ public class BtClientUtilTest {
 
         DtoResponse<SeedFileInfoDTO> seedInfoResponse = DtoResponse.fail("key");
 
-        BaseDetailNetworkInfoResponse networkInfoResponse = new BaseDetailNetworkInfoResponse();
-        BaseNetworkDTO baseNetworkDTO = new BaseNetworkDTO();
-        baseNetworkDTO.setIp("0.0.0.0");
-        networkInfoResponse.setNetworkDTO(baseNetworkDTO);
+        ClusterVirtualIpDTO ipDTO = new ClusterVirtualIpDTO();
+        ipDTO.setClusterVirtualIpIp("0.0.0.0");
+        DtoResponse<ClusterVirtualIpDTO> resp = DtoResponse.success(ipDTO);
 
         new Expectations() {
             {
                 btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
                 result = seedInfoResponse;
-                networkAPI.detailNetwork((BaseDetailNetworkRequest) any);
-                result = networkInfoResponse;
+                cloudPlatformMgmtAPI.getClusterVirtualIp((DefaultRequest) any);
+                result = resp;
             }
         };
 
         try {
-            BtClientUtil.makeBtSeed(filePath, seedSaveDirPath);
+            btClientService.makeBtSeed(filePath, seedSaveDirPath);
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_BT_MAKE_SEED_FILE_FAIL, e.getKey());
         } finally {
