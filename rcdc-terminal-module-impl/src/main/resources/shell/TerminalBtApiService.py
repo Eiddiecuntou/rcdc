@@ -72,14 +72,19 @@ def getRespJsonStr(jsonStr):
     end = jsonStr.rfind("}") + 1
     return jsonStr[begin:end]
 
-
-# Init(char rcdc, null)
-def btServerInit():
-    reqBytes = getReqBytes("rcdc");
-    api.abslayer_Init(reqBytes, None)
-
 api = getBtApi()
-btServerInit()
+
+'''
+
+    初始化
+    
+'''
+def btServerInit(type):
+    reqBytes = getReqBytes(type)
+    code = api.abslayer_Init(reqBytes, None)
+    logger.info("finish type[%s] bt init, response code [%s]" %(type, code))
+    if (code != 0):
+        raise Exception("api init invoke failed")
 
 '''
 
@@ -138,10 +143,8 @@ def startBtShare(torrentPath, fileSavePath):
     checkSpecSuccess(jsonStr)
 
 
-
-
-
 def checkSpecSuccess(jsonStr):
+    logger.info("spec api invoke response: %s" % getRespJsonStr(jsonStr))
     #非成功响应，检验错误是否RJFAIL-15005，是的话认为无异常，否则异常
     if (jsonStr.find(RJ_API_RESPONSE_CODE_SUCCESS) != -1):
         checkSuccess(jsonStr)
@@ -152,6 +155,7 @@ def checkSpecSuccess(jsonStr):
         raise Exception("api invoke failed")
 
 def checkSuccess(jsonStr):
+    logger.info("api invoke response: %s" % getRespJsonStr(jsonStr))
     if (jsonStr.find(RJ_API_RESPONSE_CODE_SUCCESS) == -1):
         raise Exception("api invoke failed, no success code")
     respStr = getRespJsonStr(jsonStr)
@@ -170,6 +174,7 @@ def checkSuccess(jsonStr):
 if __name__ == '__main__':
     logger.info("start to make bt share")
     path = sys.argv[1]
+    seedSavePath = sys.argv[2]
     seedSavePath = sys.argv[2]
     logger.info("param path : [%s], param seedSavePath : [%s]" %(path, seedSavePath))
     try:
