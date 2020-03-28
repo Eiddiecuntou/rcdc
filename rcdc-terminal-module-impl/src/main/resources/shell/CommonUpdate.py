@@ -32,7 +32,7 @@ import shutil
 import hashlib
 import traceback
 
-from BtApiService import stopBtShare, btMakeSeedBlock, startBtShare
+from TerminalBtApiService import stopBtShare, btMakeSeedBlock, startBtShare, btServerInit
 from Common import (readFile, createZip, copyTo, createDirectoty,
     getLogger, RJUpgradeException, FILE_SPERATOR, copyDirTo, shellCall, md5sum)
 from Consts import *
@@ -50,7 +50,7 @@ tempPath = "/opt/upgrade/app/"
 originDirName = "origin"
 tempDirName = "temp"
 baseDirName = "base"
-bsdiffCmdPath = "/data/web/bsdiff-4.3/bsdiff"
+bsdiffCmdPath = "bsdiff"
 torrentPrePath = "/opt/ftp/terminal"
 installPath = None
 torrentPath = None
@@ -60,9 +60,13 @@ diffComponentDir = None
 # 入口函数
 def update(terminalPlatform, osType):
     try:
-        logger.info("start upgrade terminal " + osType + " " + terminalPlatform + " package update...")
+        type = '%s%s%s%s' % ("rcdc_",terminalPlatform, "_", osType)
+        logger.info("init bt server %s" % type)
+        btServerInit(type)
+        logger.info("finish init bt server %s " % type)
+        logger.info("start upgrade terminal [%s] [%s] package update..." %(osType, terminalPlatform))
         packageUpdate(terminalPlatform, osType)
-        logger.info("finish terminal " + osType + " " + terminalPlatform + " package update")
+        logger.info("finish terminal [%s] [%s] package update" %(osType, terminalPlatform))
     except RJUpgradeException as rjEx:
         logger.error("install failed with rj exception : %s" % rjEx.msg)
         return "fail"
@@ -79,11 +83,6 @@ def packageUpdate(terminalPlatform, osType):
     generatePath(terminalPlatform, osType)
     # 根据终端类型生成Dir
     generateDir()
-
-    logger.info(installPath)
-    logger.info(torrentPath)
-    logger.info(fullComponentDir)
-    logger.info(diffComponentDir)
 
     logger.info("start update package...")
     # 升级包及包内updatelist路径
@@ -205,9 +204,13 @@ def startAllBtShare(componentList):
         incrementalPackageName = component['incrementalPackageName'] if ('incrementalPackageName' in component.keys()) else None
         fullFilePath = "%s%s" %(fullComponentDir, completePackageName)
         diffFilePath = "%s%s" %(diffComponentDir, incrementalPackageName)
+        logger.info("开启bt分享，组件：%s" % completePackageName)
         if os.path.exists(fullFilePath):
+            logger.info("开启完整包bt分享，路径：%s" % fullFilePath)
             startBtShare("%s%s" %(torrentPrePath, fullTorrentPath), fullFilePath)
-        if os.path.exists(diffFilePath):    
+
+        if os.path.exists(diffFilePath):
+            logger.info("开启差异包bt分享，路径：%s" % diffFilePath)
             startBtShare("%s%s" %(torrentPrePath, diffTorrentPath), diffFilePath)
     
 
