@@ -110,6 +110,8 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         File dir = new File(dirPath);
         if (!dir.isDirectory()) {
             dir.mkdirs();
+            dir.setReadable(true, false);
+            dir.setExecutable(true, false);
         }
     }
 
