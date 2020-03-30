@@ -106,4 +106,9 @@ public interface ShineAction {
      *  终端请求终端组列表
      */
     String GET_TERMINAL_GROUP_LIST = "get_terminal_ group_list";
+
+    /**
+     * 终端请求云主机id
+     */
+    String SYNC_RCOS_GLOBAL_PLATFORM_ID = "request_server_id";
 }
