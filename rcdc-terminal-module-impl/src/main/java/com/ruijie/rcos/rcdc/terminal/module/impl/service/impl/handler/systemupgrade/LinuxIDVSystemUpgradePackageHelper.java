@@ -51,8 +51,10 @@ public class LinuxIDVSystemUpgradePackageHelper {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_INCOMPLETE, srcFile.getPath());
         }
 
-        // 将文件从ISO中复制到对应文件夹
+        // 将文件从ISO中复制到对应文件夹，并设置权限
         File destFile = copyAndCoverFile(srcFile, fileSaveDirPath, fileName);
+        destFile.setReadable(true, false);
+        destFile.setExecutable(true, false);
 
         otaFileInfo.setFilePath(destFile.getPath());
         return otaFileInfo;
