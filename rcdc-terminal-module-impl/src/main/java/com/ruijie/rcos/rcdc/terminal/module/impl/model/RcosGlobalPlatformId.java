@@ -1,5 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
+/**
+ * Description:
+ * Copyright: Copyright (c) 2020
+ * Company: Ruijie Co., Ltd.
+ * Create Time: 2020年3月30日
+ *
+ * @author jarman
+ */
 public class RcosGlobalPlatformId {
 
     private String platformId;
