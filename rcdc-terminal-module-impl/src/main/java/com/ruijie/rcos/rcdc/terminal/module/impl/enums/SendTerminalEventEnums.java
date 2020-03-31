@@ -73,7 +73,7 @@ public enum SendTerminalEventEnums {
     /**
      * 更新离线登录设置
      */
-    CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG("change_offline_login_config");
+    SET_DISCONNECT_SERVER_USE_DAY("set_disconnect_server_use_day");
 
     private String name;
 
