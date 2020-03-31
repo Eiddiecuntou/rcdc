@@ -178,14 +178,14 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         return onlineIdvTerminalIdList;
     }
 
-    private void sendOfflineSettingToOnlineIdvTerminal(Integer offlineAutoLocked, List<String> onlineIdvterminalIdList) {
+    private void sendOfflineSettingToOnlineIdvTerminal(Integer offlineAutoLocked, List<String> onlineIdvTerminalIdList) {
         LOGGER.debug("向IDV终端发送离线登录设置");
         // 向在线IDV终端发送离线登录设置
-        for (String terminalId : onlineIdvterminalIdList) {
+        for (String terminalId : onlineIdvTerminalIdList) {
             try {
                 ChangeOfflineLoginConfig configRequest =
                         new ChangeOfflineLoginConfig(offlineAutoLocked);
-                operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG, configRequest,
+                operateTerminal(terminalId, SendTerminalEventEnums.SET_DISCONNECT_SERVER_USE_DAY, configRequest,
                         BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG);
             } catch (Exception e) {
                 LOGGER.error("send offline login config to terminal failed, terminalId[" + terminalId + "]", e);
