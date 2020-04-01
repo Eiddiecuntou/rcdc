@@ -19,4 +19,8 @@ public interface PublicBusinessKey {
     String RCDC_DELETE_TERMINAL_GROUP_SUB_GROUP_HAS_DUPLICATION_WITH_MOVE_GROUP =
             "rcdc_delete_terminal_group_sub_group_has_duplication_with_move_group";
 
+    /**
+     * 终端断开连接，处于离线状态
+     */
+    String RCDC_TERMINAL_OFFLINE = "rcdc_terminal_offline";
 }

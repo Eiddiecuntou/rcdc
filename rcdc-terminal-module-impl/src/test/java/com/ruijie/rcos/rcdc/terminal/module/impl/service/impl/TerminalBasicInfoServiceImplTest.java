@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import java.io.IOException;
 import java.util.Date;
 
@@ -19,11 +22,11 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalModelDriverDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalModelDriverEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -63,6 +66,25 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private TerminalModelDriverDAO terminalModelDriverDAO;
+
+    @Before
+    public void before() {
+
+        new MockUp<LocaleI18nResolver>() {
+
+            /**
+             *
+             * @param key key
+             * @param args args
+             * @return key
+             */
+            @Mock
+            public String resolve(String key, String... args) {
+                return key;
+            }
+
+        };
+    }
 
     /**
      * 测试修改终端名称成功
@@ -120,8 +142,42 @@ public class TerminalBasicInfoServiceImplTest {
             basicInfoService.modifyTerminalName(terminalId, terminalName);
             fail();
         } catch (BusinessException e) {
-            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+            assertEquals(e.getKey(), PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
+    }
+
+    @Test
+    public void testModifyTerminalNameByException() throws Exception {
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+
+                    sender.syncRequest((Message) any);
+                    result = new BusinessException("error");
+
+                } catch (BusinessException e) {
+                    result = sender;
+                }
+            }
+        };
+        String terminalId = "123";
+        String terminalName = "t-box";
+        try {
+            basicInfoService.modifyTerminalName(terminalId, terminalName);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL);
+
+        }
+
+        new Verifications() {
+            {
+                sender.syncRequest((Message) any);
+                times = 1;
+            }
+        };
     }
 
     /**
@@ -190,7 +246,7 @@ public class TerminalBasicInfoServiceImplTest {
             basicInfoService.modifyTerminalNetworkConfig(terminalId, config);
             fail();
         } catch (BusinessException e) {
-            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+            assertEquals(e.getKey(), PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
     }
 
