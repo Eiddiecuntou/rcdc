@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -20,7 +20,7 @@ public class TerminalOffLineException extends BusinessException {
     private static final long serialVersionUID = 4403025956187395728L;
 
     public TerminalOffLineException(Exception ex) {
-        super(BusinessKey.RCDC_TERMINAL_OFFLINE, ex);
+        super(PublicBusinessKey.RCDC_TERMINAL_OFFLINE, ex);
     }
 
 }

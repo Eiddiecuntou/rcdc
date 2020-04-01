@@ -3,11 +3,17 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import mockit.Mock;
+import mockit.MockUp;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
@@ -69,6 +75,25 @@ public class TerminalOperatorServiceImplTest {
 
     @Injectable
     private TerminalDetectionDAO terminalDetectionDAO;
+
+    @Before
+    public void before() {
+
+        new MockUp<LocaleI18nResolver>() {
+
+            /**
+             *
+             * @param key key
+             * @param args args
+             * @return key
+             */
+            @Mock
+            public String resolve(String key, String... args) {
+                return key;
+            }
+
+        };
+    }
 
     /**
      * 测试关机成功
@@ -277,7 +302,7 @@ public class TerminalOperatorServiceImplTest {
             operatorService.collectLog(terminalId);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
+            assertEquals(PublicBusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
         }
 
         new Verifications() {
@@ -660,4 +685,39 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
+
+    @Test
+    public void testRelieveFaultByException() throws IOException, InterruptedException {
+
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+
+                    sender.syncRequest((Message) any);
+                    result = new BusinessException("error");
+                } catch (BusinessException e) {
+                    result = sender;
+                }
+            }
+        };
+        String terminalId = "123";
+
+        try {
+            operatorService.relieveFault(terminalId);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL);
+        }
+
+        new Verifications() {
+            {
+                Message message;
+                sender.syncRequest(message = withCapture());
+                assertEquals(message.getAction(), SendTerminalEventEnums.RELIEVE_FAULT.getName());
+            }
+        };
+    }
+
 }

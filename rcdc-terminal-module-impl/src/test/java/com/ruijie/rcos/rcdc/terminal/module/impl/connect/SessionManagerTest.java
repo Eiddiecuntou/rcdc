@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.List;
 import java.util.Map;
 import org.junit.Assert;
@@ -9,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
@@ -137,7 +138,7 @@ public class SessionManagerTest {
             sessionManager.getRequestMessageSender(terminalId);
             fail();
         } catch (BusinessException e) {
-            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+            Assert.assertEquals(e.getKey(), PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
     }
 
