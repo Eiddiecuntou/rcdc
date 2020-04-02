@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import static org.junit.Assert.*;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -12,6 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRe
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.offlinelogin.OfflineLoginSettingResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -21,6 +23,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 
@@ -375,6 +378,25 @@ public class CbbTerminalOperatorAPIImplTest {
                 }
             }
         };
+    }
+
+
+    /**
+     *测试queryOfflineLoginSetting
+     *
+     *@throws BusinessException 业务异常
+     */
+    @Test
+    public void testQueryOfflineLoginSetting() throws BusinessException {
+
+        new Expectations() {
+            {
+                operatorService.queryOfflineLoginSetting();
+                result = "0";
+            }
+        };
+        final OfflineLoginSettingResponse offlineLoginSettingResponse = terminalOperatorAPI.queryOfflineLoginSetting(new DefaultRequest());
+        Assert.assertEquals("0", offlineLoginSettingResponse.getOfflineAutoLocked());
     }
 
 }
