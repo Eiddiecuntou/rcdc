@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.*;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -1013,4 +1014,21 @@ public class TerminalOperatorServiceImplTest {
             }
         };
     }
+
+    /**
+     *测试queryOfflineLoginSetting
+     */
+    @Test
+    public void testQueryOfflineLoginSetting() {
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.OFFLINE_LOGIN_TIME_KEY);
+                result = "0";
+            }
+        };
+
+        final String result = operatorService.queryOfflineLoginSetting();
+        Assert.assertEquals("0", result);
+    }
+
 }

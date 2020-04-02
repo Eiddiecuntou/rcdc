@@ -6,7 +6,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRe
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.offlinelogin.OfflineLoginSettingResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
@@ -106,6 +108,15 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     DefaultResponse idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
+
+    /**
+     * IDV终端离线登录设置
+     *
+     * @param request 请求参数
+     * @return 返回成功失败
+     * @throws BusinessException 业务异常
+     */
+    OfflineLoginSettingResponse queryOfflineLoginSetting(DefaultRequest request) throws BusinessException;
 
     /**
      * 终端数据盘清空

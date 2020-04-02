@@ -157,6 +157,16 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         NOTICE_HANDLER_THREAD_POOL.execute(() -> sendOfflineSettingToOnlineIdvTerminal(offlineAutoLocked, onlineIdvTerminalIdList));
     }
 
+    /**
+     * 查询终端离线登录设置
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Override
+    public String queryOfflineLoginSetting() {
+        return globalParameterAPI.findParameter(Constants.OFFLINE_LOGIN_TIME_KEY);
+    }
+
     private List<String> getOnlineIdvTerminal() {
         List<String> onlineIdvTerminalIdList = Lists.newArrayList();
         List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
