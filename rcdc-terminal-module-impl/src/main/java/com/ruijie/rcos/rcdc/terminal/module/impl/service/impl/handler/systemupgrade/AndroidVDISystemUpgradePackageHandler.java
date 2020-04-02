@@ -1,18 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.io.File;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -22,7 +14,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.util.UUID;
 
 /**
  * Description: Function Description
@@ -43,7 +42,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
     @Autowired
-    private NetworkAPI networkAPI;
+    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     @Autowired
     private BtClientAPI btClientAPI;
@@ -111,9 +110,8 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
      * @return ip
      */
     private String getLocalIP() throws BusinessException {
-        BaseDetailNetworkRequest request = new BaseDetailNetworkRequest();
-        BaseDetailNetworkInfoResponse response = networkAPI.detailNetwork(request);
-        return response.getNetworkDTO().getIp();
+        DtoResponse<ClusterVirtualIpDTO> clusterVirtualIpResponse = cloudPlatformMgmtAPI.getClusterVirtualIp(new DefaultRequest());
+        return clusterVirtualIpResponse.getDto().getClusterVirtualIpIp();
     }
 
     private File createFilePath(String filePath) {
