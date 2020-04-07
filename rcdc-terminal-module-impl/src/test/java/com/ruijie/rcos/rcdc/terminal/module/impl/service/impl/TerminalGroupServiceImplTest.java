@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -443,7 +444,7 @@ public class TerminalGroupServiceImplTest {
         try {
             terminalGroupService.checkGroupNameUnique(terminalGroup);
         } catch (BusinessException e) {
-            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE);
+            Assert.assertEquals(e.getMessage(), PublicBusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE);
         }
 
         new Verifications() {

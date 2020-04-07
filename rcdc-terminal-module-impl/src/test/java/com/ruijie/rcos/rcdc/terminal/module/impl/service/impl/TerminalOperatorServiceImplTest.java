@@ -2,9 +2,15 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import static org.junit.Assert.*;
 
+
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import java.io.IOException;
 import java.util.*;
 
+import mockit.Mock;
+import mockit.MockUp;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,6 +76,25 @@ public class TerminalOperatorServiceImplTest {
 
     @Injectable
     private TerminalDetectionDAO terminalDetectionDAO;
+
+    @Before
+    public void before() {
+
+        new MockUp<LocaleI18nResolver>() {
+
+            /**
+             *
+             * @param key key
+             * @param args args
+             * @return key
+             */
+            @Mock
+            public String resolve(String key, String... args) {
+                return key;
+            }
+
+        };
+    }
 
     /**
      * 测试关机成功
@@ -307,7 +332,7 @@ public class TerminalOperatorServiceImplTest {
             operatorService.collectLog(terminalId);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
+            assertEquals(PublicBusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
         }
 
         new Verifications() {
