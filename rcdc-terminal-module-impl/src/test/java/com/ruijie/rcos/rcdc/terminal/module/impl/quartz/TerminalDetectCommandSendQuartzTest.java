@@ -1,11 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
 import static org.junit.Assert.assertEquals;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -16,7 +14,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
 import mockit.*;
 import org.springframework.util.Assert;
 
@@ -123,11 +120,9 @@ public class TerminalDetectCommandSendQuartzTest {
                 baseSystemLogMgmtAPI.createSystemLog(logRequest = withCapture());
                 times = 1;
 
-                String[] strArr = logRequest.getContent().split(",");
-                assertEquals(4, strArr.length);
-                assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_FAIL_SYSTEM_LOG, strArr[0]);
-                assertEquals(entity.getTerminalId(), strArr[1]);
-                assertEquals("123", strArr[2]);
+                assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_FAIL_SYSTEM_LOG, logRequest.getKey());
+                assertEquals(entity.getTerminalId(), logRequest.getArgArr()[0]);
+                assertEquals("123", logRequest.getArgArr()[1]);
             }
         };
     }
@@ -184,11 +179,9 @@ public class TerminalDetectCommandSendQuartzTest {
                 baseSystemLogMgmtAPI.createSystemLog(logRequest = withCapture());
                 times = 1;
 
-                String[] strArr = logRequest.getContent().split(",");
-                assertEquals(4, strArr.length);
-                assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_FAIL_SYSTEM_LOG, strArr[0]);
-                assertEquals(entity.getTerminalId(), strArr[1]);
-                assertEquals(BusinessKey.RCDC_TERMINAL_SEND_DETECT_COMMAND_FAIL, strArr[2]);
+                assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_FAIL_SYSTEM_LOG, logRequest.getKey());
+                assertEquals(entity.getTerminalId(), logRequest.getArgArr()[0]);
+                assertEquals(BusinessKey.RCDC_TERMINAL_SEND_DETECT_COMMAND_FAIL, logRequest.getArgArr()[1]);
             }
         };
     }
@@ -244,10 +237,8 @@ public class TerminalDetectCommandSendQuartzTest {
                 baseSystemLogMgmtAPI.createSystemLog(logRequest = withCapture());
                 times = 1;
 
-                String[] strArr = logRequest.getContent().split(",");
-                assertEquals(3, strArr.length);
-                assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_SUCCESS_SYSTEM_LOG, strArr[0]);
-                assertEquals(entity.getTerminalId(), strArr[1]);
+                assertEquals(BusinessKey.RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_SUCCESS_SYSTEM_LOG, logRequest.getKey());
+                assertEquals(entity.getTerminalId(), logRequest.getArgArr()[0]);
             }
         };
     }

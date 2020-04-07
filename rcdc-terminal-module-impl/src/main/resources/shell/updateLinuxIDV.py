@@ -29,7 +29,7 @@ sys.setdefaultencoding("utf-8")
 # 入口函数
 def do_update():
     result = update(terminalPlatform, osType)
-    return result;
+    return result
 
 
 if __name__ == '__main__':

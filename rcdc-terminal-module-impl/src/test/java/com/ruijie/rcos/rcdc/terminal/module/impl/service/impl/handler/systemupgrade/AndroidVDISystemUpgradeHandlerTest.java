@@ -2,23 +2,18 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import java.util.UUID;
-
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import mockit.Verifications;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
 import mockit.Injectable;
 import mockit.Tested;
 
@@ -43,7 +38,8 @@ public class AndroidVDISystemUpgradeHandlerTest {
     private TerminalSystemUpgradeService systemUpgradeService;
 
     @Injectable
-    private BtService btService;
+    private BtClientAPI btClientAPI;
+
 
     /**
      * 测试获取系统升级service
@@ -99,45 +95,6 @@ public class AndroidVDISystemUpgradeHandlerTest {
         assertEquals(expectContent, result);
     }
 
-
-    /**
-     *  测试开启升级任务后
-     *
-     * @throws BusinessException
-     */
-    @Test
-    public void testAfterAddSystemUpgrade() throws BusinessException {
-        TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
-
-        handler.afterAddSystemUpgrade(packageEntity);
-
-        new Verifications() {
-            {
-                btService.startBtShare(packageEntity.getSeedPath(), packageEntity.getFilePath());
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     *  测试关闭升级任务后
-     *
-     * @throws BusinessException
-     */
-    @Test
-    public void testAfterCloseSystemUpgrade() throws BusinessException {
-        TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
-        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
-
-        handler.afterCloseSystemUpgrade(packageEntity, upgradeEntity);
-
-        new Verifications() {
-            {
-                btService.stopBtShare(packageEntity.getSeedPath());
-                times = 1;
-            }
-        };
-    }
 
     /**
      *  测试关闭升级任务后

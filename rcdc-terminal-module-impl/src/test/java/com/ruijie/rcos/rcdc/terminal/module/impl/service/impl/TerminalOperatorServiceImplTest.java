@@ -1,22 +1,23 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
 
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 import mockit.Mock;
 import mockit.MockUp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -25,20 +26,20 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
+import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -103,6 +104,11 @@ public class TerminalOperatorServiceImplTest {
      */
     @Test
     public void testShutdownSuccess() throws IOException, InterruptedException {
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {
             {
                 try {
@@ -111,6 +117,8 @@ public class TerminalOperatorServiceImplTest {
                 } catch (BusinessException e) {
                     result = sender;
                 }
+                sender.syncRequest((Message) any);
+                result = baseMessage;
             }
         };
         String terminalId = "123";
@@ -167,6 +175,11 @@ public class TerminalOperatorServiceImplTest {
      */
     @Test
     public void testRestart() throws IOException, InterruptedException {
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {
             {
                 try {
@@ -175,6 +188,8 @@ public class TerminalOperatorServiceImplTest {
                 } catch (BusinessException e) {
                     result = sender;
                 }
+                sender.syncRequest((Message) any);
+                result = baseMessage;
             }
         };
         String terminalId = "123";
@@ -218,18 +233,28 @@ public class TerminalOperatorServiceImplTest {
 
     /**
      * 测试收集日志不存在并且状态为正在进行
+     *
+     * @throws IOException exception
+     * @throws InterruptedException exception
      */
     @Test
-    public void testCollectLogNoExistsAndIsDoing() {
+    public void testCollectLogNoExistsAndIsDoing() throws IOException, InterruptedException {
         String terminalId = "123";
         CollectLogCache logCache = new CollectLogCache();
         logCache.setState(CbbCollectLogStateEnums.DOING);
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {
             {
                 collectLogCacheManager.getCache(terminalId);
                 result = null;
                 collectLogCacheManager.addCache(terminalId);
                 result = logCache;
+                sender.syncRequest((Message) any);
+                result = baseMessage;
             }
         };
 
@@ -251,6 +276,11 @@ public class TerminalOperatorServiceImplTest {
     public void testCollectLogSend() throws BusinessException, IOException, InterruptedException {
         CollectLogCache logCache = new CollectLogCache();
         logCache.setState(CbbCollectLogStateEnums.DONE);
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {
             {
                 collectLogCacheManager.getCache(anyString);
@@ -258,7 +288,7 @@ public class TerminalOperatorServiceImplTest {
                 sessionManager.getRequestMessageSender(anyString);
                 result = sender;
                 sender.syncRequest((Message) any);
-
+                result = baseMessage;
             }
         };
 
@@ -658,7 +688,12 @@ public class TerminalOperatorServiceImplTest {
     }
 
     @Test
-    public void testRelieveFault() throws IOException, InterruptedException {
+    public void testRelieveFault() throws Exception {
+        String action = "login";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        data.put("content", "hello");
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
         new Expectations() {
             {
                 try {
@@ -667,57 +702,208 @@ public class TerminalOperatorServiceImplTest {
                 } catch (BusinessException e) {
                     result = sender;
                 }
+                sender.syncRequest((Message) any);
+                result = baseMessage;
             }
         };
         String terminalId = "123";
 
-        try {
-            operatorService.relieveFault(terminalId);
-        } catch (BusinessException e) {
-            fail();
-        }
+        operatorService.relieveFault(terminalId);
 
         new Verifications() {
             {
-                Message message;
-                sender.syncRequest(message = withCapture());
-                assertEquals(message.getAction(), SendTerminalEventEnums.RELIEVE_FAULT.getName());
+                sessionManager.getRequestMessageSender(anyString);
+                times = 1;
+                sender.syncRequest((Message) any);
+                times = 1;
             }
         };
     }
 
+    /**
+     *测试正常清空数据盘
+     *
+     *@throws Exception 异常
+     */
     @Test
-    public void testRelieveFaultByException() throws IOException, InterruptedException {
+    public void testDiskClear(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
 
+        BaseMessage message = new BaseMessage("xxx", "xxx");
         new Expectations() {
             {
-                try {
-                    sessionManager.getRequestMessageSender(anyString);
-                    result = sender;
-
-                    sender.syncRequest((Message) any);
-                    result = new BusinessException("error");
-                } catch (BusinessException e) {
-                    result = sender;
-                }
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+                sender.syncRequest((Message) any);
+                result = message;
             }
         };
-        String terminalId = "123";
-
-        try {
-            operatorService.relieveFault(terminalId);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL);
-        }
-
+        operatorService.diskClear("xxx");
         new Verifications() {
             {
-                Message message;
-                sender.syncRequest(message = withCapture());
-                assertEquals(message.getAction(), SendTerminalEventEnums.RELIEVE_FAULT.getName());
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 1;
+                sessionManager.getRequestMessageSender(anyString);
+                times = 1;
+                sender.syncRequest((Message) any);
+                times = 1;
             }
         };
     }
 
+    /**
+     *测试清空数据盘,终端不存在
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearTerminalNotExist(@Mocked JSON json) throws Exception {
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = null;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 1;
+                sessionManager.getRequestMessageSender(anyString);
+                times = 0;
+                sender.syncRequest((Message) any);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     *测试清空数据盘,终端离线
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearTerminalNotOnline(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.OFFLINE);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 1;
+                sessionManager.getRequestMessageSender(anyString);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     *测试清空数据盘,终端
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearNotIdvTerminal(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
+     *测试清空数据盘,云桌面运行中,不能清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearDesktopRunning(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return -1;
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+
+    /**
+     *测试正常发送终端检测命令
+     *
+     *@throws Exception 异常
+     */
+    @Test
+    public void testSendDetectRequest(@Mocked JSON json) throws Exception {
+        TerminalDetectionEntity entity = new TerminalDetectionEntity();
+        entity.setTerminalId("xxx");
+        BaseMessage message = new BaseMessage("xxx", "xxx");
+        new Expectations() {
+            {
+                sender.syncRequest((Message) any);
+                result = message;
+            }
+        };
+        operatorService.sendDetectRequest(entity);
+        new Verifications() {
+            {
+                sessionManager.getRequestMessageSender(anyString);
+                times = 1;
+                sender.syncRequest((Message) any);
+                times = 1;
+                terminalDetectionDAO.getOne((UUID) any);
+                times = 1;
+                terminalDetectionDAO.save((TerminalDetectionEntity) any);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     *测试发送终端检测命令异常
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testSendDetectRequestWithException(@Mocked JSON json,@Mocked LocaleI18nResolver localeI18nResolver) throws Exception {
+        TerminalDetectionEntity entity = new TerminalDetectionEntity();
+        entity.setTerminalId("xxx");
+        BaseMessage message = new BaseMessage("xxx", "xxx");
+        new Expectations() {
+            {
+                sender.syncRequest((Message) any);
+                result = new Exception();
+            }
+        };
+        operatorService.sendDetectRequest(entity);
+        fail();
+    }
 }

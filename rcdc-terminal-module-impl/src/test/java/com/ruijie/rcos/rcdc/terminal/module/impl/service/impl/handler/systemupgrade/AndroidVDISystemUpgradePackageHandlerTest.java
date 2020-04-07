@@ -1,15 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.UUID;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
+import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
@@ -19,8 +16,15 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePa
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
+import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import mockit.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -41,6 +45,14 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
     @Injectable
     private AndroidVDISystemUpgradePackageHelper systemUpgradePackageHelper;
+
+    @Injectable
+    private BtClientAPI btClientAPI;
+
+    @Injectable
+    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
+
+
 
     /**
      * 测试获取系统升级包service
@@ -81,7 +93,8 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
         upgradeInfo.setVersion("version");
 
         SeedFileInfo seedFileInfo = new SeedFileInfo("/abc/seed.torrent", "123aaa");
-
+        SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("/abc/seed.torrent", "123aaa");
+        DtoResponse<SeedFileInfoDTO> dtoDtoResponse= DtoResponse.success(seedFileInfoDTO);
         new Expectations() {
             {
                 systemUpgradePackageHelper.unZipPackage(filePath, savePackageName);
@@ -90,8 +103,10 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
                 systemUpgradePackageHelper.checkVersionInfo(savePackagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
                 result = upgradeInfo;
 
-                systemUpgradePackageHelper.makeBtSeed(savePackagePath);
-                result = seedFileInfo;
+                btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
+                result = dtoDtoResponse;
+                
+                
             }
         };
 
@@ -117,9 +132,6 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
                 times = 1;
 
                 systemUpgradePackageHelper.checkVersionInfo(savePackagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
-                times = 1;
-
-                systemUpgradePackageHelper.makeBtSeed(savePackagePath);
                 times = 1;
 
                 FileOperateUtil.deleteFileByPath(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
@@ -160,8 +172,6 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
         upgradeInfo.setFileMD5("fileMd5");
         upgradeInfo.setVersion("version");
 
-        SeedFileInfo seedFileInfo = new SeedFileInfo("/abc/seed.torrent", "123aaa");
-
         new Expectations() {
             {
                 systemUpgradePackageHelper.unZipPackage(filePath, savePackageName);
@@ -169,9 +179,9 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
                 systemUpgradePackageHelper.checkVersionInfo(savePackagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
                 result = upgradeInfo;
+                btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
+                result = null;
 
-                systemUpgradePackageHelper.makeBtSeed(savePackagePath);
-                result = new BusinessException("123");
             }
         };
 
@@ -179,7 +189,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
             handler.getPackageInfo("123.zip", filePath);
             fail();
         } catch (BusinessException e) {
-            assertEquals("123", e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL, e.getKey());
         }
 
         new Verifications() {
@@ -188,9 +198,6 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
                 times = 1;
 
                 systemUpgradePackageHelper.checkVersionInfo(savePackagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
-                times = 1;
-
-                systemUpgradePackageHelper.makeBtSeed(savePackagePath);
                 times = 1;
 
                 FileOperateUtil.deleteFileByPath(Constants.TERMINAL_UPGRADE_OTA_PACKAGE + savePackageName);

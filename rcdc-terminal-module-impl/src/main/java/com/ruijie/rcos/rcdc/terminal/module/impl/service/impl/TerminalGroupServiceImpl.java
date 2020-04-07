@@ -3,14 +3,13 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.*;
 
-import com.google.common.collect.Lists;
-import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -21,6 +20,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupHiera
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupSubNumChecker;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker.GroupTotalNumChecker;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -50,7 +50,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     private GroupTotalNumChecker groupTotalNumChecker;
 
     @Override
-    public synchronized void saveTerminalGroup(TerminalGroupDTO terminalGroup) throws BusinessException {
+    public synchronized TerminalGroupEntity saveTerminalGroup(TerminalGroupDTO terminalGroup) throws BusinessException {
         Assert.notNull(terminalGroup, "terminal group can not be null");
         String groupName = terminalGroup.getGroupName();
         Assert.hasText(groupName, "terminal group name can not be null");
@@ -66,6 +66,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         TerminalGroupEntity entity = buildTerminalGroupEntity(terminalGroup);
         LOGGER.info("create terminal group with name[{}] ,parent group id[{}]", groupName, parentGroupId);
         terminalGroupDAO.save(entity);
+        return entity;
     }
 
     @Override

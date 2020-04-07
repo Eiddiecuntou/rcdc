@@ -58,7 +58,22 @@ public enum SendTerminalEventEnums {
     /**
      * 解除故障
      */
-    RELIEVE_FAULT("relieve_fault");
+    RELIEVE_FAULT("relieve_fault"),
+
+    /**
+     * 清空idv终端数据盘
+     */
+    CLEAR_DATA("clear_data"),
+
+    /**
+     * 同步终端背景
+     */
+    CHANGE_TERMINAL_BACKGROUND("change_terminal_background"),
+
+    /**
+     * 更新离线登录设置
+     */
+    CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG("change_offline_login_config");
 
     private String name;
 

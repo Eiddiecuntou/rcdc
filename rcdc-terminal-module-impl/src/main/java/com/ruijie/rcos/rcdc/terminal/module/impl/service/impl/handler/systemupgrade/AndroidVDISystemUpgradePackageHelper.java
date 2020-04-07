@@ -7,17 +7,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Properties;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
-import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.api.util.ZipUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
@@ -25,8 +20,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 
 /**
  * Description: Function Description
@@ -40,12 +33,6 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 public class AndroidVDISystemUpgradePackageHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AndroidVDISystemUpgradePackageHelper.class);
-
-    @Autowired
-    private BtService btService;
-
-    @Autowired
-    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     /**
      * 解压文件
@@ -127,22 +114,6 @@ public class AndroidVDISystemUpgradePackageHelper {
     }
 
     /**
-     * 制作BT种子
-     *
-     * @param filePath OTA包文件路径
-     * @return 种子信息
-     * @throws BusinessException 业务异常
-     */
-    public SeedFileInfo makeBtSeed(String filePath) throws BusinessException {
-        Assert.notNull(filePath, "filePath can not be null");
-
-        String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
-        File seedFile = new File(seedSavePath);
-        FileOperateUtil.createFileDirectory(seedFile);
-        return btService.makeBtSeed(filePath, seedSavePath, getLocalIP());
-    }
-
-    /**
      * 计算MD5值
      */
     private String generateFileMD5(String filePath) throws BusinessException {
@@ -157,19 +128,6 @@ public class AndroidVDISystemUpgradePackageHelper {
         }
         return seedMD5;
 
-    }
-
-    /**
-     * 获取ip
-     *
-     * @return ip
-     */
-
-    private String getLocalIP() throws BusinessException {
-        DtoResponse<ClusterVirtualIpDTO> response = cloudPlatformMgmtAPI.getClusterVirtualIp(new DefaultRequest());
-        Assert.notNull(response, "response can not be null");
-
-        return response.getDto().getClusterVirtualIpIp();
     }
 
 }
