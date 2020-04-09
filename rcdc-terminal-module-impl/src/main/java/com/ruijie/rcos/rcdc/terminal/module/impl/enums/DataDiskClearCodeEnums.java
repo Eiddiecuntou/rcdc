@@ -14,7 +14,10 @@ public enum DataDiskClearCodeEnums {
     DESKTOP_ON_RUNNING(-1),
 
     /** 通知shine前端失败，不可清空数据盘 */
-    NOTIFY_SHINE_WEB_FAIL(-2);
+    NOTIFY_SHINE_WEB_FAIL(-2),
+
+    /** 终端上未创建数据盘 */
+    DATA_DISK_NOT_CREATE(-3);
 
     /**shine返回状态码 */
     private int code;

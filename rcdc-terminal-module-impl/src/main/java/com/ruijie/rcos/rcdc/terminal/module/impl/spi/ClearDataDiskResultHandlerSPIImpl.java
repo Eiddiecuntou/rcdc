@@ -31,7 +31,7 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ClearDataDiskResultHandlerSPIImpl.class);
 
-    private static final String RESULT_KEY = "isClearSuccess";
+    private static final String RESULT_KEY = "clearResult";
 
     /**
      * 消息分发方法
@@ -47,6 +47,7 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
         String data = request.getData();
         JSONObject jsonObject = JSON.parseObject(data);
         Boolean isClearSuccess = jsonObject.getBoolean(RESULT_KEY);
+        LOGGER.info("shine返回清空数据盘结果：" + isClearSuccess);
         if (isClearSuccess == null) {
             LOGGER.error("终端返回清空数据盘是否成功值为null，terminalId = [{}]",request.getTerminalId());
             return;
