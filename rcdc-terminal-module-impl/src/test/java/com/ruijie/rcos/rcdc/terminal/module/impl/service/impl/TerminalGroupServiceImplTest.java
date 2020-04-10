@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -453,6 +454,42 @@ public class TerminalGroupServiceImplTest {
             }
         };
     }
+
+    /**
+     * 测试检验分组名称是否同级唯一-存在同名
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testCheckGroupNameUniqueSelf() throws BusinessException {
+        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(UUID.randomUUID(), "groupName123", null);
+        List<TerminalGroupEntity> groupList = Lists.newArrayList();
+        TerminalGroupEntity entity = new TerminalGroupEntity();
+        entity.setId(terminalGroup.getId());
+        entity.setName(terminalGroup.getGroupName());
+        groupList.add(entity);
+        new Expectations() {
+            {
+
+                terminalGroupDAO.findByParentId(terminalGroup.getParentGroupId());
+                result = groupList;
+            }
+        };
+
+        try {
+            terminalGroupService.checkGroupNameUnique(terminalGroup);
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE);
+        }
+
+        new Verifications() {
+            {
+                terminalGroupDAO.findByParentId(terminalGroup.getParentGroupId());
+                times = 1;
+            }
+        };
+    }
+    
 
     @Test
     public void testCheckGroupNameUniqueWhenDefaultGroupName() {
