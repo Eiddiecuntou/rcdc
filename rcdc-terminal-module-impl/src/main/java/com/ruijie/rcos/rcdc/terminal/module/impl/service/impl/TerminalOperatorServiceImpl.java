@@ -299,6 +299,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         checkTerminal(terminalId);
         int responseCode = operateTerminal(terminalId, SendTerminalEventEnums.CLEAR_DATA, "",
                 BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK);
+        LOGGER.info("shine回传的code： " + responseCode);
         //云桌面运行中,不能清空数据盘
         if (responseCode == DataDiskClearCodeEnums.DESKTOP_ON_RUNNING.getCode()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_DESKTOP_RUNNING_CANNOT_CLEAR_DISK, terminalId);
@@ -306,6 +307,14 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         //通知shine前端失败，不能清空数据盘
         if (responseCode == DataDiskClearCodeEnums.NOTIFY_SHINE_WEB_FAIL.getCode()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOTIFY_SHINE_WEB_FAIL, terminalId);
+        }
+        //终端上未创建数据盘，不能清空数据盘
+        if (responseCode == DataDiskClearCodeEnums.DATA_DISK_NOT_CREATE.getCode()) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_DATA_DISK_NOT_CREATE, terminalId);
+        }
+        //终端正在初始化，不能同时清空数据盘
+        if (responseCode == DataDiskClearCodeEnums.TERMINAL_ON_INITING.getCode()) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_TERMINAL_ON_INITING, terminalId);
         }
 
     }
