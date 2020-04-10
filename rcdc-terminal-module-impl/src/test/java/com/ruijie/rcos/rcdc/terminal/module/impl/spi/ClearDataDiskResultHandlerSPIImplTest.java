@@ -40,7 +40,7 @@ public class ClearDataDiskResultHandlerSPIImplTest {
     @Test
     public void testDispatch() {
         CbbDispatcherRequest cbbDispatcherRequest = new CbbDispatcherRequest();
-        cbbDispatcherRequest.setData("{\"isClearSuccess\":true}");
+        cbbDispatcherRequest.setData("{\"clearResult\":true}");
         cbbDispatcherRequest.setTerminalId("terminalId");
         handlerSPI.dispatch(cbbDispatcherRequest);
         new Verifications() {
@@ -57,7 +57,7 @@ public class ClearDataDiskResultHandlerSPIImplTest {
     @Test
     public void testDispatchWithNullResponse() {
         CbbDispatcherRequest cbbDispatcherRequest = new CbbDispatcherRequest();
-        cbbDispatcherRequest.setData("{\"isClearSuccess\":null}");
+        cbbDispatcherRequest.setData("{\"clearResult\":null}");
         cbbDispatcherRequest.setTerminalId("terminalId");
         handlerSPI.dispatch(cbbDispatcherRequest);
         new Verifications() {
@@ -74,7 +74,7 @@ public class ClearDataDiskResultHandlerSPIImplTest {
     @Test
     public void testDispatchWhileClearFail() {
         CbbDispatcherRequest cbbDispatcherRequest = new CbbDispatcherRequest();
-        cbbDispatcherRequest.setData("{\"isClearSuccess\":false}");
+        cbbDispatcherRequest.setData("{\"clearResult\":false}");
         cbbDispatcherRequest.setTerminalId("terminalId");
         handlerSPI.dispatch(cbbDispatcherRequest);
         new Verifications() {

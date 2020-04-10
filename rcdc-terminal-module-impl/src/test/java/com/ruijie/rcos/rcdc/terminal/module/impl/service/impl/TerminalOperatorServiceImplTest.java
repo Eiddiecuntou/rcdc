@@ -860,6 +860,60 @@ public class TerminalOperatorServiceImplTest {
         fail();
     }
 
+    /**
+     *测试清空数据盘,终端上未创建数据盘，不能清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearDataDiskNotCreate(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return DataDiskClearCodeEnums.DATA_DISK_NOT_CREATE.getCode();
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
+     *测试清空数据盘,终端正在初始化，不能同时清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearTerminalOnInit(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return DataDiskClearCodeEnums.TERMINAL_ON_INITING.getCode();
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
 
     /**
      *测试正常发送终端检测命令
