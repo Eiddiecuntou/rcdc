@@ -312,6 +312,10 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         if (responseCode == DataDiskClearCodeEnums.DATA_DISK_NOT_CREATE.getCode()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_DATA_DISK_NOT_CREATE, terminalId);
         }
+        //终端正在初始化，不能同时清空数据盘
+        if (responseCode == DataDiskClearCodeEnums.TERMINAL_ON_INITING.getCode()) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_TERMINAL_ON_INITING, terminalId);
+        }
 
     }
 
