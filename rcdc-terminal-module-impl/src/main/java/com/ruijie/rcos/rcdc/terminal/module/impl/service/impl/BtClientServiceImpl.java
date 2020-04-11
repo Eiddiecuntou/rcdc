@@ -9,6 +9,7 @@ import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -103,7 +104,7 @@ public class BtClientServiceImpl implements BtClientService {
         LOGGER.info("制作BT种子，目标文件[{}]，种子文件目录[{}]", filePath, seedSavePath);
         try {
             validateTargetFile(filePath);
-            createFilePath(seedSavePath);
+            FileOperateUtil.createFileDirectory(new File(seedSavePath));
 
             BaseMakeBtSeedRequest apiRequest = new BaseMakeBtSeedRequest();
             apiRequest.setFilePath(filePath);
@@ -142,13 +143,5 @@ public class BtClientServiceImpl implements BtClientService {
         DtoResponse<ClusterVirtualIpDTO> resp = cloudPlatformMgmtAPI.getClusterVirtualIp(new DefaultRequest());
         return resp.getDto().getClusterVirtualIpIp();
     }
-
-    private void createFilePath(String filePath) {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.mkdirs();
-            file.setReadable(true, false);
-            file.setExecutable(true, false);
-        }
-    }
+    
 }
