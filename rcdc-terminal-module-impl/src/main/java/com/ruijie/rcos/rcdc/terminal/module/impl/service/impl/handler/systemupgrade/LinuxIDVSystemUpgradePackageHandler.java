@@ -109,9 +109,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     private void checkAndMakeDirs(String dirPath) {
         File dir = new File(dirPath);
         if (!dir.isDirectory()) {
-            dir.mkdirs();
-            dir.setReadable(true, false);
-            dir.setExecutable(true, false);
+            FileOperateUtil.createFileDirectory(dir);
         }
     }
 
