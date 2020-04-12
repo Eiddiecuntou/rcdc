@@ -787,6 +787,25 @@ public class TerminalOperatorServiceImplTest {
     }
 
     /**
+     *测试清空数据盘,终端升级中
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearTerminalUpUpgrading(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.UPGRADING);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
      *测试清空数据盘,终端
      *
      *@throws Exception 异常

@@ -319,18 +319,22 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
 
     }
 
-    private void checkTerminal (String terminalId) throws BusinessException {
+    private void checkTerminal(String terminalId) throws BusinessException {
         TerminalEntity entity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (entity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_EXIST, terminalId);
         }
-        if (entity.getState() != CbbTerminalStateEnums.ONLINE) {
+        if (entity.getState() == CbbTerminalStateEnums.OFFLINE) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK,
-                    new String[] {entity.getTerminalName(), terminalId});
+                    entity.getTerminalName(), terminalId);
+        }
+        if (entity.getState() == CbbTerminalStateEnums.UPGRADING) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK,
+                    entity.getTerminalName(), terminalId);
         }
         if (entity.getPlatform() != CbbTerminalPlatformEnums.IDV) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_IDV_CANNOT_CLEAR_DISK,
-                    new String[] {entity.getTerminalName(), terminalId});
+                    entity.getTerminalName(), terminalId);
         }
     }
 
