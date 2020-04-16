@@ -71,6 +71,7 @@ public class TerminalSystemUpgradeServicePackageImpl implements TerminalSystemUp
         upgradePackage.setOtaScriptPath(versionInfo.getOtaScriptPath());
         upgradePackage.setOtaScriptMd5(versionInfo.getOtaScriptMD5());
         upgradePackage.setIsDelete(false);
+        upgradePackage.setUpgradeMode(versionInfo.getUpgradeMode());
     }
 
     @Override

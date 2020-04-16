@@ -1,15 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.junit.Test;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
@@ -27,8 +17,15 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePa
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-
 import mockit.*;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 /**
  * 
@@ -90,7 +87,6 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
         request.setTerminalIdArr(terminalIdArr);
         request.setPackageId(UUID.randomUUID());
-        request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         serviceTxImpl.addSystemUpgradeTask(upgradePackage, request);
 
         new Verifications() {

@@ -1,14 +1,22 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.UpgradeableTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.ViewUpgradeableTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
@@ -21,6 +29,7 @@ import mockit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -54,6 +63,18 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
     @Injectable
     private BtClientService btClientService;
+
+    @Injectable
+    private UpgradeableTerminalDAO upgradeableTerminalDAO;
+
+    @Injectable
+    private CbbTerminalSystemUpgradeAPI cbbTerminalSystemUpgradeAPI;
+
+    @Injectable
+    private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
+
+    @Injectable
+    private AuditLogAPI logAPI;
 
     /**
      * 测试获取系统升级包service
@@ -123,6 +144,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
         expectedPackageInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
         expectedPackageInfo.setFileSaveDir(Constants.TERMINAL_UPGRADE_OTA_PACKAGE);
         expectedPackageInfo.setRealFileName(id.toString() + ".zip");
+        expectedPackageInfo.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
 
         assertEquals(expectedPackageInfo, packageInfo);
 
@@ -215,7 +237,6 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
     private TerminalSystemUpgradeEntity buildUpgradeEntity() {
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradeEntity.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         upgradeEntity.setId(UUID.randomUUID());
         upgradeEntity.setPackageVersion("1.1.1");
         return upgradeEntity;
@@ -228,7 +249,114 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
         packageEntity.setSeedPath("/bbb/bb.torrent");
         packageEntity.setSeedMd5("cbd");
         packageEntity.setPackageVersion("1.1.1");
+        packageEntity.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         return packageEntity;
     }
 
+    /**
+     * 上传后处理，正常流程
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testPostUploadPackage() throws BusinessException {
+        ViewUpgradeableTerminalEntity terminalEntity = new ViewUpgradeableTerminalEntity();
+        terminalEntity.setTerminalId("terminalId");
+        List<ViewUpgradeableTerminalEntity> terminalEntityList = Lists.newArrayList();
+        terminalEntityList.add(terminalEntity);
+
+        UUID packageId = UUID.randomUUID();
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(packageId);
+
+        new Expectations() {
+            {
+                upgradeableTerminalDAO.findAllByPlatformEqualsAndTerminalOsTypeEquals(CbbTerminalPlatformEnums.VDI,
+                        CbbTerminalTypeEnums.VDI_ANDROID.getOsType());
+                result = terminalEntityList;
+                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+                result = upgradePackage;
+            }
+        };
+
+        handler.postUploadPackage(new TerminalUpgradeVersionFileInfo());
+
+        new Verifications() {
+            {
+                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 上传后处理，无可升级终端
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testPostUploadPackageNoUpgradableTerminal() throws BusinessException {
+        List<ViewUpgradeableTerminalEntity> terminalEntityList = Lists.newArrayList();
+
+        new Expectations() {
+            {
+                upgradeableTerminalDAO.findAllByPlatformEqualsAndTerminalOsTypeEquals(CbbTerminalPlatformEnums.VDI,
+                        CbbTerminalTypeEnums.VDI_ANDROID.getOsType());
+                result = terminalEntityList;
+            }
+        };
+
+        handler.postUploadPackage(new TerminalUpgradeVersionFileInfo());
+
+        new Verifications() {
+            {
+                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     * 上传后处理，异常
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testPostUploadPackageException() throws BusinessException {
+        ViewUpgradeableTerminalEntity terminalEntity = new ViewUpgradeableTerminalEntity();
+        terminalEntity.setTerminalId("terminalId");
+        List<ViewUpgradeableTerminalEntity> terminalEntityList = Lists.newArrayList();
+        terminalEntityList.add(terminalEntity);
+
+        UUID packageId = UUID.randomUUID();
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(packageId);
+
+        new MockUp<BusinessException>() {
+            @Mock
+            String getI18nMessage() {
+                return "message";
+            }
+        };
+
+        new Expectations() {
+            {
+                upgradeableTerminalDAO.findAllByPlatformEqualsAndTerminalOsTypeEquals(CbbTerminalPlatformEnums.VDI,
+                        CbbTerminalTypeEnums.VDI_ANDROID.getOsType());
+                result = terminalEntityList;
+                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+                result = upgradePackage;
+                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
+                result = new BusinessException("key");
+            }
+        };
+
+        handler.postUploadPackage(new TerminalUpgradeVersionFileInfo());
+
+        new Verifications() {
+            {
+                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
+                times = 1;
+                logAPI.recordLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG, (String[]) any);
+                times = 1;
+            }
+        };
+    }
 }

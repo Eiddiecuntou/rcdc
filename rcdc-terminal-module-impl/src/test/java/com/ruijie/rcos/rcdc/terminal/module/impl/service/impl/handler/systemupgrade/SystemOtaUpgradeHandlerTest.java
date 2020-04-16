@@ -94,7 +94,7 @@ public class SystemOtaUpgradeHandlerTest {
         TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
 
         OtaCheckResultContent result =
-                (OtaCheckResultContent) handler.getSystemUpgradeMsg(packageEntity, upgradeEntity.getId(), upgradeEntity.getUpgradeMode());
+                (OtaCheckResultContent) handler.getSystemUpgradeMsg(packageEntity, upgradeEntity.getId());
 
         OtaCheckResultContent expectContent = buildExpectedAndroidVDICheckResultContent(upgradeEntity);
 
@@ -130,7 +130,6 @@ public class SystemOtaUpgradeHandlerTest {
 
     private TerminalSystemUpgradeEntity buildUpgradeEntity() {
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradeEntity.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         upgradeEntity.setId(UUID.randomUUID());
         upgradeEntity.setPackageVersion("1.1.1");
         return upgradeEntity;
@@ -143,6 +142,7 @@ public class SystemOtaUpgradeHandlerTest {
         packageEntity.setSeedPath("/bbb/bb.torrent");
         packageEntity.setSeedMd5("cbd");
         packageEntity.setPackageVersion("1.1.1");
+        packageEntity.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         return packageEntity;
     }
 

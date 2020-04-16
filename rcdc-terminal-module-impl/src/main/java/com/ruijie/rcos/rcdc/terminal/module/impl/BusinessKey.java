@@ -366,4 +366,14 @@ public interface BusinessKey {
      * 终端操作-解除故障
      */
     String RCDC_TERMINAL_OPERATE_ACTION_RELIEVE_FAULT = "rcdc_terminal_operate_action_relieve_fault";
+
+    /**
+     * 创建终端刷机任务成功日志
+     */
+    String RCDC_TERMINAL_CREATE_UPGRADE_TASK_SUCCESS_LOG = "rcdc_terminal_create_upgrade_task_success_log";
+
+    /**
+     * 创建终端刷机任务失败日志
+     */
+    String RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG = "rcdc_terminal_create_upgrade_task_fail_log";
 }

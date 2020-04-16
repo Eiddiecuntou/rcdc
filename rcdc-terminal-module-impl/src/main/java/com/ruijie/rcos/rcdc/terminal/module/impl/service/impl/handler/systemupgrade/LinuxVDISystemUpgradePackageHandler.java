@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -34,6 +35,8 @@ import java.util.UUID;
 public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePackageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDISystemUpgradePackageHandler.class);
+
+    private static final CbbSystemUpgradeModeEnums DEFAULT_UPGRADE_MODE = CbbSystemUpgradeModeEnums.MANUAL;
 
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
@@ -71,7 +74,7 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
         versionInfo.setFilePath(packagePath);
         versionInfo.setRealFileName(storePackageName);
         versionInfo.setFileSaveDir(Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH);
-
+        versionInfo.setUpgradeMode(DEFAULT_UPGRADE_MODE);
         return versionInfo;
     }
 
