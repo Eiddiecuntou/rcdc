@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -58,6 +59,9 @@ public class TerminalSystemUpgradePackageEntity {
     private CbbSystemUpgradeDistributionModeEnums distributionMode;
 
     private Boolean isDelete;
+
+    @Enumerated(EnumType.STRING)
+    private CbbSystemUpgradeModeEnums upgradeMode;
 
     public UUID getId() {
         return id;
@@ -196,5 +200,13 @@ public class TerminalSystemUpgradePackageEntity {
 
     public void setOtaScriptMd5(String otaScriptMd5) {
         this.otaScriptMd5 = otaScriptMd5;
+    }
+
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
     }
 }

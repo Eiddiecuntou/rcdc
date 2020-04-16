@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
@@ -59,7 +58,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
         resultContent.setPackageMD5(upgradePackage.getFileMd5());
         resultContent.setSeedLink(upgradePackage.getSeedPath());
         resultContent.setSeedMD5(upgradePackage.getSeedMd5());
-        resultContent.setUpgradeMode(upgradeTask.getUpgradeMode());
+        resultContent.setUpgradeMode(upgradePackage.getUpgradeMode());
         resultContent.setPackageVersion(upgradeTask.getPackageVersion());
         resultContent.setTaskId(upgradeTask.getId());
         resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
@@ -74,16 +73,15 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
     }
 
     @Override
-    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId, CbbSystemUpgradeModeEnums upgradeMode) {
+    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId) {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
-        Assert.notNull(upgradeMode, "upgradeMode can not be null");
 
         OtaCheckResultContent resultContent = new OtaCheckResultContent();
         resultContent.setPackageMD5(upgradePackage.getFileMd5());
         resultContent.setSeedLink(upgradePackage.getSeedPath());
         resultContent.setSeedMD5(upgradePackage.getSeedMd5());
-        resultContent.setUpgradeMode(upgradeMode);
+        resultContent.setUpgradeMode(upgradePackage.getUpgradeMode());
         resultContent.setPackageVersion(upgradePackage.getPackageVersion());
         resultContent.setTaskId(upgradeTaskId);
         resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());

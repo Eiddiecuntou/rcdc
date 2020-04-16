@@ -8,3 +8,7 @@ ALTER table t_cbb_terminal ADD COLUMN network_infos varchar(1024);
 ALTER table t_cbb_sys_upgrade_package ADD COLUMN ota_script_path varchar(256);
 ALTER table t_cbb_sys_upgrade_package ADD COLUMN ota_script_md5 varchar(64);
 ALTER table t_cbb_sys_upgrade_package ALTER COLUMN seed_path TYPE varchar(256);
+
+/** 终端升级模式字段修改 */
+ALTER table t_cbb_sys_upgrade_package ADD COLUMN upgrade_mode varchar(32);
+ALTER table t_cbb_sys_upgrade DROP COLUMN upgrade_mode;

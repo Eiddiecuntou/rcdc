@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -91,6 +92,7 @@ public class EntityBeanTest {
         info.setOtaScriptMD5("otaScriptMD5");
         info.setFileSaveDir("fileSaveDir");
         info.setRealFileName("realFileName");
+        info.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         String result = "TerminalUpgradeVersionFileInfo{" +
                 "packageName='" + "packageName" + '\'' +
                 ", imgName='" + "imgName" + '\'' +
@@ -104,6 +106,7 @@ public class EntityBeanTest {
                 ", realFileName='" + "realFileName" + '\'' +
                 ", otaScriptPath='" + "otaScriptPath" + '\'' +
                 ", otaScriptMD5='" + "otaScriptMD5" + '\'' +
+                ", upgradeMode='" + "AUTO" + '\'' +
                 '}';
         assertEquals(result, info.toString());
     }

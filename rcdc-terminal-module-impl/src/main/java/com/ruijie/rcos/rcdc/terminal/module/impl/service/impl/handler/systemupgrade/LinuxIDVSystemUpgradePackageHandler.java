@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -35,6 +36,8 @@ import java.util.Properties;
 public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePackageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxIDVSystemUpgradePackageHandler.class);
+
+    private static final CbbSystemUpgradeModeEnums DEFAULT_UPGRADE_MODE = CbbSystemUpgradeModeEnums.MANUAL;
 
     /**
      * OTA文件列表长度
@@ -96,6 +99,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         versionInfo.setPackageName(OTA_PACKAGE_NAME);
         versionInfo.setSeedLink(seedInfo.getSeedFilePath());
         versionInfo.setSeedMD5(seedInfo.getSeedFileMD5());
+        versionInfo.setUpgradeMode(DEFAULT_UPGRADE_MODE);
         return versionInfo;
     }
 

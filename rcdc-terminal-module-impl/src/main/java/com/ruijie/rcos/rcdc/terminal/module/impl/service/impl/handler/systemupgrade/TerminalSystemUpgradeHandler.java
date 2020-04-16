@@ -1,14 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 
-import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+
+import java.util.UUID;
 
 /**
  * Description: 端系统升级处理对象
@@ -56,12 +55,11 @@ public interface TerminalSystemUpgradeHandler<T> {
      * 
      * @param upgradePackage 升级包对象
      * @param upgradeTaskId 升级任务id
-     * @param upgradeMode 升级模式
      * @return 升级消息对象
      *
      * @throws BusinessException 业务异常
      */
-    Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId, CbbSystemUpgradeModeEnums upgradeMode)
+    Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId)
             throws BusinessException;
 
     /**
