@@ -309,7 +309,7 @@ public class CbbTerminalBackgroundAPIImplTest {
                 cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request);
                 Assert.fail();
             } catch (BusinessException e) {
-                Assert.assertEquals(e.getMessage(), "abc");
+                Assert.assertEquals(e.getKey(), BusinessKey.RCDC_FILE_OPERATE_FAIL);
             }
         }
 

@@ -1,5 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
@@ -20,15 +28,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Description: Function Description
@@ -126,6 +125,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         TerminalSystemUpgradePackageEntity upgradePackage =
                 terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         LOGGER.debug("升级包信息: [{}]", upgradeInfo.toString());
+        
 
         // 添加升级任务
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
@@ -140,5 +140,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
             logAPI.recordLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG,
                     upgradePackage.getPackageName(), e.getI18nMessage());
         }
+        
     }
+    
 }

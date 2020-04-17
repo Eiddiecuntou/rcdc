@@ -115,9 +115,8 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
             skyengineFile.delete(false);
         }
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
-        TerminalBackgroundInfo terminalSyncBackgroundInfo = new TerminalBackgroundInfo();
-        terminalSyncBackgroundInfo.setIsDefaultImage(true);
-        terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
+        terminalBackgroundInfo.setIsDefaultImage(true);
+        terminalBackgroundService.syncTerminalBackground(terminalBackgroundInfo);
         return DefaultResponse.Builder.success();
     }
 

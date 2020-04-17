@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker;
 
 import static org.junit.Assert.*;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -96,7 +96,7 @@ public class GroupNameDuplicationCheckerTest {
             checker.check(groupEntity, "123");
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_DELETE_TERMINAL_GROUP_SUB_GROUP_HAS_DUPLICATION_WITH_MOVE_GROUP, e.getKey());
+            assertEquals(PublicBusinessKey.RCDC_DELETE_TERMINAL_GROUP_SUB_GROUP_HAS_DUPLICATION_WITH_MOVE_GROUP, e.getKey());
         }
 
 

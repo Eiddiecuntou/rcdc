@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -95,7 +95,7 @@ public class SessionManager {
         Session session = getSession(terminalId);
         if (session == null) {
             LOGGER.error("获取终端session失败，terminalId:{}", terminalId);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
+            throw new BusinessException(PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
         return new DefaultRequestMessageSender(session);
     }

@@ -1,10 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import java.util.List;
+import java.util.UUID;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
+import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
@@ -25,15 +31,12 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.BtClientServiceImp
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import mockit.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
+import mockit.Verifications;
 
 /**
  * Description: Function Description
@@ -59,7 +62,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
     private BtClientAPI btClientAPI;
 
     @Injectable
-    private NetworkAPI networkAPI;
+    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     @Injectable
     private BtClientService btClientService;

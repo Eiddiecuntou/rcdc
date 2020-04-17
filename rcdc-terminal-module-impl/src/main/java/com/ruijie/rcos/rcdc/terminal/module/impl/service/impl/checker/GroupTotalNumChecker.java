@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -31,7 +31,7 @@ public class GroupTotalNumChecker {
     public void check(long addNum) throws BusinessException {
         long count = terminalGroupDAO.count();
         if ((count + addNum) > Constants.TERMINAL_GROUP_MAX_GROUP_NUM) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_NUM_EXCEED_LIMIT,
+            throw new BusinessException(PublicBusinessKey.RCDC_TERMINALGROUP_GROUP_NUM_EXCEED_LIMIT,
                     String.valueOf(Constants.TERMINAL_GROUP_MAX_GROUP_NUM));
         }
     }
