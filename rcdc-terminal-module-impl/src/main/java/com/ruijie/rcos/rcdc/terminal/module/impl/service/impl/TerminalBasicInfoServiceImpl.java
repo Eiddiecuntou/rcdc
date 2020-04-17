@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.Date;
 import java.util.List;
 
@@ -136,7 +137,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         Assert.notNull(terminalName, "terminalName 不能为空");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
+            throw new BusinessException(PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
         ChangeHostNameRequest changeRequest = new ChangeHostNameRequest(terminalName);
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.MODIFY_TERMINAL_NAME.getName(), changeRequest);
@@ -155,7 +156,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         Assert.notNull(shineNetworkConfig, "ShineNetworkConfig 不能为null");
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
+            throw new BusinessException(PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
 
         Message message = new Message(Constants.SYSTEM_TYPE, SendTerminalEventEnums.MODIFY_TERMINAL_NETWORK_CONFIG.getName(), shineNetworkConfig);

@@ -1,16 +1,22 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.io.IOException;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -35,8 +41,13 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
+import mockit.Tested;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -73,6 +84,25 @@ public class TerminalOperatorServiceImplTest {
 
     @Injectable
     private TerminalDetectionDAO terminalDetectionDAO;
+
+    @Before
+    public void before() {
+
+        new MockUp<LocaleI18nResolver>() {
+
+            /**
+             *
+             * @param key key
+             * @param args args
+             * @return key
+             */
+            @Mock
+            public String resolve(String key, String... args) {
+                return key;
+            }
+
+        };
+    }
 
     /**
      * 测试关机成功
@@ -310,7 +340,7 @@ public class TerminalOperatorServiceImplTest {
             operatorService.collectLog(terminalId);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
+            assertEquals(PublicBusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
         }
 
         new Verifications() {

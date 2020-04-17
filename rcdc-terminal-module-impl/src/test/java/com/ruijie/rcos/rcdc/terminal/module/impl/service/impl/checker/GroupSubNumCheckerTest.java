@@ -1,12 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.UUID;
 
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -64,7 +64,7 @@ public class GroupSubNumCheckerTest {
             checker.check(groupEntity, 1);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINALGROUP_SUB_GROUP_NUM_EXCEED_LIMIT, e.getKey());
+            assertEquals(PublicBusinessKey.RCDC_TERMINALGROUP_SUB_GROUP_NUM_EXCEED_LIMIT, e.getKey());
         }
 
         new Verifications() {

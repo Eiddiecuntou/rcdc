@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -71,7 +71,7 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
     private void operateTerminal(String terminalId, TerminalBackgroundInfo request) throws BusinessException {
         DefaultRequestMessageSender sender = sessionManager.getRequestMessageSender(terminalId);
         if (sender == null) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OFFLINE);
+            throw new BusinessException(PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
         Message message = new Message<>(Constants.SYSTEM_TYPE, SendTerminalEventEnums.CHANGE_TERMINAL_BACKGROUND.getName(), request);
         try {

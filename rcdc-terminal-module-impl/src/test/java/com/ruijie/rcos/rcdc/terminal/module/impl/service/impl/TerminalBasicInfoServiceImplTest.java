@@ -1,16 +1,21 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Date;
-
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
@@ -23,13 +28,19 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalModelDriverEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
+import mockit.Tested;
+import mockit.Verifications;
 
 /**
  * Description: Function Description
@@ -59,6 +70,25 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private TerminalModelDriverDAO terminalModelDriverDAO;
+
+    @Before
+    public void before() {
+
+        new MockUp<LocaleI18nResolver>() {
+
+            /**
+             *
+             * @param key key
+             * @param args args
+             * @return key
+             */
+            @Mock
+            public String resolve(String key, String... args) {
+                return key;
+            }
+
+        };
+    }
 
     /**
      * 测试修改终端名称成功
@@ -116,8 +146,42 @@ public class TerminalBasicInfoServiceImplTest {
             basicInfoService.modifyTerminalName(terminalId, terminalName);
             fail();
         } catch (BusinessException e) {
-            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+            assertEquals(e.getKey(), PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
+    }
+
+    @Test
+    public void testModifyTerminalNameByException() throws Exception {
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+
+                    sender.syncRequest((Message) any);
+                    result = new BusinessException("error");
+
+                } catch (BusinessException e) {
+                    result = sender;
+                }
+            }
+        };
+        String terminalId = "123";
+        String terminalName = "t-box";
+        try {
+            basicInfoService.modifyTerminalName(terminalId, terminalName);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL);
+
+        }
+
+        new Verifications() {
+            {
+                sender.syncRequest((Message) any);
+                times = 1;
+            }
+        };
     }
 
     /**
@@ -186,7 +250,7 @@ public class TerminalBasicInfoServiceImplTest {
             basicInfoService.modifyTerminalNetworkConfig(terminalId, config);
             fail();
         } catch (BusinessException e) {
-            assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_OFFLINE);
+            assertEquals(e.getKey(), PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
     }
 
@@ -417,7 +481,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         basicInfoService.saveBasicInfo(terminalId, basicInfo);
 
-        new Verifications() {
+        new  Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
@@ -472,7 +536,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         basicInfoService.saveBasicInfo(terminalId, basicInfo);
 
-        new Verifications() {
+        new  Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
@@ -530,7 +594,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         basicInfoService.saveBasicInfo(terminalId, basicInfo);
 
-        new Verifications() {
+        new  Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
@@ -581,7 +645,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         basicInfoService.saveBasicInfo(terminalId, basicInfo);
 
-        new Verifications() {
+        new  Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
@@ -613,10 +677,9 @@ public class TerminalBasicInfoServiceImplTest {
     private CbbShineTerminalBasicInfo buildShineTerminalBasicInfo() {
         CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
         basicInfo.setGateway("gateway");
-        basicInfo.setTerminalId("123");
         basicInfo.setMemorySize(213L);
         basicInfo.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
-
+        basicInfo.setTerminalId("123");
         return basicInfo;
     }
 
@@ -626,67 +689,4 @@ public class TerminalBasicInfoServiceImplTest {
 
         return terminalEntity;
     }
-
-    /**
-     * 测试保存终端信息 - 新终端接入
-     */
-    @Test
-    public void testSaveBasicInfoTerminalIsNew() {
-        String terminalId = "123";
-        CbbShineTerminalBasicInfo basicInfo = buildBasicInfo();
-        new Expectations() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                result = null;
-
-                terminalEventNoticeSPI.notify((CbbNoticeRequest) any);
-            }
-        };
-
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
-
-        new Verifications() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                times = 1;
-
-                TerminalEntity saveEntity = new TerminalEntity();
-                basicInfoDAO.save(saveEntity = withCapture());
-                assertEquals(null, saveEntity.getId());
-            }
-        };
-    }
-
-    private CbbShineTerminalBasicInfo buildBasicInfo() {
-        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
-        basicInfo.setCpuType("cpuType");
-        basicInfo.setDiskSize(1L);
-        basicInfo.setGateway("gateWay");
-        basicInfo.setGetDnsMode(CbbGetNetworkModeEnums.AUTO);
-        basicInfo.setGetIpMode(CbbGetNetworkModeEnums.MANUAL);
-        basicInfo.setHardwareVersion("hardWareVersion");
-        basicInfo.setIdvTerminalMode("PERSONAL");
-        basicInfo.setIp("ip");
-        basicInfo.setMacAddr("macAddr");
-        basicInfo.setMainDns("mainDns");
-        basicInfo.setMemorySize(2L);
-        basicInfo.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
-        basicInfo.setPlatform(CbbTerminalPlatformEnums.VDI);
-        basicInfo.setProductType("productType");
-        basicInfo.setRainOsVersion("rainOsVersion");
-        basicInfo.setRainUpgradeVersion("rainUpgradeVersion");
-        basicInfo.setSecondDns("secondDns");
-        basicInfo.setSerialNumber("SerialNumber");
-        basicInfo.setSsid("ssid");
-        basicInfo.setSubnetMask("subnetMask");
-        basicInfo.setTerminalId("123");
-        basicInfo.setTerminalName("terminalName");
-        basicInfo.setTerminalOsType("Linux");
-        basicInfo.setTerminalOsVersion("osVersion");
-        basicInfo.setValidateMd5("validateMd5");
-        basicInfo.setWirelessAuthMode(CbbTerminalWirelessAuthModeEnums.MODE_OPEN);
-
-        return basicInfo;
-    }
 }
-
