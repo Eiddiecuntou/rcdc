@@ -88,7 +88,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     @Override
     public void shutdown(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
-        checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN);
+        checkAllowOperate(terminalId, PublicBusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN);
         operateTerminal(terminalId, SendTerminalEventEnums.SHUTDOWN_TERMINAL, "", BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SHUTDOWN);
     }
 
