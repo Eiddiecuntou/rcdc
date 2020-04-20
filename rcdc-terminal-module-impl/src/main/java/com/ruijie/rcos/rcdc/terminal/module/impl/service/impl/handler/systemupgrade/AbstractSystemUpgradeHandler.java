@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -14,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeSe
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.util.Assert;
 
 /**
  * Description: Function Description
@@ -36,23 +35,26 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         Assert.hasText(terminalEntity.getTerminalId(), "terminalId can not be blank");
         Assert.notNull(terminalEntity.getGroupId(), "terminal group id can not be null");
 
-        boolean enableUpgrade = isTerminalNeedUpgrade(terminalEntity, terminalType);
-        if (!enableUpgrade) {
-            return buildNoNeedCheckResult();
+        CheckSystemUpgradeResultEnums checkSystemUpgradeResult = isTerminalNeedUpgrade(terminalEntity, terminalType);
+        if (checkSystemUpgradeResult == CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE
+                || checkSystemUpgradeResult == CheckSystemUpgradeResultEnums.UNSUPPORT) {
+            return buildNoNeedCheckResult(checkSystemUpgradeResult);
         }
 
         TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageType(terminalType);
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         SystemUpgradeCheckResult<T> checkResult = getCheckResult(upgradePackage, upgradeTask);
+        checkResult.setSystemUpgradeCode(checkSystemUpgradeResult.getResult());
+
         return checkResult;
     }
 
-    private boolean isTerminalNeedUpgrade(TerminalEntity terminalEntity, CbbTerminalTypeEnums terminalType) {
+    private CheckSystemUpgradeResultEnums isTerminalNeedUpgrade(TerminalEntity terminalEntity, CbbTerminalTypeEnums terminalType) {
 
         boolean enableUpgrade = isTerminalEnableUpgrade(terminalEntity, terminalType);
         if (!enableUpgrade) {
             LOGGER.info("终端[{}]不升级");
-            return false;
+            return CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE;
         }
 
         // TODO 需优化
@@ -62,16 +64,20 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
                 getSystemUpgradeService().getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeTask.getId());
         if (upgradeTerminalEntity == null) {
             // 终端是在升级任务开启之后接入的
-            return true;
+            return CheckSystemUpgradeResultEnums.NEED_UPGRADE;
         }
 
         CbbSystemUpgradeStateEnums state = upgradeTerminalEntity.getState();
         if (state == CbbSystemUpgradeStateEnums.SUCCESS || state == CbbSystemUpgradeStateEnums.UNDO) {
-            LOGGER.info("终端[{}]处于[{}]升级状态", upgradeTerminalEntity.getTerminalId(), state.name());
-            return false;
+            LOGGER.info("终端[{}]处于[{}]升级状态，无需升级", upgradeTerminalEntity.getTerminalId(), state.name());
+            return CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE;
+        }
+        if (state == CbbSystemUpgradeStateEnums.UPGRADING) {
+            LOGGER.info("终端[{}]正在升级中", upgradeTerminalEntity.getTerminalId());
+            return CheckSystemUpgradeResultEnums.UPGRADING;
         }
 
-        return true;
+        return CheckSystemUpgradeResultEnums.NEED_UPGRADE;
     }
 
     @Override
@@ -113,9 +119,9 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         return false;
     }
 
-    private SystemUpgradeCheckResult<T> buildNoNeedCheckResult() {
+    private SystemUpgradeCheckResult<T> buildNoNeedCheckResult(CheckSystemUpgradeResultEnums checkSystemUpgradeResult) {
         SystemUpgradeCheckResult<T> noNeedResult = new SystemUpgradeCheckResult();
-        noNeedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult());
+        noNeedResult.setSystemUpgradeCode(checkSystemUpgradeResult.getResult());
         noNeedResult.setContent(null);
         return noNeedResult;
     }

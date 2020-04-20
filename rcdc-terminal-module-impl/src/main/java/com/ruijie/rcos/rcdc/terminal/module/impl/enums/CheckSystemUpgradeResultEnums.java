@@ -14,7 +14,9 @@ public enum CheckSystemUpgradeResultEnums {
 
     NEED_UPGRADE(1),
 
-    UNSUPPORT(2);
+    UNSUPPORT(2),
+
+    UPGRADING(3);
 
     private int result;
 
