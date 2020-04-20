@@ -1,10 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.util.List;
+
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
@@ -50,9 +56,11 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
+
         CbbTerminalBasicInfoResponse basicInfoDTO = new CbbTerminalBasicInfoResponse();
-        BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO);
+        BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO, TerminalEntity.BEAN_COPY_IGNORE_NETWORK_INFO_ARR);
         basicInfoDTO.setTerminalPlatform(basicInfoEntity.getPlatform());
+        basicInfoDTO.setNetworkInfoArr(basicInfoEntity.getNetworkInfoArr());
         return basicInfoDTO;
     }
 
@@ -81,7 +89,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         String terminalId = request.getCbbTerminalId();
         TerminalEntity entity = getTerminalEntity(terminalId);
 
-        //校验终端分组
+        // 校验终端分组
         terminalGroupService.checkGroupExist(request.getGroupId());
 
         // 终端名称有变更，发送名称变更消息给终端

@@ -1,13 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
-import java.util.Date;
-import java.util.UUID;
-
-import javax.persistence.*;
-
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Description: 终端系统升级包实体类
@@ -37,6 +37,10 @@ public class TerminalSystemUpgradePackageEntity {
 
     private String seedMd5;
 
+    private String otaScriptPath;
+
+    private String otaScriptMd5;
+
     @Enumerated(EnumType.STRING)
     private CbbTerminalTypeEnums packageType;
 
@@ -55,6 +59,9 @@ public class TerminalSystemUpgradePackageEntity {
     private CbbSystemUpgradeDistributionModeEnums distributionMode;
 
     private Boolean isDelete;
+
+    @Enumerated(EnumType.STRING)
+    private CbbSystemUpgradeModeEnums upgradeMode;
 
     public UUID getId() {
         return id;
@@ -179,4 +186,27 @@ public class TerminalSystemUpgradePackageEntity {
         this.isDelete = isDelete;
     }
 
+    public String getOtaScriptPath() {
+        return otaScriptPath;
+    }
+
+    public void setOtaScriptPath(String otaScriptPath) {
+        this.otaScriptPath = otaScriptPath;
+    }
+
+    public String getOtaScriptMd5() {
+        return otaScriptMd5;
+    }
+
+    public void setOtaScriptMd5(String otaScriptMd5) {
+        this.otaScriptMd5 = otaScriptMd5;
+    }
+
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
+    }
 }

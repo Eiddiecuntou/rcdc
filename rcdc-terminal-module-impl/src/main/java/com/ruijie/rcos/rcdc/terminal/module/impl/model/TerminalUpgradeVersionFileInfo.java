@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
@@ -33,6 +34,15 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
     private String fileSaveDir;
 
     private String realFileName;
+
+    private String otaScriptPath;
+
+    private String otaScriptMD5;
+
+    /**
+     * 默认升级方式
+     */
+    private CbbSystemUpgradeModeEnums upgradeMode;
 
     public String getImgName() {
         return imgName;
@@ -114,6 +124,30 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
         this.realFileName = realFileName;
     }
 
+    public String getOtaScriptPath() {
+        return otaScriptPath;
+    }
+
+    public void setOtaScriptPath(String otaScriptPath) {
+        this.otaScriptPath = otaScriptPath;
+    }
+
+    public String getOtaScriptMD5() {
+        return otaScriptMD5;
+    }
+
+    public void setOtaScriptMD5(String otaScriptMD5) {
+        this.otaScriptMD5 = otaScriptMD5;
+    }
+
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
+    }
+
     @Override
     public String toString() {
         return "TerminalUpgradeVersionFileInfo{" +
@@ -127,6 +161,9 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
                 ", seedMD5='" + seedMD5 + '\'' +
                 ", fileSaveDir='" + fileSaveDir + '\'' +
                 ", realFileName='" + realFileName + '\'' +
+                ", otaScriptPath='" + otaScriptPath + '\'' +
+                ", otaScriptMD5='" + otaScriptMD5 + '\'' +
+                ", upgradeMode='" + upgradeMode + '\'' +
                 '}';
     }
 }

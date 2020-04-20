@@ -1,24 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.util.Map;
-
+import com.google.common.collect.Maps;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import mockit.Injectable;
+import mockit.Tested;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.google.common.collect.Maps;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.AndroidVDISystemUpgradePackageHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradePackageHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-
-import mockit.Injectable;
-import mockit.Tested;
+import java.util.Map;
 
 /**
  * Description: Function Description
@@ -39,6 +33,9 @@ public class TerminalSystemUpgradePackageHandlerFactoryTest {
 
     @Injectable
     private AndroidVDISystemUpgradePackageHandler androidVDISystemUpgradeHandler;
+
+    @Injectable
+    private LinuxIDVSystemUpgradePackageHandler linuxIDVSystemUpgradePackageHandler;
 
     /**
      * 获取版本升级处理器参数为空

@@ -1,15 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
-import java.util.*;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -26,6 +17,13 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoServic
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeGlobal;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.util.*;
 
 /**
  * 
@@ -59,7 +57,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(request, "request can not be null");
 
-        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage, request.getUpgradeMode());
+        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage);
 
         // 获取分组下的终端与选择的终端合并去重
         String[] terminalIdUnderGroupArr = obtainTerminalUnderGroup(request.getTerminalGroupIdArr(), upgradePackage.getPackageType());
@@ -166,11 +164,9 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
      * 添加刷机任务
      *
      * @param upgradePackage 刷机包对象
-     * @param upgradeMode 升级模式
      * @return 刷机任务对象
      */
-    private TerminalSystemUpgradeEntity addSystemUpgradeTaskEntity(TerminalSystemUpgradePackageEntity upgradePackage,
-            CbbSystemUpgradeModeEnums upgradeMode) {
+    private TerminalSystemUpgradeEntity addSystemUpgradeTaskEntity(TerminalSystemUpgradePackageEntity upgradePackage) {
         TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
         entity.setUpgradePackageId(upgradePackage.getId());
         entity.setPackageName(upgradePackage.getPackageName());
@@ -178,7 +174,6 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         entity.setPackageType(upgradePackage.getPackageType());
         entity.setCreateTime(new Date());
         entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
-        entity.setUpgradeMode(upgradeMode);
         systemUpgradeDAO.save(entity);
         return entity;
     }

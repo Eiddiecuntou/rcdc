@@ -1,19 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
-import java.util.Date;
-import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * 
@@ -48,9 +40,6 @@ public class TerminalSystemUpgradeEntity {
 
     @Version
     private Integer version;
-
-    @Enumerated(EnumType.STRING)
-    private CbbSystemUpgradeModeEnums upgradeMode;
 
     public UUID getId() {
         return id;
@@ -114,13 +103,5 @@ public class TerminalSystemUpgradeEntity {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public CbbSystemUpgradeModeEnums getUpgradeMode() {
-        return upgradeMode;
-    }
-
-    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
-        this.upgradeMode = upgradeMode;
     }
 }

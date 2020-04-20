@@ -13,7 +13,7 @@ import java.util.UUID;
  *
  * @author nt
  */
-public class AndroidVDICheckResultContent extends EqualsHashcodeSupport {
+public class OtaCheckResultContent extends EqualsHashcodeSupport {
 
     private String packageName;
 
@@ -26,6 +26,10 @@ public class AndroidVDICheckResultContent extends EqualsHashcodeSupport {
     private String seedName;
 
     private String seedMD5;
+
+    private String otaScriptPath;
+
+    private String otaScriptMD5;
 
     private CbbSystemUpgradeModeEnums upgradeMode;
 
@@ -93,5 +97,21 @@ public class AndroidVDICheckResultContent extends EqualsHashcodeSupport {
 
     public void setSeedName(String seedName) {
         this.seedName = seedName;
+    }
+
+    public String getOtaScriptPath() {
+        return otaScriptPath;
+    }
+
+    public void setOtaScriptPath(String otaScriptPath) {
+        this.otaScriptPath = otaScriptPath;
+    }
+
+    public String getOtaScriptMD5() {
+        return otaScriptMD5;
+    }
+
+    public void setOtaScriptMD5(String otaScriptMD5) {
+        this.otaScriptMD5 = otaScriptMD5;
     }
 }

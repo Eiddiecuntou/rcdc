@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -53,11 +54,11 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
 
     private String serialNumber;
 
-    private String cpuMode;
+    private String cpuType;
 
-    private Integer memorySize;
+    private Long memorySize;
 
-    private Integer diskSize;
+    private Long diskSize;
 
     private String terminalOsType;
 
@@ -82,6 +83,8 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
 
     @Enumerated(EnumType.STRING)
     private CbbTerminalStateEnums state;
+
+    private CbbTerminalNetworkInfoDTO[] networkInfoArr;
 
     public UUID getId() {
         return id;
@@ -195,27 +198,27 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
         this.serialNumber = serialNumber;
     }
 
-    public String getCpuMode() {
-        return cpuMode;
+    public String getCpuType() {
+        return cpuType;
     }
 
-    public void setCpuMode(String cpuMode) {
-        this.cpuMode = cpuMode;
+    public void setCpuType(String cpuType) {
+        this.cpuType = cpuType;
     }
 
-    public Integer getMemorySize() {
+    public Long getMemorySize() {
         return memorySize;
     }
 
-    public void setMemorySize(Integer memorySize) {
+    public void setMemorySize(Long memorySize) {
         this.memorySize = memorySize;
     }
 
-    public Integer getDiskSize() {
+    public Long getDiskSize() {
         return diskSize;
     }
 
-    public void setDiskSize(Integer diskSize) {
+    public void setDiskSize(Long diskSize) {
         this.diskSize = diskSize;
     }
 
@@ -309,5 +312,13 @@ public class CbbTerminalBasicInfoResponse extends DefaultResponse {
 
     public String getTerminalIdForOptLog() {
         return getMacAddr();
+    }
+
+    public CbbTerminalNetworkInfoDTO[] getNetworkInfoArr() {
+        return networkInfoArr;
+    }
+
+    public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoArr) {
+        this.networkInfoArr = networkInfoArr;
     }
 }
