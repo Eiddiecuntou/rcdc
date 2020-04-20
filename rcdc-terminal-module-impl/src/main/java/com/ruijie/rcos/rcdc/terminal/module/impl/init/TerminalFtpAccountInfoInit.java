@@ -21,13 +21,11 @@ import org.springframework.stereotype.Service;
  * @author zhouhuan
  */
 @Service
-public class FtpAccountInfoInit implements SafetySingletonInitializer {
+public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FtpAccountInfoInit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalFtpAccountInfoInit.class);
 
     private static final String TERMINAL_FTP_CONFIG_KEY = "terminal_ftp_config";
-
-    private static final String GUESTTOOL_LOG_FTP_CONFIG_KEY = "guesttool_log_ftp_config";
 
     private static final Integer FTP_PASSWORD_LENGTH = 8;
 
@@ -36,25 +34,22 @@ public class FtpAccountInfoInit implements SafetySingletonInitializer {
 
     @Override
     public void safeInit() {
-        LOGGER.info("start to update ftp passwd");
-        updatePasswd(TERMINAL_FTP_CONFIG_KEY);
-        updatePasswd(GUESTTOOL_LOG_FTP_CONFIG_KEY);
-    }
-
-    private void updatePasswd(String key) {
+        LOGGER.info("start to update terminal ftp passwd");
         String passwd = getRandomFtpPasswd();
         try {
-            String ftpConfigInfo = globalParameterAPI.findParameter(key);
+            String ftpConfigInfo = globalParameterAPI.findParameter(TERMINAL_FTP_CONFIG_KEY);
             FtpConfigInfo config = JSONObject.parseObject(ftpConfigInfo, FtpConfigInfo.class);
             String userName = config.getFtpUserName();
             config.setFtpUserPassword(passwd);
             String command = "echo " + passwd + "| passwd --stdin " + userName;
             CmdExecuteUtil.executeCmd(command);
-            globalParameterAPI.updateParameter(key, JSON.toJSONString(config));
+            globalParameterAPI.updateParameter(TERMINAL_FTP_CONFIG_KEY, JSON.toJSONString(config));
         } catch (Exception e) {
-            LOGGER.error("更新全局配置表中key为{}的ftp密码失败", key, e);
+            LOGGER.error("更新全局配置表中key为{}的ftp密码失败", TERMINAL_FTP_CONFIG_KEY, e);
         }
     }
+
+
 
     //生成随机密码，截取UUID的前8位
     private String getRandomFtpPasswd() {
