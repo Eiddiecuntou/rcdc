@@ -18,9 +18,6 @@ public interface BusinessKey {
     /** 终端在线状态不允许删除 */
     String RCDC_TERMINAL_ONLINE_CANNOT_DELETE = "rcdc_terminal_online_cannot_delete";
 
-    /** 终端离线状态不能进行关闭操作 */
-    String RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN = "rcdc_terminal_offline_cannot_shutdown";
-
     /** 终端离线状态不能进行重启操作 */
     String RCDC_TERMINAL_OFFLINE_CANNOT_RESTART = "rcdc_terminal_offline_cannot_restart";
 

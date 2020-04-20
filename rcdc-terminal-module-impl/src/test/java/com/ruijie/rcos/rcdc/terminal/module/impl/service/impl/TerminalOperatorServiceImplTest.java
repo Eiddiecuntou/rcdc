@@ -164,7 +164,7 @@ public class TerminalOperatorServiceImplTest {
             operatorService.shutdown(terminalId);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN, e.getKey());
+            assertEquals(PublicBusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN, e.getKey());
         }
         new Verifications() {
             {
