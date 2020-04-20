@@ -23,4 +23,7 @@ public interface PublicBusinessKey {
      * 终端断开连接，处于离线状态
      */
     String RCDC_TERMINAL_OFFLINE = "rcdc_terminal_offline";
+
+    /** 终端离线状态不能进行关闭操作 */
+    String RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN = "rcdc_terminal_offline_cannot_shutdown";
 }
