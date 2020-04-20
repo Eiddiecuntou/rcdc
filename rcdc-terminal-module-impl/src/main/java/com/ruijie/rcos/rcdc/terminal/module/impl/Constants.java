@@ -217,4 +217,7 @@ public interface Constants {
     /** IDV终端最大离线登录时间全局参数表key */
     String OFFLINE_LOGIN_TIME_KEY = "offline_time";
 
+    /**  维护模式dispatchKey - 终端 **/
+    String MAINTENANCE_MODE_TERMINAL = "terminal";
+
 }
