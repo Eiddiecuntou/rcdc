@@ -1,18 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.data.domain.Page;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
@@ -21,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerm
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
@@ -51,6 +39,18 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Stream;
 
 /**
  * Description: 终端系统升级实现类
@@ -127,6 +127,9 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     public CbbAddSystemUpgradeTaskResponse addSystemUpgradeTask(CbbAddSystemUpgradeTaskRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
+        if (request.getUpgradeMode() == null) {
+            request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
+        }
         UUID packageId = request.getPackageId();
         TerminalSystemUpgradePackageEntity upgradePackage = getUpgradePackageEntity(packageId);
         // 判断刷机包是否允许开启升级任务
@@ -137,7 +140,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.getPackageType());
         handler.afterAddSystemUpgrade(upgradePackage);
 
-        Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeTaskId, request.getUpgradeMode());
+        Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeTaskId);
         // 向在线终端发送升级消息
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
         String[] upgradeTerminalIdArr = upgradeTerminalList.stream().map(upgradeTerminal -> upgradeTerminal.getTerminalId()).toArray(String[]::new);
@@ -572,7 +575,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private void sendUpgradeMsg(CbbUpgradeTerminalRequest request, TerminalSystemUpgradeEntity upgradeEntity) throws BusinessException {
         TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradeEntity.getPackageType());
         TerminalSystemUpgradePackageEntity upgradePackage = systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
-        Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeEntity.getId(), upgradeEntity.getUpgradeMode());
+        Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeEntity.getId());
         SINGLE_THREAD_EXECUTOR.execute(() -> sendSystemUpgradeMsg(new String[] {request.getTerminalId()}, upgradeMsg));
     }
 

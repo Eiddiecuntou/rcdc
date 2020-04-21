@@ -1,24 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.io.File;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.util.UUID;
 
 /**
  * Description: Function Description
@@ -29,9 +25,9 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
  * @author nt
  */
 @Service
-public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<AndroidVDICheckResultContent> {
+public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaCheckResultContent> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AndroidVDISystemUpgradeHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemOtaUpgradeHandler.class);
 
     @Autowired
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
@@ -40,7 +36,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
     private TerminalSystemUpgradeService systemUpgradeService;
 
     @Autowired
-    private BtClientAPI btClientAPI;
+    private BtClientService btClientService;
 
     @Override
     protected TerminalSystemUpgradeService getSystemUpgradeService() {
@@ -53,42 +49,45 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
     }
 
     @Override
-    protected SystemUpgradeCheckResult<AndroidVDICheckResultContent> getCheckResult(TerminalSystemUpgradePackageEntity upgradePackage,
-            TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
+    protected SystemUpgradeCheckResult<OtaCheckResultContent> getCheckResult(TerminalSystemUpgradePackageEntity upgradePackage,
+                                                                             TerminalSystemUpgradeEntity upgradeTask) throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTask, "upgradeTask can not be null");
 
-        AndroidVDICheckResultContent resultContent = new AndroidVDICheckResultContent();
+        OtaCheckResultContent resultContent = new OtaCheckResultContent();
         resultContent.setPackageMD5(upgradePackage.getFileMd5());
         resultContent.setSeedLink(upgradePackage.getSeedPath());
         resultContent.setSeedMD5(upgradePackage.getSeedMd5());
-        resultContent.setUpgradeMode(upgradeTask.getUpgradeMode());
+        resultContent.setUpgradeMode(upgradePackage.getUpgradeMode());
         resultContent.setPackageVersion(upgradeTask.getPackageVersion());
         resultContent.setTaskId(upgradeTask.getId());
         resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
+        resultContent.setOtaScriptPath(upgradePackage.getOtaScriptPath());
+        resultContent.setOtaScriptMD5(upgradePackage.getOtaScriptMd5());
 
-        SystemUpgradeCheckResult<AndroidVDICheckResultContent> checkResult = new SystemUpgradeCheckResult<>();
+        SystemUpgradeCheckResult<OtaCheckResultContent> checkResult = new SystemUpgradeCheckResult<>();
         checkResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
         checkResult.setContent(resultContent);
         return checkResult;
     }
 
     @Override
-    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId, CbbSystemUpgradeModeEnums upgradeMode) {
+    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId) {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
-        Assert.notNull(upgradeMode, "upgradeMode can not be null");
 
-        AndroidVDICheckResultContent resultContent = new AndroidVDICheckResultContent();
+        OtaCheckResultContent resultContent = new OtaCheckResultContent();
         resultContent.setPackageMD5(upgradePackage.getFileMd5());
         resultContent.setSeedLink(upgradePackage.getSeedPath());
         resultContent.setSeedMD5(upgradePackage.getSeedMd5());
-        resultContent.setUpgradeMode(upgradeMode);
+        resultContent.setUpgradeMode(upgradePackage.getUpgradeMode());
         resultContent.setPackageVersion(upgradePackage.getPackageVersion());
         resultContent.setTaskId(upgradeTaskId);
         resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
+        resultContent.setOtaScriptPath(upgradePackage.getOtaScriptPath());
+        resultContent.setOtaScriptMD5(upgradePackage.getOtaScriptMd5());
 
         return resultContent;
     }
@@ -99,10 +98,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
 
         // 开启BT分享
         LOGGER.info("开启安卓系统升级bt分享");
-        BaseStartBtShareRequest apiRequest = new BaseStartBtShareRequest();
-        apiRequest.setSeedFilePath(upgradePackage.getSeedPath());
-        apiRequest.setFilePath(upgradePackage.getFilePath());
-        btClientAPI.startBtShare(apiRequest);
+        btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
     }
 
     @Override
@@ -113,9 +109,7 @@ public class AndroidVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler
 
         // 关闭BT分享
         LOGGER.info("关闭安卓系统升级bt分享");
-        BaseStopBtShareRequest apiRequest = new BaseStopBtShareRequest();
-        apiRequest.setSeedFilePath(upgradePackage.getSeedPath());
-        btClientAPI.stopBtShare(apiRequest);
+        btClientService.stopBtShare(upgradePackage.getSeedPath());
     }
 
     @Override

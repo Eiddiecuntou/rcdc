@@ -13,6 +13,10 @@ import java.util.UUID;
  */
 public interface Constants {
 
+    int SUCCESS = 0;
+
+    int FAILURE = 99;
+
     String SYSTEM_TYPE = "rcdc";
 
     /**
@@ -68,7 +72,7 @@ public interface Constants {
     /**
      * 系统刷机包挂载路径
      */
-    String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "/opt/upgrade/mount_dir/";
+    String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "/opt/upgrade/mount_dir/linux_vdi/";
 
     /**
      * 系统刷机包版本文件路径
@@ -154,27 +158,57 @@ public interface Constants {
     /**
      * 出厂OTA包存放目录
      */
-    String TERMINAL_UPGRADE_OTA = "/data/web/terminal/ota/android_vdi";
+    String TERMINAL_UPGRADE_OTA = "/data/web/terminal/ota/android_vdi/";
 
     /**
      * 解压后OTA包存放目录
      */
-    String TERMINAL_UPGRADE_OTA_PACKAGE = "/opt/upgrade/ota/package/";
+    String TERMINAL_UPGRADE_OTA_PACKAGE = "/opt/upgrade/ota/package/android_vdi/";
 
     /**
      * OTA包中version存放目录
      */
-    String TERMINAL_UPGRADE_OTA_PACKAGE_VERSION = "/opt/upgrade/ota/package/version";
+    String TERMINAL_UPGRADE_OTA_PACKAGE_VERSION = "/opt/upgrade/ota/package/android_vdi/version";
 
     /**
      * OTA包中zip包存放目录
      */
-    String TERMINAL_UPGRADE_OTA_PACKAGE_ZIP = "/opt/upgrade/ota/package/Rainrcd.zip";
+    String TERMINAL_UPGRADE_OTA_PACKAGE_ZIP = "/opt/upgrade/ota/package/android_vdi/Rainrcd.zip";
 
     /**
      * OTA包种子文件保存目录
      */
-    String TERMINAL_UPGRADE_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/";
+    String TERMINAL_UPGRADE_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/android_vdi";
+
+    /**
+     * 出厂Linux IDV OTA包保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA = "/data/web/terminal/ota/linux_idv/";
+
+    /**
+     * Linux IDV OTA包保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR = "/opt/upgrade/ota/package/linux_idv/";
+
+    /**
+     * Linux IDV ISO包挂载目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH = "/opt/upgrade/mount_dir/linux_idv/";
+
+    /**
+     * Linux IDV ISO包中OTA文件列表路径
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_LIST_PATH = "/filelist/ota.list";
+
+    /**
+     * Linux IDV OTA包种子文件保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/linux_idv/";
+
+    /**
+     * Linux IDV OTA脚本文件保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR = "/opt/ftp/terminal/ota/bash/linux_idv/";
 
     /**
      * 终端组件升级包路径

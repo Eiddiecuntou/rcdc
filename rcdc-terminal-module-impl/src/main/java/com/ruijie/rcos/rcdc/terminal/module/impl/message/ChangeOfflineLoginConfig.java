@@ -10,17 +10,17 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
  */
 public class ChangeOfflineLoginConfig {
 
-    private Integer offlineAutoLocked;
+    private Integer disconnectServerUseDay;
 
-    public ChangeOfflineLoginConfig(Integer offlineAutoLocked) {
-        this.offlineAutoLocked = offlineAutoLocked;
+    public Integer getDisconnectServerUseDay() {
+        return disconnectServerUseDay;
     }
 
-    public Integer getOfflineAutoLocked() {
-        return offlineAutoLocked;
+    public void setDisconnectServerUseDay(Integer disconnectServerUseDay) {
+        this.disconnectServerUseDay = disconnectServerUseDay;
     }
 
-    public void setOfflineAutoLocked(Integer offlineAutoLocked) {
-        this.offlineAutoLocked = offlineAutoLocked;
+    public ChangeOfflineLoginConfig(Integer disconnectServerUseDay) {
+        this.disconnectServerUseDay = disconnectServerUseDay;
     }
 }

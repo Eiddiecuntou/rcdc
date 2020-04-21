@@ -88,9 +88,9 @@ public interface ShineAction {
     String REPORT_SYSTEM_UPGRADE_RESULT = "report_system_upgrade_result";
 
     /**
-     *  上报IDV终端清空数据盘确认响应
+     *  上报IDV终端确认清空数据盘响应
      */
-    String CONFIRM_CLEAR_DATA = "confirm_clear_data";
+    String CLEAR_DATA_DISK_CHOICE = "clear_data_disk_choice";
 
     /**
      *  上报IDV终端清空数据盘结果
@@ -106,4 +106,14 @@ public interface ShineAction {
      *  终端请求同步离线登录设置
      */
     String REQUEST_OFFLINE_CONFIG = "request_offline_config";
+
+    /**
+     *  终端请求终端组列表
+     */
+    String GET_TERMINAL_GROUP_LIST = "get_terminal_group_list";
+
+    /**
+     * 终端请求云主机id
+     */
+    String SYNC_RCOS_GLOBAL_PLATFORM_ID = "request_server_id";
 }

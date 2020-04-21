@@ -1,10 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
+import java.util.UUID;
+
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
-
-import java.util.UUID;
 
 /**
  * Description: Function Description

@@ -211,6 +211,7 @@ public class FileOperateUtil {
 
     /**
      * 根据路径删除文件，只能删除文件不能删除目录
+     * 
      * @param filePath 文件路径
      */
     public static void deleteFileByPath(String filePath) {
@@ -226,16 +227,20 @@ public class FileOperateUtil {
 
     /**
      * 检查并创建文件夹
+     * 
      * @param directoryPath 路径
      * @return 创建的文件夹
      * @throws BusinessException 业务异常
      */
     public static File checkAndGetDirectory(final String directoryPath) throws BusinessException {
-        Assert.notNull(directoryPath,"directoryPath not null");
+        Assert.notNull(directoryPath, "directoryPath not null");
         File packageDir = new File(directoryPath);
         if (!packageDir.exists() || !packageDir.isDirectory()) {
             try {
                 packageDir.mkdir();
+                packageDir.setReadable(true, false);
+                packageDir.setExecutable(true, false);
+                packageDir.setWritable(true, false);
             } catch (Exception e) {
                 throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
             }

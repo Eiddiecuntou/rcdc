@@ -18,9 +18,6 @@ public interface BusinessKey {
     /** 终端在线状态不允许删除 */
     String RCDC_TERMINAL_ONLINE_CANNOT_DELETE = "rcdc_terminal_online_cannot_delete";
 
-    /** 终端离线状态不能进行关闭操作 */
-    String RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN = "rcdc_terminal_offline_cannot_shutdown";
-
     /** 终端离线状态不能进行重启操作 */
     String RCDC_TERMINAL_OFFLINE_CANNOT_RESTART = "rcdc_terminal_offline_cannot_restart";
 
@@ -62,6 +59,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_UNSUPPORT = "rcdc_terminal_system_upgrade_upload_file_package_type_unsupport";
 
     /**
+     * 升级包类型错误
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_ERROR = "rcdc_terminal_system_upgrade_upload_file_package_type_error";
+
+    /**
      * 上传系统升级文件失败
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL = "rcdc_terminal_system_upgrade_upload_file_fail";
@@ -98,6 +100,15 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT = "rcdc_terminal_system_upgrade_package_version_file_incorrect";
 
+    /**
+     * 系统OTA升级文件列表解析错误
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_LIST_INCORRECT = "rcdc_terminal_system_upgrade_package_ota_list_incorrect";
+
+    /**
+     * 系统升级包版本文件不完整
+     */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_INCOMPLETE = "rcdc_terminal_system_upgrade_package_file_incomplete";
 
     /**
      * 系统刷机包磁盘空间不足
@@ -305,9 +316,6 @@ public interface BusinessKey {
 
     /************Android终端OTA升级**************************/
     String RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL = "rcdc_terminal_ota_upgrade_computer_seed_file_md5_fail";
-    String RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_make_seed_file_fail";
-    String RCDC_TERMINAL_OTA_UPGRADE_BT_SHARE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_bt_share_file_fail";
-    String RCDC_TERMINAL_OTA_UPGRADE_STOP_SHARE_SEED_FILE_FAIL = "rcdc_terminal_ota_upgrade_stop_share_file_fail";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR = "rcdc_terminal_ota_upgrade_package_has_error";
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL = "rcdc_terminal_ota_upgrade_package_move_fail";
 
@@ -317,9 +325,14 @@ public interface BusinessKey {
     String RCDC_TERMINAL_NOT_IDV_CANNOT_CLEAR_DISK = "rcdc_terminal_not_idv_cannot_clear_disk";
     String RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK = "rcdc_terminal_operate_action_clear_disk";
     String RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK = "rcdc_terminal_not_online_cannot_clear_disk";
+    String RCDC_TERMINAL_ON_UPGRADING_CANNOT_CLEAR_DISK = "rcdc_terminal_on_upgrading_cannot_clear_disk";
     String RCDC_TERMINAL_CONFIRM_TO_CLEAR_DISK = "rcdc_terminal_confirm_to_clear_disk";
+    String RCDC_TERMINAL_CANCEL_CLEAR_DISK = "rcdc_terminal_cancel_clear_disk";
     String RCDC_TERMINAL_CLEAR_DISK_SUCCESS = "rcdc_terminal_clear_disk_success";
     String RCDC_TERMINAL_CLEAR_DISK_FAIL = "rcdc_terminal_clear_disk_fail";
+    String RCDC_TERMINAL_NOTIFY_SHINE_WEB_FAIL = "rcdc_terminal_notify_shine_web_fail";
+    String RCDC_TERMINAL_DATA_DISK_NOT_CREATE = "rcdc_terminal_data_disk_not_create";
+    String RCDC_TERMINAL_TERMINAL_ON_INITING = "rcdc_terminal_terminal_on_initing";
 
     /************终端背景界面**************************/
     String RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND = "rcdc_terminal_operate_action_send_background_url";
@@ -329,9 +342,26 @@ public interface BusinessKey {
     /************终端型号**************************/
     String RCDC_TERMINAL_MODEL_NOT_EXIST_ERROR = "rcdc_terminal_model_not_exist_error";
 
+    /************终端网络信息**************************/
+    String RCDC_TERMINAL_NETWORK_INFO_ERROR = "rcdc_terminal_network_info_error";
+
+    /************BT服务操作**************************/
+    String RCDC_TERMINAL_BT_MAKE_SEED_FILE_FAIL = "rcdc_terminal_bt_make_seed_file_fail";
+    String RCDC_TERMINAL_BT_START_SHARE_SEED_FILE_FAIL = "rcdc_terminal_bt_start_share_seed_file_fail";
+    String RCDC_TERMINAL_BT_STOP_SHARE_SEED_FILE_FAIL = "rcdc_terminal_bt_stop_share_seed_file_fail";
     /***********PC纳管*************************/
     /**
      * 终端操作-解除故障
      */
     String RCDC_TERMINAL_OPERATE_ACTION_RELIEVE_FAULT = "rcdc_terminal_operate_action_relieve_fault";
+
+    /**
+     * 创建终端刷机任务成功日志
+     */
+    String RCDC_TERMINAL_CREATE_UPGRADE_TASK_SUCCESS_LOG = "rcdc_terminal_create_upgrade_task_success_log";
+
+    /**
+     * 创建终端刷机任务失败日志
+     */
+    String RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG = "rcdc_terminal_create_upgrade_task_fail_log";
 }

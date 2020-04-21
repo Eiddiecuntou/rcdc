@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
@@ -37,6 +38,8 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
     private UUID upgradeTaskId;
 
     private Date uploadTime;
+
+    private CbbSystemUpgradeModeEnums upgradeMode;
 
     public UUID getId() {
         return id;
@@ -102,4 +105,11 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
         this.uploadTime = uploadTime;
     }
 
+    public CbbSystemUpgradeModeEnums getUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
+        this.upgradeMode = upgradeMode;
+    }
 }
