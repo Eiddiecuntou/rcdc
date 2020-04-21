@@ -1,11 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -13,6 +7,11 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.util.Map;
 
 /**
  * Description: Function Description
@@ -35,10 +34,14 @@ public class TerminalSystemUpgradePackageHandlerFactory implements SafetySinglet
     @Autowired
     private AndroidVDISystemUpgradePackageHandler androidVDISystemUpgradePackageHandler;
 
+    @Autowired
+    private LinuxIDVSystemUpgradePackageHandler linuxIDVSystemUpgradePackageHandler;
+
     @Override
     public void safeInit() {
         systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_LINUX, linuxVDISystemUpgradePackageHandler);
         systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_ANDROID, androidVDISystemUpgradePackageHandler);
+        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.IDV_LINUX, linuxIDVSystemUpgradePackageHandler);
     }
 
     /**

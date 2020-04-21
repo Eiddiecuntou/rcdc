@@ -6,16 +6,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.google.common.collect.Lists;
-
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
@@ -29,12 +27,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DataDiskClearCodeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeOfflineLoginConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeTerminalPasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
@@ -88,7 +88,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     @Override
     public void shutdown(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
-        checkAllowOperate(terminalId, BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN);
+        checkAllowOperate(terminalId, PublicBusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN);
         operateTerminal(terminalId, SendTerminalEventEnums.SHUTDOWN_TERMINAL, "", BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SHUTDOWN);
     }
 
@@ -158,6 +158,16 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         NOTICE_HANDLER_THREAD_POOL.execute(() -> sendOfflineSettingToOnlineIdvTerminal(offlineAutoLocked, onlineIdvTerminalIdList));
     }
 
+    /**
+     * 查询终端离线登录设置
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Override
+    public String queryOfflineLoginSetting() {
+        return globalParameterAPI.findParameter(Constants.OFFLINE_LOGIN_TIME_KEY);
+    }
+
     private List<String> getOnlineIdvTerminal() {
         List<String> onlineIdvTerminalIdList = Lists.newArrayList();
         List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
@@ -179,14 +189,14 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         return onlineIdvTerminalIdList;
     }
 
-    private void sendOfflineSettingToOnlineIdvTerminal(Integer offlineAutoLocked, List<String> onlineIdvterminalIdList) {
+    private void sendOfflineSettingToOnlineIdvTerminal(Integer offlineAutoLocked, List<String> onlineIdvTerminalIdList) {
         LOGGER.debug("向IDV终端发送离线登录设置");
         // 向在线IDV终端发送离线登录设置
-        for (String terminalId : onlineIdvterminalIdList) {
+        for (String terminalId : onlineIdvTerminalIdList) {
             try {
                 ChangeOfflineLoginConfig configRequest =
                         new ChangeOfflineLoginConfig(offlineAutoLocked);
-                operateTerminal(terminalId, SendTerminalEventEnums.CHANGE_TERMINAL_OFFLINE_LOGIN_CONFIG, configRequest,
+                operateTerminal(terminalId, SendTerminalEventEnums.SET_DISCONNECT_SERVER_USE_DAY, configRequest,
                         BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_OFFLINE_LOGIN_CONFIG);
             } catch (Exception e) {
                 LOGGER.error("send offline login config to terminal failed, terminalId[" + terminalId + "]", e);
@@ -290,24 +300,42 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         checkTerminal(terminalId);
         int responseCode = operateTerminal(terminalId, SendTerminalEventEnums.CLEAR_DATA, "",
                 BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_CLEAR_DISK);
+        LOGGER.info("shine回传的code： " + responseCode);
         //云桌面运行中,不能清空数据盘
-        if (responseCode == -1) {
+        if (responseCode == DataDiskClearCodeEnums.DESKTOP_ON_RUNNING.getCode()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_DESKTOP_RUNNING_CANNOT_CLEAR_DISK, terminalId);
         }
+        //通知shine前端失败，不能清空数据盘
+        if (responseCode == DataDiskClearCodeEnums.NOTIFY_SHINE_WEB_FAIL.getCode()) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOTIFY_SHINE_WEB_FAIL, terminalId);
+        }
+        //终端上未创建数据盘，不能清空数据盘
+        if (responseCode == DataDiskClearCodeEnums.DATA_DISK_NOT_CREATE.getCode()) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_DATA_DISK_NOT_CREATE, terminalId);
+        }
+        //终端正在初始化，不能同时清空数据盘
+        if (responseCode == DataDiskClearCodeEnums.TERMINAL_ON_INITING.getCode()) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_TERMINAL_ON_INITING, terminalId);
+        }
+
     }
 
-    private void checkTerminal (String terminalId) throws BusinessException {
+    private void checkTerminal(String terminalId) throws BusinessException {
         TerminalEntity entity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (entity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_EXIST, terminalId);
         }
-        if (entity.getState() != CbbTerminalStateEnums.ONLINE) {
+        if (entity.getState() == CbbTerminalStateEnums.OFFLINE) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK,
-                    new String[] {entity.getTerminalName(), terminalId});
+                    entity.getTerminalName(), terminalId);
+        }
+        if (entity.getState() == CbbTerminalStateEnums.UPGRADING) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK,
+                    entity.getTerminalName(), terminalId);
         }
         if (entity.getPlatform() != CbbTerminalPlatformEnums.IDV) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_IDV_CANNOT_CLEAR_DISK,
-                    new String[] {entity.getTerminalName(), terminalId});
+                    entity.getTerminalName(), terminalId);
         }
     }
 

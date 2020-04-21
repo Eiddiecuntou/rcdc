@@ -1,19 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -21,7 +9,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImplTest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.SimpleCmdReturnValueResolver;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
@@ -29,13 +16,21 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+import com.ruijie.rcos.sk.base.util.IsoFileUtil;
+import mockit.*;
+import org.apache.commons.exec.DefaultExecutor;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -62,6 +57,12 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
 
     @Injectable
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
+
+    @Injectable
+    private NetworkAPI networkAPI;
+
+    @Injectable
+    private BtClientAPI btClientAPI;
 
     @Mocked
     private ShellCommandRunner shellCommandRunner;
@@ -104,14 +105,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
 
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 
@@ -131,25 +128,20 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
      */
     @Test
     public void testUploadUpgradeFileSystemUpgradePackageVersionIOException() throws BusinessException, IOException {
-        new MockUp<FileInputStream>() {
+        new MockUp<ByteArrayOutputStream>() {
             @Mock
-            public void $init(String filePath) throws IOException {
-                throw new IOException();
+            public String toString() {
+                return "PASS";
+            }
+        };
+        new MockUp<AbstractSystemUpgradePackageHandler>() {
+            @Mock
+            void checkISOMd5(String filePath) throws BusinessException {
             }
         };
         CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
-            }
-        };
 
         try {
             handler.uploadUpgradePackage(request);
@@ -174,6 +166,11 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 return path;
             }
         };
+        new MockUp<AbstractSystemUpgradePackageHandler>() {
+            @Mock
+            void checkISOMd5(String filePath) throws BusinessException {
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -186,13 +183,9 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        new Expectations() {
+        new Expectations(IsoFileUtil.class) {
             {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
+                IsoFileUtil.mountISOFile(anyString, anyString);
                 result = new BusinessException("key");
             }
         };
@@ -203,7 +196,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e.getKey());
+            assertEquals("key", e.getKey());
         }
     }
 
@@ -223,14 +216,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
 
@@ -260,6 +249,11 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 return path;
             }
         };
+        new MockUp<AbstractSystemUpgradePackageHandler>() {
+            @Mock
+            void checkISOMd5(String filePath) throws BusinessException {
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -269,15 +263,6 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             @Mock
             public String[] list() {
                 return new String[0];
-            }
-        };
-
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
             }
         };
 
@@ -302,14 +287,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     public void testUploadUpgradeFileVersionFail() throws BusinessException, IOException {
         String path = CbbTerminalSystemUpgradePackageAPIImplTest.class.getResource("/").getPath() + "testVersion";
 
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
         new MockUp<CbbTerminalSystemUpgradePackageAPIImpl>() {
@@ -357,6 +338,11 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 return path;
             }
         };
+        new MockUp<AbstractSystemUpgradePackageHandler>() {
+            @Mock
+            void checkISOMd5(String filePath) throws BusinessException {
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -368,17 +354,6 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 String[] fileArr = new String[1];
                 fileArr[0] = "dfd";
                 return fileArr;
-            }
-        };
-
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
             }
         };
 
@@ -414,6 +389,12 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 return path;
             }
         };
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
+            }
+        };
         new MockUp<File>() {
             @Mock
             public boolean isDirectory() {
@@ -425,15 +406,6 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 String[] fileArr = new String[1];
                 fileArr[0] = "dfd";
                 return fileArr;
-            }
-        };
-
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
             }
         };
 
@@ -449,6 +421,160 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     }
 
     /**
+     * 测试uploadUpgradeFile，镜像文件名获取异常
+     *
+     * @throws BusinessException 异常
+     * @throws IOException 异常
+     */
+    @Test
+    public void testUploadUpgradeFileGetImgNameException() throws BusinessException, IOException {
+        String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
+        new MockUp<Files>() {
+            @Mock
+            public Path move(Path from, Path to, CopyOption... options) throws IOException {
+                throw new IOException();
+            }
+        };
+        new MockUp<LinuxVDISystemUpgradePackageHandler>() {
+            @Mock
+            public String getVersionFilePath() {
+                return path;
+            }
+        };
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
+            }
+        };
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return false;
+            }
+
+            @Mock
+            public String[] list() {
+                String[] fileArr = new String[1];
+                fileArr[0] = "";
+                return fileArr;
+            }
+        };
+
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFileName("sdsds.iso");
+        request.setFilePath("dsdsd");
+        try {
+            handler.uploadUpgradePackage(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
+        }
+    }
+
+    /**
+     * 测试uploadUpgradeFile，镜像文件名获取异常
+     *
+     * @throws BusinessException 异常
+     * @throws IOException 异常
+     */
+    @Test
+    public void testUploadUpgradeFileGetImgNameException2() throws BusinessException, IOException {
+        String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
+        new MockUp<Files>() {
+            @Mock
+            public Path move(Path from, Path to, CopyOption... options) throws IOException {
+                throw new IOException();
+            }
+        };
+        new MockUp<LinuxVDISystemUpgradePackageHandler>() {
+            @Mock
+            public String getVersionFilePath() {
+                return path;
+            }
+        };
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
+            }
+        };
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return true;
+            }
+
+            @Mock
+            public String[] list() {
+                return new String[0];
+            }
+        };
+
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFileName("sdsds.iso");
+        request.setFilePath("dsdsd");
+        try {
+            handler.uploadUpgradePackage(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
+        }
+    }
+
+    /**
+     * 测试uploadUpgradeFile，镜像文件名获取异常
+     *
+     * @throws BusinessException 异常
+     * @throws IOException 异常
+     */
+    @Test
+    public void testUploadUpgradeFileGetImgNameException3() throws BusinessException, IOException {
+        String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
+        new MockUp<Files>() {
+            @Mock
+            public Path move(Path from, Path to, CopyOption... options) throws IOException {
+                throw new IOException();
+            }
+        };
+        new MockUp<LinuxVDISystemUpgradePackageHandler>() {
+            @Mock
+            public String getVersionFilePath() {
+                return path;
+            }
+        };
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
+            }
+        };
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return true;
+            }
+
+            @Mock
+            public String[] list() {
+                String[] fileArr = new String[1];
+                fileArr[0] = "";
+                return fileArr;
+            }
+        };
+
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFileName("sdsds.iso");
+        request.setFilePath("dsdsd");
+        try {
+            handler.uploadUpgradePackage(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
+        }
+    }
+
+    /**
      * 测试uploadUpgradeFile，
      *
      * @param util mock对象
@@ -459,14 +585,10 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     public void testUploadUpgradeFile(@Mocked FileOperateUtil util) throws BusinessException, IOException {
         String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
 
-        new Expectations() {
-            {
-                byteArrayOutputStream.toString();
-                result = "PASS";
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                shellCommandRunner.execute((SimpleCmdReturnValueResolver) any);
-                result = "PASS";
+        new MockUp<ByteArrayOutputStream>() {
+            @Mock
+            public String toString() {
+                return "PASS";
             }
         };
         new MockUp<Files>() {
@@ -518,12 +640,6 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
     public void testUploadUpgradeFileWithCheckMD5Error(@Mocked FileOperateUtil util) throws BusinessException, IOException {
         String path = LinuxVDISystemUpgradePackageHandlerTest.class.getResource("/").getPath() + "testVersion";
 
-        new Expectations() {
-            {
-                defaultExecutor.execute((CommandLine)any);
-                result = new IOException();
-            }
-        };
         new MockUp<Files>() {
             @Mock
             public Path move(Path from, Path to, CopyOption... options) throws IOException {
@@ -558,7 +674,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR, e.getKey());
         }
         new Verifications() {
             {
@@ -566,36 +682,5 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 times = 0;
             }
         };
-        
-        // 校验结果返回为空或不包含PASS
-        new Expectations() {
-            {
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                byteArrayOutputStream.toString();
-                result = "";
-            }
-        };
-        try {
-            handler.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR, e.getKey());
-        }
-        
-        new Expectations() {
-            {
-                defaultExecutor.execute((CommandLine)any);
-                result = 0;
-                byteArrayOutputStream.toString();
-                result = "aaaaa";
-            }
-        };
-        try {
-            handler.uploadUpgradePackage(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR, e.getKey());
-        }
     }
 }

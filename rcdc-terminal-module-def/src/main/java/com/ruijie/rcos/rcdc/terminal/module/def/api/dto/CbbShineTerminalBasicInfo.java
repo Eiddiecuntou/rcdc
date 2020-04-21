@@ -1,10 +1,14 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.message;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.serialize.CbbWirelessAuthModeEnumsSerializer;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import org.springframework.lang.Nullable;
 
 /**
  * Description: shine上传的终端基本信息
@@ -14,60 +18,98 @@ import javax.persistence.Enumerated;
  *
  * @author Jarman
  */
-public class ShineTerminalBasicInfo {
+public class CbbShineTerminalBasicInfo {
 
+    @Nullable
     private String terminalName;
 
+    @Nullable
     private String terminalId;
 
+    @Nullable
     private String macAddr;
 
+    @Nullable
     private String ip;
 
+    @Nullable
     private String subnetMask;
 
+    @Nullable
     private String gateway;
 
+    @Nullable
     private String mainDns;
 
+    @Nullable
     private String secondDns;
 
+    @Nullable
     @Enumerated(EnumType.STRING)
     private CbbGetNetworkModeEnums getIpMode;
 
+    @Nullable
     @Enumerated(EnumType.STRING)
     private CbbGetNetworkModeEnums getDnsMode;
 
+    @Nullable
     private String productType;
 
+    @Nullable
     @Enumerated(EnumType.STRING)
     private CbbNetworkModeEnums networkAccessMode;
 
+    @Nullable
     private String serialNumber;
 
+    @Nullable
     private String cpuType;
 
+    @Nullable
     private Long memorySize;
 
+    @Nullable
     private Long diskSize;
 
+    @Nullable
     private String terminalOsType;
 
+    @Nullable
     private String terminalOsVersion;
 
+    @Nullable
     private String rainOsVersion;
 
+    @Nullable
     private String rainUpgradeVersion;
 
+    @Nullable
     private String hardwareVersion;
 
+    @Nullable
     @Enumerated(EnumType.STRING)
     private CbbTerminalPlatformEnums platform;
 
+    @Nullable
     private String validateMd5;
 
+    @Nullable
     private String osInnerVersion;
 
+    @Nullable
+    private String idvTerminalMode;
+
+    @Nullable
+    private String ssid;
+
+    @Nullable
+    @JSONField(serializeUsing = CbbWirelessAuthModeEnumsSerializer.class, deserializeUsing = CbbWirelessAuthModeEnumsSerializer.class)
+    private CbbTerminalWirelessAuthModeEnums wirelessAuthMode;
+
+    @Nullable
+    private CbbTerminalNetworkInfoDTO[] networkInfoArr;
+
+    @Nullable
     private String productId;
 
     public CbbTerminalPlatformEnums getPlatform() {
@@ -260,6 +302,38 @@ public class ShineTerminalBasicInfo {
 
     public void setOsInnerVersion(String osInnerVersion) {
         this.osInnerVersion = osInnerVersion;
+    }
+
+    public String getIdvTerminalMode() {
+        return idvTerminalMode;
+    }
+
+    public void setIdvTerminalMode(String idvTerminalMode) {
+        this.idvTerminalMode = idvTerminalMode;
+    }
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
+
+    public CbbTerminalWirelessAuthModeEnums getWirelessAuthMode() {
+        return wirelessAuthMode;
+    }
+
+    public void setWirelessAuthMode(CbbTerminalWirelessAuthModeEnums wirelessAuthMode) {
+        this.wirelessAuthMode = wirelessAuthMode;
+    }
+
+    public CbbTerminalNetworkInfoDTO[] getNetworkInfoArr() {
+        return networkInfoArr;
+    }
+
+    public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoArr) {
+        this.networkInfoArr = networkInfoArr;
     }
 
     public String getProductId() {

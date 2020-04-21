@@ -63,7 +63,7 @@ public class ConnectCloseHandlerSPIImplTest {
                 CbbNoticeRequest cbbNoticeRequest;
                 terminalEventNoticeSPI.notify(cbbNoticeRequest = withCapture());
                 times = 1;
-                assertEquals("123", cbbNoticeRequest.getTerminalId());
+                assertEquals("123", cbbNoticeRequest.getTerminalBasicInfo().getTerminalId());
                 assertEquals(CbbNoticeEventEnums.OFFLINE.getName(), cbbNoticeRequest.getDispatcherKey());
             }
         };

@@ -15,7 +15,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 public class OfflineLoginSettingRequest implements Request {
 
     @NotNull
-    @Range(min = "0")
+    @Range(min = "-1")
     private Integer offlineAutoLocked;
 
     public OfflineLoginSettingRequest(Integer offlineAutoLocked) {

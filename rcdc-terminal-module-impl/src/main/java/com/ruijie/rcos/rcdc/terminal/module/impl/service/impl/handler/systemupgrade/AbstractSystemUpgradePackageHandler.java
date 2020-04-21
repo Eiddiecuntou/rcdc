@@ -1,15 +1,22 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.util.StringUtils;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
+import org.springframework.util.Assert;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * Description: Function Description
@@ -23,6 +30,8 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSystemUpgradePackageHandler.class);
 
+    private static final String ISO_FILE_MD5_CHECK_SUCCESS_FLAG = "PASS";
+
     @Override
     public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
@@ -35,9 +44,55 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
 
         // 替换升级文件,清除原升级包目录下旧文件
         FileOperateUtil.emptyDirectory(upgradeInfo.getFileSaveDir(), upgradeInfo.getRealFileName());
+        // 上传后处理
+        postUploadPackage(upgradeInfo);
     }
 
     protected abstract TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException;
 
     protected abstract TerminalSystemUpgradePackageService getSystemUpgradePackageService();
+
+    /**
+     * 系统升级包上传后处理方法
+     * @param upgradeInfo 升级包信息
+     */
+    protected void postUploadPackage(TerminalUpgradeVersionFileInfo upgradeInfo) {
+        LOGGER.info("[{}]系统升级包无需上传后处理流程", upgradeInfo.getPackageType().name());
+    }
+
+    // FIXME zyc 需要下沉到框架
+    void checkISOMd5(String filePath) throws BusinessException {
+        LOGGER.debug("check iso md5，file path: {}", filePath);
+        String mountCmd = String.format(Constants.SYSTEM_CMD_CHECK_ISO_MD5, filePath);
+
+        LOGGER.debug("check iso md5, cmd : {}", mountCmd);
+        String outStr = executeCommand(mountCmd);
+        LOGGER.info("check iso md5, outStr: {}", outStr);
+
+        if (StringUtils.isBlank(outStr) || !outStr.contains("PASS") ) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
+        }
+        LOGGER.info("check iso md5 success");
+    }
+
+    private String executeCommand(String mountCmd) throws BusinessException {
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        PumpStreamHandler psh = new PumpStreamHandler(stdout);
+        CommandLine cl = CommandLine.parse(mountCmd);
+        DefaultExecutor exec = new DefaultExecutor();
+        exec.setStreamHandler(psh);
+        try {
+            exec.execute(cl);
+            return stdout.toString();
+        } catch (IOException e) {
+            LOGGER.error("exec.execute [{}] has IOException", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL, e);
+        } finally {
+            try {
+                stdout.close();
+            } catch (IOException e) {
+                LOGGER.error("stdout.close() has IOException", e);
+            }
+        }
+    }
 }

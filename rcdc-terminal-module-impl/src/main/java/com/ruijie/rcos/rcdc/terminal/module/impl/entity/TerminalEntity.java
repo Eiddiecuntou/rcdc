@@ -2,12 +2,19 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Description: 终端基本信息实体类
@@ -20,6 +27,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 @Entity
 @Table(name = "t_cbb_terminal")
 public class TerminalEntity {
+
+    public static final String BEAN_COPY_IGNORE_NETWORK_INFO_ARR = "networkInfoArr";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -88,7 +98,49 @@ public class TerminalEntity {
 
     private String osInnerVersion;
 
+    private String ssid;
+
+    @Enumerated(EnumType.STRING)
+    private CbbTerminalWirelessAuthModeEnums wirelessAuthMode;
+
     private String productId;
+
+    private String networkInfos;
+
+    /**
+     *  获取网络信息对象数组
+     *
+     * @return CbbTerminalNetworkInfoDTO[]
+     * @throws BusinessException 业务异常
+     */
+    public CbbTerminalNetworkInfoDTO[] getNetworkInfoArr() throws BusinessException {
+        if (StringUtils.isBlank(networkInfos)) {
+            return new CbbTerminalNetworkInfoDTO[0];
+        }
+
+        List<CbbTerminalNetworkInfoDTO> networkInfoDTOList;
+        try {
+            networkInfoDTOList = JSON.parseArray(networkInfos, CbbTerminalNetworkInfoDTO.class);
+        } catch (Exception e) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NETWORK_INFO_ERROR, e);
+        }
+
+        if (CollectionUtils.isEmpty(networkInfoDTOList)) {
+            return new CbbTerminalNetworkInfoDTO[0];
+        }
+
+        return networkInfoDTOList.toArray(new CbbTerminalNetworkInfoDTO[networkInfoDTOList.size()]);
+    }
+
+    /**
+     *  设置终端网络信息
+     * @param networkInfoDTOArr 网络信息数组
+     */
+    public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoDTOArr) {
+        Assert.notNull(networkInfoDTOArr, "networkInfoDTOArr can not be null");
+
+        setNetworkInfos(JSON.toJSONString(networkInfoDTOArr));
+    }
 
     public UUID getId() {
         return id;
@@ -338,4 +390,29 @@ public class TerminalEntity {
     public void setProductId(String productId) {
         this.productId = productId;
     }
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
+
+    public CbbTerminalWirelessAuthModeEnums getWirelessAuthMode() {
+        return wirelessAuthMode;
+    }
+
+    public void setWirelessAuthMode(CbbTerminalWirelessAuthModeEnums wirelessAuthMode) {
+        this.wirelessAuthMode = wirelessAuthMode;
+    }
+
+    protected String getNetworkInfos() {
+        return networkInfos;
+    }
+
+    protected void setNetworkInfos(String networkInfos) {
+        this.networkInfos = networkInfos;
+    }
+
 }

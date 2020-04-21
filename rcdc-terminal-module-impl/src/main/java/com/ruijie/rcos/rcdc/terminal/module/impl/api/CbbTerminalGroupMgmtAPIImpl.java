@@ -1,37 +1,31 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.google.common.base.Objects;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalGroupOperNotifySPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalGroupOperNotifyRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalGroupHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -56,6 +50,9 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
 
     @Autowired
     private TerminalGroupService terminalGroupService;
+
+    @Autowired
+    private TerminalGroupHandler terminalGroupHandler;
 
     @Autowired
     private TerminalGroupServiceTx terminalGroupServiceTx;
@@ -95,89 +92,10 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
         }
         //过滤掉未分组
         if (request.getEnableFilterDefaultGroup()) {
-            filterDefaultGroup(groupList);
+            terminalGroupHandler.filterDefaultGroup(groupList);
         }
-        TerminalGroupTreeNodeDTO[] dtoArr = assembleGroupTree(null, groupList, request.getFilterGroupId());
+        TerminalGroupTreeNodeDTO[] dtoArr = terminalGroupHandler.assembleGroupTree(null, groupList, request.getFilterGroupId());
         return new CbbGetTerminalGroupTreeResponse(dtoArr);
-    }
-    
-    /**
-     * 过滤掉未分组
-     * @param groupList 分组列表
-     */
-    private void filterDefaultGroup(List<TerminalGroupEntity> groupList) {
-        Iterator<TerminalGroupEntity> iterator = groupList.iterator();
-        for (; iterator.hasNext();) {
-            TerminalGroupEntity group = iterator.next();
-            if (Objects.equal(Constants.DEFAULT_TERMINAL_GROUP_UUID, group.getId())) {
-                iterator.remove();
-                return;
-            }
-        }
-    }
-
-    /**
-     * 组装树形结构
-     * 
-     * @param parentId 父级节点
-     * @param groupList 分组列表
-     * @param filterGroupId 分组列表
-     * @return 树形结构的分组列表
-     */
-    private TerminalGroupTreeNodeDTO[] assembleGroupTree(UUID parentId, List<TerminalGroupEntity> groupList, UUID filterGroupId) {
-        if (CollectionUtils.isEmpty(groupList)) {
-            return new TerminalGroupTreeNodeDTO[0];
-        }
-        
-        List<TerminalGroupEntity> subList = new ArrayList<>();
-        Iterator<TerminalGroupEntity> iterator = groupList.iterator();
-        TerminalGroupEntity defaultGroup = null;
-        for (; iterator.hasNext();) {
-            TerminalGroupEntity group = iterator.next();
-            //过滤的分组跳过
-            if (Objects.equal(group.getId(), filterGroupId)) {
-                continue;
-            }
-            
-            if (Objects.equal(parentId, group.getParentId())) {
-                //将默认分组放到列表最后
-                if (Objects.equal(group.getId(), Constants.DEFAULT_TERMINAL_GROUP_UUID)) {
-                    defaultGroup = group;
-                    continue;
-                }
-                subList.add(group);
-                iterator.remove();
-            }
-        }
-        if (defaultGroup != null) {
-            subList.add(defaultGroup);
-        }
-
-        TerminalGroupTreeNodeDTO[] dtoArr = convertToNodeDTO(subList);
-        for (TerminalGroupTreeNodeDTO dto : dtoArr) {
-            dto.setChildren(assembleGroupTree(dto.getId(), groupList, filterGroupId));
-        }
-
-        return dtoArr;
-    }
-
-    /**
-     * 将分组对象转换为dto数组输出
-     * 
-     * @param subList 分组列表
-     * @return dto数组
-     */
-    private TerminalGroupTreeNodeDTO[] convertToNodeDTO(List<TerminalGroupEntity> subList) {
-        int size = subList.size();
-        TerminalGroupTreeNodeDTO[] dtoArr = new TerminalGroupTreeNodeDTO[size];
-        Stream.iterate(0, i -> i + 1).limit(size).forEach(i -> {
-            TerminalGroupEntity entity = subList.get(i);
-            TerminalGroupTreeNodeDTO dto = new TerminalGroupTreeNodeDTO();
-            entity.converToDTO(dto);
-            dto.setEnableDefault(Constants.DEFAULT_TERMINAL_GROUP_UUID.equals(dto.getId()));
-            dtoArr[i] = dto;
-        });
-        return dtoArr;
     }
 
     @Override
