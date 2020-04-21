@@ -66,6 +66,11 @@ public interface ShineAction {
     String REQUEST_SOFTWARE_VERSION = "request_software_version";
 
     /**
+     * 请求ftp密码
+     */
+    String SYNC_FTP_ACCOUNT_INFO = "sync_ftp_account_info";
+
+    /**
      * 同步LOGO
      */
     String SYNC_TERMINAL_LOGO = "sync_terminal_logo";
