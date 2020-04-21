@@ -20,7 +20,10 @@ public enum DataDiskClearCodeEnums {
     DATA_DISK_NOT_CREATE(-3),
 
     /** 终端正在初始化，不能同时清空数据盘*/
-    TERMINAL_ON_INITING(-4);
+    TERMINAL_ON_INITING(-4),
+
+    /** 终端正在初始化，不能同时清空数据盘 */
+    TERMINAL_ON_DATA_DISK_CLEARING(-5);
 
     /**shine返回状态码 */
     private int code;

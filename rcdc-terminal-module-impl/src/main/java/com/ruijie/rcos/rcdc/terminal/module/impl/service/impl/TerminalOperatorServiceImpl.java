@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
@@ -316,6 +316,10 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         //终端正在初始化，不能同时清空数据盘
         if (responseCode == DataDiskClearCodeEnums.TERMINAL_ON_INITING.getCode()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_TERMINAL_ON_INITING, terminalId);
+        }
+        //终端正在清空数据盘，不能再次下发清空数据盘
+        if (responseCode == DataDiskClearCodeEnums.TERMINAL_ON_DATA_DISK_CLEARING.getCode()) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_TERMINAL_ON_DATA_DISK_CLEARING, terminalId);
         }
 
     }
