@@ -1,5 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.util.*;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
@@ -28,17 +38,9 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+
 import mockit.*;
 import mockit.integration.junit4.JMockit;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.IOException;
-import java.util.*;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -880,7 +882,61 @@ public class TerminalOperatorServiceImplTest {
     }
 
     /**
+     *测试清空数据盘,正在还原云桌面,不能清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearOnRestoreDesktop(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return DataDiskClearCodeEnums.TERMINAL_ON_RESTORE_DESKTOP.getCode();
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
      *测试清空数据盘,通知shine前端失败，不能清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearOnDiskClearing(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return DataDiskClearCodeEnums.TERMINAL_ON_DATA_DISK_CLEARING.getCode();
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
+     *终端正在清空数据盘，不能再次下发清空数据盘
      *
      *@throws Exception 异常
      */
