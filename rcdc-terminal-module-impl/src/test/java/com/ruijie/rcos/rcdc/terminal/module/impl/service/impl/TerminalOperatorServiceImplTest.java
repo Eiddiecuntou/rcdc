@@ -40,17 +40,7 @@ import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 
 import mockit.*;
-import mockit.*;
 import mockit.integration.junit4.JMockit;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.IOException;
-import java.util.*;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
