@@ -29,6 +29,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DataDiskClearCodeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
@@ -39,7 +40,17 @@ import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 
 import mockit.*;
+import mockit.*;
 import mockit.integration.junit4.JMockit;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -92,6 +103,13 @@ public class TerminalOperatorServiceImplTest {
                 return key;
             }
 
+        };
+
+        new MockUp<ThreadExecutor>() {
+            @Mock
+            void execute(Runnable command) {
+                command.run();
+            }
         };
     }
 
