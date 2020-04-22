@@ -874,6 +874,33 @@ public class TerminalOperatorServiceImplTest {
     }
 
     /**
+     *测试清空数据盘,正在还原云桌面,不能清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearOnRestoreDesktop(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return DataDiskClearCodeEnums.TERMINAL_ON_RESTORE_DESKTOP.getCode();
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
      *测试清空数据盘,通知shine前端失败，不能清空数据盘
      *
      *@throws Exception 异常

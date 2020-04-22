@@ -334,6 +334,7 @@ public interface BusinessKey {
     String RCDC_TERMINAL_DATA_DISK_NOT_CREATE = "rcdc_terminal_data_disk_not_create";
     String RCDC_TERMINAL_TERMINAL_ON_INITING = "rcdc_terminal_terminal_on_initing";
     String RCDC_TERMINAL_TERMINAL_ON_DATA_DISK_CLEARING = "rcdc_terminal_terminal_on_data_disk_clearing";
+    String RCDC_TERMINAL_TERMINAL_ON_RESTORE_DESKTOP = "rcdc_terminal_terminal_on_restore_desktop";
 
     /************终端背景界面**************************/
     String RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND = "rcdc_terminal_operate_action_send_background_url";

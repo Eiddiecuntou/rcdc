@@ -321,6 +321,10 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         if (responseCode == DataDiskClearCodeEnums.TERMINAL_ON_DATA_DISK_CLEARING.getCode()) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_TERMINAL_ON_DATA_DISK_CLEARING, terminalId);
         }
+        //终端正在还原云桌面，不能同时清空数据盘
+        if (responseCode == DataDiskClearCodeEnums.TERMINAL_ON_RESTORE_DESKTOP.getCode()) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_TERMINAL_ON_RESTORE_DESKTOP, terminalId);
+        }
 
     }
 
