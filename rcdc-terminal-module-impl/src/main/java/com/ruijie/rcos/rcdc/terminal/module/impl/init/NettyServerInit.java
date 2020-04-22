@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import java.util.List;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -80,7 +82,10 @@ public class NettyServerInit implements SafetySingletonInitializer {
     private void dealTerminalOffline(TerminalEntity item) {
         String terminalId = item.getTerminalId();
         terminalBasicInfoService.modifyTerminalStateToOffline(terminalId);
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.OFFLINE, terminalId);
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.OFFLINE);
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+        basicInfo.setTerminalId(terminalId);
+        noticeRequest.setTerminalBasicInfo(basicInfo);
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 }

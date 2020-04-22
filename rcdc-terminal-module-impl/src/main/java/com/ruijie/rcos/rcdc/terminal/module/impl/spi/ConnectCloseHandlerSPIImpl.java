@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
@@ -38,7 +39,10 @@ public class ConnectCloseHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         String terminalId = request.getTerminalId();
         LOGGER.debug("连接关闭事件处理，terminal={}", terminalId);
         basicInfoService.modifyTerminalStateToOffline(terminalId);
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.OFFLINE, terminalId);
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.OFFLINE);
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+        basicInfo.setTerminalId(terminalId);
+        noticeRequest.setTerminalBasicInfo(basicInfo);
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 }

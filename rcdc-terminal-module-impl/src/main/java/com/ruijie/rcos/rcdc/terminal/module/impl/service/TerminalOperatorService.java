@@ -85,6 +85,14 @@ public interface TerminalOperatorService {
     void offlineLoginSetting(Integer offlineAutoLocked) throws BusinessException;
 
     /**
+     * 查询终端离线登录设置
+     *
+     * @return 脱网登录锁定日期设定值
+     * @throws BusinessException 业务异常
+     */
+    String queryOfflineLoginSetting();
+
+    /**
      * 清除idv终端数据盘
      *
      * @param terminalId 终端id

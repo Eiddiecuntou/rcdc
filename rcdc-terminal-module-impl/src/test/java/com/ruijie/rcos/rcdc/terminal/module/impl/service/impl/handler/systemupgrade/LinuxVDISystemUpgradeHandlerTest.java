@@ -1,18 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
-import mockit.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
@@ -23,6 +14,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgr
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import mockit.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -124,7 +123,6 @@ public class LinuxVDISystemUpgradeHandlerTest {
         TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
         TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
         UUID upgradeTaskId = upgradeEntity.getId();
-        CbbSystemUpgradeModeEnums mode = upgradeEntity.getUpgradeMode();
 
         new MockUp<AesUtil>() {
             @Mock
@@ -142,7 +140,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
             }
         };
 
-        LinuxVDICheckResultContent result = (LinuxVDICheckResultContent) handler.getSystemUpgradeMsg(packageEntity, upgradeTaskId, mode);
+        LinuxVDICheckResultContent result = (LinuxVDICheckResultContent) handler.getSystemUpgradeMsg(packageEntity, upgradeTaskId);
 
         LinuxVDICheckResultContent expectContent = buildExpectedLinuxVDICheckResultContent(packageEntity, upgradeEntity, pxeSambaInfo);
 
@@ -253,7 +251,6 @@ public class LinuxVDISystemUpgradeHandlerTest {
 
     private TerminalSystemUpgradeEntity buildUpgradeEntity() {
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradeEntity.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         upgradeEntity.setId(UUID.randomUUID());
         upgradeEntity.setPackageVersion("1.1.1");
         upgradeEntity.setPackageName("aa.zip");
@@ -268,6 +265,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         packageEntity.setFileMd5("abc");
         packageEntity.setSeedPath("/bbb/bb.torrent");
         packageEntity.setSeedMd5("cbd");
+        packageEntity.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
 
         return packageEntity;
     }
@@ -279,7 +277,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
         resultContent.setImgName(upgradePackage.getImgName());
         resultContent.setIsoVersion(upgradePackage.getPackageVersion());
         resultContent.setPackageVersion(upgradePackage.getPackageVersion());
-        resultContent.setUpgradeMode(upgradeEntity.getUpgradeMode());
+        resultContent.setUpgradeMode(upgradePackage.getUpgradeMode());
         resultContent.setTaskId(upgradeEntity.getId());
         resultContent.setSambaIp(pxeSambaInfo.getIp());
         resultContent.setSambaPassword(AesUtil.encrypt(pxeSambaInfo.getPassword(), Constants.TERMINAL_PXE_SAMBA_PASSWORD_AES_KEY));

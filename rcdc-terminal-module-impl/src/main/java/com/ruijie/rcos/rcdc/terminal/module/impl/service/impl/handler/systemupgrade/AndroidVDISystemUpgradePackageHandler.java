@@ -1,28 +1,33 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.network.BaseDetailNetworkRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.response.network.BaseDetailNetworkInfoResponse;
+import org.springframework.util.CollectionUtils;
+import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.UpgradeableTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.ViewUpgradeableTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 
 /**
  * Description: Function Description
@@ -39,17 +44,28 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
 
     private static final String OTA_SUFFIX = ".zip";
 
+    private static final CbbSystemUpgradeModeEnums DEFAULT_UPGRADE_MODE = CbbSystemUpgradeModeEnums.AUTO;
+
     @Autowired
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
     @Autowired
-    private NetworkAPI networkAPI;
-
-    @Autowired
-    private BtClientAPI btClientAPI;
-
-    @Autowired
     private AndroidVDISystemUpgradePackageHelper systemUpgradePackageHelper;
+
+    @Autowired
+    private BtClientService btClientService;
+
+    @Autowired
+    private UpgradeableTerminalDAO upgradeableTerminalDAO;
+
+    @Autowired
+    private CbbTerminalSystemUpgradeAPI cbbTerminalSystemUpgradeAPI;
+
+    @Autowired
+    private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
+
+    @Autowired
+    private AuditLogAPI logAPI;
 
     @Override
     protected TerminalSystemUpgradePackageService getSystemUpgradePackageService() {
@@ -68,7 +84,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
             TerminalUpgradeVersionFileInfo upgradeInfo =
                     systemUpgradePackageHelper.checkVersionInfo(packagePath, Constants.TERMINAL_UPGRADE_OTA_PACKAGE_VERSION);
             // 制作Bt种子
-            SeedFileInfoDTO seedFileInfo = makeBtSeed(packagePath);
+            SeedFileInfoDTO seedFileInfo = btClientService.makeBtSeed(packagePath, Constants.TERMINAL_UPGRADE_OTA_SEED_FILE);
 
             upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
             upgradeInfo.setPackageName(fileName);
@@ -77,6 +93,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
             upgradeInfo.setSeedMD5(seedFileInfo.getSeedFileMD5());
             upgradeInfo.setFileSaveDir(Constants.TERMINAL_UPGRADE_OTA_PACKAGE);
             upgradeInfo.setRealFileName(savePackageName);
+            upgradeInfo.setUpgradeMode(DEFAULT_UPGRADE_MODE);
             return upgradeInfo;
         } catch (Exception e) {
             FileOperateUtil.deleteFileByPath(Constants.TERMINAL_UPGRADE_OTA_PACKAGE + savePackageName);
@@ -87,42 +104,43 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         }
     }
 
-    private SeedFileInfoDTO makeBtSeed(String filePath) throws BusinessException {
-        Assert.notNull(filePath, "filePath can not be null");
-        String seedSavePath = Constants.TERMINAL_UPGRADE_OTA_SEED_FILE;
-        createFilePath(seedSavePath);
+    @Override
+    protected void postUploadPackage(TerminalUpgradeVersionFileInfo upgradeInfo) {
+        Assert.notNull(upgradeInfo, "upgradeInfo cannot be null!");
 
-        BaseMakeBtSeedRequest apiRequest = new BaseMakeBtSeedRequest();
-        apiRequest.setFilePath(filePath);
-        apiRequest.setSeedSavePath(seedSavePath);
-        apiRequest.setIpAddr(getLocalIP());
-        DtoResponse<SeedFileInfoDTO> apiResponse = btClientAPI.makeBtSeed(apiRequest);
-
-        if (null == apiResponse || DtoResponse.Status.SUCCESS != apiResponse.getStatus() || null == apiResponse.getDto()) {
-            LOGGER.error("制作BT种子失败");
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_MAKE_SEED_FILE_FAIL);
+        LOGGER.info("开始执行Android VDI终端升级包上传后处理");
+        // 查询所有android终端ID
+        List<ViewUpgradeableTerminalEntity> terminalEntityList =
+                upgradeableTerminalDAO.findAllByPlatformEqualsAndTerminalOsTypeEquals(CbbTerminalPlatformEnums.VDI,
+                        CbbTerminalTypeEnums.VDI_ANDROID.getOsType());
+        if (CollectionUtils.isEmpty(terminalEntityList)) {
+            LOGGER.info("未找到可升级的Android VDI终端");
+            return;
         }
-        return apiResponse.getDto();
-    }
+        String[] terminalIdArr = terminalEntityList.stream()
+                .map(ViewUpgradeableTerminalEntity::getTerminalId).collect(Collectors.toList()).toArray(new String[]{});
+        LOGGER.debug("需要升级的终端ID: [{}]", Arrays.toString(terminalIdArr));
 
-    /**
-     * 获取ip
-     *
-     * @return ip
-     */
-    private String getLocalIP() throws BusinessException {
-        BaseDetailNetworkRequest request = new BaseDetailNetworkRequest();
-        BaseDetailNetworkInfoResponse response = networkAPI.detailNetwork(request);
-        return response.getNetworkDTO().getIp();
-    }
+        // 获取升级包信息
+        TerminalSystemUpgradePackageEntity upgradePackage =
+                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        LOGGER.debug("升级包信息: [{}]", upgradeInfo.toString());
+        
 
-    private File createFilePath(String filePath) {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.mkdir();
-            file.setReadable(true, false);
-            file.setExecutable(true, false);
+        // 添加升级任务
+        CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        request.setTerminalIdArr(terminalIdArr);
+        request.setPackageId(upgradePackage.getId());
+        try {
+            cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask(request);
+            LOGGER.info("自动添加Android VDI升级任务成功");
+            logAPI.recordLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_SUCCESS_LOG, upgradePackage.getPackageName());
+        } catch (BusinessException e) {
+            LOGGER.error("自动添加Android VDI升级任务失败");
+            logAPI.recordLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG,
+                    upgradePackage.getPackageName(), e.getI18nMessage());
         }
-        return file;
+        
     }
+    
 }

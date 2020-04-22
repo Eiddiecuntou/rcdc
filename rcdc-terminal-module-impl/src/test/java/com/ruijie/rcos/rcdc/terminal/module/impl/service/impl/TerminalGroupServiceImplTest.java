@@ -1,6 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -19,20 +32,6 @@ import mockit.Mock;
 import mockit.MockUp;
 import mockit.Tested;
 import mockit.Verifications;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -443,7 +442,7 @@ public class TerminalGroupServiceImplTest {
         try {
             terminalGroupService.checkGroupNameUnique(terminalGroup);
         } catch (BusinessException e) {
-            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE);
+            Assert.assertEquals(e.getMessage(), PublicBusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE);
         }
 
         new Verifications() {
@@ -453,6 +452,42 @@ public class TerminalGroupServiceImplTest {
             }
         };
     }
+
+    /**
+     * 测试检验分组名称是否同级唯一-存在同名
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testCheckGroupNameUniqueSelf() throws BusinessException {
+        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(UUID.randomUUID(), "groupName123", null);
+        List<TerminalGroupEntity> groupList = Lists.newArrayList();
+        TerminalGroupEntity entity = new TerminalGroupEntity();
+        entity.setId(terminalGroup.getId());
+        entity.setName(terminalGroup.getGroupName());
+        groupList.add(entity);
+        new Expectations() {
+            {
+
+                terminalGroupDAO.findByParentId(terminalGroup.getParentGroupId());
+                result = groupList;
+            }
+        };
+
+        try {
+            terminalGroupService.checkGroupNameUnique(terminalGroup);
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getMessage(), PublicBusinessKey.RCDC_TERMINALGROUP_GROUP_NAME_DUPLICATE);
+        }
+
+        new Verifications() {
+            {
+                terminalGroupDAO.findByParentId(terminalGroup.getParentGroupId());
+                times = 1;
+            }
+        };
+    }
+    
 
     @Test
     public void testCheckGroupNameUniqueWhenDefaultGroupName() {

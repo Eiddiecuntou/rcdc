@@ -10,3 +10,5 @@ ADD COLUMN seed_md5 varchar(128);
 /** 添加终端内部系统版本号字段 */
 ALTER TABLE t_cbb_terminal ADD COLUMN os_inner_version varchar(32);
 COMMENT ON COLUMN t_cbb_terminal.os_inner_version IS '终端内部系统版本号';
+
+

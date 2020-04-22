@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import java.util.Collections;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
@@ -16,7 +16,7 @@ import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -92,6 +92,39 @@ public class TerminalComponentUpgradeServiceImplTest {
 
         assertEquals(111, versionDTO.getResult().intValue());
         assertEquals("sss", versionDTO.getUpdatelist());
+        new Verifications() {
+            {
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试getVersion,异常
+     *
+     * @throws BusinessException exception
+     */
+    @Test
+    public void testGetVersionException() throws BusinessException {
+        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
+        updatelist.setComponentList(Collections.emptyList());
+
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        terminalEntity.setTerminalOsType("Linux");
+
+        TerminalComponentUpgradeHandler handler = new LinuxVDIComponentUpgradeHandler();
+        new Expectations() {
+            {
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                result = new BusinessException("key");
+            }
+        };
+
+        TerminalVersionResultDTO versionDTO = serviceImpl.getVersion(terminalEntity, null);
+
+        assertEquals(1, versionDTO.getResult().intValue());
         new Verifications() {
             {
                 handlerFactory.getHandler((CbbTerminalTypeEnums) any);

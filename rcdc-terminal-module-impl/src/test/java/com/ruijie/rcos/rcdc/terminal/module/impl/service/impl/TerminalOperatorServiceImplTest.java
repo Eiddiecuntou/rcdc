@@ -1,14 +1,22 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.io.IOException;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -21,6 +29,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalDetectionDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DataDiskClearCodeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
@@ -32,8 +41,13 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
+import mockit.Tested;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 
 /**
@@ -70,6 +84,25 @@ public class TerminalOperatorServiceImplTest {
 
     @Injectable
     private TerminalDetectionDAO terminalDetectionDAO;
+
+    @Before
+    public void before() {
+
+        new MockUp<LocaleI18nResolver>() {
+
+            /**
+             *
+             * @param key key
+             * @param args args
+             * @return key
+             */
+            @Mock
+            public String resolve(String key, String... args) {
+                return key;
+            }
+
+        };
+    }
 
     /**
      * 测试关机成功
@@ -131,7 +164,7 @@ public class TerminalOperatorServiceImplTest {
             operatorService.shutdown(terminalId);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN, e.getKey());
+            assertEquals(PublicBusinessKey.RCDC_TERMINAL_OFFLINE_CANNOT_SHUTDOWN, e.getKey());
         }
         new Verifications() {
             {
@@ -307,7 +340,7 @@ public class TerminalOperatorServiceImplTest {
             operatorService.collectLog(terminalId);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
+            assertEquals(PublicBusinessKey.RCDC_TERMINAL_OFFLINE, e.getKey());
         }
 
         new Verifications() {
@@ -784,6 +817,25 @@ public class TerminalOperatorServiceImplTest {
     }
 
     /**
+     *测试清空数据盘,终端升级中
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearTerminalUpUpgrading(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.UPGRADING);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
      *测试清空数据盘,终端
      *
      *@throws Exception 异常
@@ -817,7 +869,88 @@ public class TerminalOperatorServiceImplTest {
             @Mock
             int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
                     throws BusinessException {
-                return -1;
+                return DataDiskClearCodeEnums.DESKTOP_ON_RUNNING.getCode();
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
+     *测试清空数据盘,通知shine前端失败，不能清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearNotifyShineWebFail(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return DataDiskClearCodeEnums.NOTIFY_SHINE_WEB_FAIL.getCode();
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
+     *测试清空数据盘,终端上未创建数据盘，不能清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearDataDiskNotCreate(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return DataDiskClearCodeEnums.DATA_DISK_NOT_CREATE.getCode();
+            }
+        };
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.diskClear("xxx");
+        fail();
+    }
+
+    /**
+     *测试清空数据盘,终端正在初始化，不能同时清空数据盘
+     *
+     *@throws Exception 异常
+     */
+    @Test(expected = BusinessException.class)
+    public void testDiskClearTerminalOnInit(@Mocked JSON json) throws Exception {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setState(CbbTerminalStateEnums.ONLINE);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new MockUp<TerminalOperatorServiceImpl>() {
+            @Mock
+            int operateTerminal(String terminalId, SendTerminalEventEnums terminalEvent, Object content, String operateActionKey)
+                    throws BusinessException {
+                return DataDiskClearCodeEnums.TERMINAL_ON_INITING.getCode();
             }
         };
         new Expectations() {
@@ -881,4 +1014,124 @@ public class TerminalOperatorServiceImplTest {
         operatorService.sendDetectRequest(entity);
         fail();
     }
+
+
+    /**
+     *测试idv终端离线登录设置,，向在线IDV终端发送离线登录设置异常
+     *
+     *@throws BusinessException 业务异常
+     */
+    @Test
+    public void testOfflineLoginSettingWithException() throws BusinessException {
+        List<String> onlineTerminalIdList = Lists.newArrayList();
+        onlineTerminalIdList.add("terminalOne");
+        onlineTerminalIdList.add("terminalTwo");
+        onlineTerminalIdList.add("terminalThree");
+        TerminalEntity firstEntity = new TerminalEntity();
+        TerminalEntity secondEntity = new TerminalEntity();
+        secondEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new Expectations() {
+            {
+                sessionManager.getOnlineTerminalId();
+                result = onlineTerminalIdList;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                returns(null, firstEntity, secondEntity);
+            }
+        };
+        operatorService.offlineLoginSetting(0);
+        new Verifications() {
+            {
+                sessionManager.getOnlineTerminalId();
+                times = 1;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 3;
+            }
+        };
+    }
+
+    /**
+     *测试idv终端离线登录设置，不存在在线idv终端
+     *
+     *@throws BusinessException 业务异常
+     */
+    @Test
+    public void testOfflineLoginSettingWithNoOnlineIdv() throws BusinessException {
+        List<String> onlineTerminalIdList = Lists.newArrayList();
+        new Expectations() {
+            {
+                sessionManager.getOnlineTerminalId();
+                result = onlineTerminalIdList;
+            }
+        };
+        operatorService.offlineLoginSetting(0);
+        new Verifications() {
+            {
+                sessionManager.getOnlineTerminalId();
+                times = 1;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     *测试idv终端离线登录设置
+     *
+     * @throws Exception exception
+     */
+    @Test
+    public void testOfflineLoginSetting() throws Exception {
+        List<String> onlineTerminalIdList = Lists.newArrayList();
+        onlineTerminalIdList.add("terminalOne");
+        TerminalEntity entity = new TerminalEntity();
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
+
+        String action = "action";
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", 100);
+        BaseMessage baseMessage = new BaseMessage(action, JSON.toJSONString(data));
+        new Expectations() {
+            {
+                try {
+                    sessionManager.getRequestMessageSender(anyString);
+                    result = sender;
+                } catch (BusinessException e) {
+                    result = sender;
+                }
+                sender.syncRequest((Message) any);
+                result = baseMessage;
+                sessionManager.getOnlineTerminalId();
+                result = onlineTerminalIdList;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
+            }
+        };
+        operatorService.offlineLoginSetting(0);
+        Thread.sleep(1000);
+        new Verifications() {
+            {
+                sessionManager.getOnlineTerminalId();
+                times = 1;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     *测试queryOfflineLoginSetting
+     */
+    @Test
+    public void testQueryOfflineLoginSetting() {
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.OFFLINE_LOGIN_TIME_KEY);
+                result = "0";
+            }
+        };
+
+        final String result = operatorService.queryOfflineLoginSetting();
+        Assert.assertEquals("0", result);
+    }
+
 }

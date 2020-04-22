@@ -1,15 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import java.io.File;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
@@ -23,6 +13,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.SambaInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Description: Function Description
@@ -72,7 +70,7 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
         SambaInfoDTO pxeSambaInfo = sambaInfoService.getPxeSambaInfo();
 
         LinuxVDICheckResultContent resultContent =
-                buildLinuxVDICheckResultContent(upgradePackage, upgradeTask.getId(), upgradeTask.getUpgradeMode(), pxeSambaInfo);
+                buildLinuxVDICheckResultContent(upgradePackage, upgradeTask.getId(), pxeSambaInfo);
 
         SystemUpgradeCheckResult<LinuxVDICheckResultContent> checkResult = new SystemUpgradeCheckResult<>();
         checkResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
@@ -112,26 +110,25 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
     }
 
     @Override
-    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId, CbbSystemUpgradeModeEnums upgradeMode)
+    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId)
             throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
-        Assert.notNull(upgradeMode, "upgradeMode can not be null");
 
         SambaInfoDTO pxeSambaInfo = sambaInfoService.getPxeSambaInfo();
 
-        LinuxVDICheckResultContent resultContent = buildLinuxVDICheckResultContent(upgradePackage, upgradeTaskId, upgradeMode, pxeSambaInfo);
+        LinuxVDICheckResultContent resultContent = buildLinuxVDICheckResultContent(upgradePackage, upgradeTaskId, pxeSambaInfo);
 
         return resultContent;
     }
 
-    private LinuxVDICheckResultContent buildLinuxVDICheckResultContent(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId,
-            CbbSystemUpgradeModeEnums upgradeMode, SambaInfoDTO pxeSambaInfo) {
+    private LinuxVDICheckResultContent buildLinuxVDICheckResultContent(TerminalSystemUpgradePackageEntity upgradePackage,
+                                                                       UUID upgradeTaskId, SambaInfoDTO pxeSambaInfo) {
         LinuxVDICheckResultContent resultContent = new LinuxVDICheckResultContent();
         resultContent.setImgName(upgradePackage.getImgName());
         resultContent.setIsoVersion(upgradePackage.getPackageVersion());
         resultContent.setPackageVersion(upgradePackage.getPackageVersion());
-        resultContent.setUpgradeMode(upgradeMode);
+        resultContent.setUpgradeMode(upgradePackage.getUpgradeMode());
         resultContent.setTaskId(upgradeTaskId);
         resultContent.setSambaIp(pxeSambaInfo.getIp());
         resultContent.setSambaPassword(AesUtil.encrypt(pxeSambaInfo.getPassword(), Constants.TERMINAL_PXE_SAMBA_PASSWORD_AES_KEY));

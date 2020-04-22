@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.ruijie.rcos.sk.base.test.GetSetTester;
@@ -55,7 +57,7 @@ public class MessageBeanTest {
      */
     @Test
     public void testShineTerminalBasicInfo() {
-        GetSetTester tester = new GetSetTester(ShineTerminalBasicInfo.class);
+        GetSetTester tester = new GetSetTester(CbbShineTerminalBasicInfo.class);
         tester.runTest();
         assertTrue(true);
     }
