@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -86,13 +86,16 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         Assert.notNull(terminalGroup, "terminal group can not be null");
         Assert.hasText(terminalGroup.getGroupName(), "terminal group name can not be blank");
 
+        UUID groupId = terminalGroup.getId();
+        UUID parentGroupId = terminalGroup.getParentGroupId();
+        LOGGER.info("分组id是：" + groupId.toString());
+
         String groupName = terminalGroup.getGroupName();
-        if (getDefaultGroupNameList().contains(groupName)) {
+        if (getDefaultGroupNameList().contains(groupName) && !groupId.equals(Constants.DEFAULT_TERMINAL_GROUP_UUID)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME, groupName);
         }
 
-        UUID groupId = terminalGroup.getId();
-        UUID parentGroupId = terminalGroup.getParentGroupId();
+
         List<TerminalGroupEntity> subList =
                 terminalGroupDAO.findByParentId(parentGroupId);
         if (CollectionUtils.isEmpty(subList)) {
