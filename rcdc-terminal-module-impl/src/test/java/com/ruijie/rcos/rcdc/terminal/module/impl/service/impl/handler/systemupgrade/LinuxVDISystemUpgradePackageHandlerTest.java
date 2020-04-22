@@ -416,7 +416,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             handler.uploadUpgradePackage(request);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT, e.getKey());
         }
     }
 

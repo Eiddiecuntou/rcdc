@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi.maintenance;
 
+import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseUpgradeDTO;
 import com.ruijie.rcos.base.sysmanage.module.def.spi.BaseMaintenanceModeNotifySPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -25,7 +26,7 @@ public class MaintenanceModeNotifySPIImpl implements BaseMaintenanceModeNotifySP
     private BeforeEnteringMaintenanceHandler beforeEnteringMaintenanceHandler;
 
     @Override
-    public Response beforeEnteringMaintenance(@DispatcherKey String dispatchKey) throws BusinessException {
+    public Response beforeEnteringMaintenance(@DispatcherKey String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         beforeEnteringMaintenanceHandler.handle();
@@ -34,7 +35,7 @@ public class MaintenanceModeNotifySPIImpl implements BaseMaintenanceModeNotifySP
     }
 
     @Override
-    public Response afterEnteringMaintenance(@DispatcherKey String dispatchKey) throws BusinessException {
+    public Response afterEnteringMaintenance(@DispatcherKey String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         // 不需处理，直接响应成功
@@ -42,7 +43,7 @@ public class MaintenanceModeNotifySPIImpl implements BaseMaintenanceModeNotifySP
     }
 
     @Override
-    public Response afterUnderMaintenance(@DispatcherKey String dispatchKey) {
+    public Response afterUnderMaintenance(@DispatcherKey String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         // 不需处理，直接响应成功
@@ -50,7 +51,7 @@ public class MaintenanceModeNotifySPIImpl implements BaseMaintenanceModeNotifySP
     }
 
     @Override
-    public Response afterMaintenanceEnd(@DispatcherKey String dispatchKey) throws BusinessException {
+    public Response afterMaintenanceEnd(@DispatcherKey String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         // 不需处理，直接响应成功

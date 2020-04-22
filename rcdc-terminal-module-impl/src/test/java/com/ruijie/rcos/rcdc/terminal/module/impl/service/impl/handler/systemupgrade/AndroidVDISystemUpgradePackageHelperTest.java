@@ -1,17 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.UUID;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -21,8 +9,18 @@ import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.util.StringUtils;
-
 import mockit.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -310,7 +308,7 @@ public class AndroidVDISystemUpgradePackageHelperTest {
             helper.checkVersionInfo(packagePath, path);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR, e.getKey());
+            assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
         }
 
     }
@@ -343,7 +341,7 @@ public class AndroidVDISystemUpgradePackageHelperTest {
             helper.checkVersionInfo(packagePath, path);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_HAS_ERROR, e.getKey());
+            assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
         }
 
     }
@@ -376,7 +374,7 @@ public class AndroidVDISystemUpgradePackageHelperTest {
             helper.checkVersionInfo(packagePath, path);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL, e.getKey());
+            assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
         }
 
     }
