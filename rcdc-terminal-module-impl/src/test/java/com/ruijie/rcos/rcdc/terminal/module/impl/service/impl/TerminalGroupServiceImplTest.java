@@ -1,17 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import static org.junit.Assert.*;
+
+import java.util.*;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
@@ -26,12 +23,8 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
-import mockit.Verifications;
+
+import mockit.*;
 
 /**
  *
@@ -377,6 +370,33 @@ public class TerminalGroupServiceImplTest {
         UUID id = UUID.randomUUID();
         TerminalGroupDTO terminalGroup = new TerminalGroupDTO(id, "groupName123", UUID.randomUUID());
         List<TerminalGroupEntity> groupList = buildTerminalGroupList();
+        new Expectations() {
+            {
+                terminalGroupDAO.findByParentId(terminalGroup.getParentGroupId());
+                result = groupList;
+            }
+        };
+
+        boolean enableUnique = terminalGroupService.checkGroupNameUnique(terminalGroup);
+        Assert.assertTrue(enableUnique);
+
+        new Verifications() {
+            {
+                terminalGroupDAO.findByParentId(terminalGroup.getParentGroupId());
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试检验分组名称是否同级唯一-子级列表为空
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testCheckGroupNameUniqueEditUnGrouped() throws BusinessException {
+        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(Constants.DEFAULT_TERMINAL_GROUP_UUID, "groupName123", null);
+        List<TerminalGroupEntity> groupList = Collections.emptyList();
         new Expectations() {
             {
                 terminalGroupDAO.findByParentId(terminalGroup.getParentGroupId());
