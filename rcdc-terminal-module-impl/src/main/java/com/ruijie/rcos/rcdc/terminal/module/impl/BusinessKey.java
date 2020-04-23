@@ -364,4 +364,9 @@ public interface BusinessKey {
      * 创建终端刷机任务失败日志
      */
     String RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG = "rcdc_terminal_create_upgrade_task_fail_log";
+
+
+    /***********维护模式*************************/
+    String RCDC_TERMINAL_MAINTENANCE_PRE_VALIDATE_FAIL_FOR_LINUX_VDI_UPGRADING_TASK =
+            "rcdc_terminal_maintenance_pre_validate_fail_for_linux_vdi_upgrading_task";
 }
