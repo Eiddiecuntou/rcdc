@@ -71,6 +71,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(shineTerminalBasicInfo, "终端信息不能为空");
 
+        // 自学习终端型号
+        saveTerminalModel(shineTerminalBasicInfo);
+
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         Date now = new Date();
         if (basicInfoEntity == null) {
@@ -85,9 +88,6 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
         basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
         basicInfoDAO.save(basicInfoEntity);
-
-        // 自学习终端型号
-        saveTerminalModel(shineTerminalBasicInfo);
 
         // 通知其他组件终端为在线状态
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
