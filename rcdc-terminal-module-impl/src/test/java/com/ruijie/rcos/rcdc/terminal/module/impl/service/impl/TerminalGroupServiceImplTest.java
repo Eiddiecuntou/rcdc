@@ -166,6 +166,47 @@ public class TerminalGroupServiceImplTest {
      * @throws BusinessException 业务异常
      */
     @Test
+    public void testSaveTerminalGroupParentGroupIdNull() throws BusinessException {
+        TerminalGroupDTO groupDTO = new TerminalGroupDTO(UUID.randomUUID(), "name123", null);
+        TerminalGroupEntity group = new TerminalGroupEntity();
+        group.setParentId(null);
+
+        new MockUp<TerminalGroupServiceImpl>() {
+            @Mock
+            public boolean checkGroupNameUnique(TerminalGroupDTO terminalGroup) throws BusinessException {
+                return true;
+            }
+        };
+
+        new MockUp<LocaleI18nResolver>() {
+            @Mock
+            public String resolve(String key, String... args) {
+                return "123";
+            }
+        };
+
+        terminalGroupService.saveTerminalGroup(groupDTO);
+
+        new Verifications() {
+            {
+                terminalGroupDAO.save((TerminalGroupEntity) any);
+                times = 1;
+
+                groupTotalNumChecker.check(1);
+                times = 1;
+
+                groupHierarchyChecker.check(groupDTO.getParentGroupId(), 1);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试保存终端分组-上级分组id为空
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
     public void testSaveTerminalGroup() throws BusinessException {
         TerminalGroupDTO groupDTO = new TerminalGroupDTO(UUID.randomUUID(), "name123", UUID.randomUUID());
         TerminalGroupEntity group = new TerminalGroupEntity();
@@ -543,6 +584,28 @@ public class TerminalGroupServiceImplTest {
         } catch (BusinessException e) {
             Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME);
         }
+    }
+
+    @Test
+    public void testCheckGroupNameUniqueWhenCreateDefaultGroupName2() throws BusinessException {
+        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(null, "测试", null);
+
+        new MockUp<LocaleI18nResolver>() {
+            @Mock
+            public String resolve(String key, String... args) {
+                return "总览";
+            }
+        };
+
+        boolean enableUnique = terminalGroupService.checkGroupNameUnique(terminalGroup);
+        Assert.assertTrue(enableUnique);
+
+        new Verifications() {
+            {
+                terminalGroupDAO.findByParentId(terminalGroup.getParentGroupId());
+                times = 1;
+            }
+        };
     }
 
     private List<TerminalGroupEntity> buildHasSameNameList(UUID groupId) {
