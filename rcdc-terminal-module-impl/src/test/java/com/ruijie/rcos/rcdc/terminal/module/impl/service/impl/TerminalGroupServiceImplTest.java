@@ -513,6 +513,31 @@ public class TerminalGroupServiceImplTest {
     public void testCheckGroupNameUniqueWhenDefaultGroupName() {
         TerminalGroupDTO terminalGroup = new TerminalGroupDTO(UUID.randomUUID(), "总览", null);
 
+        new MockUp<LocaleI18nResolver>() {
+            @Mock
+            public String resolve(String key, String... args) {
+                return "总览";
+            }
+        };
+
+        try {
+            terminalGroupService.checkGroupNameUnique(terminalGroup);
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getMessage(), BusinessKey.RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME);
+        }
+    }
+
+    @Test
+    public void testCheckGroupNameUniqueWhenCreateDefaultGroupName() {
+        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(null, "总览", null);
+
+        new MockUp<LocaleI18nResolver>() {
+            @Mock
+            public String resolve(String key, String... args) {
+                return "总览";
+            }
+        };
+
         try {
             terminalGroupService.checkGroupNameUnique(terminalGroup);
         } catch (BusinessException e) {
