@@ -49,10 +49,8 @@ public class TerminalSystemUpgradeHandlerFactoryTest {
      */
     @Test
     public void testGetHandler() throws BusinessException {
-
-        handlerFactory.safeInit();
         TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
-        Assert.assertEquals(handler, linuxVDISystemUpgradeHandler);
+        Assert.assertTrue(handler instanceof LinuxVDISystemUpgradeHandler);
     }
 
     /**

@@ -309,7 +309,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
         new Verifications() {
             {
                 cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
-                times = 0;
+                times = 1;
             }
         };
     }
