@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi.maintenance;
 
+import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseUpgradeDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response;
@@ -43,7 +44,7 @@ public class MaintenanceModeNotifySPIImplTest {
             }
         };
 
-        spi.beforeEnteringMaintenance("aaa");
+        spi.beforeEnteringMaintenance("aaa", new BaseUpgradeDTO());
 
         new Verifications() {
             {
@@ -61,7 +62,7 @@ public class MaintenanceModeNotifySPIImplTest {
     @Test
     public void testAfterUnderMaintenance() throws BusinessException {
 
-        Response response = spi.afterUnderMaintenance("aaa");
+        Response response = spi.afterUnderMaintenance("aaa", new BaseUpgradeDTO());
         assertEquals(Response.Status.SUCCESS, response.getStatus());
     }
 
@@ -73,7 +74,7 @@ public class MaintenanceModeNotifySPIImplTest {
     @Test
     public void testAfterMaintenanceEnd() throws BusinessException {
 
-        Response response = spi.afterMaintenanceEnd("aaa");
+        Response response = spi.afterMaintenanceEnd("aaa", new BaseUpgradeDTO());
         assertEquals(Response.Status.SUCCESS, response.getStatus());
     }
 
@@ -86,7 +87,7 @@ public class MaintenanceModeNotifySPIImplTest {
     @Test
     public void testAfterEnteringMaintenance() throws BusinessException {
 
-        Response response = spi.afterEnteringMaintenance("aaa");
+        Response response = spi.afterEnteringMaintenance("aaa", new BaseUpgradeDTO());
         assertEquals(Response.Status.SUCCESS, response.getStatus());
     }
 }
