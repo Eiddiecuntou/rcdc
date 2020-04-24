@@ -47,6 +47,11 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     @Override
+    public void postUploadPackage() {
+        LOGGER.info("Linux VDI系统升级包无需上传后处理流程");
+    }
+
+    @Override
     protected TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.notNull(fileName, "fileName can not be null");
         Assert.notNull(filePath, "filePath can not be null");

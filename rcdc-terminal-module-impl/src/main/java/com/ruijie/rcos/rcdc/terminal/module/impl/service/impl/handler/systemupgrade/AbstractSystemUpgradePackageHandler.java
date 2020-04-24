@@ -44,21 +44,11 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
 
         // 替换升级文件,清除原升级包目录下旧文件
         FileOperateUtil.emptyDirectory(upgradeInfo.getFileSaveDir(), upgradeInfo.getRealFileName());
-        // 上传后处理
-        postUploadPackage(upgradeInfo);
     }
 
     protected abstract TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException;
 
     protected abstract TerminalSystemUpgradePackageService getSystemUpgradePackageService();
-
-    /**
-     * 系统升级包上传后处理方法
-     * @param upgradeInfo 升级包信息
-     */
-    protected void postUploadPackage(TerminalUpgradeVersionFileInfo upgradeInfo) {
-        LOGGER.info("[{}]系统升级包无需上传后处理流程", upgradeInfo.getPackageType().name());
-    }
 
     // FIXME zyc 需要下沉到框架
     void checkISOMd5(String filePath) throws BusinessException {

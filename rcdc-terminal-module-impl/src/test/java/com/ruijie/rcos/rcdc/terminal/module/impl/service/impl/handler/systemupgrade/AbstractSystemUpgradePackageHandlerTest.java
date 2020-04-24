@@ -71,5 +71,10 @@ public class AbstractSystemUpgradePackageHandlerTest {
         protected TerminalSystemUpgradePackageService getSystemUpgradePackageService() {
             return terminalSystemUpgradePackageService;
         }
+
+        @Override
+        public void postUploadPackage() {
+
+        }
     }
 }

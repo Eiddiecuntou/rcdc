@@ -1,11 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import java.util.List;
-import java.util.UUID;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
@@ -31,12 +25,15 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.BtClientServiceImp
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -281,7 +278,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        handler.postUploadPackage(new TerminalUpgradeVersionFileInfo());
+        handler.postUploadPackage();
 
         new Verifications() {
             {
@@ -307,7 +304,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        handler.postUploadPackage(new TerminalUpgradeVersionFileInfo());
+        handler.postUploadPackage();
 
         new Verifications() {
             {
@@ -351,7 +348,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        handler.postUploadPackage(new TerminalUpgradeVersionFileInfo());
+        handler.postUploadPackage();
 
         new Verifications() {
             {
