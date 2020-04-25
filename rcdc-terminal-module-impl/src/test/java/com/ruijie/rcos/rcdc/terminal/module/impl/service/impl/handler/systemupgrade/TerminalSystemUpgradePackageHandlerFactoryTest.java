@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -11,8 +10,6 @@ import mockit.Tested;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Map;
 
 /**
  * Description: Function Description
@@ -55,11 +52,8 @@ public class TerminalSystemUpgradePackageHandlerFactoryTest {
      */
     @Test
     public void testGetHandler() throws BusinessException {
-
-        Map<CbbTerminalTypeEnums, TerminalSystemUpgradePackageHandler> systemUpgradeHandlerHolder = Maps.newHashMap();
-        handlerFactory.safeInit();
         TerminalSystemUpgradePackageHandler handler = handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
-        Assert.assertEquals(handler, linuxVDISystemUpgradeHandler);
+        Assert.assertTrue(handler instanceof LinuxVDISystemUpgradePackageHandler);
     }
 
     /**
