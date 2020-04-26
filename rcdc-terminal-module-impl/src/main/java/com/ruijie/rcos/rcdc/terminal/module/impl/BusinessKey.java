@@ -366,4 +366,8 @@ public interface BusinessKey {
      * 创建终端刷机任务失败日志
      */
     String RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG = "rcdc_terminal_create_upgrade_task_fail_log";
+
+    /** 安卓OTA升级文件不合法 */
+    String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_ILLEGAL = "rcdc_terminal_ota_upgrade_package_illegal";
+
 }
