@@ -58,6 +58,13 @@ public class AndroidVDISystemUpgradePackageHelperTest {
             }
         };
 
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+        };
+
         new Expectations(Files.class) {
             {
                 Files.move((Path) any, (Path) any);
@@ -181,6 +188,13 @@ public class AndroidVDISystemUpgradePackageHelperTest {
             }
         };
 
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+        };
+
         new Expectations(Files.class) {
             {
                 Files.move((Path) any, (Path) any);
@@ -280,6 +294,69 @@ public class AndroidVDISystemUpgradePackageHelperTest {
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
         }
+    }
+
+    /**
+     * 测试获取系统升级包信息 - 移动升级包出现异常
+     */
+    @Test
+    public void testUnzipPackageMoveFilePackageIsIllegal() throws BusinessException, IOException {
+
+        new Expectations(FileOperateUtil.class) {
+            {
+                FileOperateUtil.createFileDirectory((File) any);
+
+            }
+
+        };
+
+        new Expectations(ZipUtil.class) {
+            {
+                ZipUtil.unzipFile((File) any, (File) any);
+            }
+        };
+
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return false;
+            }
+        };
+
+        UUID id = UUID.randomUUID();
+        new MockUp<UUID>() {
+            @Mock
+            public UUID randomUUID() {
+                return id;
+            }
+        };
+
+        String filePath = "/aa/123.zip";
+        String savePackageName = id.toString() + ".zip";
+        String savePackagePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE + savePackageName;
+
+        try {
+            helper.unZipPackage(filePath, savePackageName);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_ILLEGAL, e.getKey());
+        }
+
+        new Verifications() {
+            {
+                File unzipFile;
+                FileOperateUtil.createFileDirectory(unzipFile = withCapture());
+                times = 1;
+                assertEquals(unzipFile, new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE));
+
+                File unzipFile2;
+                File zipFile;
+                ZipUtil.unzipFile(zipFile = withCapture(), unzipFile2 = withCapture());
+                times = 1;
+                assertEquals(unzipFile2, new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE));
+                assertEquals(zipFile, new File(filePath));
+            }
+        };
     }
 
     /**

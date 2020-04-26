@@ -57,7 +57,14 @@ public class AndroidVDISystemUpgradePackageHelper {
             LOGGER.debug("version file read error, file path[{}]", zipFile);
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
+
+        // 校验安卓ota升级zip文件是否存在
         File rainrcdFile = new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP);
+        if (!rainrcdFile.exists()) {
+            LOGGER.error("上传的ota升级包不合法，升级文件不存在");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_ILLEGAL);
+        }
+
         File savePackageFile = new File(savePackagePath);
         try {
             Files.move(rainrcdFile.toPath(), savePackageFile.toPath());
