@@ -97,6 +97,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
             TerminalSystemUpgradePackageHandler handler = handlerFactory.getHandler(type);
             handler.uploadUpgradePackage(request);
             FileOperateUtil.deleteFile(file);
+            handler.postUploadPackage();
         } catch (Exception e) {
             LOGGER.error("获取OTA包信息失败", e);
         }

@@ -268,8 +268,10 @@ public class AbstractSystemUpgradeHandlerTest {
         TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
 
         TerminalEntity terminalEntity = buildTerminalEntity();
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
 
         TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
+        packageEntity.setPackageType(CbbTerminalTypeEnums.IDV_LINUX);
 
         TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
 
@@ -291,7 +293,7 @@ public class AbstractSystemUpgradeHandlerTest {
 
         new Expectations() {
             {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.IDV_LINUX);
                 result = packageEntity;
 
                 systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
@@ -303,16 +305,13 @@ public class AbstractSystemUpgradeHandlerTest {
             }
         };
 
-        SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, terminalEntity);
+        SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.IDV_LINUX, terminalEntity);
 
-        SystemUpgradeCheckResult  expectedResult= new SystemUpgradeCheckResult();
-        expectedResult.setSystemUpgradeCode(3);
-
-        assertEquals(expectedResult, checkResult);
+        assertEquals(3, checkResult.getSystemUpgradeCode().intValue());
 
         new Verifications() {
             {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.IDV_LINUX);
                 times = 2;
 
                 systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());

@@ -14,16 +14,12 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.*;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -55,9 +51,6 @@ public class TerminalSystemUpgradeServiceTxImplTest {
 
     @Injectable
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
-
-    @Injectable
-    private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
 
     @Injectable
     private TerminalSystemUpgradeTerminalGroupDAO systemUpgradeTerminalGroupDAO;
@@ -295,6 +288,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         entity.setSysUpgradeId(upgradeTaskId);
         entity.setTerminalId(terminalId);
         entity.setState(CbbSystemUpgradeStateEnums.UNDO);
+        entity.setStartTime(new Date());
         TerminalSystemUpgradeTerminalEntity upgradeTerminal = new TerminalSystemUpgradeTerminalEntity();
         new Expectations() {
             {

@@ -69,6 +69,11 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     @Override
+    public void postUploadPackage() {
+        LOGGER.info("Linux IDV系统升级包无需上传后处理流程");
+    }
+
+    @Override
     protected TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.hasText(fileName, "fileName must have text!");
         Assert.hasText(filePath, "filePath must have text!");
