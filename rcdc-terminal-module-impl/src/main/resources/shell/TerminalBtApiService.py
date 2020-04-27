@@ -18,7 +18,6 @@ BT_SERVICE_SO_PATH = "/usr/local/lib/libsysabslayer_linux.so"
 
 
 #锐捷bt服务调用返回
-RJ_API_RESPONSE_CODE = "code";
 RJ_API_RESPONSE_CODE_SUCCESS = "RJSUCCESS-0";
 RJ_API_RESPONSE_CODE_NO_TASK = "RJFAIL-15005";
 
@@ -155,17 +154,14 @@ def checkSpecSuccess(jsonStr):
         raise Exception("api invoke failed")
 
 def checkSuccess(jsonStr):
-    logger.info("api invoke response: %s" % getRespJsonStr(jsonStr))
     if (jsonStr.find(RJ_API_RESPONSE_CODE_SUCCESS) == -1):
-        raise Exception("api invoke failed, no success code")
+        logger.error("api invoke failed %s", jsonStr)
+        raise Exception("api invoke failed, code error")
     respStr = getRespJsonStr(jsonStr)
     jsonObj = json.loads(respStr)
     if jsonObj is None:
         logger.error("json object is None, can not invoke api")
         raise Exception("can not invoke api")
-    if jsonObj[RJ_API_RESPONSE_CODE] != RJ_API_RESPONSE_CODE_SUCCESS:
-        logger.error("api invoke failed %s", jsonObj[RJ_API_RESPONSE_CODE])
-        raise Exception("api invoke failed, code error")
     logger.info("invoke api success")
     return jsonObj
 
