@@ -1,12 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -14,6 +7,12 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUp
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Description: Function Description
@@ -53,12 +52,17 @@ public class TerminalSystemPackageUploadingServiceImpl implements TerminalSystem
             }
             SYS_UPGRADE_PACKAGE_UPLOADING.add(terminalType);
         }
+        TerminalSystemUpgradePackageHandler handler = null;
         try {
-            TerminalSystemUpgradePackageHandler handler = handlerFactory.getHandler(terminalType);
+            handler = handlerFactory.getHandler(terminalType);
             handler.uploadUpgradePackage(request);
         } finally {
             // 完成清除上传标志缓存内记录
             SYS_UPGRADE_PACKAGE_UPLOADING.remove(terminalType);
+            // 上传后处理
+            if (handler != null) {
+                handler.postUploadPackage();
+            }
         }
     }
 
