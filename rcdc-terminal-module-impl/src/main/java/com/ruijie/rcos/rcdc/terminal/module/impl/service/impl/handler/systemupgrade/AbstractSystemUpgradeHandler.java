@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradeTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -12,6 +14,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeSe
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 /**
@@ -27,6 +30,11 @@ import org.springframework.util.Assert;
 public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemUpgradeHandler<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSystemUpgradeHandler.class);
+
+    private static final String SYSTEM_OS_TYPE_ANDROID = "Android";
+
+    @Autowired
+    private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
 
     @Override
     public SystemUpgradeCheckResult<T> checkSystemUpgrade(CbbTerminalTypeEnums terminalType, TerminalEntity terminalEntity) throws BusinessException {
@@ -106,10 +114,26 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
 
         if (notInTask(upgradeTerminalEntity, isGroupInUpgrade)) {
             LOGGER.info("终端[{}]不在任务中", terminalId);
+            // 判断是否需要加入升级任务
+            addToUpgradeList(terminalEntity, terminalId, upgradeTask);
             return false;
         }
 
         return true;
+    }
+
+    private void addToUpgradeList(TerminalEntity terminalEntity, String terminalId, TerminalSystemUpgradeEntity upgradeTask) {
+        if (SYSTEM_OS_TYPE_ANDROID.equals(terminalEntity.getTerminalOsType())) {
+            CbbUpgradeTerminalRequest addRequest = new CbbUpgradeTerminalRequest();
+            addRequest.setTerminalId(terminalId);
+            addRequest.setUpgradeTaskId(upgradeTask.getId());
+            try {
+                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal(addRequest);
+                LOGGER.info("终端[{}]加入系统升级任务成功", terminalId);
+            } catch (BusinessException e) {
+                LOGGER.error("终端[" + terminalId + "]加入系统升级任务失败", e);
+            }
+        }
     }
 
     private boolean notInTask(TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity, boolean isGroupInUpgrade) {

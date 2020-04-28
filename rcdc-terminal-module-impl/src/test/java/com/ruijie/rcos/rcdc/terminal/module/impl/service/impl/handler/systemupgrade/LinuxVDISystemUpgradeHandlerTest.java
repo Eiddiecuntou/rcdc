@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -55,6 +56,9 @@ public class LinuxVDISystemUpgradeHandlerTest {
 
     @Injectable
     private TerminalSystemUpgradeTerminalDAO terminalSystemUpgradeTerminalDAO;
+
+    @Injectable
+    private CbbTerminalSystemUpgradeAPI cbbTerminalSystemUpgradeAPI;
 
     /**
      * 测试获取系统升级service

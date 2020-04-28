@@ -1,7 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradeTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -38,6 +40,9 @@ public class AbstractSystemUpgradeHandlerTest {
 
     @Injectable
     private TerminalSystemUpgradeService systemUpgradeService;
+
+    @Injectable
+    private CbbTerminalSystemUpgradeAPI cbbTerminalUpgradeAPI;
 
 
     /**
@@ -471,6 +476,128 @@ public class AbstractSystemUpgradeHandlerTest {
                 times = 1;
 
                 systemUpgradeService.isGroupInUpgradeTask(upgradeEntity.getId(), terminalEntity.getGroupId());
+                times = 1;
+            }
+        };
+
+    }
+
+    /**
+     * 测试终端是否能够升级 - 不再升级任务中，不再升级组中也无升级终端记录，安卓终端
+     */
+    @Test
+    public void testIsTerminalEnableUpgradeNoInUpgradeTask2() throws BusinessException {
+        TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
+        Deencapsulation.setField(handler, "cbbTerminalUpgradeAPI", cbbTerminalUpgradeAPI);
+
+        TerminalEntity terminalEntity = buildTerminalEntity();
+        terminalEntity.setTerminalOsType("Android");
+
+        TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
+        packageEntity.setIsDelete(false);
+
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
+
+//        TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = buildUpgradeTerminalEntity(terminalEntity, upgradeEntity);
+
+        new Expectations() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                result = packageEntity;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                result = upgradeEntity;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                result = null;
+
+                systemUpgradeService.isGroupInUpgradeTask(upgradeEntity.getId(), terminalEntity.getGroupId());
+                result = false;
+
+            }
+        };
+
+        boolean enableUpgrade = handler.isTerminalEnableUpgrade(terminalEntity, CbbTerminalTypeEnums.VDI_LINUX);
+
+        assertEquals(false, enableUpgrade);
+
+        new Verifications() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                times = 1;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                times = 1;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                times = 1;
+
+                systemUpgradeService.isGroupInUpgradeTask(upgradeEntity.getId(), terminalEntity.getGroupId());
+                times = 1;
+
+                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbUpgradeTerminalRequest) any);
+                times = 1;
+            }
+        };
+
+    }
+
+    /**
+     * 测试终端是否能够升级 - 不再升级任务中，不再升级组中也无升级终端记录，安卓终端，自动加入升级任务失败
+     */
+    @Test
+    public void testIsTerminalEnableUpgradeNoInUpgradeTask3() throws BusinessException {
+        TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
+        Deencapsulation.setField(handler, "cbbTerminalUpgradeAPI", cbbTerminalUpgradeAPI);
+
+        TerminalEntity terminalEntity = buildTerminalEntity();
+        terminalEntity.setTerminalOsType("Android");
+
+        TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
+        packageEntity.setIsDelete(false);
+
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
+
+//        TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = buildUpgradeTerminalEntity(terminalEntity, upgradeEntity);
+
+        new Expectations() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                result = packageEntity;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                result = upgradeEntity;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                result = null;
+
+                systemUpgradeService.isGroupInUpgradeTask(upgradeEntity.getId(), terminalEntity.getGroupId());
+                result = false;
+
+                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbUpgradeTerminalRequest) any);
+                result = new BusinessException("key");
+            }
+        };
+
+        boolean enableUpgrade = handler.isTerminalEnableUpgrade(terminalEntity, CbbTerminalTypeEnums.VDI_LINUX);
+
+        assertEquals(false, enableUpgrade);
+
+        new Verifications() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                times = 1;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                times = 1;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                times = 1;
+
+                systemUpgradeService.isGroupInUpgradeTask(upgradeEntity.getId(), terminalEntity.getGroupId());
+                times = 1;
+
+                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbUpgradeTerminalRequest) any);
                 times = 1;
             }
         };
