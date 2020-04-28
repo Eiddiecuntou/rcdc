@@ -6,10 +6,10 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Map;
 
@@ -22,11 +22,11 @@ import java.util.Map;
  * @author hs
  */
 @Service
-public class TerminalSystemUpgradePackageHandlerFactory implements SafetySingletonInitializer {
+public class TerminalSystemUpgradePackageHandlerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradePackageHandlerFactory.class);
 
-    private static Map<CbbTerminalTypeEnums, TerminalSystemUpgradePackageHandler> systemUpgradeHandlerHolder = Maps.newHashMap();
+    private static final Map<CbbTerminalTypeEnums, TerminalSystemUpgradePackageHandler> SYSTEM_UPGRADE_PACKAGE_HANDLER_HOLDER = Maps.newHashMap();
 
     @Autowired
     private LinuxVDISystemUpgradePackageHandler linuxVDISystemUpgradePackageHandler;
@@ -36,13 +36,6 @@ public class TerminalSystemUpgradePackageHandlerFactory implements SafetySinglet
 
     @Autowired
     private LinuxIDVSystemUpgradePackageHandler linuxIDVSystemUpgradePackageHandler;
-
-    @Override
-    public void safeInit() {
-        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_LINUX, linuxVDISystemUpgradePackageHandler);
-        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_ANDROID, androidVDISystemUpgradePackageHandler);
-        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.IDV_LINUX, linuxIDVSystemUpgradePackageHandler);
-    }
 
     /**
      * 获取终端系统升级包处理对象
@@ -54,8 +47,16 @@ public class TerminalSystemUpgradePackageHandlerFactory implements SafetySinglet
     public TerminalSystemUpgradePackageHandler getHandler(CbbTerminalTypeEnums terminalType) throws BusinessException {
         Assert.notNull(terminalType, "terminal type can not be null");
 
-        checkReady();
-        TerminalSystemUpgradePackageHandler handler = systemUpgradeHandlerHolder.get(terminalType);
+        if (CollectionUtils.isEmpty(SYSTEM_UPGRADE_PACKAGE_HANDLER_HOLDER)) {
+            synchronized (SYSTEM_UPGRADE_PACKAGE_HANDLER_HOLDER) {
+                if (CollectionUtils.isEmpty(SYSTEM_UPGRADE_PACKAGE_HANDLER_HOLDER)) {
+                    LOGGER.info("初始化终端系统升级处理对象工厂");
+                    init();
+                }
+            }
+        }
+
+        TerminalSystemUpgradePackageHandler handler = SYSTEM_UPGRADE_PACKAGE_HANDLER_HOLDER.get(terminalType);
 
         if (handler == null) {
             LOGGER.error("终端类型为[{}]的系统升级包处理对象不存在", terminalType.name());
@@ -66,11 +67,9 @@ public class TerminalSystemUpgradePackageHandlerFactory implements SafetySinglet
         return handler;
     }
 
-    private void checkReady() {
-        if (systemUpgradeHandlerHolder.isEmpty()) {
-            LOGGER.info("系统升级包holder未初始化");
-            safeInit();
-            LOGGER.info("完成系统升级holder初始化");
-        }
+    private void init() {
+        SYSTEM_UPGRADE_PACKAGE_HANDLER_HOLDER.put(CbbTerminalTypeEnums.VDI_LINUX, linuxVDISystemUpgradePackageHandler);
+        SYSTEM_UPGRADE_PACKAGE_HANDLER_HOLDER.put(CbbTerminalTypeEnums.VDI_ANDROID, androidVDISystemUpgradePackageHandler);
+        SYSTEM_UPGRADE_PACKAGE_HANDLER_HOLDER.put(CbbTerminalTypeEnums.IDV_LINUX, linuxIDVSystemUpgradePackageHandler);
     }
 }

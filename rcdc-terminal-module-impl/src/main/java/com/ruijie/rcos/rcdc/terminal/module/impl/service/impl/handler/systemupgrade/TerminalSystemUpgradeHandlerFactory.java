@@ -6,10 +6,10 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Map;
 
@@ -22,24 +22,17 @@ import java.util.Map;
  * @author hs
  */
 @Service
-public class TerminalSystemUpgradeHandlerFactory implements SafetySingletonInitializer {
+public class TerminalSystemUpgradeHandlerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeHandlerFactory.class);
 
-    private static Map<CbbTerminalTypeEnums, TerminalSystemUpgradeHandler> systemUpgradeHandlerHolder = Maps.newHashMap();
+    private static final Map<CbbTerminalTypeEnums, TerminalSystemUpgradeHandler> SYSTEM_UPGRADE_HANDLER = Maps.newHashMap();
 
     @Autowired
     private LinuxVDISystemUpgradeHandler linuxVDISystemUpgradeHandler;
 
     @Autowired
     private SystemOtaUpgradeHandler systemOtaUpgradeHandler;
-
-    @Override
-    public void safeInit() {
-        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_LINUX, linuxVDISystemUpgradeHandler);
-        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_ANDROID, systemOtaUpgradeHandler);
-        systemUpgradeHandlerHolder.put(CbbTerminalTypeEnums.IDV_LINUX, systemOtaUpgradeHandler);
-    }
 
     /**
      * 获取终端组件升级处理对象
@@ -51,7 +44,16 @@ public class TerminalSystemUpgradeHandlerFactory implements SafetySingletonIniti
     public TerminalSystemUpgradeHandler getHandler(CbbTerminalTypeEnums terminalType) throws BusinessException {
         Assert.notNull(terminalType, "terminal type can not be null");
 
-        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerHolder.get(terminalType);
+        if (CollectionUtils.isEmpty(SYSTEM_UPGRADE_HANDLER)) {
+            synchronized (SYSTEM_UPGRADE_HANDLER) {
+                if (CollectionUtils.isEmpty(SYSTEM_UPGRADE_HANDLER)) {
+                    LOGGER.info("初始化终端系统升级处理对象工厂");
+                    init();
+                }
+            }
+        }
+
+        TerminalSystemUpgradeHandler handler = SYSTEM_UPGRADE_HANDLER.get(terminalType);
 
         if (handler == null) {
             LOGGER.error("终端类型为[{}]的系统升级处理对象不存在", terminalType.name());
@@ -62,5 +64,9 @@ public class TerminalSystemUpgradeHandlerFactory implements SafetySingletonIniti
         return handler;
     }
 
-
+    private void init() {
+        SYSTEM_UPGRADE_HANDLER.put(CbbTerminalTypeEnums.VDI_LINUX, linuxVDISystemUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(CbbTerminalTypeEnums.VDI_ANDROID, systemOtaUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(CbbTerminalTypeEnums.IDV_LINUX, systemOtaUpgradeHandler);
+    }
 }

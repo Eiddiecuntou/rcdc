@@ -252,7 +252,11 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         Assert.notNull(state, "state can not be null");
 
         final TerminalSystemUpgradeTerminalEntity saveEntity = getUpgradeTerminalEntity(upgradeTaskId, terminalId);
+        Date startTime = upgradeTerminal.getStartTime();
         saveEntity.setState(state);
+        if (startTime != null) {
+            saveEntity.setStartTime(startTime);
+        }
         systemUpgradeTerminalDAO.save(saveEntity);
 
         syncTerminalState(saveEntity);

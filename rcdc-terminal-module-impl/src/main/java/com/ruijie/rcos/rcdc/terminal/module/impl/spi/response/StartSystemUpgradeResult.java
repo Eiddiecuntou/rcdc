@@ -19,4 +19,11 @@ public class StartSystemUpgradeResult {
     public void setEnableUpgrade(Boolean enableUpgrade) {
         this.enableUpgrade = enableUpgrade;
     }
+
+    @Override
+    public String toString() {
+        return "StartSystemUpgradeResult{" +
+                "enableUpgrade=" + enableUpgrade +
+                '}';
+    }
 }
