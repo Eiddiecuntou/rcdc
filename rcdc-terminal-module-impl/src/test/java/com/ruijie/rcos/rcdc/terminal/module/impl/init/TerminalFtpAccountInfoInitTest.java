@@ -1,13 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.CmdExecuteUtil;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import java.io.IOException;
+import java.util.UUID;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,45 +31,85 @@ public class TerminalFtpAccountInfoInitTest {
     GlobalParameterAPI globalParameterAPI;
 
     @Mocked
-    CmdExecuteUtil cmdExecuteUtil;
+    ProcessBuilder processBuilder;
+
+    @Mocked
+    Process process;
 
     /**
      * 测试sateInit方法
      */
     @Test
     public void testSafeInit() {
-        new Expectations() {
+        UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
+        new Expectations(UUID.class) {
             {
                 globalParameterAPI.findParameter("terminal_ftp_config");
                 result =  "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\","
                     + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
+                UUID.randomUUID();
+                result = uuid;
             }
         };
         terminalFtpAccountInfoInit.safeInit();
         new Verifications() {
             {
-                globalParameterAPI.updateParameter(withEqual("terminal_ftp_config"), anyString);
+                String info;
+                globalParameterAPI.updateParameter(withEqual("terminal_ftp_config"), info = withCapture());
                 times = 1;
+                Assert.assertTrue(info.contains("00000000"));
             }
         };
     }
 
     /**
-     * 测试sateInit方法, key为"terminal_ftp_config"的数据不存在
+     * 测试sateInit方法, 执行系统命令失败
+     * @throws IOException ex
      */
     @Test
-    public void testSafeInitGuesttoolLogFtpConfigUnexists() {
+    public void testSafeInitExecuteSystemCmdFail() throws IOException {
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminal_ftp_config");
-                result = null;
+                result =  "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\","
+                    + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
+                processBuilder.start();
+                result = new IOException();
             }
         };
         terminalFtpAccountInfoInit.safeInit();
         new Verifications() {
             {
-                globalParameterAPI.updateParameter(withEqual("terminal_ftp_config"), anyString);
-                times = 0;
+                String info;
+                globalParameterAPI.updateParameter(withEqual("terminal_ftp_config"), info = withCapture());
+                times = 1;
+                Assert.assertTrue(info.contains("21Wq_Er"));
+            }
+        };
+    }
+
+    /**
+     * 测试sateInit方法, 执行系统命令失败
+     * @throws InterruptedException ex
+     */
+    @Test
+    public void testSafeInitExecuteSystemCmdCodeNotZero() throws InterruptedException {
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter("terminal_ftp_config");
+                result =  "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\","
+                    + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
+                process.waitFor();
+                result = 1;
+            }
+        };
+        terminalFtpAccountInfoInit.safeInit();
+        new Verifications() {
+            {
+                String info;
+                globalParameterAPI.updateParameter(withEqual("terminal_ftp_config"), info = withCapture());
+                times = 1;
+                Assert.assertTrue(info.contains("21Wq_Er"));
             }
         };
     }
