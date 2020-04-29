@@ -1,4 +1,3 @@
-
 package com.ruijie.rcos.rcdc.terminal.module.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
@@ -254,5 +253,4 @@ public interface Constants {
 
     /**  维护模式dispatchKey - 终端 **/
     String MAINTENANCE_MODE_TERMINAL = "terminal";
-
 }

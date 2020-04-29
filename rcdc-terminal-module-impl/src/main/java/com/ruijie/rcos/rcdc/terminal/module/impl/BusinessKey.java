@@ -357,11 +357,6 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_OPERATE_ACTION_RELIEVE_FAULT = "rcdc_terminal_operate_action_relieve_fault";
 
-
-    /***********维护模式*************************/
-    String RCDC_TERMINAL_MAINTENANCE_PRE_VALIDATE_FAIL_FOR_LINUX_VDI_UPGRADING_TASK =
-            "rcdc_terminal_maintenance_pre_validate_fail_for_linux_vdi_upgrading_task";
-
     /**
      * 创建终端刷机任务成功日志
      */
@@ -372,7 +367,11 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG = "rcdc_terminal_create_upgrade_task_fail_log";
 
+
+    /***********维护模式*************************/
+    String RCDC_TERMINAL_MAINTENANCE_PRE_VALIDATE_FAIL_FOR_LINUX_VDI_UPGRADING_TASK =
+            "rcdc_terminal_maintenance_pre_validate_fail_for_linux_vdi_upgrading_task";
+
     /** 安卓OTA升级文件不合法 */
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_ILLEGAL = "rcdc_terminal_ota_upgrade_package_illegal";
-
 }
