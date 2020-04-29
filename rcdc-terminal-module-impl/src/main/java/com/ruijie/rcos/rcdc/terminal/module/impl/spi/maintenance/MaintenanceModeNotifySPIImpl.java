@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi.maintenance;
 
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseUpgradeDTO;
 import com.ruijie.rcos.base.sysmanage.module.def.spi.BaseMaintenanceModeNotifySPI;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
@@ -19,7 +18,7 @@ import org.springframework.util.Assert;
  *
  * @author nt
  */
-@DispatcherImplemetion(Constants.MAINTENANCE_MODE_TERMINAL)
+@DispatcherImplemetion("MaintenanceModeNotifySPIImpl")
 public class MaintenanceModeNotifySPIImpl implements BaseMaintenanceModeNotifySPI {
 
     @Autowired
