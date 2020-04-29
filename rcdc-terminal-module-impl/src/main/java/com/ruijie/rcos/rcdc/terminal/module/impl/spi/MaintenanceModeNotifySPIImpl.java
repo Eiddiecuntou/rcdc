@@ -1,11 +1,13 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.spi.maintenance;
+package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseUpgradeDTO;
 import com.ruijie.rcos.base.sysmanage.module.def.spi.BaseMaintenanceModeNotifySPI;
+import com.ruijie.rcos.rcdc.terminal.module.impl.spi.maintenance.BeforeEnteringMaintenanceHandler;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
-import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -21,20 +23,22 @@ import org.springframework.util.Assert;
 @DispatcherImplemetion("MaintenanceModeNotifySPIImpl")
 public class MaintenanceModeNotifySPIImpl implements BaseMaintenanceModeNotifySPI {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaintenanceModeNotifySPIImpl.class);
+
     @Autowired
     private BeforeEnteringMaintenanceHandler beforeEnteringMaintenanceHandler;
 
     @Override
-    public Response beforeEnteringMaintenance(@DispatcherKey String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
+    public Response beforeEnteringMaintenance(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
-
+        LOGGER.info("维护：rcdc-terminal：beforeEnteringMaintenance-before");
         beforeEnteringMaintenanceHandler.handle();
-
+        LOGGER.info("维护：rcdc-terminal：beforeEnteringMaintenance-after");
         return DefaultResponse.Builder.success();
     }
 
     @Override
-    public Response afterEnteringMaintenance(@DispatcherKey String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
+    public Response afterEnteringMaintenance(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         // 不需处理，直接响应成功
@@ -42,7 +46,7 @@ public class MaintenanceModeNotifySPIImpl implements BaseMaintenanceModeNotifySP
     }
 
     @Override
-    public Response afterUnderMaintenance(@DispatcherKey String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) {
+    public Response afterUnderMaintenance(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         // 不需处理，直接响应成功
@@ -50,7 +54,7 @@ public class MaintenanceModeNotifySPIImpl implements BaseMaintenanceModeNotifySP
     }
 
     @Override
-    public Response afterMaintenanceEnd(@DispatcherKey String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
+    public Response afterMaintenanceEnd(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         // 不需处理，直接响应成功
