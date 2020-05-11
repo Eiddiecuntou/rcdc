@@ -45,15 +45,16 @@ public class GroupNameDuplicationCheckerTest {
      */
     @Test
     public void testCheck() throws BusinessException {
+        UUID uuid = UUID.randomUUID();
         TerminalGroupEntity groupEntity = new TerminalGroupEntity();
-        groupEntity.setId(UUID.randomUUID());
-
+        groupEntity.setId(uuid);
+        List<TerminalGroupEntity> groupList = Lists.newArrayList(groupEntity);
         TerminalGroupEntity deleteGroupEntity = new TerminalGroupEntity();
-
+        deleteGroupEntity.setId(uuid);
         new Expectations() {
             {
                 terminalGroupDAO.findByParentIdAndName(groupEntity.getId(), "123");
-                result = Lists.newArrayList();
+                result = groupList;
             }
         };
         checker.check(deleteGroupEntity, groupEntity, "123");
@@ -74,7 +75,7 @@ public class GroupNameDuplicationCheckerTest {
         TerminalGroupEntity groupEntity = new TerminalGroupEntity();
         groupEntity.setId(UUID.randomUUID());
         TerminalGroupEntity deleteGroupEntity = new TerminalGroupEntity();
-
+        deleteGroupEntity.setId(UUID.randomUUID());
         List<TerminalGroupEntity> groupList = Lists.newArrayList(groupEntity);
         new Expectations() {
             {
