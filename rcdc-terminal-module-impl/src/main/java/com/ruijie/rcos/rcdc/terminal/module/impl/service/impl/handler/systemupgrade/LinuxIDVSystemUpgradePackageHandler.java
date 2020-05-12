@@ -101,7 +101,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
         // 组装升级包信息
         versionInfo.setPackageType(CbbTerminalTypeEnums.IDV_LINUX);
-        versionInfo.setPackageName(OTA_PACKAGE_NAME);
+        versionInfo.setPackageName(fileName);
         versionInfo.setSeedLink(seedInfo.getSeedFilePath());
         versionInfo.setSeedMD5(seedInfo.getSeedFileMD5());
         versionInfo.setUpgradeMode(DEFAULT_UPGRADE_MODE);
