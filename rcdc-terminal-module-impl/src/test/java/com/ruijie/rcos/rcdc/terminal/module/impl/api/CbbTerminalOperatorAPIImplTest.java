@@ -243,7 +243,7 @@ public class CbbTerminalOperatorAPIImplTest {
         };
 
         CbbTerminalCollectLogStatusResponse collectLog = terminalOperatorAPI.getCollectLog(request);
-        assertEquals(CbbCollectLogStateEnums.FAILURE, collectLog.getState());
+        assertEquals(CbbCollectLogStateEnums.FAULT, collectLog.getState());
 
     }
 
