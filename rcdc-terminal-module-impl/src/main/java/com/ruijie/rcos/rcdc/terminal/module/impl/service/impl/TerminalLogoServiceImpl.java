@@ -1,11 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -43,7 +45,7 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
     private GlobalParameterAPI globalParameterAPI;
 
     private static final ThreadExecutor NOTICE_HANDLER_THREAD_POOL =
-            ThreadExecutors.newBuilder(TerminalLogoService.class.getName()).maxThreadNum(1).queueSize(10).build();
+            ThreadExecutors.newBuilder(TerminalLogoService.class.getName()).maxThreadNum(20).queueSize(50).build();
 
     @Override
     public void syncTerminalLogo(String logoName, SendTerminalEventEnums name) throws BusinessException {
@@ -79,7 +81,7 @@ public class TerminalLogoServiceImpl implements TerminalLogoService {
         }
         Message message = new Message(Constants.SYSTEM_TYPE, terminalEvent.getName(), data);
         try {
-            sender.syncRequest(message);
+            sender.request(message);
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
