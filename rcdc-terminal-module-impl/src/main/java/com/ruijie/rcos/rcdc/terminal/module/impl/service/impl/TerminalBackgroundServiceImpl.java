@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -40,7 +41,7 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
     private SessionManager sessionManager;
 
     private static final ThreadExecutor NOTICE_HANDLER_THREAD_POOL =
-            ThreadExecutors.newBuilder(TerminalBackgroundService.class.getName()).maxThreadNum(16).queueSize(10).build();
+            ThreadExecutors.newBuilder(TerminalBackgroundService.class.getName()).maxThreadNum(20).queueSize(50).build();
 
     @Override
     public void syncTerminalBackground(TerminalBackgroundInfo terminalSyncBackgroundInfo) throws BusinessException {

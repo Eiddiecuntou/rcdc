@@ -1,5 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
@@ -8,22 +20,12 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Description:
@@ -129,7 +131,7 @@ public class TerminalLogoServiceImplTest {
                 result = onlineTerminalIdList;
                 sessionManager.getRequestMessageSender(anyString);
                 result = sender;
-                sender.syncRequest((Message) any);
+                sender.request((Message) any);
                 result = new Exception();
             }
         };
@@ -146,7 +148,7 @@ public class TerminalLogoServiceImplTest {
                 times = 1;
                 sessionManager.getRequestMessageSender(anyString);
                 times = 1;
-                sender.syncRequest((Message) any);
+                sender.request((Message) any);
                 times = 1;
 
 
@@ -173,7 +175,7 @@ public class TerminalLogoServiceImplTest {
                 result = onlineTerminalIdList;
                 sessionManager.getRequestMessageSender(anyString);
                 result = sender;
-                sender.syncRequest((Message) any);
+                sender.request((Message) any);
             }
         };
         terminalLogoService.syncTerminalLogo(logoName, name);
@@ -184,7 +186,7 @@ public class TerminalLogoServiceImplTest {
                 times = 1;
                 sessionManager.getRequestMessageSender(anyString);
                 times = 1;
-                sender.syncRequest((Message) any);
+                sender.request((Message) any);
                 times = 1;
             }
         };
