@@ -154,7 +154,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         CollectLogCache cache = collectLogCacheManager.getCache(terminalId);
         if (cache == null) {
             // 日志不存在，构造失败状态信息
-            cache = new CollectLogCache(CbbCollectLogStateEnums.FAILURE);
+            cache = new CollectLogCache(CbbCollectLogStateEnums.FAULT);
         }
         return cache;
     }
