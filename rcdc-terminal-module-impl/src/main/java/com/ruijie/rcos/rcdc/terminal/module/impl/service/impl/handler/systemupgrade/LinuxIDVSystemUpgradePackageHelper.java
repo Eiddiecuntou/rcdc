@@ -108,12 +108,9 @@ public class LinuxIDVSystemUpgradePackageHelper {
         Properties prop = new Properties();
         try (InputStream in = new FileInputStream(versionFilePath)) {
             prop.load(in);
-        } catch (FileNotFoundException e) {
-            LOGGER.debug("version file not found, file path[{}]", versionFilePath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST, e);
         } catch (IOException e) {
-            LOGGER.debug("version file read error, file path[{}]", versionFilePath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+            LOGGER.error("version file read error, file path: " + versionFilePath, e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_ERROR, e);
         }
         return prop;
     }
@@ -132,12 +129,9 @@ public class LinuxIDVSystemUpgradePackageHelper {
             while ((line = buffer.readLine()) != null && StringUtils.isNotBlank(line)) {
                 otaFileList.add(line.trim());
             }
-        } catch (FileNotFoundException e) {
-            LOGGER.debug("ota list file not found, file path[{}]", otaListPath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_NOT_EXIST, e);
         } catch (IOException e) {
-            LOGGER.debug("ota list file read error, file path[{}]", otaListPath);
-            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
+            LOGGER.error("ota list file read error, file path: " + otaListPath, e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_FILE_ERROR, e);
         }
         return otaFileList;
     }
