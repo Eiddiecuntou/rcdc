@@ -40,38 +40,6 @@ public class TerminalCollectLogCleanQuartzTaskTest {
 
 
     /**
-     * 测试execute，终端日志存放目录不存在
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testExecuteLogDirectoryNotExist() throws Exception {
-
-        new MockUp<LocaleI18nResolver>() {
-            @Mock
-            public String resolve(String key, String... args) {
-                return key;
-            }
-        };
-
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return false;
-            }
-        };
-        quartz.run();
-        new Verifications() {
-            {
-                BaseCreateSystemLogRequest request;
-                baseSystemLogMgmtAPI.createSystemLog(request = withCapture());
-                times = 1;
-                assertEquals(request.getKey(), BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_FAIL_SYSTEM_LOG);
-            }
-        };
-    }
-
-    /**
      * 测试execute, 终端日志文件夹无日志文件
      *
      * @throws Exception 异常

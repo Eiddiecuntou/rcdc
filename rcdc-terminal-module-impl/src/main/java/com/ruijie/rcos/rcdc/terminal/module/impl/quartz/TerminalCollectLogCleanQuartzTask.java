@@ -16,7 +16,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
-import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
@@ -63,8 +62,7 @@ public class TerminalCollectLogCleanQuartzTask implements SafetySingletonInitial
         Stopwatch stopwatch = Stopwatch.createStarted();
         File fileDir = new File(Constants.STORE_TERMINAL_LOG_PATH);
         if (!fileDir.isDirectory()) {
-            LOGGER.error("终端收集日志文件目录不存在");
-            addFailSystemLog(stopwatch);
+            LOGGER.error("终端收集日志文件目录不存在,无需清理");
             return;
         }
 
@@ -88,14 +86,6 @@ public class TerminalCollectLogCleanQuartzTask implements SafetySingletonInitial
             addSuccessSystemLog(deleteCount, timeMillis);
         }
         LOGGER.info("完成清理终端收集日志文件定时任务, 共删除[{}]个日志文件, 耗时[{}]毫秒", deleteCount, timeMillis);
-    }
-
-    private void addFailSystemLog(Stopwatch stopwatch) {
-        BaseCreateSystemLogRequest request =
-                new BaseCreateSystemLogRequest(BusinessKey.RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_FAIL_SYSTEM_LOG,
-                        LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_DIRECTORY_NOT_EXIST, new String[] {}),
-                        String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
-        baseSystemLogMgmtAPI.createSystemLog(request);
     }
 
     private void addSuccessSystemLog(int deleteCount, String timeMillis) {
