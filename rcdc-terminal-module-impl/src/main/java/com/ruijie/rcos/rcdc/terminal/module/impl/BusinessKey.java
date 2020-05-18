@@ -364,4 +364,8 @@ public interface BusinessKey {
 
     /** 安卓OTA升级文件不合法 */
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_ILLEGAL = "rcdc_terminal_ota_upgrade_package_illegal";
+
+    /** IDV升级包 */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_ERROR = "rcdc_terminal_system_upgrade_package_version_file_error";
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_FILE_ERROR = "rcdc_terminal_system_upgrade_package_ota_file_error";
 }
