@@ -855,5 +855,35 @@ public class FileOperateUtilTest {
         assertTrue(FileOperateUtil.deleteFile(deleteFile));
     }
 
+    /**
+     * test
+     * @param skyengineFile file
+     * @throws BusinessException ex
+     */
+    @Test
+    public void testDeleteFileByPath(@Mocked SkyengineFile skyengineFile) throws BusinessException {
+        String filePath = "test";
+
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+
+            @Mock
+            public boolean isDirectory(Invocation invocation) {
+                Assert.notNull(invocation, "invocation can not be null");
+                File file = invocation.getInvokedInstance();
+                if ("test".equals(file.getPath())) {
+                    return false;
+                }
+                return true;
+            }
+        };
+
+        FileOperateUtil.deleteFileByPath(filePath);
+        assertTrue(true);
+    }
+
 
 }
