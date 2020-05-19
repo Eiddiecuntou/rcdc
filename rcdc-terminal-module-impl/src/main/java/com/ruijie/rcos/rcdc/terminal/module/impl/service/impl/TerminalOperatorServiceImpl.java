@@ -375,9 +375,11 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             // 在线状态允许操作
             return;
         }
-        String terminalName = terminalBasicInfoDAO.getTerminalNameByTerminalId(terminalId);
-        LOGGER.warn("终端[{}({})]离线,不允许操作", terminalName, terminalId);
-        throw new BusinessException(businessKey, new String[] {terminalName, terminalId});
+        TerminalEntity terminalEntity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        Assert.notNull(terminalEntity, "terminalEntity must not be null, terminalId = " + terminalId);
+        
+        LOGGER.warn("终端[{}({})]离线,不允许操作", terminalEntity.getTerminalName(), terminalEntity.getMacAddr());
+        throw new BusinessException(businessKey, new String[] {terminalEntity.getTerminalName(), terminalEntity.getMacAddr()});
     }
 
 }
