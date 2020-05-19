@@ -322,6 +322,43 @@ public class CbbTerminalBasicInfoAPIImplTest {
      */
     @Test
     public void testModifyTerminalNameModifyTerminalNameHasBusinessException() throws BusinessException {
+        TerminalEntity terminalEntity = new TerminalEntity();
+        UUID id = UUID.randomUUID();
+        terminalEntity.setId(id);
+        terminalEntity.setTerminalName("testName");
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = terminalEntity;
+            }
+        };
+
+
+        CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+        request.setCbbTerminalId("123");
+        request.setGroupId(id);
+        request.setTerminalName("testName");
+        terminalBasicInfoAPI.modifyTerminal(request);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 1;
+
+                basicInfoDAO.save((TerminalEntity) any);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试终端名字无变更
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testModifyTerminalWithoutChange() throws BusinessException {
         new Expectations() {
             {
                 basicInfoService.modifyTerminalName(anyString, anyString);
