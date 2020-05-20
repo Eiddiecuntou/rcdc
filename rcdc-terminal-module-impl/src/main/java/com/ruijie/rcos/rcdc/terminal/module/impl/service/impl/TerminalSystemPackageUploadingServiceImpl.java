@@ -55,6 +55,8 @@ public class TerminalSystemPackageUploadingServiceImpl implements TerminalSystem
         TerminalSystemUpgradePackageHandler handler = null;
         try {
             handler = handlerFactory.getHandler(terminalType);
+            // 上传前处理
+            handler.preUploadPackage();
             handler.uploadUpgradePackage(request);
         } finally {
             // 完成清除上传标志缓存内记录

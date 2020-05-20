@@ -73,6 +73,11 @@ public class AbstractSystemUpgradePackageHandlerTest {
         }
 
         @Override
+        public void preUploadPackage() {
+
+        }
+
+        @Override
         public void postUploadPackage() {
 
         }

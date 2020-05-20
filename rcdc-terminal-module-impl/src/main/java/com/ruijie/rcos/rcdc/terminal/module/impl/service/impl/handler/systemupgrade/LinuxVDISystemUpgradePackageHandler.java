@@ -47,6 +47,11 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     @Override
+    public void preUploadPackage() {
+        LOGGER.info("Linux VDI系统升级包无需上传前处理流程");
+    }
+
+    @Override
     public void postUploadPackage() {
         LOGGER.info("Linux VDI系统升级包无需上传后处理流程");
     }

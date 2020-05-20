@@ -21,6 +21,11 @@ public interface TerminalSystemUpgradePackageHandler {
     void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException;
 
     /**
+     * 系统升级包上传前处理方法
+     */
+    void preUploadPackage();
+
+    /**
      * 系统升级包上传后处理方法
      */
     void postUploadPackage();
