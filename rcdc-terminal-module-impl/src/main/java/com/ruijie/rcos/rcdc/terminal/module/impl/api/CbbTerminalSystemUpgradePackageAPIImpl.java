@@ -80,8 +80,10 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         boolean hasRunningTask = false;
         List<String> errorList = Lists.newArrayList();
         TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(request.getTerminalType());
+        LOGGER.info("上传升级包类型[{}]", request.getTerminalType());
         // Android VDI升级包不校验升级任务开启情况
         if (upgradePackage != null && request.getTerminalType() != CbbTerminalTypeEnums.VDI_ANDROID) {
+            LOGGER.info("检查升级包是否存在进行中的升级任务");
             hasRunningTask = terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
         }
         if (hasRunningTask) {
