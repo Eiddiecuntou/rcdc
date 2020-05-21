@@ -115,14 +115,13 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         if (notInTask(upgradeTerminalEntity, isGroupInUpgrade)) {
             LOGGER.info("终端[{}]不在任务中", terminalId);
             // 判断是否需要加入升级任务
-            addToUpgradeList(terminalEntity, terminalId, upgradeTask);
-            return false;
+            return shouldAddToUpgradeList(terminalEntity, terminalId, upgradeTask);
         }
 
         return true;
     }
 
-    private void addToUpgradeList(TerminalEntity terminalEntity, String terminalId, TerminalSystemUpgradeEntity upgradeTask) {
+    private boolean shouldAddToUpgradeList(TerminalEntity terminalEntity, String terminalId, TerminalSystemUpgradeEntity upgradeTask) {
         if (SYSTEM_OS_TYPE_ANDROID.equals(terminalEntity.getTerminalOsType())) {
             CbbUpgradeTerminalRequest addRequest = new CbbUpgradeTerminalRequest();
             addRequest.setTerminalId(terminalId);
@@ -130,10 +129,12 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
             try {
                 cbbTerminalUpgradeAPI.addSystemUpgradeTerminal(addRequest);
                 LOGGER.info("终端[{}]加入系统升级任务成功", terminalId);
+                return true;
             } catch (BusinessException e) {
                 LOGGER.error("终端[" + terminalId + "]加入系统升级任务失败", e);
             }
         }
+        return false;
     }
 
     private boolean notInTask(TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity, boolean isGroupInUpgrade) {
