@@ -3,7 +3,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.BetweenTimeRangeMatch;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -58,14 +62,15 @@ public abstract class AbstractPageQueryTemplate<T> {
         Pageable pageable = getPageRequest(request, defaultSortField, defaultDataSort.getDirection());
         String searchKeyword = request.getSearchKeyword();
         MatchEqual[] matchEqualArr = request.getMatchEqualArr();
+        BetweenTimeRangeMatch betweenTimeRangeMatch = request.getBetweenTimeRangeMatch();
 
-        if (StringUtils.isBlank(searchKeyword) && ArrayUtils.isEmpty(matchEqualArr)) {
+        if (StringUtils.isBlank(searchKeyword) && ArrayUtils.isEmpty(matchEqualArr) && Objects.isNull(betweenTimeRangeMatch)) {
             // 没有条件查询
             return find(null, pageable);
         }
         List<String> searchColumnList = getSearchColumn();
         // 构建specification
-        Specification<T> specification = new PageQuerySpecification<>(searchKeyword, searchColumnList, matchEqualArr);
+        Specification<T> specification = new PageQuerySpecification<>(searchKeyword, searchColumnList, matchEqualArr, betweenTimeRangeMatch);
 
         return find(specification, pageable);
     }

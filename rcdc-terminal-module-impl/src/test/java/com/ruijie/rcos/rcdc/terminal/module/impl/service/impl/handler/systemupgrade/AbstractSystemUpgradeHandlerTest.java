@@ -519,7 +519,7 @@ public class AbstractSystemUpgradeHandlerTest {
 
         boolean enableUpgrade = handler.isTerminalEnableUpgrade(terminalEntity, CbbTerminalTypeEnums.VDI_LINUX);
 
-        assertEquals(false, enableUpgrade);
+        assertEquals(true, enableUpgrade);
 
         new Verifications() {
             {
