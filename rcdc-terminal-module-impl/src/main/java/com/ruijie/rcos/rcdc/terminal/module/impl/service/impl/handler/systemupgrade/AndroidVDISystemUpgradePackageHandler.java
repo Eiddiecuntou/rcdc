@@ -142,7 +142,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
             LOGGER.info("Android VDI终端升级包不存在，返回");
             return;
         }
-        LOGGER.debug("升级包信息: [{}]", upgradePackage.toString());
+        LOGGER.info("升级包信息: [{}]", upgradePackage.toString());
 
         // 获取进行中的升级任务信息
         TerminalSystemUpgradeEntity systemUpgradeTask =
@@ -151,7 +151,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
             LOGGER.info("未开启Android VDI终端升级任务，返回");
             return;
         }
-        LOGGER.debug("升级任务信息: [{}]", systemUpgradeTask.toString());
+        LOGGER.info("升级任务信息: [{}]", systemUpgradeTask.toString());
 
         try {
             LOGGER.info("开始关闭Android VDI终端升级任务");
@@ -174,13 +174,13 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         if (!CollectionUtils.isEmpty(terminalEntityList)) {
             terminalIdArr = terminalEntityList.stream()
                     .map(ViewUpgradeableTerminalEntity::getTerminalId).collect(Collectors.toList()).toArray(new String[]{});
-            LOGGER.debug("需要升级的终端ID: [{}]", Arrays.toString(terminalIdArr));
+            LOGGER.info("需要升级的终端ID: [{}]", Arrays.toString(terminalIdArr));
         }
 
         // 获取升级包信息
         TerminalSystemUpgradePackageEntity upgradePackage =
                 terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        LOGGER.debug("升级包信息: [{}]", upgradePackage.toString());
+        LOGGER.info("升级包信息: [{}]", upgradePackage.toString());
 
         // 添加升级任务
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
