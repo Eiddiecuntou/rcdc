@@ -1096,8 +1096,6 @@ public class TerminalOperatorServiceImplTest {
             {
                 sessionManager.getOnlineTerminalId();
                 times = 1;
-                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
-                times = 3;
             }
         };
     }
