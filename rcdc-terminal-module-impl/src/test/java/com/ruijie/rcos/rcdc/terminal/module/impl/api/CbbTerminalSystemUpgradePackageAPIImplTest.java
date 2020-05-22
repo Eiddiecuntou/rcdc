@@ -29,6 +29,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import mockit.*;
 import org.apache.commons.lang3.time.DateUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
@@ -88,7 +89,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     }
 
     /**
-     * 测试uploadUpgradeFile，系统升级任务正在进行中
+     * 测试uploadUpgradeFile，系统升级任务未在进行中
      * 
      * @throws Exception 异常
      */
@@ -102,10 +103,90 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         new Expectations() {
             {
                 terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                result = null;
             }
         };
 
         upgradePackageAPIImpl.uploadUpgradePackage(request);
+        new Verifications() {
+            {
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                times = 1;
+            }
+        };
+
+    }
+
+    /**
+     * 测试uploadUpgradeFile，系统升级任务在进行中
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testUploadUpgradePackageInTask() throws Exception {
+
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFileName("123.iso");
+        request.setFilePath("/temp");
+        request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
+
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+
+        new Expectations() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                result = upgradePackage;
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
+                result = true;
+            }
+        };
+
+        try {
+            upgradePackageAPIImpl.uploadUpgradePackage(request);
+            Assert.fail();
+        } catch (BusinessException e) {
+            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, e.getKey());
+        }
+
+        new Verifications() {
+            {
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                times = 0;
+            }
+        };
+
+    }
+
+    /**
+     * 测试uploadUpgradeFile，系统升级任务在进行中，安卓包
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testUploadUpgradePackageInTaskAndroid() throws Exception {
+
+        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        request.setFileName("123.iso");
+        request.setFilePath("/temp");
+        request.setTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
+
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+
+        new Expectations() {
+            {
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                result = upgradePackage;
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
+                result = true;
+            }
+        };
+
+        upgradePackageAPIImpl.uploadUpgradePackage(request);
+
         new Verifications() {
             {
                 terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
