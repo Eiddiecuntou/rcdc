@@ -49,6 +49,9 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
 
     @Override
     public boolean checkServerDiskSpaceIsEnough(Long fileSize, String fileStorePath) {
+        Assert.notNull(fileSize, "fileSize can not be null");
+        Assert.notNull(fileStorePath, "fileStorePath can not be null");
+
         File packageDir = new File(fileStorePath);
         final long usableSpace = packageDir.getUsableSpace();
 

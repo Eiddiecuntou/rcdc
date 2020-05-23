@@ -158,7 +158,7 @@ public interface Constants {
     /**
      * 解压后Android VDI OTA包和Linux IDV OTA包存放的第二级目录，也是/dev/sdo文件系统挂载目录
      */
-    String TERMINAL_UPGRADE_OTA_LINUX_IDV_AND_ANDROID_VDI_DIR= "/opt/";
+    String TERMINAL_UPGRADE_OTA_LINUX_IDV_AND_ANDROID_VDI_DIR = "/opt/";
 
     /**
      * 出厂OTA包存放目录
