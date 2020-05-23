@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
@@ -329,6 +330,42 @@ public class CbbTerminalLogoAPIImplTest {
                 times = 0;
                 terminalLogoService.syncTerminalLogo(StringUtils.EMPTY, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
                 times = 0;
+            }
+        };
+
+    }
+
+    /**
+     * 测试initLogo  logo Exists
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testInitLogoWithLogoExists(@Mocked SkyengineFile skyengineFile) throws Exception {
+        DefaultRequest request = new DefaultRequest();
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter("terminalLogo");
+                result = "logoPath";
+            }
+        };
+
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+        };
+        terminalLogoAPI.initLogo(request);
+
+        new Verifications() {
+            {
+                globalParameterAPI.findParameter("terminalLogo");
+                times = 1;
+                globalParameterAPI.updateParameter("terminalLogo", null);
+                times = 1;
+                terminalLogoService.syncTerminalLogo(StringUtils.EMPTY, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                times = 1;
             }
         };
 

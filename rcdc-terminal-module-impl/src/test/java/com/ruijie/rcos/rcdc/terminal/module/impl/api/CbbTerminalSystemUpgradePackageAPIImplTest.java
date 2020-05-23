@@ -658,4 +658,36 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
     }
+
+    /**
+     * 测试检查是否允许上传升级包
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testCheckAllowUploadPackageWithPackageNull(@Injectable TerminalSystemUpgradePackageHandler handler) throws Exception {
+        CbbCheckAllowUploadPackageRequest request = new CbbCheckAllowUploadPackageRequest(10L);
+
+        new Expectations() {
+            {
+                termianlSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                result = null;
+                terminalSystemUpgradePackageHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                result = handler;
+                handler.checkServerDiskSpaceIsEnough(anyLong, anyString);
+                result = false;
+            }
+        };
+
+        new MockUp<LocaleI18nResolver>() {
+            @Mock
+            public String resolve(String key, String... args) {
+                return key;
+            }
+        };
+
+        CbbCheckAllowUploadPackageResponse response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
+        assertEquals(false, response.getAllowUpload());
+        assertEquals(1, response.getErrorList().size());
+    }
 }
