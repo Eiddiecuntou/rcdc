@@ -4,6 +4,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalMode
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
+import java.util.List;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018
@@ -31,4 +33,10 @@ public interface TerminalModelService {
      */
     CbbTerminalModelDTO queryByProductId(String productId) throws BusinessException;
 
+    /**
+     * 查询所有终端运行平台类型
+     * @param platform 终端平台类型
+     * @return List<String>
+     */
+    List<String> queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums platform);
 }

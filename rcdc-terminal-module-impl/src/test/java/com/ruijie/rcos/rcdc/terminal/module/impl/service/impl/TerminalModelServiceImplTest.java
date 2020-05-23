@@ -3,8 +3,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.List;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,6 +42,8 @@ public class TerminalModelServiceImplTest {
     @Injectable
     private TerminalModelDriverDAO terminalModelDriverDAO;
 
+    @Injectable
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     /**
      * 测试根据平台类型查询终端类型 - 列表为空
@@ -187,4 +192,36 @@ public class TerminalModelServiceImplTest {
 
     }
 
+
+    /**
+     * testQueryTerminalOsTypeByPlatform
+     */
+    @Test
+    public void testQueryTerminalOsTypeByPlatform() {
+
+        new Expectations() {
+            {
+                terminalBasicInfoDAO.getTerminalOsTypeByPlatform(CbbTerminalPlatformEnums.APP);
+                result = Lists.newArrayList("Windows");
+            }
+        };
+        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums.APP);
+        Assert.assertEquals(osTypeList.get(0), "Windows");
+    }
+
+    /**
+     * testQueryTerminalOsTypeByPlatform
+     */
+    @Test
+    public void testQueryTerminalOsTypeByPlatformIsEmpty() {
+
+        new Expectations() {
+            {
+                terminalBasicInfoDAO.getTerminalOsTypeByPlatform(CbbTerminalPlatformEnums.APP);
+                result = null;
+            }
+        };
+        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums.APP);
+        Assert.assertEquals(osTypeList.size(), 0);
+    }
 }

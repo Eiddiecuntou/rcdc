@@ -1,10 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class TerminalModelServiceImpl implements TerminalModelService {
 
     @Autowired
     private TerminalModelDriverDAO terminalModelDriverDAO;
+
+    @Autowired
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     @Override
     public CbbTerminalModelDTO[] queryTerminalModelByPlatform(CbbTerminalPlatformEnums platform) {
@@ -77,4 +82,13 @@ public class TerminalModelServiceImpl implements TerminalModelService {
         return terminalModelDTO;
     }
 
+    @Override
+    public List<String> queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums platform) {
+        Assert.notNull(platform, "platform can not be null");
+        List<String> terminalOsTypeList = terminalBasicInfoDAO.getTerminalOsTypeByPlatform(platform);
+        if (CollectionUtils.isEmpty(terminalOsTypeList)) {
+            return Collections.emptyList();
+        }
+        return terminalOsTypeList;
+    }
 }
