@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectThresholdDTO;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
@@ -16,14 +17,16 @@ public class CbbDetectResultResponse extends DefaultResponse {
 
     private CbbTerminalDetectStatisticsDTO result;
 
+    private CbbTerminalDetectThresholdDTO threshold;
 
 
     public CbbDetectResultResponse() {
         
     }
 
-    public CbbDetectResultResponse(CbbTerminalDetectStatisticsDTO result) {
+    public CbbDetectResultResponse(CbbTerminalDetectStatisticsDTO result, CbbTerminalDetectThresholdDTO threshold) {
         this.result = result;
+        this.threshold = threshold;
     }
 
     public CbbTerminalDetectStatisticsDTO getResult() {
@@ -34,4 +37,11 @@ public class CbbDetectResultResponse extends DefaultResponse {
         this.result = result;
     }
 
+    public CbbTerminalDetectThresholdDTO getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(CbbTerminalDetectThresholdDTO threshold) {
+        this.threshold = threshold;
+    }
 }
