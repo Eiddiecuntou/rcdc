@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.common.Constant;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
@@ -197,5 +198,10 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         }
         
     }
-    
+
+    @Override
+    public String getUpgradePackageFileDir() {
+        return Constants.TERMINAL_UPGRADE_OTA_LINUX_IDV_AND_ANDROID_VDI_DIR;
+    }
+
 }
