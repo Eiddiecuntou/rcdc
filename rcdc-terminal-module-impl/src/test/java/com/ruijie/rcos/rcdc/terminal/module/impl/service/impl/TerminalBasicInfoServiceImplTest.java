@@ -341,6 +341,8 @@ public class TerminalBasicInfoServiceImplTest {
         basicInfoEntity.setState(CbbTerminalStateEnums.UPGRADING);
         new Expectations() {
             {
+                sessionManager.getSession(anyString);
+                result = null;
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = basicInfoEntity;
             }
