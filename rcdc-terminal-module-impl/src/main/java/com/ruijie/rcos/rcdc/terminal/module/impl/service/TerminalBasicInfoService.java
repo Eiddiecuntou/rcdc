@@ -18,9 +18,10 @@ public interface TerminalBasicInfoService {
     /**
      *
      * @param terminalId 终端id
+     * @param isTerminalOnline 是否终端上线信息
      * @param shineTerminalBasicInfo 终端信息
      */
-    void saveBasicInfo(String terminalId, CbbShineTerminalBasicInfo shineTerminalBasicInfo);
+    void saveBasicInfo(String terminalId, boolean isTerminalOnline, CbbShineTerminalBasicInfo shineTerminalBasicInfo);
 
     /**
      * 修改终端名称

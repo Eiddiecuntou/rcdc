@@ -68,7 +68,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         entity.setPlatform(CbbTerminalPlatformEnums.VDI);
         new Expectations() {
             {
-                basicInfoService.saveBasicInfo(anyString, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 result = entity;
                 try {
@@ -113,7 +113,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 result = terminalEntity;
-                basicInfoService.saveBasicInfo(anyString, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
                 try {
                     messageHandlerAPI.response((CbbResponseShineMessage) any);
                 } catch (Exception e) {
@@ -156,7 +156,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 result = terminalEntity;
-                basicInfoService.saveBasicInfo(anyString, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
 
                 handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
                 result = new BusinessException("123");
@@ -199,7 +199,7 @@ public class CheckUpgradeHandlerSPIImplTest {
     private void saveVerifications() {
         new Verifications() {
             {
-                basicInfoService.saveBasicInfo(anyString, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
                 times = 1;
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
