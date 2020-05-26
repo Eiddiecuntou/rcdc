@@ -67,7 +67,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private static final int FAIL_TRY_COUNT = 3;
 
     @Override
-    public void saveBasicInfo(String terminalId, boolean isTerminalOnline, CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
+    public void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(shineTerminalBasicInfo, "终端信息不能为空");
 
@@ -83,7 +83,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             basicInfoEntity.setGroupId(Constants.DEFAULT_TERMINAL_GROUP_UUID);
         }
         BeanUtils.copyProperties(shineTerminalBasicInfo, basicInfoEntity, TerminalEntity.BEAN_COPY_IGNORE_NETWORK_INFO_ARR);
-        if (isTerminalOnline) {
+        if (isNewConnection) {
             basicInfoEntity.setLastOnlineTime(now);
         }
 

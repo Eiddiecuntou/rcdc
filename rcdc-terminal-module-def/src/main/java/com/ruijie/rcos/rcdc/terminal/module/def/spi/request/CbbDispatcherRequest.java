@@ -29,7 +29,7 @@ public class CbbDispatcherRequest implements Request {
     private String data;
 
     @Nullable
-    private Boolean isTerminalOnline;
+    private Boolean isNewConnection;
 
     public String getDispatcherKey() {
         return dispatcherKey;
@@ -65,11 +65,11 @@ public class CbbDispatcherRequest implements Request {
     }
 
     @Nullable
-    public Boolean getTerminalOnline() {
-        return isTerminalOnline;
+    public Boolean getNewConnection() {
+        return isNewConnection;
     }
 
-    public void setTerminalOnline(@Nullable Boolean terminalOnline) {
-        isTerminalOnline = terminalOnline;
+    public void setNewConnection(@Nullable Boolean newConnection) {
+        isNewConnection = newConnection;
     }
 }

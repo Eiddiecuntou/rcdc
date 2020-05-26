@@ -91,6 +91,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             request.setTerminalId(terminalId);
             request.setRequestId("456");
             request.setData(generateJson());
+            request.setNewConnection(true);
             checkUpgradeHandler.dispatch(request);
 
             saveVerifications();
@@ -134,6 +135,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
             request.setData(generateJson());
+            request.setNewConnection(true);
             checkUpgradeHandler.dispatch(request);
 
             saveVerifications();
@@ -174,6 +176,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
             request.setData(generateJson());
+            request.setNewConnection(false);
             checkUpgradeHandler.dispatch(request);
         } catch (Exception e) {
             fail();

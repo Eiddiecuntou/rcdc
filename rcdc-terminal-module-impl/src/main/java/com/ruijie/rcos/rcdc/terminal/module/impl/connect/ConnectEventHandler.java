@@ -72,18 +72,18 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
             return;
         }
 
-        boolean isTerminalOnline = false;
+        boolean isNewConnection = false;
         // 处理升级报文，获取terminalId绑定终端
         if (ShineAction.CHECK_UPGRADE.equals(message.getAction())) {
             LOGGER.debug("开始处理检查升级报文[{}]", ShineAction.CHECK_UPGRADE);
             CbbShineTerminalBasicInfo basicInfo = parseTerminalInfo(message.getData());
             // 判断终端是否是新上线
-            isTerminalOnline = isTerminalOnline(basicInfo.getTerminalId(), sender.getSession());
+            isNewConnection = isNewConnection(basicInfo.getTerminalId(), sender.getSession());
             // 绑定终端
             bindSession(sender, basicInfo);
         }
         // 消息分发
-        dispatchMessage(sender, message, isTerminalOnline);
+        dispatchMessage(sender, message, isNewConnection);
     }
 
     /**
@@ -93,7 +93,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
      * @param session session
      * @return 判断结果
      */
-    private boolean isTerminalOnline(String terminalId, Session session) {
+    private boolean isNewConnection(String terminalId, Session session) {
         Session latestSession = sessionManager.getSession(terminalId);
         if (latestSession == session) {
             return false;
@@ -122,13 +122,13 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
     /**
      * 执行消息分发
      */
-    private void dispatchMessage(ResponseMessageSender sender, BaseMessage message, boolean isTerminalOnline) {
+    private void dispatchMessage(ResponseMessageSender sender, BaseMessage message, boolean isNewConnection) {
         String terminalId = getTerminalIdFromSession(sender.getSession());
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setDispatcherKey(message.getAction());
         request.setRequestId(sender.getResponseId());
         request.setTerminalId(terminalId);
-        request.setTerminalOnline(isTerminalOnline);
+        request.setNewConnection(isNewConnection);
         String data = message.getData() == null ? null : String.valueOf(message.getData());
         request.setData(data);
         TerminalInfo terminalInfo = sender.getSession().getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
