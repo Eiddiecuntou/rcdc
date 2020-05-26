@@ -28,6 +28,9 @@ public class CbbDispatcherRequest implements Request {
     @Nullable
     private String data;
 
+    @Nullable
+    private Boolean isNewConnection;
+
     public String getDispatcherKey() {
         return dispatcherKey;
     }
@@ -59,5 +62,14 @@ public class CbbDispatcherRequest implements Request {
 
     public void setData(@Nullable String data) {
         this.data = data;
+    }
+
+    @Nullable
+    public Boolean getNewConnection() {
+        return isNewConnection;
+    }
+
+    public void setNewConnection(@Nullable Boolean newConnection) {
+        isNewConnection = newConnection;
     }
 }

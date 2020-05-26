@@ -479,7 +479,7 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+        basicInfoService.saveBasicInfo(terminalId, false, basicInfo);
 
         new  Verifications() {
             {
@@ -534,7 +534,7 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+        basicInfoService.saveBasicInfo(terminalId, false, basicInfo);
 
         new  Verifications() {
             {
@@ -592,7 +592,7 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+        basicInfoService.saveBasicInfo(terminalId, false, basicInfo);
 
         new  Verifications() {
             {
@@ -643,7 +643,7 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+        basicInfoService.saveBasicInfo(terminalId, false, basicInfo);
 
         new  Verifications() {
             {
