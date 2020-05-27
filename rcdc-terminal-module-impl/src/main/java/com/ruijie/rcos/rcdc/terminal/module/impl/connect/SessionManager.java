@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -27,9 +25,6 @@ import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 public class SessionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionManager.class);
-
-    @Autowired
-    private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
     /**
      * key 为terminalId,value为Session

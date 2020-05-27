@@ -79,7 +79,7 @@ public class SyncSystemUpgradeResultHelper {
         }
 
         TerminalSystemUpgradeEntity upgradingTask = obtainTerminalSystemUpgradingTask(terminalType);
-        saveUpgradeTerminalIfNotExist(basicInfoEntity, upgradingTask);
+        TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = saveUpgradeTerminalIfNotExist(basicInfoEntity, upgradingTask);
 
         SystemUpgradeResultInfo upgradeResultInfo = convertJsonData(request);
 
@@ -89,10 +89,19 @@ public class SyncSystemUpgradeResultHelper {
             return;
         }
 
-        // 更新为其他最终态（非升级中）需释放所占的升级位置
-        updateTerminalUpgradeStatus(basicInfoEntity.getTerminalId(), upgradingTask, upgradeResultInfo);
-        handler.releaseUpgradeQuota(basicInfoEntity.getTerminalId());
-        responseTerminal(request, new Object());
+        // 更新状态为最终态，判断是否终端实际状态为中间态，不是则不需更新
+        if (isUpgradeTerminalInProcessing(upgradeTerminalEntity)) {
+            // 更新为其他最终态（非升级中）需释放所占的升级位置
+            updateTerminalUpgradeStatus(basicInfoEntity.getTerminalId(), upgradingTask, upgradeResultInfo);
+            handler.releaseUpgradeQuota(basicInfoEntity.getTerminalId());
+            responseTerminal(request, new Object());
+        }
+
+    }
+
+    private boolean isUpgradeTerminalInProcessing(TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity) {
+        return upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.UPGRADING
+                || upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.WAIT;
     }
 
     /**
@@ -108,13 +117,14 @@ public class SyncSystemUpgradeResultHelper {
         responseTerminal(request, result);
     }
 
-    private void saveUpgradeTerminalIfNotExist(TerminalEntity basicInfoEntity, TerminalSystemUpgradeEntity upgradingTask) {
+    private TerminalSystemUpgradeTerminalEntity saveUpgradeTerminalIfNotExist(TerminalEntity basicInfoEntity,
+            TerminalSystemUpgradeEntity upgradingTask) {
 
         TerminalSystemUpgradeTerminalEntity existUpgradeTerminal =
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradingTask.getId(), basicInfoEntity.getTerminalId());
         if (existUpgradeTerminal != null) {
             // 升级任务已存在升级终端
-            return;
+            return existUpgradeTerminal;
         }
 
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = new TerminalSystemUpgradeTerminalEntity();
@@ -123,7 +133,7 @@ public class SyncSystemUpgradeResultHelper {
         upgradeTerminalEntity.setState(CbbSystemUpgradeStateEnums.WAIT);
         upgradeTerminalEntity.setCreateTime(new Date());
 
-        systemUpgradeTerminalDAO.save(upgradeTerminalEntity);
+        return systemUpgradeTerminalDAO.save(upgradeTerminalEntity);
     }
 
     private TerminalSystemUpgradeEntity obtainTerminalSystemUpgradingTask(CbbTerminalTypeEnums terminalType) {

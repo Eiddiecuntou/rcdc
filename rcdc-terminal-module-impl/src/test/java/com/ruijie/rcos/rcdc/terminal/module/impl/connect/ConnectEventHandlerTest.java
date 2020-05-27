@@ -127,6 +127,62 @@ public class ConnectEventHandlerTest {
     }
 
     /**
+     * 测试第一个报文正常执行逻辑过程
+     *
+     * @param session session连接
+     * @throws InterruptedException 异常
+     */
+    @Test
+    public void testOnReceiveFirstMessageForOnline(@Mocked Session session) throws InterruptedException {
+        String terminalId = "01-1C-42-F1-2D-45";
+        TerminalInfo info = new TerminalInfo(terminalId, "172.21.12.3");
+        new MockUp<BaseCreateSystemLogRequest>() {
+            @Mock
+            public void $init(String key, String... args) {
+
+            }
+        };
+        new Expectations() {
+            {
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
+                result = null;
+                sessionManager.getSession(terminalId);
+                result = null;
+                sessionManager.bindSession(terminalId, (Session) any);
+                result = null;
+                session.getAttribute(anyString);
+                result = info;
+            }
+        };
+
+
+        String action = ShineAction.CHECK_UPGRADE;
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+        basicInfo.setTerminalId(terminalId);
+        String data = JSON.toJSONString(basicInfo);
+        BaseMessage baseMessage = new BaseMessage(action, data);
+
+        try {
+            connectEventHandler.onReceive(sender, baseMessage);
+        } catch (Exception e) {
+            fail();
+        }
+        Thread.sleep(1000);
+        try {
+            new Verifications() {
+                {
+                    String terId;
+                    sessionManager.bindSession(terId = withCapture(), (Session) any);
+                    times = 1;
+                    assertEquals(terminalId, terId);
+                }
+            };
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    /**
      * 测试不是第一个报文执行逻辑过程
      * 
      * @param session session连接

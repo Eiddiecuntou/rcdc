@@ -11,11 +11,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.UpgradeableTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.ViewUpgradeableTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -60,6 +63,9 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
     private AndroidVDISystemUpgradePackageHelper systemUpgradePackageHelper;
 
     @Autowired
+    private TerminalSystemUpgradeService terminalSystemUpgradeService;
+
+    @Autowired
     private BtClientService btClientService;
 
     @Autowired
@@ -70,6 +76,12 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
 
     @Autowired
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
+
+    @Autowired
+    private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
+
+    @Autowired
+    private TerminalSystemUpgradeServiceTx terminalSystemUpgradeServiceTx;
 
     @Autowired
     private AuditLogAPI logAPI;
@@ -120,6 +132,37 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
     }
 
     @Override
+    public void preUploadPackage() {
+        LOGGER.info("开始执行Android VDI终端升级包上传前处理");
+
+        // 获取升级包信息
+        TerminalSystemUpgradePackageEntity upgradePackage =
+                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        if (upgradePackage == null) {
+            LOGGER.info("Android VDI终端升级包不存在，返回");
+            return;
+        }
+        LOGGER.info("升级包信息: [{}]", upgradePackage.toString());
+
+        // 获取进行中的升级任务信息
+        TerminalSystemUpgradeEntity systemUpgradeTask =
+                terminalSystemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
+        if (systemUpgradeTask == null) {
+            LOGGER.info("未开启Android VDI终端升级任务，返回");
+            return;
+        }
+        LOGGER.info("升级任务信息: [{}]", systemUpgradeTask.toString());
+
+        try {
+            LOGGER.info("开始关闭Android VDI终端升级任务");
+            terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(systemUpgradeTask.getId());
+            systemUpgradeHandlerFactory.getHandler(systemUpgradeTask.getPackageType()).afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
+        } catch (BusinessException e) {
+            LOGGER.error("关闭Android VDI终端升级任务失败", e);
+        }
+    }
+
+    @Override
     public void postUploadPackage() {
         LOGGER.info("开始执行Android VDI终端升级包上传后处理");
         // 查询所有android终端ID
@@ -131,13 +174,13 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         if (!CollectionUtils.isEmpty(terminalEntityList)) {
             terminalIdArr = terminalEntityList.stream()
                     .map(ViewUpgradeableTerminalEntity::getTerminalId).collect(Collectors.toList()).toArray(new String[]{});
-            LOGGER.debug("需要升级的终端ID: [{}]", Arrays.toString(terminalIdArr));
+            LOGGER.info("需要升级的终端ID: [{}]", Arrays.toString(terminalIdArr));
         }
 
         // 获取升级包信息
         TerminalSystemUpgradePackageEntity upgradePackage =
                 terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
-        LOGGER.debug("升级包信息: [{}]", upgradePackage.toString());
+        LOGGER.info("升级包信息: [{}]", upgradePackage.toString());
 
         // 添加升级任务
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
