@@ -13,7 +13,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.io.*;
 import java.util.List;
 import java.util.Properties;
@@ -32,6 +31,9 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
     @Tested
     private LinuxIDVSystemUpgradePackageHelper helper;
 
+    /**
+     * after
+     */
     @After
     public void after() {
         String rootPath = this.getClass().getResource("/").getPath();
@@ -43,6 +45,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，正常流程
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -81,8 +84,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
             }
         };
 
-        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
-                helper.handleOtaListItem(otaListItem, rootPath, destFileName);
+        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo = helper.handleOtaListItem(otaListItem, rootPath, destFileName);
 
         Assert.assertEquals(fileMD5, otaFileInfo.getMd5());
         Assert.assertFalse(otaFileInfo.getFilePath().startsWith(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH));
@@ -90,6 +92,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，源文件不存在
+     * 
      * @throws BusinessException 异常
      */
     @Test(expected = BusinessException.class)
@@ -114,6 +117,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，列表项格式错误
+     * 
      * @throws BusinessException 异常
      */
     @Test(expected = BusinessException.class)
@@ -130,6 +134,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，磁盘空间不足
+     * 
      * @throws BusinessException 异常
      */
     @Test(expected = BusinessException.class)
@@ -164,6 +169,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，复制失败
+     * 
      * @throws BusinessException 异常
      */
     @Test(expected = BusinessException.class)
@@ -209,6 +215,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 读取版本文件，正常流程
+     * 
      * @throws IOException 异常
      * @throws BusinessException 异常
      */
@@ -228,6 +235,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 读取版本文件，异常
+     * 
      * @throws IOException 异常
      * @throws BusinessException 异常
      */
@@ -255,6 +263,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 读取OTA文件列表，正常流程
+     * 
      * @throws IOException 异常
      * @throws BusinessException 异常
      */
@@ -275,6 +284,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 读取OTA文件列表，列表读取错误
+     * 
      * @throws IOException 异常
      * @throws BusinessException 异常
      */
@@ -306,8 +316,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
      */
     @Test
     public void testOtaFileInfo() {
-        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
-                new LinuxIDVSystemUpgradePackageHelper.OtaFileInfo("path", "md5");
+        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo = new LinuxIDVSystemUpgradePackageHelper.OtaFileInfo("path", "md5");
         Assert.assertEquals("path", otaFileInfo.getFilePath());
         Assert.assertEquals("md5", otaFileInfo.getMd5());
 

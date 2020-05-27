@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFileSystemEnvironment;
@@ -278,7 +277,7 @@ public class FileOperateUtilTest {
         String filePath = System.getProperty("user.dir");
         File subFile = new File(filePath);
 
-        new MockUp<SkyengineFileSystemEnvironment>(){
+        new MockUp<SkyengineFileSystemEnvironment>() {
 
             @Mock
             public List<String> getAllowOperatorFolder() {
@@ -286,7 +285,7 @@ public class FileOperateUtilTest {
             }
         };
 
-        new MockUp<SkyengineFile>(){
+        new MockUp<SkyengineFile>() {
 
             @Mock
             public boolean delete(boolean isMoveToRecy) {
@@ -321,7 +320,6 @@ public class FileOperateUtilTest {
         try {
             FileOperateUtil.emptyDirectory(directoryPath, exceptFileName);
         } catch (Exception e) {
-            e.printStackTrace();
             fail();
         }
     }
@@ -771,7 +769,7 @@ public class FileOperateUtilTest {
         String filePath = System.getProperty("user.dir");
         File deleteFile = new File(filePath);
 
-        new MockUp<SkyengineFileSystemEnvironment>(){
+        new MockUp<SkyengineFileSystemEnvironment>() {
 
             @Mock
             public List<String> getAllowOperatorFolder() {
@@ -779,7 +777,7 @@ public class FileOperateUtilTest {
             }
         };
 
-        new MockUp<SkyengineFile>(){
+        new MockUp<SkyengineFile>() {
 
             @Mock
             public boolean delete(boolean isMoveToRecy) {
@@ -837,7 +835,7 @@ public class FileOperateUtilTest {
             }
         };
 
-        new MockUp<SkyengineFileSystemEnvironment>(){
+        new MockUp<SkyengineFileSystemEnvironment>() {
 
             @Mock
             public List<String> getAllowOperatorFolder() {
@@ -845,7 +843,7 @@ public class FileOperateUtilTest {
             }
         };
 
-        new MockUp<SkyengineFile>(){
+        new MockUp<SkyengineFile>() {
 
             @Mock
             public boolean delete(boolean isMoveToRecy) {
@@ -857,6 +855,7 @@ public class FileOperateUtilTest {
 
     /**
      * test
+     * 
      * @param skyengineFile file
      * @throws BusinessException ex
      */
