@@ -140,7 +140,7 @@ public class PageQuerySpecification<T> implements Specification<T> {
         }
 
         if (this.betweenTimeRangeMatch.getEndTime() != null) {
-            predicateList.add(cb.lessThanOrEqualTo(root.get(betweenTimeRangeMatch.getTimeKey()), this.betweenTimeRangeMatch.getEndTime()));
+            predicateList.add(cb.lessThan(root.get(betweenTimeRangeMatch.getTimeKey()), this.betweenTimeRangeMatch.getEndTime()));
         }
         Predicate[] predicateArr = new Predicate[predicateList.size()];
 
