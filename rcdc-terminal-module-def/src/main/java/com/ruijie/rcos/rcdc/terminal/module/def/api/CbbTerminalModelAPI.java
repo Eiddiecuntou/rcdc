@@ -7,6 +7,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 
+import java.util.List;
+
 
 /**
  * Description: Function Description
@@ -37,4 +39,12 @@ public interface CbbTerminalModelAPI {
      */
     
     DtoResponse<CbbTerminalModelDTO> queryByProductId(CbbTerminalProductIdRequest request) throws BusinessException;
+
+
+    /**
+     * 查询终端运行平台类型
+     * @param request 终端平台类型
+     * @return 终端运行平台类型
+     */
+    DtoResponse<List<String>> listTerminalOsType(CbbTerminalPlatformRequest request);
 }
