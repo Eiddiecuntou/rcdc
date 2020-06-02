@@ -76,10 +76,14 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         }
 
         CbbSystemUpgradeStateEnums state = upgradeTerminalEntity.getState();
-        if (state == CbbSystemUpgradeStateEnums.SUCCESS || state == CbbSystemUpgradeStateEnums.UNDO) {
-            LOGGER.info("终端[{}]处于[{}]升级状态，无需升级", upgradeTerminalEntity.getTerminalId(), state.name());
-            return CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE;
+        if (enableUpgradeOnlyOnce(terminalType)) {
+            if (state == CbbSystemUpgradeStateEnums.SUCCESS || state == CbbSystemUpgradeStateEnums.UNDO) {
+                LOGGER.info("终端[{}]处于[{}]升级状态，无需升级", upgradeTerminalEntity.getTerminalId(), state.name());
+                return CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE;
+            }
         }
+
+
         if (state == CbbSystemUpgradeStateEnums.UPGRADING && upgradePackage.getPackageType() == CbbTerminalTypeEnums.IDV_LINUX) {
             LOGGER.info("终端[{}]正在升级中", upgradeTerminalEntity.getTerminalId());
             return CheckSystemUpgradeResultEnums.UPGRADING;
@@ -171,6 +175,16 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
     @Override
     public boolean checkAndHoldUpgradeQuota(String terminalId) {
         Assert.hasText(terminalId, "terminalId can not be blank");
+        return true;
+    }
+
+    /**
+     * 是否任务中仅允许刷机一次
+     *
+     * @param terminalType terminalType
+     * @return boolean
+     */
+    protected boolean enableUpgradeOnlyOnce(CbbTerminalTypeEnums terminalType) {
         return true;
     }
 
