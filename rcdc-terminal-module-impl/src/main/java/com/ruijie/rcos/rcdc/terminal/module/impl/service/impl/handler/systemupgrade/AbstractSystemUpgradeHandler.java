@@ -76,11 +76,9 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         }
 
         CbbSystemUpgradeStateEnums state = upgradeTerminalEntity.getState();
-        if (enableUpgradeOnlyOnce(terminalType)) {
-            if (state == CbbSystemUpgradeStateEnums.SUCCESS || state == CbbSystemUpgradeStateEnums.UNDO) {
-                LOGGER.info("终端[{}]处于[{}]升级状态，无需升级", upgradeTerminalEntity.getTerminalId(), state.name());
-                return CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE;
-            }
+        if (isNoNeedUpgrade(state, terminalType)) {
+            LOGGER.info("终端[{}]处于[{}]升级状态，无需升级", upgradeTerminalEntity.getTerminalId(), state.name());
+            return CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE;
         }
 
 
@@ -91,6 +89,14 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
 
         LOGGER.info("终端[{}]需要升级", upgradeTerminalEntity.getTerminalId());
         return CheckSystemUpgradeResultEnums.NEED_UPGRADE;
+    }
+
+    private boolean isNoNeedUpgrade(CbbSystemUpgradeStateEnums state, CbbTerminalTypeEnums terminalType) {
+        if (!enableUpgradeOnlyOnce(terminalType)) {
+            return false;
+        }
+
+        return state == CbbSystemUpgradeStateEnums.SUCCESS || state == CbbSystemUpgradeStateEnums.UNDO;
     }
 
     @Override
