@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
@@ -251,6 +252,18 @@ public class LinuxVDISystemUpgradeHandlerTest {
                 times = 1;
             }
         };
+    }
+
+    /**
+     * 测试释放升级位置
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testEnableUpgradeOnlyOnce() throws BusinessException {
+
+        boolean enableUpgradeOnlyOnce = handler.enableUpgradeOnlyOnce(CbbTerminalTypeEnums.VDI_LINUX);
+        assertEquals(true, enableUpgradeOnlyOnce);
     }
 
     private TerminalSystemUpgradeEntity buildUpgradeEntity() {

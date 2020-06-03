@@ -184,16 +184,6 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         return true;
     }
 
-    /**
-     * 是否任务中仅允许刷机一次
-     *
-     * @param terminalType terminalType
-     * @return boolean
-     */
-    protected boolean enableUpgradeOnlyOnce(CbbTerminalTypeEnums terminalType) {
-        return true;
-    }
-
     @Override
     public void releaseUpgradeQuota(String terminalId) {
         Assert.hasText(terminalId, "terminalId can not be blank");
@@ -207,5 +197,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
     protected abstract TerminalSystemUpgradePackageDAO getTerminalSystemUpgradePackageDAO();
 
     protected abstract boolean upgradingNumLimit();
+
+    protected abstract boolean enableUpgradeOnlyOnce(CbbTerminalTypeEnums terminalType);
 
 }

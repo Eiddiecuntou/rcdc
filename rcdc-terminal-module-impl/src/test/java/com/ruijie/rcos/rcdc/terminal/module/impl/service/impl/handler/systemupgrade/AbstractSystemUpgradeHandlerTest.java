@@ -392,70 +392,6 @@ public class AbstractSystemUpgradeHandlerTest {
     }
 
     /**
-     * 测试CheckSystemUpgrade
-     */
-    @Test
-    public void testCheckSystemUpgradeTerminalUpgrading2() throws BusinessException {
-        Tested2SystemUpgradeHandler handler = new Tested2SystemUpgradeHandler();
-
-        TerminalEntity terminalEntity = buildTerminalEntity();
-        terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
-
-        TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
-        packageEntity.setPackageType(CbbTerminalTypeEnums.IDV_LINUX);
-
-        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
-
-        TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = buildUpgradeTerminalEntity(terminalEntity, upgradeEntity);
-        upgradeTerminalEntity.setState(CbbSystemUpgradeStateEnums.UPGRADING);
-
-        new MockUp<Tested2SystemUpgradeHandler>() {
-            @Mock
-            public boolean isTerminalEnableUpgrade(TerminalEntity terminal, CbbTerminalTypeEnums terminalType) {
-                return true;
-            }
-
-            @Mock
-            public boolean upgradingNumLimit() {
-                return false;
-            }
-        };
-
-
-        new Expectations() {
-            {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.IDV_LINUX);
-                result = packageEntity;
-
-                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
-                result = upgradeEntity;
-
-                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
-                result = upgradeTerminalEntity;
-
-            }
-        };
-
-        SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.IDV_LINUX, terminalEntity);
-
-        assertEquals(3, checkResult.getSystemUpgradeCode().intValue());
-
-        new Verifications() {
-            {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.IDV_LINUX);
-                times = 2;
-
-                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
-                times = 2;
-
-                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
-                times = 1;
-            }
-        };
-    }
-
-
-    /**
      * 测试终端是否能够升级 - 升级包已删除1
      */
     @Test
@@ -921,43 +857,4 @@ public class AbstractSystemUpgradeHandlerTest {
         }
     }
 
-    /**
-     * Description: 测试类
-     * Copyright: Copyright (c) 2018
-     * Company: Ruijie Co., Ltd.
-     * Create Time: 2019/11/7
-     *
-     * @author nt
-     */
-    private class Tested2SystemUpgradeHandler extends AbstractSystemUpgradeHandler {
-
-        @Override
-        protected SystemUpgradeCheckResult getCheckResult(TerminalSystemUpgradePackageEntity upgradePackage, TerminalSystemUpgradeEntity upgradeTask)
-                throws BusinessException {
-            SystemUpgradeCheckResult checkResult = new SystemUpgradeCheckResult();
-            checkResult.setSystemUpgradeCode(1);
-            return checkResult;
-        }
-
-        @Override
-        protected TerminalSystemUpgradeService getSystemUpgradeService() {
-            return systemUpgradeService;
-        }
-
-        @Override
-        protected TerminalSystemUpgradePackageDAO getTerminalSystemUpgradePackageDAO() {
-            return systemUpgradePackageDAO;
-        }
-
-        @Override
-        protected boolean upgradingNumLimit() {
-            return false;
-        }
-
-        @Override
-        public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId) throws BusinessException {
-            // for test
-            return null;
-        }
-    }
 }
