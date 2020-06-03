@@ -136,7 +136,6 @@ public class AbstractSystemUpgradeHandlerTest {
         };
     }
 
-
     /**
      * 测试CheckSystemUpgrade
      */
@@ -254,6 +253,70 @@ public class AbstractSystemUpgradeHandlerTest {
         new Verifications() {
             {
                 systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                times = 2;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                times = 2;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * testCheckSystemUpgradeTerminalTypeIsAndroidVDI
+     */
+    @Test
+    public void testCheckSystemUpgradeTerminalTypeIsAndroidVDI() throws BusinessException {
+        TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
+
+        TerminalEntity terminalEntity = buildTerminalEntity();
+
+        TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
+
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
+
+        TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = buildUpgradeTerminalEntity(terminalEntity, upgradeEntity);
+        upgradeTerminalEntity.setState(CbbSystemUpgradeStateEnums.WAIT);
+
+        new MockUp<TestedSystemUpgradeHandler>() {
+            @Mock
+            public boolean isTerminalEnableUpgrade(TerminalEntity terminal, CbbTerminalTypeEnums terminalType) {
+                return true;
+            }
+
+            @Mock
+            public boolean upgradingNumLimit() {
+                return false;
+            }
+        };
+
+
+        new Expectations() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+                result = packageEntity;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
+                result = upgradeEntity;
+
+                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
+                result = upgradeTerminalEntity;
+
+            }
+        };
+
+        SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_ANDROID, terminalEntity);
+
+        SystemUpgradeCheckResult  expectedResult= new SystemUpgradeCheckResult();
+        expectedResult.setSystemUpgradeCode(1);
+
+        assertEquals(expectedResult, checkResult);
+
+        new Verifications() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
                 times = 2;
 
                 systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
@@ -787,5 +850,11 @@ public class AbstractSystemUpgradeHandlerTest {
             // for test
             return null;
         }
+
+        @Override
+        protected boolean enableUpgradeOnlyOnce(CbbTerminalTypeEnums terminalType) {
+            return terminalType != CbbTerminalTypeEnums.VDI_ANDROID;
+        }
     }
+
 }

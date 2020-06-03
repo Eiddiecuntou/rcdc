@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
@@ -194,5 +195,18 @@ public class SystemOtaUpgradeHandlerTest {
         } catch (Exception e) {
             fail(e.getMessage());
         }
+    }
+
+    /**
+     * testEnableUpgradeOnlyOnce
+     */
+    @Test
+    public void testEnableUpgradeOnlyOnce() {
+
+        boolean enableUpgradeOnlyOnce = handler.enableUpgradeOnlyOnce(CbbTerminalTypeEnums.IDV_LINUX);
+        assertEquals(true, enableUpgradeOnlyOnce);
+
+        boolean enableUpgradeOnlyOnce2 = handler.enableUpgradeOnlyOnce(CbbTerminalTypeEnums.VDI_ANDROID);
+        assertEquals(false, enableUpgradeOnlyOnce2);
     }
 }
