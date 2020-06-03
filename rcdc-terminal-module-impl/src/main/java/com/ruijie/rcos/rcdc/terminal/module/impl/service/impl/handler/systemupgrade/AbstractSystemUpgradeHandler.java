@@ -93,6 +93,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
 
     private boolean isNoNeedUpgrade(CbbSystemUpgradeStateEnums state, CbbTerminalTypeEnums terminalType) {
         if (!enableUpgradeOnlyOnce(terminalType)) {
+            LOGGER.info("终端类型[{}]的升级任务可重复升级", terminalType.name());
             return false;
         }
 
