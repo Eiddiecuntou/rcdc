@@ -30,7 +30,7 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
     public CbbItemArrResponse<CbbTerminalModelDTO> listTerminalModel(CbbTerminalPlatformRequest request) {
         Assert.notNull(request, "request can not be null");
 
-        CbbTerminalModelDTO[] terminalModelArr = terminalModelService.queryTerminalModelByPlatform(request.getPlatform());
+        CbbTerminalModelDTO[] terminalModelArr = terminalModelService.queryTerminalModelByPlatform(request.getPlatformArr());
         return new CbbItemArrResponse<>(terminalModelArr);
     }
 
@@ -46,7 +46,7 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
     public DtoResponse<List<String>> listTerminalOsType(CbbTerminalPlatformRequest request) {
         Assert.notNull(request, "request can not be null");
 
-        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(request.getPlatform());
+        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(request.getPlatformArr());
         return DtoResponse.success(osTypeList);
     }
 }

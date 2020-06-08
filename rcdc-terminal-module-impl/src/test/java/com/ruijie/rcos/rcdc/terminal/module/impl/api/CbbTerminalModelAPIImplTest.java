@@ -83,10 +83,10 @@ public class CbbTerminalModelAPIImplTest {
     public void testListTerminalOsType() {
 
         CbbTerminalPlatformRequest platformRequest = new CbbTerminalPlatformRequest();
-        platformRequest.setPlatform(CbbTerminalPlatformEnums.APP);
+        platformRequest.setPlatformArr(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
         new Expectations() {
             {
-                terminalModelService.queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums.APP);
+                terminalModelService.queryTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
                 result = Lists.newArrayList("Windows");
             }
         };

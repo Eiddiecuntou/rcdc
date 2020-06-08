@@ -40,10 +40,11 @@ public class TerminalModelServiceImpl implements TerminalModelService {
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     @Override
-    public CbbTerminalModelDTO[] queryTerminalModelByPlatform(CbbTerminalPlatformEnums platform) {
-        Assert.notNull(platform, "platform can not be null");
+    public CbbTerminalModelDTO[] queryTerminalModelByPlatform(CbbTerminalPlatformEnums[] platformArr) {
+        Assert.notNull(platformArr, "platform can not be null");
+        Assert.notEmpty(platformArr, "platform can not be empty");
 
-        List<TerminalModelDriverEntity> entityList = terminalModelDriverDAO.findByPlatform(platform);
+        List<TerminalModelDriverEntity> entityList = terminalModelDriverDAO.findByPlatformIn(platformArr);
         if (CollectionUtils.isEmpty(entityList)) {
             return new CbbTerminalModelDTO[0];
         }
@@ -83,9 +84,10 @@ public class TerminalModelServiceImpl implements TerminalModelService {
     }
 
     @Override
-    public List<String> queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums platform) {
-        Assert.notNull(platform, "platform can not be null");
-        List<String> terminalOsTypeList = terminalBasicInfoDAO.getTerminalOsTypeByPlatform(platform);
+    public List<String> queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums[] platformArr) {
+        Assert.notNull(platformArr, "platformArr can not be null");
+        Assert.notEmpty(platformArr, "platformArr can not be empty");
+        List<String> terminalOsTypeList = terminalBasicInfoDAO.getTerminalOsTypeByPlatform(platformArr);
         if (CollectionUtils.isEmpty(terminalOsTypeList)) {
             return Collections.emptyList();
         }
