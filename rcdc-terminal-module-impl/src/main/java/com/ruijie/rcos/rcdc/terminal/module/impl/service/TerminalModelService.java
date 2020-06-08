@@ -19,10 +19,10 @@ public interface TerminalModelService {
     /**
      *  查询所有终端类型
      *
-     * @param platform 平台类型
+     * @param platformArr 平台类型
      * @return CbbTerminalModelDTO数组
      */
-    CbbTerminalModelDTO[] queryTerminalModelByPlatform(CbbTerminalPlatformEnums platform);
+    CbbTerminalModelDTO[] queryTerminalModelByPlatform(CbbTerminalPlatformEnums[] platformArr);
 
     /**
      *  根据终端类型查询支持的cpu型号
@@ -35,8 +35,8 @@ public interface TerminalModelService {
 
     /**
      * 查询所有终端运行平台类型
-     * @param platform 终端平台类型
+     * @param platformArr 终端平台类型
      * @return List<String>
      */
-    List<String> queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums platform);
+    List<String> queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums[] platformArr);
 }

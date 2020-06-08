@@ -16,13 +16,13 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 public class CbbTerminalPlatformRequest extends EqualsHashcodeSupport implements Request {
 
     @NotNull
-    private CbbTerminalPlatformEnums platform;
+    private CbbTerminalPlatformEnums[] platformArr;
 
-    public CbbTerminalPlatformEnums getPlatform() {
-        return platform;
+    public CbbTerminalPlatformEnums[] getPlatformArr() {
+        return platformArr;
     }
 
-    public void setPlatform(CbbTerminalPlatformEnums platform) {
-        this.platform = platform;
+    public void setPlatformArr(CbbTerminalPlatformEnums[] platformArr) {
+        this.platformArr = platformArr;
     }
 }
