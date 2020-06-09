@@ -4,7 +4,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.Date;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +73,22 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         // 自学习终端型号
         saveTerminalModel(shineTerminalBasicInfo);
 
+        // 保存终端基础信息
+        boolean isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo);
+        int count = 0;
+        // 失败，尝试3次
+        while (!isSaveSuccess && count++ < FAIL_TRY_COUNT) {
+            LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, terminalId);
+            isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo);
+        }
+
+        // 通知其他组件终端为在线状态
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
+        noticeRequest.setTerminalBasicInfo(shineTerminalBasicInfo);
+        terminalEventNoticeSPI.notify(noticeRequest);
+    }
+
+    private boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         Date now = new Date();
         if (basicInfoEntity == null) {
@@ -90,12 +105,13 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
         basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
-        basicInfoDAO.save(basicInfoEntity);
-
-        // 通知其他组件终端为在线状态
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
-        noticeRequest.setTerminalBasicInfo(shineTerminalBasicInfo);
-        terminalEventNoticeSPI.notify(noticeRequest);
+        try {
+            basicInfoDAO.save(basicInfoEntity);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("保存终端信息失败！将进行重试", e);
+            return false;
+        }
     }
 
     private CbbTerminalNetworkInfoDTO[] obtainNetworkInfo(CbbShineTerminalBasicInfo basicInfo) {
