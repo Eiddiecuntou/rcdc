@@ -5,6 +5,7 @@ import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImpl;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.CbbTerminalSystemUpgradePackageAPIImplTest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -19,6 +20,7 @@ import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.util.IsoFileUtil;
 import mockit.*;
 import org.apache.commons.exec.DefaultExecutor;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -72,7 +74,16 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
 
     @Mocked
     private ByteArrayOutputStream byteArrayOutputStream;
-    
+
+    /**
+     * 获取Linux IDV升级包存放路径
+     */
+    @Test
+    public void testGetUpgradePackageFileDir() {
+        String fileDir = handler.getUpgradePackageFileDir();
+        Assert.assertEquals(Constants.PXE_SAMBA_PACKAGE_PATH, fileDir);
+    }
+
     /**
      * 测试uploadUpgradeFile，文件类型错误
      *

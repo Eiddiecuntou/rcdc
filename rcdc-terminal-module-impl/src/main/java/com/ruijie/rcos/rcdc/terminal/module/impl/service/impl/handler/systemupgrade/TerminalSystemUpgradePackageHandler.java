@@ -29,4 +29,20 @@ public interface TerminalSystemUpgradePackageHandler {
      * 系统升级包上传后处理方法
      */
     void postUploadPackage();
+
+    /**
+     * 获取系统升级包存放的路径
+     *
+     * @return 存放路径
+     */
+    String getUpgradePackageFileDir();
+
+    /**
+     * 检验磁盘空间是否满足升级包上传
+     *
+     * @param fileSize 文件大小
+     * @param fileStorePath 文件存放路径
+     * @return 磁盘空间是否足够
+     */
+    boolean checkServerDiskSpaceIsEnough(Long fileSize, String fileStorePath);
 }

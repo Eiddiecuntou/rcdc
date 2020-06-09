@@ -57,6 +57,11 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     @Override
+    public String getUpgradePackageFileDir() {
+        return Constants.PXE_SAMBA_PACKAGE_PATH;
+    }
+
+    @Override
     protected TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.notNull(fileName, "fileName can not be null");
         Assert.notNull(filePath, "filePath can not be null");

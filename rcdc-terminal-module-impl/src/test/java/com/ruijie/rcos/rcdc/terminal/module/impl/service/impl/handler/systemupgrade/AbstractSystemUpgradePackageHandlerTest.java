@@ -81,5 +81,10 @@ public class AbstractSystemUpgradePackageHandlerTest {
         public void postUploadPackage() {
 
         }
+
+        @Override
+        public String getUpgradePackageFileDir() {
+            return "";
+        }
     }
 }

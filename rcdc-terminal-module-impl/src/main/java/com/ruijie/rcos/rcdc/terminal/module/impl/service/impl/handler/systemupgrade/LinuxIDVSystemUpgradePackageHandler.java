@@ -79,6 +79,11 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     @Override
+    public String getUpgradePackageFileDir() {
+        return Constants.TERMINAL_UPGRADE_OTA_LINUX_IDV_AND_ANDROID_VDI_DIR;
+    }
+
+    @Override
     protected TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.hasText(fileName, "fileName must have text!");
         Assert.hasText(filePath, "filePath must have text!");

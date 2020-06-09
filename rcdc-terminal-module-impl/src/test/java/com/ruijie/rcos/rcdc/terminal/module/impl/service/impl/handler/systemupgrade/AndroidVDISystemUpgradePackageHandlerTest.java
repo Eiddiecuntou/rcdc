@@ -372,6 +372,15 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
     }
 
     /**
+     * getUpgradePackageFileDir测试方法
+     *
+     */
+    public void testGetUpgradePackageFileDir() {
+        String fileDir = handler.getUpgradePackageFileDir();
+        assertEquals(Constants.TERMINAL_UPGRADE_OTA_LINUX_IDV_AND_ANDROID_VDI_DIR, fileDir);
+    }
+
+    /**
      * 上传前处理，正常流程
      * @throws BusinessException 异常
      */
