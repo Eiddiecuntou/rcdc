@@ -166,16 +166,16 @@ public class TerminalOtaUpgradeInitTest {
         upgradePackage.setFilePath("123");
         upgradePackage.setSeedPath("456");
         List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
-        List<TerminalSystemUpgradeEntity> upgradingTaskList2 = Lists.newArrayList();
+        List<TerminalSystemUpgradeEntity> upgradingTask2List = Lists.newArrayList();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradingTaskList2.add(upgradeEntity);
+        upgradingTask2List.add(upgradeEntity);
         new Expectations() {
             {
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);
-                returns(upgradingTaskList, upgradingTaskList2);
+                returns(upgradingTaskList, upgradingTask2List);
 
                 btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
                 result = new Exception("123");
