@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalModelDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalProductIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalModelService;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
@@ -45,6 +47,26 @@ public class CbbTerminalModelAPIImplTest {
     public void testListTerminalModelArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.listTerminalModel(null), "request can not be null");
         assertTrue(true);
+    }
+
+    /**
+     * 测试listTerminalModel参数为空
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testListTerminalModel() throws Exception {
+        CbbTerminalModelDTO modelDTO = new CbbTerminalModelDTO();
+        CbbTerminalModelDTO[] terminalModelArr = new CbbTerminalModelDTO[] {modelDTO};
+        new Expectations() {
+            {
+                terminalModelService.queryTerminalModelByPlatform((CbbTerminalPlatformEnums[]) any);
+                result = terminalModelArr;
+            }
+        };
+
+        CbbItemArrResponse<CbbTerminalModelDTO> response = terminalModelAPI.listTerminalModel(new CbbTerminalPlatformRequest());
+        assertEquals(response.getItemArr(), terminalModelArr);
     }
 
     /**
