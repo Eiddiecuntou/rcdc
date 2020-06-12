@@ -55,7 +55,7 @@ public class SyncSystemUpgradeResultHelper {
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
 
     /**
-     *  处理终端系统升级状态消息
+     * 处理终端系统升级状态消息
      *
      * @param basicInfoEntity 终端信息
      * @param handler 系统升级处理对象
@@ -94,9 +94,9 @@ public class SyncSystemUpgradeResultHelper {
             // 更新为其他最终态（非升级中）需释放所占的升级位置
             updateTerminalUpgradeStatus(basicInfoEntity.getTerminalId(), upgradingTask, upgradeResultInfo);
             handler.releaseUpgradeQuota(basicInfoEntity.getTerminalId());
-            responseTerminal(request, new Object());
         }
 
+        responseTerminal(request, new Object());
     }
 
     private boolean isUpgradeTerminalInProcessing(TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity) {
@@ -105,7 +105,7 @@ public class SyncSystemUpgradeResultHelper {
     }
 
     /**
-     *  响应不需升级
+     * 响应不需升级
      *
      * @param request 请求信息
      */
