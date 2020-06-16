@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import org.apache.commons.lang3.StringUtils;
@@ -48,24 +50,25 @@ public class TerminalModelServiceImpl implements TerminalModelService {
         if (CollectionUtils.isEmpty(entityList)) {
             return new CbbTerminalModelDTO[0];
         }
-        Set<String> productModelSet = new HashSet<>();
-        return entityList.stream().map(entity -> convertToDTO(entity, productModelSet)).filter(Objects::nonNull).toArray(CbbTerminalModelDTO[]::new);
+        Set<String> productIdSet = new HashSet<>();
+        return entityList.stream().map(entity -> convertToDTO(entity, productIdSet)).filter(Objects::nonNull).toArray(CbbTerminalModelDTO[]::new);
     }
 
-    private static CbbTerminalModelDTO convertToDTO(TerminalModelDriverEntity entity, Set<String> productModelSet) {
-        if (StringUtils.isBlank(entity.getProductModel())) {
+    private static CbbTerminalModelDTO convertToDTO(TerminalModelDriverEntity entity, Set<String> productIdSet) {
+        String productId = entity.getProductId();
+        if (StringUtils.isBlank(productId)) {
             // 产品型号为空返回null, 过滤掉
             return null;
         }
 
-        if (productModelSet.contains(entity.getProductModel().trim())) {
+        if (productIdSet.contains(productId.trim())) {
             // 产品型号重复了返回null, 过滤掉
             return null;
         }
 
         CbbTerminalModelDTO terminalModelDTO = new CbbTerminalModelDTO();
         BeanUtils.copyProperties(entity, terminalModelDTO);
-        productModelSet.add(entity.getProductModel().trim());
+        productIdSet.add(productId.trim());
         return terminalModelDTO;
     }
 
