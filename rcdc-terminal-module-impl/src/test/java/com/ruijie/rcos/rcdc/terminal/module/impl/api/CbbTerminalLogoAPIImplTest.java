@@ -173,7 +173,7 @@ public class CbbTerminalLogoAPIImplTest {
         new MockUp<File>() {
             @Mock
             boolean exist() {
-                return false;
+                return true;
             }
 
             @Mock
