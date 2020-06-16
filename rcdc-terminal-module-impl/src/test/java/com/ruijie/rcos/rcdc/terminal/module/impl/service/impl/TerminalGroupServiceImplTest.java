@@ -346,6 +346,48 @@ public class TerminalGroupServiceImplTest {
         };
     }
 
+    /**
+     * 测试编辑终端-父级节点为null
+     *
+     * @throws BusinessException exception
+     */
+    @Test
+    public void testmodifyGroupByIdWhileParentGroupIdNotNull() throws BusinessException {
+        UUID uuid = UUID.randomUUID();
+        UUID parentGroupId = UUID.randomUUID();
+        TerminalGroupDTO dto = new TerminalGroupDTO(uuid, "groupName123", parentGroupId);
+
+        TerminalGroupEntity groupEntity = new TerminalGroupEntity();
+        groupEntity.setId(uuid);
+        groupEntity.setName("groupName123");
+        groupEntity.setParentId(null);
+
+        new MockUp<TerminalGroupServiceImpl>() {
+            @Mock
+            public TerminalGroupEntity checkGroupExist(UUID groupId) throws BusinessException {
+                return groupEntity;
+            }
+
+            @Mock
+            private void checkGroupName(TerminalGroupDTO terminalGroup) throws BusinessException {
+                // 保存分组以覆盖，这里mock掉
+            }
+        };
+
+        terminalGroupService.modifyGroupById(dto);
+
+        new Verifications() {
+            {
+                TerminalGroupEntity saveGroup;
+                terminalGroupDAO.save(saveGroup = withCapture());
+
+                assertEquals(uuid, saveGroup.getId());
+                assertEquals("groupName123", saveGroup.getName());
+                assertEquals(parentGroupId, saveGroup.getParentId());
+            }
+        };
+    }
+
 
     /**
      * 测试获取终端分组
@@ -654,4 +696,26 @@ public class TerminalGroupServiceImplTest {
         }
     }
 
+    @Test
+    public void testGetTerminalGroupNameArr() throws BusinessException {
+        UUID uuid = UUID.randomUUID();
+        TerminalGroupEntity terminalGroupEntity = new TerminalGroupEntity();
+        terminalGroupEntity.setId(uuid);
+        UUID parentId = UUID.randomUUID();
+        terminalGroupEntity.setParentId(parentId);
+
+        TerminalGroupEntity parentTerminalGroupEntity = new TerminalGroupEntity();
+        parentTerminalGroupEntity.setId(parentId);
+
+        new Expectations() {
+            {
+                terminalGroupDAO.findById(uuid);
+                result = Optional.of(terminalGroupEntity);
+                terminalGroupDAO.findById(parentId);
+                result = Optional.of(parentTerminalGroupEntity);
+            }
+        };
+        String[] terminalGroupNameArr = terminalGroupService.getTerminalGroupNameArr(uuid);
+        Assert.assertEquals(2, terminalGroupNameArr.length);
+    }
 }
