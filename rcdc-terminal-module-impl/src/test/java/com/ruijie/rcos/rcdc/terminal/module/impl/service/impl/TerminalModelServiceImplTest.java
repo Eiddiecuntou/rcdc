@@ -88,13 +88,13 @@ public class TerminalModelServiceImplTest {
 
         TerminalModelDriverEntity modelDriverEntity2 = new TerminalModelDriverEntity();
         modelDriverEntity2.setId(UUID.randomUUID());
-        modelDriverEntity2.setProductId("abc");
+        modelDriverEntity2.setProductId("123");
         modelDriverEntity2.setProductModel("456");
 
         TerminalModelDriverEntity modelDriverEntity3 = new TerminalModelDriverEntity();
         modelDriverEntity3.setId(UUID.randomUUID());
-        modelDriverEntity3.setProductId("3123123");
-        modelDriverEntity3.setProductModel(null);
+        modelDriverEntity3.setProductId(null);
+        modelDriverEntity3.setProductModel("xxx");
 
         new Expectations() {
             {
