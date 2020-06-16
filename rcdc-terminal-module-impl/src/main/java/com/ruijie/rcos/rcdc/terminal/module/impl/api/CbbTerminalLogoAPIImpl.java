@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -30,6 +35,8 @@ import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
  */
 public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalLogoAPIImpl.class);
+
     private static final String TERMINAL_LOGO_NAME = "logo.png";
 
     @Autowired
@@ -47,32 +54,42 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
 
         deleteLogo();
 
-        saveLogo(request.getLogoPath());
+        TerminalLogoInfo terminalLogoInfo = saveLogoInfo(request);
 
-        terminalLogoService.syncTerminalLogo(TERMINAL_LOGO_NAME, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+        terminalLogoService.syncTerminalLogo(terminalLogoInfo, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
 
         return DefaultResponse.Builder.success();
     }
 
     @Override
     public CbbGetLogoPathResponse getLogoPath(DefaultRequest request) {
-        String logoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
+        String logoInfo = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
         CbbGetLogoPathResponse response = new CbbGetLogoPathResponse();
-        response.setLogoPath(logoPath);
+        response.setLogoPath(getLogoPath(logoInfo));
         return response;
     }
 
     @Override
     public DefaultResponse initLogo(DefaultRequest request) throws BusinessException {
         String logoPath = deleteLogo();
-        if (logoPath != null) {
+        if (StringUtils.isNotEmpty(logoPath)) {
             globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, null);
-            terminalLogoService.syncTerminalLogo(StringUtils.EMPTY, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+            terminalLogoService.syncTerminalLogo(new TerminalLogoInfo(), SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
         }
         return DefaultResponse.Builder.success();
     }
 
-    private void saveLogo(String logoPath) throws BusinessException {
+    private TerminalLogoInfo saveLogoInfo(CbbUploadLogoRequest request) throws BusinessException {
+        String saveLogoPath = saveLogo(request.getLogoPath());
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath(saveLogoPath);
+        terminalLogoInfo.setMd5(request.getLogoMD5());
+        globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, JSON.toJSONString(terminalLogoInfo));
+        return terminalLogoInfo;
+
+    }
+
+    private String saveLogo(String logoPath) throws BusinessException {
         File logo = new File(logoPath);
         String saveLogoFile = configFacade.read("file.busiz.dir.terminal.logo");
         String saveLogoPath = saveLogoFile + TERMINAL_LOGO_NAME;
@@ -83,21 +100,20 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
             saveLogo.setReadable(true, false);
             saveLogo.setExecutable(true, false);
 
-            globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, saveLogoPath);
         } catch (IOException e) {
+            LOGGER.error("从[{}] 移动文件到[{}]失败", logoPath, saveLogoPath);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPLOAD_LOGO_FAIL, e);
         }
-
+        return saveLogoPath;
     }
 
     private String deleteLogo() {
-        String logoPath = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
-        if (logoPath != null) {
-            File logo = new File(logoPath);
-            if (logo.exists()) {
-                SkyengineFile skyengineFile = new SkyengineFile(logoPath);
-                skyengineFile.delete(false);
-            }
+        String logoInfo = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
+        String logoPath = getLogoPath(logoInfo);
+        File logo = new File(logoPath);
+        if (logo.exists()) {
+            SkyengineFile skyengineFile = new SkyengineFile(logoPath);
+            skyengineFile.delete(false);
         }
         return logoPath;
     }
@@ -109,6 +125,16 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
             logo.setReadable(true, false);
             logo.setExecutable(true, false);
         }
+
+    }
+
+    private String getLogoPath(String logoInfo) {
+        if (StringUtils.isEmpty(logoInfo)) {
+            LOGGER.info("没有保存自定义logo，返回空路径");
+            return StringUtils.EMPTY;
+        }
+        TerminalLogoInfo terminalLogoInfo = JSONObject.parseObject(logoInfo, TerminalLogoInfo.class);
+        return terminalLogoInfo.getLogoPath();
 
     }
 }
