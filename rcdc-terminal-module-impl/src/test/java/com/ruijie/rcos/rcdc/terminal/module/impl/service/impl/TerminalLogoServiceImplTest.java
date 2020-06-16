@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,7 +60,9 @@ public class TerminalLogoServiceImplTest {
      */
     @Test
     public void testSyncTerminalLogoOnlineTerminalIdListIsEmpty() throws BusinessException, InterruptedException {
-        String logoName = "logo.png";
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");
         SendTerminalEventEnums name = SendTerminalEventEnums.MODIFY_TERMINAL_NAME;
         new Expectations() {
             {
@@ -66,7 +70,7 @@ public class TerminalLogoServiceImplTest {
                 result = Collections.emptyList();
             }
         };
-        terminalLogoService.syncTerminalLogo(logoName, name);
+        terminalLogoService.syncTerminalLogo(terminalLogoInfo, name);
         Thread.sleep(1000);
 
         new Verifications() {
@@ -87,7 +91,9 @@ public class TerminalLogoServiceImplTest {
      */
     @Test
     public void testSyncTerminalLogoDefaultRequestMessageSenderIsNull() throws BusinessException, InterruptedException {
-        String logoName = "logo.png";
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");;
         SendTerminalEventEnums name = SendTerminalEventEnums.MODIFY_TERMINAL_NAME;
         List<String> onlineTerminalIdList = new ArrayList<>();
         onlineTerminalIdList.add("1");
@@ -99,7 +105,7 @@ public class TerminalLogoServiceImplTest {
                 result = null;
             }
         };
-        terminalLogoService.syncTerminalLogo(logoName, name);
+        terminalLogoService.syncTerminalLogo(terminalLogoInfo, name);
         Thread.sleep(1000);
         new Verifications() {
             {
@@ -121,10 +127,13 @@ public class TerminalLogoServiceImplTest {
      */
     @Test
     public void testSyncTerminalLogoException() throws BusinessException, IOException, InterruptedException {
-        String logoName = "logo.png";
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");
         SendTerminalEventEnums name = SendTerminalEventEnums.MODIFY_TERMINAL_NAME;
         List<String> onlineTerminalIdList = new ArrayList<>();
         onlineTerminalIdList.add("1");
+
         new Expectations() {
             {
                 sessionManager.getOnlineTerminalId();
@@ -136,7 +145,7 @@ public class TerminalLogoServiceImplTest {
             }
         };
         try {
-            terminalLogoService.syncTerminalLogo(logoName, name);
+            terminalLogoService.syncTerminalLogo(terminalLogoInfo, name);
             Thread.sleep(1000);
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e.getKey());
@@ -165,7 +174,9 @@ public class TerminalLogoServiceImplTest {
      */
     @Test
     public void testSyncTerminalLogoSuccess() throws BusinessException, IOException, InterruptedException {
-        String logoName = "logo.png";
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");
         SendTerminalEventEnums name = SendTerminalEventEnums.MODIFY_TERMINAL_NAME;
         List<String> onlineTerminalIdList = new ArrayList<>();
         onlineTerminalIdList.add("1");
@@ -178,7 +189,7 @@ public class TerminalLogoServiceImplTest {
                 sender.request((Message) any);
             }
         };
-        terminalLogoService.syncTerminalLogo(logoName, name);
+        terminalLogoService.syncTerminalLogo(terminalLogoInfo, name);
         Thread.sleep(1000);
         new Verifications() {
             {
@@ -204,8 +215,8 @@ public class TerminalLogoServiceImplTest {
                 result = null;
             }
         };
-        terminalLogoService.getTerminalLogoName();
-        assertEquals(StringUtils.EMPTY, terminalLogoService.getTerminalLogoName());
+        assertEquals(StringUtils.EMPTY, terminalLogoService.getTerminalLogoInfo().getLogoPath());
+        assertEquals(StringUtils.EMPTY, terminalLogoService.getTerminalLogoInfo().getMd5());
     }
 
     /**
@@ -214,17 +225,19 @@ public class TerminalLogoServiceImplTest {
      */
     @Test
     public void testGetTerminalLogoNameLogoPathNotNull() {
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");
+        String logoInfo = JSON.toJSONString(terminalLogoInfo);
         new Expectations() {
             {
                 globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
-                result = anyString;
-                anyString.substring(anyString.lastIndexOf("/") + 1);
-                result = "logo.png";
+                result = logoInfo;
 
             }
         };
-        terminalLogoService.getTerminalLogoName();
-        assertEquals("logo.png", terminalLogoService.getTerminalLogoName());
+        assertEquals("/logo/logo.png", terminalLogoService.getTerminalLogoInfo().getLogoPath());
+        assertEquals("123456", terminalLogoService.getTerminalLogoInfo().getMd5());
     }
 
 
