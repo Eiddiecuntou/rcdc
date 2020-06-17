@@ -45,7 +45,7 @@ public enum CbbTerminalTypeEnums {
     /**
      * 苹果系统软终端
      */
-    APP_MACOS("APP", "Mac_OS"),
+    APP_MACOS("APP", "macOS"),
 
     /**
      * 苹果手机移动终端
