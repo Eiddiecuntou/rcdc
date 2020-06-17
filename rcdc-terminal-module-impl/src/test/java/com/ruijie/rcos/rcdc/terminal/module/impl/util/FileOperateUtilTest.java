@@ -884,5 +884,66 @@ public class FileOperateUtilTest {
         assertTrue(true);
     }
 
+    /**
+     * 测试listFile
+     */
+    @Test
+    public void testListFile() {
+        String filePath = "test";
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+
+            @Mock
+            boolean isFile() {
+                return false;
+            }
+
+            File[] listFiles() {
+                return new File[] {new File("/test/test")};
+            }
+        };
+        FileOperateUtil.listFile(filePath);
+        new Verifications() {
+            {
+
+            }
+        };
+    }
+
+    /**
+     * 测试listFile
+     */
+    @Test
+    public void testListFileNull() {
+        String filePath = "test";
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+
+            @Mock
+            boolean isFile() {
+                return false;
+            }
+
+            File[] listFiles() {
+
+                //目录下没有文件
+                return null;
+            }
+        };
+        FileOperateUtil.listFile(filePath);
+        new Verifications() {
+            {
+
+            }
+        };
+    }
+
+
 
 }

@@ -12,18 +12,30 @@ import org.springframework.util.Assert;
  */
 public class SyncTerminalLogoRequest {
 
-    private String logoName;
+    private String logoPath;
 
-    public SyncTerminalLogoRequest(String logoName) {
-        Assert.notNull(logoName, "logoName can not be null");
-        this.logoName = logoName;
+    private String md5;
+
+    public SyncTerminalLogoRequest(String logoPath, String md5) {
+        Assert.notNull(logoPath, "logoPath can not be null");
+        Assert.notNull(md5, "md5 can not be null");
+        this.logoPath = logoPath;
+        this.md5 = md5;
     }
 
-    public String getLogoName() {
-        return logoName;
+    public String getLogoPath() {
+        return logoPath;
     }
 
-    public void setLogoName(String logoName) {
-        this.logoName = logoName;
+    public void setLogoPath(String logoPath) {
+        this.logoPath = logoPath;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
     }
 }

@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -18,17 +19,17 @@ public interface TerminalLogoService {
     /**
      * 上传终端Logo
      *
-     * @param logoName Logo名字
+     * @param terminalLogoInfo Logo信息
      * @param name     发送给终端的Action
      * @throws BusinessException 业务异常
      */
-    void syncTerminalLogo(String logoName, SendTerminalEventEnums name) throws BusinessException;
+    void syncTerminalLogo(TerminalLogoInfo terminalLogoInfo, SendTerminalEventEnums name) throws BusinessException;
 
     /**
-     * 获取终端Logo名
+     * 获取终端Logo信息
      *
-     * @return 终端Logo名
+     * @return 终端Logo信息
      */
-    String getTerminalLogoName();
+    TerminalLogoInfo getTerminalLogoInfo();
 
 }

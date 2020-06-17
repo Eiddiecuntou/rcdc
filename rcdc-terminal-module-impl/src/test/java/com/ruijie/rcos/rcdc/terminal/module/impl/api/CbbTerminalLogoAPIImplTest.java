@@ -1,8 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -94,7 +96,7 @@ public class CbbTerminalLogoAPIImplTest {
                 result = "/opt/ftp/terminal/logo/";
                 Files.move((Path) any, (Path) any);
                 globalParameterAPI.updateParameter("terminalLogo", anyString);
-                terminalLogoService.syncTerminalLogo(anyString, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
             }
         };
         terminalLogoAPI.uploadLogo(request);
@@ -106,7 +108,7 @@ public class CbbTerminalLogoAPIImplTest {
                 times = 1;
                 globalParameterAPI.updateParameter("terminalLogo", anyString);
                 times = 1;
-                terminalLogoService.syncTerminalLogo(anyString, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
                 times = 1;
             }
         };
@@ -124,7 +126,7 @@ public class CbbTerminalLogoAPIImplTest {
         new MockUp<File>() {
             @Mock
             boolean exists() {
-                return true;
+                return false;
             }
 
             @Mock
@@ -141,7 +143,7 @@ public class CbbTerminalLogoAPIImplTest {
                 result = "/opt/ftp/terminal/logo/";
                 Files.move((Path) any, (Path) any);
                 globalParameterAPI.updateParameter("terminalLogo", anyString);
-                terminalLogoService.syncTerminalLogo(anyString, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
             }
         };
         terminalLogoAPI.uploadLogo(request);
@@ -153,7 +155,7 @@ public class CbbTerminalLogoAPIImplTest {
                 times = 1;
                 globalParameterAPI.updateParameter("terminalLogo", anyString);
                 times = 1;
-                terminalLogoService.syncTerminalLogo(anyString, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
                 times = 1;
             }
         };
@@ -171,7 +173,7 @@ public class CbbTerminalLogoAPIImplTest {
         new MockUp<File>() {
             @Mock
             boolean exist() {
-                return false;
+                return true;
             }
 
             @Mock
@@ -224,24 +226,28 @@ public class CbbTerminalLogoAPIImplTest {
     @Test
     public void testUploadLogoFileExist() throws Exception {
         CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");
+        String logoInfo = JSON.toJSONString(terminalLogoInfo);
         new MockUp<CbbTerminalLogoAPIImpl>() {
             @Mock
-            private void saveLogo(String logoPath) {
-                
+            private String saveLogo(String logoPath) {
+                return "/logo/logo.png";
             }
         };
 
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminalLogo");
-                result = "/opt/ftp/terminal/logo/logo.png";
-                terminalLogoService.syncTerminalLogo(anyString, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                result = logoInfo;
+                terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
             }
         };
         terminalLogoAPI.uploadLogo(request);
         new Verifications() {
             {
-                terminalLogoService.syncTerminalLogo(anyString, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
                 times = 1;
             }
         };
@@ -257,10 +263,14 @@ public class CbbTerminalLogoAPIImplTest {
     @Test
     public void testGetLogoPath() throws Exception {
         DefaultRequest request = new DefaultRequest();
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");
+        String logoInfo = JSON.toJSONString(terminalLogoInfo);
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminalLogo");
-                result = "logoPath";
+                result = logoInfo;
             }
         };
         terminalLogoAPI.getLogoPath(request);
@@ -282,12 +292,16 @@ public class CbbTerminalLogoAPIImplTest {
     @Test
     public void testInitLogoPathIsNotNull() throws Exception {
         DefaultRequest request = new DefaultRequest();
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");
+        String logoInfo = JSON.toJSONString(terminalLogoInfo);
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminalLogo");
-                result = "logoPath";
+                result = logoInfo;
                 globalParameterAPI.updateParameter("terminalLogo", null);
-                terminalLogoService.syncTerminalLogo(StringUtils.EMPTY, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
 
             }
         };
@@ -299,7 +313,7 @@ public class CbbTerminalLogoAPIImplTest {
                 times = 1;
                 globalParameterAPI.updateParameter("terminalLogo", null);
                 times = 1;
-                terminalLogoService.syncTerminalLogo(StringUtils.EMPTY, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
                 times = 1;
             }
         };
@@ -328,7 +342,7 @@ public class CbbTerminalLogoAPIImplTest {
                 times = 1;
                 globalParameterAPI.updateParameter("terminalLogo", null);
                 times = 0;
-                terminalLogoService.syncTerminalLogo(StringUtils.EMPTY, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                terminalLogoService.syncTerminalLogo(new TerminalLogoInfo(), SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
                 times = 0;
             }
         };
@@ -338,15 +352,21 @@ public class CbbTerminalLogoAPIImplTest {
     /**
      * 测试initLogo  logo Exists
      *
+     * @param skyengineFile 文件
+     *
      * @throws Exception 异常
      */
     @Test
     public void testInitLogoWithLogoExists(@Mocked SkyengineFile skyengineFile) throws Exception {
         DefaultRequest request = new DefaultRequest();
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");
+        String logoInfo = JSON.toJSONString(terminalLogoInfo);
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminalLogo");
-                result = "logoPath";
+                result = logoInfo;
             }
         };
 
@@ -364,7 +384,7 @@ public class CbbTerminalLogoAPIImplTest {
                 times = 1;
                 globalParameterAPI.updateParameter("terminalLogo", null);
                 times = 1;
-                terminalLogoService.syncTerminalLogo(StringUtils.EMPTY, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+                terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
                 times = 1;
             }
         };

@@ -4,8 +4,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAP
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalLogoName;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.*;
@@ -57,10 +57,13 @@ public class SyncTerminalLogoHandlerSPIImplTest {
     public void testDispatch(@Mocked MessageUtils utils) throws BusinessException {
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         CbbResponseShineMessage responseMessage = new CbbResponseShineMessage<>();
+        TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
+        terminalLogoInfo.setLogoPath("/logo/logo.png");
+        terminalLogoInfo.setMd5("123456");
         new Expectations() {
             {
-                terminalLogoService.getTerminalLogoName();
-                result = "logo.png";
+                terminalLogoService.getTerminalLogoInfo();
+                result = terminalLogoInfo;
                 MessageUtils.buildResponseMessage(request, any);
                 result = responseMessage;
             }
@@ -68,10 +71,11 @@ public class SyncTerminalLogoHandlerSPIImplTest {
         syncTerminalLogoHandlerSPI.dispatch(request);
         new Verifications() {
             {
-                TerminalLogoName terminalLogo;
+                TerminalLogoInfo terminalLogo;
                 MessageUtils.buildResponseMessage(request, terminalLogo = withCapture());
                 times = 1;
-                assertEquals("logo.png", terminalLogo.getLogoName());
+                assertEquals("/logo/logo.png", terminalLogo.getLogoPath());
+                assertEquals("123456", terminalLogo.getMd5());
                 messageHandlerAPI.response(responseMessage);
                 times = 1;
             }
@@ -88,7 +92,7 @@ public class SyncTerminalLogoHandlerSPIImplTest {
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         new Expectations() {
             {
-                terminalLogoService.getTerminalLogoName();
+                terminalLogoService.getTerminalLogoInfo();
                 result = new BusinessException("key");
             }
         };
