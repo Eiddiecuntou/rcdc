@@ -25,6 +25,7 @@ public class TreeNodeTest {
         TreeNode node = new TreeNode(id, new ArrayList<>());
         int depth = node.maxDepth(null);
         Assert.assertTrue(depth == 0);
+        node.setId(id);
         Assert.assertEquals(node.getId(), id);
     }
 }
