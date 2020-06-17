@@ -1,0 +1,1 @@
+UPDATE t_sk_global_parameter SET param_value = 'cvbtq14Wq3wTHsZI25f8l3U/+aVxfuIHjPoMB8Jnksw=', default_value = 'cvbtq14Wq3wTHsZI25f8l3U/+aVxfuIHjPoMB8Jnksw=' WHERE param_key = 'terminal_pwd';
