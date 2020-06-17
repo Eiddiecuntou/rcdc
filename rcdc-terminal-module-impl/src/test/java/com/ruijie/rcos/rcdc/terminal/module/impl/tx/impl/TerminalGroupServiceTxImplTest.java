@@ -80,37 +80,6 @@ public class TerminalGroupServiceTxImplTest {
     }
 
     /**
-     * testDeleteGroup
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testDeleteGroupWhileMoveGroupIdIsNull() throws BusinessException {
-        UUID id = UUID.randomUUID();
-        UUID moveGroupId = UUID.randomUUID();
-
-        new Expectations() {
-            {
-                terminalGroupDAO.findByParentId(id);
-                result = Lists.newArrayList();
-            }
-        };
-        serviceTxImpl.deleteGroup(id, moveGroupId);
-        new Verifications() {
-            {
-                validator.validate(id, moveGroupId);
-                times = 1;
-                terminalGroupService.checkGroupExist(id);
-                times = 1;
-                terminalGroupDAO.findByParentId(id);
-                times = 1;
-                systemUpgradeTerminalGroupDAO.deleteByTerminalGroupId(id);
-                times = 1;
-            }
-        };
-    }
-
-    /**
      * testDeleteGroup1
      *
      * @throws BusinessException 异常

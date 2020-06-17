@@ -21,11 +21,8 @@ public class TreeNodeTest {
 
     @Test
     public void testMaxDepthRootNull() {
-        UUID id = UUID.randomUUID();
-        TreeNode node = new TreeNode(id, new ArrayList<>());
+        TreeNode node = new TreeNode(UUID.randomUUID(), new ArrayList<>());
         int depth = node.maxDepth(null);
         Assert.assertTrue(depth == 0);
-        node.setId(id);
-        Assert.assertEquals(node.getId(), id);
     }
 }

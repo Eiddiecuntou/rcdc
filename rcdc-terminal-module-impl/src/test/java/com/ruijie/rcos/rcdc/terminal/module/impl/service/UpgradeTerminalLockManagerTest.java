@@ -1,8 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,17 +29,20 @@ public class UpgradeTerminalLockManagerTest {
     @Tested
     private UpgradeTerminalLockManager upgradeTerminalLockManager;
 
+
     /**
      * 测试GetAndCreateLock方法
-     * 
-     * @param reentrantLock lock
+     *
      * @throws Exception 异常
      */
     @Test
-    public void testGetAndCreateLock(@Mocked ReentrantLock reentrantLock) throws Exception {
+    public void testGetAndCreateLock() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeTerminalLockManager.getAndCreateLock(null), "terminalId can not be empty");
         UUID terminalId = UUID.randomUUID();
-        Assert.assertEquals(upgradeTerminalLockManager.getAndCreateLock(terminalId.toString()), reentrantLock);
-        Assert.assertEquals(upgradeTerminalLockManager.getAndCreateLock(terminalId.toString()), reentrantLock);
+        Lock reentrantLock = upgradeTerminalLockManager.getAndCreateLock(terminalId.toString());
+        Map<String, Lock> terminalLockMap = (Map<String, Lock>) FieldUtils.readField(upgradeTerminalLockManager, "terminalLockMap", true);
+
+        Assert.assertEquals(reentrantLock, terminalLockMap.get(terminalId.toString()));
+
     }
 }
