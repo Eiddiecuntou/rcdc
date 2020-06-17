@@ -87,7 +87,7 @@ public class TerminalGroupServiceTxImplTest {
     @Test
     public void testDeleteGroupWhileMoveGroupIdIsNull() throws BusinessException {
         UUID id = UUID.randomUUID();
-        UUID moveGroupId = null;
+        UUID moveGroupId = UUID.randomUUID();
 
         new Expectations() {
             {
@@ -106,8 +106,6 @@ public class TerminalGroupServiceTxImplTest {
                 times = 1;
                 systemUpgradeTerminalGroupDAO.deleteByTerminalGroupId(id);
                 times = 1;
-                terminalGroupService.checkGroupExist(moveGroupId);
-                times = 0;
             }
         };
     }
