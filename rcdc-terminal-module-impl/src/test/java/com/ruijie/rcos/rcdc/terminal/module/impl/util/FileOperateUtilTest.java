@@ -944,6 +944,25 @@ public class FileOperateUtilTest {
         };
     }
 
+    /**
+     * 测试listFile
+     */
+    @Test
+    public void testListFilePathNotExists() {
+        String filePath = "test";
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return false;
+            }
+        };
+        try {
+            FileOperateUtil.listFile(filePath);
+            fail();
+        } catch (Exception e) {
+            assertEquals(e.getMessage(), "filePath:{}" + filePath);
+        }
 
+    }
 
 }
