@@ -1,16 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
-import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
+import com.ruijie.rcos.base.sysmanage.module.def.api.SambaServiceAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.dto.SambaConfigDTO;
+import com.ruijie.rcos.base.sysmanage.module.def.enums.SambaMountState;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SambaInfoDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
@@ -24,20 +23,12 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 @Service
 public class SambaInfoService {
 
-    @Value("${samba.pxe.username}")
-    private String sambaPxeUserName;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SambaInfoService.class);
 
-    @Value("${samba.pxe.password}")
-    private String sambaPxePassword;
-
-    @Value("${samba.pxe.port}")
-    private String sambaPxePort;
-
-    @Value("${samba.pxe.server_dir}")
-    private String sambaPxeDir;
+    private static final String PXE_SHARE_NAME = "pxe";
 
     @Autowired
-    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
+    private SambaServiceAPI sambaServiceAPI;
 
     /**
      * 获取pxe刷机samba信息
@@ -46,22 +37,21 @@ public class SambaInfoService {
      * @throws BusinessException 业务异常
      */
     public SambaInfoDTO getPxeSambaInfo() throws BusinessException {
+
+        final SambaConfigDTO sambaConfigDTO = sambaServiceAPI.getSambaConfig(PXE_SHARE_NAME).getDto();
+
+        if (sambaConfigDTO.getState() == SambaMountState.UNMOUNT) {
+            LOGGER.error("samba共享目录[{}]未挂载", PXE_SHARE_NAME);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SAMBA_UNMOUNT, PXE_SHARE_NAME);
+        }
+
         SambaInfoDTO pxeSambaInfoDTO = new SambaInfoDTO();
-        pxeSambaInfoDTO.setUserName(sambaPxeUserName);
-        pxeSambaInfoDTO.setPassword(sambaPxePassword);
-        pxeSambaInfoDTO.setIp(obtainVirtualIp());
-        pxeSambaInfoDTO.setPort(sambaPxePort);
-        pxeSambaInfoDTO.setFilePath(sambaPxeDir);
+        pxeSambaInfoDTO.setUserName(sambaConfigDTO.getWriter().getUsername());
+        pxeSambaInfoDTO.setPassword(sambaConfigDTO.getWriter().getPassword());
+        pxeSambaInfoDTO.setIp(sambaConfigDTO.getIp());
+        pxeSambaInfoDTO.setPort(sambaConfigDTO.getPort().toString());
+        pxeSambaInfoDTO.setFilePath(sambaConfigDTO.getServerPath());
 
         return pxeSambaInfoDTO;
     }
-
-    private String obtainVirtualIp() throws BusinessException {
-        DtoResponse<ClusterVirtualIpDTO> response = cloudPlatformMgmtAPI.getClusterVirtualIp(new DefaultRequest());
-        Assert.notNull(response, "response can not be null");
-        Assert.notNull(response.getDto(), "ClusterVirtualIpDTO can not be null");
-
-        return response.getDto().getClusterVirtualIpIp();
-    }
-
 }
