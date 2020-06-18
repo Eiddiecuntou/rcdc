@@ -368,4 +368,6 @@ public interface BusinessKey {
     /** IDV升级包 */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_ERROR = "rcdc_terminal_system_upgrade_package_version_file_error";
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_FILE_ERROR = "rcdc_terminal_system_upgrade_package_ota_file_error";
+
+    String RCDC_TERMINAL_SAMBA_UNMOUNT = "rcdc_terminal_samba_unmount";
 }
