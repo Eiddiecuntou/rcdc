@@ -56,6 +56,7 @@ installPath = None
 torrentPath = None
 fullComponentDir = None
 diffComponentDir = None
+limitFileSize = 20 * 1024 *1024
 
 # 入口函数
 def update(terminalPlatform, osType):
@@ -235,7 +236,7 @@ def completeUpdatePackage(originPath, tempDir, newComponentList, oldComponentLis
         oldVersion = None
         oldComponentFileName = None
         if oldComponentList != None:
-            oldVersion, oldComponentFileName,oldComponentFileMd5 = needMakeDiffFile(componentName, newVersion, newComponentMd5, oldComponentList)
+            oldVersion, oldComponentFileName,oldComponentFileMd5 = needMakeDiffFile(originPath, componentName, newVersion, newComponentMd5, oldComponentList)
             
         if oldVersion != None:
             logger.info("start make component[%s] vesion[%s] to version[%s] diff file" % (componentName, oldVersion, newVersion))
@@ -246,12 +247,20 @@ def completeUpdatePackage(originPath, tempDir, newComponentList, oldComponentLis
             newComp['basePackageMd5'] = oldComponentFileMd5
 
 
-def needMakeDiffFile(componentName, newVersion, newComponentMd5, oldComponentList):
+def needMakeDiffFile(originPath, componentName, newVersion, newComponentMd5, oldComponentList):
     for oldComp in oldComponentList:
         # 组件名不同跳过
         if componentName != oldComp['name']:
             continue
-        
+
+        # 组件包制作差异bsdiff非常消耗内存，最大可能达到17倍文件大小
+        # 因此限制制作差异的文件大小，超过的不制作差异
+        oldfilePath = '%s%s%s%s' % (originPath, RAINOS_UPDATE_FULL_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, oldComp['completePackageName'])
+        fsize = getFileSizeByte(oldfilePath);
+        if fsize > limitFileSize:
+            logger.info("component[%s] file size is [%s], big than [%s],skip make diff file" % (componentName, fsize, limitFileSize))
+            return None,None,None
+
         # 版本不相同则需制作差异包
         oldVersion = oldComp['version']
         if newVersion != oldVersion:
@@ -264,6 +273,8 @@ def needMakeDiffFile(componentName, newVersion, newComponentMd5, oldComponentLis
     
     return None,None,None
 
+def getFileSizeByte(filePath):
+    return os.path.getsize(filePath)
 
 def getFTPRelatePath(torrentPath):
     return torrentPath.replace(torrentPrePath, "")
