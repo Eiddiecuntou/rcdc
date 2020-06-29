@@ -4,11 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.BetweenTimeRangeMatch;
 import org.junit.Test;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -42,7 +45,7 @@ public class PageQuerySpecificationTest {
     public void testConstructor() {
         // 参数列名为空但关键词不为空
         try {
-            new PageQuerySpecification<>("df", new ArrayList<>(), new MatchEqual[1]);
+            new PageQuerySpecification<>("df", new ArrayList<>(), new MatchEqual[1], new BetweenTimeRangeMatch());
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals("请指定需要搜索的列名", e.getMessage());
@@ -56,7 +59,8 @@ public class PageQuerySpecificationTest {
      */
     @Test
     public void testToPredicateArgumentIsNull() throws Exception {
-        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("", new ArrayList<>(), new MatchEqual[1]);
+        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("", new ArrayList<>(), new MatchEqual[1],
+                new BetweenTimeRangeMatch());
         ThrowExceptionTester.throwIllegalArgumentException(() -> specification.toPredicate(null, query, cb), "Root不能为null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> specification.toPredicate(root, null, cb), "CriteriaQuery不能为null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> specification.toPredicate(root, query, null), "CriteriaBuilder不能为null");
@@ -80,7 +84,7 @@ public class PageQuerySpecificationTest {
                 result = exactMatchPredicate;
                 cb.or((Predicate[]) any);
                 result = likePredicate;
-                cb.and(likePredicate, exactMatchPredicate);
+                cb.and((Predicate[]) any);
                 result = resultPredicate;
             }
         };
@@ -94,7 +98,10 @@ public class PageQuerySpecificationTest {
         matchEqual.setValueArr(fieldValueArr);
         matchEqualArr[0] = matchEqual;
 
-        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("dfgdf", searchColumnList, matchEqualArr);
+        BetweenTimeRangeMatch betweenTimeRangeMatch = new BetweenTimeRangeMatch(new Date(), new Date(), "test");
+
+        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("dfgdf", searchColumnList, matchEqualArr,
+                betweenTimeRangeMatch);
 
         assertEquals(resultPredicate, specification.toPredicate(root, query, cb));
     }
@@ -123,7 +130,8 @@ public class PageQuerySpecificationTest {
         matchEqual.setValueArr(fieldValueArr);
         matchEqualArr[0] = matchEqual;
 
-        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("", searchColumnList, matchEqualArr);
+        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("", searchColumnList, matchEqualArr,
+                new BetweenTimeRangeMatch());
 
         assertEquals(exactMatchPredicate, specification.toPredicate(root, query, cb));
     }
@@ -148,7 +156,8 @@ public class PageQuerySpecificationTest {
 
         MatchEqual[] matchEqualArr = new MatchEqual[0];
 
-        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("sds", searchColumnList, matchEqualArr);
+        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("sds", searchColumnList, matchEqualArr,
+                new BetweenTimeRangeMatch());
 
         assertEquals(likePredicate, specification.toPredicate(root, query, cb));
     }
@@ -166,7 +175,7 @@ public class PageQuerySpecificationTest {
 
         MatchEqual[] matchEqualArr = new MatchEqual[0];
 
-        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("", searchColumnList, matchEqualArr);
+        PageQuerySpecification<Object> specification = new PageQuerySpecification<>("", searchColumnList, matchEqualArr, null);
 
         try {
             specification.toPredicate(root, query, cb);

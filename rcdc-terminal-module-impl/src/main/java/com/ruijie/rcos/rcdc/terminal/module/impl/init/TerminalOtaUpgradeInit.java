@@ -61,14 +61,25 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
     }
 
     private void init(String basePath, CbbTerminalTypeEnums type) {
+        // 如果存在OTA升级包文件，则认为需要初始化，包含ISO初始部署、tar包升级两种场景
+        File packageDir = new File(basePath);
+        if (packageDir.isDirectory()) {
+            List<File> fileList = FileOperateUtil.listFile(basePath);
+            if (!CollectionUtils.isEmpty(fileList)) {
+                LOGGER.info("初始化ota升级包");
+                initOtaFile(fileList.get(0), type);
+                return;
+            }
+        }
+
         TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(type);
         if (upgradePackage == null) {
-            LOGGER.info("初始化ota升级包");
-            initOtaFile(basePath, type);
-        } else {
-            LOGGER.info("初始化bt分享");
-            initBtServer(upgradePackage);
+            LOGGER.info("终端类型【{}】的升级包记录不存在", type.name());
+            return;
         }
+
+        LOGGER.info("初始化bt分享");
+        initBtServer(upgradePackage);
     }
 
     private void initBtServer(TerminalSystemUpgradePackageEntity upgradePackage) {
@@ -85,18 +96,13 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         }
     }
 
-    private void initOtaFile(String basePath, CbbTerminalTypeEnums type) {
+    private void initOtaFile(File packageFile, CbbTerminalTypeEnums type) {
         try {
-            List<File> fileList = FileOperateUtil.listFile(basePath);
-            if (CollectionUtils.isEmpty(fileList)) {
-                LOGGER.info("出厂路径下OTA升级包不存在");
-                return;
-            }
-            File file = fileList.get(0);
-            CbbTerminalUpgradePackageUploadRequest request = generateRequest(file, type);
+            CbbTerminalUpgradePackageUploadRequest request = generateRequest(packageFile, type);
             TerminalSystemUpgradePackageHandler handler = handlerFactory.getHandler(type);
+            handler.preUploadPackage();
             handler.uploadUpgradePackage(request);
-            FileOperateUtil.deleteFile(file);
+            FileOperateUtil.deleteFile(packageFile);
             handler.postUploadPackage();
         } catch (Exception e) {
             LOGGER.error("获取OTA包信息失败", e);

@@ -43,6 +43,6 @@ public class CollectLogResponseSPIImpl implements CbbDispatcherHandlerSPI {
             return;
         }
         LOGGER.error("日志收集失败；terminalId:{}", request.getTerminalId());
-        collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.FAILURE);
+        collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.FAULT);
     }
 }

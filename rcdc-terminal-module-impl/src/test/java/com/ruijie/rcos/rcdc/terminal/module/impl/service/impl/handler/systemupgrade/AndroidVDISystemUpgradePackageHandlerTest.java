@@ -21,7 +21,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.SeedFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.BtClientServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -72,6 +74,15 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
     @Injectable
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
+
+    @Injectable
+    private TerminalSystemUpgradeService terminalSystemUpgradeService;
+
+    @Injectable
+    private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
+
+    @Injectable
+    private TerminalSystemUpgradeServiceTx terminalSystemUpgradeServiceTx;
 
     @Injectable
     private AuditLogAPI logAPI;
@@ -355,6 +366,133 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
                 cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
                 times = 1;
                 logAPI.recordLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG, (String[]) any);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * getUpgradePackageFileDir测试方法
+     *
+     */
+    public void testGetUpgradePackageFileDir() {
+        String fileDir = handler.getUpgradePackageFileDir();
+        assertEquals(Constants.TERMINAL_UPGRADE_OTA_LINUX_IDV_AND_ANDROID_VDI_DIR, fileDir);
+    }
+
+    /**
+     * 上传前处理，正常流程
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testPreUploadPackage() throws BusinessException {
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+
+        TerminalSystemUpgradeEntity systemUpgradeTask = new TerminalSystemUpgradeEntity();
+        systemUpgradeTask.setId(UUID.randomUUID());
+
+        new Expectations() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+                result = upgradePackage;
+                terminalSystemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId((UUID) any);
+                result = systemUpgradeTask;
+            }
+        };
+
+        handler.preUploadPackage();
+
+        new Verifications() {
+            {
+                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask((UUID) any);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 上传前处理，正常流程，已关闭任务
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testPreUploadPackageTaskClosed() throws BusinessException {
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+
+        new Expectations() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+                result = upgradePackage;
+                terminalSystemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId((UUID) any);
+                result = null;
+            }
+        };
+
+        handler.preUploadPackage();
+
+        new Verifications() {
+            {
+                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask((UUID) any);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     * 上传前处理，正常流程，无升级包
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testPreUploadPackageNotExist() throws BusinessException {
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+
+        new Expectations() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+                result = null;
+            }
+        };
+
+        handler.preUploadPackage();
+
+        new Verifications() {
+            {
+                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask((UUID) any);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     * 上传前处理，异常
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testPreUploadPackageException() throws BusinessException {
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+
+        TerminalSystemUpgradeEntity systemUpgradeTask = new TerminalSystemUpgradeEntity();
+        systemUpgradeTask.setId(UUID.randomUUID());
+
+        new Expectations() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+                result = upgradePackage;
+                terminalSystemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId((UUID) any);
+                result = systemUpgradeTask;
+                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask((UUID) any);
+                result = new BusinessException("key");
+            }
+        };
+
+        handler.preUploadPackage();
+
+        new Verifications() {
+            {
+                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask((UUID) any);
                 times = 1;
             }
         };

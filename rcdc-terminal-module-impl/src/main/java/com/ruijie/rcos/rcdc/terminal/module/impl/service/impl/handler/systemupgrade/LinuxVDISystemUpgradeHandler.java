@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
@@ -156,5 +157,12 @@ public class LinuxVDISystemUpgradeHandler extends AbstractSystemUpgradeHandler<L
         Assert.hasText(terminalId, "terminalId can not be blank");
 
         SystemUpgradeGlobal.releaseUpgradeQuota(terminalId);
+    }
+
+    @Override
+    protected boolean enableUpgradeOnlyOnce(CbbTerminalTypeEnums terminalType) {
+        Assert.notNull(terminalType, "terminalType can not be null");
+
+        return true;
     }
 }

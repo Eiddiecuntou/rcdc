@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -12,7 +13,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.io.*;
 import java.util.List;
 import java.util.Properties;
@@ -31,6 +31,9 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
     @Tested
     private LinuxIDVSystemUpgradePackageHelper helper;
 
+    /**
+     * after
+     */
     @After
     public void after() {
         String rootPath = this.getClass().getResource("/").getPath();
@@ -42,6 +45,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，正常流程
+     * 
      * @throws BusinessException 异常
      */
     @Test
@@ -80,8 +84,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
             }
         };
 
-        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
-                helper.handleOtaListItem(otaListItem, rootPath, destFileName);
+        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo = helper.handleOtaListItem(otaListItem, rootPath, destFileName);
 
         Assert.assertEquals(fileMD5, otaFileInfo.getMd5());
         Assert.assertFalse(otaFileInfo.getFilePath().startsWith(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH));
@@ -89,6 +92,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，源文件不存在
+     * 
      * @throws BusinessException 异常
      */
     @Test(expected = BusinessException.class)
@@ -113,6 +117,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，列表项格式错误
+     * 
      * @throws BusinessException 异常
      */
     @Test(expected = BusinessException.class)
@@ -129,6 +134,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，磁盘空间不足
+     * 
      * @throws BusinessException 异常
      */
     @Test(expected = BusinessException.class)
@@ -163,6 +169,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 处理OTA文件列表项，复制失败
+     * 
      * @throws BusinessException 异常
      */
     @Test(expected = BusinessException.class)
@@ -208,6 +215,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
 
     /**
      * 读取版本文件，正常流程
+     * 
      * @throws IOException 异常
      * @throws BusinessException 异常
      */
@@ -226,26 +234,12 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
     }
 
     /**
-     * 读取版本文件，文件不存在
-     * @throws IOException 异常
-     * @throws BusinessException 异常
-     */
-    @Test(expected = BusinessException.class)
-    public void testGetVersionPropertiesNotExist() throws IOException, BusinessException {
-        String rootPath = this.getClass().getResource("/").getPath();
-        String versionFilePath = rootPath + "version.properties";
-
-        helper.getVersionProperties(versionFilePath);
-
-        Assert.fail();
-    }
-
-    /**
      * 读取版本文件，异常
+     * 
      * @throws IOException 异常
      * @throws BusinessException 异常
      */
-    @Test(expected = BusinessException.class)
+    @Test
     public void testGetVersionPropertiesException() throws IOException, BusinessException {
         String rootPath = this.getClass().getResource("/").getPath();
         String versionFilePath = rootPath + "version.properties";
@@ -259,13 +253,17 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
             }
         };
 
-        helper.getVersionProperties(versionFilePath);
-
-        Assert.fail();
+        try {
+            helper.getVersionProperties(versionFilePath);
+            Assert.fail();
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_ERROR);
+        }
     }
 
     /**
      * 读取OTA文件列表，正常流程
+     * 
      * @throws IOException 异常
      * @throws BusinessException 异常
      */
@@ -285,26 +283,12 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
     }
 
     /**
-     * 读取OTA文件列表，列表不存在
-     * @throws IOException 异常
-     * @throws BusinessException 异常
-     */
-    @Test(expected = BusinessException.class)
-    public void testGetOtaFilesInfoNotExist() throws IOException, BusinessException {
-        String rootPath = this.getClass().getResource("/").getPath();
-        String otaListPath = rootPath + "ots.list";
-
-        helper.getOtaFilesInfo(otaListPath);
-
-        Assert.fail();
-    }
-
-    /**
      * 读取OTA文件列表，列表读取错误
+     * 
      * @throws IOException 异常
      * @throws BusinessException 异常
      */
-    @Test(expected = BusinessException.class)
+    @Test
     public void testGetOtaFilesInfoException() throws IOException, BusinessException {
         String rootPath = this.getClass().getResource("/").getPath();
         String otaListPath = rootPath + "ots.list";
@@ -319,9 +303,12 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
             }
         };
 
-        helper.getOtaFilesInfo(otaListPath);
-
-        Assert.fail();
+        try {
+            helper.getOtaFilesInfo(otaListPath);
+            Assert.fail();
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_FILE_ERROR);
+        }
     }
 
     /**
@@ -329,8 +316,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
      */
     @Test
     public void testOtaFileInfo() {
-        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
-                new LinuxIDVSystemUpgradePackageHelper.OtaFileInfo("path", "md5");
+        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo = new LinuxIDVSystemUpgradePackageHelper.OtaFileInfo("path", "md5");
         Assert.assertEquals("path", otaFileInfo.getFilePath());
         Assert.assertEquals("md5", otaFileInfo.getMd5());
 

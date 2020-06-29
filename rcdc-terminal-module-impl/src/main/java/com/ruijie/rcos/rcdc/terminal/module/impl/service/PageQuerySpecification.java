@@ -1,11 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.BetweenTimeRangeMatch;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -46,14 +51,20 @@ public class PageQuerySpecification<T> implements Specification<T> {
      */
     private MatchEqual[] matchEqualArr;
 
+    /**
+     * 特定时间范围内查询对象
+     */
+    private BetweenTimeRangeMatch betweenTimeRangeMatch;
 
-    public PageQuerySpecification(String searchKeyword, List<String> searchColumnList, MatchEqual[] matchEqualArr) {
+    public PageQuerySpecification(String searchKeyword, List<String> searchColumnList, MatchEqual[] matchEqualArr,
+                                  BetweenTimeRangeMatch betweenTimeRangeMatch) {
         if (StringUtils.isNotBlank(searchKeyword) && CollectionUtils.isEmpty(searchColumnList)) {
             throw new IllegalArgumentException("请指定需要搜索的列名");
         }
         this.searchKeyword = searchKeyword;
         this.searchColumnList = searchColumnList;
         this.matchEqualArr = matchEqualArr;
+        this.betweenTimeRangeMatch = betweenTimeRangeMatch;
     }
 
     @Override
@@ -63,17 +74,16 @@ public class PageQuerySpecification<T> implements Specification<T> {
         Assert.notNull(cb, "CriteriaBuilder不能为null");
         Predicate likePredicate = buildLikePredicate(root, cb);
         Predicate exactMatchPredicate = buildExactMatchPredicate(root, cb);
-        if (likePredicate != null && exactMatchPredicate != null) {
-            return cb.and(likePredicate, exactMatchPredicate);
+        Predicate betweenTimePredicate = buildBetweenTimeRangeMatchPredicate(root, cb);
+        List<Predicate> initialPredicateList = Lists.newArrayList(likePredicate, exactMatchPredicate, betweenTimePredicate);
+
+        Predicate[] predicateArr = initialPredicateList.stream().filter(item -> item != null).toArray(Predicate[]::new);
+        if (0 == predicateArr.length) {
+            // 都为null的情况
+            throw new IllegalArgumentException("请指定查询条件");
         }
-        if (likePredicate == null && exactMatchPredicate != null) {
-            return exactMatchPredicate;
-        }
-        if (likePredicate != null) {
-            return likePredicate;
-        }
-        // 都为null的情况
-        throw new IllegalArgumentException("请指定查询条件");
+
+        return cb.and(predicateArr);
     }
 
     /**
@@ -113,6 +123,28 @@ public class PageQuerySpecification<T> implements Specification<T> {
         Predicate[] predicateArr = new Predicate[predicateList.size()];
         Predicate likePredicate = cb.or(predicateList.toArray(predicateArr));
         return likePredicate;
+    }
+
+    /**
+     * 构建特定时间范围查询条件
+     */
+    private Predicate buildBetweenTimeRangeMatchPredicate(Root<T> root, CriteriaBuilder cb) {
+        if (null == betweenTimeRangeMatch) {
+            // 没有传特定时间范围查询对象返回null
+            return null;
+        }
+        List<Predicate> predicateList = Lists.newArrayList();
+
+        if (this.betweenTimeRangeMatch.getStartTime() != null) {
+            predicateList.add(cb.greaterThanOrEqualTo(root.get(betweenTimeRangeMatch.getTimeKey()), this.betweenTimeRangeMatch.getStartTime()));
+        }
+
+        if (this.betweenTimeRangeMatch.getEndTime() != null) {
+            predicateList.add(cb.lessThan(root.get(betweenTimeRangeMatch.getTimeKey()), this.betweenTimeRangeMatch.getEndTime()));
+        }
+        Predicate[] predicateArr = new Predicate[predicateList.size()];
+
+        return cb.and(predicateList.toArray(predicateArr));
     }
 
 }

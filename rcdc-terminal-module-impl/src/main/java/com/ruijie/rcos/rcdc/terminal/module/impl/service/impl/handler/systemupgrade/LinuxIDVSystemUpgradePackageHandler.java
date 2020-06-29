@@ -69,8 +69,18 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     @Override
+    public void preUploadPackage() {
+        LOGGER.info("Linux IDV系统升级包无需上传前处理流程");
+    }
+
+    @Override
     public void postUploadPackage() {
         LOGGER.info("Linux IDV系统升级包无需上传后处理流程");
+    }
+
+    @Override
+    public String getUpgradePackageFileDir() {
+        return Constants.TERMINAL_UPGRADE_OTA_LINUX_IDV_AND_ANDROID_VDI_DIR;
     }
 
     @Override
@@ -101,7 +111,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
 
         // 组装升级包信息
         versionInfo.setPackageType(CbbTerminalTypeEnums.IDV_LINUX);
-        versionInfo.setPackageName(OTA_PACKAGE_NAME);
+        versionInfo.setPackageName(fileName);
         versionInfo.setSeedLink(seedInfo.getSeedFilePath());
         versionInfo.setSeedMD5(seedInfo.getSeedFileMD5());
         versionInfo.setUpgradeMode(DEFAULT_UPGRADE_MODE);

@@ -1,15 +1,23 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalModelDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalProductIdRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalModelService;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 import mockit.*;
 import mockit.integration.junit4.JMockit;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -42,6 +50,26 @@ public class CbbTerminalModelAPIImplTest {
     }
 
     /**
+     * 测试listTerminalModel参数为空
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testListTerminalModel() throws Exception {
+        CbbTerminalModelDTO modelDTO = new CbbTerminalModelDTO();
+        CbbTerminalModelDTO[] terminalModelArr = new CbbTerminalModelDTO[] {modelDTO};
+        new Expectations() {
+            {
+                terminalModelService.queryTerminalModelByPlatform((CbbTerminalPlatformEnums[]) any);
+                result = terminalModelArr;
+            }
+        };
+
+        CbbItemArrResponse<CbbTerminalModelDTO> response = terminalModelAPI.listTerminalModel(new CbbTerminalPlatformRequest());
+        assertEquals(response.getItemArr(), terminalModelArr);
+    }
+
+    /**
      * 测试queryByProductId参数为空
      *
      * @throws Exception 异常
@@ -68,5 +96,25 @@ public class CbbTerminalModelAPIImplTest {
         };
         DtoResponse<CbbTerminalModelDTO> response = terminalModelAPI.queryByProductId(request);
         assertEquals(Status.SUCCESS, response.getStatus());
+    }
+
+    /**
+     * testListTerminalOsType
+     */
+    @Test
+    public void testListTerminalOsType() {
+
+        CbbTerminalPlatformRequest platformRequest = new CbbTerminalPlatformRequest();
+        platformRequest.setPlatformArr(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
+        new Expectations() {
+            {
+                terminalModelService.queryTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
+                result = Lists.newArrayList("Windows");
+            }
+        };
+
+        DtoResponse<List<String>> listDtoResponse = terminalModelAPI.listTerminalOsType(platformRequest);
+
+        Assert.assertEquals(listDtoResponse.getDto().get(0), "Windows");
     }
 }

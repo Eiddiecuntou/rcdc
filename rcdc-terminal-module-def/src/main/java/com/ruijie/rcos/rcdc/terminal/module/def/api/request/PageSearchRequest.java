@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.BetweenTimeRangeMatch;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -30,6 +32,9 @@ public class PageSearchRequest extends DefaultPageRequest {
     @Nullable
     private Sort sort;
 
+    @Nullable
+    private BetweenTimeRangeMatch betweenTimeRangeMatch;
+
     public String getSearchKeyword() {
         return searchKeyword;
     }
@@ -53,6 +58,15 @@ public class PageSearchRequest extends DefaultPageRequest {
 
     public void setMatchEqualArr(MatchEqual[] matchEqualArr) {
         this.matchEqualArr = matchEqualArr;
+    }
+
+    @Nullable
+    public BetweenTimeRangeMatch getBetweenTimeRangeMatch() {
+        return betweenTimeRangeMatch;
+    }
+
+    public void setBetweenTimeRangeMatch(@Nullable BetweenTimeRangeMatch betweenTimeRangeMatch) {
+        this.betweenTimeRangeMatch = betweenTimeRangeMatch;
     }
 
     public PageSearchRequest() {

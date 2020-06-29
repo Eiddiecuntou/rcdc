@@ -73,8 +73,18 @@ public class AbstractSystemUpgradePackageHandlerTest {
         }
 
         @Override
+        public void preUploadPackage() {
+
+        }
+
+        @Override
         public void postUploadPackage() {
 
+        }
+
+        @Override
+        public String getUpgradePackageFileDir() {
+            return "";
         }
     }
 }

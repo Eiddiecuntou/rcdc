@@ -1,11 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +21,8 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.integration.junit4.JMockit;
+
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -65,9 +66,9 @@ public class SessionManagerTest {
     }
 
     /**
-     * 
+     *
      * 测试移除session
-     * 
+     *
      * @param session 连接会话
      */
     @Test
@@ -90,6 +91,45 @@ public class SessionManagerTest {
         sessionMap.put(terminalId, session);
         sessionManager.removeSession(terminalId, session);
         Assert.assertEquals(0, sessionMap.size());
+        sessionMap.clear();
+    }
+
+    /**
+     *
+     * 测试移除session
+     *
+     * @param session 连接会话
+     */
+    @Test
+    public void testRemoveSessionFail(@Mocked Session session) {
+        String terminalId = "321";
+        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
+        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
+
+        new MockUp<ConcurrentHashMap>() {
+            @Mock
+            public boolean remove(Object key, Object value) {
+                return false;
+            }
+
+        };
+
+        new Expectations() {
+            {
+                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
+                result = info;
+            }
+        };
+        new MockUp<BaseCreateSystemLogRequest>() {
+            @Mock
+            public void $init(String key, String... args) {
+
+            }
+        };
+        sessionMap.put(terminalId, session);
+        boolean isSuccess = sessionManager.removeSession(terminalId, session);
+        assertFalse(isSuccess);
+        Assert.assertEquals(1, sessionMap.size());
         sessionMap.clear();
     }
 

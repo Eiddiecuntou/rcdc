@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
 import static org.junit.Assert.assertEquals;
 
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
 import mockit.*;
+
 
 /**
  * Description: Function Description
@@ -42,6 +44,29 @@ public class TerminalDetectCommandSendQuartzTest {
 
     @Injectable
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
+
+    /**
+     * testSafeInit
+     */
+    @Test
+    public void testSafeInit() {
+
+        new Expectations(ThreadExecutors.class) {
+            {
+                ThreadExecutors.scheduleWithFixedDelay(anyString, (Runnable) any, anyLong, anyLong);
+                result = null;
+            }
+        };
+
+        quartz.safeInit();
+
+        new Verifications() {
+            {
+                ThreadExecutors.scheduleWithFixedDelay(anyString, (Runnable) any, anyLong, anyLong);
+                times = 1;
+            }
+        };
+    }
 
     /**
      * 测试运行发送检测命令 - 无需要发送的记录

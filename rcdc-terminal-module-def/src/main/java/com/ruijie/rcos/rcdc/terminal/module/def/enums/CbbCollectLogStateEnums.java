@@ -24,5 +24,5 @@ public enum CbbCollectLogStateEnums {
     /**
      * 收集失败
      */
-    FAILURE
+    FAULT
 }

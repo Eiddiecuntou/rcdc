@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
@@ -116,5 +117,15 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
     protected boolean upgradingNumLimit() {
         // 不限制升级终端数量
         return false;
+    }
+
+    @Override
+    protected boolean enableUpgradeOnlyOnce(CbbTerminalTypeEnums terminalType) {
+        if (terminalType == CbbTerminalTypeEnums.VDI_ANDROID) {
+            // 安卓ota允许重复刷机，是否刷机由终端判断
+            return false;
+        }
+
+        return true;
     }
 }

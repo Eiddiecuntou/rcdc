@@ -1,10 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,32 +38,37 @@ public class TerminalModelServiceImpl implements TerminalModelService {
     @Autowired
     private TerminalModelDriverDAO terminalModelDriverDAO;
 
-    @Override
-    public CbbTerminalModelDTO[] queryTerminalModelByPlatform(CbbTerminalPlatformEnums platform) {
-        Assert.notNull(platform, "platform can not be null");
+    @Autowired
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
-        List<TerminalModelDriverEntity> entityList = terminalModelDriverDAO.findByPlatform(platform);
+    @Override
+    public CbbTerminalModelDTO[] queryTerminalModelByPlatform(CbbTerminalPlatformEnums[] platformArr) {
+        Assert.notNull(platformArr, "platform can not be null");
+        Assert.notEmpty(platformArr, "platform can not be empty");
+
+        List<TerminalModelDriverEntity> entityList = terminalModelDriverDAO.findByPlatformIn(platformArr);
         if (CollectionUtils.isEmpty(entityList)) {
             return new CbbTerminalModelDTO[0];
         }
-        Set<String> productModelSet = new HashSet<>();
-        return entityList.stream().map(entity -> convertToDTO(entity, productModelSet)).filter(Objects::nonNull).toArray(CbbTerminalModelDTO[]::new);
+        Set<String> productIdSet = new HashSet<>();
+        return entityList.stream().map(entity -> convertToDTO(entity, productIdSet)).filter(Objects::nonNull).toArray(CbbTerminalModelDTO[]::new);
     }
 
-    private static CbbTerminalModelDTO convertToDTO(TerminalModelDriverEntity entity, Set<String> productModelSet) {
-        if (StringUtils.isBlank(entity.getProductModel())) {
+    private static CbbTerminalModelDTO convertToDTO(TerminalModelDriverEntity entity, Set<String> productIdSet) {
+        String productId = entity.getProductId();
+        if (StringUtils.isBlank(productId)) {
             // 产品型号为空返回null, 过滤掉
             return null;
         }
 
-        if (productModelSet.contains(entity.getProductModel().trim())) {
+        if (productIdSet.contains(productId.trim())) {
             // 产品型号重复了返回null, 过滤掉
             return null;
         }
 
         CbbTerminalModelDTO terminalModelDTO = new CbbTerminalModelDTO();
         BeanUtils.copyProperties(entity, terminalModelDTO);
-        productModelSet.add(entity.getProductModel().trim());
+        productIdSet.add(productId.trim());
         return terminalModelDTO;
     }
 
@@ -77,4 +86,14 @@ public class TerminalModelServiceImpl implements TerminalModelService {
         return terminalModelDTO;
     }
 
+    @Override
+    public List<String> queryTerminalOsTypeByPlatform(CbbTerminalPlatformEnums[] platformArr) {
+        Assert.notNull(platformArr, "platformArr can not be null");
+        Assert.notEmpty(platformArr, "platformArr can not be empty");
+        List<String> terminalOsTypeList = terminalBasicInfoDAO.getTerminalOsTypeByPlatform(platformArr);
+        if (CollectionUtils.isEmpty(terminalOsTypeList)) {
+            return Collections.emptyList();
+        }
+        return terminalOsTypeList;
+    }
 }

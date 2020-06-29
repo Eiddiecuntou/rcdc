@@ -11,6 +11,8 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018
@@ -28,7 +30,7 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
     public CbbItemArrResponse<CbbTerminalModelDTO> listTerminalModel(CbbTerminalPlatformRequest request) {
         Assert.notNull(request, "request can not be null");
 
-        CbbTerminalModelDTO[] terminalModelArr = terminalModelService.queryTerminalModelByPlatform(request.getPlatform());
+        CbbTerminalModelDTO[] terminalModelArr = terminalModelService.queryTerminalModelByPlatform(request.getPlatformArr());
         return new CbbItemArrResponse<>(terminalModelArr);
     }
 
@@ -40,4 +42,11 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
         return DtoResponse.success(terminalModelDTO);
     }
 
+    @Override
+    public DtoResponse<List<String>> listTerminalOsType(CbbTerminalPlatformRequest request) {
+        Assert.notNull(request, "request can not be null");
+
+        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(request.getPlatformArr());
+        return DtoResponse.success(osTypeList);
+    }
 }
