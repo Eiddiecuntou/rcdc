@@ -1,21 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
-import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
+import com.ruijie.rcos.base.sysmanage.module.def.api.SambaServiceAPI;
+import com.ruijie.rcos.base.sysmanage.module.def.dto.SambaConfigDTO;
+import com.ruijie.rcos.base.sysmanage.module.def.enums.SambaMountState;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SambaInfoDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Description: Function Description
@@ -32,43 +30,54 @@ public class SambaInfoServiceTest {
     private SambaInfoService sambaInfoService;
 
     @Injectable
-    private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
-
-    @Injectable
-    private String sambaPxeUserName = "userName";
-
-    @Injectable
-    private String sambaPxePassword = "pwd";
-
-    @Injectable
-    private String sambaPxePort = "123";
-
-    @Injectable
-    private String sambaPxeDir = "/aa/bb";
+    private SambaServiceAPI sambaServiceAPI;
 
     @Test
     public void testGetPxeSambaInfo() throws BusinessException {
-        ClusterVirtualIpDTO vipDTO = new ClusterVirtualIpDTO();
-        vipDTO.setClusterVirtualIpIp("172.1.1.0");
-        DtoResponse<ClusterVirtualIpDTO> response = DtoResponse.success(vipDTO);
-
+        SambaConfigDTO sambaConfigDTO = new SambaConfigDTO();
+        sambaConfigDTO.setWriter(new SambaConfigDTO.SambaUser("pxe_writer", "123455"));
+        sambaConfigDTO.setIp("172.0.0.1");
+        sambaConfigDTO.setPort(445);
+        sambaConfigDTO.setServerPath("pxe");
+        sambaConfigDTO.setLocalPath("/external_share/pxe");
+        sambaConfigDTO.setState(SambaMountState.MOUNTED);
         new Expectations() {
             {
-                cloudPlatformMgmtAPI.getClusterVirtualIp((DefaultRequest) any);
-                result = response;
+                sambaServiceAPI.getSambaConfig("pxe");
+                result = DtoResponse.success(sambaConfigDTO);
             }
         };
 
         SambaInfoDTO pxeSambaInfo = sambaInfoService.getPxeSambaInfo();
+        Assert.assertEquals(pxeSambaInfo.getUserName(), "pxe_writer");
+        Assert.assertEquals(pxeSambaInfo.getPassword(), "123455");
+        Assert.assertEquals(pxeSambaInfo.getIp(), "172.0.0.1");
+        Assert.assertEquals(pxeSambaInfo.getPort(), "445");
+        Assert.assertEquals(pxeSambaInfo.getFilePath(), "pxe");
+    }
 
-        SambaInfoDTO expectedDTO = new SambaInfoDTO();
-        expectedDTO.setUserName("userName");
-        expectedDTO.setPassword("pwd");
-        expectedDTO.setIp("172.1.1.0");
-        expectedDTO.setPort("123");
-        expectedDTO.setFilePath("/aa/bb");
+    @Test
+    public void testGetPxeSambaInfoWithUnmount() throws BusinessException {
+        SambaConfigDTO sambaConfigDTO = new SambaConfigDTO();
+        sambaConfigDTO.setWriter(new SambaConfigDTO.SambaUser("pxe_writer", "123455"));
+        sambaConfigDTO.setIp("172.0.0.1");
+        sambaConfigDTO.setPort(445);
+        sambaConfigDTO.setServerPath("pxe");
+        sambaConfigDTO.setLocalPath("/external_share/pxe");
+        sambaConfigDTO.setState(SambaMountState.UNMOUNT);
+        new Expectations() {
+            {
+                sambaServiceAPI.getSambaConfig("pxe");
+                result = DtoResponse.success(sambaConfigDTO);
+            }
+        };
 
-        assertEquals(expectedDTO, pxeSambaInfo);
+        try {
+            sambaInfoService.getPxeSambaInfo();
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_SAMBA_UNMOUNT);
+        }
+
     }
 
 }

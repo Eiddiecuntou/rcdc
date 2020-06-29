@@ -6,8 +6,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalLogoName;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
@@ -40,10 +40,8 @@ public class SyncTerminalLogoHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         LOGGER.debug("=====终端同步Logo报文===={}", request.getData());
         try {
-            String logoName = terminalLogoService.getTerminalLogoName();
-            TerminalLogoName terminalLogo = new TerminalLogoName();
-            terminalLogo.setLogoName(logoName);
-            CbbResponseShineMessage<TerminalLogoName> responseMessage = MessageUtils.buildResponseMessage(request, terminalLogo);
+            TerminalLogoInfo terminalLogoInfo = terminalLogoService.getTerminalLogoInfo();
+            CbbResponseShineMessage<TerminalLogoInfo> responseMessage = MessageUtils.buildResponseMessage(request, terminalLogoInfo);
             messageHandlerAPI.response(responseMessage);
         } catch (Exception e) {
             LOGGER.error("终端同步Logo消息应答失败", e);

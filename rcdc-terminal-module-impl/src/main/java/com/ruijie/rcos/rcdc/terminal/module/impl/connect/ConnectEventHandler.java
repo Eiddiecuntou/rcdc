@@ -71,14 +71,35 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
             LOGGER.warn("终端未绑定session，不处理报文。action：{};data:{}", message.getAction(), String.valueOf(message.getData()));
             return;
         }
+
+        boolean isNewConnection = false;
         // 处理升级报文，获取terminalId绑定终端
         if (ShineAction.CHECK_UPGRADE.equals(message.getAction())) {
             LOGGER.debug("开始处理检查升级报文[{}]", ShineAction.CHECK_UPGRADE);
+            CbbShineTerminalBasicInfo basicInfo = parseTerminalInfo(message.getData());
+            // 判断终端是否是新上线
+            isNewConnection = isNewConnection(basicInfo.getTerminalId(), sender.getSession());
             // 绑定终端
-            bindSession(sender, message.getData());
+            bindSession(sender, basicInfo);
         }
         // 消息分发
-        dispatchMessage(sender, message);
+        dispatchMessage(sender, message, isNewConnection);
+    }
+
+    /**
+     * 判断终端是否是新上线
+     *
+     * @param terminalId terminalId
+     * @param session session
+     * @return 判断结果
+     */
+    private boolean isNewConnection(String terminalId, Session session) {
+        Session latestSession = sessionManager.getSession(terminalId);
+        if (latestSession == session) {
+            return false;
+        }
+
+        return true;
     }
 
     private boolean handleNonBusinessMessage(ResponseMessageSender sender, BaseMessage message) {
@@ -97,15 +118,17 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         return false;
     }
 
+
     /**
      * 执行消息分发
      */
-    private void dispatchMessage(ResponseMessageSender sender, BaseMessage message) {
+    private void dispatchMessage(ResponseMessageSender sender, BaseMessage message, boolean isNewConnection) {
         String terminalId = getTerminalIdFromSession(sender.getSession());
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setDispatcherKey(message.getAction());
         request.setRequestId(sender.getResponseId());
         request.setTerminalId(terminalId);
+        request.setNewConnection(isNewConnection);
         String data = message.getData() == null ? null : String.valueOf(message.getData());
         request.setData(data);
         TerminalInfo terminalInfo = sender.getSession().getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
@@ -124,7 +147,16 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
      * 设置terminalId，绑定连接session,
      * 后续报文请求都是基于已绑定terminalId的连接
      */
-    private void bindSession(ResponseMessageSender sender, Object message) {
+    private void bindSession(ResponseMessageSender sender, CbbShineTerminalBasicInfo basicInfo) {
+        String terminalId = basicInfo.getTerminalId();
+        Assert.hasText(terminalId, "绑定终端连接session的terminalId不能为空");
+        Session session = sender.getSession();
+        TerminalInfo terminalInfo = new TerminalInfo(terminalId, basicInfo.getIp());
+        session.setAttribute(ConnectConstants.TERMINAL_BIND_KEY, terminalInfo);
+        sessionManager.bindSession(terminalId, session);
+    }
+
+    private CbbShineTerminalBasicInfo parseTerminalInfo(Object message) {
         Assert.notNull(message, "终端信息不能为空");
         String data = String.valueOf(message);
         CbbShineTerminalBasicInfo basicInfo;
@@ -133,12 +165,7 @@ public class ConnectEventHandler extends AbstractServerMessageHandler {
         } catch (Exception e) {
             throw new IllegalArgumentException("接收到的报文格式错误;data:" + data, e);
         }
-        String terminalId = basicInfo.getTerminalId();
-        Assert.hasText(terminalId, "绑定终端连接session的terminalId不能为空");
-        Session session = sender.getSession();
-        TerminalInfo terminalInfo = new TerminalInfo(terminalId, basicInfo.getIp());
-        session.setAttribute(ConnectConstants.TERMINAL_BIND_KEY, terminalInfo);
-        sessionManager.bindSession(terminalId, session);
+        return basicInfo;
     }
 
     private boolean hasBindSession(Session session, String action) {

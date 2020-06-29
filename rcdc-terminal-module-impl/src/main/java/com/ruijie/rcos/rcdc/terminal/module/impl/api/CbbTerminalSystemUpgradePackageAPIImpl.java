@@ -20,6 +20,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -72,6 +74,9 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     @Autowired
     private TerminalSystemPackageUploadingService terminalSystemPackageUploadingService;
 
+    @Autowired
+    private TerminalSystemUpgradePackageHandlerFactory terminalSystemUpgradePackageHandlerFactory;
+
     @Override
     public CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
@@ -80,17 +85,21 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         boolean hasRunningTask = false;
         List<String> errorList = Lists.newArrayList();
         TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(request.getTerminalType());
-        if (upgradePackage != null) {
+        LOGGER.info("上传升级包类型[{}]", request.getTerminalType());
+        // Android VDI升级包不校验升级任务开启情况
+        if (upgradePackage != null && request.getTerminalType() != CbbTerminalTypeEnums.VDI_ANDROID) {
+            LOGGER.info("检查升级包是否存在进行中的升级任务");
             hasRunningTask = terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
         }
         if (hasRunningTask) {
-            LOGGER.debug("system upgrade task is running");
+            LOGGER.info("system upgrade task is running");
             allowUpload = false;
             errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, new String[] {}));
         }
 
         // 判断磁盘大小是否满足
-        final boolean isEnough = checkPackageDiskSpaceIsEnough(request.getFileSize());
+        TerminalSystemUpgradePackageHandler handler = terminalSystemUpgradePackageHandlerFactory.getHandler(request.getTerminalType());
+        final boolean isEnough = handler.checkServerDiskSpaceIsEnough(request.getFileSize(), handler.getUpgradePackageFileDir());
         if (!isEnough) {
             allowUpload = false;
             errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[] {}));
@@ -107,10 +116,10 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     public DefaultResponse uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         CbbTerminalTypeEnums terminalType = request.getTerminalType();
-        // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包
+        // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包（Android VDI升级包除外）
         boolean hasRunningTask = isExistRunningTask(terminalType);
-        if (hasRunningTask) {
-            LOGGER.debug("system upgrade task is running, can not upload file ");
+        if (hasRunningTask && request.getTerminalType() != CbbTerminalTypeEnums.VDI_ANDROID) {
+            LOGGER.info("system upgrade task is running, can not upload file ");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }
         terminalSystemPackageUploadingService.uploadUpgradePackage(request, terminalType);
@@ -130,22 +139,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         }
 
         return terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
-    }
-
-    /**
-     * 检验磁盘空间是否满足升级包上传
-     * 
-     * @param fileSize 文件大小
-     * @return 磁盘空间是否足够
-     */
-    private boolean checkPackageDiskSpaceIsEnough(Long fileSize) {
-        File packageDir = new File(Constants.PXE_SAMBA_PACKAGE_PATH);
-        final long usableSpace = packageDir.getUsableSpace();
-        if (usableSpace >= fileSize) {
-            return true;
-        }
-
-        return false;
     }
 
     @Override

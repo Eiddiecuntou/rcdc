@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalDetectRecordAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectThresholdDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
@@ -113,7 +114,12 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
         Assert.notNull(request, "request can not be null");
 
         CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(request.getDetectDate());
-        CbbDetectResultResponse resp = new CbbDetectResultResponse(result);
+
+        CbbTerminalDetectThresholdDTO threshold = new CbbTerminalDetectThresholdDTO();
+        threshold.setBandwidthThreshold(Constants.TERMINAL_DETECT_BINDWIDTH_NORM);
+        threshold.setPacketLossRateThreshold(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE);
+        threshold.setDelayThreshold(Constants.TERMINAL_DETECT_DELAY_NORM);
+        CbbDetectResultResponse resp = new CbbDetectResultResponse(result, threshold);
         resp.setStatus(Response.Status.SUCCESS);
         return resp;
     }

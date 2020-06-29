@@ -110,4 +110,13 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @return 终端列表
      */
     List<TerminalEntity> findByGroupIdAndPlatformAndTerminalOsType(UUID groupId, CbbTerminalPlatformEnums platform, String osType);
+
+
+    /**
+     * 终端类型查询运行平台类型
+     * @param platformArr 终端类型
+     * @return 运行平台类型列表
+     */
+    @Query("select distinct terminalOsType from TerminalEntity where platform in ?1")
+    List<String> getTerminalOsTypeByPlatform(CbbTerminalPlatformEnums[] platformArr);
 }

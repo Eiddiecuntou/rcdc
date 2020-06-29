@@ -55,6 +55,7 @@ public class TerminalOtaUpgradeInitTest {
 
     /**
      * 初始化方法，出厂包未初始化，正常流程
+     * 
      * @throws IOException 异常
      * @throws BusinessException 异常
      */
@@ -65,12 +66,25 @@ public class TerminalOtaUpgradeInitTest {
         mockInitPackage.createNewFile();
         List<File> fileList = Lists.newArrayList();
         fileList.add(mockInitPackage);
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return true;
+            }
+        };
+
         new Expectations(FileOperateUtil.class) {
             {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = null;
                 FileOperateUtil.listFile(anyString);
                 result = fileList;
+
+                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_ANDROID);
+                result = handler;
+
+                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
+                result = new Exception("123");
+
                 FileOperateUtil.deleteFile((File) any);
             }
         };
@@ -79,10 +93,12 @@ public class TerminalOtaUpgradeInitTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                times = 2;
+                handler.preUploadPackage();
+                times = 1;
                 handler.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any);
-                times = 2;
+                times = 1;
+                handler.postUploadPackage();
+                times = 1;
 
                 List<CbbTerminalTypeEnums> typeEnumsList = Lists.newArrayList();
                 handlerFactory.getHandler(this.withCapture(typeEnumsList));
@@ -96,10 +112,18 @@ public class TerminalOtaUpgradeInitTest {
 
     /**
      * 初始化方法，出厂包未初始化，出厂包不存在
+     * 
      * @throws BusinessException 异常
      */
     @Test
     public void testSafeInitPackageNotExist() throws BusinessException {
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return true;
+            }
+        };
+
         List<File> fileList = Lists.newArrayList();
         new Expectations(FileOperateUtil.class) {
             {
@@ -123,18 +147,38 @@ public class TerminalOtaUpgradeInitTest {
     }
 
     /**
-     * 初始化方法，出厂包未初始化，读取文件异常
+     * 初始化方法，出厂包不存在
+     * 
      * @throws BusinessException 异常
      */
     @Test
-    public void testSafeInitPackageNotExistException() throws BusinessException {
-        List<File> fileList = Lists.newArrayList();
-        new Expectations(FileOperateUtil.class) {
+    public void testSafeInitPackageNotDirectoryAndNeedInitBt() throws BusinessException {
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return false;
+            }
+        };
+
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+        upgradePackage.setFilePath("123");
+        upgradePackage.setSeedPath("456");
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
+        List<TerminalSystemUpgradeEntity> upgradingTask2List = Lists.newArrayList();
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+        upgradingTask2List.add(upgradeEntity);
+        new Expectations() {
             {
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = null;
-                FileOperateUtil.listFile(anyString);
-                result = new IOException();
+                result = upgradePackage;
+
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);
+                returns(upgradingTaskList, upgradingTask2List);
+
+                btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
+                result = new Exception("123");
             }
         };
 
@@ -146,117 +190,12 @@ public class TerminalOtaUpgradeInitTest {
                 times = 2;
                 handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 times = 0;
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);
+                times = 2;
+                btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
+                times = 1;
             }
         };
     }
 
-    /**
-     * 初始化方法，出厂包已初始化，没有升级任务
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testSafeInitPackageHasInitNoTask() throws BusinessException {
-        UUID id = UUID.randomUUID();
-        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
-        upgradePackage.setId(id);
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = upgradePackage;
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(id,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
-                result = upgradingTaskList;
-            }
-        };
-
-        terminalOtaUpgradeInit.safeInit();
-
-        new Verifications() {
-            {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                times = 2;
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 2;
-            }
-        };
-    }
-
-    /**
-     * 初始化方法，出厂包已初始化，有升级任务
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testSafeInitPackageHasInitHasTask() throws BusinessException {
-        UUID id = UUID.randomUUID();
-        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
-        upgradePackage.setId(id);
-        upgradePackage.setSeedPath("seedPath");
-        upgradePackage.setFilePath("filePath");
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
-        TerminalSystemUpgradeEntity terminalSystemUpgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradingTaskList.add(terminalSystemUpgradeEntity);
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = upgradePackage;
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(id,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
-                result = upgradingTaskList;
-                btClientService.startBtShare("filePath", "seedPath");
-            }
-        };
-
-        terminalOtaUpgradeInit.safeInit();
-
-        new Verifications() {
-            {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                times = 2;
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 2;
-            }
-        };
-    }
-
-    /**
-     * 初始化方法，出厂包已初始化，BT接口调用异常
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testSafeInitPackageHasInitBtException() throws BusinessException {
-        UUID id = UUID.randomUUID();
-        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
-        upgradePackage.setId(id);
-        upgradePackage.setSeedPath("seedPath");
-        upgradePackage.setFilePath("filePath");
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
-        TerminalSystemUpgradeEntity terminalSystemUpgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradingTaskList.add(terminalSystemUpgradeEntity);
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = upgradePackage;
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(id,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
-                result = upgradingTaskList;
-                btClientService.startBtShare(anyString, anyString);
-                result = new Exception("xxx");
-            }
-        };
-
-        terminalOtaUpgradeInit.safeInit();
-
-        new Verifications() {
-            {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                times = 2;
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc((UUID) any,
-                        (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 2;
-            }
-        };
-    }
 }

@@ -30,6 +30,8 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 import mockit.*;
 import mockit.integration.junit4.JMockit;
 
+import java.io.File;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018
@@ -243,7 +245,7 @@ public class CbbTerminalOperatorAPIImplTest {
         };
 
         CbbTerminalCollectLogStatusResponse collectLog = terminalOperatorAPI.getCollectLog(request);
-        assertEquals(CbbCollectLogStateEnums.FAILURE, collectLog.getState());
+        assertEquals(CbbCollectLogStateEnums.FAULT, collectLog.getState());
 
     }
 
@@ -308,6 +310,28 @@ public class CbbTerminalOperatorAPIImplTest {
             @Mock
             private void checkFileExist(String logFilePath) throws BusinessException {
                 
+            }
+        };
+
+        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
+        assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
+        assertEquals("logFileName", response.getLogFileName());
+        assertEquals("", response.getSuffix());
+    }
+
+    /**
+     * 测试getTerminalLogFileInfo，日志文件存在
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testGetTerminalLogFileExist() throws BusinessException {
+        CbbTerminalLogNameRequest request = new CbbTerminalLogNameRequest();
+        request.setLogName("logFileName");
+        new MockUp<File>() {
+            @Mock
+            public boolean isFile() {
+                return true;
             }
         };
 

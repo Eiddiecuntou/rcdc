@@ -79,6 +79,15 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
     }
 
     /**
+     * 获取Linux IDV升级包存放路径
+     */
+    @Test
+    public void testGetUpgradePackageFileDir() {
+        String fileDir = handler.getUpgradePackageFileDir();
+        Assert.assertEquals(Constants.TERMINAL_UPGRADE_OTA_LINUX_IDV_AND_ANDROID_VDI_DIR, fileDir);
+    }
+
+    /**
      * 获取升级包信息，正常流程
      * @throws BusinessException 异常
      * @throws IOException 异常

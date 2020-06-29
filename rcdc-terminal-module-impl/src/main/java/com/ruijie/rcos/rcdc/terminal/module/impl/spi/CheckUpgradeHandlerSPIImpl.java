@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 
+import com.ruijie.rcos.sk.commkit.base.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -64,7 +65,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         // 保存终端基本信息
         String terminalId = request.getTerminalId();
         CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+        basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
         TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);

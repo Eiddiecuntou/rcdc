@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFileSystemEnvironment;
@@ -278,7 +277,7 @@ public class FileOperateUtilTest {
         String filePath = System.getProperty("user.dir");
         File subFile = new File(filePath);
 
-        new MockUp<SkyengineFileSystemEnvironment>(){
+        new MockUp<SkyengineFileSystemEnvironment>() {
 
             @Mock
             public List<String> getAllowOperatorFolder() {
@@ -286,7 +285,7 @@ public class FileOperateUtilTest {
             }
         };
 
-        new MockUp<SkyengineFile>(){
+        new MockUp<SkyengineFile>() {
 
             @Mock
             public boolean delete(boolean isMoveToRecy) {
@@ -321,7 +320,6 @@ public class FileOperateUtilTest {
         try {
             FileOperateUtil.emptyDirectory(directoryPath, exceptFileName);
         } catch (Exception e) {
-            e.printStackTrace();
             fail();
         }
     }
@@ -771,7 +769,7 @@ public class FileOperateUtilTest {
         String filePath = System.getProperty("user.dir");
         File deleteFile = new File(filePath);
 
-        new MockUp<SkyengineFileSystemEnvironment>(){
+        new MockUp<SkyengineFileSystemEnvironment>() {
 
             @Mock
             public List<String> getAllowOperatorFolder() {
@@ -779,7 +777,7 @@ public class FileOperateUtilTest {
             }
         };
 
-        new MockUp<SkyengineFile>(){
+        new MockUp<SkyengineFile>() {
 
             @Mock
             public boolean delete(boolean isMoveToRecy) {
@@ -837,7 +835,7 @@ public class FileOperateUtilTest {
             }
         };
 
-        new MockUp<SkyengineFileSystemEnvironment>(){
+        new MockUp<SkyengineFileSystemEnvironment>() {
 
             @Mock
             public List<String> getAllowOperatorFolder() {
@@ -845,7 +843,7 @@ public class FileOperateUtilTest {
             }
         };
 
-        new MockUp<SkyengineFile>(){
+        new MockUp<SkyengineFile>() {
 
             @Mock
             public boolean delete(boolean isMoveToRecy) {
@@ -855,5 +853,116 @@ public class FileOperateUtilTest {
         assertTrue(FileOperateUtil.deleteFile(deleteFile));
     }
 
+    /**
+     * test
+     * 
+     * @param skyengineFile file
+     * @throws BusinessException ex
+     */
+    @Test
+    public void testDeleteFileByPath(@Mocked SkyengineFile skyengineFile) throws BusinessException {
+        String filePath = "test";
+
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+
+            @Mock
+            public boolean isDirectory(Invocation invocation) {
+                Assert.notNull(invocation, "invocation can not be null");
+                File file = invocation.getInvokedInstance();
+                if ("test".equals(file.getPath())) {
+                    return false;
+                }
+                return true;
+            }
+        };
+
+        FileOperateUtil.deleteFileByPath(filePath);
+        assertTrue(true);
+    }
+
+    /**
+     * 测试listFile
+     */
+    @Test
+    public void testListFile() {
+        String filePath = "test";
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+
+            @Mock
+            boolean isFile() {
+                return false;
+            }
+
+            File[] listFiles() {
+                return new File[] {new File("/test/test")};
+            }
+        };
+        FileOperateUtil.listFile(filePath);
+        new Verifications() {
+            {
+
+            }
+        };
+    }
+
+    /**
+     * 测试listFile
+     */
+    @Test
+    public void testListFileNull() {
+        String filePath = "test";
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+
+            @Mock
+            boolean isFile() {
+                return false;
+            }
+
+            File[] listFiles() {
+
+                //目录下没有文件
+                return null;
+            }
+        };
+        FileOperateUtil.listFile(filePath);
+        new Verifications() {
+            {
+
+            }
+        };
+    }
+
+    /**
+     * 测试listFile
+     */
+    @Test
+    public void testListFilePathNotExists() {
+        String filePath = "test";
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return false;
+            }
+        };
+        try {
+            FileOperateUtil.listFile(filePath);
+            fail();
+        } catch (Exception e) {
+            assertEquals(e.getMessage(), "filePath:{}" + filePath);
+        }
+
+    }
 
 }

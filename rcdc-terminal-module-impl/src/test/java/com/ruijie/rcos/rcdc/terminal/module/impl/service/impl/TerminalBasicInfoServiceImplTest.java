@@ -341,6 +341,8 @@ public class TerminalBasicInfoServiceImplTest {
         basicInfoEntity.setState(CbbTerminalStateEnums.UPGRADING);
         new Expectations() {
             {
+                sessionManager.getSession(anyString);
+                result = null;
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = basicInfoEntity;
             }
@@ -479,7 +481,7 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+        basicInfoService.saveBasicInfo(terminalId, false, basicInfo);
 
         new  Verifications() {
             {
@@ -534,7 +536,7 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+        basicInfoService.saveBasicInfo(terminalId, false, basicInfo);
 
         new  Verifications() {
             {
@@ -592,7 +594,7 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+        basicInfoService.saveBasicInfo(terminalId, false, basicInfo);
 
         new  Verifications() {
             {
@@ -643,7 +645,7 @@ public class TerminalBasicInfoServiceImplTest {
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, basicInfo);
+        basicInfoService.saveBasicInfo(terminalId, false, basicInfo);
 
         new  Verifications() {
             {

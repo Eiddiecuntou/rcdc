@@ -16,6 +16,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.springframework.util.Assert;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -44,6 +45,18 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
 
         // 替换升级文件,清除原升级包目录下旧文件
         FileOperateUtil.emptyDirectory(upgradeInfo.getFileSaveDir(), upgradeInfo.getRealFileName());
+    }
+
+    @Override
+    public boolean checkServerDiskSpaceIsEnough(Long fileSize, String fileStorePath) {
+        Assert.notNull(fileSize, "fileSize can not be null");
+        Assert.notNull(fileStorePath, "fileStorePath can not be null");
+
+        File packageDir = new File(fileStorePath);
+        final long usableSpace = packageDir.getUsableSpace();
+
+        LOGGER.info("升级包文件大小校验，磁盘路径：{}，文件大小：{}，磁盘可用容量大小：{}", fileStorePath, fileSize, usableSpace);
+        return usableSpace >= fileSize;
     }
 
     protected abstract TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException;

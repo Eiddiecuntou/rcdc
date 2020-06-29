@@ -74,7 +74,7 @@ public class CollectLogResponseSPIImplTest {
             {
                 collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.DONE, response.getContent().getLogName());
                 times = 1;
-                collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.FAILURE);
+                collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.FAULT);
                 times = 0;
             }
         };
@@ -106,7 +106,7 @@ public class CollectLogResponseSPIImplTest {
             {
                 collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.DONE, response.getContent().getLogName());
                 times = 0;
-                collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.FAILURE);
+                collectLogCacheManager.updateState(request.getTerminalId(), CbbCollectLogStateEnums.FAULT);
                 times = 1;
             }
         };

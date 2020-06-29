@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.checker;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,11 +10,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 
 import mockit.Expectations;
 import mockit.Injectable;
@@ -39,34 +39,25 @@ public class GroupNameDuplicationCheckerTest {
     private TerminalGroupDAO terminalGroupDAO;
 
     /**
-     * 测试参数为空
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testCheckArgIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> checker.check(null, "1122"), "groupEntity can not be null");
-        ThrowExceptionTester.throwIllegalArgumentException(() -> checker.check(new TerminalGroupEntity(), ""), "groupName can not be blank");
-        assertTrue(true);
-    }
-
-    /**
      * 测试子分组数超出限制
      * 
      * @throws BusinessException exception
      */
     @Test
     public void testCheck() throws BusinessException {
+        UUID uuid = UUID.randomUUID();
         TerminalGroupEntity groupEntity = new TerminalGroupEntity();
-        groupEntity.setId(UUID.randomUUID());
-
+        groupEntity.setId(uuid);
+        List<TerminalGroupEntity> groupList = Lists.newArrayList(groupEntity);
+        TerminalGroupEntity deleteGroupEntity = new TerminalGroupEntity();
+        deleteGroupEntity.setId(uuid);
         new Expectations() {
             {
                 terminalGroupDAO.findByParentIdAndName(groupEntity.getId(), "123");
-                result = Lists.newArrayList();
+                result = groupList;
             }
         };
-        checker.check(groupEntity, "123");
+        checker.check(deleteGroupEntity, groupEntity, "123");
 
         new Verifications() {
             {
@@ -83,7 +74,8 @@ public class GroupNameDuplicationCheckerTest {
     public void testCheckHasDuplicationGroup() {
         TerminalGroupEntity groupEntity = new TerminalGroupEntity();
         groupEntity.setId(UUID.randomUUID());
-
+        TerminalGroupEntity deleteGroupEntity = new TerminalGroupEntity();
+        deleteGroupEntity.setId(UUID.randomUUID());
         List<TerminalGroupEntity> groupList = Lists.newArrayList(groupEntity);
         new Expectations() {
             {
@@ -93,7 +85,7 @@ public class GroupNameDuplicationCheckerTest {
         };
 
         try {
-            checker.check(groupEntity, "123");
+            checker.check(deleteGroupEntity, groupEntity, "123");
             fail();
         } catch (BusinessException e) {
             assertEquals(PublicBusinessKey.RCDC_DELETE_TERMINAL_GROUP_SUB_GROUP_HAS_DUPLICATION_WITH_MOVE_GROUP, e.getKey());

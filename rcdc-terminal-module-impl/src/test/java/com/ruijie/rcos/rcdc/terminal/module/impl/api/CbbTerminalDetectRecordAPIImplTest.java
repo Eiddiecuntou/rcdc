@@ -110,6 +110,45 @@ public class CbbTerminalDetectRecordAPIImplTest {
     }
 
     /**
+     * 获取TerminalEntity为空
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testListDetectNull() throws BusinessException {
+        List<TerminalDetectionEntity> entityList = Lists.newArrayList();
+        TerminalDetectionEntity entity = new TerminalDetectionEntity();
+        entity.setId(UUID.randomUUID());
+        entity.setTerminalId("123");
+        entity.setDetectState(DetectStateEnums.SUCCESS);
+        entityList.add(entity);
+        Page page = new PageImpl<TerminalDetectionEntity>(entityList, new PageRequest(0, 10), 1);
+
+        new Expectations() {
+            {
+                detectService.pageQuery((CbbTerminalDetectPageRequest) any);
+                result = page;
+                terminalBasicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = null;
+
+            }
+        };
+
+        new MockUp<LocaleI18nResolver>() {
+
+            @Mock
+            public String resolve(String key, String... args) {
+                return "123";
+            }
+        };
+
+        DefaultPageResponse<CbbTerminalDetectDTO> response = api.listDetect(new CbbTerminalDetectPageRequest());
+        assertEquals(1, response.getItemArr().length);
+        assertEquals(entity.getTerminalId(), response.getItemArr()[0].getTerminalId());
+        assertEquals(entity.getDetectState().name(), response.getItemArr()[0].getCheckState().getState());
+    }
+
+    /**
      * 测试获取最近检测记录
      * 
      * @throws BusinessException 业务异常

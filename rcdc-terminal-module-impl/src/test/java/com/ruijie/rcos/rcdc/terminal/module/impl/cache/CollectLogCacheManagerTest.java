@@ -77,7 +77,7 @@ public class CollectLogCacheManagerTest {
 
         String terminalId = "123";
         try {
-            cacheManager.updateState(terminalId, CbbCollectLogStateEnums.FAILURE);
+            cacheManager.updateState(terminalId, CbbCollectLogStateEnums.FAULT);
         } catch (Exception e) {
             fail();
         }
@@ -93,9 +93,9 @@ public class CollectLogCacheManagerTest {
             Cache<String, CollectLogCache> caches = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
             CollectLogCache cache = new CollectLogCache();
             caches.put(terminalId, cache);
-            cacheManager.updateState(terminalId, CbbCollectLogStateEnums.FAILURE, "shine.zip");
+            cacheManager.updateState(terminalId, CbbCollectLogStateEnums.FAULT, "shine.zip");
             Assert.assertEquals(caches.size(), 1);
-            Assert.assertEquals(caches.getIfPresent(terminalId).getState(), CbbCollectLogStateEnums.FAILURE);
+            Assert.assertEquals(caches.getIfPresent(terminalId).getState(), CbbCollectLogStateEnums.FAULT);
 
         } catch (Exception e) {
             fail();
@@ -111,10 +111,10 @@ public class CollectLogCacheManagerTest {
     public void testUpdateState2CacheIsNull(@Injectable Cache<String, CollectLogCache> caches) {
         String terminalId = "2222";
         try {
-            cacheManager.updateState(terminalId, CbbCollectLogStateEnums.FAILURE, "shine.zip");
+            cacheManager.updateState(terminalId, CbbCollectLogStateEnums.FAULT, "shine.zip");
             Cache<String, CollectLogCache> caches1 = Deencapsulation.getField(cacheManager, "COLLECT_LOG_CACHE");
             Assert.assertEquals(1, caches1.size());
-            Assert.assertEquals(CbbCollectLogStateEnums.FAILURE, caches1.getIfPresent(terminalId).getState());
+            Assert.assertEquals(CbbCollectLogStateEnums.FAULT, caches1.getIfPresent(terminalId).getState());
             cacheManager.removeCache(terminalId);
 
         } catch (Exception e) {

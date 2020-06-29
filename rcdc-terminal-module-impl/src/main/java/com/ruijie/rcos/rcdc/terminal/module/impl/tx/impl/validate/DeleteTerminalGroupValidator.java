@@ -121,7 +121,7 @@ public class DeleteTerminalGroupValidator {
 
         TerminalGroupEntity moveGroupEntity = obtainMoveGroupEntity(moveGroupId);
         for (TerminalGroupEntity subGroup : subGroupList) {
-            groupNameDuplicationChecker.check(moveGroupEntity, subGroup.getName());
+            groupNameDuplicationChecker.check(groupEntity, moveGroupEntity, subGroup.getName());
         }
 
     }

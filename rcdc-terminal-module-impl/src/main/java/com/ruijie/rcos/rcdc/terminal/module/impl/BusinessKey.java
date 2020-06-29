@@ -194,16 +194,6 @@ public interface BusinessKey {
     String RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_SUCCESS_SYSTEM_LOG = "rcdc_terminal_quartz_clean_terminal_collect_log_success_system_log";
 
     /**
-     * 清理终端收集日志文件定时任务系统日志
-     */
-    String RCDC_TERMINAL_QUARTZ_CLEAN_TERMINAL_COLLECT_LOG_FAIL_SYSTEM_LOG = "rcdc_terminal_quartz_clean_terminal_collect_log_fail_system_log";
-
-    /**
-     * 终端收集日志文件路径文件夹不存在
-     */
-    String RCDC_TERMINAL_COLLECT_LOG_DIRECTORY_NOT_EXIST = "rcdc_terminal_collect_log_directory_not_exist";
-
-    /**
      * 终端检测超时处理定时任务
      */
     String RCDC_TERMINAL_QUARTZ_DETECT_TIME_OUT = "rcdc_terminal_quartz_detect_time_out";
@@ -374,4 +364,10 @@ public interface BusinessKey {
 
     /** 安卓OTA升级文件不合法 */
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_ILLEGAL = "rcdc_terminal_ota_upgrade_package_illegal";
+
+    /** IDV升级包 */
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_ERROR = "rcdc_terminal_system_upgrade_package_version_file_error";
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_FILE_ERROR = "rcdc_terminal_system_upgrade_package_ota_file_error";
+
+    String RCDC_TERMINAL_SAMBA_UNMOUNT = "rcdc_terminal_samba_unmount";
 }
