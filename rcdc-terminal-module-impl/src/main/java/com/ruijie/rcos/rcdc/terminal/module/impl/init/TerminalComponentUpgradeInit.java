@@ -167,13 +167,18 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
     }
 
     private void executeUpdate(String currentIp, String pythonScriptPath, CbbTerminalTypeEnums terminalType) {
+
+        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + terminalType.name().toLowerCase();
+
+        // 先将执行结果设置为失败，防止异常中断不再执行脚本
+        globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_FAIL);
+
         LOGGER.info("start invoke pythonScript...");
         ShellCommandRunner runner = new ShellCommandRunner();
         String shellCmd = String.format(INIT_COMMAND, pythonScriptPath, currentIp);
         LOGGER.info("execute shell cmd : {}", shellCmd);
         runner.setCommand(shellCmd);
 
-        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + terminalType.name().toLowerCase();
         try {
             String outStr = runner.execute(new BtShareInitReturnValueResolver(terminalType));
             LOGGER.debug("out String is :{}", outStr);
