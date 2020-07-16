@@ -90,7 +90,6 @@ public class CbbTerminalStatisticsAPIImpl implements CbbTerminalStatisticsAPI {
                     break;
             }
         }));
-
         TerminalStatisticsItem item = new TerminalStatisticsItem();
         item.setOnline(online.get());
         item.setOffline(offline.get());
