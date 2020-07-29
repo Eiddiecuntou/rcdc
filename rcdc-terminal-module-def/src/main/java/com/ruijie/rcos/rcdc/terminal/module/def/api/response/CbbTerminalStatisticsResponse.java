@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
+import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+
 /**
  * Description: 终端数据统计对象
  * Copyright: Copyright (c) 2018
@@ -8,7 +10,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
  *
  * @author Jarman
  */
-public class TerminalStatisticsResponse {
+public class CbbTerminalStatisticsResponse extends DefaultResponse {
 
     private TerminalStatisticsItem vdi;
 

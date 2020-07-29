@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalPlatformRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalStatisticsResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalStatisticsResponse;
 
 /**
  * Description: 统计接口
@@ -19,6 +19,6 @@ public interface CbbTerminalStatisticsAPI {
      * @param request 终端类型请求
      * @return 返回统计结果
      */
-    TerminalStatisticsResponse statisticsTerminal(TerminalPlatformRequest request);
+    CbbTerminalStatisticsResponse statisticsTerminal(TerminalPlatformRequest request);
 
 }
