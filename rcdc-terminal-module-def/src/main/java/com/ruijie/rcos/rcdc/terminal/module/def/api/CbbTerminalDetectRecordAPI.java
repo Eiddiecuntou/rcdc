@@ -1,10 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
@@ -37,15 +36,15 @@ public interface CbbTerminalDetectRecordAPI {
      * @return 检测记录信息
      * @throws BusinessException 业务异常
      */
-    
-    CbbDetectInfoResponse getRecentDetect(CbbTerminalIdRequest request) throws BusinessException;
+
+    CbbTerminalDetectDTO getRecentDetect(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 获取终端检测记录结果
      *
-     * @param request 检测结果请求参数
+     * @param detectDate 检测结果请求参数
      * @return 终端检测结果
      */
     
-    CbbDetectResultResponse getDetectResult(CbbTerminalDetectResultRequest request);
+    CbbDetectResultResponse getDetectResult(CbbDetectDateEnums detectDate);
 }

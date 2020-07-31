@@ -5,10 +5,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalDetectRecordAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectThresholdDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -80,13 +79,12 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
     }
 
     @Override
-    public CbbDetectInfoResponse getRecentDetect(CbbTerminalIdRequest request) throws BusinessException {
+    public CbbTerminalDetectDTO getRecentDetect(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         CbbTerminalDetectDTO detectInfo = detectService.getRecentDetect(request.getTerminalId());
-        CbbDetectInfoResponse response = new CbbDetectInfoResponse();
-        response.setDetectInfo(detectInfo);
-        return response;
+
+        return detectInfo;
     }
 
     private void setThreshold(CbbTerminalDetectDTO detectDTO) {
@@ -110,10 +108,10 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
     }
 
     @Override
-    public CbbDetectResultResponse getDetectResult(CbbTerminalDetectResultRequest request) {
-        Assert.notNull(request, "request can not be null");
+    public CbbDetectResultResponse getDetectResult(CbbDetectDateEnums detectDate) {
+        Assert.notNull(detectDate, "detectDate can not be null");
 
-        CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(request.getDetectDate());
+        CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(detectDate);
 
         CbbTerminalDetectThresholdDTO threshold = new CbbTerminalDetectThresholdDTO();
         threshold.setBandwidthThreshold(Constants.TERMINAL_DETECT_BINDWIDTH_NORM);

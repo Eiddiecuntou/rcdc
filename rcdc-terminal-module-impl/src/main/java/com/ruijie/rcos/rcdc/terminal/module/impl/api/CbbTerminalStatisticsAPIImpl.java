@@ -3,9 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalStatisticsAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalPlatformRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalStatisticsItem;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalStatisticsResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalStatisticsItem;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.ViewTerminalStatDAO;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -37,28 +36,28 @@ public class CbbTerminalStatisticsAPIImpl implements CbbTerminalStatisticsAPI {
     private ViewTerminalStatDAO viewTerminalStatDAO;
 
     @Override
-    public CbbTerminalStatisticsResponse statisticsTerminal(TerminalPlatformRequest request) {
-        Assert.notNull(request, "TerminalTypeRequest不能为空");
+    public CbbTerminalStatisticsResponse statisticsTerminal(UUID[] groupIdArr) {
+        Assert.notNull(groupIdArr, "groupIdArr");
         CbbTerminalStatisticsResponse response = new CbbTerminalStatisticsResponse();
         //统计各类型终端在线情况
-        TerminalStatisticsItem itemVDI = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.VDI, request);
+        TerminalStatisticsItem itemVDI = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.VDI, groupIdArr);
         response.setVdi(itemVDI);
-        TerminalStatisticsItem itemIDV = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.IDV, request);
+        TerminalStatisticsItem itemIDV = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.IDV, groupIdArr);
         response.setIdv(itemIDV);
-        TerminalStatisticsItem itemAPP = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.APP, request);
+        TerminalStatisticsItem itemAPP = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.APP, groupIdArr);
         response.setApp(itemAPP);
         //统计所有终端在线情况
         return response;
     }
 
-    private TerminalStatisticsItem buildTerminalStatisticsItem(CbbTerminalPlatformEnums terminalPlatform, TerminalPlatformRequest request) {
+    private TerminalStatisticsItem buildTerminalStatisticsItem(CbbTerminalPlatformEnums terminalPlatform, UUID[] groupIdArr) {
         List<TerminalStatisticsDTO> resultList;
         Long neverLoginCount = 0L;
-        if (ArrayUtils.isEmpty(request.getGroupIdArr())) {
+        if (ArrayUtils.isEmpty(groupIdArr)) {
             resultList = viewTerminalStatDAO.statisticsByTerminalState(terminalPlatform);
         } else {
             List<UUID> terminalGroupIdList = HibernateUtil
-                    .handleQueryIncludeList(Arrays.asList(request.getGroupIdArr()));
+                    .handleQueryIncludeList(Arrays.asList(groupIdArr));
             resultList = viewTerminalStatDAO.statisticsByTerminalStateAndGroupId(terminalPlatform,
                     terminalGroupIdList);
         }

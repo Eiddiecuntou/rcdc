@@ -2,14 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.offlinelogin.OfflineLoginSettingResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
  * Description: 终端操作接口
@@ -25,21 +22,19 @@ public interface CbbTerminalOperatorAPI {
      * 关闭终端
      *
      * @param request 终端id请求参数对象
-     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     
-    DefaultResponse shutdown(CbbTerminalIdRequest request) throws BusinessException;
+    void shutdown(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 重启终端
      *
      * @param request 终端id请求参数对象
-     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     
-    DefaultResponse restart(CbbTerminalIdRequest request) throws BusinessException;
+    void restart(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 修改终端管理员密码
@@ -49,7 +44,7 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     
-    DefaultResponse changePassword(CbbChangePasswordRequest request) throws BusinessException;
+    void changePassword(CbbChangePasswordRequest request) throws BusinessException;
 
     /**
      * 收集终端日志
@@ -59,7 +54,7 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     
-    DefaultResponse collectLog(CbbTerminalIdRequest request) throws BusinessException;
+    void collectLog(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 终端检测
@@ -69,7 +64,7 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     
-    DefaultResponse singleDetect(CbbTerminalIdRequest request) throws BusinessException;
+    void singleDetect(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * 获取终端收集日志状态
@@ -84,46 +79,42 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 获取终端收集日志路径
      * 
-     * @param request 请求参数
+     * @param logName 请求参数
      * @return 终端收集日志路径
      * @throws BusinessException 业务异常
      */
     
-    CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalLogNameRequest request) throws BusinessException;
+    CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(String logName) throws BusinessException;
 
     /**
      * 解除故障
      *
      * @param request 终端id请求参数对象
-     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    DefaultResponse relieveFault(CbbTerminalIdRequest request) throws BusinessException;
+    void relieveFault(CbbTerminalIdRequest request) throws BusinessException;
 
     /**
      * IDV终端离线登录设置
      *
      * @param request 请求参数
-     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    DefaultResponse idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
+    void idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
 
     /**
      * IDV终端离线登录设置
      *
-     * @param request 请求参数
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    OfflineLoginSettingResponse queryOfflineLoginSetting(DefaultRequest request) throws BusinessException;
+    OfflineLoginSettingResponse queryOfflineLoginSetting() throws BusinessException;
 
     /**
      * 终端数据盘清空
      *
      * @param idRequest 请求参数
-     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    DefaultResponse clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException;
+    void clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException;
 }

@@ -1,7 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.TerminalPlatformRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalStatisticsResponse;
+
+import java.util.UUID;
 
 /**
  * Description: 统计接口
@@ -16,9 +17,9 @@ public interface CbbTerminalStatisticsAPI {
     /**
      * 统计终端新
      *
-     * @param request 终端类型请求
+     * @param groupIdArr 终端类型请求
      * @return 返回统计结果
      */
-    CbbTerminalStatisticsResponse statisticsTerminal(TerminalPlatformRequest request);
+    CbbTerminalStatisticsResponse statisticsTerminal(UUID[] groupIdArr);
 
 }

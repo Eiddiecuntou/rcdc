@@ -13,9 +13,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateE
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTaskUpgradeTerminalResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -37,7 +34,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,7 +173,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbTerminalNameResponse addSystemUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException {
+    public String addSystemUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         LOGGER.info("开始追加刷机终端：{} ", request.getTerminalId());
@@ -194,13 +190,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // 向在线终端发送升级消息
         sendUpgradeMsg(request, upgradeEntity);
 
-        CbbTerminalNameResponse response = new CbbTerminalNameResponse();
-        response.setTerminalName(terminal.getTerminalName());
-        return response;
+        return terminal.getTerminalName();
     }
 
     @Override
-    public DefaultResponse editSystemUpgradeTerminalGroup(CbbUpgradeTerminalGroupRequest request) throws BusinessException {
+    public void editSystemUpgradeTerminalGroup(CbbUpgradeTerminalGroupRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         LOGGER.info("编辑刷机终端分组：{} ", JSON.toJSONString(request.getTerminalGroupIdArr()));
@@ -211,7 +205,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         checkGroupExist(request.getTerminalGroupIdArr());
         terminalSystemUpgradeServiceTx.editUpgradeGroup(upgradeEntity, request.getTerminalGroupIdArr());
 
-        return DefaultResponse.Builder.success();
     }
 
     private void checkGroupExist(UUID[] terminalGroupIdArr) throws BusinessException {
@@ -276,14 +269,14 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbGetTerminalUpgradeTaskResponse getTerminalUpgradeTaskById(IdRequest request) throws BusinessException {
+    public CbbSystemUpgradeTaskDTO getTerminalUpgradeTaskById(IdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         final TerminalSystemUpgradeEntity upgradeTaskEntity = terminalSystemUpgradeService.getSystemUpgradeTask(request.getId());
         CbbSystemUpgradeTaskDTO upgradeTaskDTO = new CbbSystemUpgradeTaskDTO();
         TASK_BEAN_COPIER.copy(upgradeTaskEntity, upgradeTaskDTO, null);
         upgradeTaskDTO.setUpgradeTaskState(upgradeTaskEntity.getState());
-        return new CbbGetTerminalUpgradeTaskResponse(upgradeTaskDTO);
+        return upgradeTaskDTO;
     }
 
     @Override
@@ -347,12 +340,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultResponse closeSystemUpgradeTask(IdRequest request) throws BusinessException {
+    public void closeSystemUpgradeTask(IdRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getId());
         doAfterCloseUpgradeTask(request.getId());
-        return DefaultResponse.Builder.success();
     }
 
     private void doAfterCloseUpgradeTask(UUID upgradeTaskId) throws BusinessException {
@@ -440,7 +432,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
 
     @Override
-    public CbbGetTaskUpgradeTerminalResponse getUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalRequest request) {
+    public List<CbbSystemUpgradeTaskTerminalDTO> getUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalRequest request) {
         Assert.notNull(request, "request can not be null");
 
         final UUID upgradeTaskId = request.getId();
@@ -452,7 +444,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             upgradeTerminalList = systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(upgradeTaskId, upgradeTerminalState);
         }
         if (CollectionUtils.isEmpty(upgradeTerminalList)) {
-            return new CbbGetTaskUpgradeTerminalResponse(Lists.newArrayList());
+            return Lists.newArrayList();
         }
 
         List<CbbSystemUpgradeTaskTerminalDTO> upgradeTerminalDTOList = new ArrayList<>();
@@ -460,7 +452,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             upgradeTerminalDTOList.add(buildUpgradeTerminalDTO(entity));
         });
 
-        return new CbbGetTaskUpgradeTerminalResponse(upgradeTerminalDTOList);
+        return upgradeTerminalDTOList;
     }
 
     private CbbSystemUpgradeTaskTerminalDTO buildUpgradeTerminalDTO(TerminalSystemUpgradeTerminalEntity entity) {
@@ -471,7 +463,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbTerminalNameResponse cancelUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException {
+    public String cancelUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         final UUID upgradeTaskId = request.getUpgradeTaskId();
@@ -484,9 +476,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             lockManager.getAndCreateLock(terminalId).unlock();
         }
 
-        CbbTerminalNameResponse response = new CbbTerminalNameResponse();
-        response.setTerminalName(basicInfoDAO.getTerminalNameByTerminalId(terminalId));
-        return response;
+        return basicInfoDAO.getTerminalNameByTerminalId(terminalId);
     }
 
     private void checkAndCancelUpgradeTerminal(String terminalId, UUID upgradeTaskId) throws BusinessException {
@@ -501,7 +491,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
 
     @Override
-    public CbbTerminalNameResponse retryUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException {
+    public String retryUpgradeTerminal(CbbUpgradeTerminalRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         final UUID upgradeTaskId = request.getUpgradeTaskId();
@@ -515,9 +505,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         final TerminalSystemUpgradeEntity upgradeEntity = terminalSystemUpgradeService.getSystemUpgradeTask(request.getUpgradeTaskId());
         sendUpgradeMsg(request, upgradeEntity);
 
-        CbbTerminalNameResponse response = new CbbTerminalNameResponse();
-        response.setTerminalName(basicInfoDAO.getTerminalNameByTerminalId(terminalId));
-        return response;
+        return basicInfoDAO.getTerminalNameByTerminalId(terminalId);
     }
 
     private void checkRetryIsAllowed(final TerminalSystemUpgradeTerminalEntity upgradeTerminal) throws BusinessException {

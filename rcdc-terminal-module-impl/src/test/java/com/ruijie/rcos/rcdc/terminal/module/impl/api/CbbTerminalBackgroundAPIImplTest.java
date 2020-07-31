@@ -1,14 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundSaveRequest;
@@ -21,14 +12,16 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.Response;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
 import mockit.*;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * Description: 终端背景图片接口实现类
@@ -74,21 +67,6 @@ public class CbbTerminalBackgroundAPIImplTest {
     private static final String REQUEST_DATA =
             "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png','filePath':'/opt/ftp/terminal/background/background.png'}}";
 
-
-    /**
-     * 测试参数为空
-     */
-    @Test
-    public void testParamNullError() {
-        try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> cbbTerminalBackgroundAPI.saveBackgroundImageConfig(null), "request must not be null");
-            ThrowExceptionTester.throwIllegalArgumentException(() -> cbbTerminalBackgroundAPI.getBackgroundImageInfo(null),
-                    "request must not be null");
-            ThrowExceptionTester.throwIllegalArgumentException(() -> cbbTerminalBackgroundAPI.initBackgroundImage(null), "request must not be null");
-        } catch (Exception e) {
-            Assert.fail();
-        }
-    }
 
     /**
      * 测试上传时，需要删除文件的情况
@@ -152,8 +130,8 @@ public class CbbTerminalBackgroundAPIImplTest {
                 result = null;
             }
         };
-        DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse1 = cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
-        Assert.assertEquals(dtoResponse1.isEmpty(), true);
+        CbbTerminalBackgroundImageInfoDTO dto = cbbTerminalBackgroundAPI.getBackgroundImageInfo();
+        Assert.assertEquals(dto.getImageName(), null);
 
         new Expectations() {
             {
@@ -165,8 +143,8 @@ public class CbbTerminalBackgroundAPIImplTest {
             }
         };
 
-        DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse2 = cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
-        Assert.assertEquals(dtoResponse2.isEmpty(), true);
+        CbbTerminalBackgroundImageInfoDTO dto2 = cbbTerminalBackgroundAPI.getBackgroundImageInfo();
+        Assert.assertEquals(dto2.getImageName(), null);
     }
 
 
@@ -186,8 +164,8 @@ public class CbbTerminalBackgroundAPIImplTest {
                 result = REQUEST_DATA;
             }
         };
-        DtoResponse<CbbTerminalBackgroundImageInfoDTO> dtoResponse = cbbTerminalBackgroundAPI.getBackgroundImageInfo(new DefaultRequest());
-        Assert.assertEquals(dtoResponse.isEmpty(), false);
+        CbbTerminalBackgroundImageInfoDTO dto = cbbTerminalBackgroundAPI.getBackgroundImageInfo();
+        Assert.assertEquals(dto.getImageName(), null);
     }
 
     /**
@@ -207,7 +185,7 @@ public class CbbTerminalBackgroundAPIImplTest {
             }
         };
 
-        cbbTerminalBackgroundAPI.initBackgroundImage(new DefaultRequest());
+        cbbTerminalBackgroundAPI.initBackgroundImage();
 
         new Verifications() {
             {
@@ -240,8 +218,8 @@ public class CbbTerminalBackgroundAPIImplTest {
                 globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
             }
         };
-        DefaultResponse response = cbbTerminalBackgroundAPI.initBackgroundImage(new DefaultRequest());
-        Assert.assertEquals(response.getStatus(), Response.Status.SUCCESS);
+        cbbTerminalBackgroundAPI.initBackgroundImage();
+
         new Verifications() {
             {
                 globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
@@ -259,8 +237,8 @@ public class CbbTerminalBackgroundAPIImplTest {
                 result = null;
             }
         };
-        DefaultResponse response1 = cbbTerminalBackgroundAPI.initBackgroundImage(new DefaultRequest());
-        Assert.assertEquals(response1.getStatus(), Response.Status.SUCCESS);
+        cbbTerminalBackgroundAPI.initBackgroundImage();
+
         new Verifications() {
             {
                 globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);

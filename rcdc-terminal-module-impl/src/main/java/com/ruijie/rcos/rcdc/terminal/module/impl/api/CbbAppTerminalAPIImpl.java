@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbAppTerminalAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDownLoadUrlResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
@@ -10,8 +9,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;
@@ -31,8 +28,7 @@ public class CbbAppTerminalAPIImpl implements CbbAppTerminalAPI {
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbAppTerminalAPIImpl.class);
 
     @Override
-    public CbbDownLoadUrlResponse getWindowsAppDownloadUrl(DefaultRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public String getWindowsAppDownloadUrl() throws BusinessException {
         CbbWinAppUpdateListDTO listDTO = TerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.APP_WINDOWS);
         // 获取updatelist中完整组件的信息，从中获取全量包文件路径
         if (!TerminalUpdateListCacheManager.isCacheReady(CbbTerminalTypeEnums.APP_WINDOWS)) {
@@ -47,7 +43,7 @@ public class CbbAppTerminalAPIImpl implements CbbAppTerminalAPI {
 
         String completePackageUrl = WINDOWS_APP_COMPONENT_DIR + listDTO.getCompletePackageName();
         if (FileUtils.isValidPath(new File(completePackageUrl))) {
-            return new CbbDownLoadUrlResponse(completePackageUrl);
+            return completePackageUrl;
         }
 
         // 无全量包信息

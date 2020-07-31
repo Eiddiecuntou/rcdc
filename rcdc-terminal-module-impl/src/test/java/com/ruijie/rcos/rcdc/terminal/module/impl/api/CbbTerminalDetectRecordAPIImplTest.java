@@ -1,24 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-import java.util.UUID;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectResultRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
@@ -28,8 +15,17 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
-
 import mockit.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Description: Function Description
@@ -164,8 +160,7 @@ public class CbbTerminalDetectRecordAPIImplTest {
             }
         };
 
-        CbbDetectInfoResponse response = api.getRecentDetect(new CbbTerminalIdRequest("123"));
-        assertEquals(detectInfo, response.getDetectInfo());
+        assertEquals(detectInfo, api.getRecentDetect(new CbbTerminalIdRequest("123")));
     }
 
     /**
@@ -183,7 +178,7 @@ public class CbbTerminalDetectRecordAPIImplTest {
             }
         };
 
-        CbbDetectResultResponse response = api.getDetectResult(new CbbTerminalDetectResultRequest());
+        CbbDetectResultResponse response = api.getDetectResult(CbbDetectDateEnums.TODAY);
         assertEquals(dto, response.getResult());
     }
 }

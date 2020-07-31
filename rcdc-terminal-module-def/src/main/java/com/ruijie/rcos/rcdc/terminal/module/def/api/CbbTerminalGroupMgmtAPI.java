@@ -1,23 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
+
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -39,10 +33,9 @@ public interface CbbTerminalGroupMgmtAPI {
     /**
      * 获取所有树节点信息
      *
-     * @param request 默认请求
      * @return UserGroupTreeResponse 响应
      */
-    DtoResponse<List<TerminalGroupDTO>> getAllTerminalGroup(DefaultRequest request);
+    List<TerminalGroupDTO> getAllTerminalGroup();
     
     
     /**
@@ -52,8 +45,8 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return UserGroupTreeResponse 终端组DTO
      * @throws BusinessException 业务异常
      */
-    
-    CbbGetTerminalGroupTreeResponse loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeRequest request) throws BusinessException;
+
+    TerminalGroupTreeNodeDTO[] loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeRequest request) throws BusinessException;
     
     /**
      * 根据分组名称及父分组id获取分组
@@ -62,18 +55,18 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 校验结果
      * @throws BusinessException 业务异常
      */
-    
-    CbbTerminalGroupResponse getByName(CbbTerminalGroupRequest request) throws BusinessException;
+
+    TerminalGroupDTO getByName(CbbTerminalGroupRequest request) throws BusinessException;
 
     /**
      * 加载指定id终端组对象
      * 
      * @param request 请求参数id
-     * @return CbbTerminalGroupResponse 终端组DTO
+     * @return TerminalGroupDTO 终端组DTO
      * @throws BusinessException 业务异常
      */
-    
-    CbbTerminalGroupResponse loadById(IdRequest request) throws BusinessException;
+
+    TerminalGroupDTO loadById(IdRequest request) throws BusinessException;
 
     /**
      * @description 创建终端组
@@ -81,16 +74,15 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 创建终端组详细信息
      * @throws BusinessException 业务异常
      */
-    DtoResponse<TerminalGroupDTO> createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException;
+    TerminalGroupDTO createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException;
 
     /**
      * @description 编辑终端组
      * @param request 页面请求参数对象
-     * @return Response
      * @throws BusinessException 业务异常
      */
     
-    DefaultResponse editTerminalGroup(CbbEditTerminalGroupRequest request) throws BusinessException;
+    void editTerminalGroup(CbbEditTerminalGroupRequest request) throws BusinessException;
 
     /**
      * @description 删除终端组
@@ -99,7 +91,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常.
      */
     
-    DefaultResponse deleteTerminalGroup(CbbDeleteTerminalGroupRequest request) throws BusinessException;
+    void deleteTerminalGroup(CbbDeleteTerminalGroupRequest request) throws BusinessException;
 
     /**
      *  获取终端分组路径数组
@@ -108,8 +100,8 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    
-    CbbObtainGroupNamePathResponse obtainGroupNamePathArr(IdRequest request) throws BusinessException;
+
+    String[] obtainGroupNamePathArr(IdRequest request) throws BusinessException;
 
     /**
      * 判断分组名称是否存在
@@ -117,6 +109,6 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    
-    CbbCheckGroupNameDuplicationResponse checkUseGroupNameDuplication(CbbTerminalGroupNameDuplicationRequest request) throws BusinessException;
+
+    boolean checkUseGroupNameDuplication(CbbTerminalGroupNameDuplicationRequest request) throws BusinessException;
 }

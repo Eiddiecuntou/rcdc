@@ -1,15 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.*;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
@@ -23,14 +16,15 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
-
 import mockit.*;
 import mockit.integration.junit4.JMockit;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
+
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -154,8 +148,7 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testChangePassword() throws Exception {
         CbbChangePasswordRequest request = new CbbChangePasswordRequest();
         request.setPassword("password123");
-        DefaultResponse response = terminalOperatorAPI.changePassword(request);
-        assertEquals(Status.SUCCESS, response.getStatus());
+        terminalOperatorAPI.changePassword(request);
         new Verifications() {
             {
                 operatorService.changePassword(request.getPassword());
@@ -184,8 +177,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testDetect() throws BusinessException {
         CbbTerminalIdRequest request = new CbbTerminalIdRequest("123");
-        DefaultResponse response = terminalOperatorAPI.singleDetect(request);
-        assertEquals(Status.SUCCESS, response.getStatus());
+        terminalOperatorAPI.singleDetect(request);
         new Verifications() {
             {
                 operatorService.detect("123");
@@ -265,10 +257,9 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testGetTerminalLogFileInfoCollectFileNotExist() {
-        CbbTerminalLogNameRequest request = new CbbTerminalLogNameRequest();
-        request.setLogName("123.rar");
+        String logName = "123.rar";
         try {
-            terminalOperatorAPI.getTerminalLogFileInfo(request);
+            terminalOperatorAPI.getTerminalLogFileInfo(logName);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST, e.getKey());
@@ -282,8 +273,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testGetTerminalLogFileInfoHasSuffix() throws BusinessException {
-        CbbTerminalLogNameRequest request = new CbbTerminalLogNameRequest();
-        request.setLogName("logFileName.rar");
+        String logName = "logFileName.rar";
         new MockUp<CbbTerminalOperatorAPIImpl>() {
             @Mock
             private void checkFileExist(String logFilePath) throws BusinessException {
@@ -291,7 +281,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
 
-        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
+        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
         assertEquals("/opt/ftp/terminal/log/logFileName.rar", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("rar", response.getSuffix());
@@ -304,8 +294,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testGetTerminalLogFileInfoNotHasSuffix() throws BusinessException {
-        CbbTerminalLogNameRequest request = new CbbTerminalLogNameRequest();
-        request.setLogName("logFileName");
+        String logName = "logFileName";
         new MockUp<CbbTerminalOperatorAPIImpl>() {
             @Mock
             private void checkFileExist(String logFilePath) throws BusinessException {
@@ -313,7 +302,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
 
-        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
+        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
         assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("", response.getSuffix());
@@ -326,8 +315,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testGetTerminalLogFileExist() throws BusinessException {
-        CbbTerminalLogNameRequest request = new CbbTerminalLogNameRequest();
-        request.setLogName("logFileName");
+        String logName = "logFileName";
         new MockUp<File>() {
             @Mock
             public boolean isFile() {
@@ -335,7 +323,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
 
-        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(request);
+        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
         assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("", response.getSuffix());
@@ -350,8 +338,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testClearIdvTerminalDataDisk() throws BusinessException {
         CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        DefaultResponse response = terminalOperatorAPI.clearIdvTerminalDataDisk(request);
-        assertEquals(response.getStatus(),Status.SUCCESS);
+        terminalOperatorAPI.clearIdvTerminalDataDisk(request);
     }
 
 
@@ -363,8 +350,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testIdvOfflineLoginSetting() throws BusinessException {
         OfflineLoginSettingRequest request = new OfflineLoginSettingRequest(0);
-        DefaultResponse response = terminalOperatorAPI.idvOfflineLoginSetting(request);
-        assertEquals(response.getStatus(), Status.SUCCESS);
+        terminalOperatorAPI.idvOfflineLoginSetting(request);
     }
 
     /**
@@ -419,7 +405,7 @@ public class CbbTerminalOperatorAPIImplTest {
                 result = "0";
             }
         };
-        final OfflineLoginSettingResponse offlineLoginSettingResponse = terminalOperatorAPI.queryOfflineLoginSetting(new DefaultRequest());
+        final OfflineLoginSettingResponse offlineLoginSettingResponse = terminalOperatorAPI.queryOfflineLoginSetting();
         Assert.assertEquals("0", offlineLoginSettingResponse.getOfflineAutoLocked());
     }
 

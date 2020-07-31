@@ -1,16 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.util.List;
-
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
@@ -23,7 +13,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 /**
  * Description: 终端基本信息维护
@@ -65,7 +57,7 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     }
 
     @Override
-    public DefaultResponse delete(CbbTerminalIdRequest request) throws BusinessException {
+    public void delete(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "TerminalIdRequest不能为null");
         String terminalId = request.getTerminalId();
         // 在线终端不允许删除
@@ -79,11 +71,10 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
 
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
 
-        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public DefaultResponse modifyTerminal(CbbModifyTerminalRequest request) throws BusinessException {
+    public void modifyTerminal(CbbModifyTerminalRequest request) throws BusinessException {
         Assert.notNull(request, "request不能为空");
 
         String terminalId = request.getCbbTerminalId();
@@ -106,7 +97,6 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
         entity.setTerminalName(request.getTerminalName());
         basicInfoDAO.save(entity);
 
-        return DefaultResponse.Builder.success();
     }
 
     private TerminalEntity getTerminalEntity(String terminalId) throws BusinessException {

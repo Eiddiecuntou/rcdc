@@ -1,26 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalGroupOperNotifySPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalGroupOperNotifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -31,14 +19,20 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Description: Function Description
@@ -88,7 +82,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        api.getAllTerminalGroup(new DefaultRequest());
+        api.getAllTerminalGroup();
 
         new Verifications() {
             {
@@ -112,8 +106,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbGetTerminalGroupTreeResponse response = api.loadTerminalGroupCompleteTree(new CbbGetTerminalGroupCompleteTreeRequest());
-        assertEquals(0, response.getItemArr().length);
+        TerminalGroupTreeNodeDTO[] dtos = api.loadTerminalGroupCompleteTree(new CbbGetTerminalGroupCompleteTreeRequest());
+        assertEquals(0, dtos.length);
 
         new Verifications() {
             {
@@ -146,7 +140,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbGetTerminalGroupCompleteTreeRequest request = new CbbGetTerminalGroupCompleteTreeRequest();
         request.setEnableFilterDefaultGroup(true);
         request.setFilterGroupId(filterGroup.getId());
-        CbbGetTerminalGroupTreeResponse response = api.loadTerminalGroupCompleteTree(request);
+        TerminalGroupTreeNodeDTO[] dtos = api.loadTerminalGroupCompleteTree(request);
 
         new Verifications() {
             {
@@ -178,7 +172,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
         CbbGetTerminalGroupCompleteTreeRequest request = new CbbGetTerminalGroupCompleteTreeRequest();
         request.setEnableFilterDefaultGroup(false);
-        CbbGetTerminalGroupTreeResponse response = api.loadTerminalGroupCompleteTree(request);
+        api.loadTerminalGroupCompleteTree(request);
 
         new Verifications() {
             {
@@ -231,8 +225,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbTerminalGroupResponse response = api.getByName(new CbbTerminalGroupRequest("aaa", UUID.randomUUID()));
-        assertEquals(null, response.getTerminalGroupDTO());
+        TerminalGroupDTO dto = api.getByName(new CbbTerminalGroupRequest("aaa", UUID.randomUUID()));
+        assertEquals(null, dto);
     }
 
     /**
@@ -255,9 +249,9 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbTerminalGroupResponse response = api.getByName(new CbbTerminalGroupRequest("aaa", UUID.randomUUID()));
-        assertEquals(groupEntity.getId(), response.getTerminalGroupDTO().getId());
-        assertEquals(groupEntity.getName(), response.getTerminalGroupDTO().getGroupName());
+        TerminalGroupDTO dto = api.getByName(new CbbTerminalGroupRequest("aaa", UUID.randomUUID()));
+        assertEquals(groupEntity.getId(), dto.getId());
+        assertEquals(groupEntity.getName(), dto.getGroupName());
 
         new Verifications() {
             {
@@ -291,10 +285,10 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbTerminalGroupResponse response = api.loadById(new IdRequest(UUID.randomUUID()));
-        assertEquals(groupEntity1.getId(), response.getTerminalGroupDTO().getId());
-        assertEquals(groupEntity1.getName(), response.getTerminalGroupDTO().getGroupName());
-        assertEquals(groupEntity2.getName(), response.getTerminalGroupDTO().getParentGroupName());
+        TerminalGroupDTO dto = api.loadById(new IdRequest(UUID.randomUUID()));
+        assertEquals(groupEntity1.getId(), dto.getId());
+        assertEquals(groupEntity1.getName(), dto.getGroupName());
+        assertEquals(groupEntity2.getName(), dto.getParentGroupName());
 
         new Verifications() {
             {
@@ -323,10 +317,10 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbTerminalGroupResponse response = api.loadById(new IdRequest(UUID.randomUUID()));
-        assertEquals(groupEntity1.getId(), response.getTerminalGroupDTO().getId());
-        assertEquals(groupEntity1.getName(), response.getTerminalGroupDTO().getGroupName());
-        assertEquals(null, response.getTerminalGroupDTO().getParentGroupName());
+        TerminalGroupDTO dto = api.loadById(new IdRequest(UUID.randomUUID()));
+        assertEquals(groupEntity1.getId(), dto.getId());
+        assertEquals(groupEntity1.getName(), dto.getGroupName());
+        assertEquals(null, dto.getParentGroupName());
 
         new Verifications() {
             {
@@ -423,8 +417,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbObtainGroupNamePathResponse response = api.obtainGroupNamePathArr(new IdRequest(UUID.randomUUID()));
-        assertEquals(nameStrArr, response.getGroupNameArr());
+        String[] groupNameArr = api.obtainGroupNamePathArr(new IdRequest(UUID.randomUUID()));
+        assertEquals(nameStrArr, groupNameArr);
 
         new Verifications() {
             {
@@ -457,8 +451,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbCheckGroupNameDuplicationResponse response = api.checkUseGroupNameDuplication(request);
-        Assert.assertTrue(response.isHasDuplication());
+        boolean hasDuplication = api.checkUseGroupNameDuplication(request);
+        Assert.assertTrue(hasDuplication);
 
         new Verifications() {
             {
@@ -485,8 +479,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbCheckGroupNameDuplicationResponse response = api.checkUseGroupNameDuplication(request);
-        Assert.assertFalse(response.isHasDuplication());
+        boolean hasDuplication = api.checkUseGroupNameDuplication(request);
+        Assert.assertFalse(hasDuplication);
 
         new Verifications() {
             {
@@ -513,8 +507,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbCheckGroupNameDuplicationResponse response = api.checkUseGroupNameDuplication(request);
-        Assert.assertTrue(response.isHasDuplication());
+        boolean hasDuplication = api.checkUseGroupNameDuplication(request);
+        Assert.assertTrue(hasDuplication);
 
         new Verifications() {
             {

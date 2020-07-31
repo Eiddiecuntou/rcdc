@@ -1,16 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.io.File;
-import java.util.regex.Pattern;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalLogNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
@@ -24,8 +17,11 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.util.regex.Pattern;
 
 /**
  * Description: 终端操作实现类
@@ -48,30 +44,27 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     private CollectLogCacheManager collectLogCacheManager;
 
     @Override
-    public DefaultResponse shutdown(CbbTerminalIdRequest request) throws BusinessException {
+    public void shutdown(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
         operatorService.shutdown(terminalId);
-        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public DefaultResponse restart(CbbTerminalIdRequest request) throws BusinessException {
+    public void restart(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
         operatorService.restart(terminalId);
-        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public DefaultResponse changePassword(CbbChangePasswordRequest request) throws BusinessException {
+    public void changePassword(CbbChangePasswordRequest request) throws BusinessException {
         Assert.notNull(request, "CbbChangePasswordRequest不能为空");
 
         checkPwdIsLegal(request.getPassword());
         operatorService.changePassword(request.getPassword());
-        return DefaultResponse.Builder.success();
     }
 
     private void checkPwdIsLegal(String password) throws BusinessException {
@@ -82,20 +75,18 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public DefaultResponse collectLog(CbbTerminalIdRequest request) throws BusinessException {
+    public void collectLog(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         String terminalId = request.getTerminalId();
         operatorService.collectLog(terminalId);
-        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public DefaultResponse singleDetect(CbbTerminalIdRequest request) throws BusinessException {
+    public void singleDetect(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
 
         String terminalId = request.getTerminalId();
         operatorService.detect(terminalId);
-        return DefaultResponse.Builder.success();
     }
 
     @Override
@@ -110,10 +101,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(CbbTerminalLogNameRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(String logFileName) throws BusinessException {
+        Assert.notNull(logFileName, "logFileName can not be null");
 
-        String logFileName = request.getLogName();
         String logFilePath = Constants.STORE_TERMINAL_LOG_PATH + logFileName;
         checkFileExist(logFilePath);
         String logFileNameWithoutExtension = Files.getNameWithoutExtension(logFileName);
@@ -160,21 +150,19 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public DefaultResponse relieveFault(CbbTerminalIdRequest request) throws BusinessException {
+    public void relieveFault(CbbTerminalIdRequest request) throws BusinessException {
         Assert.notNull(request, "CbbTerminalIdRequest不能为空");
         Assert.hasText(request.getTerminalId(), "terminalId不能为空");
         String terminalId = request.getTerminalId();
         operatorService.relieveFault(terminalId);
-        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public DefaultResponse clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException {
+    public void clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException {
         Assert.notNull(idRequest,"idRequest can not be null");
 
         String terminalId = idRequest.getTerminalId();
         operatorService.diskClear(terminalId);
-        return DefaultResponse.Builder.success();
     }
 
     /**
@@ -185,22 +173,19 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @Override
-    public DefaultResponse idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException {
+    public void idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         operatorService.offlineLoginSetting(request.getOfflineAutoLocked());
-        return DefaultResponse.Builder.success();
     }
 
     /**
      * IDV终端离线登录设置
      *
-     * @param request 请求参数
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @Override
-    public OfflineLoginSettingResponse queryOfflineLoginSetting(DefaultRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public OfflineLoginSettingResponse queryOfflineLoginSetting() throws BusinessException {
         String offlineLoginSetting = operatorService.queryOfflineLoginSetting();
         return new OfflineLoginSettingResponse(offlineLoginSetting);
     }

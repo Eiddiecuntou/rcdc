@@ -12,9 +12,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateE
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTaskUpgradeTerminalResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -32,7 +29,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
@@ -433,8 +429,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.addSystemUpgradeTerminal(request);
-        assertEquals(terminal.getTerminalName(), response.getTerminalName());
+        String terminalName = upgradeAPIImpl.addSystemUpgradeTerminal(request);
+        assertEquals(terminal.getTerminalName(), terminalName);
 
         new Verifications() {
             {
@@ -595,8 +591,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testCloseSystemUpgradeTask() throws BusinessException {
         IdRequest request = new IdRequest();
-        DefaultResponse response = upgradeAPIImpl.closeSystemUpgradeTask(request);
-        assertEquals(Status.SUCCESS, response.getStatus());
+        upgradeAPIImpl.closeSystemUpgradeTask(request);
         new Verifications() {
             {
                 terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getId());
@@ -721,10 +716,10 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbGetTerminalUpgradeTaskResponse response = upgradeAPIImpl.getTerminalUpgradeTaskById(new IdRequest());
-        assertEquals(upgradeTaskEntity.getId(), response.getUpgradeTask().getId());
-        assertEquals(upgradeTaskEntity.getPackageName(), response.getUpgradeTask().getPackageName());
-        assertEquals(upgradeTaskEntity.getState(), response.getUpgradeTask().getUpgradeTaskState());
+        CbbSystemUpgradeTaskDTO taskDTO = upgradeAPIImpl.getTerminalUpgradeTaskById(new IdRequest());
+        assertEquals(upgradeTaskEntity.getId(), taskDTO.getId());
+        assertEquals(upgradeTaskEntity.getPackageName(), taskDTO.getPackageName());
+        assertEquals(upgradeTaskEntity.getState(), taskDTO.getUpgradeTaskState());
 
         new Verifications() {
             {
@@ -752,8 +747,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbGetTaskUpgradeTerminalResponse response = upgradeAPIImpl.getUpgradeTerminalByTaskId(request);
-        assertEquals(0, response.getUpgradeTerminalList().size());
+        List<CbbSystemUpgradeTaskTerminalDTO> taskTerminalDTOList = upgradeAPIImpl.getUpgradeTerminalByTaskId(request);
+        assertEquals(0, taskTerminalDTOList.size());
 
         new Verifications() {
             {
@@ -789,11 +784,11 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbGetTaskUpgradeTerminalResponse response = upgradeAPIImpl.getUpgradeTerminalByTaskId(request);
-        assertEquals(1, response.getUpgradeTerminalList().size());
-        assertEquals(entity.getTerminalId(), response.getUpgradeTerminalList().get(0).getTerminalId());
-        assertEquals(entity.getId(), response.getUpgradeTerminalList().get(0).getId());
-        assertEquals(entity.getState(), response.getUpgradeTerminalList().get(0).getTerminalUpgradeState());
+        List<CbbSystemUpgradeTaskTerminalDTO> taskTerminalDTOList = upgradeAPIImpl.getUpgradeTerminalByTaskId(request);
+        assertEquals(1, taskTerminalDTOList.size());
+        assertEquals(entity.getTerminalId(), taskTerminalDTOList.get(0).getTerminalId());
+        assertEquals(entity.getId(), taskTerminalDTOList.get(0).getId());
+        assertEquals(entity.getState(), taskTerminalDTOList.get(0).getTerminalUpgradeState());
 
         new Verifications() {
             {
@@ -939,8 +934,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.cancelUpgradeTerminal(request);
-        assertEquals("bbb", response.getTerminalName());
+        String terminalName = upgradeAPIImpl.cancelUpgradeTerminal(request);
+        assertEquals("bbb", terminalName);
 
         new Verifications() {
             {
@@ -1046,8 +1041,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.retryUpgradeTerminal(request);
-        assertEquals("ccc", response.getTerminalName());
+        String terminalName = upgradeAPIImpl.retryUpgradeTerminal(request);
+        assertEquals("ccc", terminalName);
 
         new Verifications() {
             {
@@ -1110,8 +1105,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.retryUpgradeTerminal(request);
-        assertEquals("ccc", response.getTerminalName());
+        String terminalName = upgradeAPIImpl.retryUpgradeTerminal(request);
+        assertEquals("ccc", terminalName);
         assertEquals(CbbSystemUpgradeStateEnums.UPGRADING, upgradeTerminal.getState());
 
         new Verifications() {
@@ -1168,8 +1163,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.retryUpgradeTerminal(request);
-        assertEquals("ccc", response.getTerminalName());
+        String terminalName = upgradeAPIImpl.retryUpgradeTerminal(request);
+        assertEquals("ccc", terminalName);
 
         new Verifications() {
             {
@@ -1263,8 +1258,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        DefaultResponse defaultResponse = upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
-        assertEquals(Status.SUCCESS, defaultResponse.getStatus());
+        upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
 
         new Verifications() {
             {
@@ -1303,8 +1297,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        DefaultResponse defaultResponse = upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
-        assertEquals(Status.SUCCESS, defaultResponse.getStatus());
+        upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
 
         new Verifications() {
             {

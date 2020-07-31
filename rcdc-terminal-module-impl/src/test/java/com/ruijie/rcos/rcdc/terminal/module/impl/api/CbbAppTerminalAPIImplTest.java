@@ -3,15 +3,16 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDownLoadUrlResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import mockit.*;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
+import mockit.Verifications;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,7 +57,7 @@ public class CbbAppTerminalAPIImplTest {
         };
 
         try {
-            api.getWindowsAppDownloadUrl(new DefaultRequest());
+            api.getWindowsAppDownloadUrl();
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_WINDOWS_APP_UPDATELIST_CACHE_NOT_READY, e.getKey());
@@ -84,7 +85,7 @@ public class CbbAppTerminalAPIImplTest {
         };
 
         try {
-            api.getWindowsAppDownloadUrl(new DefaultRequest());
+            api.getWindowsAppDownloadUrl();
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPDATELIST_CACHE_INCORRECT, e.getKey());
@@ -113,7 +114,7 @@ public class CbbAppTerminalAPIImplTest {
         };
 
         try {
-            api.getWindowsAppDownloadUrl(new DefaultRequest());
+            api.getWindowsAppDownloadUrl();
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPDATELIST_CACHE_INCORRECT, e.getKey());
@@ -153,7 +154,7 @@ public class CbbAppTerminalAPIImplTest {
         };
 
         try {
-            api.getWindowsAppDownloadUrl(new DefaultRequest());
+            api.getWindowsAppDownloadUrl();
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPDATELIST_CACHE_INCORRECT, e.getKey());
@@ -206,8 +207,8 @@ public class CbbAppTerminalAPIImplTest {
         };
 
         try {
-            CbbDownLoadUrlResponse windowsAppDownloadUrl = api.getWindowsAppDownloadUrl(new DefaultRequest());
-            assertEquals("/opt/ftp/terminal/terminal_component/windows_app/component/aaa", windowsAppDownloadUrl.getDownLoadUrl());
+            String downLoadUrl = api.getWindowsAppDownloadUrl();
+            assertEquals("/opt/ftp/terminal/terminal_component/windows_app/component/aaa", downLoadUrl);
         } catch (BusinessException e) {
             fail();
         }

@@ -2,12 +2,10 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalModelAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalModelDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalProductIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalModelService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -27,26 +25,26 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
     private TerminalModelService terminalModelService;
 
     @Override
-    public CbbItemArrResponse<CbbTerminalModelDTO> listTerminalModel(CbbTerminalPlatformRequest request) {
-        Assert.notNull(request, "request can not be null");
+    public CbbItemArrResponse<CbbTerminalModelDTO> listTerminalModel(CbbTerminalPlatformEnums[] platformArr) {
+        Assert.notNull(platformArr, "platformArr can not be null");
 
-        CbbTerminalModelDTO[] terminalModelArr = terminalModelService.queryTerminalModelByPlatform(request.getPlatformArr());
+        CbbTerminalModelDTO[] terminalModelArr = terminalModelService.queryTerminalModelByPlatform(platformArr);
         return new CbbItemArrResponse<>(terminalModelArr);
     }
 
     @Override
-    public DtoResponse<CbbTerminalModelDTO> queryByProductId(CbbTerminalProductIdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public CbbTerminalModelDTO queryByProductId(String productId) throws BusinessException {
+        Assert.notNull(productId, "productId can not be null");
 
-        CbbTerminalModelDTO terminalModelDTO = terminalModelService.queryByProductId(request.getProductId());
-        return DtoResponse.success(terminalModelDTO);
+        CbbTerminalModelDTO terminalModelDTO = terminalModelService.queryByProductId(productId);
+        return terminalModelDTO;
     }
 
     @Override
-    public DtoResponse<List<String>> listTerminalOsType(CbbTerminalPlatformRequest request) {
-        Assert.notNull(request, "request can not be null");
+    public List<String> listTerminalOsType(CbbTerminalPlatformEnums[] platformArr) {
+        Assert.notNull(platformArr, "platformArr can not be null");
 
-        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(request.getPlatformArr());
-        return DtoResponse.success(osTypeList);
+        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(platformArr);
+        return osTypeList;
     }
 }

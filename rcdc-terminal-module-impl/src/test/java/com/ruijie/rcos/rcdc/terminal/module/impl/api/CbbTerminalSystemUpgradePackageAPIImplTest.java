@@ -6,9 +6,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskSt
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbListTerminalSystemUpgradePackageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageNameResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -27,7 +24,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import mockit.*;
 import org.apache.commons.lang3.time.DateUtils;
@@ -203,18 +199,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
 
     /**
-     * 测试listSystemUpgradePackage，参数为空
-     *
-     * @throws Exception 异常
-     */
-    @Test
-    public void testListSystemUpgradePackageArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.listSystemUpgradePackage(null),
-                "request can not be null");
-        assertTrue(true);
-    }
-
-    /**
      * 测试listSystemUpgradePackage-无进行中的升级任务
      *
      * @throws ParseException exception
@@ -236,8 +220,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbListTerminalSystemUpgradePackageResponse response =
-                upgradePackageAPIImpl.listSystemUpgradePackage(new DefaultRequest());
+        CbbTerminalSystemUpgradePackageInfoDTO[] dtos =
+                upgradePackageAPIImpl.listSystemUpgradePackage();
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
                 buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.FINISH, null);
@@ -284,8 +268,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbListTerminalSystemUpgradePackageResponse response =
-                upgradePackageAPIImpl.listSystemUpgradePackage(new DefaultRequest());
+        CbbTerminalSystemUpgradePackageInfoDTO[] dtos =
+                upgradePackageAPIImpl.listSystemUpgradePackage();
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
                 buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.UPGRADING, systemUpgradeId);
@@ -380,8 +364,8 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbUpgradePackageNameResponse response = upgradePackageAPIImpl.deleteUpgradePackage(request);
-        assertEquals(systemUpgradePackage.getPackageName(), response.getPackageName());
+        String packageName = upgradePackageAPIImpl.deleteUpgradePackage(request);
+        assertEquals(systemUpgradePackage.getPackageName(), packageName);
 
         new Verifications() {
             {
@@ -432,7 +416,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbUpgradePackageResponse response = upgradePackageAPIImpl.getById(new IdRequest(packageId));
+        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.getById(new IdRequest(packageId));
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
                 buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.FINISH, null);
@@ -478,7 +462,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbUpgradePackageResponse response = upgradePackageAPIImpl.getById(new IdRequest(packageId));
+        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.getById(new IdRequest(packageId));
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
                 buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.UPGRADING, systemUpgradeId);
