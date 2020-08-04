@@ -118,7 +118,7 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
         threshold.setPacketLossRateThreshold(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE);
         threshold.setDelayThreshold(Constants.TERMINAL_DETECT_DELAY_NORM);
         CbbDetectResultResponse resp = new CbbDetectResultResponse(result, threshold);
-        resp.setStatus(Response.Status.SUCCESS);
+
         return resp;
     }
 }

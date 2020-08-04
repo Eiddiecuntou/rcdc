@@ -102,7 +102,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Override
     public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(String logFileName) throws BusinessException {
-        Assert.notNull(logFileName, "logFileName can not be null");
+        Assert.hasText(logFileName, "logFileName can not be blank");
 
         String logFilePath = Constants.STORE_TERMINAL_LOG_PATH + logFileName;
         checkFileExist(logFilePath);

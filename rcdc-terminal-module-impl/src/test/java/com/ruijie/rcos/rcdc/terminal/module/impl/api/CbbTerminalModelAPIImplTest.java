@@ -43,7 +43,7 @@ public class CbbTerminalModelAPIImplTest {
      */
     @Test
     public void testListTerminalModelArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.listTerminalModel(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.listTerminalModel(null), "platformArr can not be null");
         assertTrue(true);
     }
 
@@ -74,7 +74,7 @@ public class CbbTerminalModelAPIImplTest {
      */
     @Test
     public void testQueryByProductIdArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.queryByProductId(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.queryByProductId(null), "productId can not be null");
         assertTrue(true);
     }
 
