@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.base.annotation.Range;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
  * 
@@ -14,7 +13,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-public class CbbCheckAllowUploadPackageRequest implements Request {
+public class CbbCheckAllowUploadPackageRequest {
 
     @NotNull
     @Range(min = "1")

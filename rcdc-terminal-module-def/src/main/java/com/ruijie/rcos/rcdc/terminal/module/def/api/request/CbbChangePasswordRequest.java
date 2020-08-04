@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.Size;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
  * Description: 修改终端管理员密码请求参数
@@ -12,7 +11,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  *
  * @author Jarman
  */
-public class CbbChangePasswordRequest implements Request {
+public class CbbChangePasswordRequest {
 
     @NotBlank
     @Size(min = 8, max = 16)

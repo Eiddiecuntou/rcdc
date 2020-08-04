@@ -1,8 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo;
 
-import org.springframework.util.Assert;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.util.Assert;
 
 /**
  * Description: 上传Logo请求
@@ -12,7 +11,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  *
  * @author huangsen
  */
-public class CbbUploadLogoRequest implements Request {
+public class CbbUploadLogoRequest {
 
     @NotBlank
     private String logoPath;

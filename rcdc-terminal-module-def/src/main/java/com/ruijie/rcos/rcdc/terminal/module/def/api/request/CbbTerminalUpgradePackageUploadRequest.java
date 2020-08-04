@@ -1,10 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.util.Assert;
 
 /**
@@ -16,7 +14,7 @@ import org.springframework.util.Assert;
  * 
  * @author nt
  */
-public class CbbTerminalUpgradePackageUploadRequest implements Request {
+public class CbbTerminalUpgradePackageUploadRequest {
 
     @NotBlank
     private String filePath;

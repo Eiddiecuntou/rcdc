@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-
 /**
  * Description: 终端应答的数据
  * Copyright: Copyright (c) 2018
@@ -11,7 +9,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * @param <T> 消息体
  * @author Jarman
  */
-public class CbbShineMessageResponse<T> extends DefaultResponse {
+public class CbbShineMessageResponse<T> {
 
     private int code;
 

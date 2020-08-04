@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin;
 
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.base.annotation.Range;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
  * Description:
@@ -12,7 +11,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  *
  * @author conghaifeng
  */
-public class OfflineLoginSettingRequest implements Request {
+public class OfflineLoginSettingRequest {
 
     @NotNull
     @Range(min = "-1")

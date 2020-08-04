@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
  * 
@@ -12,7 +11,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author nt
  */
-public class CbbTerminalCollectLogStatusResponse extends DefaultResponse {
+public class CbbTerminalCollectLogStatusResponse {
 
 
     private CbbCollectLogStateEnums state;

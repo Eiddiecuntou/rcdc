@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
 import java.util.List;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
  * 
@@ -12,7 +11,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author nt
  */
-public class CbbCheckAllowUploadPackageResponse extends DefaultResponse {
+public class CbbCheckAllowUploadPackageResponse {
 
     private Boolean allowUpload;
 

@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
 import java.util.UUID;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
  * 
@@ -12,7 +11,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author nt
  */
-public class CbbAddSystemUpgradeTaskResponse extends DefaultResponse {
+public class CbbAddSystemUpgradeTaskResponse {
 
     private UUID upgradeTaskId;
 

@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-
 /**
  * 
  * Description: 终端日志存储路径
@@ -11,7 +9,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author nt
  */
-public class CbbTerminalLogFileInfoResponse extends DefaultResponse {
+public class CbbTerminalLogFileInfoResponse {
 
     private String logFilePath;
 

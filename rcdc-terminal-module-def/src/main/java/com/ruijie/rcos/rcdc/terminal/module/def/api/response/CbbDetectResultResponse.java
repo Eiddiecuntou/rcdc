@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectThresholdDTO;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
  * 
@@ -13,7 +12,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * 
  * @author nt
  */
-public class CbbDetectResultResponse extends DefaultResponse {
+public class CbbDetectResultResponse {
 
     private CbbTerminalDetectStatisticsDTO result;
 

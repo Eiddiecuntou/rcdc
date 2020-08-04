@@ -2,8 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.response.offlinelogin;
 
 import org.springframework.util.Assert;
 
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-
 /**
  * Description:
  * Copyright: Copyright (c) 2020
@@ -12,7 +10,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  *
  * @author conghaifeng
  */
-public class OfflineLoginSettingResponse extends DefaultResponse {
+public class OfflineLoginSettingResponse {
 
     private String offlineAutoLocked;
 

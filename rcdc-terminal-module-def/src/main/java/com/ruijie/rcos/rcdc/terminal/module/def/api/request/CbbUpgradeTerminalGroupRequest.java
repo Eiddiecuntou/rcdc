@@ -1,9 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import java.util.UUID;
-
 import com.ruijie.rcos.sk.base.annotation.NotNull;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+
+import java.util.UUID;
 
 /**
  * 
@@ -14,7 +13,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-public class CbbUpgradeTerminalGroupRequest implements Request {
+public class CbbUpgradeTerminalGroupRequest {
 
     @NotNull
     private UUID upgradeTaskId;

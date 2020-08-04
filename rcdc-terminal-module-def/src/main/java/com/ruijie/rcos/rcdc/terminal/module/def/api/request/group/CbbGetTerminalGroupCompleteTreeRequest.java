@@ -1,11 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request.group;
 
-import java.util.UUID;
-
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
 
-import com.ruijie.rcos.sk.base.annotation.NotNull;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import java.util.UUID;
 
 /**
  * 
@@ -16,7 +14,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author nt
  */
-public class CbbGetTerminalGroupCompleteTreeRequest implements Request {
+public class CbbGetTerminalGroupCompleteTreeRequest {
 
     @NotNull
     private Boolean enableFilterDefaultGroup;

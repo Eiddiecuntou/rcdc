@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -14,7 +13,7 @@ import org.springframework.util.Assert;
  * @param <T> 消息体
  * @author Jarman
  */
-public class CbbShineMessageRequest<T> implements Request {
+public class CbbShineMessageRequest<T> {
 
     @NotBlank
     protected String action;

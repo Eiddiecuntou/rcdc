@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 
 /**
  * Description: Function Description
@@ -12,7 +11,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  *
  * @author songxiang
  */
-public class CbbTerminalBackgroundSaveRequest implements Request {
+public class CbbTerminalBackgroundSaveRequest {
 
     @NotBlank
     private String imageName;
