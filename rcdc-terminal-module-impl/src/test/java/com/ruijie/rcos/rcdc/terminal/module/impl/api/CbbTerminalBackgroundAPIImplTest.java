@@ -165,7 +165,7 @@ public class CbbTerminalBackgroundAPIImplTest {
             }
         };
         CbbTerminalBackgroundImageInfoDTO dto = cbbTerminalBackgroundAPI.getBackgroundImageInfo();
-        Assert.assertEquals(dto.getImageName(), null);
+        Assert.assertTrue(dto != null);
     }
 
     /**

@@ -110,12 +110,10 @@ public class BtClientServiceImpl implements BtClientService {
             apiRequest.setFilePath(filePath);
             apiRequest.setSeedSavePath(seedSavePath);
             apiRequest.setIpAddr(getLocalIP());
-            DtoResponse<SeedFileInfoDTO> apiResponse = btClientAPI.makeBtSeed(apiRequest);
+            SeedFileInfoDTO seedFileInfoDTO = btClientAPI.makeBtSeed(apiRequest);
 
-            Assert.notNull(apiResponse, "BT API response is null!");
-            Assert.isTrue(DtoResponse.Status.SUCCESS == apiResponse.getStatus(), "BT API response fail!");
-            Assert.notNull(apiResponse.getDto(), "seedInfoDto is null!");
-            return apiResponse.getDto();
+            Assert.notNull(seedFileInfoDTO, "seedInfoDto is null!");
+            return seedFileInfoDTO;
         } catch (Exception e) {
             LOGGER.error("制作BT种子失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_BT_MAKE_SEED_FILE_FAIL, e);

@@ -7,7 +7,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SambaInfoDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -44,7 +43,7 @@ public class SambaInfoServiceTest {
         new Expectations() {
             {
                 sambaServiceAPI.getSambaConfig("pxe");
-                result = DtoResponse.success(sambaConfigDTO);
+                result = sambaConfigDTO;
             }
         };
 
@@ -68,7 +67,7 @@ public class SambaInfoServiceTest {
         new Expectations() {
             {
                 sambaServiceAPI.getSambaConfig("pxe");
-                result = DtoResponse.success(sambaConfigDTO);
+                result = sambaConfigDTO;
             }
         };
 

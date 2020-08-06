@@ -237,7 +237,6 @@ public class BtClientServiceImplTest {
         file.createNewFile();
 
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedPath", "seedMD5");
-        DtoResponse<SeedFileInfoDTO> seedInfoResponse = DtoResponse.success(seedFileInfoDTO);
 
         ClusterVirtualIpDTO ipDTO = new ClusterVirtualIpDTO();
         ipDTO.setClusterVirtualIpIp("0.0.0.0");
@@ -246,7 +245,7 @@ public class BtClientServiceImplTest {
         new Expectations() {
             {
                 btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
-                result = seedInfoResponse;
+                result = seedFileInfoDTO;
                 cloudPlatformMgmtAPI.getClusterVirtualIp((DefaultRequest) any);
                 result = resp;
             }
@@ -284,7 +283,6 @@ public class BtClientServiceImplTest {
         File file = new File(filePath);
         file.createNewFile();
 
-        DtoResponse<SeedFileInfoDTO> seedInfoResponse = DtoResponse.fail("key");
 
         ClusterVirtualIpDTO ipDTO = new ClusterVirtualIpDTO();
         ipDTO.setClusterVirtualIpIp("0.0.0.0");
@@ -293,7 +291,7 @@ public class BtClientServiceImplTest {
         new Expectations() {
             {
                 btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
-                result = seedInfoResponse;
+                result = "key";
                 cloudPlatformMgmtAPI.getClusterVirtualIp((DefaultRequest) any);
                 result = resp;
             }

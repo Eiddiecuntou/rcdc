@@ -248,7 +248,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testGetTerminalLogFileInfoArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getTerminalLogFileInfo(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getTerminalLogFileInfo(null), "logFileName can not be blank");
         assertTrue(true);
     }
 
