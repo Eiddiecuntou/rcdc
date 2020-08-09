@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalModelDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalModelService;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -63,8 +62,8 @@ public class CbbTerminalModelAPIImplTest {
             }
         };
 
-        CbbItemArrResponse<CbbTerminalModelDTO> response = terminalModelAPI.listTerminalModel(new CbbTerminalPlatformEnums[]{});
-        assertEquals(response.getItemArr(), terminalModelArr);
+        CbbTerminalModelDTO[] modelDTOArr = terminalModelAPI.listTerminalModel(new CbbTerminalPlatformEnums[]{});
+        assertEquals(modelDTOArr, terminalModelArr);
     }
 
     /**

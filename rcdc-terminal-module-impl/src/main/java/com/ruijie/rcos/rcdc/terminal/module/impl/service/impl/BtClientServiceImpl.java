@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
@@ -81,9 +80,7 @@ public class BtClientServiceImpl implements BtClientService {
             validateSeedFile(seedPath);
 
             // 关闭BT分享
-            BaseStopBtShareRequest apiRequest = new BaseStopBtShareRequest();
-            apiRequest.setSeedFilePath(seedPath);
-            btClientAPI.stopBtShare(apiRequest);
+            btClientAPI.stopBtShare(seedPath);
         } catch (Exception e) {
             LOGGER.error("关闭BT分享失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_BT_STOP_SHARE_SEED_FILE_FAIL, e);

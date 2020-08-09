@@ -8,9 +8,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -89,11 +89,11 @@ public interface CbbTerminalSystemUpgradeAPI {
     /**
      * 关闭刷机任务
      * 
-     * @param request 请求参数
+     * @param taskId 请求参数
      * @throws BusinessException 业务异常
      */
     
-    void closeSystemUpgradeTask(IdRequest request) throws BusinessException;
+    void closeSystemUpgradeTask(UUID taskId) throws BusinessException;
 
     /**
      * 终端可刷机的列表
@@ -138,11 +138,11 @@ public interface CbbTerminalSystemUpgradeAPI {
     /**
      * 获取终端刷机任务信息
      * 
-     * @param request 请求参数
+     * @param taskId 请求参数
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
 
-    CbbSystemUpgradeTaskDTO getTerminalUpgradeTaskById(IdRequest request) throws BusinessException;
+    CbbSystemUpgradeTaskDTO getTerminalUpgradeTaskById(UUID taskId) throws BusinessException;
 
 }

@@ -34,7 +34,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
@@ -269,10 +268,10 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbSystemUpgradeTaskDTO getTerminalUpgradeTaskById(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public CbbSystemUpgradeTaskDTO getTerminalUpgradeTaskById(UUID taskId) throws BusinessException {
+        Assert.notNull(taskId, "taskId can not be null");
 
-        final TerminalSystemUpgradeEntity upgradeTaskEntity = terminalSystemUpgradeService.getSystemUpgradeTask(request.getId());
+        final TerminalSystemUpgradeEntity upgradeTaskEntity = terminalSystemUpgradeService.getSystemUpgradeTask(taskId);
         CbbSystemUpgradeTaskDTO upgradeTaskDTO = new CbbSystemUpgradeTaskDTO();
         TASK_BEAN_COPIER.copy(upgradeTaskEntity, upgradeTaskDTO, null);
         upgradeTaskDTO.setUpgradeTaskState(upgradeTaskEntity.getState());
@@ -340,11 +339,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public void closeSystemUpgradeTask(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public void closeSystemUpgradeTask(UUID taskId) throws BusinessException {
+        Assert.notNull(taskId, "taskId can not be null");
 
-        terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getId());
-        doAfterCloseUpgradeTask(request.getId());
+        terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(taskId);
+        doAfterCloseUpgradeTask(taskId);
     }
 
     private void doAfterCloseUpgradeTask(UUID upgradeTaskId) throws BusinessException {

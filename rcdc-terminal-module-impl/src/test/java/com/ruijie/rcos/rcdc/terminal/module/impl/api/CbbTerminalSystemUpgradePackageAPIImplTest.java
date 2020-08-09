@@ -297,7 +297,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     @Test
     public void testDeleteUpgradePackageParamIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.deleteUpgradePackage(null),
-                "request can not be null");
+                "packageId can not be null");
         assertTrue(true);
     }
 
@@ -309,21 +309,21 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testDeleteUpgradePackageHasRunningTask() throws ParseException, BusinessException {
-        IdRequest request = new IdRequest(UUID.randomUUID());
+        UUID packageId = UUID.randomUUID();
 
-        TerminalSystemUpgradePackageEntity systemUpgradePackage = buildSystemUpgradePackageEntity(request.getId());
+        TerminalSystemUpgradePackageEntity systemUpgradePackage = buildSystemUpgradePackageEntity(packageId);
         new Expectations() {
             {
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getId());
+                terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
                 result = systemUpgradePackage;
 
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getId());
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageId);
                 result = true;
             }
         };
 
         try {
-            upgradePackageAPIImpl.deleteUpgradePackage(request);
+            upgradePackageAPIImpl.deleteUpgradePackage(packageId);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_HAS_RUNNING_TASK_NOT_ALLOW_DELETE, e.getKey());
@@ -331,10 +331,10 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Verifications() {
             {
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getId());
+                terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
                 times = 1;
 
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getId());
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageId);
                 times = 1;
             }
         };
@@ -350,32 +350,33 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     @Test
     public void testDeleteUpgradePackageNoRunningTask() throws ParseException, BusinessException {
         IdRequest request = new IdRequest(UUID.randomUUID());
+        UUID packageId = UUID.randomUUID();
 
-        TerminalSystemUpgradePackageEntity systemUpgradePackage = buildSystemUpgradePackageEntity(request.getId());
+        TerminalSystemUpgradePackageEntity systemUpgradePackage = buildSystemUpgradePackageEntity(packageId);
         new Expectations() {
             {
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getId());
+                terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
                 result = systemUpgradePackage;
 
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getId());
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageId);
                 result = false;
 
-                terminalSystemUpgradePackageService.deleteSoft(request.getId());
+                terminalSystemUpgradePackageService.deleteSoft(packageId);
             }
         };
 
-        String packageName = upgradePackageAPIImpl.deleteUpgradePackage(request);
+        String packageName = upgradePackageAPIImpl.deleteUpgradePackage(packageId);
         assertEquals(systemUpgradePackage.getPackageName(), packageName);
 
         new Verifications() {
             {
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getId());
+                terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
                 times = 1;
 
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getId());
+                terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageId);
                 times = 1;
 
-                terminalSystemUpgradePackageService.deleteSoft(request.getId());
+                terminalSystemUpgradePackageService.deleteSoft(packageId);
                 times = 1;
             }
         };
@@ -390,7 +391,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     @Test
     public void testGetByIdParamIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.getById(null),
-                "request can not be null");
+                "packageId can not be null");
         assertTrue(true);
     }
 
@@ -416,7 +417,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.getById(new IdRequest(packageId));
+        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.getById(packageId);
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
                 buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.FINISH, null);
@@ -462,7 +463,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.getById(new IdRequest(packageId));
+        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.getById(packageId);
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
                 buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.UPGRADING, systemUpgradeId);

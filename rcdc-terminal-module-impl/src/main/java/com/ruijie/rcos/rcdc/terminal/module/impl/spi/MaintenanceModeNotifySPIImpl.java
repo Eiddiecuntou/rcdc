@@ -27,31 +27,35 @@ public class MaintenanceModeNotifySPIImpl implements BaseMaintenanceModeNotifySP
     private BeforeEnteringMaintenanceHandler beforeEnteringMaintenanceHandler;
 
     @Override
-    public void beforeEnteringMaintenance(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
+    public Boolean beforeEnteringMaintenance(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
         LOGGER.info("维护：rcdc-terminal：beforeEnteringMaintenance-before");
         beforeEnteringMaintenanceHandler.handle();
         LOGGER.info("维护：rcdc-terminal：beforeEnteringMaintenance-after");
+        return Boolean.TRUE;
     }
 
     @Override
-    public void afterEnteringMaintenance(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
+    public Boolean afterEnteringMaintenance(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         // 不需处理，直接响应成功
+        return Boolean.TRUE;
     }
 
     @Override
-    public void afterUnderMaintenance(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) {
+    public Boolean afterUnderMaintenance(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         // 不需处理，直接响应成功
+        return Boolean.TRUE;
     }
 
     @Override
-    public void afterMaintenanceEnd(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
+    public Boolean afterMaintenanceEnd(String dispatchKey, BaseUpgradeDTO baseUpgradeDTO) throws BusinessException {
         Assert.hasText(dispatchKey, "dispatchKey can not be blank");
 
         // 不需处理，直接响应成功
+        return Boolean.TRUE;
     }
 }

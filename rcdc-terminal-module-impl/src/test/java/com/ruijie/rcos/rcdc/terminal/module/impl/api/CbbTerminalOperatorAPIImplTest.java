@@ -2,11 +2,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.offlinelogin.OfflineLoginSettingResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -65,9 +63,8 @@ public class CbbTerminalOperatorAPIImplTest {
 
         try {
             String terminalId = "123";
-            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-            request.setTerminalId(terminalId);
-            terminalOperatorAPI.shutdown(request);
+
+            terminalOperatorAPI.shutdown(terminalId);
         } catch (Exception e) {
             fail();
         }
@@ -90,10 +87,9 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testRestart() throws BusinessException {
         try {
             String terminalId = "123";
-            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-            request.setTerminalId(terminalId);
-            terminalOperatorAPI.shutdown(request);
-            terminalOperatorAPI.restart(request);
+
+            terminalOperatorAPI.shutdown(terminalId);
+            terminalOperatorAPI.restart(terminalId);
         } catch (Exception e) {
             fail();
         }
@@ -114,9 +110,8 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testCollectLog() throws BusinessException {
         try {
             String terminalId = "123";
-            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-            request.setTerminalId(terminalId);
-            terminalOperatorAPI.collectLog(request);
+
+            terminalOperatorAPI.collectLog(terminalId);
         } catch (Exception e) {
             fail();
         }
@@ -164,8 +159,8 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testDetectArgumentIsNull() throws Exception {
-        CbbTerminalIdRequest request = null;
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.singleDetect(request), "CbbTerminalIdRequest不能为空");
+
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.singleDetect(null), "terminalId不能为空");
         assertTrue(true);
     }
 
@@ -176,8 +171,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testDetect() throws BusinessException {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest("123");
-        terminalOperatorAPI.singleDetect(request);
+        terminalOperatorAPI.singleDetect("123");
         new Verifications() {
             {
                 operatorService.detect("123");
@@ -193,7 +187,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testGetCollectLogArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getCollectLog(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getCollectLog(null), "terminalId can not be blank");
         assertTrue(true);
     }
 
@@ -204,8 +198,6 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testGetCollectLog() throws Exception {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId("123");
         CollectLogCache cache = new CollectLogCache();
         cache.setLogFileName("logFileName");
         cache.setState(CbbCollectLogStateEnums.DONE);
@@ -215,7 +207,7 @@ public class CbbTerminalOperatorAPIImplTest {
                 result = cache;
             }
         };
-        CbbTerminalCollectLogStatusResponse response = terminalOperatorAPI.getCollectLog(request);
+        CbbTerminalCollectLogStatusResponse response = terminalOperatorAPI.getCollectLog("123");
         assertEquals("logFileName", response.getLogName());
         assertEquals(CbbCollectLogStateEnums.DONE, response.getState());
     }
@@ -227,8 +219,6 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testGetCollectLogCollectLogCacheIsNull() throws BusinessException {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId("123");
         new Expectations() {
             {
                 collectLogCacheManager.getCache("123");
@@ -236,7 +226,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
 
-        CbbTerminalCollectLogStatusResponse collectLog = terminalOperatorAPI.getCollectLog(request);
+        CbbTerminalCollectLogStatusResponse collectLog = terminalOperatorAPI.getCollectLog("123");
         assertEquals(CbbCollectLogStateEnums.FAULT, collectLog.getState());
 
     }
@@ -337,8 +327,14 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testClearIdvTerminalDataDisk() throws BusinessException {
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        terminalOperatorAPI.clearIdvTerminalDataDisk(request);
+        terminalOperatorAPI.clearIdvTerminalDataDisk("123");
+        new Verifications() {
+            {
+                operatorService.diskClear("123");
+                times = 1;
+
+            }
+        };
     }
 
 
@@ -351,6 +347,12 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testIdvOfflineLoginSetting() throws BusinessException {
         OfflineLoginSettingRequest request = new OfflineLoginSettingRequest(0);
         terminalOperatorAPI.idvOfflineLoginSetting(request);
+        new Verifications() {
+            {
+                operatorService.offlineLoginSetting(0);
+                times = 1;
+            }
+        };
     }
 
     /**
@@ -360,7 +362,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testRelieveFaultValidateParams() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null),
-                "CbbTerminalIdRequest不能为空");
+                "terminalId不能为空");
         assertTrue(true);
     }
 
@@ -371,9 +373,8 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testRelieveFault() {
         try {
             String terminalId = "123";
-            CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-            request.setTerminalId(terminalId);
-            terminalOperatorAPI.relieveFault(request);
+
+            terminalOperatorAPI.relieveFault(terminalId);
         } catch (BusinessException e) {
             fail();
         }
@@ -405,8 +406,8 @@ public class CbbTerminalOperatorAPIImplTest {
                 result = "0";
             }
         };
-        final OfflineLoginSettingResponse offlineLoginSettingResponse = terminalOperatorAPI.queryOfflineLoginSetting();
-        Assert.assertEquals("0", offlineLoginSettingResponse.getOfflineAutoLocked());
+
+        Assert.assertEquals("0", terminalOperatorAPI.queryOfflineLoginSetting());
     }
 
 }

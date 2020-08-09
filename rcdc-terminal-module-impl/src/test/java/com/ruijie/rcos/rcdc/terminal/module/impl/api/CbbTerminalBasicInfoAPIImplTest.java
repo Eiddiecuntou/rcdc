@@ -1,20 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.Date;
-import java.util.UUID;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -23,9 +12,17 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoServic
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-
 import mockit.*;
 import mockit.integration.junit4.JMockit;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Date;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -65,10 +62,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
                 result = null;
             }
         };
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId(terminalId);
+
         try {
-            terminalBasicInfoAPI.findBasicInfoByTerminalId(request);
+            terminalBasicInfoAPI.findBasicInfoByTerminalId(terminalId);
             fail();
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL, e.getKey());
@@ -107,10 +103,9 @@ public class CbbTerminalBasicInfoAPIImplTest {
                 result = entity;
             }
         };
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId(terminalId);
+
         try {
-            CbbTerminalBasicInfoResponse dto = terminalBasicInfoAPI.findBasicInfoByTerminalId(request);
+            CbbTerminalBasicInfoResponse dto = terminalBasicInfoAPI.findBasicInfoByTerminalId(terminalId);
             assertEquals(dto.getTerminalId(), terminalId);
             assertEquals(dto.getTerminalName(), name);
             assertEquals(dto.getCreateTime(), now);
@@ -147,10 +142,8 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
 
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId("123");
         try {
-            terminalBasicInfoAPI.delete(request);
+            terminalBasicInfoAPI.delete("123");
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, e.getKey());
@@ -179,10 +172,8 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
 
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId("123");
         try {
-            terminalBasicInfoAPI.delete(request);
+            terminalBasicInfoAPI.delete("123");
         } catch (BusinessException e) {
             fail();
         }
@@ -210,10 +201,8 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
 
-        CbbTerminalIdRequest request = new CbbTerminalIdRequest();
-        request.setTerminalId("123");
         try {
-            terminalBasicInfoAPI.delete(request);
+            terminalBasicInfoAPI.delete("123");
         } catch (Exception e) {
             fail();
         }

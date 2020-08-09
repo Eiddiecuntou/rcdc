@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalModelAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalModelDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalModelService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -25,11 +24,11 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
     private TerminalModelService terminalModelService;
 
     @Override
-    public CbbItemArrResponse<CbbTerminalModelDTO> listTerminalModel(CbbTerminalPlatformEnums[] platformArr) {
+    public CbbTerminalModelDTO[] listTerminalModel(CbbTerminalPlatformEnums[] platformArr) {
         Assert.notNull(platformArr, "platformArr can not be null");
 
         CbbTerminalModelDTO[] terminalModelArr = terminalModelService.queryTerminalModelByPlatform(platformArr);
-        return new CbbItemArrResponse<>(terminalModelArr);
+        return terminalModelArr;
     }
 
     @Override

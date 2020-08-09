@@ -22,7 +22,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.util.Assert;
@@ -153,10 +152,9 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     @Override
-    public String deleteUpgradePackage(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public String deleteUpgradePackage(UUID packageId) throws BusinessException {
+        Assert.notNull(packageId, "packageId can not be null");
 
-        final UUID packageId = request.getId();
         final TerminalSystemUpgradePackageEntity systemUpgradePackage = terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
         if (terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageId)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_HAS_RUNNING_TASK_NOT_ALLOW_DELETE);
@@ -168,11 +166,11 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     @Override
-    public CbbTerminalSystemUpgradePackageInfoDTO getById(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public CbbTerminalSystemUpgradePackageInfoDTO getById(UUID packageId) throws BusinessException {
+        Assert.notNull(packageId, "packageId can not be null");
 
         final TerminalSystemUpgradePackageEntity packageEntity =
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getId());
+                terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
         CbbTerminalSystemUpgradePackageInfoDTO dto = new CbbTerminalSystemUpgradePackageInfoDTO();
         PACKAGE_BEAN_COPIER.copy(packageEntity, dto, null);
         dto.setName(packageEntity.getPackageName());

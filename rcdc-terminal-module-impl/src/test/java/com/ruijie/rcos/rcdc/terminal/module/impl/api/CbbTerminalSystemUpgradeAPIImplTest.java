@@ -29,7 +29,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import mockit.*;
@@ -578,7 +577,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testCloseSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.closeSystemUpgradeTask(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.closeSystemUpgradeTask(null), "taskId can not be null");
         assertTrue(true);
     }
 
@@ -590,11 +589,12 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testCloseSystemUpgradeTask() throws BusinessException {
-        IdRequest request = new IdRequest();
-        upgradeAPIImpl.closeSystemUpgradeTask(request);
+        UUID taskId = UUID.randomUUID();
+        upgradeAPIImpl.closeSystemUpgradeTask(taskId);
+
         new Verifications() {
             {
-                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getId());
+                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(taskId);
                 times = 1;
             }
         };
@@ -716,7 +716,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbSystemUpgradeTaskDTO taskDTO = upgradeAPIImpl.getTerminalUpgradeTaskById(new IdRequest());
+        CbbSystemUpgradeTaskDTO taskDTO = upgradeAPIImpl.getTerminalUpgradeTaskById(UUID.randomUUID());
         assertEquals(upgradeTaskEntity.getId(), taskDTO.getId());
         assertEquals(upgradeTaskEntity.getPackageName(), taskDTO.getPackageName());
         assertEquals(upgradeTaskEntity.getState(), taskDTO.getUpgradeTaskState());

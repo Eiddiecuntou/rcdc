@@ -5,7 +5,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadP
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
+
+import java.util.UUID;
 
 
 /**
@@ -33,12 +34,12 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * 
      * 删除终端系统升级文件
      * 
-     * @param request 请求参数
+     * @param packageId 请求参数
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
 
-    String deleteUpgradePackage(IdRequest request)
+    String deleteUpgradePackage(UUID packageId)
             throws BusinessException;
 
     /**
@@ -56,12 +57,12 @@ public interface CbbTerminalSystemUpgradePackageAPI {
     /**
      * 获取终端升级包信息
      * 
-     * @param request 请求参数
+     * @param packageId 请求参数
      * @return 终端升级包信息
      * @throws BusinessException 业务异常
      */
 
-    CbbTerminalSystemUpgradePackageInfoDTO getById(IdRequest request) throws BusinessException;
+    CbbTerminalSystemUpgradePackageInfoDTO getById(UUID packageId) throws BusinessException;
 
     /**
      * 校验升级包是否允许上传

@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -42,9 +41,9 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     private TerminalGroupService terminalGroupService;
 
     @Override
-    public CbbTerminalBasicInfoResponse findBasicInfoByTerminalId(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "TerminalIdRequest不能为null");
-        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
+    public CbbTerminalBasicInfoResponse findBasicInfoByTerminalId(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId不能为空");
+        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (basicInfoEntity == null) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
@@ -57,13 +56,12 @@ public class CbbTerminalBasicInfoAPIImpl implements CbbTerminalBasicInfoAPI {
     }
 
     @Override
-    public void delete(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "TerminalIdRequest不能为null");
-        String terminalId = request.getTerminalId();
+    public void delete(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId不能为空");
         // 在线终端不允许删除
         boolean isOnline = basicInfoService.isTerminalOnline(terminalId);
         if (isOnline) {
-            CbbTerminalBasicInfoResponse basicInfo = findBasicInfoByTerminalId(new CbbTerminalIdRequest(terminalId));
+            CbbTerminalBasicInfoResponse basicInfo = findBasicInfoByTerminalId(terminalId);
             String terminalName = basicInfo.getTerminalName();
             String macAddr = basicInfo.getMacAddr();
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[] {terminalName, macAddr});

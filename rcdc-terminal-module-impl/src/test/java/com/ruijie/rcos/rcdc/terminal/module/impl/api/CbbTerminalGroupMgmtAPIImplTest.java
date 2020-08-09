@@ -19,7 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -285,7 +284,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        TerminalGroupDTO dto = api.loadById(new IdRequest(UUID.randomUUID()));
+        TerminalGroupDTO dto = api.loadById(UUID.randomUUID());
         assertEquals(groupEntity1.getId(), dto.getId());
         assertEquals(groupEntity1.getName(), dto.getGroupName());
         assertEquals(groupEntity2.getName(), dto.getParentGroupName());
@@ -317,7 +316,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        TerminalGroupDTO dto = api.loadById(new IdRequest(UUID.randomUUID()));
+        TerminalGroupDTO dto = api.loadById(UUID.randomUUID());
         assertEquals(groupEntity1.getId(), dto.getId());
         assertEquals(groupEntity1.getName(), dto.getGroupName());
         assertEquals(null, dto.getParentGroupName());
@@ -417,7 +416,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        String[] groupNameArr = api.obtainGroupNamePathArr(new IdRequest(UUID.randomUUID()));
+        String[] groupNameArr = api.obtainGroupNamePathArr(UUID.randomUUID());
         assertEquals(nameStrArr, groupNameArr);
 
         new Verifications() {

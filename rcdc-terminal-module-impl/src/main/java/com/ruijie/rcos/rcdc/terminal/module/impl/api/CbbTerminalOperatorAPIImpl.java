@@ -3,11 +3,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.offlinelogin.OfflineLoginSettingResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -44,18 +42,16 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     private CollectLogCacheManager collectLogCacheManager;
 
     @Override
-    public void shutdown(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
-        Assert.hasText(request.getTerminalId(), "terminalId不能为空");
-        String terminalId = request.getTerminalId();
+    public void shutdown(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId不能为空");
+
         operatorService.shutdown(terminalId);
     }
 
     @Override
-    public void restart(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
-        Assert.hasText(request.getTerminalId(), "terminalId不能为空");
-        String terminalId = request.getTerminalId();
+    public void restart(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId不能为空");
+
         operatorService.restart(terminalId);
     }
 
@@ -75,25 +71,24 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public void collectLog(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
-        String terminalId = request.getTerminalId();
+    public void collectLog(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId不能为空");
+
         operatorService.collectLog(terminalId);
     }
 
     @Override
-    public void singleDetect(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
+    public void singleDetect(String terminalId) throws BusinessException {
+        Assert.notNull(terminalId, "terminalId不能为空");
 
-        String terminalId = request.getTerminalId();
         operatorService.detect(terminalId);
     }
 
     @Override
-    public CbbTerminalCollectLogStatusResponse getCollectLog(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public CbbTerminalCollectLogStatusResponse getCollectLog(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId can not be blank");
 
-        CollectLogCache cache = getCollectLogCache(request.getTerminalId());
+        CollectLogCache cache = getCollectLogCache(terminalId);
         CbbTerminalCollectLogStatusResponse response = new CbbTerminalCollectLogStatusResponse();
         response.setLogName(cache.getLogFileName());
         response.setState(cache.getState());
@@ -150,18 +145,16 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public void relieveFault(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "CbbTerminalIdRequest不能为空");
-        Assert.hasText(request.getTerminalId(), "terminalId不能为空");
-        String terminalId = request.getTerminalId();
+    public void relieveFault(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId不能为空");
+
         operatorService.relieveFault(terminalId);
     }
 
     @Override
-    public void clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException {
-        Assert.notNull(idRequest,"idRequest can not be null");
+    public void clearIdvTerminalDataDisk(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId,"terminalId can not be blank");
 
-        String terminalId = idRequest.getTerminalId();
         operatorService.diskClear(terminalId);
     }
 
@@ -185,9 +178,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @Override
-    public OfflineLoginSettingResponse queryOfflineLoginSetting() throws BusinessException {
+    public String queryOfflineLoginSetting() throws BusinessException {
         String offlineLoginSetting = operatorService.queryOfflineLoginSetting();
-        return new OfflineLoginSettingResponse(offlineLoginSetting);
+        return offlineLoginSetting;
     }
 
 }

@@ -7,7 +7,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatist
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectThresholdDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -79,10 +78,10 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
     }
 
     @Override
-    public CbbTerminalDetectDTO getRecentDetect(CbbTerminalIdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public CbbTerminalDetectDTO getRecentDetect(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId can not be blank");
 
-        CbbTerminalDetectDTO detectInfo = detectService.getRecentDetect(request.getTerminalId());
+        CbbTerminalDetectDTO detectInfo = detectService.getRecentDetect(terminalId);
 
         return detectInfo;
     }

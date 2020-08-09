@@ -1,11 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.offlinelogin.OfflineLoginSettingResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -21,26 +19,25 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 关闭终端
      *
-     * @param request 终端id请求参数对象
+     * @param terminalId 终端id请求参数对象
      * @throws BusinessException 业务异常
      */
     
-    void shutdown(CbbTerminalIdRequest request) throws BusinessException;
+    void shutdown(String terminalId) throws BusinessException;
 
     /**
      * 重启终端
      *
-     * @param request 终端id请求参数对象
+     * @param terminalId 终端id请求参数对象
      * @throws BusinessException 业务异常
      */
     
-    void restart(CbbTerminalIdRequest request) throws BusinessException;
+    void restart(String terminalId) throws BusinessException;
 
     /**
      * 修改终端管理员密码
      *
      * @param request 修改密码请求参数对象
-     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     
@@ -49,32 +46,30 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 收集终端日志
      *
-     * @param request 终端id请求参数对象
-     * @return 返回成功失败
+     * @param terminalId 终端id请求参数对象
      * @throws BusinessException 业务异常
      */
     
-    void collectLog(CbbTerminalIdRequest request) throws BusinessException;
+    void collectLog(String terminalId) throws BusinessException;
 
     /**
      * 终端检测
      *
-     * @param request 终端检测请求参数对象
-     * @return 返回成功失败
+     * @param terminalId 终端检测请求参数对象
      * @throws BusinessException 业务异常
      */
     
-    void singleDetect(CbbTerminalIdRequest request) throws BusinessException;
+    void singleDetect(String terminalId) throws BusinessException;
 
     /**
      * 获取终端收集日志状态
      * 
-     * @param idRequest id请求参数
+     * @param terminalId id请求参数
      * @return 终端日志收集状态信息
      * @throws BusinessException 业务异常
      */
     
-    CbbTerminalCollectLogStatusResponse getCollectLog(CbbTerminalIdRequest idRequest) throws BusinessException;
+    CbbTerminalCollectLogStatusResponse getCollectLog(String terminalId) throws BusinessException;
 
     /**
      * 获取终端收集日志路径
@@ -89,10 +84,10 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 解除故障
      *
-     * @param request 终端id请求参数对象
+     * @param terminalId 终端id请求参数对象
      * @throws BusinessException 业务异常
      */
-    void relieveFault(CbbTerminalIdRequest request) throws BusinessException;
+    void relieveFault(String terminalId) throws BusinessException;
 
     /**
      * IDV终端离线登录设置
@@ -108,13 +103,13 @@ public interface CbbTerminalOperatorAPI {
      * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
-    OfflineLoginSettingResponse queryOfflineLoginSetting() throws BusinessException;
+    String queryOfflineLoginSetting() throws BusinessException;
 
     /**
      * 终端数据盘清空
      *
-     * @param idRequest 请求参数
+     * @param terminalId 请求参数
      * @throws BusinessException 业务异常
      */
-    void clearIdvTerminalDataDisk(CbbTerminalIdRequest idRequest) throws BusinessException;
+    void clearIdvTerminalDataDisk(String terminalId) throws BusinessException;
 }

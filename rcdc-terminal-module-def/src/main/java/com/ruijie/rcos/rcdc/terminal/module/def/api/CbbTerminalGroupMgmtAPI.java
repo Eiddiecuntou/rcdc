@@ -8,7 +8,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTermina
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 
 import java.util.List;
 import java.util.UUID;
@@ -61,12 +60,12 @@ public interface CbbTerminalGroupMgmtAPI {
     /**
      * 加载指定id终端组对象
      * 
-     * @param request 请求参数id
+     * @param groupId 请求参数id
      * @return TerminalGroupDTO 终端组DTO
      * @throws BusinessException 业务异常
      */
 
-    TerminalGroupDTO loadById(IdRequest request) throws BusinessException;
+    TerminalGroupDTO loadById(UUID groupId) throws BusinessException;
 
     /**
      * @description 创建终端组
@@ -87,7 +86,6 @@ public interface CbbTerminalGroupMgmtAPI {
     /**
      * @description 删除终端组
      * @param request 页面请求参数对象
-     * @return Response
      * @throws BusinessException 业务异常.
      */
     
@@ -96,12 +94,12 @@ public interface CbbTerminalGroupMgmtAPI {
     /**
      *  获取终端分组路径数组
      *
-     * @param request 请求参数
+     * @param groupId 请求参数
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
 
-    String[] obtainGroupNamePathArr(IdRequest request) throws BusinessException;
+    String[] obtainGroupNamePathArr(UUID groupId) throws BusinessException;
 
     /**
      * 判断分组名称是否存在

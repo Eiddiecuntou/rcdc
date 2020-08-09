@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalIdRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
@@ -32,12 +31,12 @@ public interface CbbTerminalDetectRecordAPI {
     /**
      * 获取终端最后检测记录
      *
-     * @param request 请求参数
+     * @param terminalId 请求参数
      * @return 检测记录信息
      * @throws BusinessException 业务异常
      */
 
-    CbbTerminalDetectDTO getRecentDetect(CbbTerminalIdRequest request) throws BusinessException;
+    CbbTerminalDetectDTO getRecentDetect(String terminalId) throws BusinessException;
 
     /**
      * 获取终端检测记录结果

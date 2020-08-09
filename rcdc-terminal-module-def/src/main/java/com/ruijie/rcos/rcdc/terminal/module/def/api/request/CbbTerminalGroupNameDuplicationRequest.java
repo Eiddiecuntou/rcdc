@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.lang.Nullable;
 
 import java.util.UUID;
@@ -14,7 +13,7 @@ import java.util.UUID;
  *
  * @author chen zj
  */
-public class CbbTerminalGroupNameDuplicationRequest implements Request {
+public class CbbTerminalGroupNameDuplicationRequest {
 
     @Nullable
     private UUID id;

@@ -18,7 +18,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -106,11 +105,10 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public TerminalGroupDTO loadById(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public TerminalGroupDTO loadById(UUID groupId) throws BusinessException {
+        Assert.notNull(groupId, "groupId can not be null");
 
-        UUID id = request.getId();
-        TerminalGroupEntity groupEntity = terminalGroupService.getTerminalGroup(id);
+        TerminalGroupEntity groupEntity = terminalGroupService.getTerminalGroup(groupId);
         TerminalGroupDTO groupDTO = new TerminalGroupDTO();
         groupEntity.converToDTO(groupDTO);
         if (groupEntity.getParentId() != null) {
@@ -151,10 +149,10 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     }
 
     @Override
-    public String[] obtainGroupNamePathArr(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public String[] obtainGroupNamePathArr(UUID groupId) throws BusinessException {
+        Assert.notNull(groupId, "request can not be null");
 
-        return terminalGroupService.getTerminalGroupNameArr(request.getId());
+        return terminalGroupService.getTerminalGroupNameArr(groupId);
     }
 
     @Override

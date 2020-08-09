@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
@@ -188,7 +187,7 @@ public class BtClientServiceImplTest {
 
         new Verifications() {
             {
-                btClientAPI.stopBtShare((BaseStopBtShareRequest) any);
+                btClientAPI.stopBtShare(anyString);
                 times = 1;
             }
         };
@@ -215,7 +214,7 @@ public class BtClientServiceImplTest {
 
         new Verifications() {
             {
-                btClientAPI.stopBtShare((BaseStopBtShareRequest) any);
+                btClientAPI.stopBtShare(anyString);
                 times = 0;
             }
         };

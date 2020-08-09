@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalModelDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -25,7 +24,7 @@ public interface CbbTerminalModelAPI {
      * @return 终端类型列表
      */
     
-    CbbItemArrResponse<CbbTerminalModelDTO> listTerminalModel(CbbTerminalPlatformEnums[] platformArr);
+    CbbTerminalModelDTO[] listTerminalModel(CbbTerminalPlatformEnums[] platformArr);
 
 
     /**
