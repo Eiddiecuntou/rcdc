@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
 
-import java.util.UUID;
-import org.springframework.lang.Nullable;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
+import org.springframework.lang.Nullable;
+
+import java.util.UUID;
 
 /**
  * 
@@ -14,7 +14,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.Request;
  * 
  * @author wjp
  */
-public class CbbTerminalGroupOperNotifyRequest implements Request {
+public class CbbTerminalGroupOperNotifyRequest {
 
     @NotNull
     private UUID id;

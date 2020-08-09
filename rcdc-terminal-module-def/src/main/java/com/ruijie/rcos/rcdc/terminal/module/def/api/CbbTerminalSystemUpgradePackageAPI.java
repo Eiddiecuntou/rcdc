@@ -39,8 +39,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @throws BusinessException 业务异常
      */
 
-    String deleteUpgradePackage(UUID packageId)
-            throws BusinessException;
+    String deleteUpgradePackage(UUID packageId) throws BusinessException;
 
     /**
      * 

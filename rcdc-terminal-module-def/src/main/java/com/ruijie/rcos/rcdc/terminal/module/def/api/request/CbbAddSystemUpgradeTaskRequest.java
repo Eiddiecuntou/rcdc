@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.lang.Nullable;
 
 import java.util.UUID;
@@ -17,7 +16,7 @@ import java.util.UUID;
  * 
  * @author nt
  */
-public class CbbAddSystemUpgradeTaskRequest implements Request {
+public class CbbAddSystemUpgradeTaskRequest {
 
     @NotNull
     private UUID packageId;

@@ -20,7 +20,6 @@ public interface CbbTerminalLogoAPI {
      * 上传Logo
      *
      * @param request 请求参数
-     * @return 上传Logo结果
      * @throws BusinessException 请求异常
      */
     
@@ -38,7 +37,6 @@ public interface CbbTerminalLogoAPI {
     /**
      * 初始化Logo
      *
-     * @return 初始化Logo结果
      * @throws BusinessException 请求异常
      */
     

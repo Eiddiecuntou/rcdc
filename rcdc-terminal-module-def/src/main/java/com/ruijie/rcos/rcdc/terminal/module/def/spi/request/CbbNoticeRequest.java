@@ -4,7 +4,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -16,7 +15,7 @@ import org.springframework.util.Assert;
  *
  * @author Jarman
  */
-public class CbbNoticeRequest implements Request {
+public class CbbNoticeRequest {
 
     @NotBlank
     @DispatcherKey

@@ -44,7 +44,6 @@ public interface CbbTranspondMessageHandlerAPI {
      *
      * @param msg 请求消息对象
      * @param requestCallback 请求回调对象
-     * @return 返回成功失败状态
      * @throws BusinessException 业务异常
      */
     
@@ -54,7 +53,6 @@ public interface CbbTranspondMessageHandlerAPI {
      * 应答消息
      *
      * @param msg shine消息请参数
-     * @return 返回成功失败状态
      */
     
     void response(CbbResponseShineMessage msg);
