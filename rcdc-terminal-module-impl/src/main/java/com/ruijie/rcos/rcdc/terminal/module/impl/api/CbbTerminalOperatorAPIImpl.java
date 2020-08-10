@@ -162,7 +162,6 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
      * IDV终端离线登录设置
      *
      * @param request 请求参数
-     * @return 返回成功失败
      * @throws BusinessException 业务异常
      */
     @Override
