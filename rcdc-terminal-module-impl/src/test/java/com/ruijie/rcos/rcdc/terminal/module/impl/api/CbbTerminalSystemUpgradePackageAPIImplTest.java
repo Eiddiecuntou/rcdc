@@ -220,7 +220,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbTerminalSystemUpgradePackageInfoDTO[] dtos =
+        CbbTerminalSystemUpgradePackageInfoDTO[] dtoArr =
                 upgradePackageAPIImpl.listSystemUpgradePackage();
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
@@ -268,7 +268,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbTerminalSystemUpgradePackageInfoDTO[] dtos =
+        CbbTerminalSystemUpgradePackageInfoDTO[] dtoArr =
                 upgradePackageAPIImpl.listSystemUpgradePackage();
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =

@@ -106,8 +106,8 @@ public class CbbTerminalModelAPIImplTest {
             }
         };
 
-        List<String> listDto = terminalModelAPI.listTerminalOsType(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
+        List<String> terminalOsTypeList = terminalModelAPI.listTerminalOsType(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
 
-        Assert.assertEquals(listDto.get(0), "Windows");
+        Assert.assertEquals(terminalOsTypeList.get(0), "Windows");
     }
 }

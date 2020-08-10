@@ -105,8 +105,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        TerminalGroupTreeNodeDTO[] dtos = api.loadTerminalGroupCompleteTree(new CbbGetTerminalGroupCompleteTreeRequest());
-        assertEquals(0, dtos.length);
+        TerminalGroupTreeNodeDTO[] dtoArr = api.loadTerminalGroupCompleteTree(new CbbGetTerminalGroupCompleteTreeRequest());
+        assertEquals(0, dtoArr.length);
 
         new Verifications() {
             {
@@ -139,7 +139,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbGetTerminalGroupCompleteTreeRequest request = new CbbGetTerminalGroupCompleteTreeRequest();
         request.setEnableFilterDefaultGroup(true);
         request.setFilterGroupId(filterGroup.getId());
-        TerminalGroupTreeNodeDTO[] dtos = api.loadTerminalGroupCompleteTree(request);
+        TerminalGroupTreeNodeDTO[] dtoArr = api.loadTerminalGroupCompleteTree(request);
 
         new Verifications() {
             {
