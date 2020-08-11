@@ -17,6 +17,16 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 public interface CbbTerminalOperatorAPI {
 
     /**
+     * @api {POST} CbbTerminalOperatorAPI.shutdown 关闭终端
+     * @apiName shutdown
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 关闭终端
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
+     *
+     * @apiSuccess (响应字段说明) {void} void 无返回值参数
+     *
+     */
+    /**
      * 关闭终端
      *
      * @param terminalId 终端id请求参数对象
@@ -25,6 +35,15 @@ public interface CbbTerminalOperatorAPI {
     
     void shutdown(String terminalId) throws BusinessException;
 
+    /**
+     * @api {POST} CbbTerminalOperatorAPI.restart 重启终端
+     * @apiName restart
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 重启终端
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
+     *
+     * @apiSuccess (响应字段说明) {void} void 无返回值参数
+     */
     /**
      * 重启终端
      *
@@ -35,32 +54,69 @@ public interface CbbTerminalOperatorAPI {
     void restart(String terminalId) throws BusinessException;
 
     /**
+     * @api {POST} CbbTerminalOperatorAPI.changePassword 修改终端管理员密码
+     * @apiName changePassword
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 修改终端管理员密码
+     * @apiParam (请求体字段说明) {CbbChangePasswordRequest} request CbbChangePasswordRequest
+     * @apiParam (请求体字段说明) {String} request.password 密码
+     *
+     * @apiSuccess (响应字段说明) {void} void 无返回值参数
+     */
+    /**
      * 修改终端管理员密码
      *
      * @param request 修改密码请求参数对象
      * @throws BusinessException 业务异常
      */
-    
     void changePassword(CbbChangePasswordRequest request) throws BusinessException;
 
+    /**
+     * @api {POST} CbbTerminalOperatorAPI.collectLog 收集终端日志
+     * @apiName collectLog
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 收集终端日志
+     * @apiParam (请求体字段说明) {CbbTerminalIdRequest} request CbbTerminalIdRequest
+     * @apiParam (请求体字段说明) {String} request.terminalId 终端id
+     *
+     * @apiSuccess (响应字段说明) {void} void 无返回值参数
+     */
     /**
      * 收集终端日志
      *
      * @param terminalId 终端id请求参数对象
      * @throws BusinessException 业务异常
      */
-    
     void collectLog(String terminalId) throws BusinessException;
 
+    /**
+     * @api {POST} CbbTerminalOperatorAPI.singleDetect 终端检测
+     * @apiName singleDetect
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 终端检测
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
+     *
+     * @apiSuccess (响应字段说明) {void} void 无返回值参数
+     */
     /**
      * 终端检测
      *
      * @param terminalId 终端检测请求参数对象
      * @throws BusinessException 业务异常
      */
-    
     void singleDetect(String terminalId) throws BusinessException;
 
+    /**
+     * @api {POST} CbbTerminalOperatorAPI.getCollectLog 获取终端收集日志状态
+     * @apiName getCollectLog
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 获取终端收集日志状态
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
+     *
+     * @apiSuccess (响应字段说明) {CbbTerminalCollectLogStatusResponse} result CbbTerminalCollectLogStatusResponse
+     * @apiSuccess (响应字段说明) {CbbCollectLogStateEnums="DOING","DONE","FAILURE"} result.state
+     * @apiSuccess (响应字段说明) {String} result.logName 日志名称
+     */
     /**
      * 获取终端收集日志状态
      * 
@@ -68,9 +124,20 @@ public interface CbbTerminalOperatorAPI {
      * @return 终端日志收集状态信息
      * @throws BusinessException 业务异常
      */
-    
     CbbTerminalCollectLogStatusResponse getCollectLog(String terminalId) throws BusinessException;
 
+    /**
+     * @api {POST} CbbTerminalOperatorAPI.getTerminalLogFileInfo 获取终端收集日志路径
+     * @apiName getTerminalLogFileInfo
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 获取终端收集日志路径
+     * @apiParam (请求体字段说明) {String} logName 日志名称
+     *
+     * @apiSuccess (响应字段说明) {CbbTerminalLogFileInfoResponse} result CbbTerminalLogFileInfoResponse
+     * @apiSuccess (响应字段说明) {String} result.logFilePath 日志路径
+     * @apiSuccess (响应字段说明) {String} result.logFileName 日志文件名
+     * @apiSuccess (响应字段说明) {String} result.suffix suffix
+     */
     /**
      * 获取终端收集日志路径
      * 
@@ -78,9 +145,18 @@ public interface CbbTerminalOperatorAPI {
      * @return 终端收集日志路径
      * @throws BusinessException 业务异常
      */
-    
     CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(String logName) throws BusinessException;
 
+    /**
+     * @api {POST} CbbTerminalOperatorAPI.relieveFault 解除故障
+     * @apiName relieveFault
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 解除故障
+     * @apiParam (请求体字段说明) {CbbTerminalIdRequest} request CbbTerminalIdRequest
+     * @apiParam (请求体字段说明) {String} request.terminalId 终端id
+     *
+     * @apiSuccess (响应字段说明) {void} void 无返回值参数
+     */
     /**
      * 解除故障
      *
@@ -90,6 +166,16 @@ public interface CbbTerminalOperatorAPI {
     void relieveFault(String terminalId) throws BusinessException;
 
     /**
+     * @api {POST} CbbTerminalOperatorAPI.idvOfflineLoginSetting IDV终端离线登录设置
+     * @apiName idvOfflineLoginSetting
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription IDV终端离线登录设置
+     * @apiParam (请求体字段说明) {OfflineLoginSettingRequest} request OfflineLoginSettingRequest
+     * @apiParam (请求体字段说明) {Integer} request.offlineAutoLocked 日志名称
+     *
+     * @apiSuccess (响应字段说明) {void} void 无返回值参数
+     */
+    /**
      * IDV终端离线登录设置
      *
      * @param request 请求参数
@@ -98,6 +184,15 @@ public interface CbbTerminalOperatorAPI {
     void idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
 
     /**
+     * @api {POST} CbbTerminalOperatorAPI.queryOfflineLoginSetting IDV终端离线登录设置
+     * @apiName queryOfflineLoginSetting
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription IDV终端离线登录设置
+     * @apiParam (请求体字段说明) {void} request 无请求参数
+     *
+     * @apiSuccess (响应字段说明) {String} result TODO
+     */
+    /**
      * IDV终端离线登录设置
      *
      * @return 返回成功失败
@@ -105,6 +200,15 @@ public interface CbbTerminalOperatorAPI {
      */
     String queryOfflineLoginSetting() throws BusinessException;
 
+    /**
+     * @api {POST} CbbTerminalOperatorAPI.clearIdvTerminalDataDisk 终端数据盘清空
+     * @apiName clearIdvTerminalDataDisk
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 终端数据盘清空
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
+     *
+     * @apiSuccess (响应字段说明) {void} void 无返回值参数
+     */
     /**
      * 终端数据盘清空
      *

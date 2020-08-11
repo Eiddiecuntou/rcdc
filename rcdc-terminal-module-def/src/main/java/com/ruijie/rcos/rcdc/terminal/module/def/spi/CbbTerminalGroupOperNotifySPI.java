@@ -15,7 +15,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  */
 public interface CbbTerminalGroupOperNotifySPI {
 
-
+    /**
+     * @api {SPI} CbbTerminalEventNoticeSPI.notify 消息通知
+     * @apiName notify
+     * @apiGroup CbbTerminalEventNoticeSPI
+     * @apiDescription 消息通知
+     * @apiParam (请求体字段说明) {CbbTerminalGroupOperNotifyRequest} terminalGroupOperNotifyRequest CbbTerminalGroupOperNotifyRequest
+     * @apiParam (请求体字段说明) {UUID} terminalGroupOperNotifyRequest.id id
+     * @apiParam (请求体字段说明) {UUID} [terminalGroupOperNotifyRequest.moveGroupId] TODO
+     *
+     * @apiSuccess (响应字段说明) {DefaultResponse} result DefaultResponse
+     */
     /**
      * 消息通知：终端组织架构发生变更（删）
      *

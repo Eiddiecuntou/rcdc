@@ -14,6 +14,15 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 public interface CbbAppTerminalAPI {
 
     /**
+     * @api {POST} CbbAppTerminalAPI.getWindowsAppDownloadUrl 获取windows软终端全量包下载路径
+     * @apiName getWindowsAppDownloadUrl
+     * @apiGroup CbbAppTerminalAPI
+     * @apiDescription 获取windows软终端全量包下载路径
+     * @apiParam (请求体字段说明) {void} request 无请求参数
+     *
+     * @apiSuccess (响应字段说明) {String} downLoadUrl 下载路径
+     */
+    /**
      * 获取windows软终端全量包下载路径
      *
      * @return 下载路径
