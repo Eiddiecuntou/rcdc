@@ -18,9 +18,8 @@ public interface CbbAppTerminalAPI {
      * @apiName getWindowsAppDownloadUrl
      * @apiGroup CbbAppTerminalAPI
      * @apiDescription 获取windows软终端全量包下载路径
-     * @apiParam (请求体字段说明) {void} request 无请求参数
      *
-     * @apiSuccess (响应字段说明) {String} downLoadUrl 下载路径
+     * @apiSuccess (请求成功响应字段说明) {String} downLoadUrl 下载路径
      */
     /**
      * 获取windows软终端全量包下载路径

@@ -19,10 +19,10 @@ public interface CbbTerminalBackgroundAPI {
      * @apiName saveBackgroundImageConfig
      * @apiGroup CbbTerminalBackgroundAPI
      * @apiDescription 上传终端背景图,保存背景图的相关配置，并且向在线终端同步背景图
-     * @apiParam (请求体字段说明) {String} imageName 名称
+     * @apiParam (请求体字段说明) {String} imageName 图片名称
      * @apiParam (请求体字段说明) {Long} imageSize 大小
      * @apiParam (请求体字段说明) {String} md5 md5
-     * @apiParam (请求体字段说明) {String} imagePath 路径
+     * @apiParam (请求体字段说明) {String} imagePath 图片路径
      *
      * @apiSuccess (响应字段说明) {void} void 无返回值
      */
@@ -34,7 +34,7 @@ public interface CbbTerminalBackgroundAPI {
     void saveBackgroundImageConfig(CbbTerminalBackgroundSaveRequest request) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalBackgroundAPI.getBackgroundImageInfo 获取终端背景图的路径
+     * @api {POST} CbbTerminalBackgroundAPI.getBackgroundImageInfo 获取终端背景图信息
      * @apiName getBackgroundImageInfo
      * @apiGroup CbbTerminalBackgroundAPI
      * @apiDescription 获取终端背景图的路径

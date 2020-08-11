@@ -54,14 +54,14 @@ public interface CbbTerminalBasicInfoAPI {
      * @apiSuccess (响应字段说明) {String} result.productType productType
      * @apiSuccess (响应字段说明) {CbbTerminalPlatformEnums} result.terminalPlatform 取值范围：VDI,IDV,APP
      * @apiSuccess (响应字段说明) {String} result.serialNumber 序列号
-     * @apiSuccess (响应字段说明) {String} result.cpuMode cpuMode
+     * @apiSuccess (响应字段说明) {String} result.cpuMode cpu模式
      * @apiSuccess (响应字段说明) {String} result.memorySize 内存大小
      * @apiSuccess (响应字段说明) {String} result.diskSize 磁盘大小
      * @apiSuccess (响应字段说明) {String} result.terminalOsType 终端操作系统类型
      * @apiSuccess (响应字段说明) {String} result.terminalOsVersion 终端操作系统版本
      * @apiSuccess (响应字段说明) {String} result.rainOsVersion rainOs版本
-     * @apiSuccess (响应字段说明) {String} result.rainUpgradeVersion rainUpgrade版本
-     * @apiSuccess (响应字段说明) {String} result.hardwareVersion hardware版本
+     * @apiSuccess (响应字段说明) {String} result.rainUpgradeVersion rain升级版本
+     * @apiSuccess (响应字段说明) {String} result.hardwareVersion 硬件版本
      * @apiSuccess (响应字段说明) {CbbNetworkModeEnums} result.networkAccessMode 取值范围：WIRED,WIRELESS
      * @apiSuccess (响应字段说明) {Date} result.createTime 创建时间
      * @apiSuccess (响应字段说明) {Date} result.lastOnlineTime 最后一次Online
@@ -86,7 +86,7 @@ public interface CbbTerminalBasicInfoAPI {
      * @apiParam (请求体字段说明) {CbbModifyTerminalRequest} request CbbModifyTerminalRequest
      * @apiParam (请求体字段说明) {String} request.cbbTerminalId cbb终端id
      * @apiParam (请求体字段说明) {String} request.terminalName 终端名称
-     * @apiParam (请求体字段说明) {String} [request.groupId] groupId
+     * @apiParam (请求体字段说明) {String} [request.groupId] 分组Id
      *
      * @apiSuccess (响应字段说明) {void} void 无返回值
      */

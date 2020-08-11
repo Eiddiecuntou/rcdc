@@ -29,7 +29,7 @@ public interface CbbTerminalDetectRecordAPI {
      *
      * @apiSuccess (响应字段说明) {CbbTerminalDetectDTO[]} itemArr 响应实体数组
      * @apiSuccess (响应字段说明) {String} itemArr.terminalId id
-     * @apiSuccess (响应字段说明) {String} itemArr.terminalName 名称
+     * @apiSuccess (响应字段说明) {String} itemArr.terminalName 终端名称
      * @apiSuccess (响应字段说明) {String} itemArr.ip ip
      * @apiSuccess (响应字段说明) {String} itemArr.mac mac
      * @apiSuccess (响应字段说明) {Integer} itemArr.ipConflict ip冲突结果，0 不冲突，1 冲突，如果有冲突则ipConflictMac字段保存冲突的mac地址，否则为空值
@@ -55,10 +55,10 @@ public interface CbbTerminalDetectRecordAPI {
     DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalDetectRecordAPI.getRecentDetect 获取检测记录分页列表
+     * @api {POST} CbbTerminalDetectRecordAPI.getRecentDetect 获取终端最后检测记录
      * @apiName getRecentDetect
      * @apiGroup CbbTerminalDetectRecordAPI
-     * @apiDescription 获取检测记录分页列表
+     * @apiDescription 获取终端最后检测记录
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
      * @apiSuccess (响应字段说明) {CbbTerminalDetectDTO} detectInfo 响应实体
@@ -80,7 +80,7 @@ public interface CbbTerminalDetectRecordAPI {
      * @apiSuccess (响应字段说明) {String} detectInfo.checkState.message 响应实体数组DetectState类message信息
      */
     /**
-     * 获取终端最后检测记录
+     * 获取终端最后一次检测记录
      *
      * @param terminalId 请求参数
      * @return 检测记录信息
@@ -97,6 +97,7 @@ public interface CbbTerminalDetectRecordAPI {
      * @apiParam (请求体字段说明) {CbbDetectDateEnums="TODAY","YESTERDAY"} detectDate
      *
      *
+     * @apiSuccess (响应字段说明) {CbbDetectResultResponse} response 响应实体
      * @apiSuccess (响应字段说明) {CbbTerminalDetectStatisticsDTO} result 响应实体
      * @apiSuccess (响应字段说明) {int} result.ipConflict ip冲突结果，0 不冲突，1 冲突，如果有冲突则ipConflictMac字段保存冲突的mac地址，否则为空值
      * @apiSuccess (响应字段说明) {int} result.bandwidth 带宽
@@ -106,9 +107,9 @@ public interface CbbTerminalDetectRecordAPI {
      * @apiSuccess (响应字段说明) {int} result.checking checking
      * @apiSuccess (响应字段说明) {int} result.all all
      * @apiSuccess (响应字段说明) {CbbTerminalDetectThresholdDTO} threshold 响应实体
-     * @apiSuccess (响应字段说明) {Double} threshold.bandwidthThreshold TODO
-     * @apiSuccess (响应字段说明) {Double} threshold.packetLossRateThreshold TODO
-     * @apiSuccess (响应字段说明) {Double} threshold.delayThreshold TODO
+     * @apiSuccess (响应字段说明) {Double} threshold.bandwidthThreshold  带宽阈值
+     * @apiSuccess (响应字段说明) {Double} threshold.packetLossRateThreshold 丢包率阈值
+     * @apiSuccess (响应字段说明) {Double} threshold.delayThreshold 时延阈值
      *
      *
      */
