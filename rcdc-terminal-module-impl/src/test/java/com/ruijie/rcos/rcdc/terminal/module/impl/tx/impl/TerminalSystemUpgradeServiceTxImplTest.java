@@ -75,11 +75,13 @@ public class TerminalSystemUpgradeServiceTxImplTest {
     public void testAddSystemUpgradeTask() {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         upgradePackage.setId(UUID.randomUUID());
+        upgradePackage.setPackageType(CbbTerminalTypeEnums.APP_LINUX);
         String[] terminalIdArr = new String[1];
         terminalIdArr[0] = "1";
         CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
         request.setTerminalIdArr(terminalIdArr);
         request.setPackageId(UUID.randomUUID());
+        request.setTerminalGroupIdArr(new UUID[]{UUID.randomUUID()});
         serviceTxImpl.addSystemUpgradeTask(upgradePackage, request);
 
         new Verifications() {
