@@ -136,7 +136,7 @@ public interface CbbTerminalOperatorAPI {
      * @apiSuccess (响应字段说明) {CbbTerminalLogFileInfoResponse} result CbbTerminalLogFileInfoResponse
      * @apiSuccess (响应字段说明) {String} result.logFilePath 日志路径
      * @apiSuccess (响应字段说明) {String} result.logFileName 日志文件名
-     * @apiSuccess (响应字段说明) {String} result.suffix suffix
+     * @apiSuccess (响应字段说明) {String} result.suffix suffix 后缀
      */
     /**
      * 获取终端收集日志路径
@@ -171,7 +171,7 @@ public interface CbbTerminalOperatorAPI {
      * @apiGroup CbbTerminalOperatorAPI
      * @apiDescription IDV终端离线登录设置
      * @apiParam (请求体字段说明) {OfflineLoginSettingRequest} request OfflineLoginSettingRequest
-     * @apiParam (请求体字段说明) {Integer} request.offlineAutoLocked 日志名称
+     * @apiParam (请求体字段说明) {Integer} request.offlineAutoLocked 离线自动锁定
      *
      * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
@@ -190,7 +190,7 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription IDV终端离线登录设置
      * @apiParam (请求体字段说明) {void} request 无请求参数
      *
-     * @apiSuccess (响应字段说明) {String} result TODO
+     * @apiSuccess (响应字段说明) {String} result 脱网登录锁定日期设定值
      */
     /**
      * IDV终端离线登录设置

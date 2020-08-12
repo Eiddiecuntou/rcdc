@@ -64,9 +64,9 @@ public interface CbbTerminalModelAPI {
      * @apiName listTerminalOsType
      * @apiGroup CbbTerminalModelAPI
      * @apiDescription 查询终端运行平台类型
-     * @apiParam (请求体字段说明) {CbbTerminalPlatformEnums[]="VDI","IDV","APP","PC"} platformArr TODO
+     * @apiParam (请求体字段说明) {CbbTerminalPlatformEnums[]="VDI","IDV","APP","PC"} platformArr 终端类型数组
      *
-     * @apiSuccess (响应字段说明) {List<String>} List<String> TODO
+     * @apiSuccess (响应字段说明) {List<String>} List<String> 操作系统数组
      */
     /**
      * 查询终端运行平台类型
