@@ -1,23 +1,24 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
-import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalGroupDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl.validate.DeleteTerminalGroupValidator;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 
@@ -57,9 +58,14 @@ public class TerminalGroupServiceTxImplTest {
     public void testDeleteGroup() throws BusinessException {
         UUID id = UUID.randomUUID();
         UUID moveGroupId = UUID.randomUUID();
+        List<TerminalEntity> terminalList = new ArrayList<>();
+        TerminalEntity entity = new TerminalEntity();
+        terminalList.add(entity);
 
         new Expectations() {
             {
+                terminalDAO.findByGroupId(id);
+                result = terminalList;
                 terminalGroupDAO.findByParentId(id);
                 result = Lists.newArrayList();
             }
