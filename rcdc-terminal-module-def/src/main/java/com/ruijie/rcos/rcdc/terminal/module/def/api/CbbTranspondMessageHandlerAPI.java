@@ -47,9 +47,9 @@ public interface CbbTranspondMessageHandlerAPI {
      * @apiParam (请求体字段说明) {String} msg.terminalId 终端id
      * @apiParam (请求体字段说明) {T} [msg.content] content
      *
-     * @apiSuccess (响应字段说明) {CbbShineMessageResponse} result CbbShineMessageResponse
-     * @apiSuccess (响应字段说明) {int} result.code code
-     * @apiSuccess (响应字段说明) {T} [msg.content] 消息内容
+     * @apiSuccess (响应字段说明) {CbbShineMessageResponse} response CbbShineMessageResponse
+     * @apiSuccess (响应字段说明) {int} response.code code
+     * @apiSuccess (响应字段说明) {T} [response.content] 消息内容
      */
     /**
      * 同步发送消息

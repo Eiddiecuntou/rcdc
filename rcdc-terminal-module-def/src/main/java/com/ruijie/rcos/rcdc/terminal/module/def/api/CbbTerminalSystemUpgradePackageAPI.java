@@ -98,17 +98,17 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiDescription 获取终端升级包信息
      * @apiParam (请求体字段说明) {UUID} UUID 升级包id
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalSystemUpgradePackageInfoDTO} result 响应实体类
-     * @apiSuccess (响应字段说明) {UUID} result.id 升级包id
-     * @apiSuccess (响应字段说明) {String} result.name 升级包名称
+     * @apiSuccess (响应字段说明) {CbbTerminalSystemUpgradePackageInfoDTO} terminalSystemUpgradePackageInfoDTO 响应实体类
+     * @apiSuccess (响应字段说明) {UUID} terminalSystemUpgradePackageInfoDTO.id 升级包id
+     * @apiSuccess (响应字段说明) {String} terminalSystemUpgradePackageInfoDTO.name 升级包名称
      * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
-     * "APP_IOS","APP_LINUX"} result.terminalType 终端类型
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} result.origin 升级包来源
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} result.distributionMode 系统刷机包分发方式
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} result.status 升级任务状态
-     * @apiSuccess (响应字段说明) {UUID} result.upgradeTaskId 升级任务id
-     * @apiSuccess (响应字段说明) {Date} result.uploadTime 上传时间
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} result.upgradeMode 升级模式，自动、手动
+     * "APP_IOS","APP_LINUX"} terminalSystemUpgradePackageInfoDTO.terminalType 终端类型
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} terminalSystemUpgradePackageInfoDTO.origin 升级包来源
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} terminalSystemUpgradePackageInfoDTO.distributionMode 系统刷机包分发方式
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} terminalSystemUpgradePackageInfoDTO.status 升级任务状态
+     * @apiSuccess (响应字段说明) {UUID} terminalSystemUpgradePackageInfoDTO.upgradeTaskId 升级任务id
+     * @apiSuccess (响应字段说明) {Date} terminalSystemUpgradePackageInfoDTO.uploadTime 上传时间
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} terminalSystemUpgradePackageInfoDTO.upgradeMode 升级模式，自动、手动
      */
     /**
      * 获取终端升级包信息
@@ -128,9 +128,9 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiParam (请求体字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
      * "APP_IOS","APP_LINUX"} request.terminalType 终端类型
      *
-     * @apiSuccess (响应字段说明) {CbbCheckAllowUploadPackageResponse} result CbbCheckAllowUploadPackageResponse
-     * @apiSuccess (响应字段说明) {Boolean} result.allowUpload 是否允许上传
-     * @apiSuccess (响应字段说明) {List} result.errorList 错误信息列表
+     * @apiSuccess (响应字段说明) {CbbCheckAllowUploadPackageResponse} response CbbCheckAllowUploadPackageResponse
+     * @apiSuccess (响应字段说明) {Boolean} response.allowUpload 是否允许上传
+     * @apiSuccess (响应字段说明) {List} response.errorList 错误信息列表
      */
     /**
      * 校验升级包是否允许上传

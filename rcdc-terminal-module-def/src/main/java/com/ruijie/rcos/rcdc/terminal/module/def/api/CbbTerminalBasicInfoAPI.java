@@ -38,35 +38,35 @@ public interface CbbTerminalBasicInfoAPI {
      * @apiDescription 根据terminalId获取终端基本信息
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalBasicInfoResponse} result CbbTerminalBasicInfoResponse
-     * @apiSuccess (响应字段说明) {UUID} result.id 终端id
-     * @apiSuccess (响应字段说明) {String} result.terminalName 终端名称
-     * @apiSuccess (响应字段说明) {String} result.terminalId 终端id
-     * @apiSuccess (响应字段说明) {String} result.macAddr 终端mac
-     * @apiSuccess (响应字段说明) {String} result.ip 终端ip
-     * @apiSuccess (响应字段说明) {String} result.subnetMask 子网掩码
-     * @apiSuccess (响应字段说明) {String} result.gateway 网关
-     * @apiSuccess (响应字段说明) {String} result.mainDns 首选dns
-     * @apiSuccess (响应字段说明) {String} result.secondDns 备用dns
-     * @apiSuccess (响应字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} result.getIpMode 获取ip模式，自动、手动
-     * @apiSuccess (响应字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} result.getDnsMode 获取dns模式，自动、手动
-     * @apiSuccess (响应字段说明) {String} result.productType 终端产品类型
-     * @apiSuccess (响应字段说明) {CbbTerminalPlatformEnums="VDI","IDV","APP"} result.terminalPlatform 终端平台类型
-     * @apiSuccess (响应字段说明) {String} result.serialNumber 序列号
-     * @apiSuccess (响应字段说明) {String} result.cpuMode cpu模式
-     * @apiSuccess (响应字段说明) {String} result.memorySize 内存大小
-     * @apiSuccess (响应字段说明) {String} result.diskSize 磁盘大小
-     * @apiSuccess (响应字段说明) {String} result.terminalOsType 终端操作系统类型
-     * @apiSuccess (响应字段说明) {String} result.terminalOsVersion 终端操作系统版本
-     * @apiSuccess (响应字段说明) {String} result.rainOsVersion rainOs版本
-     * @apiSuccess (响应字段说明) {String} result.rainUpgradeVersion rua升级版本
-     * @apiSuccess (响应字段说明) {String} result.hardwareVersion 硬件版本
-     * @apiSuccess (响应字段说明) {CbbNetworkModeEnums="WIRED","WIRELESS"} result.networkAccessMode 网络类型，有线、无线
-     * @apiSuccess (响应字段说明) {Date} result.createTime 创建时间
-     * @apiSuccess (响应字段说明) {Date} result.lastOnlineTime 最后一次在线时间
-     * @apiSuccess (响应字段说明) {Date} result.lastOfflineTime 最后一次离线时间
-     * @apiSuccess (响应字段说明) {Integer} result.version 版本
-     * @apiSuccess (响应字段说明) {CbbTerminalStateEnums="OFFLINE","ONLINE","UPGRADING"} result.state 终端状态
+     * @apiSuccess (响应字段说明) {CbbTerminalBasicInfoResponse} response CbbTerminalBasicInfoResponse
+     * @apiSuccess (响应字段说明) {UUID} response.id 终端id
+     * @apiSuccess (响应字段说明) {String} response.terminalName 终端名称
+     * @apiSuccess (响应字段说明) {String} response.terminalId 终端id
+     * @apiSuccess (响应字段说明) {String} response.macAddr 终端mac
+     * @apiSuccess (响应字段说明) {String} response.ip 终端ip
+     * @apiSuccess (响应字段说明) {String} response.subnetMask 子网掩码
+     * @apiSuccess (响应字段说明) {String} response.gateway 网关
+     * @apiSuccess (响应字段说明) {String} response.mainDns 首选dns
+     * @apiSuccess (响应字段说明) {String} response.secondDns 备用dns
+     * @apiSuccess (响应字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} response.getIpMode 获取ip模式，自动、手动
+     * @apiSuccess (响应字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} response.getDnsMode 获取dns模式，自动、手动
+     * @apiSuccess (响应字段说明) {String} response.productType 终端产品类型
+     * @apiSuccess (响应字段说明) {CbbTerminalPlatformEnums="VDI","IDV","APP"} response.terminalPlatform 终端平台类型
+     * @apiSuccess (响应字段说明) {String} response.serialNumber 序列号
+     * @apiSuccess (响应字段说明) {String} response.cpuMode cpu模式
+     * @apiSuccess (响应字段说明) {String} response.memorySize 内存大小
+     * @apiSuccess (响应字段说明) {String} response.diskSize 磁盘大小
+     * @apiSuccess (响应字段说明) {String} response.terminalOsType 终端操作系统类型
+     * @apiSuccess (响应字段说明) {String} response.terminalOsVersion 终端操作系统版本
+     * @apiSuccess (响应字段说明) {String} response.rainOsVersion rainOs版本
+     * @apiSuccess (响应字段说明) {String} response.rainUpgradeVersion rua升级版本
+     * @apiSuccess (响应字段说明) {String} response.hardwareVersion 硬件版本
+     * @apiSuccess (响应字段说明) {CbbNetworkModeEnums="WIRED","WIRELESS"} response.networkAccessMode 网络类型，有线、无线
+     * @apiSuccess (响应字段说明) {Date} response.createTime 创建时间
+     * @apiSuccess (响应字段说明) {Date} response.lastOnlineTime 最后一次在线时间
+     * @apiSuccess (响应字段说明) {Date} response.lastOfflineTime 最后一次离线时间
+     * @apiSuccess (响应字段说明) {Integer} response.version 版本
+     * @apiSuccess (响应字段说明) {CbbTerminalStateEnums="OFFLINE","ONLINE","UPGRADING"} response.state 终端状态
      */
     /**
      * 根据terminalId获取终端基本信息

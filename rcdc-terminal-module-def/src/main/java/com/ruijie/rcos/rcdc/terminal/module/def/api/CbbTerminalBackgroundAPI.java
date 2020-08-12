@@ -38,9 +38,9 @@ public interface CbbTerminalBackgroundAPI {
      * @apiGroup CbbTerminalBackgroundAPI
      * @apiDescription 获取终端背景图的路径
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalBackgroundImageInfoDTO} result 响应实体
-     * @apiSuccess (响应字段说明) {String} result.imagePath 文件路径
-     * @apiSuccess (响应字段说明) {String} result.imageName 文件名称
+     * @apiSuccess (响应字段说明) {CbbTerminalBackgroundImageInfoDTO} terminalBackgroundImageInfoDTO 响应实体
+     * @apiSuccess (响应字段说明) {String} terminalBackgroundImageInfoDTO.imagePath 文件路径
+     * @apiSuccess (响应字段说明) {String} terminalBackgroundImageInfoDTO.imageName 文件名称
      */
     /**
      * 获取终端背景图的路径

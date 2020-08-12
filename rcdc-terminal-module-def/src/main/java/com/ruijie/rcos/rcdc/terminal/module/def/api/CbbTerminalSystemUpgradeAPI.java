@@ -35,9 +35,9 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiParam (请求体字段说明) {String[]} [request.terminalIdArr] 终端id数组
      * @apiParam (请求体字段说明) {UUID[]} [request.terminalGroupIdArr] 终端组id数组
      *
-     * @apiSuccess (响应字段说明) {CbbAddSystemUpgradeTaskResponse} result CbbAddSystemUpgradeTaskResponse
-     * @apiSuccess (响应字段说明) {UUID} result.upgradeTaskId upgradeTaskId 升级任务id
-     * @apiSuccess (响应字段说明) {String} result.imgName 升级包名称
+     * @apiSuccess (响应字段说明) {CbbAddSystemUpgradeTaskResponse} response CbbAddSystemUpgradeTaskResponse
+     * @apiSuccess (响应字段说明) {UUID} response.upgradeTaskId upgradeTaskId 升级任务id
+     * @apiSuccess (响应字段说明) {String} response.imgName 升级包名称
      */
     /**
      * 添加刷机任务
@@ -100,18 +100,18 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiParam (请求体字段说明) {Integer} request.page 页码
      * @apiParam (请求体字段说明) {Integer} request.limit 每页数量
 
-     * @apiSuccess (响应字段说明) {DefaultPageResponse} result DefaultPageResponse<CbbSpecialDeviceConfigDTO>
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskDTO[]} result.itemArr 分页数据数组
-     * @apiSuccess (响应字段说明) {UUID} result.itemArr.id 刷机任务id
-     * @apiSuccess (响应字段说明) {String} result.itemArr.packageVersion 刷机包版本
-     * @apiSuccess (响应字段说明) {String} result.itemArr.packageName 刷机包名称
-     * @apiSuccess (响应字段说明) {Date} result.itemArr.createTime 创建时间
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} result.itemArr.upgradeTaskState 任务状态
-     * @apiSuccess (响应字段说明) {Integer} result.itemArr.successNum 成功数量
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} result.itemArr.upgradeMode 升级模式：自动升级、手动升级
+     * @apiSuccess (响应字段说明) {DefaultPageResponse} response DefaultPageResponse<CbbSpecialDeviceConfigDTO>
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskDTO[]} response.itemArr 分页数据数组
+     * @apiSuccess (响应字段说明) {UUID} response.itemArr.id 刷机任务id
+     * @apiSuccess (响应字段说明) {String} response.itemArr.packageVersion 刷机包版本
+     * @apiSuccess (响应字段说明) {String} response.itemArr.packageName 刷机包名称
+     * @apiSuccess (响应字段说明) {Date} response.itemArr.createTime 创建时间
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} response.itemArr.upgradeTaskState 任务状态
+     * @apiSuccess (响应字段说明) {Integer} response.itemArr.successNum 成功数量
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} response.itemArr.upgradeMode 升级模式：自动升级、手动升级
      * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
-     * "APP_IOS","APP_LINUX"} result.itemArr.terminalType 终端类型
-     * @apiSuccess (响应字段说明) {long} result.total 分页数据总数
+     * "APP_IOS","APP_LINUX"} response.itemArr.terminalType 终端类型
+     * @apiSuccess (响应字段说明) {long} response.total 分页数据总数
      *
      */
     /**
@@ -217,17 +217,17 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiParam (请求体字段说明) {Integer} request.page 页码
      * @apiParam (请求体字段说明) {Integer} request.limit 每页数量
      *
-     * @apiSuccess (响应字段说明) {DefaultPageResponse} result DefaultPageResponse<CbbSpecialDeviceConfigDTO>
-     * @apiSuccess (响应字段说明) {CbbUpgradeableTerminalListDTO[]} result.itemArr 分页数据数组
-     * @apiSuccess (响应字段说明) {UUID} result.itemArr.id 终端id
-     * @apiSuccess (响应字段说明) {String} result.itemArr.terminalName 终端名称
-     * @apiSuccess (响应字段说明) {String} result.itemArr.ip 终端ip
-     * @apiSuccess (响应字段说明) {String} result.itemArr.mac 终端mac
-     * @apiSuccess (响应字段说明) {CbbTerminalStateEnums="OFFLINE","ONLINE","UPGRADING"} result.itemArr.terminalState 终端状态
-     * @apiSuccess (响应字段说明) {String} result.itemArr.productType 产品型号
-     * @apiSuccess (响应字段说明) {Date} result.itemArr.lastUpgradeTime 最后一次升级时间
-     * @apiSuccess (响应字段说明) {UUID} result.itemArr.groupId 终端组id
-     * @apiSuccess (响应字段说明) {long} result.total 分页数据总数
+     * @apiSuccess (响应字段说明) {DefaultPageResponse} response DefaultPageResponse<CbbSpecialDeviceConfigDTO>
+     * @apiSuccess (响应字段说明) {CbbUpgradeableTerminalListDTO[]} response.itemArr 分页数据数组
+     * @apiSuccess (响应字段说明) {UUID} response.itemArr.id 终端id
+     * @apiSuccess (响应字段说明) {String} response.itemArr.terminalName 终端名称
+     * @apiSuccess (响应字段说明) {String} response.itemArr.ip 终端ip
+     * @apiSuccess (响应字段说明) {String} response.itemArr.mac 终端mac
+     * @apiSuccess (响应字段说明) {CbbTerminalStateEnums="OFFLINE","ONLINE","UPGRADING"} response.itemArr.terminalState 终端状态
+     * @apiSuccess (响应字段说明) {String} response.itemArr.productType 产品型号
+     * @apiSuccess (响应字段说明) {Date} response.itemArr.lastUpgradeTime 最后一次升级时间
+     * @apiSuccess (响应字段说明) {UUID} response.itemArr.groupId 终端组id
+     * @apiSuccess (响应字段说明) {long} response.total 分页数据总数
      *
      */
     /**
@@ -246,18 +246,19 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiGroup CbbTerminalSystemUpgradeAPI
      * @apiDescription 获取刷机任务终端列表
      * @apiParam (请求体字段说明) {CbbGetTaskUpgradeTerminalRequest} request CbbGetTaskUpgradeTerminalRequest
+     * @apiParam (请求体字段说明) {UUID} id 终端id
      * @apiParam (请求体字段说明) {CbbSystemUpgradeStateEnums="WAIT","UPGRADING","SUCCESS","FAIL",
      * "UNDO","UNSUPPORTED","NO_NEED"} [request.terminalState] 终端升级状态
      *
-     * @apiSuccess (响应字段说明) {List} result 响应实体列表
-     * @apiSuccess (响应字段说明) {UUID} result.id 终端分组名称
-     * @apiSuccess (响应字段说明) {String} result.terminalId 父级分组id
-     * @apiSuccess (响应字段说明) {String} result.terminalName 父级分组名称
-     * @apiSuccess (响应字段说明) {String} result.ip 终端ip
-     * @apiSuccess (响应字段说明) {String} result.mac 终端mac
-     * @apiSuccess (响应字段说明) {Date} result.startTime 终端分组名称
+     * @apiSuccess (响应字段说明) {List} terminalDtoList 响应实体列表
+     * @apiSuccess (响应字段说明) {UUID} terminalDtoList.id 刷机任务id
+     * @apiSuccess (响应字段说明) {String} terminalDtoList.terminalId 父级分组id
+     * @apiSuccess (响应字段说明) {String} terminalDtoList.terminalName 父级分组名称
+     * @apiSuccess (响应字段说明) {String} terminalDtoList.ip 终端ip
+     * @apiSuccess (响应字段说明) {String} terminalDtoList.mac 终端mac
+     * @apiSuccess (响应字段说明) {Date} terminalDtoList.startTime 终端分组名称
      * @apiSuccess (响应字段说明) {CbbSystemUpgradeStateEnums="WAIT","UPGRADING","SUCCESS","FAIL","UNDO",
-     * "UNSUPPORTED","NO_NEED"} result.terminalUpgradeState 终端升级后的状态
+     * "UNSUPPORTED","NO_NEED"} terminalDtoList.terminalUpgradeState 终端升级后的状态
      */
     /**
      * 获取刷机任务终端列表
@@ -268,7 +269,7 @@ public interface CbbTerminalSystemUpgradeAPI {
     List<CbbSystemUpgradeTaskTerminalDTO> getUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalRequest request);
 
     /**
-     * @api {POST} CbbTerminalSystemUpgradeAPI.cancelUpgradeTerminal 取消刷机终端
+     * @api {POST} CbbTerminalSystemUpgradeAPI.cancelUpgradeTerminal 取消终端刷机
      * @apiName cancelUpgradeTerminal
      * @apiGroup CbbTerminalSystemUpgradeAPI
      * @apiDescription 取消刷机终端
@@ -314,16 +315,16 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiDescription 通过id获取终端刷机任务信息
      * @apiParam (请求体字段说明) {UUID} taskId 刷机任务id
      *
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskDTO} result 响应实体
-     * @apiSuccess (响应字段说明) {UUID} result.id 刷机任务id
-     * @apiSuccess (响应字段说明) {String} result.packageVersion 刷机包版本
-     * @apiSuccess (响应字段说明) {String} result.packageName 刷机包名称
-     * @apiSuccess (响应字段说明) {Date} result.createTime 创建时间
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} result.upgradeTaskState 升级任务状态
-     * @apiSuccess (响应字段说明) {Integer} result.successNum 成功数字
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} result.upgradeMode 升级模式 自动、手动
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskDTO} systemUpgradeTaskDTO 响应实体
+     * @apiSuccess (响应字段说明) {UUID} systemUpgradeTaskDTO.id 刷机任务id
+     * @apiSuccess (响应字段说明) {String} systemUpgradeTaskDTO.packageVersion 刷机包版本
+     * @apiSuccess (响应字段说明) {String} systemUpgradeTaskDTO.packageName 刷机包名称
+     * @apiSuccess (响应字段说明) {Date} systemUpgradeTaskDTO.createTime 创建时间
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} systemUpgradeTaskDTO.upgradeTaskState 升级任务状态
+     * @apiSuccess (响应字段说明) {Integer} systemUpgradeTaskDTO.successNum 成功数字
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} systemUpgradeTaskDTO.upgradeMode 升级模式 自动、手动
      * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
-     * "APP_IOS","APP_LINUX"} result.itemArr.terminalType 终端类型
+     * "APP_IOS","APP_LINUX"} systemUpgradeTaskDTO.terminalType 终端类型
      */
     /**
      * 通过id获取终端刷机任务信息

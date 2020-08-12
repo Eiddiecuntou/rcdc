@@ -107,9 +107,9 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 获取终端收集日志状态
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalCollectLogStatusResponse} result CbbTerminalCollectLogStatusResponse
-     * @apiSuccess (响应字段说明) {CbbCollectLogStateEnums="DOING","DONE","FAILURE"} result.state 日志收集状态
-     * @apiSuccess (响应字段说明) {String} result.logName 日志名称
+     * @apiSuccess (响应字段说明) {CbbTerminalCollectLogStatusResponse} response CbbTerminalCollectLogStatusResponse
+     * @apiSuccess (响应字段说明) {CbbCollectLogStateEnums="DOING","DONE","FAILURE"} response.state 日志收集状态
+     * @apiSuccess (响应字段说明) {String} response.logName 日志名称
      */
     /**
      * 获取终端收集日志状态
@@ -127,10 +127,10 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 获取终端收集日志路径
      * @apiParam (请求体字段说明) {String} logName 日志名称
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalLogFileInfoResponse} result CbbTerminalLogFileInfoResponse
-     * @apiSuccess (响应字段说明) {String} result.logFilePath 日志路径
-     * @apiSuccess (响应字段说明) {String} result.logFileName 日志文件名
-     * @apiSuccess (响应字段说明) {String} result.suffix 日志文件名后缀
+     * @apiSuccess (响应字段说明) {CbbTerminalLogFileInfoResponse} response CbbTerminalLogFileInfoResponse
+     * @apiSuccess (响应字段说明) {String} response.logFilePath 日志路径
+     * @apiSuccess (响应字段说明) {String} response.logFileName 日志文件名
+     * @apiSuccess (响应字段说明) {String} response.suffix 日志文件名后缀
      */
     /**
      * 获取终端收集日志路径
