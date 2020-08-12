@@ -209,7 +209,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiDescription 判断分组名称是否存在
      * @apiParam (请求体字段说明) {CbbTerminalGroupNameDuplicationRequest} request CbbTerminalGroupNameDuplicationRequest
      * @apiParam (请求体字段说明) {UUID} [request.id] 分组id
-     * @apiParam (请求体字段说明) {UUID} [request.parentId] 父id
+     * @apiParam (请求体字段说明) {UUID} [request.parentId] 父级分组id
      * @apiParam (请求体字段说明) {String} request.groupName 分组名称
      *
      * @apiSuccess (响应字段说明) {boolean} hasDuplication 是否存在

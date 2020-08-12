@@ -30,13 +30,13 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiGroup CbbTerminalSystemUpgradeAPI
      * @apiDescription 添加刷机任务
      * @apiParam (请求体字段说明) {CbbAddSystemUpgradeTaskRequest} request CbbAddSystemUpgradeTaskRequest
-     * @apiParam (请求体字段说明) {UUID} request.packageId 终端id
+     * @apiParam (请求体字段说明) {UUID} request.packageId 升级包id
      * @apiParam (请求体字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} [request.upgradeMode] 升级模式：自动升级、手动升级
      * @apiParam (请求体字段说明) {String[]} [request.terminalIdArr] 终端id数组
      * @apiParam (请求体字段说明) {UUID[]} [request.terminalGroupIdArr] 终端组id数组
      *
      * @apiSuccess (响应字段说明) {CbbAddSystemUpgradeTaskResponse} response CbbAddSystemUpgradeTaskResponse
-     * @apiSuccess (响应字段说明) {UUID} response.upgradeTaskId upgradeTaskId 升级任务id
+     * @apiSuccess (响应字段说明) {UUID} response.upgradeTaskId 升级任务id
      * @apiSuccess (响应字段说明) {String} response.imgName 升级包名称
      */
     /**
@@ -55,7 +55,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiDescription 添加刷机任务终端
      * @apiParam (请求体字段说明) {CbbUpgradeTerminalRequest} request CbbUpgradeTerminalRequest
      * @apiParam (请求体字段说明) {UUID} request.upgradeTaskId 升级任务id
-     * @apiParam (请求体字段说明) {String} request.terminalId terminalId 终端id
+     * @apiParam (请求体字段说明) {String} request.terminalId 终端id
      *
      * @apiSuccess (响应字段说明) {String} terminalName 终端名
      */
