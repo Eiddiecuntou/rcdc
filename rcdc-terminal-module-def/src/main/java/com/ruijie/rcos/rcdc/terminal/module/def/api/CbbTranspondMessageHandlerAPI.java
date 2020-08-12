@@ -24,9 +24,9 @@ public interface CbbTranspondMessageHandlerAPI {
      * @apiGroup CbbTranspondMessageHandlerAPI
      * @apiDescription 发送消息
      * @apiParam (请求体字段说明) {CbbShineMessageRequest} msg CbbShineMessageRequest
-     * @apiParam (请求体字段说明) {String} msg.action action
+     * @apiParam (请求体字段说明) {String} msg.action 请求action
      * @apiParam (请求体字段说明) {String} msg.terminalId 终端id
-     * @apiParam (请求体字段说明) {T} [msg.content] content
+     * @apiParam (请求体字段说明) {T} [msg.content] 内容
      *
      * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
@@ -89,7 +89,7 @@ public interface CbbTranspondMessageHandlerAPI {
      * @api {POST} CbbTranspondMessageHandlerAPI.asyncRequest 异步发送消息
      * @apiName asyncRequest
      * @apiGroup CbbTranspondMessageHandlerAPI
-     * @apiDescription 异步发送消息
+     * @apiDescription 异步发送消息（不含回调函数接口）
      * @apiParam (请求体字段说明) {CbbResponseShineMessage} msg CbbResponseShineMessage
      * @apiParam (请求体字段说明) {String} msg.requestId 请求id
      * @apiParam (请求体字段说明) {String} msg.action action

@@ -42,7 +42,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiSuccess (响应字段说明) {String} itemArr.groupName 终端分组名称
      * @apiSuccess (响应字段说明) {UUID} itemArr.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} itemArr.parentGroupName 父级分组名称
-     * @apiSuccess (响应字段说明) {Boolean} itemArr.enableDefault TODO
+     * @apiSuccess (响应字段说明) {Boolean} itemArr.enableDefault
      */
     /**
      * 获取所有树节点信息
@@ -91,7 +91,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.groupName 终端分组名称
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.parentGroupName 父级分组名称
-     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault TODO
+     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault
      */
     /**
      * 根据分组名称及父分组id获取分组
@@ -115,7 +115,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.groupName 终端分组名称
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.parentGroupName 父级分组名称
-     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault TODO
+     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault
      */
     /**
      * 加载指定id终端组对象
@@ -141,7 +141,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.groupName 终端分组名称
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.parentGroupName 父级分组名称
-     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault TODO
+     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault
      */
     /**
      * @description 创建终端组

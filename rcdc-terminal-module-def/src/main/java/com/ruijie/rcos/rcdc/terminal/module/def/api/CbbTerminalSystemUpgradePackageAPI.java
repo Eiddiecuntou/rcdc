@@ -25,11 +25,11 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiName uploadUpgradePackage
      * @apiGroup CbbTerminalSystemUpgradePackageAPI
      * @apiDescription 上传终端系统升级文件
-     * @apiParam (请求体字段说明) {CbbTerminalUpgradePackageUploadRequest}request CbbTerminalUpgradePackageUploadRequest
+     * @apiParam (请求体字段说明) {CbbTerminalUpgradePackageUploadRequest}request CbbTerminalUpgradePackageUploadRequest 请求实体
      * @apiParam (请求体字段说明) {String} request.filePath 文件路径
      * @apiParam (请求体字段说明) {String} request.fileName 文件名称
      * @apiParam (请求体字段说明) {String} request.fileMD5 文件MD5
-     * @apiParam (请求体字段说明) {CbbTerminalTypeEnums="VDI_LINUX("VDI", "Linux")","VDI_ANDROID("VDI", "Android")","VDI_WINDOWS("VDI", "Windows")","IDV_LINUX("IDV", "Linux")","APP_WINDOWS("APP", "Windows")","APP_ANDROID("APP", "Android")","APP_MACOS("APP", "Mac_OS")","APP_IOS("APP", "iOS")","APP_LINUX("APP", "Linux")"} request.terminalType
+     * @apiParam (请求体字段说明) {CbbTerminalTypeEnums="VDI_LINUX("VDI", "Linux")","VDI_ANDROID("VDI", "Android")","VDI_WINDOWS("VDI", "Windows")","IDV_LINUX("IDV", "Linux")","APP_WINDOWS("APP", "Windows")","APP_ANDROID("APP", "Android")","APP_MACOS("APP", "Mac_OS")","APP_IOS("APP", "iOS")","APP_LINUX("APP", "Linux")"} request.terminalType 终端类型
      *
      * @apiSuccess (响应字段说明) {void} void 无返回值
      *
@@ -74,13 +74,13 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiSuccess (响应字段说明) {CbbTerminalSystemUpgradePackageInfoDTO[]} itemArr 响应实体类
      * @apiSuccess (响应字段说明) {UUID} itemArr.id id
      * @apiSuccess (响应字段说明) {String} itemArr.name 名称
-     * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums="VDI_LINUX("VDI", "Linux")","VDI_ANDROID("VDI", "Android")","VDI_WINDOWS("VDI", "Windows")","IDV_LINUX("IDV", "Linux")","APP_WINDOWS("APP", "Windows")","APP_ANDROID("APP", "Android")","APP_MACOS("APP", "Mac_OS")","APP_IOS("APP", "iOS")","APP_LINUX("APP", "Linux")"} itemArr.packageType
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} itemArr.origin TODO
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} itemArr.distributionMode TODO
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} itemArr.status TODO
+     * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums="VDI_LINUX("VDI", "Linux")","VDI_ANDROID("VDI", "Android")","VDI_WINDOWS("VDI", "Windows")","IDV_LINUX("IDV", "Linux")","APP_WINDOWS("APP", "Windows")","APP_ANDROID("APP", "Android")","APP_MACOS("APP", "Mac_OS")","APP_IOS("APP", "iOS")","APP_LINUX("APP", "Linux")"} itemArr.packageType 升级包类型
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} itemArr.origin 升级包来源
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} itemArr.distributionMode 系统刷机包分发方式
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} itemArr.status 升级任务状态
      * @apiSuccess (响应字段说明) {UUID} itemArr.upgradeTaskId upgradeTaskId
      * @apiSuccess (响应字段说明) {Date} itemArr.uploadTime 上传时间
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} itemArr.upgradeMode TODO
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} itemArr.upgradeMode 升级模式
      */
     /**
      *
@@ -105,12 +105,12 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiSuccess (响应字段说明) {UUID} itemArr.id id
      * @apiSuccess (响应字段说明) {String} itemArr.name 名称
      * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums=VDI_LINUX("VDI", "Linux")","VDI_ANDROID("VDI", "Android")","VDI_WINDOWS("VDI", "Windows")","IDV_LINUX("IDV", "Linux")","APP_WINDOWS("APP", "Windows")","APP_ANDROID("APP", "Android")","APP_MACOS("APP", "Mac_OS")","APP_IOS("APP", "iOS")","APP_LINUX("APP", "Linux")"} itemArr.packageType
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} itemArr.origin TODO
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} itemArr.distributionMode TODO
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} itemArr.status TODO
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} itemArr.origin 升级包来源
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} itemArr.distributionMode 系统刷机包分发方式
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} itemArr.status 升级任务状态
      * @apiSuccess (响应字段说明) {UUID} itemArr.upgradeTaskId upgradeTaskId
      * @apiSuccess (响应字段说明) {Date} itemArr.uploadTime 上传时间
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} itemArr.upgradeMode TODO
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} itemArr.upgradeMode 升级模式
      */
     /**
      * 获取终端升级包信息
