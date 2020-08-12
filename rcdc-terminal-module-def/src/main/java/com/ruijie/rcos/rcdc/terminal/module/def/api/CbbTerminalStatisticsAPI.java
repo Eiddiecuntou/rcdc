@@ -21,14 +21,14 @@ public interface CbbTerminalStatisticsAPI {
      * @apiDescription 统计终端新
      * @apiParam (请求体字段说明) {UUID[]} groupIdArr 终端组id数组
      *
-     *@apiSuccess (响应字段说明) {CbbTerminalStatisticsResponse} return CbbTerminalStatisticsResponse
-     *@apiSuccess (响应字段说明) {TerminalStatisticsItem} return.TerminalStatisticsItem 终端统计项
-     *@apiSuccess (响应字段说明) {Integer} return.TerminalStatisticsItem.total 终端总数
-     *@apiSuccess (响应字段说明) {Integer} return.TerminalStatisticsItem.online 在线终端数
-     *@apiSuccess (响应字段说明) {Integer} return.TerminalStatisticsItem.offline 离线终端数量
-     *@apiSuccess (响应字段说明) {Integer} return.TerminalStatisticsItem.neverLogin 从未登录终端数量
-     *@apiSuccess (响应字段说明) {Integer} return.total 终端总数
-     *@apiSuccess (响应字段说明) {Integer} return.totalOnline 在线终端总数
+     *@apiSuccess (响应字段说明) {CbbTerminalStatisticsResponse} result CbbTerminalStatisticsResponse
+     *@apiSuccess (响应字段说明) {TerminalStatisticsItem} result.TerminalStatisticsItem 终端统计项
+     *@apiSuccess (响应字段说明) {Integer} result.TerminalStatisticsItem.total 终端总数
+     *@apiSuccess (响应字段说明) {Integer} result.TerminalStatisticsItem.online 在线终端数
+     *@apiSuccess (响应字段说明) {Integer} result.TerminalStatisticsItem.offline 离线终端数量
+     *@apiSuccess (响应字段说明) {Integer} result.TerminalStatisticsItem.neverLogin 从未登录终端数量
+     *@apiSuccess (响应字段说明) {Integer} result.total 终端总数
+     *@apiSuccess (响应字段说明) {Integer} result.totalOnline 在线终端总数
      *
     /**
      * 统计终端数据

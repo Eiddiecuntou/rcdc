@@ -26,12 +26,11 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiGroup CbbTerminalSystemUpgradePackageAPI
      * @apiDescription 上传终端系统升级文件
      * @apiParam (请求体字段说明) {CbbTerminalUpgradePackageUploadRequest}request CbbTerminalUpgradePackageUploadRequest 请求实体
-     * @apiParam (请求体字段说明) {String} request.filePath 文件路径
-     * @apiParam (请求体字段说明) {String} request.fileName 文件名称
-     * @apiParam (请求体字段说明) {String} request.fileMD5 文件MD5
-     * @apiParam (请求体字段说明) {CbbTerminalTypeEnums="VDI_LINUX("VDI", "Linux")","VDI_ANDROID("VDI", "Android")","VDI_WINDOWS("VDI", "Windows")","IDV_LINUX("IDV", "Linux")","APP_WINDOWS("APP", "Windows")","APP_ANDROID("APP", "Android")","APP_MACOS("APP", "Mac_OS")","APP_IOS("APP", "iOS")","APP_LINUX("APP", "Linux")"} request.terminalType 终端类型
-     *
-     * @apiSuccess (响应字段说明) {void} void 无返回值
+     * @apiParam (请求体字段说明) {String} request.filePath 升级包路径
+     * @apiParam (请求体字段说明) {String} request.fileName 升级包名称
+     * @apiParam (请求体字段说明) {String} request.fileMD5 升级包MD5
+     * @apiParam (请求体字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
+     * "APP_IOS","APP_LINUX"} request.terminalType 终端类型
      *
      */
     /**
@@ -50,7 +49,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiDescription 删除终端系统升级文件
      * @apiParam (请求体字段说明) {UUID} packageId 升级包id
      *
-     * @apiSuccess (响应字段说明) {String}  packageName 文件名
+     * @apiSuccess (响应字段说明) {String} packageName 文件名
      *
      */
     /**
@@ -61,7 +60,6 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-
     String deleteUpgradePackage(UUID packageId) throws BusinessException;
 
     /**
@@ -69,18 +67,18 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiName listSystemUpgradePackage
      * @apiGroup CbbTerminalSystemUpgradePackageAPI
      * @apiDescription 获取系统升级包列表
-     * @apiParam (请求体字段说明) {void} request 无请求参数
      *
      * @apiSuccess (响应字段说明) {CbbTerminalSystemUpgradePackageInfoDTO[]} itemArr 响应实体类
-     * @apiSuccess (响应字段说明) {UUID} itemArr.id id
-     * @apiSuccess (响应字段说明) {String} itemArr.name 名称
-     * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums="VDI_LINUX("VDI", "Linux")","VDI_ANDROID("VDI", "Android")","VDI_WINDOWS("VDI", "Windows")","IDV_LINUX("IDV", "Linux")","APP_WINDOWS("APP", "Windows")","APP_ANDROID("APP", "Android")","APP_MACOS("APP", "Mac_OS")","APP_IOS("APP", "iOS")","APP_LINUX("APP", "Linux")"} itemArr.packageType 升级包类型
+     * @apiSuccess (响应字段说明) {UUID} itemArr.id 升级包id
+     * @apiSuccess (响应字段说明) {String} itemArr.name 升级包名称
+     * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
+     * "APP_IOS","APP_LINUX"} itemArr.terminalType 终端类型
      * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} itemArr.origin 升级包来源
      * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} itemArr.distributionMode 系统刷机包分发方式
      * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} itemArr.status 升级任务状态
-     * @apiSuccess (响应字段说明) {UUID} itemArr.upgradeTaskId upgradeTaskId
+     * @apiSuccess (响应字段说明) {UUID} itemArr.upgradeTaskId 升级任务id
      * @apiSuccess (响应字段说明) {Date} itemArr.uploadTime 上传时间
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} itemArr.upgradeMode 升级模式
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} itemArr.upgradeMode 升级模式，自动、手动
      */
     /**
      *
@@ -90,7 +88,6 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 升级包列表
      * @throws BusinessException 业务异常
      */
-
     CbbTerminalSystemUpgradePackageInfoDTO[] listSystemUpgradePackage()
             throws BusinessException;
 
@@ -101,16 +98,17 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiDescription 获取终端升级包信息
      * @apiParam (请求体字段说明) {UUID} UUID 升级包id
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalSystemUpgradePackageInfoDTO[]} itemArr 响应实体类
-     * @apiSuccess (响应字段说明) {UUID} itemArr.id id
-     * @apiSuccess (响应字段说明) {String} itemArr.name 名称
-     * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums=VDI_LINUX("VDI", "Linux")","VDI_ANDROID("VDI", "Android")","VDI_WINDOWS("VDI", "Windows")","IDV_LINUX("IDV", "Linux")","APP_WINDOWS("APP", "Windows")","APP_ANDROID("APP", "Android")","APP_MACOS("APP", "Mac_OS")","APP_IOS("APP", "iOS")","APP_LINUX("APP", "Linux")"} itemArr.packageType
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} itemArr.origin 升级包来源
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} itemArr.distributionMode 系统刷机包分发方式
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} itemArr.status 升级任务状态
-     * @apiSuccess (响应字段说明) {UUID} itemArr.upgradeTaskId upgradeTaskId
-     * @apiSuccess (响应字段说明) {Date} itemArr.uploadTime 上传时间
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} itemArr.upgradeMode 升级模式
+     * @apiSuccess (响应字段说明) {CbbTerminalSystemUpgradePackageInfoDTO} result 响应实体类
+     * @apiSuccess (响应字段说明) {UUID} result.id 升级包id
+     * @apiSuccess (响应字段说明) {String} result.name 升级包名称
+     * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
+     * "APP_IOS","APP_LINUX"} result.terminalType 终端类型
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} result.origin 升级包来源
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} result.distributionMode 系统刷机包分发方式
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} result.status 升级任务状态
+     * @apiSuccess (响应字段说明) {UUID} result.upgradeTaskId 升级任务id
+     * @apiSuccess (响应字段说明) {Date} result.uploadTime 上传时间
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} result.upgradeMode 升级模式，自动、手动
      */
     /**
      * 获取终端升级包信息
@@ -119,7 +117,6 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 终端升级包信息
      * @throws BusinessException 业务异常
      */
-
     CbbTerminalSystemUpgradePackageInfoDTO getById(UUID packageId) throws BusinessException;
 
     /**
@@ -128,7 +125,8 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiGroup CbbTerminalSystemUpgradePackageAPI
      * @apiDescription 校验升级包是否允许上传
      * @apiParam (请求体字段说明) {Long}fileSize 文件大小
-     * @apiParam (请求体字段说明) {CbbTerminalTypeEnums=VDI_LINUX("VDI", "Linux")","VDI_ANDROID("VDI", "Android")","VDI_WINDOWS("VDI", "Windows")","IDV_LINUX("IDV", "Linux")","APP_WINDOWS("APP", "Windows")","APP_ANDROID("APP", "Android")","APP_MACOS("APP", "Mac_OS")","APP_IOS("APP", "iOS")","APP_LINUX("APP", "Linux")"}terminalType
+     * @apiParam (请求体字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
+     * "APP_IOS","APP_LINUX"} request.terminalType 终端类型
      *
      * @apiSuccess (响应字段说明) {CbbCheckAllowUploadPackageResponse} result CbbCheckAllowUploadPackageResponse
      * @apiSuccess (响应字段说明) {Boolean} result.allowUpload 是否允许上传

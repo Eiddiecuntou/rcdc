@@ -22,10 +22,10 @@ public interface CbbTerminalModelAPI {
      * @apiName listTerminalModel
      * @apiGroup CbbTerminalModelAPI
      * @apiDescription 查询终端类型列表
-     * @apiParam (请求体字段说明) {CbbTerminalPlatformEnums[]="VDI","IDV","APP","PC"} platformArr platformArr
+     * @apiParam (请求体字段说明) {CbbTerminalPlatformEnums[]="VDI","IDV","APP","PC"} platformArr 终端类型数组
      *
      * @apiSuccess (响应字段说明) {CbbTerminalModelDTO[]} result CbbTerminalModelDTO[]
-     * @apiSuccess (响应字段说明) {String} result.productModel 型号
+     * @apiSuccess (响应字段说明) {String} result.productModel 终端型号
      * @apiSuccess (响应字段说明) {String} result.productId 终端型号id
      * @apiSuccess (响应字段说明) {String} result.cpuType cpu类型
      */
@@ -46,7 +46,7 @@ public interface CbbTerminalModelAPI {
      * @apiParam (请求体字段说明) {String} productId 终端型号id
      *
      * @apiSuccess (响应字段说明) {CbbTerminalModelDTO} itemArr 响应实体
-     * @apiSuccess (响应字段说明) {String} itemArr.productModel 型号
+     * @apiSuccess (响应字段说明) {String} itemArr.productModel 终端型号
      * @apiSuccess (响应字段说明) {String} itemArr.productId 终端型号id
      * @apiSuccess (响应字段说明) {String} itemArr.cpuType cpu类型
      */
@@ -66,7 +66,7 @@ public interface CbbTerminalModelAPI {
      * @apiDescription 查询终端运行平台类型
      * @apiParam (请求体字段说明) {CbbTerminalPlatformEnums[]="VDI","IDV","APP","PC"} platformArr 终端类型数组
      *
-     * @apiSuccess (响应字段说明) {List<String>} List<String> 操作系统数组
+     * @apiSuccess (响应字段说明) {List} result 操作系统类型列表
      */
     /**
      * 查询终端运行平台类型
