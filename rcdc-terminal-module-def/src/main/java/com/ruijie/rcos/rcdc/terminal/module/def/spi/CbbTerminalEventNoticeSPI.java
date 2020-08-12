@@ -20,7 +20,7 @@ public interface CbbTerminalEventNoticeSPI {
      * @apiGroup CbbTerminalEventNoticeSPI
      * @apiDescription 消息通知
      * @apiParam (请求体字段说明) {CbbNoticeRequest} request CbbNoticeRequest
-     * @apiParam (请求体字段说明) {String} request.dispatcherKey TODO
+     * @apiParam (请求体字段说明) {String} request.dispatcherKey 分发消息识别字段
 
      *
      * @apiSuccess (响应字段说明) {void} void 无返回值参数

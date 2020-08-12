@@ -22,7 +22,7 @@ public interface CbbTerminalGroupOperNotifySPI {
      * @apiDescription 消息通知
      * @apiParam (请求体字段说明) {CbbTerminalGroupOperNotifyRequest} terminalGroupOperNotifyRequest CbbTerminalGroupOperNotifyRequest
      * @apiParam (请求体字段说明) {UUID} terminalGroupOperNotifyRequest.id id
-     * @apiParam (请求体字段说明) {UUID} [terminalGroupOperNotifyRequest.moveGroupId] TODO
+     * @apiParam (请求体字段说明) {UUID} [terminalGroupOperNotifyRequest.moveGroupId] 变更终端分组id
      *
      * @apiSuccess (响应字段说明) {DefaultResponse} result DefaultResponse
      */
