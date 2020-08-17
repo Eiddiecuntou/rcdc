@@ -1,25 +1,24 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
+import com.ruijie.rcos.sk.base.crypto.Md5Builder;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.util.StringUtils;
+import com.ruijie.rcos.sk.base.zip.ZipUtil;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Properties;
-
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
-import com.ruijie.rcos.sk.base.api.util.ZipUtil;
-import com.ruijie.rcos.sk.base.crypto.Md5Builder;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.base.util.StringUtils;
 
 /**
  * Description: Function Description
