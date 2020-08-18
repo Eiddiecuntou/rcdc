@@ -3,9 +3,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -97,13 +97,13 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     @Test
     public void testUploadUpgradePackage() throws Exception {
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("123.iso");
         request.setFilePath("/temp");
         request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
         new Expectations() {
             {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = null;
             }
@@ -112,7 +112,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         upgradePackageAPIImpl.uploadUpgradePackage(request);
         new Verifications() {
             {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
                 times = 1;
             }
         };
@@ -127,7 +127,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     @Test
     public void testUploadUpgradePackageInTask() throws Exception {
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("123.iso");
         request.setFilePath("/temp");
         request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
@@ -153,7 +153,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Verifications() {
             {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
                 times = 0;
             }
         };
@@ -168,7 +168,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     @Test
     public void testUploadUpgradePackageInTaskAndroid() throws Exception {
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("123.iso");
         request.setFilePath("/temp");
         request.setTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
@@ -178,7 +178,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Expectations() {
             {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
@@ -190,7 +190,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Verifications() {
             {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any, (CbbTerminalTypeEnums) any);
+                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
                 times = 1;
             }
         };
@@ -537,7 +537,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testCheckAllowUploadPackageHasRunningTaskDiskSpaceEnough() throws Exception {
-        CbbCheckAllowUploadPackageRequest request = new CbbCheckAllowUploadPackageRequest(10L);
+        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO(10L);
 
         new Expectations() {
             {
@@ -560,7 +560,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbCheckAllowUploadPackageResponse response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
+        CbbCheckAllowUploadPackageResultDTO response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
         assertEquals(false, response.getAllowUpload());
         assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, response.getErrorList().get(0));
         assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, response.getErrorList().get(1));
@@ -580,7 +580,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testCheckAllowUploadPackage(@Injectable TerminalSystemUpgradePackageHandler handler) throws Exception {
-        CbbCheckAllowUploadPackageRequest request = new CbbCheckAllowUploadPackageRequest(10L);
+        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO(10L);
 
         new Expectations() {
             {
@@ -593,7 +593,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbCheckAllowUploadPackageResponse response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
+        CbbCheckAllowUploadPackageResultDTO response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
         assertEquals(true, response.getAllowUpload());
         assertEquals(0, response.getErrorList().size());
 
@@ -612,7 +612,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testCheckAllowUploadPackageWithServerDiskNotEnough(@Injectable TerminalSystemUpgradePackageHandler handler) throws Exception {
-        CbbCheckAllowUploadPackageRequest request = new CbbCheckAllowUploadPackageRequest(10L);
+        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO(10L);
 
         new Expectations() {
             {
@@ -632,7 +632,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbCheckAllowUploadPackageResponse response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
+        CbbCheckAllowUploadPackageResultDTO response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
         assertEquals(false, response.getAllowUpload());
         assertEquals(1, response.getErrorList().size());
 
@@ -651,7 +651,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testCheckAllowUploadPackageWithPackageNull(@Injectable TerminalSystemUpgradePackageHandler handler) throws Exception {
-        CbbCheckAllowUploadPackageRequest request = new CbbCheckAllowUploadPackageRequest(10L);
+        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO(10L);
 
         new Expectations() {
             {
@@ -671,7 +671,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbCheckAllowUploadPackageResponse response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
+        CbbCheckAllowUploadPackageResultDTO response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
         assertEquals(false, response.getAllowUpload());
         assertEquals(1, response.getErrorList().size());
     }

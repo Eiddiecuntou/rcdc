@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.google.common.base.Objects;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupTreeNodeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import org.springframework.lang.Nullable;
@@ -51,11 +51,11 @@ public class TerminalGroupHandler {
      * @param filterGroupId 分组列表
      * @return 树形结构的分组列表
      */
-    public TerminalGroupTreeNodeDTO[] assembleGroupTree(@Nullable UUID parentId, List<TerminalGroupEntity> groupList, @Nullable UUID filterGroupId) {
+    public CbbTerminalGroupTreeNodeDTO[] assembleGroupTree(@Nullable UUID parentId, List<TerminalGroupEntity> groupList, @Nullable UUID filterGroupId) {
         Assert.notNull(groupList, "groupList cannot be null!");
 
         if (CollectionUtils.isEmpty(groupList)) {
-            return new TerminalGroupTreeNodeDTO[0];
+            return new CbbTerminalGroupTreeNodeDTO[0];
         }
 
         List<TerminalGroupEntity> subList = new ArrayList<>();
@@ -82,8 +82,8 @@ public class TerminalGroupHandler {
             subList.add(defaultGroup);
         }
 
-        TerminalGroupTreeNodeDTO[] dtoArr = convertToNodeDTO(subList);
-        for (TerminalGroupTreeNodeDTO dto : dtoArr) {
+        CbbTerminalGroupTreeNodeDTO[] dtoArr = convertToNodeDTO(subList);
+        for (CbbTerminalGroupTreeNodeDTO dto : dtoArr) {
             dto.setChildren(assembleGroupTree(dto.getId(), groupList, filterGroupId));
         }
 
@@ -96,12 +96,12 @@ public class TerminalGroupHandler {
      * @param subList 分组列表
      * @return dto数组
      */
-    private TerminalGroupTreeNodeDTO[] convertToNodeDTO(List<TerminalGroupEntity> subList) {
+    private CbbTerminalGroupTreeNodeDTO[] convertToNodeDTO(List<TerminalGroupEntity> subList) {
         int size = subList.size();
-        TerminalGroupTreeNodeDTO[] dtoArr = new TerminalGroupTreeNodeDTO[size];
+        CbbTerminalGroupTreeNodeDTO[] dtoArr = new CbbTerminalGroupTreeNodeDTO[size];
         Stream.iterate(0, i -> i + 1).limit(size).forEach(i -> {
             TerminalGroupEntity entity = subList.get(i);
-            TerminalGroupTreeNodeDTO dto = new TerminalGroupTreeNodeDTO();
+            CbbTerminalGroupTreeNodeDTO dto = new CbbTerminalGroupTreeNodeDTO();
             entity.converToDTO(dto);
             dto.setEnableDefault(Constants.DEFAULT_TERMINAL_GROUP_UUID.equals(dto.getId()));
             dtoArr[i] = dto;

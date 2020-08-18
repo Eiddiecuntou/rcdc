@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalStatisticsDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.TerminalStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalStatisticsResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.ViewTerminalStatDAO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -56,7 +56,7 @@ public class CbbTerminalStatisticsAPIImplTest {
             }
         };
 
-        CbbTerminalStatisticsResponse response = terminalStatisticsAPI.statisticsTerminal(groupIdArr);
+        CbbTerminalStatisticsDTO response = terminalStatisticsAPI.statisticsTerminal(groupIdArr);
 
         assertEquals((Integer) 1, response.getVdi().getOnline());
         assertEquals((Integer) 1, response.getApp().getOnline());
@@ -83,7 +83,7 @@ public class CbbTerminalStatisticsAPIImplTest {
             }
         };
 
-        CbbTerminalStatisticsResponse response = terminalStatisticsAPI.statisticsTerminal(groupIdArr);
+        CbbTerminalStatisticsDTO response = terminalStatisticsAPI.statisticsTerminal(groupIdArr);
 
         assertEquals((Integer) 1, response.getVdi().getOffline());
         assertEquals((Integer) 1, response.getApp().getOffline());
@@ -108,7 +108,7 @@ public class CbbTerminalStatisticsAPIImplTest {
             }
         };
 
-        CbbTerminalStatisticsResponse response = terminalStatisticsAPI.statisticsTerminal(groupIdArr);
+        CbbTerminalStatisticsDTO response = terminalStatisticsAPI.statisticsTerminal(groupIdArr);
 
         assertEquals((Integer) 0, response.getVdi().getOnline());
         assertEquals((Integer) 0, response.getApp().getOnline());

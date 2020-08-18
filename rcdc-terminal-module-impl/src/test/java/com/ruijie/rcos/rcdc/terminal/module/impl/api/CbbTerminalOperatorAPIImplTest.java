@@ -1,10 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbChangePasswordDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalCollectLogStatusDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLogFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
@@ -141,7 +141,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testChangePassword() throws Exception {
-        CbbChangePasswordRequest request = new CbbChangePasswordRequest();
+        CbbChangePasswordDTO request = new CbbChangePasswordDTO();
         request.setPassword("password123");
         terminalOperatorAPI.changePassword(request);
         new Verifications() {
@@ -207,7 +207,7 @@ public class CbbTerminalOperatorAPIImplTest {
                 result = cache;
             }
         };
-        CbbTerminalCollectLogStatusResponse response = terminalOperatorAPI.getCollectLog("123");
+        CbbTerminalCollectLogStatusDTO response = terminalOperatorAPI.getCollectLog("123");
         assertEquals("logFileName", response.getLogName());
         assertEquals(CbbCollectLogStateEnums.DONE, response.getState());
     }
@@ -226,7 +226,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
 
-        CbbTerminalCollectLogStatusResponse collectLog = terminalOperatorAPI.getCollectLog("123");
+        CbbTerminalCollectLogStatusDTO collectLog = terminalOperatorAPI.getCollectLog("123");
         assertEquals(CbbCollectLogStateEnums.FAULT, collectLog.getState());
 
     }
@@ -271,7 +271,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
 
-        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
+        CbbTerminalLogFileInfoDTO response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
         assertEquals("/opt/ftp/terminal/log/logFileName.rar", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("rar", response.getSuffix());
@@ -292,7 +292,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
 
-        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
+        CbbTerminalLogFileInfoDTO response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
         assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("", response.getSuffix());
@@ -313,7 +313,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
 
-        CbbTerminalLogFileInfoResponse response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
+        CbbTerminalLogFileInfoDTO response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
         assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("", response.getSuffix());
@@ -345,7 +345,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testIdvOfflineLoginSetting() throws BusinessException {
-        OfflineLoginSettingRequest request = new OfflineLoginSettingRequest(0);
+        CbbOfflineLoginSettingDTO request = new CbbOfflineLoginSettingDTO(0);
         terminalOperatorAPI.idvOfflineLoginSetting(request);
         new Verifications() {
             {

@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageResultDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 import java.util.UUID;
@@ -25,7 +25,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiName uploadUpgradePackage
      * @apiGroup CbbTerminalSystemUpgradePackageAPI
      * @apiDescription 上传终端系统升级文件
-     * @apiParam (请求体字段说明) {CbbTerminalUpgradePackageUploadRequest}request CbbTerminalUpgradePackageUploadRequest 请求实体
+     * @apiParam (请求体字段说明) {CbbTerminalUpgradePackageUploadDTO}request CbbTerminalUpgradePackageUploadDTO 请求实体
      * @apiParam (请求体字段说明) {String} request.filePath 升级包路径
      * @apiParam (请求体字段说明) {String} request.fileName 升级包名称
      * @apiParam (请求体字段说明) {String} request.fileMD5 升级包MD5
@@ -40,7 +40,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @param request 请求参数
      * @throws BusinessException 业务异常
      */
-    void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException;
+    void uploadUpgradePackage(CbbTerminalUpgradePackageUploadDTO request) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalSystemUpgradePackageAPI.deleteUpgradePackage 删除终端系统升级文件
@@ -128,7 +128,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiParam (请求体字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
      * "APP_IOS","APP_LINUX"} request.terminalType 终端类型
      *
-     * @apiSuccess (响应字段说明) {CbbCheckAllowUploadPackageResponse} response CbbCheckAllowUploadPackageResponse
+     * @apiSuccess (响应字段说明) {CbbCheckAllowUploadPackageResultDTO} response CbbCheckAllowUploadPackageResultDTO
      * @apiSuccess (响应字段说明) {Boolean} response.allowUpload 是否允许上传
      * @apiSuccess (响应字段说明) {List} response.errorList 错误信息列表
      */
@@ -139,7 +139,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-    CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request)
+    CbbCheckAllowUploadPackageResultDTO checkAllowUploadPackage(CbbCheckAllowUploadPackageDTO request)
             throws BusinessException;
 
 }

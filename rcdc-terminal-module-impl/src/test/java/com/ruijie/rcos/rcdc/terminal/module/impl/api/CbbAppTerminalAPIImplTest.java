@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
@@ -41,12 +41,12 @@ public class CbbAppTerminalAPIImplTest {
      */
     @Test
     public void testGetWindowsAppDownloadUrlCacheIsNotReady() {
-        CbbWinAppUpdateListDTO listDTO = new CbbWinAppUpdateListDTO();
+        WinAppUpdateListDTO listDTO = new WinAppUpdateListDTO();
 
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
+            public WinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 return listDTO;
             }
 
@@ -73,7 +73,7 @@ public class CbbAppTerminalAPIImplTest {
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
+            public WinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 // 获取updatelist缓存为空
                 return null;
             }
@@ -97,13 +97,13 @@ public class CbbAppTerminalAPIImplTest {
      */
     @Test
     public void testGetWindowsAppDownloadUrlCacheIncorrect() {
-        CbbWinAppUpdateListDTO listDTO = new CbbWinAppUpdateListDTO();
+        WinAppUpdateListDTO listDTO = new WinAppUpdateListDTO();
         listDTO.setComponentList(null);
 
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
+            public WinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 return listDTO;
             }
 
@@ -126,16 +126,16 @@ public class CbbAppTerminalAPIImplTest {
      */
     @Test
     public void testGetWindowsAppDownloadUrlPackageUrlInvalid() {
-        CbbWinAppUpdateListDTO listDTO = new CbbWinAppUpdateListDTO();
-        List<CbbWinAppComponentVersionInfoDTO> versionInfoDTOList = Lists.newArrayList();
-        versionInfoDTOList.add(new CbbWinAppComponentVersionInfoDTO());
+        WinAppUpdateListDTO listDTO = new WinAppUpdateListDTO();
+        List<WinAppComponentVersionInfoDTO> versionInfoDTOList = Lists.newArrayList();
+        versionInfoDTOList.add(new WinAppComponentVersionInfoDTO());
         listDTO.setComponentList(versionInfoDTOList);
         listDTO.setCompletePackageName("aaa");
 
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
+            public WinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 return listDTO;
             }
 
@@ -179,16 +179,16 @@ public class CbbAppTerminalAPIImplTest {
      */
     @Test
     public void testGetWindowsAppDownloadUrl() {
-        CbbWinAppUpdateListDTO listDTO = new CbbWinAppUpdateListDTO();
-        List<CbbWinAppComponentVersionInfoDTO> versionInfoDTOList = Lists.newArrayList();
-        versionInfoDTOList.add(new CbbWinAppComponentVersionInfoDTO());
+        WinAppUpdateListDTO listDTO = new WinAppUpdateListDTO();
+        List<WinAppComponentVersionInfoDTO> versionInfoDTOList = Lists.newArrayList();
+        versionInfoDTOList.add(new WinAppComponentVersionInfoDTO());
         listDTO.setComponentList(versionInfoDTOList);
         listDTO.setCompletePackageName("aaa");
 
         new MockUp<TerminalUpdateListCacheManager>() {
 
             @Mock
-            public CbbWinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
+            public WinAppUpdateListDTO get(CbbTerminalTypeEnums type) {
                 return listDTO;
             }
 

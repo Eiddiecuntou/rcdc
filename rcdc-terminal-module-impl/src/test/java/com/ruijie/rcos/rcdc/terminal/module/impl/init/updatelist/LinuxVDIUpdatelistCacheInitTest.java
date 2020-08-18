@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import static org.junit.Assert.assertTrue;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +51,7 @@ public class LinuxVDIUpdatelistCacheInitTest {
     public void testFillUpdateList() {
 
         // 这个方法啥也没干
-        cacheInit.fillUpdateList(new CbbCommonUpdateListDTO());
+        cacheInit.fillUpdateList(new CommonUpdateListDTO());
         assertTrue(true);
     }
 }

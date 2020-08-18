@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.springframework.lang.Nullable;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDetailDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -32,7 +32,7 @@ public interface TerminalGroupService {
      * @throws BusinessException 业务异常
      * @return 用户组信息实体类
      */
-    TerminalGroupEntity saveTerminalGroup(TerminalGroupDTO terminalGroup) throws BusinessException;
+    TerminalGroupEntity saveTerminalGroup(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException;
 
     /**
      * @description 根据UUID获取指定终端组
@@ -50,7 +50,7 @@ public interface TerminalGroupService {
      * @return 是否同级唯一结果
      * @throws BusinessException 业务异常
      */
-    boolean checkGroupNameUnique(TerminalGroupDTO terminalGroup) throws BusinessException;
+    boolean checkGroupNameUnique(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException;
 
     /**
      * 修改终端分组信息
@@ -58,7 +58,7 @@ public interface TerminalGroupService {
      * @param terminalGroup 终端分组对象
      * @throws BusinessException 业务异常
      */
-    void modifyGroupById(TerminalGroupDTO terminalGroup) throws BusinessException;
+    void modifyGroupById(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException;
     
     /**
      * 检验分组是否存在

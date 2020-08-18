@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;

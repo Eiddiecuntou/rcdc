@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalStatisticsDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.TerminalStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.ViewTerminalStatEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;

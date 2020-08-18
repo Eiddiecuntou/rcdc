@@ -1,22 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.BetweenTimeRangeMatch;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.BetweenTimeRangeMatch;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.MatchEqual;
 
 
 /**

@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalStatisticsAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalStatisticsDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.TerminalStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalStatisticsResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalStatisticsItem;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.ViewTerminalStatDAO;
@@ -36,9 +36,9 @@ public class CbbTerminalStatisticsAPIImpl implements CbbTerminalStatisticsAPI {
     private ViewTerminalStatDAO viewTerminalStatDAO;
 
     @Override
-    public CbbTerminalStatisticsResponse statisticsTerminal(UUID[] groupIdArr) {
+    public CbbTerminalStatisticsDTO statisticsTerminal(UUID[] groupIdArr) {
         Assert.notNull(groupIdArr, "groupIdArr");
-        CbbTerminalStatisticsResponse response = new CbbTerminalStatisticsResponse();
+        CbbTerminalStatisticsDTO response = new CbbTerminalStatisticsDTO();
         //统计各类型终端在线情况
         TerminalStatisticsItem itemVDI = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.VDI, groupIdArr);
         response.setVdi(itemVDI);

@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundSaveRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundSaveDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
@@ -76,7 +76,7 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadExistDeleteFile() throws BusinessException, IOException {
-        CbbTerminalBackgroundSaveRequest request = new CbbTerminalBackgroundSaveRequest();
+        CbbTerminalBackgroundSaveDTO request = new CbbTerminalBackgroundSaveDTO();
         request.setImageName("abc.png");
         request.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -251,7 +251,7 @@ public class CbbTerminalBackgroundAPIImplTest {
 
     @Test
     public void testUploadNoNeedDelete() throws IOException, BusinessException {
-        CbbTerminalBackgroundSaveRequest request = new CbbTerminalBackgroundSaveRequest();
+        CbbTerminalBackgroundSaveDTO request = new CbbTerminalBackgroundSaveDTO();
         request.setImageName("abc.png");
         request.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -310,10 +310,10 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadExistDeleteFileWhenFileSuffixException() throws BusinessException, IOException {
-        CbbTerminalBackgroundSaveRequest request1 = new CbbTerminalBackgroundSaveRequest();
+        CbbTerminalBackgroundSaveDTO request1 = new CbbTerminalBackgroundSaveDTO();
         request1.setImageName("abc.");
         request1.setImagePath("123");
-        CbbTerminalBackgroundSaveRequest request2 = new CbbTerminalBackgroundSaveRequest();
+        CbbTerminalBackgroundSaveDTO request2 = new CbbTerminalBackgroundSaveDTO();
         request2.setImageName("abc");
         request2.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
@@ -356,10 +356,10 @@ public class CbbTerminalBackgroundAPIImplTest {
      */
     @Test
     public void testUploadNoNeedDeleteWhenFileSuffixError() throws IOException, BusinessException {
-        CbbTerminalBackgroundSaveRequest request1 = new CbbTerminalBackgroundSaveRequest();
+        CbbTerminalBackgroundSaveDTO request1 = new CbbTerminalBackgroundSaveDTO();
         request1.setImageName("abc.");
         request1.setImagePath("123");
-        CbbTerminalBackgroundSaveRequest request2 = new CbbTerminalBackgroundSaveRequest();
+        CbbTerminalBackgroundSaveDTO request2 = new CbbTerminalBackgroundSaveDTO();
         request2.setImageName("abc");
         request2.setImagePath("123");
         killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");

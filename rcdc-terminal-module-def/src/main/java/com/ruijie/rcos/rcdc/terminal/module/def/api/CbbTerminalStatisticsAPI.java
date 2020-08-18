@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalStatisticsResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalStatisticsDTO;
 
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ public interface CbbTerminalStatisticsAPI {
      * @apiDescription 统计终端新
      * @apiParam (请求体字段说明) {UUID[]} groupIdArr 终端组id数组
      *
-     *@apiSuccess (响应字段说明) {CbbTerminalStatisticsResponse} response CbbTerminalStatisticsResponse
+     *@apiSuccess (响应字段说明) {CbbTerminalStatisticsDTO} response CbbTerminalStatisticsDTO
      *@apiSuccess (响应字段说明) {TerminalStatisticsItem} response.TerminalStatisticsItem 终端统计项
      *@apiSuccess (响应字段说明) {Integer} response.TerminalStatisticsItem.total 终端总数
      *@apiSuccess (响应字段说明) {Integer} response.TerminalStatisticsItem.online 在线终端数
@@ -36,6 +36,6 @@ public interface CbbTerminalStatisticsAPI {
      * @param groupIdArr 终端类型请求
      * @return 返回统计结果
      */
-    CbbTerminalStatisticsResponse statisticsTerminal(UUID[] groupIdArr);
+    CbbTerminalStatisticsDTO statisticsTerminal(UUID[] groupIdArr);
 
 }

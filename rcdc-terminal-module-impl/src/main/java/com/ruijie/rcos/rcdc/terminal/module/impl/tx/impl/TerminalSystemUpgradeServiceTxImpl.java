@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -53,7 +53,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
     private TerminalSystemUpgradeTerminalGroupDAO systemUpgradeTerminalGroupDAO;
 
     @Override
-    public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, CbbAddSystemUpgradeTaskRequest request) {
+    public UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, CbbAddSystemUpgradeTaskDTO request) {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(request, "request can not be null");
 

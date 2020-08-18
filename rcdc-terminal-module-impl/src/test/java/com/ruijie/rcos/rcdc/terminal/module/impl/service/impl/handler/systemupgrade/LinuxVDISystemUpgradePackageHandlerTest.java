@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.NetworkAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -91,7 +91,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
      */
     @Test
     public void testUploadUpgradeFileFileTypeError() {
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.ds");
         request.setFilePath("/aaa/bbb");
         request.setFileMD5("123");
@@ -112,7 +112,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
      */
     @Test
     public void testUploadUpgradeFileSystemUpgradePackageVersionFileNotFoundException() throws BusinessException, IOException {
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
 
@@ -150,7 +150,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             void checkISOMd5(String filePath) throws BusinessException {
             }
         };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
 
@@ -200,7 +200,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 result = new BusinessException("key");
             }
         };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
         try {
@@ -234,7 +234,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
         try {
@@ -277,7 +277,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("/temp");
         try {
@@ -323,7 +323,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
                 return fileArr;
             }
         };
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
@@ -368,7 +368,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
@@ -420,7 +420,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
@@ -472,7 +472,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
@@ -522,7 +522,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
@@ -574,7 +574,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {
@@ -629,7 +629,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("/aaa/sdsds.iso");
         handler.uploadUpgradePackage(request);
@@ -678,7 +678,7 @@ public class LinuxVDISystemUpgradePackageHandlerTest {
             }
         };
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFileName("sdsds.iso");
         request.setFilePath("dsdsd");
         try {

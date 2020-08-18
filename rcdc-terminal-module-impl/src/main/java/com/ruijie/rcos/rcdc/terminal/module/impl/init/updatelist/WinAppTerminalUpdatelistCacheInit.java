@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * @author nt
  */
 @Service
-public class WinAppTerminalUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbWinAppUpdateListDTO> {
+public class WinAppTerminalUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<WinAppUpdateListDTO> {
 
     private static final String UPDATE_LIST_PATH = "/opt/ftp/terminal/terminal_component/windows_app/update.list";
 
@@ -28,9 +28,9 @@ public class WinAppTerminalUpdatelistCacheInit extends AbstractUpdatelistCacheIn
     }
 
     @Override
-    protected void fillUpdateList(CbbWinAppUpdateListDTO updatelist) {
+    protected void fillUpdateList(WinAppUpdateListDTO updatelist) {
         updatelist.setCompletePackageUrl(COMPONENT_PACKAGE_DOWNLOAD_URL_PRE + updatelist.getCompletePackageName());
-        List<CbbWinAppComponentVersionInfoDTO> componentList = updatelist.getComponentList();
+        List<WinAppComponentVersionInfoDTO> componentList = updatelist.getComponentList();
         componentList.forEach(component -> component
             .setCompletePackageUrl(COMPONENT_PACKAGE_DOWNLOAD_URL_PRE + component.getCompletePackageName()));
     }

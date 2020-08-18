@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 
-import com.ruijie.rcos.sk.commkit.base.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 

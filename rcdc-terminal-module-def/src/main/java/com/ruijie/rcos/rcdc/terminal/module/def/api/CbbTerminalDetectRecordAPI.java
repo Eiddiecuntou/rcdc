@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbDetectResultDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 
@@ -99,7 +99,7 @@ public interface CbbTerminalDetectRecordAPI {
      * @apiDescription 获取终端检测记录结果
      * @apiParam (请求体字段说明) {CbbDetectDateEnums="TODAY","YESTERDAY"} detectDate
      *
-     * @apiSuccess (响应字段说明) {CbbDetectResultResponse} response 响应实体
+     * @apiSuccess (响应字段说明) {CbbDetectResultDTO} response 响应实体
      * @apiSuccess (响应字段说明) {CbbTerminalDetectStatisticsDTO} response.result 响应实体
      * @apiSuccess (响应字段说明) {int} response.result.ipConflict ip冲突结果，0 不冲突，1 冲突，如果有冲突则ipConflictMac字段保存冲突的mac地址，否则为空值
      * @apiSuccess (响应字段说明) {int} response.result.bandwidth 带宽
@@ -121,5 +121,5 @@ public interface CbbTerminalDetectRecordAPI {
      * @param detectDate 检测结果请求参数
      * @return 终端检测结果
      */
-    CbbDetectResultResponse getDetectResult(CbbDetectDateEnums detectDate);
+    CbbDetectResultDTO getDetectResult(CbbDetectDateEnums detectDate);
 }

@@ -5,7 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbDetectResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
@@ -177,7 +177,7 @@ public class CbbTerminalDetectRecordAPIImplTest {
             }
         };
 
-        CbbDetectResultResponse response = api.getDetectResult(CbbDetectDateEnums.TODAY);
+        CbbDetectResultDTO response = api.getDetectResult(CbbDetectDateEnums.TODAY);
         assertEquals(dto, response.getResult());
     }
 }

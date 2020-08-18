@@ -3,15 +3,15 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.component
 import java.util.List;
 import java.util.Objects;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppUpdateListDTO;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
@@ -32,7 +32,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCommonComponentUpgradeHandler.class);
 
     @Override
-    public TerminalVersionResultDTO<CbbCommonUpdateListDTO> getVersion(GetVersionDTO request) {
+    public TerminalVersionResultDTO<CommonUpdateListDTO> getVersion(GetVersionDTO request) {
         Assert.notNull(request, "get version request can not be null");
 
         CbbTerminalTypeEnums terminalType = getTerminalType();
@@ -43,7 +43,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult());
         }
 
-        CbbCommonUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(terminalType);
+        CommonUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(terminalType);
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist or component is null, return not support");
@@ -67,7 +67,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
             isSupport = isSupportUpgrade(updatelist, request);
         } catch (Exception e) {
             LOGGER.error("比较osLimit版本失败", e);
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new CbbWinAppUpdateListDTO());
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new WinAppUpdateListDTO());
         }
 
         if (!isSupport) {
@@ -76,7 +76,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         }
 
         // 深拷贝对象
-        CbbCommonUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
+        CommonUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
 
         LOGGER.info("start upgrade");
         // 判断是否差异升级,终端update.list的版本号(VER)与服务器update.list的BASE版本号相同则为差异升级
@@ -93,7 +93,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
     }
 
-    private boolean isSupportUpgrade(CbbCommonUpdateListDTO updateList, GetVersionDTO request) {
+    private boolean isSupportUpgrade(CommonUpdateListDTO updateList, GetVersionDTO request) {
         if (StringUtils.isBlank(request.getOsInnerVersion()) || StringUtils.isBlank(updateList.getOsLimit())) {
             // 支持旧版本终端未上报osInnerVersion场景升级,或updatelist文件中无oslimit信息的情况
             return true;
@@ -108,9 +108,9 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
      *
      * @param componentList 组件升级信息
      */
-    private void clearDifferenceUpgradeInfo(List<CbbCommonComponentVersionInfoDTO> componentList) {
+    private void clearDifferenceUpgradeInfo(List<CommonComponentVersionInfoDTO> componentList) {
         Assert.notNull(componentList, "componentList cannot be null");
-        for (CbbCommonComponentVersionInfoDTO componentInfo : componentList) {
+        for (CommonComponentVersionInfoDTO componentInfo : componentList) {
             componentInfo.setIncrementalPackageMd5(null);
             componentInfo.setIncrementalPackageName(null);
             componentInfo.setIncrementalTorrentMd5(null);
@@ -127,7 +127,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
      * @param：request 终端信息对象
      * @return: boolean 是否需要升级结果
      */
-    private boolean isNeedToUpgrade(CbbCommonUpdateListDTO updatelist, GetVersionDTO request) {
+    private boolean isNeedToUpgrade(CommonUpdateListDTO updatelist, GetVersionDTO request) {
         boolean isVersionEqual = request.getRainUpgradeVersion().equals(updatelist.getVersion());
         boolean isMD5Equal = Objects.equals(request.getValidateMd5(), updatelist.getValidateMd5());
         return !isVersionEqual || !isMD5Equal;

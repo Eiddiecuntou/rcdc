@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbBaseUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.BaseUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -133,7 +133,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
 
         new MockUp(TestedUpdatelistCacheInit.class) {
             @Mock
-            public void fillUpdateList(CbbBaseUpdateListDTO updatelist) {
+            public void fillUpdateList(BaseUpdateListDTO updatelist) {
                 throw new RuntimeException("aaa");
             }
         };
@@ -182,13 +182,13 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         new MockUp(JSON.class) {
             @Mock
             public Object parseObject(String content, Class clz) {
-                return new CbbBaseUpdateListDTO();
+                return new BaseUpdateListDTO();
             }
         };
 
         new MockUp(TestedUpdatelistCacheInit.class) {
             @Mock
-            public void fillUpdateList(CbbBaseUpdateListDTO updatelist) {
+            public void fillUpdateList(BaseUpdateListDTO updatelist) {
                 throw new RuntimeException("aaa");
             }
         };
@@ -260,7 +260,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
      *
      * @author nt
      */
-    class TestedUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbBaseUpdateListDTO> {
+    class TestedUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<BaseUpdateListDTO> {
 
         @Override
         protected String getUpdateListPath() {
@@ -268,7 +268,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         }
 
         @Override
-        protected void fillUpdateList(CbbBaseUpdateListDTO updatelist) {
+        protected void fillUpdateList(BaseUpdateListDTO updatelist) {
 
         }
 

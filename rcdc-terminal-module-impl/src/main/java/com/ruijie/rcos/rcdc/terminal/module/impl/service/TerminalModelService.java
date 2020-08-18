@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalModelDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalModelDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 

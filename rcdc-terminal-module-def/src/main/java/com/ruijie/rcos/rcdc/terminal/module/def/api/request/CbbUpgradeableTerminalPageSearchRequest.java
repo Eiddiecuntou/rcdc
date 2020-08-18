@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import com.ruijie.rcos.sk.webmvc.api.vo.ExactMatch;
 import org.springframework.util.Assert;

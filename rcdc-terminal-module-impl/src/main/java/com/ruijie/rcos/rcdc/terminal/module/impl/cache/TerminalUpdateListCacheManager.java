@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
 import com.google.common.collect.Maps;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbBaseUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.BaseUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.util.Assert;
 
@@ -28,7 +28,7 @@ public class TerminalUpdateListCacheManager {
     /**
      * updatelist缓存
      */
-    private static final Map<CbbTerminalTypeEnums, ? super CbbBaseUpdateListDTO> UPDATE_LIST_CACHE_MAP = Maps.newHashMap();
+    private static final Map<CbbTerminalTypeEnums, ? super BaseUpdateListDTO> UPDATE_LIST_CACHE_MAP = Maps.newHashMap();
 
     /**
      * 添加缓存
@@ -37,7 +37,7 @@ public class TerminalUpdateListCacheManager {
      * @param terminalType 终端平台类型
      * @param updatelist 组件更新列表信息
      */
-    public static <T extends CbbBaseUpdateListDTO> void add(CbbTerminalTypeEnums terminalType, T updatelist) {
+    public static <T extends BaseUpdateListDTO> void add(CbbTerminalTypeEnums terminalType, T updatelist) {
         Assert.notNull(terminalType, "terminalType can not be null");
         Assert.notNull(updatelist, "updatelist can not be null");
 
@@ -51,7 +51,7 @@ public class TerminalUpdateListCacheManager {
      * @param terminalType 软终端类型
      * @return 返回对应缓存对象
      */
-    public static <T extends CbbBaseUpdateListDTO> T get(CbbTerminalTypeEnums terminalType) {
+    public static <T extends BaseUpdateListDTO> T get(CbbTerminalTypeEnums terminalType) {
         Assert.notNull(terminalType, "terminalType can not be null");
 
         return (T) UPDATE_LIST_CACHE_MAP.get(terminalType);
@@ -62,7 +62,7 @@ public class TerminalUpdateListCacheManager {
      *
      * @return 返回集合对象
      */
-    public static Map<CbbTerminalTypeEnums, ? super CbbBaseUpdateListDTO> getUpdateListCache() {
+    public static Map<CbbTerminalTypeEnums, ? super BaseUpdateListDTO> getUpdateListCache() {
         return UPDATE_LIST_CACHE_MAP;
     }
 

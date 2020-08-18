@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDetailDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
@@ -80,7 +80,7 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testSaveTerminalGroupParentGroupIsDefault() throws BusinessException {
-        TerminalGroupDTO groupDTO = new TerminalGroupDTO(UUID.randomUUID(), "123", Constants.DEFAULT_TERMINAL_GROUP_UUID);
+        CbbTerminalGroupDetailDTO groupDTO = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "123", Constants.DEFAULT_TERMINAL_GROUP_UUID);
         TerminalGroupEntity group = new TerminalGroupEntity();
         group.setParentId(UUID.randomUUID());
 
@@ -115,7 +115,7 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testSaveTerminalGroupTerminalIsDefaultName() throws BusinessException {
-        TerminalGroupDTO groupDTO = new TerminalGroupDTO(UUID.randomUUID(), "总览", UUID.randomUUID());
+        CbbTerminalGroupDetailDTO groupDTO = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "总览", UUID.randomUUID());
         TerminalGroupEntity group = new TerminalGroupEntity();
         group.setParentId(UUID.randomUUID());
         new Expectations() {
@@ -167,13 +167,13 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testSaveTerminalGroupParentGroupIdNull() throws BusinessException {
-        TerminalGroupDTO groupDTO = new TerminalGroupDTO(UUID.randomUUID(), "name123", null);
+        CbbTerminalGroupDetailDTO groupDTO = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "name123", null);
         TerminalGroupEntity group = new TerminalGroupEntity();
         group.setParentId(null);
 
         new MockUp<TerminalGroupServiceImpl>() {
             @Mock
-            public boolean checkGroupNameUnique(TerminalGroupDTO terminalGroup) throws BusinessException {
+            public boolean checkGroupNameUnique(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException {
                 return true;
             }
         };
@@ -208,7 +208,7 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testSaveTerminalGroup() throws BusinessException {
-        TerminalGroupDTO groupDTO = new TerminalGroupDTO(UUID.randomUUID(), "name123", UUID.randomUUID());
+        CbbTerminalGroupDetailDTO groupDTO = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "name123", UUID.randomUUID());
         TerminalGroupEntity group = new TerminalGroupEntity();
         group.setParentId(UUID.randomUUID());
         new Expectations() {
@@ -228,7 +228,7 @@ public class TerminalGroupServiceImplTest {
 
         new MockUp<TerminalGroupServiceImpl>() {
             @Mock
-            public boolean checkGroupNameUnique(TerminalGroupDTO terminalGroup) throws BusinessException {
+            public boolean checkGroupNameUnique(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException {
                 return true;
             }
         };
@@ -266,7 +266,7 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testSaveTerminalGroupParamIsNull() throws Exception {
-        TerminalGroupDTO groupDTO2 = new TerminalGroupDTO(UUID.randomUUID(), "", null);
+        CbbTerminalGroupDetailDTO groupDTO2 = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "", null);
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalGroupService.saveTerminalGroup(null), "terminal group can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalGroupService.saveTerminalGroup(groupDTO2),
                 "terminal group name can not be null");
@@ -280,7 +280,7 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testModifyByTerminalIdParamIsEmpty() throws Exception {
-        TerminalGroupDTO groupDTO2 = new TerminalGroupDTO(UUID.randomUUID(), "", null);
+        CbbTerminalGroupDetailDTO groupDTO2 = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "", null);
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalGroupService.modifyGroupById(null), "terminal group param can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> terminalGroupService.modifyGroupById(groupDTO2),
                 "terminal group name can not be blank");
@@ -295,7 +295,7 @@ public class TerminalGroupServiceImplTest {
     @Test
     public void testmodifyGroupByIdWhileParentIdEqualsId() {
         UUID uuid = UUID.randomUUID();
-        TerminalGroupDTO dto = new TerminalGroupDTO(uuid, "groupName123", uuid);
+        CbbTerminalGroupDetailDTO dto = new CbbTerminalGroupDetailDTO(uuid, "groupName123", uuid);
 
         try {
             terminalGroupService.modifyGroupById(dto);
@@ -313,7 +313,7 @@ public class TerminalGroupServiceImplTest {
     @Test
     public void testmodifyGroupByIdWhileParentIdIsNull() throws BusinessException {
         UUID uuid = UUID.randomUUID();
-        TerminalGroupDTO dto = new TerminalGroupDTO(uuid, "groupName123", null);
+        CbbTerminalGroupDetailDTO dto = new CbbTerminalGroupDetailDTO(uuid, "groupName123", null);
 
         TerminalGroupEntity groupEntity = new TerminalGroupEntity();
         groupEntity.setId(uuid);
@@ -327,7 +327,7 @@ public class TerminalGroupServiceImplTest {
             }
 
             @Mock
-            private void checkGroupName(TerminalGroupDTO terminalGroup) throws BusinessException {
+            private void checkGroupName(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException {
                 // 保存分组以覆盖，这里mock掉
             }
         };
@@ -355,7 +355,7 @@ public class TerminalGroupServiceImplTest {
     public void testmodifyGroupByIdWhileParentGroupIdNotNull() throws BusinessException {
         UUID uuid = UUID.randomUUID();
         UUID parentGroupId = UUID.randomUUID();
-        TerminalGroupDTO dto = new TerminalGroupDTO(uuid, "groupName123", parentGroupId);
+        CbbTerminalGroupDetailDTO dto = new CbbTerminalGroupDetailDTO(uuid, "groupName123", parentGroupId);
 
         TerminalGroupEntity groupEntity = new TerminalGroupEntity();
         groupEntity.setId(uuid);
@@ -369,7 +369,7 @@ public class TerminalGroupServiceImplTest {
             }
 
             @Mock
-            private void checkGroupName(TerminalGroupDTO terminalGroup) throws BusinessException {
+            private void checkGroupName(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException {
                 // 保存分组以覆盖，这里mock掉
             }
         };
@@ -451,7 +451,7 @@ public class TerminalGroupServiceImplTest {
     @Test
     public void testCheckGroupNameUnique() throws BusinessException {
         UUID id = UUID.randomUUID();
-        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(id, "groupName123", UUID.randomUUID());
+        CbbTerminalGroupDetailDTO terminalGroup = new CbbTerminalGroupDetailDTO(id, "groupName123", UUID.randomUUID());
         List<TerminalGroupEntity> groupList = buildTerminalGroupList();
         new Expectations() {
             {
@@ -478,7 +478,7 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testCheckGroupNameUniqueEditUnGrouped() throws BusinessException {
-        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(Constants.DEFAULT_TERMINAL_GROUP_UUID, "groupName123", null);
+        CbbTerminalGroupDetailDTO terminalGroup = new CbbTerminalGroupDetailDTO(Constants.DEFAULT_TERMINAL_GROUP_UUID, "groupName123", null);
         List<TerminalGroupEntity> groupList = Collections.emptyList();
         new Expectations() {
             {
@@ -505,7 +505,7 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testCheckGroupNameUniqueSubListIsEmpty() throws BusinessException {
-        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(UUID.randomUUID(), "groupName123", null);
+        CbbTerminalGroupDetailDTO terminalGroup = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "groupName123", null);
         List<TerminalGroupEntity> groupList = Collections.emptyList();
         new Expectations() {
             {
@@ -532,7 +532,7 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testCheckGroupNameUniqueNotUnique() throws BusinessException {
-        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(UUID.randomUUID(), "groupName123", null);
+        CbbTerminalGroupDetailDTO terminalGroup = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "groupName123", null);
         List<TerminalGroupEntity> groupList = buildHasSameNameList(terminalGroup.getId());
         new Expectations() {
             {
@@ -563,7 +563,7 @@ public class TerminalGroupServiceImplTest {
      */
     @Test
     public void testCheckGroupNameUniqueSelf() throws BusinessException {
-        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(UUID.randomUUID(), "groupName123", null);
+        CbbTerminalGroupDetailDTO terminalGroup = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "groupName123", null);
         List<TerminalGroupEntity> groupList = Lists.newArrayList();
         TerminalGroupEntity entity = new TerminalGroupEntity();
         entity.setId(terminalGroup.getId());
@@ -594,7 +594,7 @@ public class TerminalGroupServiceImplTest {
 
     @Test
     public void testCheckGroupNameUniqueWhenDefaultGroupName() {
-        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(UUID.randomUUID(), "总览", null);
+        CbbTerminalGroupDetailDTO terminalGroup = new CbbTerminalGroupDetailDTO(UUID.randomUUID(), "总览", null);
 
         new MockUp<LocaleI18nResolver>() {
             @Mock
@@ -612,7 +612,7 @@ public class TerminalGroupServiceImplTest {
 
     @Test
     public void testCheckGroupNameUniqueWhenCreateDefaultGroupName() {
-        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(null, "总览", null);
+        CbbTerminalGroupDetailDTO terminalGroup = new CbbTerminalGroupDetailDTO(null, "总览", null);
 
         new MockUp<LocaleI18nResolver>() {
             @Mock
@@ -630,7 +630,7 @@ public class TerminalGroupServiceImplTest {
 
     @Test
     public void testCheckGroupNameUniqueWhenCreateDefaultGroupName2() throws BusinessException {
-        TerminalGroupDTO terminalGroup = new TerminalGroupDTO(null, "测试", null);
+        CbbTerminalGroupDetailDTO terminalGroup = new CbbTerminalGroupDetailDTO(null, "测试", null);
 
         new MockUp<LocaleI18nResolver>() {
             @Mock

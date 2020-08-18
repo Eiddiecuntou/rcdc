@@ -3,11 +3,9 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
 
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.BetweenTimeRangeMatch;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageRequest;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import com.ruijie.rcos.sk.webmvc.api.vo.ExactMatch;

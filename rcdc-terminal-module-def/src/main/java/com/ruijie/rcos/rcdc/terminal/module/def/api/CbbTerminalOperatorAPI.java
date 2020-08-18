@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbChangePasswordDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalCollectLogStatusDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLogFileInfoDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -55,7 +55,7 @@ public interface CbbTerminalOperatorAPI {
      * @apiName changePassword
      * @apiGroup CbbTerminalOperatorAPI
      * @apiDescription 修改终端管理员密码
-     * @apiParam (请求体字段说明) {CbbChangePasswordRequest} request CbbChangePasswordRequest
+     * @apiParam (请求体字段说明) {CbbChangePasswordDTO} request CbbChangePasswordDTO
      * @apiParam (请求体字段说明) {String} request.password 密码
      *
      */
@@ -65,7 +65,7 @@ public interface CbbTerminalOperatorAPI {
      * @param request 修改密码请求参数对象
      * @throws BusinessException 业务异常
      */
-    void changePassword(CbbChangePasswordRequest request) throws BusinessException;
+    void changePassword(CbbChangePasswordDTO request) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalOperatorAPI.collectLog 收集终端日志
@@ -107,7 +107,7 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 获取终端收集日志状态
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalCollectLogStatusResponse} response CbbTerminalCollectLogStatusResponse
+     * @apiSuccess (响应字段说明) {CbbTerminalCollectLogStatusDTO} response CbbTerminalCollectLogStatusDTO
      * @apiSuccess (响应字段说明) {CbbCollectLogStateEnums="DOING","DONE","FAILURE"} response.state 日志收集状态
      * @apiSuccess (响应字段说明) {String} response.logName 日志名称
      */
@@ -118,7 +118,7 @@ public interface CbbTerminalOperatorAPI {
      * @return 终端日志收集状态信息
      * @throws BusinessException 业务异常
      */
-    CbbTerminalCollectLogStatusResponse getCollectLog(String terminalId) throws BusinessException;
+    CbbTerminalCollectLogStatusDTO getCollectLog(String terminalId) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalOperatorAPI.getTerminalLogFileInfo 获取终端收集日志路径
@@ -127,7 +127,7 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 获取终端收集日志路径
      * @apiParam (请求体字段说明) {String} logName 日志名称
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalLogFileInfoResponse} response CbbTerminalLogFileInfoResponse
+     * @apiSuccess (响应字段说明) {CbbTerminalLogFileInfoDTO} response CbbTerminalLogFileInfoDTO
      * @apiSuccess (响应字段说明) {String} response.logFilePath 日志路径
      * @apiSuccess (响应字段说明) {String} response.logFileName 日志文件名
      * @apiSuccess (响应字段说明) {String} response.suffix 日志文件名后缀
@@ -139,7 +139,7 @@ public interface CbbTerminalOperatorAPI {
      * @return 终端收集日志路径
      * @throws BusinessException 业务异常
      */
-    CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(String logName) throws BusinessException;
+    CbbTerminalLogFileInfoDTO getTerminalLogFileInfo(String logName) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalOperatorAPI.relieveFault 解除故障
@@ -163,7 +163,7 @@ public interface CbbTerminalOperatorAPI {
      * @apiName idvOfflineLoginSetting
      * @apiGroup CbbTerminalOperatorAPI
      * @apiDescription IDV终端离线登录设置
-     * @apiParam (请求体字段说明) {OfflineLoginSettingRequest} request OfflineLoginSettingRequest
+     * @apiParam (请求体字段说明) {CbbOfflineLoginSettingDTO} request CbbOfflineLoginSettingDTO
      * @apiParam (请求体字段说明) {Integer} request.offlineAutoLocked 离线自动锁定
      *
      */
@@ -173,7 +173,7 @@ public interface CbbTerminalOperatorAPI {
      * @param request 请求参数
      * @throws BusinessException 业务异常
      */
-    void idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
+    void idvOfflineLoginSetting(CbbOfflineLoginSettingDTO request) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalOperatorAPI.queryOfflineLoginSetting 查询IDV终端离线登录设置

@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradeTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -134,7 +134,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
 
     private boolean shouldAddToUpgradeList(TerminalEntity terminalEntity, String terminalId, TerminalSystemUpgradeEntity upgradeTask) {
         if (SYSTEM_OS_TYPE_ANDROID.equals(terminalEntity.getTerminalOsType())) {
-            CbbUpgradeTerminalRequest addRequest = new CbbUpgradeTerminalRequest();
+            CbbUpgradeTerminalDTO addRequest = new CbbUpgradeTerminalDTO();
             addRequest.setTerminalId(terminalId);
             addRequest.setUpgradeTaskId(upgradeTask.getId());
             try {

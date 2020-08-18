@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUploadLogoDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 
@@ -21,7 +21,7 @@ public interface CbbTerminalLogoAPI {
      * @apiName uploadLogo
      * @apiGroup CbbTerminalLogoAPI
      * @apiDescription 上传Logo
-     * @apiParam (请求体字段说明) {CbbUploadLogoRequest} request CbbUploadLogoRequest
+     * @apiParam (请求体字段说明) {CbbUploadLogoDTO} request CbbUploadLogoDTO
      * @apiParam (请求体字段说明) {String} request.logoPath 文件路径
      * @apiParam (请求体字段说明) {String} request.logoName 文件名称
      * @apiParam (请求体字段说明) {String} request.logoMD5 文件MD5
@@ -34,7 +34,7 @@ public interface CbbTerminalLogoAPI {
      * @return 上传Logo结果
      * @throws BusinessException 请求异常
      */
-    void uploadLogo(CbbUploadLogoRequest request) throws BusinessException;
+    void uploadLogo(CbbUploadLogoDTO request) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalLogoAPI.getLogoPath 获取logo路径

@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -98,7 +98,7 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
 
     private void initOtaFile(File packageFile, CbbTerminalTypeEnums type) {
         try {
-            CbbTerminalUpgradePackageUploadRequest request = generateRequest(packageFile, type);
+            CbbTerminalUpgradePackageUploadDTO request = generateRequest(packageFile, type);
             TerminalSystemUpgradePackageHandler handler = handlerFactory.getHandler(type);
             handler.preUploadPackage();
             handler.uploadUpgradePackage(request);
@@ -109,12 +109,12 @@ public class TerminalOtaUpgradeInit implements SafetySingletonInitializer {
         }
     }
 
-    private CbbTerminalUpgradePackageUploadRequest generateRequest(File file, CbbTerminalTypeEnums type) throws IOException {
+    private CbbTerminalUpgradePackageUploadDTO generateRequest(File file, CbbTerminalTypeEnums type) throws IOException {
         Assert.notNull(file, "file can not be null");
         String fileName = file.getName();
         String filePath = file.getPath();
 
-        CbbTerminalUpgradePackageUploadRequest request = new CbbTerminalUpgradePackageUploadRequest();
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
         request.setFilePath(filePath);
         request.setFileName(fileName);
         request.setTerminalType(type);

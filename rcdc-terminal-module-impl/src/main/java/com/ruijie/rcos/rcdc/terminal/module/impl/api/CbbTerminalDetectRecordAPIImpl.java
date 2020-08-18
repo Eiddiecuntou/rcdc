@@ -7,7 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatist
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectThresholdDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbDetectDateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalDetectPageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbDetectResultResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbDetectResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
@@ -107,7 +107,7 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
     }
 
     @Override
-    public CbbDetectResultResponse getDetectResult(CbbDetectDateEnums detectDate) {
+    public CbbDetectResultDTO getDetectResult(CbbDetectDateEnums detectDate) {
         Assert.notNull(detectDate, "detectDate can not be null");
 
         CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(detectDate);
@@ -116,7 +116,7 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
         threshold.setBandwidthThreshold(Constants.TERMINAL_DETECT_BINDWIDTH_NORM);
         threshold.setPacketLossRateThreshold(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE);
         threshold.setDelayThreshold(Constants.TERMINAL_DETECT_DELAY_NORM);
-        CbbDetectResultResponse resp = new CbbDetectResultResponse(result, threshold);
+        CbbDetectResultDTO resp = new CbbDetectResultDTO(result, threshold);
 
         return resp;
     }

@@ -1,11 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
-import com.ruijie.rcos.base.sysmanage.module.def.common.Constant;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -184,7 +183,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         LOGGER.info("升级包信息: [{}]", upgradePackage.toString());
 
         // 添加升级任务
-        CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setTerminalIdArr(terminalIdArr);
         request.setPackageId(upgradePackage.getId());
         try {

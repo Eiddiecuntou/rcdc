@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbModifyTerminalDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 
@@ -38,7 +38,7 @@ public interface CbbTerminalBasicInfoAPI {
      * @apiDescription 根据terminalId获取终端基本信息
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalBasicInfoResponse} response CbbTerminalBasicInfoResponse
+     * @apiSuccess (响应字段说明) {CbbTerminalBasicInfoDTO} response CbbTerminalBasicInfoDTO
      * @apiSuccess (响应字段说明) {UUID} response.id 终端id
      * @apiSuccess (响应字段说明) {String} response.terminalName 终端名称
      * @apiSuccess (响应字段说明) {String} response.terminalId 终端id
@@ -75,14 +75,14 @@ public interface CbbTerminalBasicInfoAPI {
      * @return 终端基本信息DTO
      * @throws BusinessException 业务异常
      */
-    CbbTerminalBasicInfoResponse findBasicInfoByTerminalId(String terminalId) throws BusinessException;
+    CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(String terminalId) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalBasicInfoAPI.modifyTerminal 编辑终端信息
      * @apiName modifyTerminal
      * @apiGroup CbbTerminalBasicInfoAPI
      * @apiDescription 编辑终端信息
-     * @apiParam (请求体字段说明) {CbbModifyTerminalRequest} request CbbModifyTerminalRequest
+     * @apiParam (请求体字段说明) {CbbModifyTerminalDTO} request CbbModifyTerminalDTO
      * @apiParam (请求体字段说明) {String} request.cbbTerminalId 终端id
      * @apiParam (请求体字段说明) {String} request.terminalName 终端名称
      * @apiParam (请求体字段说明) {String} request.groupId 终端组Id
@@ -94,6 +94,6 @@ public interface CbbTerminalBasicInfoAPI {
      * @param request 请求参数
      * @throws BusinessException 业务异常
      */
-    void modifyTerminal(CbbModifyTerminalRequest request) throws BusinessException;
+    void modifyTerminal(CbbModifyTerminalDTO request) throws BusinessException;
 
 }

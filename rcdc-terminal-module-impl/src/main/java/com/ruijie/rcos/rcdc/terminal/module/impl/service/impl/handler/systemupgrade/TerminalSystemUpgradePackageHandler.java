@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -18,7 +18,7 @@ public interface TerminalSystemUpgradePackageHandler {
      * @param request 请求参数
      * @throws BusinessException 异常
      */
-    void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException;
+    void uploadUpgradePackage(CbbTerminalUpgradePackageUploadDTO request) throws BusinessException;
 
     /**
      * 系统升级包上传前处理方法

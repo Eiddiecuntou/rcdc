@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUploadLogoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
@@ -64,7 +64,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testUploadLogoPathIsNull() throws Exception {
-        CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
+        CbbUploadLogoDTO request = new CbbUploadLogoDTO("logoPath", "logoName", "logoMD5");
         new MockUp<File>() {
             @Mock
             boolean exists() {
@@ -120,7 +120,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testUploadLogoFileNotExist() throws Exception {
-        CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
+        CbbUploadLogoDTO request = new CbbUploadLogoDTO("logoPath", "logoName", "logoMD5");
         new MockUp<File>() {
             @Mock
             boolean exists() {
@@ -167,7 +167,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testUploadLogoException() throws Exception {
-        CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
+        CbbUploadLogoDTO request = new CbbUploadLogoDTO("logoPath", "logoName", "logoMD5");
         new MockUp<File>() {
             @Mock
             boolean exist() {
@@ -223,7 +223,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testUploadLogoFileExist() throws Exception {
-        CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
+        CbbUploadLogoDTO request = new CbbUploadLogoDTO("logoPath", "logoName", "logoMD5");
         TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
         terminalLogoInfo.setLogoPath("/logo/logo.png");
         terminalLogoInfo.setMd5("123456");

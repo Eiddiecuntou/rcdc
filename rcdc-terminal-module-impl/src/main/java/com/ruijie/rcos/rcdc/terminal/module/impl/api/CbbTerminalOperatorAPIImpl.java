@@ -2,10 +2,10 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbChangePasswordRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.offlinelogin.OfflineLoginSettingRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalCollectLogStatusResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalLogFileInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbChangePasswordDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalCollectLogStatusDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLogFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -56,7 +56,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public void changePassword(CbbChangePasswordRequest request) throws BusinessException {
+    public void changePassword(CbbChangePasswordDTO request) throws BusinessException {
         Assert.notNull(request, "CbbChangePasswordRequest不能为空");
 
         checkPwdIsLegal(request.getPassword());
@@ -85,25 +85,25 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public CbbTerminalCollectLogStatusResponse getCollectLog(String terminalId) throws BusinessException {
+    public CbbTerminalCollectLogStatusDTO getCollectLog(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId can not be blank");
 
         CollectLogCache cache = getCollectLogCache(terminalId);
-        CbbTerminalCollectLogStatusResponse response = new CbbTerminalCollectLogStatusResponse();
+        CbbTerminalCollectLogStatusDTO response = new CbbTerminalCollectLogStatusDTO();
         response.setLogName(cache.getLogFileName());
         response.setState(cache.getState());
         return response;
     }
 
     @Override
-    public CbbTerminalLogFileInfoResponse getTerminalLogFileInfo(String logFileName) throws BusinessException {
+    public CbbTerminalLogFileInfoDTO getTerminalLogFileInfo(String logFileName) throws BusinessException {
         Assert.hasText(logFileName, "logFileName can not be blank");
 
         String logFilePath = Constants.STORE_TERMINAL_LOG_PATH + logFileName;
         checkFileExist(logFilePath);
         String logFileNameWithoutExtension = Files.getNameWithoutExtension(logFileName);
         String suffix = getFileSuffix(logFileName);
-        CbbTerminalLogFileInfoResponse response = new CbbTerminalLogFileInfoResponse();
+        CbbTerminalLogFileInfoDTO response = new CbbTerminalLogFileInfoDTO();
         response.setLogFilePath(logFilePath);
         response.setLogFileName(logFileNameWithoutExtension);
         response.setSuffix(suffix);
@@ -165,7 +165,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     @Override
-    public void idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException {
+    public void idvOfflineLoginSetting(CbbOfflineLoginSettingDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         operatorService.offlineLoginSetting(request.getOfflineAutoLocked());
     }

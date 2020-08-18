@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalModelDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalModelDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalModelDriverDAO;

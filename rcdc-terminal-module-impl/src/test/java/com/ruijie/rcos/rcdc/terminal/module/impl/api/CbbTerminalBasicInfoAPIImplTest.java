@@ -3,8 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbModifyTerminalRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalBasicInfoResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbModifyTerminalDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -105,7 +105,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
 
         try {
-            CbbTerminalBasicInfoResponse dto = terminalBasicInfoAPI.findBasicInfoByTerminalId(terminalId);
+            CbbTerminalBasicInfoDTO dto = terminalBasicInfoAPI.findBasicInfoByTerminalId(terminalId);
             assertEquals(dto.getTerminalId(), terminalId);
             assertEquals(dto.getTerminalName(), name);
             assertEquals(dto.getCreateTime(), now);
@@ -232,7 +232,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
 
         try {
-            CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+            CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
             request.setCbbTerminalId("123");
             request.setGroupId(UUID.randomUUID());
             request.setTerminalName("123");
@@ -261,7 +261,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
 
         try {
-            CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+            CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
             request.setCbbTerminalId("123");
             request.setGroupId(UUID.randomUUID());
             request.setTerminalName("123");
@@ -287,7 +287,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
             }
         };
         try {
-            CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+            CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
             request.setCbbTerminalId("123");
             request.setGroupId(UUID.randomUUID());
             request.setTerminalName("123");
@@ -324,7 +324,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
 
 
-        CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+        CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
         request.setCbbTerminalId("123");
         request.setGroupId(id);
         request.setTerminalName("testName");
@@ -356,7 +356,7 @@ public class CbbTerminalBasicInfoAPIImplTest {
         };
 
         try {
-            CbbModifyTerminalRequest request = new CbbModifyTerminalRequest();
+            CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
             request.setCbbTerminalId("123");
             request.setGroupId(UUID.randomUUID());
             request.setTerminalName("123");

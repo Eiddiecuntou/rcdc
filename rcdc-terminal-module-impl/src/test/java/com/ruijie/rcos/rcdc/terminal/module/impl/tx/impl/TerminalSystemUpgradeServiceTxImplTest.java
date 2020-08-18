@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -78,7 +78,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         upgradePackage.setPackageType(CbbTerminalTypeEnums.APP_LINUX);
         String[] terminalIdArr = new String[1];
         terminalIdArr[0] = "1";
-        CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setTerminalIdArr(terminalIdArr);
         request.setPackageId(UUID.randomUUID());
         request.setTerminalGroupIdArr(new UUID[]{UUID.randomUUID()});

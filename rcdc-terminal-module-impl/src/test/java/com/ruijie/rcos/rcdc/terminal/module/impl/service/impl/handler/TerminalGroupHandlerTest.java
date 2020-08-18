@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupTreeNodeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -49,8 +49,8 @@ public class TerminalGroupHandlerTest {
     @Test
     public void testAssembleGroupTree() {
         List<TerminalGroupEntity> groupEntityList = buildTerminalGroupEntities();
-        TerminalGroupTreeNodeDTO[] nodeDTOArr = handler.assembleGroupTree(null, groupEntityList, null);
-        for (TerminalGroupTreeNodeDTO nodeDTO : nodeDTOArr) {
+        CbbTerminalGroupTreeNodeDTO[] nodeDTOArr = handler.assembleGroupTree(null, groupEntityList, null);
+        for (CbbTerminalGroupTreeNodeDTO nodeDTO : nodeDTOArr) {
             if ("aaa".equals(nodeDTO.getLabel())) {
                 Assert.assertEquals(1, nodeDTO.getChildren().length);
                 Assert.assertEquals("aaa111", nodeDTO.getChildren()[0].getLabel());
@@ -65,7 +65,7 @@ public class TerminalGroupHandlerTest {
             }
         }
         nodeDTOArr = handler.assembleGroupTree(null, groupEntityList, filterGroupId);
-        for (TerminalGroupTreeNodeDTO nodeDTO : nodeDTOArr) {
+        for (CbbTerminalGroupTreeNodeDTO nodeDTO : nodeDTOArr) {
             if (Objects.equals(nodeDTO.getId(), filterGroupId)) {
                 Assert.fail("过滤分组仍存在");
             }
@@ -73,7 +73,7 @@ public class TerminalGroupHandlerTest {
         Assert.assertEquals(Constants.DEFAULT_TERMINAL_GROUP_UUID, nodeDTOArr[nodeDTOArr.length - 1].getId());
 
         List<TerminalGroupEntity> emptyGroupEntityList = Lists.newArrayList();
-        TerminalGroupTreeNodeDTO[] emptyNodeDTOArr = handler.assembleGroupTree(null, emptyGroupEntityList, null);
+        CbbTerminalGroupTreeNodeDTO[] emptyNodeDTOArr = handler.assembleGroupTree(null, emptyGroupEntityList, null);
         Assert.assertEquals(0, emptyNodeDTOArr.length);
     }
 

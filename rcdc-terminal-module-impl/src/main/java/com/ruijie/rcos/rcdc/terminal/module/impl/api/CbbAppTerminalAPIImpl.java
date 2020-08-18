@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbAppTerminalAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
@@ -29,7 +29,7 @@ public class CbbAppTerminalAPIImpl implements CbbAppTerminalAPI {
 
     @Override
     public String getWindowsAppDownloadUrl() throws BusinessException {
-        CbbWinAppUpdateListDTO listDTO = TerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.APP_WINDOWS);
+        WinAppUpdateListDTO listDTO = TerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.APP_WINDOWS);
         // 获取updatelist中完整组件的信息，从中获取全量包文件路径
         if (!TerminalUpdateListCacheManager.isCacheReady(CbbTerminalTypeEnums.APP_WINDOWS)) {
             LOGGER.error("windows软终端updatelist缓存未就绪");

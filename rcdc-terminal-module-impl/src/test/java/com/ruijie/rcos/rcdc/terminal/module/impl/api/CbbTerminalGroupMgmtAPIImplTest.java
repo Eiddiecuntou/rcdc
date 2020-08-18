@@ -2,13 +2,13 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDetailDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupTreeNodeDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupNameDuplicationDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbDeleteTerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbEditTerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbGetTerminalGroupCompleteTreeDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalGroupOperNotifySPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalGroupOperNotifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -105,7 +105,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        TerminalGroupTreeNodeDTO[] dtoArr = api.loadTerminalGroupCompleteTree(new CbbGetTerminalGroupCompleteTreeRequest());
+        CbbTerminalGroupTreeNodeDTO[] dtoArr = api.loadTerminalGroupCompleteTree(new CbbGetTerminalGroupCompleteTreeDTO());
         assertEquals(0, dtoArr.length);
 
         new Verifications() {
@@ -136,10 +136,10 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbGetTerminalGroupCompleteTreeRequest request = new CbbGetTerminalGroupCompleteTreeRequest();
+        CbbGetTerminalGroupCompleteTreeDTO request = new CbbGetTerminalGroupCompleteTreeDTO();
         request.setEnableFilterDefaultGroup(true);
         request.setFilterGroupId(filterGroup.getId());
-        TerminalGroupTreeNodeDTO[] dtoArr = api.loadTerminalGroupCompleteTree(request);
+        CbbTerminalGroupTreeNodeDTO[] dtoArr = api.loadTerminalGroupCompleteTree(request);
 
         new Verifications() {
             {
@@ -169,7 +169,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        CbbGetTerminalGroupCompleteTreeRequest request = new CbbGetTerminalGroupCompleteTreeRequest();
+        CbbGetTerminalGroupCompleteTreeDTO request = new CbbGetTerminalGroupCompleteTreeDTO();
         request.setEnableFilterDefaultGroup(false);
         api.loadTerminalGroupCompleteTree(request);
 
@@ -224,7 +224,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        TerminalGroupDTO dto = api.getByName(new CbbTerminalGroupRequest("aaa", UUID.randomUUID()));
+        CbbTerminalGroupDetailDTO dto = api.getByName(new CbbTerminalGroupDTO("aaa", UUID.randomUUID()));
         assertEquals(null, dto);
     }
 
@@ -248,7 +248,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        TerminalGroupDTO dto = api.getByName(new CbbTerminalGroupRequest("aaa", UUID.randomUUID()));
+        CbbTerminalGroupDetailDTO dto = api.getByName(new CbbTerminalGroupDTO("aaa", UUID.randomUUID()));
         assertEquals(groupEntity.getId(), dto.getId());
         assertEquals(groupEntity.getName(), dto.getGroupName());
 
@@ -284,7 +284,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        TerminalGroupDTO dto = api.loadById(UUID.randomUUID());
+        CbbTerminalGroupDetailDTO dto = api.loadById(UUID.randomUUID());
         assertEquals(groupEntity1.getId(), dto.getId());
         assertEquals(groupEntity1.getName(), dto.getGroupName());
         assertEquals(groupEntity2.getName(), dto.getParentGroupName());
@@ -316,7 +316,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        TerminalGroupDTO dto = api.loadById(UUID.randomUUID());
+        CbbTerminalGroupDetailDTO dto = api.loadById(UUID.randomUUID());
         assertEquals(groupEntity1.getId(), dto.getId());
         assertEquals(groupEntity1.getName(), dto.getGroupName());
         assertEquals(null, dto.getParentGroupName());
@@ -337,15 +337,15 @@ public class CbbTerminalGroupMgmtAPIImplTest {
     public void testCreateTerminalGroup() throws BusinessException {
         new Expectations() {
             {
-                terminalGroupService.saveTerminalGroup((TerminalGroupDTO) any);
+                terminalGroupService.saveTerminalGroup((CbbTerminalGroupDetailDTO) any);
             }
         };
 
-        api.createTerminalGroup(new CbbTerminalGroupRequest("aaa", UUID.randomUUID()));
+        api.createTerminalGroup(new CbbTerminalGroupDTO("aaa", UUID.randomUUID()));
 
         new Verifications() {
             {
-                terminalGroupService.saveTerminalGroup((TerminalGroupDTO) any);
+                terminalGroupService.saveTerminalGroup((CbbTerminalGroupDetailDTO) any);
                 times = 1;
             }
         };
@@ -359,15 +359,15 @@ public class CbbTerminalGroupMgmtAPIImplTest {
     public void testModifyGroupById() throws BusinessException {
         new Expectations() {
             {
-                terminalGroupService.modifyGroupById((TerminalGroupDTO) any);
+                terminalGroupService.modifyGroupById((CbbTerminalGroupDetailDTO) any);
             }
         };
 
-        api.editTerminalGroup(new CbbEditTerminalGroupRequest(UUID.randomUUID(), "aaa", UUID.randomUUID()));
+        api.editTerminalGroup(new CbbEditTerminalGroupDTO(UUID.randomUUID(), "aaa", UUID.randomUUID()));
 
         new Verifications() {
             {
-                terminalGroupService.modifyGroupById((TerminalGroupDTO) any);
+                terminalGroupService.modifyGroupById((CbbTerminalGroupDetailDTO) any);
                 times = 1;
             }
         };
@@ -379,7 +379,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
      */
     @Test
     public void testDeleteTerminalGroup() throws BusinessException {
-        final CbbDeleteTerminalGroupRequest deleteTerminalGroupRequest = new CbbDeleteTerminalGroupRequest();
+        final CbbDeleteTerminalGroupDTO deleteTerminalGroupRequest = new CbbDeleteTerminalGroupDTO();
         deleteTerminalGroupRequest.setId(UUID.randomUUID());
         deleteTerminalGroupRequest.setMoveGroupId(UUID.randomUUID());
         new Expectations() {
@@ -430,7 +430,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
     @Test
     public void testCheckUseGroupNameDuplicationParam()  throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(()-> api.checkUseGroupNameDuplication(null), "Param [CbbTerminalGroupNameDuplicationRequest] must not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(()-> api.checkUseGroupNameDuplication(null), "Param [CbbTerminalGroupNameDuplicationDTO] must not be null");
         Assert.assertTrue(true);
     }
 
@@ -440,12 +440,12 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         String grpuName = "groupName";
         UUID parentId = UUID.randomUUID();
 
-        CbbTerminalGroupNameDuplicationRequest request = new CbbTerminalGroupNameDuplicationRequest(id, parentId,
+        CbbTerminalGroupNameDuplicationDTO request = new CbbTerminalGroupNameDuplicationDTO(id, parentId,
                 grpuName);
 
         new Expectations(){
             {
-                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                terminalGroupService.checkGroupNameUnique((CbbTerminalGroupDetailDTO) any);
                 result = false;
             }
         };
@@ -455,7 +455,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
         new Verifications() {
             {
-                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                terminalGroupService.checkGroupNameUnique((CbbTerminalGroupDetailDTO) any);
                 times = 1;
             }
         };
@@ -468,12 +468,12 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         String grpuName = "groupName";
         UUID parentId = UUID.randomUUID();
 
-        CbbTerminalGroupNameDuplicationRequest request = new CbbTerminalGroupNameDuplicationRequest(id, parentId,
+        CbbTerminalGroupNameDuplicationDTO request = new CbbTerminalGroupNameDuplicationDTO(id, parentId,
                 grpuName);
 
         new Expectations(){
             {
-                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                terminalGroupService.checkGroupNameUnique((CbbTerminalGroupDetailDTO) any);
                 result = true;
             }
         };
@@ -483,7 +483,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
         new Verifications() {
             {
-                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                terminalGroupService.checkGroupNameUnique((CbbTerminalGroupDetailDTO) any);
                 times = 1;
             }
         };
@@ -496,12 +496,12 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         String grpuName = "groupName";
         UUID parentId = UUID.randomUUID();
 
-        CbbTerminalGroupNameDuplicationRequest request = new CbbTerminalGroupNameDuplicationRequest(id, parentId,
+        CbbTerminalGroupNameDuplicationDTO request = new CbbTerminalGroupNameDuplicationDTO(id, parentId,
                 grpuName);
 
         new Expectations(){
             {
-                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                terminalGroupService.checkGroupNameUnique((CbbTerminalGroupDetailDTO) any);
                 result = new BusinessException("error");
             }
         };
@@ -511,7 +511,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
         new Verifications() {
             {
-                terminalGroupService.checkGroupNameUnique((TerminalGroupDTO) any);
+                terminalGroupService.checkGroupNameUnique((CbbTerminalGroupDetailDTO) any);
                 times = 1;
             }
         };

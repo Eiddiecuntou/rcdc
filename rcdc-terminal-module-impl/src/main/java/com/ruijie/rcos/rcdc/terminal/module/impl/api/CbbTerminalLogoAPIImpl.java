@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLogoAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUploadLogoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
@@ -46,7 +46,7 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
     private TerminalLogoService terminalLogoService;
 
     @Override
-    public void uploadLogo(CbbUploadLogoRequest request) throws BusinessException {
+    public void uploadLogo(CbbUploadLogoDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         deleteLogo();
@@ -73,7 +73,7 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
         }
     }
 
-    private TerminalLogoInfo saveLogoInfo(CbbUploadLogoRequest request) throws BusinessException {
+    private TerminalLogoInfo saveLogoInfo(CbbUploadLogoDTO request) throws BusinessException {
         String saveLogoPath = saveLogo(request.getLogoPath());
         TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
         terminalLogoInfo.setLogoPath(saveLogoPath);
