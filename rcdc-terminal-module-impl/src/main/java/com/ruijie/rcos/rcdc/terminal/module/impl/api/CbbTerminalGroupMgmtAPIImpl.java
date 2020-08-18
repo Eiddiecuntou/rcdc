@@ -133,7 +133,8 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     public void editTerminalGroup(CbbEditTerminalGroupDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        CbbTerminalGroupDetailDTO terminalGroupDTO = new CbbTerminalGroupDetailDTO(request.getId(), request.getGroupName(), request.getParentGroupId());
+        CbbTerminalGroupDetailDTO terminalGroupDTO = new CbbTerminalGroupDetailDTO(request.getId()
+                , request.getGroupName(), request.getParentGroupId());
         terminalGroupService.modifyGroupById(terminalGroupDTO);
     }
 
