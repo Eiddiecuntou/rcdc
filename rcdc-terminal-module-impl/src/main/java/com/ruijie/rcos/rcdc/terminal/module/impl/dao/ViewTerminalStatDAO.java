@@ -25,7 +25,7 @@ public interface ViewTerminalStatDAO extends SkyEngineJpaRepository<ViewTerminal
      * @param terminalType 终端类型
      * @return 返回终端统计结果
      */
-    @Query("select new com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalStatisticsDTO(count(state)," + "state) " + "from "
+    @Query("select new com.ruijie.rcos.rcdc.terminal.module.impl.dto.TerminalStatisticsDTO(count(state)," + "state) " + "from "
             + "ViewTerminalStatEntity where platform=?1 group by state")
     List<TerminalStatisticsDTO> statisticsByTerminalState(CbbTerminalPlatformEnums terminalType);
 
@@ -36,7 +36,7 @@ public interface ViewTerminalStatDAO extends SkyEngineJpaRepository<ViewTerminal
      * @param groupIdList  组Id列表
      * @return 返回终端统计结果
      */
-    @Query("select new com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalStatisticsDTO(count(state), state) "
+    @Query("select new com.ruijie.rcos.rcdc.terminal.module.impl.dto.TerminalStatisticsDTO(count(state), state) "
             + "from ViewTerminalStatEntity "
             + "where platform=?1 and groupId in (?2) group by state")
     List<TerminalStatisticsDTO> statisticsByTerminalStateAndGroupId(CbbTerminalPlatformEnums terminalType, List<UUID> groupIdList);
