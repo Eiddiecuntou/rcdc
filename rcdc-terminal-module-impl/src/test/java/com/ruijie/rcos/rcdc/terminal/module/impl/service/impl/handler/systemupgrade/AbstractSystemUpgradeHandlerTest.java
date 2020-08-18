@@ -245,7 +245,7 @@ public class AbstractSystemUpgradeHandlerTest {
 
         SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, terminalEntity);
 
-        SystemUpgradeCheckResult  expectedResult= new SystemUpgradeCheckResult();
+        SystemUpgradeCheckResult  expectedResult = new SystemUpgradeCheckResult();
         expectedResult.setSystemUpgradeCode(1);
 
         assertEquals(expectedResult, checkResult);
@@ -309,7 +309,7 @@ public class AbstractSystemUpgradeHandlerTest {
 
         SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_ANDROID, terminalEntity);
 
-        SystemUpgradeCheckResult  expectedResult= new SystemUpgradeCheckResult();
+        SystemUpgradeCheckResult  expectedResult = new SystemUpgradeCheckResult();
         expectedResult.setSystemUpgradeCode(1);
 
         assertEquals(expectedResult, checkResult);

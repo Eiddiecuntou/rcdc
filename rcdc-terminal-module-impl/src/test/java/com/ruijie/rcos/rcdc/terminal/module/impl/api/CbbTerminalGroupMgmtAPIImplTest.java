@@ -430,7 +430,8 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
     @Test
     public void testCheckUseGroupNameDuplicationParam()  throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(()-> api.checkUseGroupNameDuplication(null), "Param [CbbTerminalGroupNameDuplicationDTO] must not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(()-> api.checkUseGroupNameDuplication(null)
+                , "Param [CbbTerminalGroupNameDuplicationDTO] must not be null");
         Assert.assertTrue(true);
     }
 
@@ -443,7 +444,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbTerminalGroupNameDuplicationDTO request = new CbbTerminalGroupNameDuplicationDTO(id, parentId,
                 grpuName);
 
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupService.checkGroupNameUnique((CbbTerminalGroupDetailDTO) any);
                 result = false;
@@ -471,7 +472,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbTerminalGroupNameDuplicationDTO request = new CbbTerminalGroupNameDuplicationDTO(id, parentId,
                 grpuName);
 
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupService.checkGroupNameUnique((CbbTerminalGroupDetailDTO) any);
                 result = true;
@@ -499,7 +500,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
         CbbTerminalGroupNameDuplicationDTO request = new CbbTerminalGroupNameDuplicationDTO(id, parentId,
                 grpuName);
 
-        new Expectations(){
+        new Expectations() {
             {
                 terminalGroupService.checkGroupNameUnique((CbbTerminalGroupDetailDTO) any);
                 result = new BusinessException("error");

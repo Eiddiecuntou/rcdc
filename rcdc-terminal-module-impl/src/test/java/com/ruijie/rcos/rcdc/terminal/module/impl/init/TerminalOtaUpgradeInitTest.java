@@ -174,7 +174,8 @@ public class TerminalOtaUpgradeInitTest {
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId()
+                        , (List<CbbSystemUpgradeTaskStateEnums>) any);
                 returns(upgradingTaskList, upgradingTask2List);
 
                 btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
@@ -190,7 +191,8 @@ public class TerminalOtaUpgradeInitTest {
                 times = 2;
                 handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 times = 0;
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId()
+                        , (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 2;
                 btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
                 times = 1;

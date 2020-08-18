@@ -64,8 +64,8 @@ public class CbbTerminalBackgroundAPIImplTest {
 
     private static final String CONFIG_FACADE = "file.busiz.dir.terminal.background";
 
-    private static final String REQUEST_DATA =
-            "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png','imagePath':'abc/background.png','filePath':'/opt/ftp/terminal/background/background.png'}}";
+    private static final String REQUEST_DATA = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png'" +
+            ",'imagePath':'abc/background.png','filePath':'/opt/ftp/terminal/background/background.png'}}";
 
 
     /**

@@ -51,7 +51,8 @@ public class TerminalGroupHandler {
      * @param filterGroupId 分组列表
      * @return 树形结构的分组列表
      */
-    public CbbTerminalGroupTreeNodeDTO[] assembleGroupTree(@Nullable UUID parentId, List<TerminalGroupEntity> groupList, @Nullable UUID filterGroupId) {
+    public CbbTerminalGroupTreeNodeDTO[] assembleGroupTree(@Nullable UUID parentId
+            , List<TerminalGroupEntity> groupList, @Nullable UUID filterGroupId) {
         Assert.notNull(groupList, "groupList cannot be null!");
 
         if (CollectionUtils.isEmpty(groupList)) {
