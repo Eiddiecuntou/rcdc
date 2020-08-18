@@ -35,14 +35,13 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiName getAllTerminalGroup
      * @apiGroup CbbTerminalGroupMgmtAPI
      * @apiDescription 获取所有树节点信息
-     * @apiParam (请求体字段说明) {void} request 无请求参数
      *
-     * @apiSuccess (响应字段说明) {TerminalGroupDTO[]}  itemArr 终端分组树形结构数组
+     * @apiSuccess (响应字段说明) {TerminalGroupDTO[]} itemArr 终端分组树形结构数组
      * @apiSuccess (响应字段说明) {UUID} itemArr.id 终端分组id
      * @apiSuccess (响应字段说明) {String} itemArr.groupName 终端分组名称
      * @apiSuccess (响应字段说明) {UUID} itemArr.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} itemArr.parentGroupName 父级分组名称
-     * @apiSuccess (响应字段说明) {Boolean} itemArr.enableDefault TODO
+     * @apiSuccess (响应字段说明) {Boolean} itemArr.enableDefault 默认分组
      */
     /**
      * 获取所有树节点信息
@@ -61,10 +60,10 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiParam (请求体字段说明) {Boolean} request.enableFilterDefaultGroup enableFilterDefaultGroup
      * @apiParam (请求体字段说明) {UUID} [request.filterGroupId] filterGroupId
      *
-     * @apiSuccess (响应字段说明) {TerminalGroupTreeNodeDTO[]}  itemArr 终端分组树形结构数组
-     * @apiSuccess (响应字段说明) {UUID} itemArr.id id
-     * @apiSuccess (响应字段说明) {String} itemArr.label label
-     * @apiSuccess (响应字段说明) {Boolean} itemArr.enableDefault enableDefault
+     * @apiSuccess (响应字段说明) {TerminalGroupTreeNodeDTO[]} itemArr 终端分组树形结构数组
+     * @apiSuccess (响应字段说明) {UUID} itemArr.id 终端组id
+     * @apiSuccess (响应字段说明) {String} itemArr.label 终端组名称
+     * @apiSuccess (响应字段说明) {Boolean} itemArr.enableDefault 默认分组
      * @apiSuccess (响应字段说明) {UUID} itemArr.parentId 父级节点id，用于组装树形结构，序列化时忽略该属性
      */
     /**
@@ -74,7 +73,6 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return UserGroupTreeResponse 终端组DTO
      * @throws BusinessException 业务异常
      */
-
     TerminalGroupTreeNodeDTO[] loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeRequest request) throws BusinessException;
 
     /**
@@ -86,12 +84,12 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiParam (请求体字段说明) {String} request.groupName 终端分组名称
      * @apiParam (请求体字段说明) {UUID} [request.parentGroupId] 父级分组id
      *
-     * @apiSuccess (响应字段说明) {TerminalGroupDTO}  terminalGroupDTO 终端分组dto
+     * @apiSuccess (响应字段说明) {TerminalGroupDTO} terminalGroupDTO 终端分组dto
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.id 终端分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.groupName 终端分组名称
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.parentGroupName 父级分组名称
-     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault TODO
+     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault 默认分组
      */
     /**
      * 根据分组名称及父分组id获取分组
@@ -115,7 +113,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.groupName 终端分组名称
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.parentGroupName 父级分组名称
-     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault TODO
+     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault 默认分组
      */
     /**
      * 加载指定id终端组对象
@@ -124,7 +122,6 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return TerminalGroupDTO 终端组DTO
      * @throws BusinessException 业务异常
      */
-
     TerminalGroupDTO loadById(UUID groupId) throws BusinessException;
 
     /**
@@ -136,12 +133,12 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiParam (请求体字段说明) {String} request.groupName 终端分组名称
      * @apiParam (请求体字段说明) {UUID} [request.parentGroupId] 父级分组id
      *
-     * @apiSuccess (响应字段说明) {TerminalGroupDTO}  terminalGroupDTO 终端分组dto
+     * @apiSuccess (响应字段说明) {TerminalGroupDTO} terminalGroupDTO 终端分组dto
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.id 终端分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.groupName 终端分组名称
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.parentGroupName 父级分组名称
-     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault TODO
+     * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault 默认分组
      */
     /**
      * @description 创建终端组
@@ -161,7 +158,6 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiParam (请求体字段说明) {String} request.groupName 分组名称
      * @apiParam (请求体字段说明) {UUID} [request.parentGroupId] 父级分组id
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * @description 编辑终端组
@@ -176,10 +172,9 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiGroup CbbTerminalGroupMgmtAPI
      * @apiDescription 删除终端组
      * @apiParam (请求体字段说明) {CbbDeleteTerminalGroupRequest} request CbbDeleteTerminalGroupRequest
-     * @apiParam (请求体字段说明) {UUID} request.id 分组id
-     * @apiParam (请求体字段说明) {String} [request.moveGroupId] 删除分组id
+     * @apiParam (请求体字段说明) {UUID} request.id 终端组id
+     * @apiParam (请求体字段说明) {String} [request.moveGroupId] 删除后移动到终端组id
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * @description 删除终端组
@@ -195,7 +190,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiDescription 删除终端组
      * @apiParam (请求体字段说明) {UUID} groupId 终端组id
      *
-     * @apiSuccess (响应字段说明) {String[]} groupNameArr 分组名称数组
+     * @apiSuccess (响应字段说明) {String[]} groupNameArr 终端分组路径数组
      */
     /**
      *  获取终端分组路径数组
@@ -214,7 +209,7 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiDescription 判断分组名称是否存在
      * @apiParam (请求体字段说明) {CbbTerminalGroupNameDuplicationRequest} request CbbTerminalGroupNameDuplicationRequest
      * @apiParam (请求体字段说明) {UUID} [request.id] 分组id
-     * @apiParam (请求体字段说明) {UUID} [request.parentId] 父id
+     * @apiParam (请求体字段说明) {UUID} [request.parentId] 父级分组id
      * @apiParam (请求体字段说明) {String} request.groupName 分组名称
      *
      * @apiSuccess (响应字段说明) {boolean} hasDuplication 是否存在
@@ -225,6 +220,5 @@ public interface CbbTerminalGroupMgmtAPI {
      * @return 请求响应
      * @throws BusinessException 业务异常
      */
-
     boolean checkUseGroupNameDuplication(CbbTerminalGroupNameDuplicationRequest request) throws BusinessException;
 }

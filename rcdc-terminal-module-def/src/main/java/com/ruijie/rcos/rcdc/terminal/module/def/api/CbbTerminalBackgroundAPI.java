@@ -15,16 +15,15 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 public interface CbbTerminalBackgroundAPI {
 
     /**
-     * @api {POST} CbbTerminalBackgroundAPI.saveBackgroundImageConfig 上传终端背景图,保存背景图的相关配置，并且向在线终端同步背景图
+     * @api {POST} CbbTerminalBackgroundAPI.saveBackgroundImageConfig 上传终端背景图
      * @apiName saveBackgroundImageConfig
      * @apiGroup CbbTerminalBackgroundAPI
      * @apiDescription 上传终端背景图,保存背景图的相关配置，并且向在线终端同步背景图
-     * @apiParam (请求体字段说明) {String} imageName 名称
-     * @apiParam (请求体字段说明) {Long} imageSize 大小
-     * @apiParam (请求体字段说明) {String} md5 md5
-     * @apiParam (请求体字段说明) {String} imagePath 路径
+     * @apiParam (请求体字段说明) {String} imageName 文件名称
+     * @apiParam (请求体字段说明) {Long} imageSize 文件大小
+     * @apiParam (请求体字段说明) {String} md5 文件md5
+     * @apiParam (请求体字段说明) {String} imagePath 文件路径
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值
      */
     /**
      * 上传终端背景图,保存背景图的相关配置，并且向在线终端同步背景图
@@ -34,15 +33,14 @@ public interface CbbTerminalBackgroundAPI {
     void saveBackgroundImageConfig(CbbTerminalBackgroundSaveRequest request) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalBackgroundAPI.getBackgroundImageInfo 获取终端背景图的路径
+     * @api {POST} CbbTerminalBackgroundAPI.getBackgroundImageInfo 获取终端背景图信息
      * @apiName getBackgroundImageInfo
      * @apiGroup CbbTerminalBackgroundAPI
      * @apiDescription 获取终端背景图的路径
-     * @apiParam (请求体字段说明) {void} request 无请求参数
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalBackgroundImageInfoDTO} result 响应实体
-     * @apiSuccess (响应字段说明) {String} result.imagePath 路径
-     * @apiSuccess (响应字段说明) {String} result.imageName 名称
+     * @apiSuccess (响应字段说明) {CbbTerminalBackgroundImageInfoDTO} terminalBackgroundImageInfoDTO 响应实体
+     * @apiSuccess (响应字段说明) {String} terminalBackgroundImageInfoDTO.imagePath 文件路径
+     * @apiSuccess (响应字段说明) {String} terminalBackgroundImageInfoDTO.imageName 文件名称
      */
     /**
      * 获取终端背景图的路径
@@ -56,9 +54,6 @@ public interface CbbTerminalBackgroundAPI {
      * @apiName initBackgroundImage
      * @apiGroup CbbTerminalBackgroundAPI
      * @apiDescription 初始化背景图
-     * @apiParam (请求体字段说明) {void} request 无请求参数
-     *
-     * @apiSuccess (响应字段说明) {void} void 无返回值
      */
     /**
      * 初始化背景图

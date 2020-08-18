@@ -16,18 +16,17 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherInterface;
 public interface CbbDispatcherHandlerSPI {
 
     /**
-     * @api {SPI} CbbDispatcherHandlerSPI.dispatch 消息分发方法
+     * @api {SPI} CbbDispatcherHandlerSPI.dispatch 终端消息分发SPI
      * @apiName dispatch
      * @apiGroup CbbDispatcherHandlerSPI
-     * @apiDescription 消息分发方法
+     * @apiDescription 终端消息分发SPI
      * @apiParam (请求体字段说明) {CbbDispatcherRequest} request CbbDispatcherRequest
-     * @apiParam (请求体字段说明) {String} request.dispatcherKey TODO
-     * @apiParam (请求体字段说明) {String} request.terminalId TODO
-     * @apiParam (请求体字段说明) {String} [request.requestId] TODO
-     * @apiParam (请求体字段说明) {String} [request.data] TODO
-     * @apiParam (请求体字段说明) {Boolean} [request.isNewConnection] TODO
+     * @apiParam (请求体字段说明) {String} request.dispatcherKey 分发识别字段
+     * @apiParam (请求体字段说明) {String} request.terminalId 终端id
+     * @apiParam (请求体字段说明) {String} [request.requestId] 请求id
+     * @apiParam (请求体字段说明) {String} [request.data] 内容
+     * @apiParam (请求体字段说明) {Boolean} [request.isNewConnection] 是否为全新内容
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * 消息分发方法

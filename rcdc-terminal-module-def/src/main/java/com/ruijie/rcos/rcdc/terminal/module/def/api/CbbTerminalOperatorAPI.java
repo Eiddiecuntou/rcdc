@@ -23,8 +23,6 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 关闭终端
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
-     *
      */
     /**
      * 关闭终端
@@ -42,7 +40,6 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 重启终端
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * 重启终端
@@ -61,7 +58,6 @@ public interface CbbTerminalOperatorAPI {
      * @apiParam (请求体字段说明) {CbbChangePasswordRequest} request CbbChangePasswordRequest
      * @apiParam (请求体字段说明) {String} request.password 密码
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * 修改终端管理员密码
@@ -79,7 +75,6 @@ public interface CbbTerminalOperatorAPI {
      * @apiParam (请求体字段说明) {CbbTerminalIdRequest} request CbbTerminalIdRequest
      * @apiParam (请求体字段说明) {String} request.terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * 收集终端日志
@@ -96,7 +91,6 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 终端检测
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * 终端检测
@@ -113,9 +107,9 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 获取终端收集日志状态
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalCollectLogStatusResponse} result CbbTerminalCollectLogStatusResponse
-     * @apiSuccess (响应字段说明) {CbbCollectLogStateEnums="DOING","DONE","FAILURE"} result.state
-     * @apiSuccess (响应字段说明) {String} result.logName 日志名称
+     * @apiSuccess (响应字段说明) {CbbTerminalCollectLogStatusResponse} response CbbTerminalCollectLogStatusResponse
+     * @apiSuccess (响应字段说明) {CbbCollectLogStateEnums="DOING","DONE","FAILURE"} response.state 日志收集状态
+     * @apiSuccess (响应字段说明) {String} response.logName 日志名称
      */
     /**
      * 获取终端收集日志状态
@@ -133,10 +127,10 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 获取终端收集日志路径
      * @apiParam (请求体字段说明) {String} logName 日志名称
      *
-     * @apiSuccess (响应字段说明) {CbbTerminalLogFileInfoResponse} result CbbTerminalLogFileInfoResponse
-     * @apiSuccess (响应字段说明) {String} result.logFilePath 日志路径
-     * @apiSuccess (响应字段说明) {String} result.logFileName 日志文件名
-     * @apiSuccess (响应字段说明) {String} result.suffix suffix
+     * @apiSuccess (响应字段说明) {CbbTerminalLogFileInfoResponse} response CbbTerminalLogFileInfoResponse
+     * @apiSuccess (响应字段说明) {String} response.logFilePath 日志路径
+     * @apiSuccess (响应字段说明) {String} response.logFileName 日志文件名
+     * @apiSuccess (响应字段说明) {String} response.suffix 日志文件名后缀
      */
     /**
      * 获取终端收集日志路径
@@ -155,7 +149,6 @@ public interface CbbTerminalOperatorAPI {
      * @apiParam (请求体字段说明) {CbbTerminalIdRequest} request CbbTerminalIdRequest
      * @apiParam (请求体字段说明) {String} request.terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * 解除故障
@@ -171,9 +164,8 @@ public interface CbbTerminalOperatorAPI {
      * @apiGroup CbbTerminalOperatorAPI
      * @apiDescription IDV终端离线登录设置
      * @apiParam (请求体字段说明) {OfflineLoginSettingRequest} request OfflineLoginSettingRequest
-     * @apiParam (请求体字段说明) {Integer} request.offlineAutoLocked 日志名称
+     * @apiParam (请求体字段说明) {Integer} request.offlineAutoLocked 离线自动锁定
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * IDV终端离线登录设置
@@ -184,13 +176,12 @@ public interface CbbTerminalOperatorAPI {
     void idvOfflineLoginSetting(OfflineLoginSettingRequest request) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalOperatorAPI.queryOfflineLoginSetting IDV终端离线登录设置
+     * @api {POST} CbbTerminalOperatorAPI.queryOfflineLoginSetting 查询IDV终端离线登录设置
      * @apiName queryOfflineLoginSetting
      * @apiGroup CbbTerminalOperatorAPI
-     * @apiDescription IDV终端离线登录设置
-     * @apiParam (请求体字段说明) {void} request 无请求参数
+     * @apiDescription 查询IDV终端离线登录设置
      *
-     * @apiSuccess (响应字段说明) {String} result TODO
+     * @apiSuccess (响应字段说明) {String} setting 脱网登录锁定日期设定值
      */
     /**
      * IDV终端离线登录设置
@@ -207,7 +198,6 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 终端数据盘清空
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * 终端数据盘清空

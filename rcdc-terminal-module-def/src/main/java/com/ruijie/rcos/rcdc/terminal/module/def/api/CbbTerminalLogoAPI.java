@@ -22,11 +22,10 @@ public interface CbbTerminalLogoAPI {
      * @apiGroup CbbTerminalLogoAPI
      * @apiDescription 上传Logo
      * @apiParam (请求体字段说明) {CbbUploadLogoRequest} request CbbUploadLogoRequest
-     * @apiParam (请求体字段说明) {String} request.logoPath 路径
-     * @apiParam (请求体字段说明) {String} request.logoName 名称
-     * @apiParam (请求体字段说明) {String} request.logoMD5 logoMD5
+     * @apiParam (请求体字段说明) {String} request.logoPath 文件路径
+     * @apiParam (请求体字段说明) {String} request.logoName 文件名称
+     * @apiParam (请求体字段说明) {String} request.logoMD5 文件MD5
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * 上传Logo
@@ -38,16 +37,15 @@ public interface CbbTerminalLogoAPI {
     void uploadLogo(CbbUploadLogoRequest request) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalLogoAPI.getLogoPath 预览Logo
+     * @api {POST} CbbTerminalLogoAPI.getLogoPath 获取logo路径
      * @apiName getLogoPath
      * @apiGroup CbbTerminalLogoAPI
-     * @apiDescription 预览Logo
-     * @apiParam (请求体字段说明) {void} request 无请求参数
+     * @apiDescription 获取logo路径
      *
-     * @apiSuccess (响应字段说明) {String} logoPath Logo路径结果
+     * @apiSuccess (响应字段说明) {String} logoPath logo相对ftp路径
      */
     /**
-     * 预览Logo
+     * 获取logo路径
      *
      * @return 获取Logo路径结果
      * @throws BusinessException 请求异常
@@ -60,9 +58,7 @@ public interface CbbTerminalLogoAPI {
      * @apiName initLogo
      * @apiGroup CbbTerminalLogoAPI
      * @apiDescription 初始化Logo
-     * @apiParam (请求体字段说明) {void} request 无请求参数
      *
-     * @apiSuccess (响应字段说明) {void} void 无返回值参数
      */
     /**
      * 初始化Logo
