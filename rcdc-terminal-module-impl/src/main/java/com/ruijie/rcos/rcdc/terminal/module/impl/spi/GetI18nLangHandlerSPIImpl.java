@@ -5,7 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;

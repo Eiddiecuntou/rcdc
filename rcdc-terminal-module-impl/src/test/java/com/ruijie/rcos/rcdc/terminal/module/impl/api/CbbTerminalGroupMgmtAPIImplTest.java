@@ -2,16 +2,14 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDetailDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupTreeNodeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupNameDuplicationDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbDeleteTerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbEditTerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbGetTerminalGroupCompleteTreeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalGroupOperNotifySPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalGroupOperNotifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.ViewTerminalStatDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.TerminalStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalGroupHandler;
@@ -19,6 +17,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import com.ruijie.rcos.sk.base.util.HibernateUtil;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -28,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,6 +58,9 @@ public class CbbTerminalGroupMgmtAPIImplTest {
 
     @Injectable
     private CbbTerminalGroupOperNotifySPI cbbTerminalGroupOperNotifySPI;
+
+    @Injectable
+    private ViewTerminalStatDAO viewTerminalStatDAO;
 
     /**
      *  测试getAllTerminalGroup()
@@ -516,6 +519,86 @@ public class CbbTerminalGroupMgmtAPIImplTest {
                 times = 1;
             }
         };
+    }
+
+    /**
+     * 测试statisticsTerminal
+     */
+    @Test
+    public void testStatisticsTerminal() {
+        UUID[] groupIdArr = new UUID[]{UUID.randomUUID()};
+        List<UUID> terminalGroupIdList = HibernateUtil
+                .handleQueryIncludeList(Arrays.asList(groupIdArr));
+        List<TerminalStatisticsDTO> dtoList = new ArrayList<>();
+        TerminalStatisticsDTO terminalStatisticsDTO = new TerminalStatisticsDTO( 1L, CbbTerminalStateEnums.ONLINE.name());
+        dtoList.add(terminalStatisticsDTO);
+        new Expectations() {
+            {
+                viewTerminalStatDAO.statisticsByTerminalStateAndGroupId((CbbTerminalPlatformEnums) any, terminalGroupIdList);
+                result = dtoList;
+
+            }
+        };
+
+        CbbTerminalStatisticsDTO response = api.statisticsTerminal(groupIdArr);
+
+        assertEquals((Integer) 1, response.getVdi().getOnline());
+        assertEquals((Integer) 1, response.getApp().getOnline());
+        assertEquals((Integer) 1, response.getIdv().getOnline());
+
+    }
+
+
+    /**
+     * 测试statisticsTerminal, groupIdArr为Empty
+     */
+    @Test
+    public void testStatisticsTerminalGroupIdArrEmpty() {
+        UUID[] groupIdArr = new UUID[]{};
+
+        List<TerminalStatisticsDTO> dtoList = new ArrayList<>();
+        TerminalStatisticsDTO terminalStatisticsDTO = new TerminalStatisticsDTO( 1L, CbbTerminalStateEnums.OFFLINE.name());
+        dtoList.add(terminalStatisticsDTO);
+        new Expectations() {
+            {
+                viewTerminalStatDAO.statisticsByTerminalState((CbbTerminalPlatformEnums) any);
+                result = dtoList;
+
+            }
+        };
+
+        CbbTerminalStatisticsDTO response = api.statisticsTerminal(groupIdArr);
+
+        assertEquals((Integer) 1, response.getVdi().getOffline());
+        assertEquals((Integer) 1, response.getApp().getOffline());
+        assertEquals((Integer) 1, response.getIdv().getOffline());
+
+    }
+
+    /**
+     * 测试statisticsTerminal, groupIdArr为Empty
+     */
+    @Test
+    public void testStatisticsTerminalTerminalListEmpty() {
+        UUID[] groupIdArr = new UUID[]{};
+
+        List<TerminalStatisticsDTO> dtoList = new ArrayList<>();
+
+        new Expectations() {
+            {
+                viewTerminalStatDAO.statisticsByTerminalState((CbbTerminalPlatformEnums) any);
+                result = dtoList;
+
+            }
+        };
+
+        CbbTerminalStatisticsDTO response = api.statisticsTerminal(groupIdArr);
+
+        assertEquals((Integer) 0, response.getVdi().getOnline());
+        assertEquals((Integer) 0, response.getApp().getOnline());
+        assertEquals((Integer) 0, response.getIdv().getOnline());
+
+
     }
 }
 

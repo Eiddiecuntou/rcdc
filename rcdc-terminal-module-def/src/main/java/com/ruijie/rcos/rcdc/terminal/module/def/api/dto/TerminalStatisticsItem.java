@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.response;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 /**
  * Description: 终端统计项

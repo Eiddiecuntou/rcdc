@@ -2,19 +2,22 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbChangePasswordDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalCollectLogStatusDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLogFileInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -39,7 +42,81 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     private TerminalOperatorService operatorService;
 
     @Autowired
-    private CollectLogCacheManager collectLogCacheManager;
+    private TerminalBasicInfoDAO basicInfoDAO;
+
+    @Autowired
+    private TerminalBasicInfoService basicInfoService;
+
+    @Autowired
+    private TerminalBasicInfoServiceTx terminalBasicInfoServiceTx;
+
+    @Autowired
+    private TerminalGroupService terminalGroupService;
+
+    @Override
+    public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId不能为空");
+        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        if (basicInfoEntity == null) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+        }
+
+        CbbTerminalBasicInfoDTO basicInfoDTO = new CbbTerminalBasicInfoDTO();
+        BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO, TerminalEntity.BEAN_COPY_IGNORE_NETWORK_INFO_ARR);
+        basicInfoDTO.setTerminalPlatform(basicInfoEntity.getPlatform());
+        basicInfoDTO.setNetworkInfoArr(basicInfoEntity.getNetworkInfoArr());
+        return basicInfoDTO;
+    }
+
+    @Override
+    public void delete(String terminalId) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId不能为空");
+        // 在线终端不允许删除
+        boolean isOnline = basicInfoService.isTerminalOnline(terminalId);
+        if (isOnline) {
+            CbbTerminalBasicInfoDTO basicInfo = findBasicInfoByTerminalId(terminalId);
+            String terminalName = basicInfo.getTerminalName();
+            String macAddr = basicInfo.getMacAddr();
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[] {terminalName, macAddr});
+        }
+
+        terminalBasicInfoServiceTx.deleteTerminal(terminalId);
+
+    }
+
+    @Override
+    public void modifyTerminal(CbbModifyTerminalDTO request) throws BusinessException {
+        Assert.notNull(request, "request不能为空");
+
+        String terminalId = request.getCbbTerminalId();
+        TerminalEntity entity = getTerminalEntity(terminalId);
+
+        // 校验终端分组
+        terminalGroupService.checkGroupExist(request.getGroupId());
+
+        // 终端名称有变更，发送名称变更消息给终端
+        if (!request.getTerminalName().equals(entity.getTerminalName())) {
+            try {
+                basicInfoService.modifyTerminalName(terminalId, request.getTerminalName());
+            } catch (BusinessException e) {
+                LOGGER.error("修改终端名称失败，terminaId:" + terminalId, e);
+                throw e;
+            }
+        }
+
+        entity.setGroupId(request.getGroupId());
+        entity.setTerminalName(request.getTerminalName());
+        basicInfoDAO.save(entity);
+
+    }
+
+    private TerminalEntity getTerminalEntity(String terminalId) throws BusinessException {
+        TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        if (basicInfoEntity == null) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+        }
+        return basicInfoEntity;
+    }
 
     @Override
     public void shutdown(String terminalId) throws BusinessException {
@@ -68,80 +145,6 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             return;
         }
         throw new BusinessException(BusinessKey.RCDC_TERMINAL_ADMIN_PWD_ILLEGAL);
-    }
-
-    @Override
-    public void collectLog(String terminalId) throws BusinessException {
-        Assert.hasText(terminalId, "terminalId不能为空");
-
-        operatorService.collectLog(terminalId);
-    }
-
-    @Override
-    public void singleDetect(String terminalId) throws BusinessException {
-        Assert.notNull(terminalId, "terminalId不能为空");
-
-        operatorService.detect(terminalId);
-    }
-
-    @Override
-    public CbbTerminalCollectLogStatusDTO getCollectLog(String terminalId) throws BusinessException {
-        Assert.hasText(terminalId, "terminalId can not be blank");
-
-        CollectLogCache cache = getCollectLogCache(terminalId);
-        CbbTerminalCollectLogStatusDTO response = new CbbTerminalCollectLogStatusDTO();
-        response.setLogName(cache.getLogFileName());
-        response.setState(cache.getState());
-        return response;
-    }
-
-    @Override
-    public CbbTerminalLogFileInfoDTO getTerminalLogFileInfo(String logFileName) throws BusinessException {
-        Assert.hasText(logFileName, "logFileName can not be blank");
-
-        String logFilePath = Constants.STORE_TERMINAL_LOG_PATH + logFileName;
-        checkFileExist(logFilePath);
-        String logFileNameWithoutExtension = Files.getNameWithoutExtension(logFileName);
-        String suffix = getFileSuffix(logFileName);
-        CbbTerminalLogFileInfoDTO response = new CbbTerminalLogFileInfoDTO();
-        response.setLogFilePath(logFilePath);
-        response.setLogFileName(logFileNameWithoutExtension);
-        response.setSuffix(suffix);
-
-        return response;
-    }
-
-    private void checkFileExist(String logFilePath) throws BusinessException {
-        File logFile = new File(logFilePath);
-        if (logFile.isFile()) {
-            return;
-        }
-        throw new BusinessException(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST);
-    }
-
-    private String getFileSuffix(String fileName) {
-        String suffix = "";
-        int lastIndexOf = fileName.lastIndexOf(".");
-        if (lastIndexOf > -1) {
-            suffix = fileName.substring(lastIndexOf + 1);
-        }
-        return suffix;
-    }
-
-    /**
-     * 获取日志缓存
-     * 
-     * @param terminalId 终端id
-     * @return 日志收集缓存
-     * @throws BusinessException 业务异常
-     */
-    private CollectLogCache getCollectLogCache(String terminalId) throws BusinessException {
-        CollectLogCache cache = collectLogCacheManager.getCache(terminalId);
-        if (cache == null) {
-            // 日志不存在，构造失败状态信息
-            cache = new CollectLogCache(CbbCollectLogStateEnums.FAULT);
-        }
-        return cache;
     }
 
     @Override

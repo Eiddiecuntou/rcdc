@@ -8,7 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.api.callback.AsyncRequestCallBa
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import mockit.Injectable;

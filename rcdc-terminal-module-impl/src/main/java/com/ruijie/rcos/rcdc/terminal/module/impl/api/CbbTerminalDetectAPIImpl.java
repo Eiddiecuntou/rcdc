@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalDetectRecordAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalDetectAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDetectThresholdDTO;
@@ -13,6 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -33,7 +34,7 @@ import java.util.stream.Stream;
  *
  * @author nt
  */
-public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAPI {
+public class CbbTerminalDetectAPIImpl implements CbbTerminalDetectAPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalOperatorAPIImpl.class);
 
@@ -42,6 +43,9 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
 
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
+
+    @Autowired
+    private TerminalOperatorService operatorService;
 
 
     @Override
@@ -119,5 +123,12 @@ public class CbbTerminalDetectRecordAPIImpl implements CbbTerminalDetectRecordAP
         CbbDetectResultDTO resp = new CbbDetectResultDTO(result, threshold);
 
         return resp;
+    }
+
+    @Override
+    public void singleDetect(String terminalId) throws BusinessException {
+        Assert.notNull(terminalId, "terminalId不能为空");
+
+        operatorService.detect(terminalId);
     }
 }

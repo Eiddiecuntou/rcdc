@@ -16,12 +16,12 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
  *
  * @author nt
  */
-public interface CbbTerminalDetectRecordAPI {
+public interface CbbTerminalDetectAPI {
 
     /**
-     * @api {POST} CbbTerminalDetectRecordAPI.listDetect 获取终端检测记录分页列表
+     * @api {POST} CbbTerminalDetectAPI.listDetect 获取终端检测记录分页列表
      * @apiName listDetect
-     * @apiGroup CbbTerminalDetectRecordAPI
+     * @apiGroup CbbTerminalDetectAPI
      * @apiDescription 获取终端检测记录分页列表
      * @apiParam (请求体字段说明) {CbbTerminalDetectPageRequest} request CbbTerminalDetectPageRequest
      * @apiParam (请求体字段说明) {Date} [request.startTime] 开始时间
@@ -58,9 +58,9 @@ public interface CbbTerminalDetectRecordAPI {
     DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalDetectRecordAPI.getRecentDetect 获取终端最后检测记录
+     * @api {POST} CbbTerminalDetectAPI.getRecentDetect 获取终端最后检测记录
      * @apiName getRecentDetect
-     * @apiGroup CbbTerminalDetectRecordAPI
+     * @apiGroup CbbTerminalDetectAPI
      * @apiDescription 获取终端最后检测记录
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
@@ -93,9 +93,9 @@ public interface CbbTerminalDetectRecordAPI {
     CbbTerminalDetectDTO getRecentDetect(String terminalId) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalDetectRecordAPI.getDetectResult 获取终端检测记录结果
+     * @api {POST} CbbTerminalDetectAPI.getDetectResult 获取终端检测记录结果
      * @apiName getDetectResult
-     * @apiGroup CbbTerminalDetectRecordAPI
+     * @apiGroup CbbTerminalDetectAPI
      * @apiDescription 获取终端检测记录结果
      * @apiParam (请求体字段说明) {CbbDetectDateEnums="TODAY","YESTERDAY"} detectDate
      *
@@ -122,4 +122,20 @@ public interface CbbTerminalDetectRecordAPI {
      * @return 终端检测结果
      */
     CbbDetectResultDTO getDetectResult(CbbDetectDateEnums detectDate);
+
+    /**
+     * @api {POST} CbbTerminalDetectAPI.singleDetect 终端检测
+     * @apiName singleDetect
+     * @apiGroup CbbTerminalDetectAPI
+     * @apiDescription 终端检测
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
+     *
+     */
+    /**
+     * 终端检测
+     *
+     * @param terminalId 终端检测请求参数对象
+     * @throws BusinessException 业务异常
+     */
+    void singleDetect(String terminalId) throws BusinessException;
 }

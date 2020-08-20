@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.TerminalStatisticsItem;
-
 /**
  * Description: 终端数据统计对象
  * Copyright: Copyright (c) 2018

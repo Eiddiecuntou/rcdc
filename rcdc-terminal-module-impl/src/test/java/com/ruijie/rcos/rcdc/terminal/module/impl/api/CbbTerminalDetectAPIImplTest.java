@@ -10,9 +10,11 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import mockit.*;
 import org.junit.Test;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Description: Function Description
@@ -35,16 +38,19 @@ import static org.junit.Assert.assertEquals;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
-public class CbbTerminalDetectRecordAPIImplTest {
+public class CbbTerminalDetectAPIImplTest {
 
     @Tested
-    private CbbTerminalDetectRecordAPIImpl api;
+    private CbbTerminalDetectAPIImpl api;
 
     @Injectable
     private TerminalDetectService detectService;
 
     @Injectable
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
+
+    @Injectable
+    private TerminalOperatorService operatorService;
 
     /**
      * 获取检测列表-结果为空
@@ -179,5 +185,33 @@ public class CbbTerminalDetectRecordAPIImplTest {
 
         CbbDetectResultDTO response = api.getDetectResult(CbbDetectDateEnums.TODAY);
         assertEquals(dto, response.getResult());
+    }
+
+    /**
+     * 测试detect，参数为空
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testDetectArgumentIsNull() throws Exception {
+
+        ThrowExceptionTester.throwIllegalArgumentException(() -> api.singleDetect(null), "terminalId不能为空");
+        assertTrue(true);
+    }
+
+    /**
+     * 测试detect，
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testDetect() throws BusinessException {
+        api.singleDetect("123");
+        new Verifications() {
+            {
+                operatorService.detect("123");
+                times = 1;
+            }
+        };
     }
 }

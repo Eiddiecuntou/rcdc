@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 

@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import org.springframework.lang.Nullable;
@@ -71,6 +71,6 @@ public class CbbShineMessageRequest<T> {
 
     @Override
     public String toString() {
-        return "CbbShineMessageRequest{" + "action='" + action + '\'' + ", terminalId='" + terminalId + '\'' + ", content=" + content + '}';
+        return "CbbRequestShineMessageDTO{" + "action='" + action + '\'' + ", terminalId='" + terminalId + '\'' + ", content=" + content + '}';
     }
 }

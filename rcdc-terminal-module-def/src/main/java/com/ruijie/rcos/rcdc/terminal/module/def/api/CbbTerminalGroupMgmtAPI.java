@@ -1,12 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDetailDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupTreeNodeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupNameDuplicationDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbDeleteTerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbEditTerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbGetTerminalGroupCompleteTreeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 import java.util.List;
@@ -221,4 +215,28 @@ public interface CbbTerminalGroupMgmtAPI {
      * @throws BusinessException 业务异常
      */
     boolean checkUseGroupNameDuplication(CbbTerminalGroupNameDuplicationDTO request) throws BusinessException;
+
+    /**
+     * @api {POST} CbbTerminalGroupMgmtAPI.statisticsTerminal 统计终端数据
+     * @apiName statisticsTerminal
+     * @apiGroup CbbTerminalGroupMgmtAPI
+     * @apiDescription 统计终端新
+     * @apiParam (请求体字段说明) {UUID[]} groupIdArr 终端组id数组
+     *
+     *@apiSuccess (响应字段说明) {CbbTerminalStatisticsDTO} response CbbTerminalStatisticsDTO
+     *@apiSuccess (响应字段说明) {TerminalStatisticsItem} response.TerminalStatisticsItem 终端统计项
+     *@apiSuccess (响应字段说明) {Integer} response.TerminalStatisticsItem.total 终端总数
+     *@apiSuccess (响应字段说明) {Integer} response.TerminalStatisticsItem.online 在线终端数
+     *@apiSuccess (响应字段说明) {Integer} response.TerminalStatisticsItem.offline 离线终端数量
+     *@apiSuccess (响应字段说明) {Integer} response.TerminalStatisticsItem.neverLogin 从未登录终端数量
+     *@apiSuccess (响应字段说明) {Integer} response.total 终端总数
+     *@apiSuccess (响应字段说明) {Integer} response.totalOnline 在线终端总数
+     */
+    /**
+     * 统计终端数据
+     *
+     * @param groupIdArr 终端类型请求
+     * @return 返回统计结果
+     */
+    CbbTerminalStatisticsDTO statisticsTerminal(UUID[] groupIdArr);
 }

@@ -1,17 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBasicInfoAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbChangePasswordDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalCollectLogStatusDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLogFileInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.*;
@@ -21,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.util.Date;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -48,10 +52,375 @@ public class CbbTerminalOperatorAPIImplTest {
     private TerminalDetectService detectService;
 
     @Injectable
-    private TerminalBasicInfoDAO terminalBasicInfoDAO;
+    private TerminalBasicInfoDAO basicInfoDAO;
 
     @Injectable
-    private CbbTerminalBasicInfoAPI basicInfoAPI;
+    private TerminalBasicInfoService basicInfoService;
+
+    @Injectable
+    private TerminalBasicInfoServiceTx terminalBasicInfoServiceTx;
+
+    @Injectable
+    private TerminalGroupService terminalGroupService;
+
+    /**
+     * 查找不到数据
+     */
+    @Test
+    public void testFindBasicInfoByTerminalIdNotFindBasicInfo() {
+        String terminalId = "123";
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = null;
+            }
+        };
+
+        try {
+            terminalOperatorAPI.findBasicInfoByTerminalId(terminalId);
+            fail();
+        } catch (BusinessException e) {
+            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL, e.getKey());
+        }
+
+        try {
+            new Verifications() {
+                {
+                    String tid;
+                    basicInfoDAO.findTerminalEntityByTerminalId(tid = withCapture());
+                    times = 1;
+                    Assert.assertEquals(tid, terminalId);
+                }
+            };
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    /**
+     * 测试返回结果
+     */
+    @Test
+    public void testFindBasicInfoByTerminalIdReturnValue() {
+        String terminalId = "123";
+        String name = "t-box01";
+        Date now = new Date();
+        TerminalEntity entity = new TerminalEntity();
+        entity.setTerminalId(terminalId);
+        entity.setTerminalName(name);
+        entity.setGetIpMode(CbbGetNetworkModeEnums.AUTO);
+        entity.setCreateTime(now);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = entity;
+            }
+        };
+
+        try {
+            CbbTerminalBasicInfoDTO dto = terminalOperatorAPI.findBasicInfoByTerminalId(terminalId);
+            assertEquals(dto.getTerminalId(), terminalId);
+            assertEquals(dto.getTerminalName(), name);
+            assertEquals(dto.getCreateTime(), now);
+            assertEquals(dto.getGetIpMode(), CbbGetNetworkModeEnums.AUTO);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        try {
+            new Verifications() {
+                {
+                    basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                    times = 1;
+                }
+            };
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    /**
+     * 测试删除终端失败,在线终端
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testDeleteFail() throws BusinessException {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setVersion(1);
+        new Expectations() {
+            {
+                basicInfoService.isTerminalOnline("123");
+                result = true;
+            }
+        };
+
+        try {
+            terminalOperatorAPI.delete("123");
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, e.getKey());
+        }
+
+        new Verifications() {
+            {
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     * 测试删除终端
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testDeleteSuccess() throws BusinessException {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setVersion(1);
+        new Expectations() {
+            {
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
+            }
+        };
+
+        try {
+            terminalOperatorAPI.delete("123");
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        new Verifications() {
+            {
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试删除终端-数据不存在
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testDeleteNoExistData() throws BusinessException {
+
+        new MockUp<CbbTerminalOperatorAPIImpl>() {
+            @Mock
+            private Integer getVersion(String terminalId) throws BusinessException {
+                return 1;
+            }
+        };
+
+        try {
+            terminalOperatorAPI.delete("123");
+        } catch (Exception e) {
+            fail();
+        }
+
+        new Verifications() {
+            {
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试修改终端名称成功
+     */
+    @Test
+    public void testModifyTerminalNameSuccess() {
+        new Expectations() {
+            {
+                try {
+                    basicInfoService.modifyTerminalName(anyString, anyString);
+                    basicInfoDAO.save((TerminalEntity) any);
+                } catch (BusinessException e) {
+                    fail();
+                }
+            }
+        };
+
+        try {
+            CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
+            request.setCbbTerminalId("123");
+            request.setGroupId(UUID.randomUUID());
+            request.setTerminalName("123");
+            terminalOperatorAPI.modifyTerminal(request);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        modifyNameVerifications();
+    }
+
+    /**
+     * 测试修改终端名称成功
+     */
+    @Test
+    public void testModifyTerminalIdvModeIsNotNull() {
+        new Expectations() {
+            {
+                try {
+                    basicInfoService.modifyTerminalName(anyString, anyString);
+                    basicInfoDAO.save((TerminalEntity) any);
+                } catch (BusinessException e) {
+                    fail();
+                }
+            }
+        };
+
+        try {
+            CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
+            request.setCbbTerminalId("123");
+            request.setGroupId(UUID.randomUUID());
+            request.setTerminalName("123");
+            terminalOperatorAPI.modifyTerminal(request);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        modifyNameVerifications();
+    }
+
+    /**
+     * 测试修改终端名称失败，TerminalEntity为空
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testModifyTerminalNameTerminalEntityIsNull() throws BusinessException {
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = null;
+            }
+        };
+        try {
+            CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
+            request.setCbbTerminalId("123");
+            request.setGroupId(UUID.randomUUID());
+            request.setTerminalName("123");
+            terminalOperatorAPI.modifyTerminal(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL, e.getKey());
+        }
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId("123");
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试修改终端名称失败，ModifyTerminalName有BusinessException
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testModifyTerminalNameModifyTerminalNameHasBusinessException() throws BusinessException {
+        TerminalEntity terminalEntity = new TerminalEntity();
+        UUID id = UUID.randomUUID();
+        terminalEntity.setId(id);
+        terminalEntity.setTerminalName("testName");
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = terminalEntity;
+            }
+        };
+
+
+        CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
+        request.setCbbTerminalId("123");
+        request.setGroupId(id);
+        request.setTerminalName("testName");
+        terminalOperatorAPI.modifyTerminal(request);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 1;
+
+                basicInfoDAO.save((TerminalEntity) any);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试终端名字无变更
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testModifyTerminalWithoutChange() throws BusinessException {
+        new Expectations() {
+            {
+                basicInfoService.modifyTerminalName(anyString, anyString);
+                result = new BusinessException("key");
+            }
+        };
+
+        try {
+            CbbModifyTerminalDTO request = new CbbModifyTerminalDTO();
+            request.setCbbTerminalId("123");
+            request.setGroupId(UUID.randomUUID());
+            request.setTerminalName("123");
+            terminalOperatorAPI.modifyTerminal(request);
+            fail();
+        } catch (BusinessException e) {
+            assertEquals("key", e.getKey());
+        }
+
+        new Verifications() {
+            {
+                basicInfoService.modifyTerminalName(anyString, anyString);
+                times = 1;
+            }
+        };
+    }
+
+    private void modifyNameVerifications() {
+        new Verifications() {
+            {
+                try {
+                    basicInfoDAO.save((TerminalEntity) any);
+                    times = 1;
+
+                } catch (Exception e) {
+                    fail();
+                }
+            }
+        };
+    }
+
+
+
+
+    private CbbTerminalNetworkInfoDTO[] getItemArr() {
+        CbbTerminalNetworkInfoDTO[] itemArr = new CbbTerminalNetworkInfoDTO[1];
+        CbbTerminalNetworkInfoDTO dto = new CbbTerminalNetworkInfoDTO();
+        dto.setGateway("456");
+        dto.setGetDnsMode(CbbGetNetworkModeEnums.AUTO);
+        dto.setGetIpMode(CbbGetNetworkModeEnums.MANUAL);
+        dto.setIp("789");
+        dto.setMacAddr("abc");
+        dto.setSsid("ssid");
+        dto.setMainDns("mainDns");
+        dto.setSecondDns("secondDns");
+        dto.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
+        dto.setSubnetMask("subnetMask");
+        itemArr[0] = dto;
+
+        return itemArr;
+    }
 
     /**
      * 测试关机
@@ -102,28 +471,6 @@ public class CbbTerminalOperatorAPIImplTest {
     }
 
     /**
-     * 测试收集日志
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testCollectLog() throws BusinessException {
-        try {
-            String terminalId = "123";
-
-            terminalOperatorAPI.collectLog(terminalId);
-        } catch (Exception e) {
-            fail();
-        }
-        new Verifications() {
-            {
-                operatorService.collectLog(anyString);
-                times = 1;
-            }
-        };
-    }
-
-    /**
      * 测试changePassword，参数为空
      * 
      * @throws Exception 异常
@@ -152,174 +499,6 @@ public class CbbTerminalOperatorAPIImplTest {
         };
     }
 
-    /**
-     * 测试detect，参数为空
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testDetectArgumentIsNull() throws Exception {
-
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.singleDetect(null), "terminalId不能为空");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试detect，
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testDetect() throws BusinessException {
-        terminalOperatorAPI.singleDetect("123");
-        new Verifications() {
-            {
-                operatorService.detect("123");
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     * 测试getCollectLog，参数为空
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testGetCollectLogArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getCollectLog(null), "terminalId can not be blank");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试getCollectLog，
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testGetCollectLog() throws Exception {
-        CollectLogCache cache = new CollectLogCache();
-        cache.setLogFileName("logFileName");
-        cache.setState(CbbCollectLogStateEnums.DONE);
-        new Expectations() {
-            {
-                collectLogCacheManager.getCache("123");
-                result = cache;
-            }
-        };
-        CbbTerminalCollectLogStatusDTO response = terminalOperatorAPI.getCollectLog("123");
-        assertEquals("logFileName", response.getLogName());
-        assertEquals(CbbCollectLogStateEnums.DONE, response.getState());
-    }
-
-    /**
-     * 测试getCollectLog，CollectLogCache为空
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testGetCollectLogCollectLogCacheIsNull() throws BusinessException {
-        new Expectations() {
-            {
-                collectLogCacheManager.getCache("123");
-                result = null;
-            }
-        };
-
-        CbbTerminalCollectLogStatusDTO collectLog = terminalOperatorAPI.getCollectLog("123");
-        assertEquals(CbbCollectLogStateEnums.FAULT, collectLog.getState());
-
-    }
-
-    /**
-     * 测试getTerminalLogFileInfo，参数为空
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testGetTerminalLogFileInfoArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.getTerminalLogFileInfo(null), "logFileName can not be blank");
-        assertTrue(true);
-    }
-
-    /**
-     * 测试getTerminalLogFileInfo，文件不存在
-     */
-    @Test
-    public void testGetTerminalLogFileInfoCollectFileNotExist() {
-        String logName = "123.rar";
-        try {
-            terminalOperatorAPI.getTerminalLogFileInfo(logName);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST, e.getKey());
-        }
-    }
-
-    /**
-     * 测试getTerminalLogFileInfo，收集失败
-     * 
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testGetTerminalLogFileInfoHasSuffix() throws BusinessException {
-        String logName = "logFileName.rar";
-        new MockUp<CbbTerminalOperatorAPIImpl>() {
-            @Mock
-            private void checkFileExist(String logFilePath) throws BusinessException {
-                
-            }
-        };
-
-        CbbTerminalLogFileInfoDTO response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
-        assertEquals("/opt/ftp/terminal/log/logFileName.rar", response.getLogFilePath());
-        assertEquals("logFileName", response.getLogFileName());
-        assertEquals("rar", response.getSuffix());
-    }
-
-    /**
-     * 测试getTerminalLogFileInfo，日志文件没有后缀名
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testGetTerminalLogFileInfoNotHasSuffix() throws BusinessException {
-        String logName = "logFileName";
-        new MockUp<CbbTerminalOperatorAPIImpl>() {
-            @Mock
-            private void checkFileExist(String logFilePath) throws BusinessException {
-                
-            }
-        };
-
-        CbbTerminalLogFileInfoDTO response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
-        assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
-        assertEquals("logFileName", response.getLogFileName());
-        assertEquals("", response.getSuffix());
-    }
-
-    /**
-     * 测试getTerminalLogFileInfo，日志文件存在
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testGetTerminalLogFileExist() throws BusinessException {
-        String logName = "logFileName";
-        new MockUp<File>() {
-            @Mock
-            public boolean isFile() {
-                return true;
-            }
-        };
-
-        CbbTerminalLogFileInfoDTO response = terminalOperatorAPI.getTerminalLogFileInfo(logName);
-        assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
-        assertEquals("logFileName", response.getLogFileName());
-        assertEquals("", response.getSuffix());
-    }
-    
-    
     /**
      *测试清空数据盘
      *

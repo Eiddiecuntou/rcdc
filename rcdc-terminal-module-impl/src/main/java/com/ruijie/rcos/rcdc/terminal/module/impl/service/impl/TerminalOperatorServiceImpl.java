@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;

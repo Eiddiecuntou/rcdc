@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.SystemVersionMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.SoftwareVersionResponseContent;
