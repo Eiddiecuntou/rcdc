@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.enums.serialize;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -20,7 +20,7 @@ import org.springframework.util.Assert;
  *
  * @author nt
  */
-public class CbbWirelessAuthModeEnumsSerializer implements ObjectSerializer, ObjectDeserializer {
+public class CbbTerminalWirelessAuthModeEnumsSerializer implements ObjectSerializer, ObjectDeserializer {
 
     @Override
     public <T> T deserialze(DefaultJSONParser parser, Type type, Object o) {

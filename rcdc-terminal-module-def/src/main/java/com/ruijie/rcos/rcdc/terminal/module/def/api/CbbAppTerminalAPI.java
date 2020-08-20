@@ -28,5 +28,6 @@ public interface CbbAppTerminalAPI {
      * @throws BusinessException 业务异常
      */
 
+    // FIXME 黄森 这要迁移到产品组件去，后续的包是由产品组件输出
     String getWindowsAppDownloadUrl() throws BusinessException;
 }
