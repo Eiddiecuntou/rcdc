@@ -73,7 +73,7 @@ public class CbbTerminalModelAPIImplTest {
      */
     @Test
     public void testQueryByProductIdArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.queryByProductId(null), "productId can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.findByProductId(null), "productId can not be null");
         assertTrue(true);
     }
 
@@ -86,10 +86,10 @@ public class CbbTerminalModelAPIImplTest {
     public void testQueryByProductIdSuccess() throws Exception {
         new Expectations() {
             {
-                terminalModelAPI.queryByProductId("aaa");
+                terminalModelAPI.findByProductId("aaa");
             }
         };
-        CbbTerminalModelDTO modelDTO = terminalModelAPI.queryByProductId("aaa");
+        CbbTerminalModelDTO modelDTO = terminalModelAPI.findByProductId("aaa");
 
     }
 

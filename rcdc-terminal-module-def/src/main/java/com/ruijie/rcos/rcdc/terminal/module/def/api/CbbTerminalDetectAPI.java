@@ -19,8 +19,8 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 public interface CbbTerminalDetectAPI {
 
     /**
-     * @api {POST} CbbTerminalDetectAPI.listDetect 获取终端检测记录分页列表
-     * @apiName listDetect
+     * @api {POST} CbbTerminalDetectAPI.pageQuery 获取终端检测记录分页列表
+     * @apiName pageQuery
      * @apiGroup CbbTerminalDetectAPI
      * @apiDescription 获取终端检测记录分页列表
      * @apiParam (请求体字段说明) {CbbTerminalDetectPageRequest} request CbbTerminalDetectPageRequest
@@ -55,7 +55,7 @@ public interface CbbTerminalDetectAPI {
      * @return 检测记录分页列表
      * @throws BusinessException 业务异常
      */
-    DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException;
+    DefaultPageResponse<CbbTerminalDetectDTO> pageQuery(CbbTerminalDetectPageRequest request) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalDetectAPI.getRecentDetect 获取终端最后检测记录

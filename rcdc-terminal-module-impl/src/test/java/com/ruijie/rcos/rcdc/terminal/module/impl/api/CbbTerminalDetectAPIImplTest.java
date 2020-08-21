@@ -69,7 +69,7 @@ public class CbbTerminalDetectAPIImplTest {
             }
         };
 
-        DefaultPageResponse<CbbTerminalDetectDTO> response = api.listDetect(new CbbTerminalDetectPageRequest());
+        DefaultPageResponse<CbbTerminalDetectDTO> response = api.pageQuery(new CbbTerminalDetectPageRequest());
         assertEquals(0, response.getItemArr().length);
     }
 
@@ -104,7 +104,7 @@ public class CbbTerminalDetectAPIImplTest {
             }
         };
 
-        DefaultPageResponse<CbbTerminalDetectDTO> response = api.listDetect(new CbbTerminalDetectPageRequest());
+        DefaultPageResponse<CbbTerminalDetectDTO> response = api.pageQuery(new CbbTerminalDetectPageRequest());
         assertEquals(1, response.getItemArr().length);
         assertEquals(entity.getTerminalId(), response.getItemArr()[0].getTerminalId());
         assertEquals(entity.getDetectState().name(), response.getItemArr()[0].getCheckState().getState());
@@ -143,7 +143,7 @@ public class CbbTerminalDetectAPIImplTest {
             }
         };
 
-        DefaultPageResponse<CbbTerminalDetectDTO> response = api.listDetect(new CbbTerminalDetectPageRequest());
+        DefaultPageResponse<CbbTerminalDetectDTO> response = api.pageQuery(new CbbTerminalDetectPageRequest());
         assertEquals(1, response.getItemArr().length);
         assertEquals(entity.getTerminalId(), response.getItemArr()[0].getTerminalId());
         assertEquals(entity.getDetectState().name(), response.getItemArr()[0].getCheckState().getState());

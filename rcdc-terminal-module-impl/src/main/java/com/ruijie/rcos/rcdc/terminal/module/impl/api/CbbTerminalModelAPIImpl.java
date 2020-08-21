@@ -32,7 +32,7 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
     }
 
     @Override
-    public CbbTerminalModelDTO queryByProductId(String productId) throws BusinessException {
+    public CbbTerminalModelDTO findByProductId(String productId) throws BusinessException {
         Assert.notNull(productId, "productId can not be null");
 
         CbbTerminalModelDTO terminalModelDTO = terminalModelService.queryByProductId(productId);

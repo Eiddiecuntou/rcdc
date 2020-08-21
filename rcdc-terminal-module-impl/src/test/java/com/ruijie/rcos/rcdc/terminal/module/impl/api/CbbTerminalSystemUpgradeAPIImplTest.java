@@ -447,7 +447,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testListSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listSystemUpgradeTask(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.pageQuerySystemUpgradeTask(null), "request can not be null");
         assertTrue(true);
     }
 
@@ -480,7 +480,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = 1;
             }
         };
-        DefaultPageResponse<CbbSystemUpgradeTaskDTO> response = upgradeAPIImpl.listSystemUpgradeTask(request);
+        DefaultPageResponse<CbbSystemUpgradeTaskDTO> response = upgradeAPIImpl.pageQuerySystemUpgradeTask(request);
         assertEquals(Status.SUCCESS, response.getStatus());
         assertEquals(upgradeEntity.getState(), response.getItemArr()[0].getUpgradeTaskState());
         assertEquals(upgradeEntity.getId(), response.getItemArr()[0].getId());
@@ -509,7 +509,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testListSystemUpgradeTaskTerminalArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listSystemUpgradeTaskTerminal(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.pageQuerySystemUpgradeTaskTerminal(null), "request can not be null");
         assertTrue(true);
     }
 
@@ -542,7 +542,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = 1;
             }
         };
-        DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> response = upgradeAPIImpl.listSystemUpgradeTaskTerminal(request);
+        DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> response = upgradeAPIImpl.pageQuerySystemUpgradeTaskTerminal(request);
         assertEquals(Status.SUCCESS, response.getStatus());
         assertEquals(entity.getState(), response.getItemArr()[0].getTerminalUpgradeState());
         assertEquals(entity.getId(), response.getItemArr()[0].getId());
@@ -604,7 +604,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testListUpgradeableTerminalArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listUpgradeableTerminal(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.pageQueryUpgradeableTerminal(null), "request can not be null");
         assertTrue(true);
     }
 
@@ -640,7 +640,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = upgradeableTerminalPage;
             }
         };
-        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.listUpgradeableTerminal(request);
+        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.pageQueryUpgradeableTerminal(request);
         assertEquals(Status.SUCCESS, pageResponse.getStatus());
         assertEquals(pageResponse.getTotal(), upgradeableTerminalPage.getTotalElements());
         assertEquals(pageResponse.getItemArr().length, upgradeableTerminalPage.getContent().size());
@@ -677,7 +677,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = upgradeableTerminalPage;
             }
         };
-        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.listUpgradeableTerminal(request);
+        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.pageQueryUpgradeableTerminal(request);
         assertEquals(Status.SUCCESS, pageResponse.getStatus());
         assertEquals(pageResponse.getTotal(), upgradeableTerminalPage.getTotalElements());
         assertEquals(pageResponse.getItemArr().length, upgradeableTerminalPage.getContent().size());
@@ -712,7 +712,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbSystemUpgradeTaskDTO taskDTO = upgradeAPIImpl.getTerminalUpgradeTaskById(UUID.randomUUID());
+        CbbSystemUpgradeTaskDTO taskDTO = upgradeAPIImpl.findTerminalUpgradeTaskById(UUID.randomUUID());
         assertEquals(upgradeTaskEntity.getId(), taskDTO.getId());
         assertEquals(upgradeTaskEntity.getPackageName(), taskDTO.getPackageName());
         assertEquals(upgradeTaskEntity.getState(), taskDTO.getUpgradeTaskState());
@@ -743,7 +743,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        List<CbbSystemUpgradeTaskTerminalDTO> taskTerminalDTOList = upgradeAPIImpl.getUpgradeTerminalByTaskId(request);
+        List<CbbSystemUpgradeTaskTerminalDTO> taskTerminalDTOList = upgradeAPIImpl.listUpgradeTerminalByTaskId(request);
         assertEquals(0, taskTerminalDTOList.size());
 
         new Verifications() {
@@ -780,7 +780,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        List<CbbSystemUpgradeTaskTerminalDTO> taskTerminalDTOList = upgradeAPIImpl.getUpgradeTerminalByTaskId(request);
+        List<CbbSystemUpgradeTaskTerminalDTO> taskTerminalDTOList = upgradeAPIImpl.listUpgradeTerminalByTaskId(request);
         assertEquals(1, taskTerminalDTOList.size());
         assertEquals(entity.getTerminalId(), taskTerminalDTOList.get(0).getTerminalId());
         assertEquals(entity.getId(), taskTerminalDTOList.get(0).getId());
@@ -1345,7 +1345,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         expectedGroupDTO.setGroupName(terminalGroupEntity.getName());
         expectedGroupDTO.setParentGroupId(terminalGroupEntity.getParentId());
 
-        DefaultPageResponse<CbbTerminalGroupDetailDTO> response = upgradeAPIImpl.listSystemUpgradeTaskTerminalGroup(request);
+        DefaultPageResponse<CbbTerminalGroupDetailDTO> response = upgradeAPIImpl.pageQuerySystemUpgradeTaskTerminalGroup(request);
         CbbTerminalGroupDetailDTO[] itemArr = response.getItemArr();
         assertEquals(Status.SUCCESS, response.getStatus());
         assertEquals(1, itemArr.length);

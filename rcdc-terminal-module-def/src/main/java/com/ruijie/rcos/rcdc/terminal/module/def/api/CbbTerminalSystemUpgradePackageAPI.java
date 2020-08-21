@@ -92,8 +92,8 @@ public interface CbbTerminalSystemUpgradePackageAPI {
             throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalSystemUpgradePackageAPI.getById 获取终端升级包信息
-     * @apiName getById
+     * @api {POST} CbbTerminalSystemUpgradePackageAPI.findById 获取终端升级包信息
+     * @apiName findById
      * @apiGroup CbbTerminalSystemUpgradePackageAPI
      * @apiDescription 获取终端升级包信息
      * @apiParam (请求体字段说明) {UUID} UUID 升级包id
@@ -117,7 +117,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @return 终端升级包信息
      * @throws BusinessException 业务异常
      */
-    CbbTerminalSystemUpgradePackageInfoDTO getById(UUID packageId) throws BusinessException;
+    CbbTerminalSystemUpgradePackageInfoDTO findById(UUID packageId) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalSystemUpgradePackageAPI.checkAllowUploadPackage 校验升级包是否允许上传

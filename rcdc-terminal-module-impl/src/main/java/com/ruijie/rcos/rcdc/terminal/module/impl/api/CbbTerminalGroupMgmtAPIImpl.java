@@ -58,7 +58,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     private ViewTerminalStatDAO viewTerminalStatDAO;
 
     @Override
-    public List<CbbTerminalGroupDetailDTO> getAllTerminalGroup() {
+    public List<CbbTerminalGroupDetailDTO> listTerminalGroup() {
 
         List<TerminalGroupEntity> groupList = terminalGroupService.findAll();
         List<CbbTerminalGroupDetailDTO> dtoList = new ArrayList<>();

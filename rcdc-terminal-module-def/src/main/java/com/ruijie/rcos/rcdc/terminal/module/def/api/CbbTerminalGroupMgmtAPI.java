@@ -25,8 +25,8 @@ public interface CbbTerminalGroupMgmtAPI {
 
 
     /**
-     * @api {POST} CbbTerminalGroupMgmtAPI.getAllTerminalGroup 获取所有树节点信息
-     * @apiName getAllTerminalGroup
+     * @api {POST} CbbTerminalGroupMgmtAPI.listTerminalGroup 获取所有树节点信息
+     * @apiName listTerminalGroup
      * @apiGroup CbbTerminalGroupMgmtAPI
      * @apiDescription 获取所有树节点信息
      *
@@ -42,7 +42,7 @@ public interface CbbTerminalGroupMgmtAPI {
      *
      * @return UserGroupTreeResponse 响应
      */
-    List<CbbTerminalGroupDetailDTO> getAllTerminalGroup();
+    List<CbbTerminalGroupDetailDTO> listTerminalGroup();
 
 
     /**

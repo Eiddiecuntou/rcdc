@@ -390,7 +390,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testGetByIdParamIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.getById(null),
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradePackageAPIImpl.findById(null),
                 "packageId can not be null");
         assertTrue(true);
     }
@@ -417,7 +417,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.getById(packageId);
+        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.findById(packageId);
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
                 buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.FINISH, null);
@@ -463,7 +463,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
             }
         };
 
-        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.getById(packageId);
+        CbbTerminalSystemUpgradePackageInfoDTO dto = upgradePackageAPIImpl.findById(packageId);
 
         CbbTerminalSystemUpgradePackageInfoDTO checkDTO =
                 buildCheckDTO(packageId, CbbSystemUpgradeTaskStateEnums.UPGRADING, systemUpgradeId);

@@ -166,7 +166,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     @Override
-    public CbbTerminalSystemUpgradePackageInfoDTO getById(UUID packageId) throws BusinessException {
+    public CbbTerminalSystemUpgradePackageInfoDTO findById(UUID packageId) throws BusinessException {
         Assert.notNull(packageId, "packageId can not be null");
 
         final TerminalSystemUpgradePackageEntity packageEntity =

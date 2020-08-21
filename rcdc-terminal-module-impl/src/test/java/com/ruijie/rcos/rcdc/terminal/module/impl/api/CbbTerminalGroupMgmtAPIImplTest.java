@@ -84,7 +84,7 @@ public class CbbTerminalGroupMgmtAPIImplTest {
             }
         };
 
-        api.getAllTerminalGroup();
+        api.listTerminalGroup();
 
         new Verifications() {
             {

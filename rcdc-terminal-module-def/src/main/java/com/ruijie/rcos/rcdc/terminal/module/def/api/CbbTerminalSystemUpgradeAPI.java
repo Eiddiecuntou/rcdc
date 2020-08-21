@@ -86,8 +86,8 @@ public interface CbbTerminalSystemUpgradeAPI {
     void editSystemUpgradeTerminalGroup(CbbUpgradeTerminalGroupDTO request) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalSystemUpgradeAPI.listSystemUpgradeTask 获取刷机任务列表信息
-     * @apiName listSystemUpgradeTask
+     * @api {POST} CbbTerminalSystemUpgradeAPI.pageQuerySystemUpgradeTask 获取刷机任务列表信息
+     * @apiName pageQuerySystemUpgradeTask
      * @apiGroup CbbTerminalSystemUpgradeAPI
      * @apiDescription 获取刷机任务列表信息
      * @apiParam (请求体字段说明) {PageSearchRequest} request PageSearchRequest
@@ -119,11 +119,11 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 任务列表
      * @throws BusinessException 业务异常
      */
-    DefaultPageResponse<CbbSystemUpgradeTaskDTO> listSystemUpgradeTask(PageSearchRequest request) throws BusinessException;
+    DefaultPageResponse<CbbSystemUpgradeTaskDTO> pageQuerySystemUpgradeTask(PageSearchRequest request) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalSystemUpgradeAPI.listSystemUpgradeTaskTerminal 获取刷机任务终端列表
-     * @apiName listSystemUpgradeTaskTerminal
+     * @api {POST} CbbTerminalSystemUpgradeAPI.pageQuerySystemUpgradeTaskTerminal 获取刷机任务终端列表
+     * @apiName pageQuerySystemUpgradeTaskTerminal
      * @apiGroup CbbTerminalSystemUpgradeAPI
      * @apiDescription 获取刷机任务终端列表
      * @apiParam (请求体字段说明) {PageSearchRequest} request PageSearchRequest
@@ -152,11 +152,11 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @param request 请求参数
      * @return 刷机终端列表
      */
-    DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> listSystemUpgradeTaskTerminal(PageSearchRequest request);
+    DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> pageQuerySystemUpgradeTaskTerminal(PageSearchRequest request);
 
     /**
-     * @api {POST} CbbTerminalSystemUpgradeAPI.listSystemUpgradeTaskTerminalGroup 获取刷机任务终端分组列表
-     * @apiName listSystemUpgradeTaskTerminalGroup
+     * @api {POST} CbbTerminalSystemUpgradeAPI.pageQuerySystemUpgradeTaskTerminalGroup 获取刷机任务终端分组列表
+     * @apiName pageQuerySystemUpgradeTaskTerminalGroup
      * @apiGroup CbbTerminalSystemUpgradeAPI
      * @apiDescription 获取刷机任务终端分组列表
      * @apiParam (请求体字段说明) {PageSearchRequest} request PageSearchRequest
@@ -184,7 +184,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      *
      * @throws BusinessException 业务异常
      */
-    DefaultPageResponse<CbbTerminalGroupDetailDTO> listSystemUpgradeTaskTerminalGroup(PageSearchRequest request) throws BusinessException;
+    DefaultPageResponse<CbbTerminalGroupDetailDTO> pageQuerySystemUpgradeTaskTerminalGroup(PageSearchRequest request) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalSystemUpgradeAPI.closeSystemUpgradeTask 关闭刷机任务
@@ -203,8 +203,8 @@ public interface CbbTerminalSystemUpgradeAPI {
     void closeSystemUpgradeTask(UUID taskId) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalSystemUpgradeAPI.listUpgradeableTerminal 终端可刷机的列表
-     * @apiName listUpgradeableTerminal
+     * @api {POST} CbbTerminalSystemUpgradeAPI.pageQueryUpgradeableTerminal 终端可刷机的列表
+     * @apiName pageQueryUpgradeableTerminal
      * @apiGroup CbbTerminalSystemUpgradeAPI
      * @apiDescription 终端可刷机的列表
      * @apiParam (请求体字段说明) {PageSearchRequest} request PageSearchRequest
@@ -234,12 +234,12 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 终端列表
      * @throws BusinessException 业务异常
      */
-    DefaultPageResponse<CbbUpgradeableTerminalListDTO> listUpgradeableTerminal(CbbUpgradeableTerminalPageSearchRequest apiRequest)
+    DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageQueryUpgradeableTerminal(CbbUpgradeableTerminalPageSearchRequest apiRequest)
             throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalSystemUpgradeAPI.getUpgradeTerminalByTaskId 获取刷机任务终端列表
-     * @apiName getUpgradeTerminalByTaskId
+     * @api {POST} CbbTerminalSystemUpgradeAPI.listUpgradeTerminalByTaskId 获取刷机任务终端列表
+     * @apiName listUpgradeTerminalByTaskId
      * @apiGroup CbbTerminalSystemUpgradeAPI
      * @apiDescription 获取刷机任务终端列表
      * @apiParam (请求体字段说明) {CbbGetTaskUpgradeTerminalDTO} request CbbGetTaskUpgradeTerminalDTO
@@ -263,7 +263,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @param request 请求参数
      * @return 刷机终端信息列表
      */
-    List<CbbSystemUpgradeTaskTerminalDTO> getUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalDTO request);
+    List<CbbSystemUpgradeTaskTerminalDTO> listUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalDTO request);
 
     /**
      * @api {POST} CbbTerminalSystemUpgradeAPI.cancelUpgradeTerminal 取消终端刷机
@@ -306,8 +306,8 @@ public interface CbbTerminalSystemUpgradeAPI {
     String retryUpgradeTerminal(CbbUpgradeTerminalDTO request) throws BusinessException;
 
     /**
-     * @api {POST} CbbTerminalSystemUpgradeAPI.getTerminalUpgradeTaskById 通过id获取终端刷机任务信息
-     * @apiName getTerminalUpgradeTaskById
+     * @api {POST} CbbTerminalSystemUpgradeAPI.findTerminalUpgradeTaskById 通过id获取终端刷机任务信息
+     * @apiName findTerminalUpgradeTaskById
      * @apiGroup CbbTerminalSystemUpgradeAPI
      * @apiDescription 通过id获取终端刷机任务信息
      * @apiParam (请求体字段说明) {UUID} taskId 刷机任务id
@@ -330,6 +330,6 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @return 请求结果
      * @throws BusinessException 业务异常
      */
-    CbbSystemUpgradeTaskDTO getTerminalUpgradeTaskById(UUID taskId) throws BusinessException;
+    CbbSystemUpgradeTaskDTO findTerminalUpgradeTaskById(UUID taskId) throws BusinessException;
 
 }

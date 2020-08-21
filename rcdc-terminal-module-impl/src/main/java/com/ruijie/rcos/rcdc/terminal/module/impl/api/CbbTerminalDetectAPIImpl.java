@@ -49,7 +49,7 @@ public class CbbTerminalDetectAPIImpl implements CbbTerminalDetectAPI {
 
 
     @Override
-    public DefaultPageResponse<CbbTerminalDetectDTO> listDetect(CbbTerminalDetectPageRequest request) throws BusinessException {
+    public DefaultPageResponse<CbbTerminalDetectDTO> pageQuery(CbbTerminalDetectPageRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalDetectionEntity> page = detectService.pageQuery(request);

@@ -237,7 +237,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultPageResponse<CbbSystemUpgradeTaskDTO> listSystemUpgradeTask(PageSearchRequest request) throws BusinessException {
+    public DefaultPageResponse<CbbSystemUpgradeTaskDTO> pageQuerySystemUpgradeTask(PageSearchRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalSystemUpgradeEntity> upgradeTaskPage = querySystemUpgradeListService.pageQuery(request, TerminalSystemUpgradeEntity.class);
@@ -264,7 +264,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public CbbSystemUpgradeTaskDTO getTerminalUpgradeTaskById(UUID taskId) throws BusinessException {
+    public CbbSystemUpgradeTaskDTO findTerminalUpgradeTaskById(UUID taskId) throws BusinessException {
         Assert.notNull(taskId, "taskId can not be null");
 
         final TerminalSystemUpgradeEntity upgradeTaskEntity = terminalSystemUpgradeService.getSystemUpgradeTask(taskId);
@@ -275,7 +275,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> listSystemUpgradeTaskTerminal(PageSearchRequest request) {
+    public DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> pageQuerySystemUpgradeTaskTerminal(PageSearchRequest request) {
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalSystemUpgradeTerminalEntity> upgradeTaskTerminalPage =
@@ -297,7 +297,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultPageResponse<CbbTerminalGroupDetailDTO> listSystemUpgradeTaskTerminalGroup(PageSearchRequest request) throws BusinessException {
+    public DefaultPageResponse<CbbTerminalGroupDetailDTO> pageQuerySystemUpgradeTaskTerminalGroup(PageSearchRequest request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalSystemUpgradeTerminalGroupEntity> upgradeTaskTerminalPage =
@@ -350,7 +350,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultPageResponse<CbbUpgradeableTerminalListDTO> listUpgradeableTerminal(CbbUpgradeableTerminalPageSearchRequest request)
+    public DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageQueryUpgradeableTerminal(CbbUpgradeableTerminalPageSearchRequest request)
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
@@ -427,7 +427,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
 
     @Override
-    public List<CbbSystemUpgradeTaskTerminalDTO> getUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalDTO request) {
+    public List<CbbSystemUpgradeTaskTerminalDTO> listUpgradeTerminalByTaskId(CbbGetTaskUpgradeTerminalDTO request) {
         Assert.notNull(request, "request can not be null");
 
         final UUID upgradeTaskId = request.getTaskId();
