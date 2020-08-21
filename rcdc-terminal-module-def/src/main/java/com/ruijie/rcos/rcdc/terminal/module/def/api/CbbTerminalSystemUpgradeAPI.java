@@ -184,7 +184,8 @@ public interface CbbTerminalSystemUpgradeAPI {
      *
      * @throws BusinessException 业务异常
      */
-    DefaultPageResponse<CbbTerminalGroupDetailDTO> pageQuerySystemUpgradeTaskTerminalGroup(PageSearchRequest request) throws BusinessException;
+    DefaultPageResponse<CbbTerminalGroupDetailDTO> pageQuerySystemUpgradeTaskTerminalGroup(PageSearchRequest request)
+            throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalSystemUpgradeAPI.closeSystemUpgradeTask 关闭刷机任务
