@@ -104,7 +104,8 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiSuccess (响应字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
      * "APP_IOS","APP_LINUX"} terminalSystemUpgradePackageInfoDTO.terminalType 终端类型
      * @apiSuccess (响应字段说明) {CbbSystemUpgradePackageOriginEnums="USER_UPLOAD"} terminalSystemUpgradePackageInfoDTO.origin 升级包来源
-     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} terminalSystemUpgradePackageInfoDTO.distributionMode 系统刷机包分发方式
+     * @apiSuccess (响应字段说明) {CbbSystemUpgradeDistributionModeEnums="FAST_UPGRADE"} terminalSystemUpgradePackageInfoDTO
+     * .distributionMode 系统刷机包分发方式
      * @apiSuccess (响应字段说明) {CbbSystemUpgradeTaskStateEnums="UPGRADING","FINISH"} terminalSystemUpgradePackageInfoDTO.status 升级任务状态
      * @apiSuccess (响应字段说明) {UUID} terminalSystemUpgradePackageInfoDTO.upgradeTaskId 升级任务id
      * @apiSuccess (响应字段说明) {Date} terminalSystemUpgradePackageInfoDTO.uploadTime 上传时间

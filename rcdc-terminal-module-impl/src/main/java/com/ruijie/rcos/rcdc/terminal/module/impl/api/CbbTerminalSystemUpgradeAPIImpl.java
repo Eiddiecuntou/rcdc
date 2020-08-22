@@ -298,7 +298,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultPageResponse<CbbTerminalGroupDetailDTO> pageQuerySystemUpgradeTaskTerminalGroup(PageSearchRequest request) throws BusinessException {
+    public DefaultPageResponse<CbbTerminalGroupDetailDTO> pageQuerySystemUpgradeTaskTerminalGroup(PageSearchRequest request)
+            throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalSystemUpgradeTerminalGroupEntity> upgradeTaskTerminalPage =
