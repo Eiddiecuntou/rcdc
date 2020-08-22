@@ -86,7 +86,7 @@ public class CbbTerminalDetectAPIImplTest {
         entity.setTerminalId("123");
         entity.setDetectState(DetectStateEnums.SUCCESS);
         entityList.add(entity);
-        Page page = new PageImpl<TerminalDetectionEntity>(entityList, new PageRequest(0, 10), 1);
+        Page page = new PageImpl<TerminalDetectionEntity>(entityList, PageRequest.of(0, 10), 1);
 
         new Expectations() {
             {
@@ -123,7 +123,7 @@ public class CbbTerminalDetectAPIImplTest {
         entity.setTerminalId("123");
         entity.setDetectState(DetectStateEnums.SUCCESS);
         entityList.add(entity);
-        Page page = new PageImpl<TerminalDetectionEntity>(entityList, new PageRequest(0, 10), 1);
+        Page page = new PageImpl<TerminalDetectionEntity>(entityList, PageRequest.of(0, 10), 1);
 
         new Expectations() {
             {

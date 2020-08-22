@@ -137,7 +137,7 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
     public Page<TerminalDetectionEntity> pageQuery(CbbTerminalDetectPageRequest request) {
         Assert.notNull(request, "request can not be null");
 
-        Pageable pageable = PageRequest.of(request.getPage(), request.getLimit(), new Sort(Direction.DESC, "createTime"));
+        Pageable pageable = PageRequest.of(request.getPage(), request.getLimit(), Sort.by(Direction.DESC, "createTime"));
         Specification<TerminalDetectionEntity> spec = new TerminalDetectSpecification(request);
 
         return detectionDAO.findAll(spec, pageable);
