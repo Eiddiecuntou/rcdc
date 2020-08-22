@@ -153,11 +153,11 @@ public abstract class AbstractPageQueryTemplate<T> {
         if (request.getSort() == null) {
             // 没有指定排序字段
             LOGGER.debug("没有指定排序字段，使用默认排序字段：[{}],排序方式为：[{}]", defaultSortField, defaultDirection);
-            return PageRequest.of(page, limit, new Sort(defaultDirection, defaultSortField));
+            return PageRequest.of(page, limit, Sort.by(defaultDirection, defaultSortField));
         }
         // 有指定排序字段和排方式
         Direction directionEnum = Direction.fromString(request.getSort().getDirection().name());
-        Sort sort = new Sort(directionEnum, request.getSort().getSortField());
+        Sort sort = Sort.by(directionEnum, request.getSort().getSortField());
         return PageRequest.of(page, limit, sort);
     }
 
