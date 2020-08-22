@@ -7,7 +7,7 @@ import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -293,7 +293,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
         new Verifications() {
             {
-                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
+                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskDTO) any);
                 times = 1;
             }
         };
@@ -319,7 +319,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
         new Verifications() {
             {
-                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
+                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskDTO) any);
                 times = 1;
             }
         };
@@ -354,7 +354,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
                 result = terminalEntityList;
                 terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
                 result = upgradePackage;
-                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
+                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskDTO) any);
                 result = new BusinessException("key");
             }
         };
@@ -363,7 +363,7 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
 
         new Verifications() {
             {
-                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskRequest) any);
+                cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask((CbbAddSystemUpgradeTaskDTO) any);
                 times = 1;
                 logAPI.recordLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG, (String[]) any);
                 times = 1;

@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * @author XiaoJiaXin
  */
 @Service
-public class AndroidVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CbbCommonUpdateListDTO> {
+public class AndroidVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CommonUpdateListDTO> {
 
     private static final String UPDATE_LIST_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_android/origin/update.list";
 
@@ -23,7 +23,7 @@ public class AndroidVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTe
     }
 
     @Override
-    protected void fillUpdateList(CbbCommonUpdateListDTO updateList) {
+    protected void fillUpdateList(CommonUpdateListDTO updateList) {
 
     }
 

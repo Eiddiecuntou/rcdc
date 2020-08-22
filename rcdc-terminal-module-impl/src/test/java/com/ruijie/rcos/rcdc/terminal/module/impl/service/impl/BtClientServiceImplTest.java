@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseMakeBtSeedRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStartBtShareRequest;
-import com.ruijie.rcos.base.sysmanage.module.def.api.request.btclient.BaseStopBtShareRequest;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
@@ -188,7 +187,7 @@ public class BtClientServiceImplTest {
 
         new Verifications() {
             {
-                btClientAPI.stopBtShare((BaseStopBtShareRequest) any);
+                btClientAPI.stopBtShare(anyString);
                 times = 1;
             }
         };
@@ -215,7 +214,7 @@ public class BtClientServiceImplTest {
 
         new Verifications() {
             {
-                btClientAPI.stopBtShare((BaseStopBtShareRequest) any);
+                btClientAPI.stopBtShare(anyString);
                 times = 0;
             }
         };
@@ -237,7 +236,6 @@ public class BtClientServiceImplTest {
         file.createNewFile();
 
         SeedFileInfoDTO seedFileInfoDTO = new SeedFileInfoDTO("seedPath", "seedMD5");
-        DtoResponse<SeedFileInfoDTO> seedInfoResponse = DtoResponse.success(seedFileInfoDTO);
 
         ClusterVirtualIpDTO ipDTO = new ClusterVirtualIpDTO();
         ipDTO.setClusterVirtualIpIp("0.0.0.0");
@@ -246,7 +244,7 @@ public class BtClientServiceImplTest {
         new Expectations() {
             {
                 btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
-                result = seedInfoResponse;
+                result = seedFileInfoDTO;
                 cloudPlatformMgmtAPI.getClusterVirtualIp((DefaultRequest) any);
                 result = resp;
             }
@@ -284,7 +282,6 @@ public class BtClientServiceImplTest {
         File file = new File(filePath);
         file.createNewFile();
 
-        DtoResponse<SeedFileInfoDTO> seedInfoResponse = DtoResponse.fail("key");
 
         ClusterVirtualIpDTO ipDTO = new ClusterVirtualIpDTO();
         ipDTO.setClusterVirtualIpIp("0.0.0.0");
@@ -293,7 +290,7 @@ public class BtClientServiceImplTest {
         new Expectations() {
             {
                 btClientAPI.makeBtSeed((BaseMakeBtSeedRequest) any);
-                result = seedInfoResponse;
+                result = "key";
                 cloudPlatformMgmtAPI.getClusterVirtualIp((DefaultRequest) any);
                 result = resp;
             }

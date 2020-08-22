@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbCommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -61,7 +61,7 @@ public class TerminalComponentUpgradeServiceImplTest {
      */
     @Test
     public void testGetVersion() throws BusinessException {
-        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
+        CommonUpdateListDTO updatelist = new CommonUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
 
         TerminalEntity terminalEntity = new TerminalEntity();
@@ -107,7 +107,7 @@ public class TerminalComponentUpgradeServiceImplTest {
      */
     @Test
     public void testGetVersionException() throws BusinessException {
-        CbbCommonUpdateListDTO updatelist = new CbbCommonUpdateListDTO();
+        CommonUpdateListDTO updatelist = new CommonUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
 
         TerminalEntity terminalEntity = new TerminalEntity();

@@ -1,17 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.CbbTerminalModelDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalPlatformRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalProductIdRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbItemArrResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalModelDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalModelService;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +15,8 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Description:
@@ -45,7 +42,7 @@ public class CbbTerminalModelAPIImplTest {
      */
     @Test
     public void testListTerminalModelArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.listTerminalModel(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.listTerminalModel(null), "platformArr can not be null");
         assertTrue(true);
     }
 
@@ -65,8 +62,8 @@ public class CbbTerminalModelAPIImplTest {
             }
         };
 
-        CbbItemArrResponse<CbbTerminalModelDTO> response = terminalModelAPI.listTerminalModel(new CbbTerminalPlatformRequest());
-        assertEquals(response.getItemArr(), terminalModelArr);
+        CbbTerminalModelDTO[] modelDTOArr = terminalModelAPI.listTerminalModel(new CbbTerminalPlatformEnums[]{});
+        assertEquals(modelDTOArr, terminalModelArr);
     }
 
     /**
@@ -76,7 +73,7 @@ public class CbbTerminalModelAPIImplTest {
      */
     @Test
     public void testQueryByProductIdArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.queryByProductId(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.findByProductId(null), "productId can not be null");
         assertTrue(true);
     }
 
@@ -87,15 +84,13 @@ public class CbbTerminalModelAPIImplTest {
      */
     @Test
     public void testQueryByProductIdSuccess() throws Exception {
-        final CbbTerminalProductIdRequest request = new CbbTerminalProductIdRequest();
-        request.setProductId("aaa");
         new Expectations() {
             {
-                terminalModelAPI.queryByProductId(request);
+                terminalModelAPI.findByProductId("aaa");
             }
         };
-        DtoResponse<CbbTerminalModelDTO> response = terminalModelAPI.queryByProductId(request);
-        assertEquals(Status.SUCCESS, response.getStatus());
+        CbbTerminalModelDTO modelDTO = terminalModelAPI.findByProductId("aaa");
+
     }
 
     /**
@@ -104,8 +99,6 @@ public class CbbTerminalModelAPIImplTest {
     @Test
     public void testListTerminalOsType() {
 
-        CbbTerminalPlatformRequest platformRequest = new CbbTerminalPlatformRequest();
-        platformRequest.setPlatformArr(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
         new Expectations() {
             {
                 terminalModelService.queryTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
@@ -113,8 +106,8 @@ public class CbbTerminalModelAPIImplTest {
             }
         };
 
-        DtoResponse<List<String>> listDtoResponse = terminalModelAPI.listTerminalOsType(platformRequest);
+        List<String> terminalOsTypeList = terminalModelAPI.listTerminalOsType(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
 
-        Assert.assertEquals(listDtoResponse.getDto().get(0), "Windows");
+        Assert.assertEquals(terminalOsTypeList.get(0), "Windows");
     }
 }

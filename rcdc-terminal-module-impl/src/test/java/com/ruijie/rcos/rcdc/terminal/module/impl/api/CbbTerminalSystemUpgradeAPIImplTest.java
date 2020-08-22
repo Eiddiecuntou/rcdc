@@ -2,19 +2,12 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbSystemUpgradeTaskTerminalDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeableTerminalListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbAddSystemUpgradeTaskResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTaskUpgradeTerminalResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbGetTerminalUpgradeTaskResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbTerminalNameResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -32,8 +25,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import mockit.*;
@@ -141,7 +132,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTaskUpgradePackageNotExist() {
-        CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
 
         new Expectations() {
@@ -164,7 +155,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTaskUpgradePackageIsUploading() {
-        CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setTerminalIdArr(new String[] {"123", "456"});
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
         upgradePackageEntity.setIsDelete(false);
@@ -189,7 +180,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTaskHasUploadingTask() {
-        CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setTerminalIdArr(new String[] {"123", "456"});
 
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
@@ -217,7 +208,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTaskPackageNotExist() {
-        CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setTerminalIdArr(new String[] {"123", "456"});
 
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
@@ -265,7 +256,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTask(@Mocked LinuxVDISystemUpgradeHandler linuxVDISystemUpgradeHandler) throws BusinessException {
-        CbbAddSystemUpgradeTaskRequest request = new CbbAddSystemUpgradeTaskRequest();
+        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setTerminalIdArr(new String[] {"123", "456"});
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
         upgradePackageEntity.setIsDelete(false);
@@ -295,7 +286,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbAddSystemUpgradeTaskResponse upgradeTaskResponse = upgradeAPIImpl.addSystemUpgradeTask(request);
+        CbbAddSystemUpgradeTaskResultDTO upgradeTaskResponse = upgradeAPIImpl.addSystemUpgradeTask(request);
         assertEquals(upgradeTaskId, upgradeTaskResponse.getUpgradeTaskId());
         assertEquals(upgradePackageOpt.get().getPackageName(), upgradeTaskResponse.getImgName());
 
@@ -330,7 +321,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminalNotFoundTerminal() {
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
 
         new Expectations() {
             {
@@ -355,7 +346,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminalUploadingTaskHasClose() throws BusinessException {
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
@@ -385,7 +376,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminalUploadingTerminalExist() throws BusinessException {
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
@@ -417,7 +408,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testAddSystemUpgradeTerminal() throws BusinessException {
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
 
         TerminalEntity terminal = new TerminalEntity();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
@@ -433,8 +424,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.addSystemUpgradeTerminal(request);
-        assertEquals(terminal.getTerminalName(), response.getTerminalName());
+        String terminalName = upgradeAPIImpl.addSystemUpgradeTerminal(request);
+        assertEquals(terminal.getTerminalName(), terminalName);
 
         new Verifications() {
             {
@@ -456,7 +447,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testListSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listSystemUpgradeTask(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.pageQuerySystemUpgradeTask(null), "request can not be null");
         assertTrue(true);
     }
 
@@ -489,7 +480,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = 1;
             }
         };
-        DefaultPageResponse<CbbSystemUpgradeTaskDTO> response = upgradeAPIImpl.listSystemUpgradeTask(request);
+        DefaultPageResponse<CbbSystemUpgradeTaskDTO> response = upgradeAPIImpl.pageQuerySystemUpgradeTask(request);
         assertEquals(Status.SUCCESS, response.getStatus());
         assertEquals(upgradeEntity.getState(), response.getItemArr()[0].getUpgradeTaskState());
         assertEquals(upgradeEntity.getId(), response.getItemArr()[0].getId());
@@ -518,7 +509,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testListSystemUpgradeTaskTerminalArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listSystemUpgradeTaskTerminal(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.pageQuerySystemUpgradeTaskTerminal(null), "request can not be null");
         assertTrue(true);
     }
 
@@ -551,7 +542,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = 1;
             }
         };
-        DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> response = upgradeAPIImpl.listSystemUpgradeTaskTerminal(request);
+        DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> response = upgradeAPIImpl.pageQuerySystemUpgradeTaskTerminal(request);
         assertEquals(Status.SUCCESS, response.getStatus());
         assertEquals(entity.getState(), response.getItemArr()[0].getTerminalUpgradeState());
         assertEquals(entity.getId(), response.getItemArr()[0].getId());
@@ -582,7 +573,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testCloseSystemUpgradeTaskArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.closeSystemUpgradeTask(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.closeSystemUpgradeTask(null), "taskId can not be null");
         assertTrue(true);
     }
 
@@ -594,12 +585,12 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testCloseSystemUpgradeTask() throws BusinessException {
-        IdRequest request = new IdRequest();
-        DefaultResponse response = upgradeAPIImpl.closeSystemUpgradeTask(request);
-        assertEquals(Status.SUCCESS, response.getStatus());
+        UUID taskId = UUID.randomUUID();
+        upgradeAPIImpl.closeSystemUpgradeTask(taskId);
+
         new Verifications() {
             {
-                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(request.getId());
+                terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(taskId);
                 times = 1;
             }
         };
@@ -613,7 +604,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testListUpgradeableTerminalArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.listUpgradeableTerminal(null), "request can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.pageQueryUpgradeableTerminal(null), "request can not be null");
         assertTrue(true);
     }
 
@@ -649,7 +640,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = upgradeableTerminalPage;
             }
         };
-        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.listUpgradeableTerminal(request);
+        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.pageQueryUpgradeableTerminal(request);
         assertEquals(Status.SUCCESS, pageResponse.getStatus());
         assertEquals(pageResponse.getTotal(), upgradeableTerminalPage.getTotalElements());
         assertEquals(pageResponse.getItemArr().length, upgradeableTerminalPage.getContent().size());
@@ -686,7 +677,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = upgradeableTerminalPage;
             }
         };
-        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.listUpgradeableTerminal(request);
+        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.pageQueryUpgradeableTerminal(request);
         assertEquals(Status.SUCCESS, pageResponse.getStatus());
         assertEquals(pageResponse.getTotal(), upgradeableTerminalPage.getTotalElements());
         assertEquals(pageResponse.getItemArr().length, upgradeableTerminalPage.getContent().size());
@@ -721,10 +712,10 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbGetTerminalUpgradeTaskResponse response = upgradeAPIImpl.getTerminalUpgradeTaskById(new IdRequest());
-        assertEquals(upgradeTaskEntity.getId(), response.getUpgradeTask().getId());
-        assertEquals(upgradeTaskEntity.getPackageName(), response.getUpgradeTask().getPackageName());
-        assertEquals(upgradeTaskEntity.getState(), response.getUpgradeTask().getUpgradeTaskState());
+        CbbSystemUpgradeTaskDTO taskDTO = upgradeAPIImpl.findTerminalUpgradeTaskById(UUID.randomUUID());
+        assertEquals(upgradeTaskEntity.getId(), taskDTO.getId());
+        assertEquals(upgradeTaskEntity.getPackageName(), taskDTO.getPackageName());
+        assertEquals(upgradeTaskEntity.getState(), taskDTO.getUpgradeTaskState());
 
         new Verifications() {
             {
@@ -739,28 +730,28 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testGetUpgradeTerminalByTaskIdRequestStateIsNull() {
-        CbbGetTaskUpgradeTerminalRequest request = new CbbGetTaskUpgradeTerminalRequest();
-        request.setId(UUID.randomUUID());
+        CbbGetTaskUpgradeTerminalDTO request = new CbbGetTaskUpgradeTerminalDTO();
+        request.setTaskId(UUID.randomUUID());
         request.setTerminalState(null);
 
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = null;
 
         new Expectations() {
             {
-                systemUpgradeTerminalDAO.findBySysUpgradeId(request.getId());
+                systemUpgradeTerminalDAO.findBySysUpgradeId(request.getTaskId());
                 result = null;
             }
         };
 
-        CbbGetTaskUpgradeTerminalResponse response = upgradeAPIImpl.getUpgradeTerminalByTaskId(request);
-        assertEquals(0, response.getUpgradeTerminalList().size());
+        List<CbbSystemUpgradeTaskTerminalDTO> taskTerminalDTOList = upgradeAPIImpl.listUpgradeTerminalByTaskId(request);
+        assertEquals(0, taskTerminalDTOList.size());
 
         new Verifications() {
             {
-                systemUpgradeTerminalDAO.findBySysUpgradeId(request.getId());
+                systemUpgradeTerminalDAO.findBySysUpgradeId(request.getTaskId());
                 times = 1;
 
-                systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(request.getId(), (CbbSystemUpgradeStateEnums) any);
+                systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(request.getTaskId(), (CbbSystemUpgradeStateEnums) any);
                 times = 0;
             }
         };
@@ -771,8 +762,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
      */
     @Test
     public void testGetUpgradeTerminalByTaskId() {
-        CbbGetTaskUpgradeTerminalRequest request = new CbbGetTaskUpgradeTerminalRequest();
-        request.setId(UUID.randomUUID());
+        CbbGetTaskUpgradeTerminalDTO request = new CbbGetTaskUpgradeTerminalDTO();
+        request.setTaskId(UUID.randomUUID());
         request.setTerminalState(CbbSystemUpgradeStateEnums.SUCCESS);
 
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = Lists.newArrayList();
@@ -784,23 +775,23 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         new Expectations() {
             {
-                systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(request.getId(), CbbSystemUpgradeStateEnums.SUCCESS);
+                systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(request.getTaskId(), CbbSystemUpgradeStateEnums.SUCCESS);
                 result = upgradeTerminalList;
             }
         };
 
-        CbbGetTaskUpgradeTerminalResponse response = upgradeAPIImpl.getUpgradeTerminalByTaskId(request);
-        assertEquals(1, response.getUpgradeTerminalList().size());
-        assertEquals(entity.getTerminalId(), response.getUpgradeTerminalList().get(0).getTerminalId());
-        assertEquals(entity.getId(), response.getUpgradeTerminalList().get(0).getId());
-        assertEquals(entity.getState(), response.getUpgradeTerminalList().get(0).getTerminalUpgradeState());
+        List<CbbSystemUpgradeTaskTerminalDTO> taskTerminalDTOList = upgradeAPIImpl.listUpgradeTerminalByTaskId(request);
+        assertEquals(1, taskTerminalDTOList.size());
+        assertEquals(entity.getTerminalId(), taskTerminalDTOList.get(0).getTerminalId());
+        assertEquals(entity.getId(), taskTerminalDTOList.get(0).getId());
+        assertEquals(entity.getState(), taskTerminalDTOList.get(0).getTerminalUpgradeState());
 
         new Verifications() {
             {
-                systemUpgradeTerminalDAO.findBySysUpgradeId(request.getId());
+                systemUpgradeTerminalDAO.findBySysUpgradeId(request.getTaskId());
                 times = 0;
 
-                systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(request.getId(), CbbSystemUpgradeStateEnums.SUCCESS);
+                systemUpgradeTerminalDAO.findBySysUpgradeIdAndState(request.getTaskId(), CbbSystemUpgradeStateEnums.SUCCESS);
                 times = 1;
             }
         };
@@ -815,7 +806,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testCancelUpgradeTerminalTaskUpgradeTerminalNotExist() throws BusinessException {
 
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
         request.setUpgradeTaskId(UUID.randomUUID());
         request.setTerminalId("aaa");
 
@@ -862,7 +853,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testCancelUpgradeTerminalTaskUpgradeTerminalStateNotAllowCancel() throws BusinessException {
 
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
         request.setUpgradeTaskId(UUID.randomUUID());
         request.setTerminalId("aaa");
 
@@ -913,7 +904,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testCancelUpgradeTerminalTask() throws BusinessException {
 
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
         request.setUpgradeTaskId(UUID.randomUUID());
         request.setTerminalId("aaa");
 
@@ -939,8 +930,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.cancelUpgradeTerminal(request);
-        assertEquals("bbb", response.getTerminalName());
+        String terminalName = upgradeAPIImpl.cancelUpgradeTerminal(request);
+        assertEquals("bbb", terminalName);
 
         new Verifications() {
             {
@@ -968,7 +959,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testRetryUpgradeTerminalTaskUpgradeTerminalStateNotAllowRetry() throws BusinessException {
 
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
         request.setUpgradeTaskId(UUID.randomUUID());
         request.setTerminalId("aaa");
 
@@ -1011,7 +1002,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testRetryUpgradeTerminalTaskUpgradeTerminalStartFileNotExist() throws BusinessException {
 
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
         request.setUpgradeTaskId(UUID.randomUUID());
         request.setTerminalId("aaa");
 
@@ -1046,8 +1037,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.retryUpgradeTerminal(request);
-        assertEquals("ccc", response.getTerminalName());
+        String terminalName = upgradeAPIImpl.retryUpgradeTerminal(request);
+        assertEquals("ccc", terminalName);
 
         new Verifications() {
             {
@@ -1075,7 +1066,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testRetryUpgradeTerminalTaskUpgradeTerminalStartFileExist() throws BusinessException {
 
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
         request.setUpgradeTaskId(UUID.randomUUID());
         request.setTerminalId("aaa");
 
@@ -1110,8 +1101,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.retryUpgradeTerminal(request);
-        assertEquals("ccc", response.getTerminalName());
+        String terminalName = upgradeAPIImpl.retryUpgradeTerminal(request);
+        assertEquals("ccc", terminalName);
         assertEquals(CbbSystemUpgradeStateEnums.UPGRADING, upgradeTerminal.getState());
 
         new Verifications() {
@@ -1140,7 +1131,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     @Test
     public void testRetryUpgradeTerminalTaskNotLinuxVDI() throws BusinessException {
 
-        CbbUpgradeTerminalRequest request = new CbbUpgradeTerminalRequest();
+        CbbUpgradeTerminalDTO request = new CbbUpgradeTerminalDTO();
         request.setUpgradeTaskId(UUID.randomUUID());
         request.setTerminalId("aaa");
 
@@ -1168,8 +1159,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        CbbTerminalNameResponse response = upgradeAPIImpl.retryUpgradeTerminal(request);
-        assertEquals("ccc", response.getTerminalName());
+        String terminalName = upgradeAPIImpl.retryUpgradeTerminal(request);
+        assertEquals("ccc", terminalName);
 
         new Verifications() {
             {
@@ -1208,7 +1199,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testEditSystemUpgradeTerminalGroupUpgradeTaskIsNotUpgrading() throws Exception {
         UUID upgradeTaskId = UUID.randomUUID();
 
-        CbbUpgradeTerminalGroupRequest request = new CbbUpgradeTerminalGroupRequest();
+        CbbUpgradeTerminalGroupDTO request = new CbbUpgradeTerminalGroupDTO();
         request.setUpgradeTaskId(upgradeTaskId);
         request.setTerminalGroupIdArr(new UUID[]{UUID.randomUUID()});
 
@@ -1249,7 +1240,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testEditSystemUpgradeTerminalGroupNoGroupId() throws Exception {
         UUID upgradeTaskId = UUID.randomUUID();
 
-        CbbUpgradeTerminalGroupRequest request = new CbbUpgradeTerminalGroupRequest();
+        CbbUpgradeTerminalGroupDTO request = new CbbUpgradeTerminalGroupDTO();
         request.setUpgradeTaskId(upgradeTaskId);
         request.setTerminalGroupIdArr(new UUID[0]);
 
@@ -1263,8 +1254,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        DefaultResponse defaultResponse = upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
-        assertEquals(Status.SUCCESS, defaultResponse.getStatus());
+        upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
 
         new Verifications() {
             {
@@ -1289,7 +1279,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testEditSystemUpgradeTerminalGroup() throws Exception {
         UUID upgradeTaskId = UUID.randomUUID();
 
-        CbbUpgradeTerminalGroupRequest request = new CbbUpgradeTerminalGroupRequest();
+        CbbUpgradeTerminalGroupDTO request = new CbbUpgradeTerminalGroupDTO();
         request.setUpgradeTaskId(upgradeTaskId);
         request.setTerminalGroupIdArr(new UUID[]{UUID.randomUUID()});
 
@@ -1303,8 +1293,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        DefaultResponse defaultResponse = upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
-        assertEquals(Status.SUCCESS, defaultResponse.getStatus());
+        upgradeAPIImpl.editSystemUpgradeTerminalGroup(request);
 
         new Verifications() {
             {
@@ -1351,13 +1340,13 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             }
         };
 
-        TerminalGroupDTO expectedGroupDTO = new TerminalGroupDTO();
+        CbbTerminalGroupDetailDTO expectedGroupDTO = new CbbTerminalGroupDetailDTO();
         expectedGroupDTO.setId(terminalGroupEntity.getId());
         expectedGroupDTO.setGroupName(terminalGroupEntity.getName());
         expectedGroupDTO.setParentGroupId(terminalGroupEntity.getParentId());
 
-        DefaultPageResponse<TerminalGroupDTO> response = upgradeAPIImpl.listSystemUpgradeTaskTerminalGroup(request);
-        TerminalGroupDTO[] itemArr = response.getItemArr();
+        DefaultPageResponse<CbbTerminalGroupDetailDTO> response = upgradeAPIImpl.pageQuerySystemUpgradeTaskTerminalGroup(request);
+        CbbTerminalGroupDetailDTO[] itemArr = response.getItemArr();
         assertEquals(Status.SUCCESS, response.getStatus());
         assertEquals(1, itemArr.length);
         assertEquals(expectedGroupDTO, itemArr[0]);

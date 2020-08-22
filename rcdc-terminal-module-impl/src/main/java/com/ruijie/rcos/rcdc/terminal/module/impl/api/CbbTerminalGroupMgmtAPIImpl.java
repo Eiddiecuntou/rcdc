@@ -1,28 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalGroupNameDuplicationRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbDeleteTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbEditTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbGetTerminalGroupCompleteTreeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.group.CbbTerminalGroupRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbCheckGroupNameDuplicationResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbObtainGroupNamePathResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbTerminalGroupResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalStatisticsItem;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalGroupOperNotifySPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalGroupOperNotifyRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.ViewTerminalStatDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.TerminalStatisticsDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.TerminalGroupHandler;
@@ -30,10 +17,17 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalGroupServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
+import com.ruijie.rcos.sk.base.util.HibernateUtil;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 终端组管理API接口实现.
@@ -60,14 +54,16 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     @Autowired
     private CbbTerminalGroupOperNotifySPI cbbTerminalGroupOperNotifySPI;
 
+    @Autowired
+    private ViewTerminalStatDAO viewTerminalStatDAO;
+
     @Override
-    public DtoResponse<List<TerminalGroupDTO>> getAllTerminalGroup(DefaultRequest request) {
-        Assert.notNull(request, "request can not be null");
+    public List<CbbTerminalGroupDetailDTO> listTerminalGroup() {
 
         List<TerminalGroupEntity> groupList = terminalGroupService.findAll();
-        List<TerminalGroupDTO> dtoList = new ArrayList<>();
+        List<CbbTerminalGroupDetailDTO> dtoList = new ArrayList<>();
         for (TerminalGroupEntity entity : groupList) {
-            TerminalGroupDTO dto = new TerminalGroupDTO();
+            CbbTerminalGroupDetailDTO dto = new CbbTerminalGroupDetailDTO();
             dto.setId(entity.getId());
             dto.setGroupName(entity.getName());
             dto.setParentGroupId(entity.getParentId());
@@ -79,77 +75,77 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
             dtoList.add(dto);
         }
 
-        return DtoResponse.success(dtoList);
+        return dtoList;
     }
 
     @Override
-    public CbbGetTerminalGroupTreeResponse loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeRequest request) throws BusinessException {
+    public CbbTerminalGroupTreeNodeDTO[] loadTerminalGroupCompleteTree(CbbGetTerminalGroupCompleteTreeDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         List<TerminalGroupEntity> groupList = terminalGroupService.findAll();
         if (CollectionUtils.isEmpty(groupList)) {
-            return new CbbGetTerminalGroupTreeResponse(new TerminalGroupTreeNodeDTO[0]);
+            return new CbbTerminalGroupTreeNodeDTO[0];
         }
         //过滤掉未分组
         if (request.getEnableFilterDefaultGroup()) {
             terminalGroupHandler.filterDefaultGroup(groupList);
         }
-        TerminalGroupTreeNodeDTO[] dtoArr = terminalGroupHandler.assembleGroupTree(null, groupList, request.getFilterGroupId());
-        return new CbbGetTerminalGroupTreeResponse(dtoArr);
+        CbbTerminalGroupTreeNodeDTO[] dtoArr = terminalGroupHandler.assembleGroupTree(null, groupList, request.getFilterGroupId());
+        return dtoArr;
     }
 
     @Override
-    public CbbTerminalGroupResponse getByName(CbbTerminalGroupRequest request) throws BusinessException {
+    public CbbTerminalGroupDetailDTO getByName(CbbTerminalGroupDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         List<TerminalGroupEntity> groupEntityList = terminalGroupService.getByName(request.getParentGroupId(), request.getGroupName());
         if (CollectionUtils.isEmpty(groupEntityList)) {
-            return new CbbTerminalGroupResponse(null);
+            //groupEntityList为空，返回null
+            return null;
         }
 
         // 同级下分组名称唯一，因此列表只可能存在一个
-        TerminalGroupDTO groupDTO = new TerminalGroupDTO();
+        CbbTerminalGroupDetailDTO groupDTO = new CbbTerminalGroupDetailDTO();
         groupEntityList.get(0).converToDTO(groupDTO);
-        return new CbbTerminalGroupResponse(groupDTO);
+        return groupDTO;
     }
 
     @Override
-    public CbbTerminalGroupResponse loadById(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public CbbTerminalGroupDetailDTO loadById(UUID groupId) throws BusinessException {
+        Assert.notNull(groupId, "groupId can not be null");
 
-        UUID id = request.getId();
-        TerminalGroupEntity groupEntity = terminalGroupService.getTerminalGroup(id);
-        TerminalGroupDTO groupDTO = new TerminalGroupDTO();
+        TerminalGroupEntity groupEntity = terminalGroupService.getTerminalGroup(groupId);
+        CbbTerminalGroupDetailDTO groupDTO = new CbbTerminalGroupDetailDTO();
         groupEntity.converToDTO(groupDTO);
         if (groupEntity.getParentId() != null) {
             TerminalGroupEntity parentGroupEntity = terminalGroupService.getTerminalGroup(groupEntity.getParentId());
             groupDTO.setParentGroupName(parentGroupEntity.getName());
         }
 
-        return new CbbTerminalGroupResponse(groupDTO);
+        return groupDTO;
     }
 
     @Override
-    public DtoResponse<TerminalGroupDTO> createTerminalGroup(CbbTerminalGroupRequest request) throws BusinessException {
+    public CbbTerminalGroupDetailDTO createTerminalGroup(CbbTerminalGroupDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        TerminalGroupDTO saveGroup = new TerminalGroupDTO(null, request.getGroupName(), request.getParentGroupId());
+        CbbTerminalGroupDetailDTO saveGroup = new CbbTerminalGroupDetailDTO(null, request.getGroupName(), request.getParentGroupId());
         TerminalGroupEntity entity = terminalGroupService.saveTerminalGroup(saveGroup);
         saveGroup.setId(entity.getId());
-        return DtoResponse.success(saveGroup);
+        return saveGroup;
     }
 
     @Override
-    public DefaultResponse editTerminalGroup(CbbEditTerminalGroupRequest request) throws BusinessException {
+    public void editTerminalGroup(CbbEditTerminalGroupDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        TerminalGroupDTO terminalGroupDTO = new TerminalGroupDTO(request.getId(), request.getGroupName(), request.getParentGroupId());
+        CbbTerminalGroupDetailDTO terminalGroupDTO = new CbbTerminalGroupDetailDTO(request.getId()
+                , request.getGroupName(), request.getParentGroupId());
         terminalGroupService.modifyGroupById(terminalGroupDTO);
-        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public DefaultResponse deleteTerminalGroup(CbbDeleteTerminalGroupRequest request) throws BusinessException {
+    public void deleteTerminalGroup(CbbDeleteTerminalGroupDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         terminalGroupServiceTx.deleteGroup(request.getId(), request.getMoveGroupId());
@@ -157,30 +153,89 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
         cbbTerminalGroupOperNotifyRequest.setId(request.getId());
         cbbTerminalGroupOperNotifyRequest.setMoveGroupId(request.getMoveGroupId());
         cbbTerminalGroupOperNotifySPI.notifyTerminalGroupChange(cbbTerminalGroupOperNotifyRequest);
-        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public CbbObtainGroupNamePathResponse obtainGroupNamePathArr(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public String[] obtainGroupNamePathArr(UUID groupId) throws BusinessException {
+        Assert.notNull(groupId, "request can not be null");
 
-        CbbObtainGroupNamePathResponse response = new CbbObtainGroupNamePathResponse();
-        response.setGroupNameArr(terminalGroupService.getTerminalGroupNameArr(request.getId()));
-        return response;
+        return terminalGroupService.getTerminalGroupNameArr(groupId);
     }
 
     @Override
-    public CbbCheckGroupNameDuplicationResponse checkUseGroupNameDuplication(CbbTerminalGroupNameDuplicationRequest request) {
-        Assert.notNull(request, "Param [CbbTerminalGroupNameDuplicationRequest] must not be null");
+    public boolean checkUseGroupNameDuplication(CbbTerminalGroupNameDuplicationDTO request) {
+        Assert.notNull(request, "Param [CbbTerminalGroupNameDuplicationDTO] must not be null");
 
         boolean isNameUnique;
         try {
-            isNameUnique = terminalGroupService.checkGroupNameUnique(new TerminalGroupDTO(request.getId(),
+            isNameUnique = terminalGroupService.checkGroupNameUnique(new CbbTerminalGroupDetailDTO(request.getId(),
                     request.getGroupName(), request.getParentId()));
         } catch (BusinessException e) {
             isNameUnique = false;
         }
 
-        return new CbbCheckGroupNameDuplicationResponse(!isNameUnique);
+        return !isNameUnique;
+    }
+
+    @Override
+    public CbbTerminalStatisticsDTO statisticsTerminal(UUID[] groupIdArr) {
+        Assert.notNull(groupIdArr, "groupIdArr");
+        CbbTerminalStatisticsDTO response = new CbbTerminalStatisticsDTO();
+        //统计各类型终端在线情况
+        TerminalStatisticsItem itemVDI = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.VDI, groupIdArr);
+        response.setVdi(itemVDI);
+        TerminalStatisticsItem itemIDV = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.IDV, groupIdArr);
+        response.setIdv(itemIDV);
+        TerminalStatisticsItem itemAPP = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.APP, groupIdArr);
+        response.setApp(itemAPP);
+        //统计所有终端在线情况
+        return response;
+    }
+
+    private TerminalStatisticsItem buildTerminalStatisticsItem(CbbTerminalPlatformEnums terminalPlatform, UUID[] groupIdArr) {
+        List<TerminalStatisticsDTO> resultList;
+        Long neverLoginCount = 0L;
+        if (ArrayUtils.isEmpty(groupIdArr)) {
+            resultList = viewTerminalStatDAO.statisticsByTerminalState(terminalPlatform);
+        } else {
+            List<UUID> terminalGroupIdList = HibernateUtil
+                    .handleQueryIncludeList(Arrays.asList(groupIdArr));
+            resultList = viewTerminalStatDAO.statisticsByTerminalStateAndGroupId(terminalPlatform,
+                    terminalGroupIdList);
+        }
+        if (CollectionUtils.isEmpty(resultList)) {
+            LOGGER.debug("没有终端类型为[{}]的数据", terminalPlatform);
+            return new TerminalStatisticsItem();
+        }
+        TerminalStatisticsItem item = buildTerminalStatisticsItem(resultList, neverLoginCount);
+        return item;
+    }
+
+    private TerminalStatisticsItem buildTerminalStatisticsItem(List<TerminalStatisticsDTO> list, Long neverLoginCount) {
+        AtomicInteger online = new AtomicInteger();
+        AtomicInteger offline = new AtomicInteger();
+        AtomicInteger other = new AtomicInteger();
+        list.forEach((item -> {
+            CbbTerminalStateEnums state = CbbTerminalStateEnums.valueOf(item.getState());
+            int count = item.getCount().intValue();
+            switch (state) {
+                case UPGRADING:
+                case ONLINE:
+                    online.addAndGet(count);
+                    break;
+                case OFFLINE:
+                    offline.addAndGet(count);
+                    break;
+                default:
+                    other.addAndGet(count);
+                    break;
+            }
+        }));
+        TerminalStatisticsItem item = new TerminalStatisticsItem();
+        item.setOnline(online.get());
+        item.setOffline(offline.get());
+        item.setNeverLogin(neverLoginCount.intValue());
+        item.setTotal(online.get() + offline.get() + other.get());
+        return item;
     }
 }

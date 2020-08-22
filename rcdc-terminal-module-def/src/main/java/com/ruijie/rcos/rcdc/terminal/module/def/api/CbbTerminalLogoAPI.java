@@ -1,10 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.logo.CbbGetLogoPathResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUploadLogoDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 
 
@@ -14,39 +11,59 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年7月8日
- * 
+ *
  * @author huangsen
  */
 public interface CbbTerminalLogoAPI {
-    
+
+    /**
+     * @api {POST} CbbTerminalLogoAPI.uploadLogo 上传Logo
+     * @apiName uploadLogo
+     * @apiGroup CbbTerminalLogoAPI
+     * @apiDescription 上传Logo
+     * @apiParam (请求体字段说明) {CbbUploadLogoDTO} request CbbUploadLogoDTO
+     * @apiParam (请求体字段说明) {String} request.logoPath 文件路径
+     * @apiParam (请求体字段说明) {String} request.logoName 文件名称
+     * @apiParam (请求体字段说明) {String} request.logoMD5 文件MD5
+     *
+     */
     /**
      * 上传Logo
      *
      * @param request 请求参数
-     * @return 上传Logo结果
      * @throws BusinessException 请求异常
      */
-    
-    DefaultResponse uploadLogo(CbbUploadLogoRequest request) throws BusinessException;
+    void uploadLogo(CbbUploadLogoDTO request) throws BusinessException;
 
     /**
-     * 预览Logo
+     * @api {POST} CbbTerminalLogoAPI.getLogoPath 获取logo路径
+     * @apiName getLogoPath
+     * @apiGroup CbbTerminalLogoAPI
+     * @apiDescription 获取logo路径
      *
-     * @param request 请求参数
+     * @apiSuccess (响应字段说明) {String} logoPath logo相对ftp路径
+     */
+    /**
+     * 获取logo路径
+     *
      * @return 获取Logo路径结果
      * @throws BusinessException 请求异常
      */
-    
-    CbbGetLogoPathResponse getLogoPath(DefaultRequest request) throws BusinessException;
 
+    String getLogoPath() throws BusinessException;
+
+    /**
+     * @api {POST} CbbTerminalLogoAPI.initLogo 初始化Logo
+     * @apiName initLogo
+     * @apiGroup CbbTerminalLogoAPI
+     * @apiDescription 初始化Logo
+     *
+     */
     /**
      * 初始化Logo
      *
-     * @param request 请求参数
-     * @return 初始化Logo结果
      * @throws BusinessException 请求异常
      */
-    
-    DefaultResponse initLogo(DefaultRequest request) throws BusinessException;
+    void initLogo() throws BusinessException;
 }
 

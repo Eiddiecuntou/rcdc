@@ -1,29 +1,26 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLogoAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.logo.CbbGetLogoPathResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUploadLogoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * Description: 终端Logo实现类
@@ -49,7 +46,7 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
     private TerminalLogoService terminalLogoService;
 
     @Override
-    public DefaultResponse uploadLogo(CbbUploadLogoRequest request) throws BusinessException {
+    public void uploadLogo(CbbUploadLogoDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         deleteLogo();
@@ -58,28 +55,25 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
 
         terminalLogoService.syncTerminalLogo(terminalLogoInfo, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
 
-        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public CbbGetLogoPathResponse getLogoPath(DefaultRequest request) {
+    public String getLogoPath() {
         String logoInfo = globalParameterAPI.findParameter(TerminalLogoService.TERMINAL_LOGO);
-        CbbGetLogoPathResponse response = new CbbGetLogoPathResponse();
-        response.setLogoPath(getLogoPath(logoInfo));
-        return response;
+
+        return getLogoPath(logoInfo);
     }
 
     @Override
-    public DefaultResponse initLogo(DefaultRequest request) throws BusinessException {
+    public void initLogo() throws BusinessException {
         String logoPath = deleteLogo();
         if (StringUtils.isNotEmpty(logoPath)) {
             globalParameterAPI.updateParameter(TerminalLogoService.TERMINAL_LOGO, null);
             terminalLogoService.syncTerminalLogo(new TerminalLogoInfo(), SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
         }
-        return DefaultResponse.Builder.success();
     }
 
-    private TerminalLogoInfo saveLogoInfo(CbbUploadLogoRequest request) throws BusinessException {
+    private TerminalLogoInfo saveLogoInfo(CbbUploadLogoDTO request) throws BusinessException {
         String saveLogoPath = saveLogo(request.getLogoPath());
         TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
         terminalLogoInfo.setLogoPath(saveLogoPath);

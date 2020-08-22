@@ -38,7 +38,7 @@ public class SambaInfoService {
      */
     public SambaInfoDTO getPxeSambaInfo() throws BusinessException {
 
-        final SambaConfigDTO sambaConfigDTO = sambaServiceAPI.getSambaConfig(PXE_SHARE_NAME).getDto();
+        final SambaConfigDTO sambaConfigDTO = sambaServiceAPI.getSambaConfig(PXE_SHARE_NAME);
 
         if (sambaConfigDTO.getState() == SambaMountState.UNMOUNT) {
             LOGGER.error("samba共享目录[{}]未挂载", PXE_SHARE_NAME);

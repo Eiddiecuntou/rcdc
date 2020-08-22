@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -34,7 +34,7 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
     private static final String ISO_FILE_MD5_CHECK_SUCCESS_FLAG = "PASS";
 
     @Override
-    public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
+    public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         String fileName = request.getFileName();
         String filePath = request.getFilePath();

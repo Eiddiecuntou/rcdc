@@ -43,3 +43,14 @@ CREATE VIEW v_cbb_upgradeable_terminal AS
                    FROM t_cbb_sys_upgrade
                   WHERE ((t_cbb_sys_upgrade.state)::text = 'UPGRADING'::text))))))
   ORDER BY sut_suc.last_upgrade_time NULLS FIRST;
+
+  -- 终端统计视图
+create view v_cbb_terminal_stat
+ as
+  SELECT
+    t_cbb_terminal.id,
+    t_cbb_terminal.state,
+    t_cbb_terminal.platform,
+    t_cbb_terminal.version,
+    t_cbb_terminal.group_id
+  FROM t_cbb_terminal;

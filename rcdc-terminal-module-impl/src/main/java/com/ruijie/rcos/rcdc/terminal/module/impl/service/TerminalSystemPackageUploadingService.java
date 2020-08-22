@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
@@ -32,5 +32,5 @@ public interface TerminalSystemPackageUploadingService {
      * @throws BusinessException 业务异常
      */
     
-    void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request, CbbTerminalTypeEnums terminalType) throws BusinessException;
+    void uploadUpgradePackage(CbbTerminalUpgradePackageUploadDTO request, CbbTerminalTypeEnums terminalType) throws BusinessException;
 }

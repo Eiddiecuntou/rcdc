@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemPackageUploadingService;
@@ -43,7 +43,7 @@ public class TerminalSystemPackageUploadingServiceImpl implements TerminalSystem
     }
 
     @Override
-    public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request, CbbTerminalTypeEnums terminalType) throws BusinessException {
+    public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadDTO request, CbbTerminalTypeEnums terminalType) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         Assert.notNull(terminalType, "terminalType can not be null");
         synchronized (LOCK) {

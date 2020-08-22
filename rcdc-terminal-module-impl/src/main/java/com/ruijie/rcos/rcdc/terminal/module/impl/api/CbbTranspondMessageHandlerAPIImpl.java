@@ -3,9 +3,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.ShineResponseMessageDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbShineMessageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.callback.AsyncRequestCallBack;
@@ -18,10 +18,10 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.commkit.base.sender.DefaultResponseMessageSender;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+
 import java.io.IOException;
 
 /**
@@ -40,14 +40,13 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     private SessionManager sessionManager;
 
     @Override
-    public DefaultResponse request(CbbShineMessageRequest request) throws BusinessException {
+    public void request(CbbShineMessageRequest request) throws BusinessException {
         Assert.notNull(request, "request参数不能为空");
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("接收到request请求消息：{}", request.toString());
         }
         DefaultRequestMessageSender sender = getRequestSender(request.getTerminalId());
         sender.request(wrapMessage(request));
-        return DefaultResponse.Builder.success();
     }
 
     @Override
@@ -67,7 +66,7 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     }
 
     @Override
-    public DefaultResponse asyncRequest(CbbShineMessageRequest request, CbbTerminalCallback callback) throws BusinessException {
+    public void asyncRequest(CbbShineMessageRequest request, CbbTerminalCallback callback) throws BusinessException {
         Assert.notNull(request, "request参数不能为null");
         Assert.notNull(callback, "CbbTerminalCallback 不能为null");
         if (LOGGER.isDebugEnabled()) {
@@ -75,11 +74,10 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         }
         DefaultRequestMessageSender sender = getRequestSender(request.getTerminalId());
         sender.asyncRequest(wrapMessage(request), new AsyncRequestCallBack(request.getTerminalId(), callback));
-        return DefaultResponse.Builder.success();
     }
 
     @Override
-    public DefaultResponse response(CbbResponseShineMessage msg) {
+    public void response(CbbResponseShineMessage msg) {
         Assert.notNull(msg, "CbbResponseShineMessage不能为null");
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("RCDC应答消息：{}", msg.toString());
@@ -94,7 +92,6 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         shineResponseMessageDTO.setContent(msg.getContent());
         Message message = new Message(Constants.SYSTEM_TYPE, msg.getAction(), shineResponseMessageDTO);
         sender.response(message);
-        return DefaultResponse.Builder.success();
     }
 
     private Message wrapMessage(CbbShineMessageRequest messageRequest) {

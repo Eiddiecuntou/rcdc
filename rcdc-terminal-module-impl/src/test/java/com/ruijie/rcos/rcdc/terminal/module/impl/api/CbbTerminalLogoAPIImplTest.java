@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.logo.CbbUploadLogoRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUploadLogoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
@@ -10,8 +10,6 @@ import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.base.util.StringUtils;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import mockit.*;
 import mockit.integration.junit4.JMockit;
@@ -66,7 +64,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testUploadLogoPathIsNull() throws Exception {
-        CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
+        CbbUploadLogoDTO request = new CbbUploadLogoDTO("logoPath", "logoName", "logoMD5");
         new MockUp<File>() {
             @Mock
             boolean exists() {
@@ -122,7 +120,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testUploadLogoFileNotExist() throws Exception {
-        CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
+        CbbUploadLogoDTO request = new CbbUploadLogoDTO("logoPath", "logoName", "logoMD5");
         new MockUp<File>() {
             @Mock
             boolean exists() {
@@ -169,7 +167,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testUploadLogoException() throws Exception {
-        CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
+        CbbUploadLogoDTO request = new CbbUploadLogoDTO("logoPath", "logoName", "logoMD5");
         new MockUp<File>() {
             @Mock
             boolean exist() {
@@ -225,7 +223,7 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testUploadLogoFileExist() throws Exception {
-        CbbUploadLogoRequest request = new CbbUploadLogoRequest("logoPath", "logoName", "logoMD5");
+        CbbUploadLogoDTO request = new CbbUploadLogoDTO("logoPath", "logoName", "logoMD5");
         TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
         terminalLogoInfo.setLogoPath("/logo/logo.png");
         terminalLogoInfo.setMd5("123456");
@@ -262,7 +260,6 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testGetLogoPath() throws Exception {
-        DefaultRequest request = new DefaultRequest();
         TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
         terminalLogoInfo.setLogoPath("/logo/logo.png");
         terminalLogoInfo.setMd5("123456");
@@ -273,7 +270,7 @@ public class CbbTerminalLogoAPIImplTest {
                 result = logoInfo;
             }
         };
-        terminalLogoAPI.getLogoPath(request);
+        terminalLogoAPI.getLogoPath();
 
         new Verifications() {
             {
@@ -291,7 +288,6 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testInitLogoPathIsNotNull() throws Exception {
-        DefaultRequest request = new DefaultRequest();
         TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
         terminalLogoInfo.setLogoPath("/logo/logo.png");
         terminalLogoInfo.setMd5("123456");
@@ -305,7 +301,7 @@ public class CbbTerminalLogoAPIImplTest {
 
             }
         };
-        terminalLogoAPI.initLogo(request);
+        terminalLogoAPI.initLogo();
 
         new Verifications() {
             {
@@ -327,14 +323,13 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testInitLogoPathIsNull() throws Exception {
-        DefaultRequest request = new DefaultRequest();
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminalLogo");
                 result = null;
             }
         };
-        terminalLogoAPI.initLogo(request);
+        terminalLogoAPI.initLogo();
 
         new Verifications() {
             {
@@ -358,7 +353,6 @@ public class CbbTerminalLogoAPIImplTest {
      */
     @Test
     public void testInitLogoWithLogoExists(@Mocked SkyengineFile skyengineFile) throws Exception {
-        DefaultRequest request = new DefaultRequest();
         TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
         terminalLogoInfo.setLogoPath("/logo/logo.png");
         terminalLogoInfo.setMd5("123456");
@@ -376,7 +370,7 @@ public class CbbTerminalLogoAPIImplTest {
                 return true;
             }
         };
-        terminalLogoAPI.initLogo(request);
+        terminalLogoAPI.initLogo();
 
         new Verifications() {
             {

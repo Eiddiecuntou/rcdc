@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherKey;
-import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import org.springframework.lang.Nullable;
 
 /**
@@ -13,7 +12,7 @@ import org.springframework.lang.Nullable;
  *
  * @author Jarman
  */
-public class CbbDispatcherRequest implements Request {
+public class CbbDispatcherRequest {
 
     @NotBlank
     @DispatcherKey

@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -95,7 +95,7 @@ public class TerminalOtaUpgradeInitTest {
             {
                 handler.preUploadPackage();
                 times = 1;
-                handler.uploadUpgradePackage((CbbTerminalUpgradePackageUploadRequest) any);
+                handler.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any);
                 times = 1;
                 handler.postUploadPackage();
                 times = 1;
@@ -174,7 +174,8 @@ public class TerminalOtaUpgradeInitTest {
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
                 result = upgradePackage;
 
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId()
+                        , (List<CbbSystemUpgradeTaskStateEnums>) any);
                 returns(upgradingTaskList, upgradingTask2List);
 
                 btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
@@ -190,7 +191,8 @@ public class TerminalOtaUpgradeInitTest {
                 times = 2;
                 handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 times = 0;
-                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), (List<CbbSystemUpgradeTaskStateEnums>) any);
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId()
+                        , (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 2;
                 btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
                 times = 1;

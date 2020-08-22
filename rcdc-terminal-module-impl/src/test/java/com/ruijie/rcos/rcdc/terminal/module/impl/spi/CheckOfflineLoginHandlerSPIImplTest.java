@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import org.junit.Test;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 

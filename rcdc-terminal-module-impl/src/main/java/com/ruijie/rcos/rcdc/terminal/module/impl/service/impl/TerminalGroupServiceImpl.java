@@ -10,7 +10,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDetailDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalGroupDAO;
@@ -50,7 +50,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     private GroupTotalNumChecker groupTotalNumChecker;
 
     @Override
-    public synchronized TerminalGroupEntity saveTerminalGroup(TerminalGroupDTO terminalGroup) throws BusinessException {
+    public synchronized TerminalGroupEntity saveTerminalGroup(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException {
         Assert.notNull(terminalGroup, "terminal group can not be null");
         String groupName = terminalGroup.getGroupName();
         Assert.hasText(groupName, "terminal group name can not be null");
@@ -82,7 +82,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     }
 
     @Override
-    public boolean checkGroupNameUnique(TerminalGroupDTO terminalGroup) throws BusinessException {
+    public boolean checkGroupNameUnique(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException {
         Assert.notNull(terminalGroup, "terminal group can not be null");
         Assert.hasText(terminalGroup.getGroupName(), "terminal group name can not be blank");
 
@@ -122,7 +122,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     }
 
     @Override
-    public void modifyGroupById(TerminalGroupDTO terminalGroup) throws BusinessException {
+    public void modifyGroupById(CbbTerminalGroupDetailDTO terminalGroup) throws BusinessException {
         Assert.notNull(terminalGroup, "terminal group param can not be null");
         UUID id = terminalGroup.getId();
         UUID parentGroupId = terminalGroup.getParentGroupId();
@@ -203,7 +203,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
      * @param terminalGroup
      * @return
      */
-    private TerminalGroupEntity buildTerminalGroupEntity(TerminalGroupDTO terminalGroup) {
+    private TerminalGroupEntity buildTerminalGroupEntity(CbbTerminalGroupDetailDTO terminalGroup) {
         TerminalGroupEntity entity = new TerminalGroupEntity();
         entity.setName(terminalGroup.getGroupName());
         entity.setParentId(terminalGroup.getParentGroupId());

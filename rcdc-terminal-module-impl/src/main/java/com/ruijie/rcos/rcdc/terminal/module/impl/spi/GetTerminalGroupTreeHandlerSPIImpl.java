@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.group.CbbGetTerminalGroupTreeResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupTreeNodeDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.GetTerminalGroupTreeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
@@ -47,7 +47,7 @@ public class GetTerminalGroupTreeHandlerSPIImpl implements CbbDispatcherHandlerS
         Assert.notNull(request, "request cannot be null!");
 
         try {
-            CbbGetTerminalGroupTreeResponse groupTreeResponse = loadTerminalGroupCompleteTree();
+            GetTerminalGroupTreeDTO groupTreeResponse = loadTerminalGroupCompleteTree();
             Assert.notNull(groupTreeResponse.getItemArr(), "items in groupTreeResponse is null!");
 
             CbbResponseShineMessage shineMessage = MessageUtils.buildResponseMessage(request, groupTreeResponse);
@@ -59,13 +59,13 @@ public class GetTerminalGroupTreeHandlerSPIImpl implements CbbDispatcherHandlerS
         }
     }
 
-    private CbbGetTerminalGroupTreeResponse loadTerminalGroupCompleteTree() {
+    private GetTerminalGroupTreeDTO loadTerminalGroupCompleteTree() {
         List<TerminalGroupEntity> groupList = terminalGroupService.findAll();
         if (CollectionUtils.isEmpty(groupList)) {
-            return new CbbGetTerminalGroupTreeResponse(new TerminalGroupTreeNodeDTO[0]);
+            return new GetTerminalGroupTreeDTO(new CbbTerminalGroupTreeNodeDTO[0]);
         }
         // 不过滤任何分组（包括"未分组"）
-        TerminalGroupTreeNodeDTO[] dtoArr = terminalGroupHandler.assembleGroupTree(null, groupList, null);
-        return new CbbGetTerminalGroupTreeResponse(dtoArr);
+        CbbTerminalGroupTreeNodeDTO[] dtoArr = terminalGroupHandler.assembleGroupTree(null, groupList, null);
+        return new GetTerminalGroupTreeDTO(dtoArr);
     }
 }

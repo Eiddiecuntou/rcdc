@@ -4,15 +4,11 @@ import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbCheckAllowUploadPackageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalUpgradePackageUploadRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbCheckAllowUploadPackageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbListTerminalSystemUpgradePackageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageNameResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbUpgradePackageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
@@ -26,15 +22,11 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -78,7 +70,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private TerminalSystemUpgradePackageHandlerFactory terminalSystemUpgradePackageHandlerFactory;
 
     @Override
-    public CbbCheckAllowUploadPackageResponse checkAllowUploadPackage(CbbCheckAllowUploadPackageRequest request) throws BusinessException {
+    public CbbCheckAllowUploadPackageResultDTO checkAllowUploadPackage(CbbCheckAllowUploadPackageDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
         boolean allowUpload = true;
@@ -105,7 +97,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
             errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[] {}));
         }
 
-        CbbCheckAllowUploadPackageResponse respone = new CbbCheckAllowUploadPackageResponse();
+        CbbCheckAllowUploadPackageResultDTO respone = new CbbCheckAllowUploadPackageResultDTO();
         respone.setAllowUpload(allowUpload);
         respone.setErrorList(errorList);
 
@@ -113,7 +105,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     @Override
-    public DefaultResponse uploadUpgradePackage(CbbTerminalUpgradePackageUploadRequest request) throws BusinessException {
+    public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         CbbTerminalTypeEnums terminalType = request.getTerminalType();
         // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包（Android VDI升级包除外）
@@ -123,7 +115,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
         }
         terminalSystemPackageUploadingService.uploadUpgradePackage(request, terminalType);
-        return DefaultResponse.Builder.success();
     }
 
     /**
@@ -142,8 +133,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     @Override
-    public CbbListTerminalSystemUpgradePackageResponse listSystemUpgradePackage(DefaultRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public CbbTerminalSystemUpgradePackageInfoDTO[] listSystemUpgradePackage() throws BusinessException {
 
         List<TerminalSystemUpgradePackageEntity> packageList = terminalSystemUpgradePackageDAO.findByIsDelete(false);
 
@@ -158,14 +148,13 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
             dtoArr[i] = dto;
         });
 
-        return new CbbListTerminalSystemUpgradePackageResponse(dtoArr);
+        return dtoArr;
     }
 
     @Override
-    public CbbUpgradePackageNameResponse deleteUpgradePackage(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public String deleteUpgradePackage(UUID packageId) throws BusinessException {
+        Assert.notNull(packageId, "packageId can not be null");
 
-        final UUID packageId = request.getId();
         final TerminalSystemUpgradePackageEntity systemUpgradePackage = terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
         if (terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageId)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_HAS_RUNNING_TASK_NOT_ALLOW_DELETE);
@@ -173,21 +162,21 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
         terminalSystemUpgradePackageService.deleteSoft(packageId);
 
-        return new CbbUpgradePackageNameResponse(systemUpgradePackage.getPackageName());
+        return systemUpgradePackage.getPackageName();
     }
 
     @Override
-    public CbbUpgradePackageResponse getById(IdRequest request) throws BusinessException {
-        Assert.notNull(request, "request can not be null");
+    public CbbTerminalSystemUpgradePackageInfoDTO findById(UUID packageId) throws BusinessException {
+        Assert.notNull(packageId, "packageId can not be null");
 
         final TerminalSystemUpgradePackageEntity packageEntity =
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(request.getId());
+                terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
         CbbTerminalSystemUpgradePackageInfoDTO dto = new CbbTerminalSystemUpgradePackageInfoDTO();
         PACKAGE_BEAN_COPIER.copy(packageEntity, dto, null);
         dto.setName(packageEntity.getPackageName());
         // 设置刷机包刷机状态
         completeUpgradingTaskInfo(dto, packageEntity);
-        return new CbbUpgradePackageResponse(dto);
+        return dto;
     }
 
     private void completeUpgradingTaskInfo(CbbTerminalSystemUpgradePackageInfoDTO dto, final TerminalSystemUpgradePackageEntity packageEntity) {

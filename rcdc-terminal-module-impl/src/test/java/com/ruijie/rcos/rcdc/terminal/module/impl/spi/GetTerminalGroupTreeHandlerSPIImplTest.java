@@ -2,8 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupTreeNodeDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalGroupEntity;
@@ -57,12 +57,12 @@ public class GetTerminalGroupTreeHandlerSPIImplTest {
         List<TerminalGroupEntity> groupList = Lists.newArrayList();
         groupList.add(entity);
 
-        TerminalGroupTreeNodeDTO nodeDTO = new TerminalGroupTreeNodeDTO();
+        CbbTerminalGroupTreeNodeDTO nodeDTO = new CbbTerminalGroupTreeNodeDTO();
         nodeDTO.setId(UUID.randomUUID());
         nodeDTO.setParentId(UUID.randomUUID());
         nodeDTO.setEnableDefault(true);
         nodeDTO.setLabel("label");
-        TerminalGroupTreeNodeDTO[] nodeDTOArr = {nodeDTO};
+        CbbTerminalGroupTreeNodeDTO[] nodeDTOArr = {nodeDTO};
 
         new Expectations() {
             {

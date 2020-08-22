@@ -4,15 +4,12 @@ import com.ruijie.rcos.base.sysmanage.module.def.dto.BaseUpgradeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.MaintenanceModeNotifySPIImpl;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.modulekit.api.comm.Response;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Description:
@@ -63,8 +60,13 @@ public class MaintenanceModeNotifySPIImplTest {
     @Test
     public void testAfterUnderMaintenance() throws BusinessException {
 
-        Response response = spi.afterUnderMaintenance("aaa", new BaseUpgradeDTO());
-        assertEquals(Response.Status.SUCCESS, response.getStatus());
+        spi.afterUnderMaintenance("aaa", new BaseUpgradeDTO());
+        new Verifications() {
+            {
+
+            }
+        };
+
     }
 
     /**
@@ -75,8 +77,12 @@ public class MaintenanceModeNotifySPIImplTest {
     @Test
     public void testAfterMaintenanceEnd() throws BusinessException {
 
-        Response response = spi.afterMaintenanceEnd("aaa", new BaseUpgradeDTO());
-        assertEquals(Response.Status.SUCCESS, response.getStatus());
+        spi.afterMaintenanceEnd("aaa", new BaseUpgradeDTO());
+        new Verifications() {
+            {
+
+            }
+        };
     }
 
 
@@ -88,7 +94,11 @@ public class MaintenanceModeNotifySPIImplTest {
     @Test
     public void testAfterEnteringMaintenance() throws BusinessException {
 
-        Response response = spi.afterEnteringMaintenance("aaa", new BaseUpgradeDTO());
-        assertEquals(Response.Status.SUCCESS, response.getStatus());
+        spi.afterEnteringMaintenance("aaa", new BaseUpgradeDTO());
+        new Verifications() {
+            {
+
+            }
+        };
     }
 }

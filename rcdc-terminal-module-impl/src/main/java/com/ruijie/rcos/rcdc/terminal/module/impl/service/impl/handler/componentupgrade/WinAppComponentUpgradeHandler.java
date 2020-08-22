@@ -6,7 +6,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
@@ -29,20 +29,20 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
     private static final Logger LOGGER = LoggerFactory.getLogger(WinAppComponentUpgradeHandler.class);
 
     @Override
-    public TerminalVersionResultDTO<CbbWinAppUpdateListDTO> getVersion(GetVersionDTO request) {
+    public TerminalVersionResultDTO<WinAppUpdateListDTO> getVersion(GetVersionDTO request) {
         Assert.notNull(request, "get version request can not be null");
 
         LOGGER.debug("windows软终端请求版本号");
         if (!TerminalUpdateListCacheManager.isCacheReady(CbbTerminalTypeEnums.APP_WINDOWS)) {
             LOGGER.debug("soft windows终端请求版本号服务端未就绪");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), new CbbWinAppUpdateListDTO());
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), new WinAppUpdateListDTO());
         }
 
-        CbbWinAppUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.APP_WINDOWS);
+        WinAppUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(CbbTerminalTypeEnums.APP_WINDOWS);
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist不存在或updatelist中组件信息不存在，返回服务器异常响应");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), new CbbWinAppUpdateListDTO());
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), new WinAppUpdateListDTO());
         }
 
         if (LOGGER.isDebugEnabled()) {
@@ -55,7 +55,7 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
         if (rainUpgradeVersion.equals(versionStr)) {
             // 版本相同，不升级 0
             LOGGER.debug("版本号服务端相同，不需要升级");
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new CbbWinAppUpdateListDTO());
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new WinAppUpdateListDTO());
         }
 
         boolean isVersionNotLess;
@@ -63,7 +63,7 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
             isVersionNotLess = isVersionNotLess(rainUpgradeVersion, updatelist.getLimitVersion());
         } catch (Exception e) {
             LOGGER.error("比较osLimit版本失败", e);
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new CbbWinAppUpdateListDTO());
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new WinAppUpdateListDTO());
         }
 
         if (isVersionNotLess) {
@@ -75,16 +75,16 @@ public class WinAppComponentUpgradeHandler extends AbstractTerminalComponentUpgr
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), getCompleteUpgradeResult(updatelist));
     }
 
-    private CbbWinAppUpdateListDTO getCompleteUpgradeResult(CbbWinAppUpdateListDTO updatelist) {
-        CbbWinAppUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
+    private WinAppUpdateListDTO getCompleteUpgradeResult(WinAppUpdateListDTO updatelist) {
+        WinAppUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
 
         copyUpdateList.setComponentList(Collections.emptyList());
         copyUpdateList.setComponentSize(0);
         return copyUpdateList;
     }
 
-    private CbbWinAppUpdateListDTO getIncrementUpgradeResult(CbbWinAppUpdateListDTO updatelist) {
-        CbbWinAppUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
+    private WinAppUpdateListDTO getIncrementUpgradeResult(WinAppUpdateListDTO updatelist) {
+        WinAppUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
 
         // 增量升级，清除完整升级信息
         copyUpdateList.setName(StringUtils.EMPTY);

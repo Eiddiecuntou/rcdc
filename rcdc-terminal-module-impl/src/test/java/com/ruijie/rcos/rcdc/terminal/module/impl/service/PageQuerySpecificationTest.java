@@ -11,9 +11,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.BetweenTimeRangeMatch;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.BetweenTimeRangeMatch;
 import org.junit.Test;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.MatchEqual;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.Expectations;
 import mockit.Mocked;

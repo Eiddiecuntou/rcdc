@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbUpgradeTerminalRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -245,7 +245,7 @@ public class AbstractSystemUpgradeHandlerTest {
 
         SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, terminalEntity);
 
-        SystemUpgradeCheckResult  expectedResult= new SystemUpgradeCheckResult();
+        SystemUpgradeCheckResult  expectedResult = new SystemUpgradeCheckResult();
         expectedResult.setSystemUpgradeCode(1);
 
         assertEquals(expectedResult, checkResult);
@@ -309,7 +309,7 @@ public class AbstractSystemUpgradeHandlerTest {
 
         SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_ANDROID, terminalEntity);
 
-        SystemUpgradeCheckResult  expectedResult= new SystemUpgradeCheckResult();
+        SystemUpgradeCheckResult  expectedResult = new SystemUpgradeCheckResult();
         expectedResult.setSystemUpgradeCode(1);
 
         assertEquals(expectedResult, checkResult);
@@ -598,7 +598,7 @@ public class AbstractSystemUpgradeHandlerTest {
                 systemUpgradeService.isGroupInUpgradeTask(upgradeEntity.getId(), terminalEntity.getGroupId());
                 times = 1;
 
-                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbUpgradeTerminalRequest) any);
+                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbUpgradeTerminalDTO) any);
                 times = 1;
             }
         };
@@ -637,7 +637,7 @@ public class AbstractSystemUpgradeHandlerTest {
                 systemUpgradeService.isGroupInUpgradeTask(upgradeEntity.getId(), terminalEntity.getGroupId());
                 result = false;
 
-                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbUpgradeTerminalRequest) any);
+                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbUpgradeTerminalDTO) any);
                 result = new BusinessException("key");
             }
         };
@@ -660,7 +660,7 @@ public class AbstractSystemUpgradeHandlerTest {
                 systemUpgradeService.isGroupInUpgradeTask(upgradeEntity.getId(), terminalEntity.getGroupId());
                 times = 1;
 
-                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbUpgradeTerminalRequest) any);
+                cbbTerminalUpgradeAPI.addSystemUpgradeTerminal((CbbUpgradeTerminalDTO) any);
                 times = 1;
             }
         };

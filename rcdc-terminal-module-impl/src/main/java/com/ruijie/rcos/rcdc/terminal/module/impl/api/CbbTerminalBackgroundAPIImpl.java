@@ -1,16 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSON;
 import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBackgroundAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbTerminalBackgroundSaveRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundSaveDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalBackgroundInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundService;
@@ -20,10 +14,12 @@ import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
-import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Description: Function Description
@@ -59,17 +55,15 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     TerminalBackgroundService terminalBackgroundService;
 
     @Override
-    public DefaultResponse saveBackgroundImageConfig(CbbTerminalBackgroundSaveRequest request) throws BusinessException {
+    public void saveBackgroundImageConfig(CbbTerminalBackgroundSaveDTO request) throws BusinessException {
         Assert.notNull(request, "request must not be null");
 
         TerminalBackgroundInfo terminalSyncBackgroundInfo = saveBackgroundImageInfo(request);
 
         terminalBackgroundService.syncTerminalBackground(terminalSyncBackgroundInfo);
-
-        return DefaultResponse.Builder.success();
     }
 
-    private TerminalBackgroundInfo saveBackgroundImageInfo(CbbTerminalBackgroundSaveRequest request) throws BusinessException {
+    private TerminalBackgroundInfo saveBackgroundImageInfo(CbbTerminalBackgroundSaveDTO request) throws BusinessException {
         deleteImageFile();
         File imageFile = getBackGroundImageFile(request.getImageName());
         saveBackgroundImageFile(request.getImagePath(), imageFile);
@@ -80,13 +74,12 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     }
 
     @Override
-    public DtoResponse<CbbTerminalBackgroundImageInfoDTO> getBackgroundImageInfo(DefaultRequest request) throws BusinessException {
-        Assert.notNull(request, "request must not be null");
+    public CbbTerminalBackgroundImageInfoDTO getBackgroundImageInfo() throws BusinessException {
 
         CbbTerminalBackgroundImageInfoDTO dto = new CbbTerminalBackgroundImageInfoDTO();
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
         if (StringUtils.isEmpty(parameter)) {
-            return DtoResponse.empty();
+            return dto;
         }
 
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
@@ -94,19 +87,18 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         File imageFile = new File(detailInfo.getFilePath());
 
         if (imageFile.exists() == false) {
-            return DtoResponse.empty();
+            return dto;
         }
         dto.setImagePath(imageFile.getAbsolutePath());
         dto.setImageName(imageFile.getName());
-        return DtoResponse.success(dto);
+        return dto;
     }
 
     @Override
-    public DefaultResponse initBackgroundImage(DefaultRequest request) throws BusinessException {
-        Assert.notNull(request, "request must not be null");
+    public void initBackgroundImage() throws BusinessException {
         String parameter = globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
         if (StringUtils.isEmpty(parameter)) {
-            return DefaultResponse.Builder.success();
+            return;
         }
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
         File imageFile = new File(terminalBackgroundInfo.getDetailInfo().getFilePath());
@@ -117,7 +109,6 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         globalParameterAPI.updateParameter(TerminalBackgroundService.TERMINAL_BACKGROUND, null);
         terminalBackgroundInfo.setIsDefaultImage(true);
         terminalBackgroundService.syncTerminalBackground(terminalBackgroundInfo);
-        return DefaultResponse.Builder.success();
     }
 
     private TerminalBackgroundInfo buildTerminalBackgroundInfo(File imageFile, String md5) {

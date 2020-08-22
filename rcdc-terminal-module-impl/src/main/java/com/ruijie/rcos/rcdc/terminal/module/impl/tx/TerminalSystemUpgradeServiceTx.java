@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbAddSystemUpgradeTaskRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
@@ -26,7 +26,7 @@ public interface TerminalSystemUpgradeServiceTx {
      * @param request 终端id数组
      * @return 刷机任务id
      */
-    UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, CbbAddSystemUpgradeTaskRequest request);
+    UUID addSystemUpgradeTask(TerminalSystemUpgradePackageEntity upgradePackage, CbbAddSystemUpgradeTaskDTO request);
 
     /**
      * 结束刷机任务

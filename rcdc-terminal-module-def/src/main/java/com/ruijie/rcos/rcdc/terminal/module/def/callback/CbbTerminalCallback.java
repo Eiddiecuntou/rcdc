@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.callback;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.response.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Callback;
 
 /**

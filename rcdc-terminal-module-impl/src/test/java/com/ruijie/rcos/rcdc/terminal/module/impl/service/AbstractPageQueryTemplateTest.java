@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.MatchEqual;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.request.MatchEqual;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.PageSearchRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;

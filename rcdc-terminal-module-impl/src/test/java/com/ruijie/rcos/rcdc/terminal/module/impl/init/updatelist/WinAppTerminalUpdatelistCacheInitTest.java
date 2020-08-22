@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.updatelist.CbbWinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppUpdateListDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
 import mockit.Tested;
@@ -52,9 +52,9 @@ public class WinAppTerminalUpdatelistCacheInitTest {
     @Test
     public void testFillUpdateListHasIOException() {
 
-        CbbWinAppUpdateListDTO dto = new CbbWinAppUpdateListDTO();
-        List<CbbWinAppComponentVersionInfoDTO> versionList = Lists.newArrayList();
-        CbbWinAppComponentVersionInfoDTO versionInfoDTO = new CbbWinAppComponentVersionInfoDTO();
+        WinAppUpdateListDTO dto = new WinAppUpdateListDTO();
+        List<WinAppComponentVersionInfoDTO> versionList = Lists.newArrayList();
+        WinAppComponentVersionInfoDTO versionInfoDTO = new WinAppComponentVersionInfoDTO();
         versionInfoDTO.setCompletePackageName("aaa");
         versionList.add(versionInfoDTO);
         dto.setComponentList(versionList);

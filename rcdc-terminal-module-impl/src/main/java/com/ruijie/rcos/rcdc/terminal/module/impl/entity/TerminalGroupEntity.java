@@ -8,8 +8,8 @@ import javax.persistence.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.util.Assert;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.terminal.TerminalGroupTreeNodeDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupDetailDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupTreeNodeDTO;
 
 /**
  * 终端组持久化实体
@@ -41,7 +41,7 @@ public class TerminalGroupEntity {
      * 
      * @param terminalGroupDTO 页面呈现的VO对象
      */
-    public void converToDTO(TerminalGroupDTO terminalGroupDTO) {
+    public void converToDTO(CbbTerminalGroupDetailDTO terminalGroupDTO) {
         Assert.notNull(terminalGroupDTO, "terminalGroupDTO can not be null");
 
         terminalGroupDTO.setId(id);
@@ -54,7 +54,7 @@ public class TerminalGroupEntity {
      * 
      * @param treeNodeDTO 页面呈现的树形对象
      */
-    public void converToDTO(TerminalGroupTreeNodeDTO treeNodeDTO) {
+    public void converToDTO(CbbTerminalGroupTreeNodeDTO treeNodeDTO) {
         Assert.notNull(treeNodeDTO, "terminal group treeNodeDTO can not be null");
 
         treeNodeDTO.setId(id);
