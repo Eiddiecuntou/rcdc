@@ -1320,7 +1320,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         TerminalSystemUpgradeTerminalGroupEntity upgradeGroup = new TerminalSystemUpgradeTerminalGroupEntity();
         upgradeGroup.setTerminalGroupId(UUID.randomUUID());
         List<TerminalSystemUpgradeTerminalGroupEntity> upgradeGroupList = Lists.newArrayList(upgradeGroup);
-        Pageable page = new PageRequest(0, 10);
+        Pageable page = PageRequest.of(0, 10);
         Page<TerminalSystemUpgradeTerminalGroupEntity> upgradeTaskTerminalPage = new PageImpl(upgradeGroupList, page, 1L);
 
         PageSearchRequest request = new PageSearchRequest();
