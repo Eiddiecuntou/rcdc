@@ -40,7 +40,7 @@ public class ClearDataDiskResultHandlerSPIImpl implements CbbDispatcherHandlerSP
      */
     @Override
     public void dispatch(CbbDispatcherRequest request) {
-        Assert.notNull(request,"CbbDispatcherRequest can not be null");
+        Assert.notNull(request,"cbbDispatcherRequest can not be null");
         Assert.hasText(request.getTerminalId(), "terminalId 不能为空");
         Assert.notNull(request.getData(), "报文消息体不能为空");
 

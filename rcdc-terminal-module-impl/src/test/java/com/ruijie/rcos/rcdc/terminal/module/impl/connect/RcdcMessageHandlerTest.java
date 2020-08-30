@@ -83,8 +83,6 @@ public class RcdcMessageHandlerTest {
         };
         new Expectations() {
             {
-                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
-                result = null;
                 sessionManager.bindSession(terminalId, (Session) any);
                 result = null;
             }
@@ -135,8 +133,6 @@ public class RcdcMessageHandlerTest {
         };
         new Expectations() {
             {
-                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
-                result = null;
                 sessionManager.getSessionByAlias(terminalId);
                 result = null;
                 sessionManager.bindSession(terminalId, (Session) any);
@@ -182,12 +178,6 @@ public class RcdcMessageHandlerTest {
         String terminalId = "01-1C-42-F1-2D-45";
         TerminalInfo info = new TerminalInfo(terminalId, "172.21.12.3");
 
-        new Expectations() {
-            {
-                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
-                result = null;
-            }
-        };
         try {
             String action = ShineAction.COLLECT_TERMINAL_LOG_FINISH;
             CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
@@ -303,34 +293,4 @@ public class RcdcMessageHandlerTest {
         };
     }
 
-    /**
-     * 测试OnReceive，分发消息失败
-     *
-     * @param session session连接
-     * @throws InterruptedException 异常
-     */
-    @Test
-    public void testOnReceiveDispatchMessageFail(@Mocked Session session) throws InterruptedException {
-        String terminalId = "01-1C-42-F1-2D-45";
-        TerminalInfo info = new TerminalInfo(terminalId, "172.21.12.3");
-        new Expectations() {
-            {
-                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
-                result = new IllegalArgumentException();
-
-            }
-        };
-
-        String action = ShineAction.TERMINAL_DETECT;
-        BaseMessage baseMessage = new BaseMessage(action, null);
-
-        connectEventHandler.onReceive(sender, baseMessage);
-        Thread.sleep(1000);
-        new Verifications() {
-            {
-                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
-                times = 1;
-            }
-        };
-    }
 }

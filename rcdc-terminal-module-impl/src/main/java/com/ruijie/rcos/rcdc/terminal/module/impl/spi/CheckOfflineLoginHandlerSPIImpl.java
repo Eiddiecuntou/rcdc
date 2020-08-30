@@ -1,3 +1,5 @@
+package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 

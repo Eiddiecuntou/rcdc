@@ -110,7 +110,7 @@ public class SyncSystemUpgradeResultHelper {
      * @param request 请求信息
      */
     public void responseNotUpgrade(CbbDispatcherRequest request) {
-        Assert.notNull(request, "CbbDispatcherRequest can not be null");
+        Assert.notNull(request, "cbbDispatcherRequest can not be null");
 
         StartSystemUpgradeResult result = new StartSystemUpgradeResult();
         result.setEnableUpgrade(false);

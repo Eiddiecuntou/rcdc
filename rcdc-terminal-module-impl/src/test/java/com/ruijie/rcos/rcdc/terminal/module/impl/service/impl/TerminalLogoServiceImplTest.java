@@ -1,14 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.codec.compatible.def.handler.SessionManager;
+import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import mockit.Expectations;
 import mockit.Injectable;

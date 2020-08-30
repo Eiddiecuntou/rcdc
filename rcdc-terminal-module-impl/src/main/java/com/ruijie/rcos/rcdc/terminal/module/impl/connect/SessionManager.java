@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -108,7 +109,7 @@ public class SessionManager {
         Session session = getSessionByAlias(terminalId);
         if (session == null) {
             LOGGER.error("获取终端session失败，terminalId:{}", terminalId);
-            throw new IllegalArgumentException("连接断开");
+            throw new BusinessException(PublicBusinessKey.RCDC_TERMINAL_OFFLINE);
         }
         return new DefaultRequestMessageSender(session);
     }
