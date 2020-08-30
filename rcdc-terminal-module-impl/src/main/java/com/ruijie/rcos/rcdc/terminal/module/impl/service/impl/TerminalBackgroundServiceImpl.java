@@ -1,12 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
+import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -21,7 +15,13 @@ import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
 
 /**
  * Description: 终端背景业务类
@@ -80,7 +80,7 @@ public class TerminalBackgroundServiceImpl implements TerminalBackgroundService 
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
-                    new String[] {LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND, new String[] {})});
+                    LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_SEND_BACKGROUND));
         }
     }
 }

@@ -1,19 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import static org.junit.Assert.fail;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.StateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.TerminalDetectResult;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description

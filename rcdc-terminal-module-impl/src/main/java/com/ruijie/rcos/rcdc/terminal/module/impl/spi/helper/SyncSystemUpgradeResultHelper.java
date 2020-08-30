@@ -1,20 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.codec.compatible.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -28,6 +20,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeService
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 
 /**
  * Description: 终端检查升级，同时需要保存终端基本信息
@@ -139,7 +139,7 @@ public class SyncSystemUpgradeResultHelper {
     private TerminalSystemUpgradeEntity obtainTerminalSystemUpgradingTask(CbbTerminalTypeEnums terminalType) {
 
         List<CbbSystemUpgradeTaskStateEnums> stateList =
-                Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+                Arrays.asList(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         List<TerminalSystemUpgradeEntity> upgradingTaskList =
                 terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(terminalType, stateList);
         Assert.notEmpty(upgradingTaskList, "upgradingTask can not be null");

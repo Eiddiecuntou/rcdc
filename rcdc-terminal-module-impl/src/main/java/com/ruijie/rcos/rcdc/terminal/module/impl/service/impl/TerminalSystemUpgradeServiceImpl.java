@@ -1,17 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
+import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -29,7 +20,16 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 
 /**
  * 
@@ -88,7 +88,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
 
     private boolean hasUpgradingTask(UUID upgradePackageId) {
         List<CbbSystemUpgradeTaskStateEnums> stateList =
-                Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+                Arrays.asList(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         List<TerminalSystemUpgradeEntity> upgradingTaskList = null;
 
         upgradingTaskList = terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackageId, stateList);
@@ -138,7 +138,7 @@ public class TerminalSystemUpgradeServiceImpl implements TerminalSystemUpgradeSe
         Assert.notNull(packageId, "packageId can not be null");
 
         List<CbbSystemUpgradeTaskStateEnums> stateList =
-                Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+                Arrays.asList(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         List<TerminalSystemUpgradeEntity> upgradingTaskList =
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
 

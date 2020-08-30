@@ -1,21 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -44,8 +34,17 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Description: 终端操作
@@ -365,12 +364,12 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         } catch (Exception e) {
             LOGGER.error("发送消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
-                    new String[] {LocaleI18nResolver.resolve(operateActionKey, new String[] {})});
+                    LocaleI18nResolver.resolve(operateActionKey));
         }
     }
 
     private void checkAllowOperate(String terminalId, String businessKey) throws BusinessException {
-        boolean isOnline = sessionManager.getSession(terminalId) == null ? false : true;
+        boolean isOnline = sessionManager.getSessionByAlias(terminalId) != null;
         if (isOnline) {
             // 在线状态允许操作
             return;
@@ -379,7 +378,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
         Assert.notNull(terminalEntity, "terminalEntity must not be null, terminalId = " + terminalId);
         
         LOGGER.warn("终端[{}({})]离线,不允许操作", terminalEntity.getTerminalName(), terminalEntity.getMacAddr());
-        throw new BusinessException(businessKey, new String[] {terminalEntity.getTerminalName(), terminalEntity.getMacAddr()});
+        throw new BusinessException(businessKey, terminalEntity.getTerminalName(), terminalEntity.getMacAddr());
     }
 
 }

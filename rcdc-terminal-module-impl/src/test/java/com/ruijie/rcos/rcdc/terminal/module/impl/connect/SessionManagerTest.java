@@ -1,26 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
+import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
+import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
+import mockit.*;
+import mockit.integration.junit4.JMockit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
-import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.commkit.base.Session;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import mockit.Deencapsulation;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.integration.junit4.JMockit;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.*;
 
@@ -42,9 +36,9 @@ public class SessionManagerTest {
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
     /**
-     * 
+     *
      * 测试绑定终端session
-     * 
+     *
      * @param session 连接会话
      */
     @Test
@@ -54,8 +48,7 @@ public class SessionManagerTest {
         TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
         new Expectations() {
             {
-                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
-                result = info;
+
 
             }
         };
@@ -78,8 +71,7 @@ public class SessionManagerTest {
         TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
         new Expectations() {
             {
-                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
-                result = info;
+
             }
         };
         new MockUp<BaseCreateSystemLogRequest>() {
@@ -116,8 +108,7 @@ public class SessionManagerTest {
 
         new Expectations() {
             {
-                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
-                result = info;
+
             }
         };
         new MockUp<BaseCreateSystemLogRequest>() {
@@ -135,7 +126,7 @@ public class SessionManagerTest {
 
     /**
      * 测试获取session
-     * 
+     *
      * @param session 连接会话
      */
     @Test
@@ -143,14 +134,14 @@ public class SessionManagerTest {
         String terminalId = "123456";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
         sessionMap.put(terminalId, session);
-        Session sessionResult = sessionManager.getSession(terminalId);
+        Session sessionResult = sessionManager.getSessionByAlias(terminalId);
         Assert.assertNotNull(sessionResult);
         sessionMap.clear();
     }
 
     /**
      * 测试获取连接通道的发送对象
-     * 
+     *
      * @param session 连接
      */
     @Test
@@ -184,7 +175,7 @@ public class SessionManagerTest {
 
     /**
      * 测试getOnlineTerminalId
-     * 
+     *
      * @param session 连接
      */
     @Test

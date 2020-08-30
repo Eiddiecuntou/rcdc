@@ -1,17 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
@@ -33,9 +23,19 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.Date;
+import java.util.List;
+
 
 /**
  * Description: Function Description
@@ -165,7 +165,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         } catch (Exception e) {
             LOGGER.error("发送修改终端名称消息给终端[" + terminalId + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OPERATE_MSG_SEND_FAIL, e,
-                    new String[] {LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_MODIFY_NAME, new String[] {})});
+                    LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_MODIFY_NAME));
         }
     }
 
@@ -196,7 +196,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         // 如果当前终端状态为升级中，则不更新为离线状态
         TerminalEntity entity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
 
-        Session session = sessionManager.getSession(terminalId);
+        Session session = sessionManager.getSessionByAlias(terminalId);
         if (session != null) {
             LOGGER.info("存在session连接，终端处于在线状态，不做离线状态更新；terminalId={}", terminalId);
             return;
@@ -236,7 +236,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     @Override
     public boolean isTerminalOnline(String terminalId) {
         Assert.hasText(terminalId, "terminalId can not empty");
-        Session session = sessionManager.getSession(terminalId);
-        return session == null ? false : true;
+        Session session = sessionManager.getSessionByAlias(terminalId);
+        return session != null;
     }
 }

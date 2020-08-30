@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sk-connectkit="http://www.ruijie.sk.com/schema/sk-connectkit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.ruijie.sk.com/schema/sk-connectkit
+                           http://www.ruijie.sk.com/schema/sk-connectkit.xsd">
+
+
+    <bean id="serverConnectManager"
+          class="com.ruijie.rcos.sk.connectkit.api.connect.DefaultConnectorManager">
+        <constructor-arg index="0" name="protocol" value="tcp"/>
+        <constructor-arg index="1" name="role" value="SERVER"/>
+        <property name="address" value="127.0.0.1"/>
+        <property name="port" value="9999"/>
+    </bean>
+
+    <bean id="defaultMessageHandler"
+          class="com.ruijie.rcos.rcdc.terminal.module.impl.connect.RcdcMessageHandler">
+
+    </bean>
+
+    <bean id="defaultCompatibleHandler"
+          class="com.ruijie.rcos.rcdc.codec.compatible.base.handler.DefaultCompatibleHandler">
+        <constructor-arg ref="defaultMessageHandler"/>
+
+    </bean>
+
+
+</beans>

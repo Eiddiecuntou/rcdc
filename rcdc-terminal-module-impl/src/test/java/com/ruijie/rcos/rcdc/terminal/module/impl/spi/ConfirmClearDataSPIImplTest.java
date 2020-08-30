@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 
 import mockit.Injectable;

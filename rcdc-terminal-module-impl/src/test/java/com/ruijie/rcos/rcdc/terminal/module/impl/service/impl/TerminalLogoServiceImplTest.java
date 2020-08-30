@@ -1,33 +1,31 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.codec.compatible.def.handler.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.commkit.base.message.Message;
+import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Tested;
+import mockit.Verifications;
+import mockit.integration.junit4.JMockit;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Tested;
-import mockit.Verifications;
-import mockit.integration.junit4.JMockit;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Description:
@@ -93,7 +91,7 @@ public class TerminalLogoServiceImplTest {
     public void testSyncTerminalLogoDefaultRequestMessageSenderIsNull() throws BusinessException, InterruptedException {
         TerminalLogoInfo terminalLogoInfo = new TerminalLogoInfo();
         terminalLogoInfo.setLogoPath("/logo/logo.png");
-        terminalLogoInfo.setMd5("123456");;
+        terminalLogoInfo.setMd5("123456");
         SendTerminalEventEnums name = SendTerminalEventEnums.MODIFY_TERMINAL_NAME;
         List<String> onlineTerminalIdList = new ArrayList<>();
         onlineTerminalIdList.add("1");
