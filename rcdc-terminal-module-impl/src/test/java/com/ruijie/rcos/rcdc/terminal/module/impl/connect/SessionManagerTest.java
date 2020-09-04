@@ -1,26 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
+import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
+import mockit.*;
+import mockit.integration.junit4.JMockit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
-import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.commkit.base.Session;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import mockit.Deencapsulation;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.integration.junit4.JMockit;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.*;
 
@@ -42,27 +36,26 @@ public class SessionManagerTest {
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
     /**
-     * 
+     *
      * 测试绑定终端session
-     * 
+     *
      * @param session 连接会话
      */
     @Test
     public void testBindSession(@Mocked Session session) {
         String terminalId = "123";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
-        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
+        Map<String, Session> sessionAliseMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
         new Expectations() {
             {
-                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
-                result = info;
-
+                session.getId();
+                result = "123";
             }
         };
-
         sessionManager.bindSession(terminalId, session);
         Assert.assertEquals(1, sessionMap.size());
         sessionMap.clear();
+        sessionAliseMap.clear();
     }
 
     /**
@@ -75,23 +68,23 @@ public class SessionManagerTest {
     public void testRemoveSession(@Mocked Session session) {
         String terminalId = "321";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
-        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
-        new Expectations() {
-            {
-                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
-                result = info;
-            }
-        };
+        Map<String, Session> sessionAliseMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
         new MockUp<BaseCreateSystemLogRequest>() {
             @Mock
             public void $init(String key, String... args) {
 
             }
         };
-        sessionMap.put(terminalId, session);
+        new Expectations() {
+            {
+                session.getId();
+                result = "123";
+            }
+        };
+        sessionAliseMap.put(terminalId, session);
         sessionManager.removeSession(terminalId, session);
-        Assert.assertEquals(0, sessionMap.size());
-        sessionMap.clear();
+        Assert.assertEquals(0, sessionAliseMap.size());
+        sessionAliseMap.clear();
     }
 
     /**
@@ -104,7 +97,7 @@ public class SessionManagerTest {
     public void testRemoveSessionFail(@Mocked Session session) {
         String terminalId = "321";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
-        TerminalInfo info = new TerminalInfo("123", "172.21.12.3");
+        Map<String, Session> sessionAliseMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
 
         new MockUp<ConcurrentHashMap>() {
             @Mock
@@ -116,8 +109,9 @@ public class SessionManagerTest {
 
         new Expectations() {
             {
-                session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
-                result = info;
+                session.getId();
+                result = "123";
+
             }
         };
         new MockUp<BaseCreateSystemLogRequest>() {
@@ -126,38 +120,40 @@ public class SessionManagerTest {
 
             }
         };
-        sessionMap.put(terminalId, session);
+        sessionAliseMap.put(terminalId, session);
         boolean isSuccess = sessionManager.removeSession(terminalId, session);
         assertFalse(isSuccess);
-        Assert.assertEquals(1, sessionMap.size());
-        sessionMap.clear();
+        Assert.assertEquals(1, sessionAliseMap.size());
+        sessionAliseMap.clear();
     }
 
     /**
      * 测试获取session
-     * 
+     *
      * @param session 连接会话
      */
     @Test
     public void testGetSession(@Mocked Session session) {
         String terminalId = "123456";
         Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
-        sessionMap.put(terminalId, session);
-        Session sessionResult = sessionManager.getSession(terminalId);
+        Map<String, Session> sessionAliasMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
+
+        sessionAliasMap.put(terminalId, session);
+        Session sessionResult = sessionManager.getSessionByAlias(terminalId);
         Assert.assertNotNull(sessionResult);
-        sessionMap.clear();
+        sessionAliasMap.clear();
     }
 
     /**
      * 测试获取连接通道的发送对象
-     * 
+     *
      * @param session 连接
      */
     @Test
     public void testGetRequestMessageSenderNormal(@Mocked Session session) {
         String terminalId = "993993";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
-        sessionMap.put(terminalId, session);
+        Map<String, Session> sessionAliasMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
+        sessionAliasMap.put(terminalId, session);
         DefaultRequestMessageSender sender = null;
         try {
             sender = sessionManager.getRequestMessageSender(terminalId);
@@ -165,7 +161,7 @@ public class SessionManagerTest {
             fail();
         }
         Assert.assertNotNull(sender);
-        sessionMap.clear();
+        sessionAliasMap.clear();
     }
 
     /**
@@ -184,7 +180,7 @@ public class SessionManagerTest {
 
     /**
      * 测试getOnlineTerminalId
-     * 
+     *
      * @param session 连接
      */
     @Test

@@ -1,10 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.FtpConfigInfo;

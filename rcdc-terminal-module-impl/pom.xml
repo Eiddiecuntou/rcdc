@@ -36,6 +36,18 @@
             <artifactId>base-sysmanage-module-def</artifactId>
             <version>${base-sysmanage-module.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.ruijie.rcos.sk.connectkit</groupId>
+            <artifactId>sk-connectkit-starter-tcp</artifactId>
+            <version>${skyengine.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ruijie.rcos.rcdc.codec.adapter</groupId>
+            <artifactId>rcdc-codec-adapter-server</artifactId>
+            <version>${rcdc-codec-adapter.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-exec</artifactId>

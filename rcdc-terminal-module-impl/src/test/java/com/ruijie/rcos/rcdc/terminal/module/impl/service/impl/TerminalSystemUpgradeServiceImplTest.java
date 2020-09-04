@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -15,7 +16,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.handler.TerminalOffLineE
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeFileClearHandler;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
