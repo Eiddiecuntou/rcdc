@@ -84,7 +84,6 @@ public class RcdcMessageHandlerTest {
         new Expectations() {
             {
                 sessionManager.bindSession(terminalId, (Session) any);
-                result = null;
             }
         };
 
@@ -133,10 +132,9 @@ public class RcdcMessageHandlerTest {
         };
         new Expectations() {
             {
-                sessionManager.getSessionByAlias(terminalId);
-                result = null;
+                session.getSessionAlias();
+                returns(null, terminalId);
                 sessionManager.bindSession(terminalId, (Session) any);
-                result = null;
             }
         };
 
@@ -147,24 +145,17 @@ public class RcdcMessageHandlerTest {
         String data = JSON.toJSONString(basicInfo);
         BaseMessage baseMessage = new BaseMessage(action, data);
 
-        try {
-            connectEventHandler.onReceive(sender, baseMessage);
-        } catch (Exception e) {
-            fail();
-        }
+        connectEventHandler.onReceive(sender, baseMessage);
+
         Thread.sleep(1000);
-        try {
-            new Verifications() {
-                {
-                    String terId;
-                    sessionManager.bindSession(terId = withCapture(), (Session) any);
-                    times = 1;
-                    assertEquals(terminalId, terId);
-                }
-            };
-        } catch (Exception e) {
-            fail();
-        }
+        new Verifications() {
+            {
+                String terId;
+                sessionManager.bindSession(terId = withCapture(), (Session) any);
+                times = 1;
+                assertEquals(terminalId, terId);
+            }
+        };
     }
 
     /**

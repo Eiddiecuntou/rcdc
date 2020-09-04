@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
+import com.ruijie.rcos.rcdc.terminal.module.impl.message.SyncServerTimeResponse;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -75,10 +76,8 @@ public class RcdcMessageHandler implements MessageHandler {
         if (ShineAction.CHECK_UPGRADE.equals(message.getAction())) {
             LOGGER.info("开始处理检查升级报文[{}]", ShineAction.CHECK_UPGRADE);
             String terminalId = parseTerminalInfo(message.getData());
-            LOGGER.info("终端id。。。。。。" + terminalId);
             // 判断终端是否是新上线
             isNewConnection = isNewConnection(terminalId, sender.getSession());
-            LOGGER.info("开始绑定终端。。。。。。");
             // 绑定终端
             bindSession(sender, terminalId);
         }
@@ -90,6 +89,14 @@ public class RcdcMessageHandler implements MessageHandler {
         // 收到心跳报文，直接应答
         if (ShineAction.HEARTBEAT.equals(message.getAction())) {
             sender.response(new Message(Constants.SYSTEM_TYPE, ShineAction.HEARTBEAT, null));
+            return true;
+        }
+
+        // 同步服务器时间，直接应答
+        if (ShineAction.SYNC_SERVER_TIME.equals(message.getAction())) {
+            LOGGER.debug("同步服务器时间");
+            SyncServerTimeResponse syncServerTimeResponse = SyncServerTimeResponse.build();
+            sender.response(new Message(Constants.SYSTEM_TYPE, ShineAction.SYNC_SERVER_TIME, syncServerTimeResponse));
             return true;
         }
 
