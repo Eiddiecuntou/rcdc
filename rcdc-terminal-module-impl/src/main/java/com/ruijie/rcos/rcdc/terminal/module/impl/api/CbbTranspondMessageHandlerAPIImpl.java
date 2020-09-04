@@ -44,7 +44,9 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     @Override
     public void request(CbbShineMessageRequest request) throws BusinessException {
         Assert.notNull(request, "request参数不能为空");
-        LOGGER.info("接收到request请求消息：{}", request.toString());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("接收到request请求消息：{}", request.toString());
+        }
 
         DefaultRequestMessageSender sender = getRequestSender(request.getTerminalId());
         sender.request(wrapMessage(request));
@@ -53,7 +55,9 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     @Override
     public CbbShineMessageResponse syncRequest(CbbShineMessageRequest request) throws IOException, InterruptedException, BusinessException {
         Assert.notNull(request, "request参数不能为空");
-        LOGGER.info("接收到syncRequest请求消息：{}", request.toString());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("接收到syncRequest请求消息：{}", request.toString());
+        }
 
         DefaultRequestMessageSender sender = getRequestSender(request.getTerminalId());
         BaseMessage baseMessage = sender.syncRequest(wrapMessage(request));
@@ -70,7 +74,9 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         Assert.notNull(request, "request参数不能为null");
         Assert.notNull(callback, "CbbTerminalCallback 不能为null");
 
-        LOGGER.debug("接收到asyncRequest请求消息：{}", request.toString());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("接收到asyncRequest请求消息：{}", request.toString());
+        }
 
         DefaultRequestMessageSender sender = getRequestSender(request.getTerminalId());
         sender.asyncRequest(wrapMessage(request), new AsyncRequestCallBack(request.getTerminalId(), callback));
