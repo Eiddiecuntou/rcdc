@@ -132,8 +132,12 @@ public class RcdcMessageHandlerTest {
         };
         new Expectations() {
             {
+                sender.getSession();
+                result = session;
                 session.getSessionAlias();
                 returns(null, terminalId);
+                sessionManager.getSessionByAlias(terminalId);
+                result = session;
                 sessionManager.bindSession(terminalId, (Session) any);
             }
         };
@@ -168,29 +172,27 @@ public class RcdcMessageHandlerTest {
     public void testOnReceiveNotFirstMessage(@Mocked Session session) throws InterruptedException {
         String terminalId = "01-1C-42-F1-2D-45";
         TerminalInfo info = new TerminalInfo(terminalId, "172.21.12.3");
+        String action = ShineAction.COLLECT_TERMINAL_LOG_FINISH;
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+        basicInfo.setTerminalId(terminalId);
+        String data = JSON.toJSONString(basicInfo);
+        BaseMessage baseMessage = new BaseMessage(action, data);
+        new Expectations() {
+            {
+                session.getSessionAlias();
+                result = terminalId;
+            }
+        };
 
-        try {
-            String action = ShineAction.COLLECT_TERMINAL_LOG_FINISH;
-            CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
-            basicInfo.setTerminalId(terminalId);
-            String data = JSON.toJSONString(basicInfo);
-            BaseMessage baseMessage = new BaseMessage(action, data);
+        connectEventHandler.onReceive(sender, baseMessage);
 
-            connectEventHandler.onReceive(sender, baseMessage);
-        } catch (Exception e) {
-            fail();
-        }
         Thread.sleep(1000);
-        try {
-            new Verifications() {
-                {
-                    sessionManager.bindSession(anyString, (Session) any);
-                    times = 0;
-                }
-            };
-        } catch (Exception e) {
-            fail();
-        }
+        new Verifications() {
+            {
+                sessionManager.bindSession(anyString, (Session) any);
+                times = 0;
+            }
+        };
     }
 
     /**
