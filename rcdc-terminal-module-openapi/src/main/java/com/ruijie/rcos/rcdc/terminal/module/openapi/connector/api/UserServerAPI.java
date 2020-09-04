@@ -7,12 +7,12 @@ import com.ruijie.rcos.sk.connectkit.api.annotation.tcp.Tcp;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 
 /**
- * Description: UserServerAPI
+ * Description: Function Description
  * Copyright: Copyright (c) 2020
  * Company: Ruijie Co., Ltd.
- * Create Time: 2020/6/16
+ * Create Time: 2020/8/24
  *
- * @author hli
+ * @author hs
  */
 @Tcp
 public interface UserServerAPI {

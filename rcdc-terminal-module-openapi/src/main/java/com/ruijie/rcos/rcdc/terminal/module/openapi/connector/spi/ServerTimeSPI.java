@@ -14,6 +14,10 @@ import com.ruijie.rcos.sk.connectkit.api.annotation.tcp.Tcp;
 @Tcp
 public interface ServerTimeSPI {
 
+    /**
+     * 同步系统时间
+     * @return 时间
+     */
     @ApiAction("syncServerTime")
     Long syncServerTime();
 }
