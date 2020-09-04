@@ -1,16 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.message;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.message.CommonMessageCode;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 
 /**
  * Description: 消息处理工具

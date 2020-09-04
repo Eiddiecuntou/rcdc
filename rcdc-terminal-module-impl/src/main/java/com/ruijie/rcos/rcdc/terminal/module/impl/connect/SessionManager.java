@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
-import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;

@@ -43,9 +43,9 @@
             <version>${skyengine.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ruijie.rcos.rcdc.codec.compatible</groupId>
-            <artifactId>rcdc-codec-compatible-server</artifactId>
-            <version>${rcdc-codec-compatiable.version}</version>
+            <groupId>com.ruijie.rcos.rcdc.codec.adapter</groupId>
+            <artifactId>rcdc-codec-adapter-server</artifactId>
+            <version>${rcdc-codec-adapter.version}</version>
         </dependency>
 
         <dependency>

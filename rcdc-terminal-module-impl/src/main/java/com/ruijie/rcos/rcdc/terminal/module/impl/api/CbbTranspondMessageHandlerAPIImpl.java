@@ -1,13 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultRequestMessageSender;
-import com.ruijie.rcos.rcdc.codec.compatible.base.sender.DefaultResponseMessageSender;
-import com.ruijie.rcos.rcdc.codec.compatible.def.api.CbbTranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.codec.compatible.def.callback.CbbTerminalCallback;
-import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbShineMessageRequest;
-import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultResponseMessageSender;
+import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.codec.adapter.def.callback.CbbTerminalCallback;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.ShineResponseMessageDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.callback.AsyncRequestCallBack;

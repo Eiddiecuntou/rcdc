@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.codec.compatible.def.callback.CbbTerminalCallback;
-import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.codec.adapter.def.callback.CbbTerminalCallback;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.callback.AsyncRequestCallBack;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import mockit.Injectable;

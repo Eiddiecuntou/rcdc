@@ -22,9 +22,13 @@
     </bean>
 
     <bean id="defaultCompatibleHandler"
-          class="com.ruijie.rcos.rcdc.codec.compatible.base.handler.DefaultCompatibleHandler">
+          class="com.ruijie.rcos.rcdc.codec.adapter.base.handler.DefaultCompatibleHandler">
         <constructor-arg ref="defaultMessageHandler"/>
 
+    </bean>
+
+    <bean id="defaultConnnectListener"
+          class="com.ruijie.rcos.rcdc.terminal.module.impl.connect.DefaultConnectorListener">
     </bean>
 
 

@@ -1,10 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.codec.compatible.base.handler.MessageHandler;
-import com.ruijie.rcos.rcdc.codec.compatible.base.sender.ResponseMessageSender;
-import com.ruijie.rcos.rcdc.codec.compatible.def.dto.CbbDispatcherRequest;
-import com.ruijie.rcos.rcdc.codec.compatible.def.spi.CbbDispatcherHandlerSPI;
+import com.ruijie.rcos.rcdc.codec.adapter.base.handler.MessageHandler;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.ResponseMessageSender;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
@@ -36,8 +36,6 @@ public class RcdcMessageHandler implements MessageHandler {
 
     @Autowired
     private SessionManager sessionManager;
-
-    private static final String TERMINAL_ID_KEY = "terminalId";
 
     /**
      * 接收报文处理线程池,分配50个线程数
