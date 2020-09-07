@@ -1,20 +1,19 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 /**
  * Description: 确认数据盘清空应答消息处理
@@ -36,7 +35,7 @@ public class ConfirmClearDataSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
-        Assert.notNull(request,"CbbDispatcherRequest can not be null");
+        Assert.notNull(request,"cbbDispatcherRequest can not be null");
         Assert.hasText(request.getTerminalId(), "terminalId 不能为空");
         Assert.notNull(request.getData(), "报文消息体不能为空");
 

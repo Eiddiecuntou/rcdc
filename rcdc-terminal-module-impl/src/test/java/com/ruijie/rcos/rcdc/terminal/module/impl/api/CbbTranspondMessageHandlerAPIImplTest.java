@@ -1,31 +1,30 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultResponseMessageSender;
+import com.ruijie.rcos.rcdc.codec.adapter.def.callback.CbbTerminalCallback;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
+import com.ruijie.rcos.sk.commkit.base.message.Message;
+import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
+import mockit.*;
+import mockit.integration.junit4.JMockit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ruijie.rcos.sk.base.log.Logger;
-import mockit.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
-import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.commkit.base.Session;
-import com.ruijie.rcos.sk.commkit.base.callback.RequestCallback;
-import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultResponseMessageSender;
-import mockit.integration.junit4.JMockit;
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -110,7 +109,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试同步发送成功
-     * 
+     *
      * @throws IOException io异常
      * @throws InterruptedException 中断异常
      * @throws BusinessException 业务异常
@@ -201,7 +200,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试同步发送,参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -212,7 +211,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试同步发送失败
-     * 
+     *
      * @throws BusinessException 异常
      * @throws InterruptedException 异常
      * @throws IOException 异常
@@ -239,7 +238,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试异步请求
-     * 
+     *
      * @param cbbTerminalCallback 回调
      * @throws BusinessException 业务异常
      * @throws IOException io异常
@@ -276,7 +275,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试终端响应,参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -287,7 +286,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试终端响应
-     * 
+     *
      * @param session session
      * @param sender 发送对象
      */
@@ -295,7 +294,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
     public void testResponse(@Mocked Session session, @Mocked DefaultResponseMessageSender sender) {
         new Expectations() {
             {
-                sessionManager.getSession(anyString);
+                sessionManager.getSessionByAlias(anyString);
                 result = session;
                 sender.response((Message) any);
             }
@@ -314,7 +313,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
     /**
      * 测试终端响应失败
-     * 
+     *
      * @param sender 发送对象
      */
     @Test
@@ -329,7 +328,7 @@ public class CbbTranspondMessageHandlerAPIImplTest {
 
         new Expectations() {
             {
-                sessionManager.getSession(anyString);
+                sessionManager.getSessionByAlias(anyString);
                 result = null;
             }
         };

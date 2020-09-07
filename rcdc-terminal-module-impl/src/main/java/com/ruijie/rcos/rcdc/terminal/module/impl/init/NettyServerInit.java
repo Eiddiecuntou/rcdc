@@ -1,16 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
-import java.util.List;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
-import com.ruijie.rcos.rcdc.terminal.module.impl.connect.ConnectEventHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -18,8 +12,14 @@ import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.commkit.server.TcpServer;
+import com.ruijie.rcos.sk.connectkit.api.connect.ConnectorManager;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * Description: 初始化启动netty server
@@ -44,24 +44,29 @@ public class NettyServerInit implements SafetySingletonInitializer {
     private TerminalBasicInfoService terminalBasicInfoService;
 
     @Autowired
-    private ConnectEventHandler connectEventHandler;
+    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
     @Autowired
-    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
+    @Qualifier("serverConnectManager")
+    private ConnectorManager serverTcpConnectManager;
 
     @Override
     public void safeInit() {
         // 初始化终端状态
         initTerminalState();
         // 启动Netty服务
-        startNettyServer();
+        startTcpServer();
     }
 
-    private void startNettyServer() {
+    private void startTcpServer() {
         START_NETTY_SERVER_THREAD_POOL.execute(() -> {
-            LOGGER.info("======启动NettyServer======");
-            TcpServer tcpServer = new TcpServer(connectEventHandler);
-            tcpServer.start();
+            LOGGER.info("======启动TcpServer======");
+            try {
+                serverTcpConnectManager.refresh("127.0.0.1", 9209);
+            } catch (Exception e) {
+                LOGGER.error("start tcp server fail");
+            }
+
         });
     }
 

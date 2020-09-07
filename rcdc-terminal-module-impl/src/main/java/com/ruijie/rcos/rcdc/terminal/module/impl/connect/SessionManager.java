@@ -1,17 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.commkit.base.Session;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
 
 /**
  * Description: 终端连接Session管理
@@ -29,6 +30,11 @@ public class SessionManager {
     /**
      * key 为terminalId,value为Session
      */
+    private static final Map<String, Session> SESSION_ALIAS_MAP = new ConcurrentHashMap<>();
+
+    /**
+     * key 为sessionId,value为Session
+     */
     private static final Map<String, Session> SESSION_MAP = new ConcurrentHashMap<>();
 
     /**
@@ -37,12 +43,13 @@ public class SessionManager {
      * @param terminalId 终端id
      * @param session 要绑定的Session
      */
-    public void bindSession(String terminalId, Session session) {
+    public void bindSession(String terminalId,  Session session) {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(session, "Session 不能为null");
-        SESSION_MAP.put(terminalId, session);
-        TerminalInfo terminalInfo = session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
-        LOGGER.info("绑定终端session，terminalId={};ip={}当前在线终端数量为：{}", terminalId, terminalInfo.getTerminalIp(), SESSION_MAP.size());
+        session.setSessionAlias(terminalId);
+        SESSION_ALIAS_MAP.put(terminalId, session);
+        SESSION_MAP.put(session.getId(), session);
+        LOGGER.info("绑定终端session，terminalId={};当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
     }
 
     /**
@@ -52,17 +59,17 @@ public class SessionManager {
      * @param session 绑定的Session
      * @return true 移除成功
      */
-    public boolean removeSession(String terminalId, Session session) {
+    public boolean removeSession(String terminalId,  Session session) {
         Assert.hasText(terminalId, "terminalId不能为空");
         Assert.notNull(session, "session can not null");
-        boolean isSuccess = SESSION_MAP.remove(terminalId, session);
-        TerminalInfo terminalInfo = session.getAttribute(ConnectConstants.TERMINAL_BIND_KEY);
+        SESSION_MAP.remove(session.getId());
+        boolean isSuccess = SESSION_ALIAS_MAP.remove(terminalId, session);
         if (isSuccess) {
-            LOGGER.info("移除终端session，terminalId={};ip={},当前在线终端数量为：{}", terminalId, terminalInfo.getTerminalIp(), SESSION_MAP.size());
+            LOGGER.info("移除终端session，terminalId={};ip={},当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
             return true;
         }
         LOGGER.info("关闭前一次连接的session，不移除当前绑定的terminalId={};ip={}的session;当前在线终端数量为：{}", terminalId,
-                terminalInfo.getTerminalIp(), SESSION_MAP.size());
+                SESSION_MAP.size());
         return false;
     }
 
@@ -72,9 +79,21 @@ public class SessionManager {
      * @param terminalId 终端id
      * @return 返回Session
      */
-    public Session getSession(String terminalId) {
+    public Session getSessionByAlias(String terminalId) {
         Assert.hasText(terminalId, "terminalId不能为空");
-        Session session = SESSION_MAP.get(terminalId);
+        Session session = SESSION_ALIAS_MAP.get(terminalId);
+        return session;
+    }
+
+    /**
+     * 获取终端Session
+     *
+     * @param sessionId sessionId
+     * @return 返回Session
+     */
+    public Session getSessionById(String sessionId) {
+        Assert.hasText(sessionId, "sessionId");
+        Session session = SESSION_MAP.get(sessionId);
         return session;
     }
 
@@ -87,7 +106,7 @@ public class SessionManager {
      */
     public DefaultRequestMessageSender getRequestMessageSender(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
-        Session session = getSession(terminalId);
+        Session session = getSessionByAlias(terminalId);
         if (session == null) {
             LOGGER.error("获取终端session失败，terminalId:{}", terminalId);
             throw new BusinessException(PublicBusinessKey.RCDC_TERMINAL_OFFLINE);

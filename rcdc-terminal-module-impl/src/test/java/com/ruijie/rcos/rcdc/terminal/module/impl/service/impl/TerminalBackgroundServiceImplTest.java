@@ -1,17 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.hamcrest.CustomMatcher;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
@@ -21,12 +11,20 @@ import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.hamcrest.CustomMatcher;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Description: 终端背景业务测试类

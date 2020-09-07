@@ -15,6 +15,8 @@ import mockit.Verifications;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -47,7 +49,7 @@ public class DeleteTerminalGroupValidatorTest {
     private GroupNameDuplicationChecker groupNameDuplicationChecker;
 
     @Test
-    public void testValidateMoveGroupIdNull() throws BusinessException {
+    public void testValidateMoveGroupIdNotNull() throws BusinessException {
         TerminalGroupEntity groupEntity = new TerminalGroupEntity();
         groupEntity.setId(UUID.randomUUID());
         groupEntity.setName("name");
@@ -63,6 +65,59 @@ public class DeleteTerminalGroupValidatorTest {
             {
                 terminalGroupService.checkGroupExist((UUID) any);
                 times = 2;
+            }
+        };
+
+    }
+
+    @Test
+    public void testValidate() throws BusinessException {
+        TerminalGroupEntity groupEntity = new TerminalGroupEntity();
+        groupEntity.setId(UUID.randomUUID());
+        groupEntity.setName("name");
+        groupEntity.setParentId(UUID.randomUUID());
+
+        List<TerminalGroupEntity> subGroupList = new ArrayList<>();
+        subGroupList.add(groupEntity);
+        new Expectations() {
+            {
+                terminalGroupService.checkGroupExist((UUID) any);
+                result = groupEntity;
+                terminalGroupDAO.findByParentId(groupEntity.getId());
+                result = subGroupList;
+            }
+        };
+        validator.validate(UUID.randomUUID(), UUID.randomUUID());
+        new Verifications() {
+            {
+                terminalGroupService.checkGroupExist((UUID) any);
+                times = 3;
+            }
+        };
+    }
+
+    @Test
+    public void testValidateMoveGroupIdNull() throws BusinessException {
+        TerminalGroupEntity groupEntity = new TerminalGroupEntity();
+        groupEntity.setId(UUID.randomUUID());
+        groupEntity.setName("name");
+        groupEntity.setParentId(UUID.randomUUID());
+
+        List<TerminalGroupEntity> subGroupList = new ArrayList<>();
+        subGroupList.add(groupEntity);
+        new Expectations() {
+            {
+                terminalGroupService.checkGroupExist((UUID) any);
+                result = groupEntity;
+                terminalGroupDAO.findByParentId(groupEntity.getId());
+                result = subGroupList;
+            }
+        };
+        validator.validate(UUID.randomUUID(), null);
+        new Verifications() {
+            {
+                terminalGroupService.checkGroupExist((UUID) any);
+                times = 1;
             }
         };
 

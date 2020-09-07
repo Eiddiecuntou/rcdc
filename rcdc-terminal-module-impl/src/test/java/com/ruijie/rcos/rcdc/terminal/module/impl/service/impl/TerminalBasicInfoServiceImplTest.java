@@ -1,16 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.IOException;
-import java.util.Date;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
@@ -31,16 +22,17 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
+import mockit.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.util.Date;
+
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -341,7 +333,7 @@ public class TerminalBasicInfoServiceImplTest {
         basicInfoEntity.setState(CbbTerminalStateEnums.UPGRADING);
         new Expectations() {
             {
-                sessionManager.getSession(anyString);
+                sessionManager.getSessionByAlias(anyString);
                 result = null;
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = basicInfoEntity;
@@ -373,7 +365,7 @@ public class TerminalBasicInfoServiceImplTest {
                 basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, anyString, anyInt);
                 result = 1;
 
-                sessionManager.getSession(terminalId);
+                sessionManager.getSessionByAlias(terminalId);
                 result = null;
             }
         };
@@ -404,7 +396,7 @@ public class TerminalBasicInfoServiceImplTest {
                 basicInfoDAO.modifyTerminalStateOffline(CbbTerminalStateEnums.OFFLINE, (Date) any, terminalId, anyInt);
                 result = 0;
 
-                sessionManager.getSession(terminalId);
+                sessionManager.getSessionByAlias(terminalId);
                 result = null;
             }
         };
@@ -440,7 +432,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         new Expectations() {
             {
-                sessionManager.getSession("123");
+                sessionManager.getSessionByAlias("123");
                 result = session;
             }
         };
@@ -456,7 +448,7 @@ public class TerminalBasicInfoServiceImplTest {
     public void testIsTerminalOnlineIsOnLine(@Mocked Session session) {
         new Expectations() {
             {
-                sessionManager.getSession("123");
+                sessionManager.getSessionByAlias("123");
                 result = session;
             }
         };

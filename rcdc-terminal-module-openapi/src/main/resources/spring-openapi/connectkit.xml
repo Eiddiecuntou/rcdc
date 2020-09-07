@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sk-connectkit="http://www.ruijie.sk.com/schema/sk-connectkit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.ruijie.sk.com/schema/sk-connectkit
+                           http://www.ruijie.sk.com/schema/sk-connectkit.xsd">
+
+
+    <sk-connectkit:reference base-package="com.ruijie.rcos.rcdc.terminal.module.openapi.connector.api"
+                             connect-manager="serverConnectManager"
+                             protocol="tcp"
+                             compatible-handler="defaultCompatibleHandler"
+    />
+
+    <sk-connectkit:service base-package="com.ruijie.rcos.rcdc.terminal.module.openapi.connector.spi"
+                           connect-manager="serverConnectManager"
+                           protocol="tcp"
+                           compatible-handler="defaultCompatibleHandler"
+    />
+
+
+</beans>
