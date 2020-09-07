@@ -1,16 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import org.junit.Test;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.junit.Test;
 
 /**
  * Description:

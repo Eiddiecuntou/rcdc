@@ -1,13 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
@@ -20,6 +17,9 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
 
 /**
  * Description: Function Description

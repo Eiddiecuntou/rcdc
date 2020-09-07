@@ -1,28 +1,30 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
+import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultResponseMessageSender;
+import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
+import com.ruijie.rcos.rcdc.codec.adapter.def.callback.CbbTerminalCallback;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.ShineResponseMessageDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbResponseShineMessage;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageRequest;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.api.callback.AsyncRequestCallBack;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.commkit.base.Session;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultRequestMessageSender;
-import com.ruijie.rcos.sk.commkit.base.sender.DefaultResponseMessageSender;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+
+
 
 /**
  * Description: 转发消息给终端（Shine）
@@ -45,6 +47,7 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("接收到request请求消息：{}", request.toString());
         }
+
         DefaultRequestMessageSender sender = getRequestSender(request.getTerminalId());
         sender.request(wrapMessage(request));
     }
@@ -55,6 +58,7 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("接收到syncRequest请求消息：{}", request.toString());
         }
+
         DefaultRequestMessageSender sender = getRequestSender(request.getTerminalId());
         BaseMessage baseMessage = sender.syncRequest(wrapMessage(request));
         Object data = baseMessage.getData();
@@ -69,9 +73,11 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
     public void asyncRequest(CbbShineMessageRequest request, CbbTerminalCallback callback) throws BusinessException {
         Assert.notNull(request, "request参数不能为null");
         Assert.notNull(callback, "CbbTerminalCallback 不能为null");
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("接收到asyncRequest请求消息：{}", request.toString());
         }
+
         DefaultRequestMessageSender sender = getRequestSender(request.getTerminalId());
         sender.asyncRequest(wrapMessage(request), new AsyncRequestCallBack(request.getTerminalId(), callback));
     }
@@ -82,7 +88,7 @@ public class CbbTranspondMessageHandlerAPIImpl implements CbbTranspondMessageHan
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("RCDC应答消息：{}", msg.toString());
         }
-        Session session = sessionManager.getSession(msg.getTerminalId());
+        Session session = sessionManager.getSessionByAlias(msg.getTerminalId());
         if (session == null) {
             throw new IllegalStateException("终端处于离线状态，消息无法发出;terminal:" + msg.getTerminalId());
         }

@@ -1,14 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalGroupDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
@@ -82,6 +84,41 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         request.setTerminalIdArr(terminalIdArr);
         request.setPackageId(UUID.randomUUID());
         request.setTerminalGroupIdArr(new UUID[]{UUID.randomUUID()});
+        serviceTxImpl.addSystemUpgradeTask(upgradePackage, request);
+
+        new Verifications() {
+            {
+                systemUpgradeDAO.save((TerminalSystemUpgradeEntity) any);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试addSystemUpgradeTask
+     */
+    @Test
+    public void testAddSystemUpgradeTask2() {
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+        upgradePackage.setPackageType(CbbTerminalTypeEnums.APP_LINUX);
+        String[] terminalIdArr = new String[1];
+        terminalIdArr[0] = "1";
+        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
+        request.setTerminalIdArr(terminalIdArr);
+        request.setPackageId(UUID.randomUUID());
+        request.setTerminalGroupIdArr(new UUID[]{UUID.randomUUID()});
+        List<TerminalEntity> terminalEntityList = new ArrayList<>();
+        TerminalEntity entity = new TerminalEntity();
+        entity.setTerminalId("123");
+        terminalEntityList.add(entity);
+        new Expectations() {
+            {
+                basicInfoDAO.findByGroupIdAndPlatformAndTerminalOsType((UUID) any, (CbbTerminalPlatformEnums) any, anyString);
+                result = terminalEntityList;
+
+            }
+        };
         serviceTxImpl.addSystemUpgradeTask(upgradePackage, request);
 
         new Verifications() {
@@ -349,5 +386,29 @@ public class TerminalSystemUpgradeServiceTxImplTest {
                 times = 1;
             }
         };
+    }
+
+    /**
+     * 测试editUpgradeGroup
+     */
+    @Test
+    public void testEditUpgradeGroup() {
+        TerminalSystemUpgradeEntity systemUpgradeEntity = new TerminalSystemUpgradeEntity();
+        systemUpgradeEntity.setId(UUID.randomUUID());
+        UUID[] terminalGroupIdArr = new UUID[]{UUID.randomUUID()};
+        new Expectations() {
+            {
+                systemUpgradeTerminalGroupDAO.deleteBySysUpgradeId(systemUpgradeEntity.getId());
+            }
+        };
+        serviceTxImpl.editUpgradeGroup(systemUpgradeEntity, terminalGroupIdArr);
+        new Verifications() {
+            {
+                systemUpgradeTerminalGroupDAO.deleteBySysUpgradeId(systemUpgradeEntity.getId());
+                times = 1;
+            }
+        };
+
+
     }
 }

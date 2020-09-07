@@ -1,12 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageResponse;
+import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCollectLogStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.message.CommonMessageCode;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
@@ -14,6 +12,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalLogName;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 /**
  * Description: 收集日志应答消息处理

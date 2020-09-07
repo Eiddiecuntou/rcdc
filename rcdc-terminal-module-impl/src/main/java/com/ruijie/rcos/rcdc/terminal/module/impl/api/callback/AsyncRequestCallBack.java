@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api.callback;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineMessageResponse;
-import com.ruijie.rcos.rcdc.terminal.module.def.callback.CbbTerminalCallback;
+import com.ruijie.rcos.rcdc.codec.adapter.def.callback.CbbTerminalCallback;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbShineMessageResponse;
 import com.ruijie.rcos.sk.commkit.base.callback.AbstractRequestCallback;
 import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import org.apache.commons.lang3.StringUtils;
@@ -18,9 +18,9 @@ import org.springframework.util.Assert;
  */
 public class AsyncRequestCallBack extends AbstractRequestCallback {
 
-    private String terminalId;
+    private final String terminalId;
 
-    private CbbTerminalCallback callback;
+    private final CbbTerminalCallback callback;
 
     public AsyncRequestCallBack(String terminalId, CbbTerminalCallback callback) {
         Assert.hasText(terminalId, "terminalId不能为空");

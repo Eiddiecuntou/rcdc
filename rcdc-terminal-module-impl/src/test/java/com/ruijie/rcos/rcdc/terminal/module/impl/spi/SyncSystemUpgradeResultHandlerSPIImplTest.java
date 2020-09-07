@@ -1,13 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
@@ -15,8 +12,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper.SyncSystemUpgradeResultHelper;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
 import mockit.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Description: Function Description
