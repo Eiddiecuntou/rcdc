@@ -1,8 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnumsSerializer;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -101,6 +103,7 @@ public class CbbShineTerminalBasicInfo {
     private String ssid;
 
     @Nullable
+    @JSONField(serializeUsing = CbbTerminalWirelessAuthModeEnumsSerializer.class, deserializeUsing = CbbTerminalWirelessAuthModeEnumsSerializer.class)
     private CbbTerminalWirelessAuthModeEnums wirelessAuthMode;
 
     @Nullable
