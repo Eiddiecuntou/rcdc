@@ -4,7 +4,6 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnumsSerializer;
 import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
 /**
@@ -37,7 +36,6 @@ public class CbbTerminalNetworkInfoDTO extends EqualsHashcodeSupport {
 
     private String ssid;
 
-    @JSONField(serializeUsing = CbbTerminalWirelessAuthModeEnumsSerializer.class, deserializeUsing = CbbTerminalWirelessAuthModeEnumsSerializer.class)
     private CbbTerminalWirelessAuthModeEnums wirelessAuthMode;
 
     public CbbNetworkModeEnums getNetworkAccessMode() {
