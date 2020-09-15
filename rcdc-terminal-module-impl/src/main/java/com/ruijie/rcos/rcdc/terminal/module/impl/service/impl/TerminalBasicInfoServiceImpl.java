@@ -105,6 +105,11 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
         basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
+
+        basicInfoEntity.setAllDiskInfo(shineTerminalBasicInfo.getAllDiskInfo());
+        basicInfoEntity.setWirelessNetCardNum(shineTerminalBasicInfo.getWirelessNetCardNum());
+        basicInfoEntity.setEthernetNetCardNum(shineTerminalBasicInfo.getEthernetNetCardNum());
+
         try {
             basicInfoDAO.save(basicInfoEntity);
             return true;

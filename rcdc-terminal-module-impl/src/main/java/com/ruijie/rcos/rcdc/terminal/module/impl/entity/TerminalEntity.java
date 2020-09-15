@@ -107,6 +107,12 @@ public class TerminalEntity {
 
     private String networkInfos;
 
+    private String allDiskInfo;
+
+    private Integer wirelessNetCardNum;
+
+    private Integer ethernetNetCardNum;
+
     /**
      *  获取网络信息对象数组
      *
@@ -415,4 +421,27 @@ public class TerminalEntity {
         this.networkInfos = networkInfos;
     }
 
+    public String getAllDiskInfo() {
+        return allDiskInfo;
+    }
+
+    public void setAllDiskInfo(String allDiskInfo) {
+        this.allDiskInfo = allDiskInfo;
+    }
+
+    public Integer getWirelessNetCardNum() {
+        return wirelessNetCardNum;
+    }
+
+    public void setWirelessNetCardNum(Integer wirelessNetCardNum) {
+        this.wirelessNetCardNum = wirelessNetCardNum;
+    }
+
+    public Integer getEthernetNetCardNum() {
+        return ethernetNetCardNum;
+    }
+
+    public void setEthernetNetCardNum(Integer ethernetNetCardNum) {
+        this.ethernetNetCardNum = ethernetNetCardNum;
+    }
 }
