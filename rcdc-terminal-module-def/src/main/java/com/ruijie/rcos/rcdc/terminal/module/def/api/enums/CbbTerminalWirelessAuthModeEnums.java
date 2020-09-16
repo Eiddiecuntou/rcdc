@@ -12,8 +12,6 @@ import org.springframework.util.Assert;
  */
 public enum CbbTerminalWirelessAuthModeEnums {
 
-    MODE_NONE("none"),
-
     MODE_WPA_EAP("wpa-eap"),
 
     MODE_WPA_PSK("wpa-psk"),
