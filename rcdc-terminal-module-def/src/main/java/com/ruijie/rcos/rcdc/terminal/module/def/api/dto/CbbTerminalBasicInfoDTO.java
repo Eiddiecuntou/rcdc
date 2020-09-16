@@ -1,15 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.Date;
 import java.util.UUID;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * Description: Function Description
@@ -83,6 +81,12 @@ public class CbbTerminalBasicInfoDTO {
     private CbbTerminalStateEnums state;
 
     private CbbTerminalNetworkInfoDTO[] networkInfoArr;
+
+    private CbbTerminalDiskInfoDTO[] diskInfoArr;
+
+    private Integer wirelessNetCardNum;
+
+    private Integer ethernetNetCardNum;
 
     public UUID getId() {
         return id;
@@ -318,5 +322,29 @@ public class CbbTerminalBasicInfoDTO {
 
     public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoArr) {
         this.networkInfoArr = networkInfoArr;
+    }
+
+    public CbbTerminalDiskInfoDTO[] getDiskInfoArr() {
+        return diskInfoArr;
+    }
+
+    public void setDiskInfoArr(CbbTerminalDiskInfoDTO[] diskInfoArr) {
+        this.diskInfoArr = diskInfoArr;
+    }
+
+    public Integer getWirelessNetCardNum() {
+        return wirelessNetCardNum;
+    }
+
+    public void setWirelessNetCardNum(Integer wirelessNetCardNum) {
+        this.wirelessNetCardNum = wirelessNetCardNum;
+    }
+
+    public Integer getEthernetNetCardNum() {
+        return ethernetNetCardNum;
+    }
+
+    public void setEthernetNetCardNum(Integer ethernetNetCardNum) {
+        this.ethernetNetCardNum = ethernetNetCardNum;
     }
 }

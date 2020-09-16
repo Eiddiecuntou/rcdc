@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.GetSetTester;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +22,7 @@ public class TerminalEntityTest {
     public void testGetAndSet() {
         GetSetTester tester = new GetSetTester(TerminalEntity.class);
         tester.addIgnoreProperty("networkInfoArr");
+        tester.addIgnoreProperty("diskInfoArr");
         tester.runTest();
         Assert.assertTrue(true);
     }
