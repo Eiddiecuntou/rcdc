@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
+import com.ruijie.rcos.sk.base.annotation.Size;
 import com.ruijie.rcos.sk.base.annotation.TextShort;
 import org.springframework.util.Assert;
 
@@ -21,7 +22,7 @@ public class CbbTerminalUpgradePackageUploadDTO {
     private String filePath;
 
     @NotBlank
-    @TextShort
+    @Size(min = 1, max = 64)
     private String fileName;
 
     @NotBlank
