@@ -101,4 +101,16 @@ public class MessageBeanTest {
         tester.runTest();
         assertTrue(true);
     }
+
+    /**
+     * 测试testSoftwareVersionResponseContent
+     */
+    @Test
+    public void testSoftwareVersionResponseContent() {
+        SoftwareVersionResponseContent soft = new SoftwareVersionResponseContent("123");
+        assertEquals("123", soft.getSoftwareVersion());
+
+        soft.setSoftwareVersion("456");
+        assertEquals("456", soft.getSoftwareVersion());
+    }
 }
