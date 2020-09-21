@@ -6,9 +6,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbIDVTerminalLicens
  * 终端授权管理
  * <br>
  * Description: Function Description <br>
- * Copyright: Copyright (c) 2017 <br>
+ * Copyright: Copyright (c) 2020 <br>
  * Company: Ruijie Co., Ltd. <br>
- * Create Time: 2020年9月16日 <br>
+ * Create Time: 2020年9月21日 <br>
  *
  * @author jarman
  */
