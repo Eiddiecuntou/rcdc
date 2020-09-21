@@ -335,6 +335,9 @@ public interface BusinessKey {
     /************终端网络信息**************************/
     String RCDC_TERMINAL_NETWORK_INFO_ERROR = "rcdc_terminal_network_info_error";
 
+    /************终端磁盘信息**************************/
+    String RCDC_TERMINAL_DISK_INFO_ERROR = "rcdc_terminal_disk_info_error";
+
     /************BT服务操作**************************/
     String RCDC_TERMINAL_BT_MAKE_SEED_FILE_FAIL = "rcdc_terminal_bt_make_seed_file_fail";
     String RCDC_TERMINAL_BT_START_SHARE_SEED_FILE_FAIL = "rcdc_terminal_bt_start_share_seed_file_fail";

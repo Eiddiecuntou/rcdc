@@ -165,7 +165,7 @@ public class TerminalEntity {
         try {
             diskInfoDTOList = JSON.parseArray(allDiskInfo, CbbTerminalDiskInfoDTO.class);
         } catch (Exception e) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NETWORK_INFO_ERROR, e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_DISK_INFO_ERROR, e);
         }
 
         if (CollectionUtils.isEmpty(diskInfoDTOList)) {
