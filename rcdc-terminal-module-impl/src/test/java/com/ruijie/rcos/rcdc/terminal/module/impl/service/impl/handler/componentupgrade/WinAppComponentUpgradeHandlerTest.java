@@ -1,28 +1,26 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -56,7 +54,7 @@ public class WinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionUpdatelistIsNull() {
-        WinAppUpdateListDTO updatelist = new WinAppUpdateListDTO();
+        AppUpdateListDTO updatelist = new AppUpdateListDTO();
         updatelist.setComponentList(Collections.emptyList());
 
         new MockUp(TerminalUpdateListCacheManager.class) {
@@ -64,7 +62,7 @@ public class WinAppComponentUpgradeHandlerTest {
             private boolean isFirst = true;
 
             @Mock
-            public WinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public AppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 if (isFirst) {
                     isFirst = false;
                     // 模拟返回空
@@ -91,9 +89,9 @@ public class WinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionNoUpgrade() {
-        WinAppUpdateListDTO updatelist = new WinAppUpdateListDTO();
-        List<WinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new WinAppComponentVersionInfoDTO());
+        AppUpdateListDTO updatelist = new AppUpdateListDTO();
+        List<AppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new AppComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setValidateMd5("123");
@@ -101,7 +99,7 @@ public class WinAppComponentUpgradeHandlerTest {
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public WinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public AppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -120,10 +118,10 @@ public class WinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionRainUpgradeVersionIsIllegale() {
-        WinAppUpdateListDTO updatelist = getCbbWinAppUpdateListDTO();
+        AppUpdateListDTO updatelist = getCbbWinAppUpdateListDTO();
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public WinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public AppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
@@ -132,7 +130,7 @@ public class WinAppComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
-        TerminalVersionResultDTO<WinAppUpdateListDTO> version = handler.getVersion(request);
+        TerminalVersionResultDTO<AppUpdateListDTO> version = handler.getVersion(request);
         assertEquals(0, version.getResult().intValue());
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
     }
@@ -142,12 +140,12 @@ public class WinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionLessThanLimitVersion() {
-        WinAppUpdateListDTO updateList = getCbbWinAppUpdateListDTO();
+        AppUpdateListDTO updateList = getCbbWinAppUpdateListDTO();
 
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public WinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public AppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updateList;
             }
         };
@@ -157,13 +155,13 @@ public class WinAppComponentUpgradeHandlerTest {
         request.setValidateMd5("123");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
 
-        WinAppUpdateListDTO expectUpdatelist = getCbbWinAppUpdateListDTO();
+        AppUpdateListDTO expectUpdatelist = getCbbWinAppUpdateListDTO();
         expectUpdatelist.setComponentList(Collections.emptyList());
         expectUpdatelist.setComponentSize(0);
 
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(), terminalVersionResultDTO.getResult().intValue());
-        WinAppUpdateListDTO returnUpdateList = (WinAppUpdateListDTO) terminalVersionResultDTO.getUpdatelist();
+        AppUpdateListDTO returnUpdateList = (AppUpdateListDTO) terminalVersionResultDTO.getUpdatelist();
         assertEquals(expectUpdatelist, returnUpdateList);
 
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalTypeEnums.APP_WINDOWS);
@@ -174,17 +172,17 @@ public class WinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersion() {
-        WinAppUpdateListDTO updatelist = getCbbWinAppUpdateListDTO();
+        AppUpdateListDTO updatelist = getCbbWinAppUpdateListDTO();
 
 
         new MockUp(TerminalUpdateListCacheManager.class) {
             @Mock
-            public WinAppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
+            public AppUpdateListDTO get(CbbTerminalTypeEnums terminalType) {
                 return updatelist;
             }
         };
 
-        WinAppUpdateListDTO expectUpdatelist = getCbbWinAppUpdateListDTO();
+        AppUpdateListDTO expectUpdatelist = getCbbWinAppUpdateListDTO();
         expectUpdatelist.setName(StringUtils.EMPTY);
         expectUpdatelist.setCompletePackageName(StringUtils.EMPTY);
         expectUpdatelist.setCompletePackageUrl(StringUtils.EMPTY);
@@ -195,7 +193,7 @@ public class WinAppComponentUpgradeHandlerTest {
         request.setValidateMd5("123");
         TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        WinAppUpdateListDTO returnUpdateList = (WinAppUpdateListDTO) terminalVersionResultDTO.getUpdatelist();
+        AppUpdateListDTO returnUpdateList = (AppUpdateListDTO) terminalVersionResultDTO.getUpdatelist();
 
         assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(), terminalVersionResultDTO.getResult().intValue());
         assertEquals(expectUpdatelist, returnUpdateList);
@@ -208,9 +206,9 @@ public class WinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetVersionIsUpdating() {
-        WinAppUpdateListDTO updatelist = new WinAppUpdateListDTO();
-        List<WinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new WinAppComponentVersionInfoDTO());
+        AppUpdateListDTO updatelist = new AppUpdateListDTO();
+        List<AppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        componentList.add(new AppComponentVersionInfoDTO());
         updatelist.setComponentList(componentList);
         updatelist.setVersion("1.1.0.1");
         updatelist.setComponentSize(1);
@@ -224,11 +222,11 @@ public class WinAppComponentUpgradeHandlerTest {
 
     }
 
-    private WinAppUpdateListDTO getCbbWinAppUpdateListDTO() {
-        WinAppUpdateListDTO updatelist = new WinAppUpdateListDTO();
-        List<WinAppComponentVersionInfoDTO> componentList = new ArrayList<>();
-        WinAppComponentVersionInfoDTO complete = new WinAppComponentVersionInfoDTO();
-        WinAppComponentVersionInfoDTO component = new WinAppComponentVersionInfoDTO();
+    private AppUpdateListDTO getCbbWinAppUpdateListDTO() {
+        AppUpdateListDTO updatelist = new AppUpdateListDTO();
+        List<AppComponentVersionInfoDTO> componentList = new ArrayList<>();
+        AppComponentVersionInfoDTO complete = new AppComponentVersionInfoDTO();
+        AppComponentVersionInfoDTO component = new AppComponentVersionInfoDTO();
         componentList.add(complete);
         componentList.add(component);
         updatelist.setComponentList(componentList);

@@ -32,6 +32,8 @@ public class TerminalComponentUpgradeHandlerFactory {
         upgradeHandlerHolder.put(CbbTerminalTypeEnums.APP_WINDOWS, new WinAppComponentUpgradeHandler());
         upgradeHandlerHolder.put(CbbTerminalTypeEnums.VDI_ANDROID, new AndroidVDIComponentUpgradeHandler());
         upgradeHandlerHolder.put(CbbTerminalTypeEnums.IDV_LINUX, new LinuxIDVComponentUpgradeHandler());
+        upgradeHandlerHolder.put(CbbTerminalTypeEnums.APP_UOS, new UosAppComponentUpgradeHandler());
+        upgradeHandlerHolder.put(CbbTerminalTypeEnums.APP_NEOKYLIN, new NeoKylinAppComponentUpgradeHandler());
         LOGGER.info("=======================完成注册终端组件升级处理器=================");
     }
 

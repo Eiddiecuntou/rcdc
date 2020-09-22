@@ -1,23 +1,22 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
-import java.util.List;
-import java.util.Objects;
-
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Description: 终端组件升级通用handler
@@ -67,7 +66,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
             isSupport = isSupportUpgrade(updatelist, request);
         } catch (Exception e) {
             LOGGER.error("比较osLimit版本失败", e);
-            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new WinAppUpdateListDTO());
+            return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new AppUpdateListDTO());
         }
 
         if (!isSupport) {
