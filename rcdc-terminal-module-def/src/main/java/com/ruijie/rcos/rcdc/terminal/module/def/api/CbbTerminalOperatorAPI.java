@@ -65,6 +65,9 @@ public interface CbbTerminalOperatorAPI {
      * @apiSuccess (响应字段说明) {Date} response.lastOfflineTime 最后一次离线时间
      * @apiSuccess (响应字段说明) {Integer} response.version 版本
      * @apiSuccess (响应字段说明) {CbbTerminalStateEnums="OFFLINE","ONLINE","UPGRADING"} response.state 终端状态
+     * @apiSuccess (响应字段说明) {Integer} response.diskInfoArr 磁盘信息数组
+     * @apiSuccess (响应字段说明) {Integer} response.wirelessNetCardNum 无线网卡数量
+     * @apiSuccess (响应字段说明) {Integer} response.ethernetNetCardNum 有线网卡数量
      */
     /**
      * 根据terminalId获取终端基本信息

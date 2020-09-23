@@ -112,6 +112,15 @@ public class CbbShineTerminalBasicInfo {
     @Nullable
     private String productId;
 
+    @Nullable
+    private String allDiskInfo;
+
+    @Nullable
+    private Integer wirelessNetCardNum;
+
+    @Nullable
+    private Integer ethernetNetCardNum;
+
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
@@ -342,5 +351,32 @@ public class CbbShineTerminalBasicInfo {
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    @Nullable
+    public String getAllDiskInfo() {
+        return allDiskInfo;
+    }
+
+    public void setAllDiskInfo(@Nullable String allDiskInfo) {
+        this.allDiskInfo = allDiskInfo;
+    }
+
+    @Nullable
+    public Integer getWirelessNetCardNum() {
+        return wirelessNetCardNum;
+    }
+
+    public void setWirelessNetCardNum(@Nullable Integer wirelessNetCardNum) {
+        this.wirelessNetCardNum = wirelessNetCardNum;
+    }
+
+    @Nullable
+    public Integer getEthernetNetCardNum() {
+        return ethernetNetCardNum;
+    }
+
+    public void setEthernetNetCardNum(@Nullable Integer ethernetNetCardNum) {
+        this.ethernetNetCardNum = ethernetNetCardNum;
     }
 }
