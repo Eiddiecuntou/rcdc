@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 /**
  * Description: Function Description

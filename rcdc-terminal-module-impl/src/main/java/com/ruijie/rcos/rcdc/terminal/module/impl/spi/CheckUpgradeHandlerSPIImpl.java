@@ -7,8 +7,8 @@ import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
@@ -16,6 +16,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeCheckResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
@@ -42,9 +43,6 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
 
     @Autowired
-    private TerminalBasicInfoDAO basicInfoDAO;
-
-    @Autowired
     private TerminalBasicInfoService basicInfoService;
 
     @Autowired
@@ -52,6 +50,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired
     private TerminalSystemUpgradeHandlerFactory handlerFactory;
+
+    @Autowired
+    private TerminalLicenseService terminalLicenseService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerSPIImpl.class);
 
@@ -63,13 +64,24 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         // 保存终端基本信息
         String terminalId = request.getTerminalId();
         CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
-        basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
+        TerminalEntity terminalEntity = basicInfoService.convertBasicInfo2TerminalEntity(terminalId, request.getNewConnection(),
+            basicInfo);
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
 
         TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
+
+        if (terminalType == CbbTerminalTypeEnums.IDV_LINUX) {
+            // idv_linux终端接入，如果未授权且没有剩余授权，不保存终端信息，并且在终端不需要升级情况下返回授权不足code
+            if (!terminalLicenseService.isAuthedOrAuthSuccess(terminalId, request.getNewConnection(), basicInfo) &&
+                versionResult.getResult() == CbbTerminalComponentUpgradeResultEnums.NOT.getResult()) {
+                versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
+            }
+        } else {
+            // 非idv_linux终端，直接保存基本信息
+            basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
+        }
 
         SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalType);
 

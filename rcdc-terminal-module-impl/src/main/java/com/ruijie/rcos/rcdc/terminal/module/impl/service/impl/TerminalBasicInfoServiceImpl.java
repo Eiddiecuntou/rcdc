@@ -25,6 +25,8 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
+import java.util.Date;
+import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -89,6 +88,28 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     private boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
+        TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
+        try {
+            basicInfoDAO.save(basicInfoEntity);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("保存终端信息失败！将进行重试", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isNewTerminal(String terminalId) {
+        Assert.hasText(terminalId, "terminalId can not be empty");
+        return basicInfoDAO.findTerminalEntityByTerminalId(terminalId) == null;
+    }
+
+    @Override
+    public TerminalEntity convertBasicInfo2TerminalEntity(String terminalId, boolean isNewConnection,
+        CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
+        Assert.hasText(terminalId, "terminalId can not be empty");
+        Assert.notNull(shineTerminalBasicInfo, "shineTerminalBasicInfo can not be null");
+
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         Date now = new Date();
         if (basicInfoEntity == null) {
@@ -105,13 +126,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
         basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
-        try {
-            basicInfoDAO.save(basicInfoEntity);
-            return true;
-        } catch (Exception e) {
-            LOGGER.error("保存终端信息失败！将进行重试", e);
-            return false;
-        }
+        return basicInfoEntity;
     }
 
     private CbbTerminalNetworkInfoDTO[] obtainNetworkInfo(CbbShineTerminalBasicInfo basicInfo) {
