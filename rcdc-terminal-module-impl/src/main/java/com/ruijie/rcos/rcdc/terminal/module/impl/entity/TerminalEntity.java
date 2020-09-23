@@ -1,17 +1,27 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import javax.persistence.*;
-
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -29,6 +39,8 @@ import org.springframework.util.CollectionUtils;
 public class TerminalEntity {
 
     public static final String BEAN_COPY_IGNORE_NETWORK_INFO_ARR = "networkInfoArr";
+
+    public static final String BEAN_COPY_IGNORE_DISK_INFO_ARR = "diskInfoArr";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -107,6 +119,12 @@ public class TerminalEntity {
 
     private String networkInfos;
 
+    private String allDiskInfo;
+
+    private Integer wirelessNetCardNum;
+
+    private Integer ethernetNetCardNum;
+
     /**
      *  获取网络信息对象数组
      *
@@ -130,6 +148,31 @@ public class TerminalEntity {
         }
 
         return networkInfoDTOList.toArray(new CbbTerminalNetworkInfoDTO[networkInfoDTOList.size()]);
+    }
+
+    /**
+     *  获取磁盘信息数组
+     *
+     * @return CbbTerminalDiskInfoDTO[]
+     * @throws BusinessException 业务异常
+     */
+    public CbbTerminalDiskInfoDTO[] getDiskInfoArr() throws BusinessException {
+        if (StringUtils.isBlank(allDiskInfo)) {
+            return new CbbTerminalDiskInfoDTO[0];
+        }
+
+        List<CbbTerminalDiskInfoDTO> diskInfoDTOList;
+        try {
+            diskInfoDTOList = JSON.parseArray(allDiskInfo, CbbTerminalDiskInfoDTO.class);
+        } catch (Exception e) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_DISK_INFO_ERROR, e);
+        }
+
+        if (CollectionUtils.isEmpty(diskInfoDTOList)) {
+            return new CbbTerminalDiskInfoDTO[0];
+        }
+
+        return diskInfoDTOList.toArray(new CbbTerminalDiskInfoDTO[diskInfoDTOList.size()]);
     }
 
     /**
@@ -415,4 +458,27 @@ public class TerminalEntity {
         this.networkInfos = networkInfos;
     }
 
+    public String getAllDiskInfo() {
+        return allDiskInfo;
+    }
+
+    public void setAllDiskInfo(String allDiskInfo) {
+        this.allDiskInfo = allDiskInfo;
+    }
+
+    public Integer getWirelessNetCardNum() {
+        return wirelessNetCardNum;
+    }
+
+    public void setWirelessNetCardNum(Integer wirelessNetCardNum) {
+        this.wirelessNetCardNum = wirelessNetCardNum;
+    }
+
+    public Integer getEthernetNetCardNum() {
+        return ethernetNetCardNum;
+    }
+
+    public void setEthernetNetCardNum(Integer ethernetNetCardNum) {
+        this.ethernetNetCardNum = ethernetNetCardNum;
+    }
 }
