@@ -52,7 +52,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
         if (licenseNum == null) {
             String terminalLicenseNum = globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
             Assert.hasText(terminalLicenseNum, "terminalLicenseNum can not be empty");
-            licenseNum = Integer.parseInt(terminalLicenseNum);
+            licenseNum = Integer.valueOf(terminalLicenseNum);
             LOGGER.info("从数据库同步licenseNum的值为:{}", licenseNum);
         }
         return licenseNum;
@@ -69,7 +69,8 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
-    public void updateTerminalLicenseNum(int licenseNum) {
+    public void updateTerminalLicenseNum(Integer licenseNum) {
+        Assert.notNull(licenseNum, "licenseNum can not be null");
         Assert.isTrue(licenseNum >= TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + TERMINAL_AUTH_DEFAULT_NUM);
 
         LOGGER.info("licenseNum 更新为 {}", licenseNum);

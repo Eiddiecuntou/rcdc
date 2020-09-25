@@ -28,7 +28,7 @@ public interface TerminalLicenseService {
      * 更新终端授权总数
      * @param authNum 终端授权数量
      */
-    void updateTerminalLicenseNum(int authNum);
+    void updateTerminalLicenseNum(Integer authNum);
 
     /**
      * 检查1台idv是否已经授权；如果未授权，并且有授权剩余，则终端已使用授权数量+1，保存终端信息到数据库
