@@ -22,7 +22,9 @@ public class TerminalStatisticsDTOTest {
     @Test
     public void testGetterAndSetter() {
         TerminalStatisticsDTO dto = new TerminalStatisticsDTO(1L, "state");
-        Assert.assertEquals(1, dto.getCount().intValue());
-        Assert.assertEquals("state", dto.getState());
+        dto.setCount(2L);
+        dto.setState("state2");
+        Assert.assertEquals(2, dto.getCount().intValue());
+        Assert.assertEquals("state2", dto.getState());
     }
 }
