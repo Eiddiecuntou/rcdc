@@ -34,8 +34,8 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
 
     @Override
     public CbbIDVTerminalLicenseNumDTO getIDVTerminalLicenseNum() {
-        int licenseNum = terminalLicenseService.getTerminalLicenseNum();
-        int usedNum = terminalLicenseService.getUsedNum();
+        Integer licenseNum = terminalLicenseService.getTerminalLicenseNum();
+        Integer usedNum = terminalLicenseService.getUsedNum();
 
         CbbIDVTerminalLicenseNumDTO licenseNumDTO = new CbbIDVTerminalLicenseNumDTO();
         licenseNumDTO.setLicenseNum(licenseNum);

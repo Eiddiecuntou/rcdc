@@ -16,13 +16,13 @@ public interface TerminalLicenseService {
      * 获取终端授权总数
      * @return 授权总数
      */
-    int getTerminalLicenseNum();
+    Integer getTerminalLicenseNum();
 
     /**
      * 获取已使用的终端授权数量
      * @return 已使用授权数量
      */
-    int getUsedNum();
+    Integer getUsedNum();
 
     /**
      * 更新终端授权总数

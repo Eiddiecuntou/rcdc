@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -8,6 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -28,7 +30,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     /**
      * 终端证书默认数量，-1表示授权不受限制。同时也是授权数量的最小值
      */
-    private static int TERMINAL_AUTH_DEFAULT_NUM = -1;
+    private static Integer TERMINAL_AUTH_DEFAULT_NUM = -1;
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
@@ -39,32 +41,29 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     @Autowired
     private TerminalBasicInfoService basicInfoService;
 
-    /**
-     * 授权数量、已授权数量初始化的值，此时还没有从数据库同步数据
-     */
-    private static final int INITIAL_NUM = -2;
+    private Integer licenseNum;
 
-    private int licenseNum = INITIAL_NUM;
-
-    private int usedNum = INITIAL_NUM;
+    private Integer usedNum;
 
 
     @Override
-    public int getTerminalLicenseNum() {
-        // 业务中licenseNum不可能值为INITIAL_NUM。如果licenseNum值为INITIAL_NUM，表示licenseNum还没有从数据库同步数据。
-        if (licenseNum == INITIAL_NUM) {
+    public Integer getTerminalLicenseNum() {
+        // licenseNum如果为null，表示licenseNum还没有从数据库同步数据。
+        if (licenseNum == null) {
             String terminalLicenseNum = globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
             Assert.hasText(terminalLicenseNum, "terminalLicenseNum can not be empty");
             licenseNum = Integer.parseInt(terminalLicenseNum);
+            LOGGER.info("从数据库同步licenseNum的值为:{}", licenseNum);
         }
         return licenseNum;
     }
 
     @Override
-    public int getUsedNum() {
-        // 如果usedNum值为INITIAL_NUM，表示usedNum还没有从数据库同步数据
-        if (usedNum == INITIAL_NUM) {
-            usedNum = (int)terminalBasicInfoDAO.count();
+    public Integer getUsedNum() {
+        // 如果usedNum值为null，表示usedNum还没有从数据库同步数据
+        if (usedNum == null) {
+            usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+            LOGGER.info("从数据库同步idv授权usedNum值为:{}", usedNum);
         }
         return usedNum;
     }
@@ -89,10 +88,10 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
             return true;
         }
 
-        int idvLicenseNum = getTerminalLicenseNum();
-        int idvUsedNum = getUsedNum();
+        Integer idvLicenseNum = getTerminalLicenseNum();
+        Integer idvUsedNum = getUsedNum();
 
-        if (idvLicenseNum == TERMINAL_AUTH_DEFAULT_NUM || idvLicenseNum > idvUsedNum) {
+        if (Objects.equals(idvLicenseNum, TERMINAL_AUTH_DEFAULT_NUM) || idvLicenseNum > idvUsedNum) {
             LOGGER.info("终端{}[{}]可以授权，当前licenseNum：{}，usedNum：{}", basicInfo.getTerminalName(), terminalId, licenseNum, usedNum);
             basicInfoService.saveBasicInfo(terminalId, isNewConnection, basicInfo);
             usedNum++;

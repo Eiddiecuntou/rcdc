@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -70,7 +71,7 @@ public class TerminalLicenseServiceImplTest {
     public void testGetUsedNum() {
         new Expectations() {
             {
-                basicInfoDAO.count();
+                basicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
                 result = 2;
             }
         };
@@ -81,7 +82,7 @@ public class TerminalLicenseServiceImplTest {
         licenceLicenseService.getUsedNum();
         new Verifications() {
             {
-                basicInfoDAO.count();
+                basicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
                 times = 1;
             }
         };
@@ -117,7 +118,7 @@ public class TerminalLicenseServiceImplTest {
                 result = true;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.count();
+                basicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
                 result = 4;
             }
         };
@@ -137,7 +138,7 @@ public class TerminalLicenseServiceImplTest {
                 result = true;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.count();
+                basicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
                 result = 5;
             }
         };
@@ -181,7 +182,7 @@ public class TerminalLicenseServiceImplTest {
                 result = true;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.count();
+                basicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
                 result = 5;
             }
         };

@@ -76,7 +76,7 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
             }
         };
         CbbIDVTerminalLicenseNumDTO licenseNumDTO = cbbTerminalLicenseMgmtAPI.getIDVTerminalLicenseNum();
-        Assert.assertEquals(1, licenseNumDTO.getLicenseNum());
-        Assert.assertEquals(2, licenseNumDTO.getUsedNum());
+        Assert.assertEquals(Integer.valueOf(1), licenseNumDTO.getLicenseNum());
+        Assert.assertEquals(Integer.valueOf(2), licenseNumDTO.getUsedNum());
     }
 }
