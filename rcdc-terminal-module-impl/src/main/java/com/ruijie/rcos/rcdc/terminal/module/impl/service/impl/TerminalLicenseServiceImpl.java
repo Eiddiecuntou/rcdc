@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -79,13 +78,11 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
-    public synchronized boolean isAuthedOrAuthSuccess(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) {
+    public synchronized boolean auth(String terminalId) {
         Assert.hasText(terminalId,  "terminalId can not be empty");
-        Assert.notNull(basicInfo, "basicInfo can not be null");
-        // 不是新终端，已授权成功
+
         if (!basicInfoService.isNewTerminal(terminalId)) {
-            LOGGER.info("终端{}[{}]已授权", terminalId, basicInfo.getTerminalName());
-            basicInfoService.saveBasicInfo(terminalId, isNewConnection, basicInfo);
+            LOGGER.info("终端[{}]已授权成功，无须再次授权", terminalId);
             return true;
         }
 
@@ -93,8 +90,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
         Integer idvUsedNum = getUsedNum();
 
         if (Objects.equals(idvLicenseNum, TERMINAL_AUTH_DEFAULT_NUM) || idvLicenseNum > idvUsedNum) {
-            LOGGER.info("终端{}[{}]可以授权，当前licenseNum：{}，usedNum：{}", basicInfo.getTerminalName(), terminalId, licenseNum, usedNum);
-            basicInfoService.saveBasicInfo(terminalId, isNewConnection, basicInfo);
+            LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);
             usedNum++;
             return true;
         }

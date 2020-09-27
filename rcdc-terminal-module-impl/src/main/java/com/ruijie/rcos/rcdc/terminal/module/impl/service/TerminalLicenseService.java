@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
-
 /**
  * Description: 终端授权service
  * Copyright: Copyright (c) 2020
@@ -31,11 +29,9 @@ public interface TerminalLicenseService {
     void updateTerminalLicenseNum(Integer authNum);
 
     /**
-     * 检查1台idv是否已经授权；如果未授权，并且有授权剩余，则终端已使用授权数量+1，保存终端信息到数据库
+     * 授权1台idv终端；如果授权数量为-1，或者有授权剩余，则终端已使用授权数量+1
      * @param terminalId 终端id
-     * @param isNewConnection 是否是新连接
-     * @param basicInfo shine上报的终端基本信息
      * @return true 已授权或者授权成功；false 授权数不足，无法授权
      */
-    boolean isAuthedOrAuthSuccess(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo);
+    boolean auth(String terminalId);
 }

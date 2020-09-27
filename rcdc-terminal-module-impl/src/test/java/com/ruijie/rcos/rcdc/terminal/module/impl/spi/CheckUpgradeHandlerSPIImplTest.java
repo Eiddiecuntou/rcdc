@@ -164,7 +164,6 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
 
                 handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
                 result = new BusinessException("123");
@@ -187,8 +186,6 @@ public class CheckUpgradeHandlerSPIImplTest {
         } catch (Exception e) {
             fail();
         }
-
-        saveVerifications();
 
         new Verifications() {
             {
@@ -221,7 +218,9 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                terminalLicenseService.isAuthedOrAuthSuccess(withEqual("123"),true, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.isNewTerminal(withEqual("123"));
+                result = true;
+                terminalLicenseService.auth(withEqual("123"));
                 result = false;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
@@ -266,8 +265,6 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                terminalLicenseService.isAuthedOrAuthSuccess(withEqual("123"),true, (CbbShineTerminalBasicInfo) any);
-                result = false;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
             }
@@ -311,7 +308,9 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                terminalLicenseService.isAuthedOrAuthSuccess(withEqual("123"),true, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.isNewTerminal(withEqual("123"));
+                result = true;
+                terminalLicenseService.auth(withEqual("123"));
                 result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
@@ -332,7 +331,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 TerminalUpgradeResult terminalUpgradeResult;
                 basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
-                times = 0;
+                times = 1;
                 MessageUtils.buildResponseMessage(request, terminalUpgradeResult = withCapture());
                 times = 1;
                 Assert.assertEquals(Integer.valueOf(0), terminalUpgradeResult.getResult());
@@ -356,8 +355,6 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                terminalLicenseService.isAuthedOrAuthSuccess(withEqual("123"),true, (CbbShineTerminalBasicInfo) any);
-                result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
             }

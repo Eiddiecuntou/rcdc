@@ -72,18 +72,21 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
 
-        if (terminalType == CbbTerminalTypeEnums.IDV_LINUX) {
-            // idv_linux终端接入，如果未授权且没有剩余授权，不保存终端信息，并且在终端不需要升级情况下返回授权不足code
-            if (!terminalLicenseService.isAuthedOrAuthSuccess(terminalId, request.getNewConnection(), basicInfo) &&
-                versionResult.getResult() == CbbTerminalComponentUpgradeResultEnums.NOT.getResult()) {
-                versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
-            }
-        } else {
-            // 非idv_linux终端，直接保存基本信息
-            basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
-        }
-
         SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalType);
+
+        if (versionResult.getResult() == CbbTerminalComponentUpgradeResultEnums.NOT.getResult() &&
+            systemUpgradeCheckResult.getSystemUpgradeCode() == CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult()) {
+            LOGGER.info("终端[{}]{}无须升级", request.getTerminalId(), basicInfo.getTerminalName());
+            if (terminalType == CbbTerminalTypeEnums.IDV_LINUX && basicInfoService.isNewTerminal(terminalId) &&
+                !terminalLicenseService.auth(terminalId)) {
+                LOGGER.info("终端[{}]{}是idv，是新接入的终端，并且授权失败。升级结果设值为：NO_AUTH", request.getTerminalId(),
+                    basicInfo.getTerminalName());
+                versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
+            } else {
+                LOGGER.info("终端[{}]{}不是idv终端，或者是接入过的终端，或者授权成功。保存终端信息", request.getTerminalId(), basicInfo.getTerminalName());
+                basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
+            }
+        }
 
         // 构建组件升级和系统升级检测结果对象
         TerminalUpgradeResult terminalUpgradeResult = buildTerminalUpgradeResult(versionResult, systemUpgradeCheckResult);
