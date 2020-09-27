@@ -16,8 +16,8 @@
         <property name="port" value="9209"/>
         <property name="sslConfig">
             <bean class="com.ruijie.rcos.sk.connectkit.api.connect.SslConfig">
-                <property name="trustStore" value="./certificate/sChat.jks" />
-                <property name="keyStore" value="./certificate/sChat.jks" />
+                <property name="trustStore" value="/certificate/sChat.jks" />
+                <property name="keyStore" value="/certificate/sChat.jks" />
                 <property name="trustPass" value="xMa@#KL12" />
                 <property name="keyPass" value="xMa@#KL12" />
                 <property name="hasClientAuth" value="true" />
