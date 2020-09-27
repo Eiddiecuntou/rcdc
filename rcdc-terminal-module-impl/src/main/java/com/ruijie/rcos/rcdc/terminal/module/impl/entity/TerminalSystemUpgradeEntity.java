@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -40,6 +41,9 @@ public class TerminalSystemUpgradeEntity {
 
     @Version
     private Integer version;
+
+    @Enumerated(EnumType.STRING)
+    private CbbFlashModeEnums flashMode;
 
     public UUID getId() {
         return id;
@@ -103,5 +107,13 @@ public class TerminalSystemUpgradeEntity {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public CbbFlashModeEnums getFlashMode() {
+        return flashMode;
+    }
+
+    public void setFlashMode(CbbFlashModeEnums flashMode) {
+        this.flashMode = flashMode;
     }
 }

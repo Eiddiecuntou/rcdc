@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
@@ -29,6 +30,9 @@ public class CbbAddSystemUpgradeTaskDTO {
 
     @Nullable
     private UUID[] terminalGroupIdArr;
+
+    @NotNull
+    private CbbFlashModeEnums flashModeEnums;
 
     public UUID getPackageId() {
         return packageId;
@@ -62,5 +66,13 @@ public class CbbAddSystemUpgradeTaskDTO {
 
     public void setTerminalGroupIdArr(@Nullable UUID[] terminalGroupIdArr) {
         this.terminalGroupIdArr = terminalGroupIdArr;
+    }
+
+    public CbbFlashModeEnums getFlashModeEnums() {
+        return flashModeEnums;
+    }
+
+    public void setFlashModeEnums(CbbFlashModeEnums flashModeEnums) {
+        this.flashModeEnums = flashModeEnums;
     }
 }
