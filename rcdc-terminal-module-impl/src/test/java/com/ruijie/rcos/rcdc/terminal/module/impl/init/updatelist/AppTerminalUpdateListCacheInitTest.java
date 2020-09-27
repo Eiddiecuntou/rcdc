@@ -21,7 +21,7 @@ import java.util.List;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
-public class WinAppTerminalUpdatelistCacheInitTest {
+public class AppTerminalUpdateListCacheInitTest {
 
     @Tested
     private AppTerminalUpdateListCacheInit cacheInit;
@@ -31,6 +31,7 @@ public class WinAppTerminalUpdatelistCacheInitTest {
      */
     @Test
     public void testGetUpdateListPath() {
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
         String updateListPath = cacheInit.getUpdateListPath();
         Assert.assertEquals("/opt/ftp/terminal/terminal_component/windows_app/update.list", updateListPath);
     }
@@ -40,6 +41,8 @@ public class WinAppTerminalUpdatelistCacheInitTest {
      */
     @Test
     public void testGetTerminalType() {
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
+        AppTerminalUpdateListCacheInit cacheInit2 = new AppTerminalUpdateListCacheInit();
         CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
         Assert.assertEquals(CbbTerminalTypeEnums.APP_WINDOWS, terminalType);
     }
@@ -50,9 +53,11 @@ public class WinAppTerminalUpdatelistCacheInitTest {
     @Test
     public void testFillUpdateListHasIOException() {
 
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
         AppUpdateListDTO dto = new AppUpdateListDTO();
         List<AppComponentVersionInfoDTO> versionList = Lists.newArrayList();
         AppComponentVersionInfoDTO versionInfoDTO = new AppComponentVersionInfoDTO();
+
         versionInfoDTO.setCompletePackageName("aaa");
         versionList.add(versionInfoDTO);
         dto.setComponentList(versionList);

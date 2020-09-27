@@ -2,8 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AppTerminalUpdateListCacheInit;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import mockit.Expectations;
-import mockit.Injectable;
+import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
 import org.junit.Test;
@@ -19,12 +18,12 @@ import org.junit.runner.RunWith;
  * @author ls
  */
 @RunWith(SkyEngineRunner.class)
-public class WinAppTerminalUpgradeCacheInitTest {
+public class AppTerminalUpgradeCacheInitTest {
 
     @Tested
     private AppTerminalUpgradeCacheInit init;
 
-    @Injectable
+    @Mocked
     private AppTerminalUpdateListCacheInit windowsAppTerminalUpdatelistCacheInit;
 
     /**
@@ -32,18 +31,13 @@ public class WinAppTerminalUpgradeCacheInitTest {
      */
     @Test
     public void testSafeInit() {
-        new Expectations() {
-            {
-                windowsAppTerminalUpdatelistCacheInit.init();
-            }
-        };
 
         init.safeInit();
 
         new Verifications() {
             {
                 windowsAppTerminalUpdatelistCacheInit.init();
-                times = 1;
+                times = 3;
             }
         };
     }
