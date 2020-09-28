@@ -74,7 +74,6 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalType);
 
-        boolean isNeedSaveBasicInfo = true;
         if (isNeedAuthTerminal(terminalType)) {
             LOGGER.info("终端[{}]{}是idv终端，并且当前限制idv授权数量", request.getTerminalId(), basicInfo.getTerminalName());
             if (basicInfoService.isNewTerminal(terminalId)) {
@@ -83,21 +82,18 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
                     LOGGER.info("终端[{}]{}无须升级", request.getTerminalId(), basicInfo.getTerminalName());
                     if (!terminalLicenseService.authIDV(terminalId)) {
                         LOGGER.info("授权数不足，不保存终端[{}]{}信息", request.getTerminalId(), basicInfo.getTerminalName());
-                        isNeedSaveBasicInfo = false;
                         versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
+                        responseToShine(request, versionResult, systemUpgradeCheckResult);
+                        return;
                     }
-                } else {
-                    LOGGER.info("终端[{}]{}可能需要升级，暂不保存终端信息", request.getTerminalId(), basicInfo.getTerminalName());
-                    isNeedSaveBasicInfo = false;
                 }
             }
         }
+        basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
+        responseToShine(request, versionResult, systemUpgradeCheckResult);
+    }
 
-        if (isNeedSaveBasicInfo) {
-            basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
-        }
-
-        // 构建组件升级和系统升级检测结果对象
+    private void responseToShine(CbbDispatcherRequest request, TerminalVersionResultDTO versionResult, SystemUpgradeCheckResult systemUpgradeCheckResult) {
         TerminalUpgradeResult terminalUpgradeResult = buildTerminalUpgradeResult(versionResult, systemUpgradeCheckResult);
         try {
             CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, terminalUpgradeResult);
