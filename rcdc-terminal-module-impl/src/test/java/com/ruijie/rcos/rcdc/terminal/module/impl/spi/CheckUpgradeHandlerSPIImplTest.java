@@ -220,7 +220,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = terminalEntity;
                 basicInfoService.isNewTerminal(withEqual("123"));
                 result = true;
-                terminalLicenseService.auth(withEqual("123"));
+                terminalLicenseService.authIDV(withEqual("123"));
                 result = false;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
@@ -265,6 +265,8 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
+                basicInfoService.isNewTerminal(withEqual(terminalId));
+                result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
             }
@@ -310,7 +312,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = terminalEntity;
                 basicInfoService.isNewTerminal(withEqual("123"));
                 result = true;
-                terminalLicenseService.auth(withEqual("123"));
+                terminalLicenseService.authIDV(withEqual("123"));
                 result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
@@ -355,6 +357,8 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
+                basicInfoService.isNewTerminal(withEqual(terminalId));
+                result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
             }

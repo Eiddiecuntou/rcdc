@@ -27,7 +27,7 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     CbbTerminalLicenseMgmtAPIImpl cbbTerminalLicenseMgmtAPI;
 
     @Injectable
-    TerminalLicenseService terminalLicenseService;
+    TerminalLicenseService TerminalLicenseService;
 
     /**
      * 测试setIDVTerminalLicenseNum
@@ -46,7 +46,7 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     public void testSetIDVTerminalLicenseNumDTO() {
         new Expectations() {
             {
-                terminalLicenseService.updateTerminalLicenseNum(1);
+                TerminalLicenseService.updateIDVTerminalLicenseNum(1);
             }
         };
         try {
@@ -56,7 +56,7 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
         }
         new Verifications() {
             {
-                terminalLicenseService.updateTerminalLicenseNum(1);
+                TerminalLicenseService.updateIDVTerminalLicenseNum(1);
                 times = 1;
             }
         };
@@ -69,9 +69,9 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     public void testGetIDVTerminalLicenseNum() {
         new Expectations() {
             {
-                terminalLicenseService.getTerminalLicenseNum();
+                TerminalLicenseService.getIDVTerminalLicenseNum();
                 result = 1;
-                terminalLicenseService.getUsedNum();
+                TerminalLicenseService.getIDVUsedNum();
                 result = 2;
             }
         };

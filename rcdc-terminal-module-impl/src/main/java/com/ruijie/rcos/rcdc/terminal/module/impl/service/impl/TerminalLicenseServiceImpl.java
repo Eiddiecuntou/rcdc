@@ -46,7 +46,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
 
 
     @Override
-    public Integer getTerminalLicenseNum() {
+    public Integer getIDVTerminalLicenseNum() {
         // licenseNum如果为null，表示licenseNum还没有从数据库同步数据。
         if (licenseNum == null) {
             String terminalLicenseNum = globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
@@ -58,9 +58,9 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
-    public Integer getUsedNum() {
-        // 如果usedNum值为null，表示usedNum还没有从数据库同步数据
-        if (usedNum == null) {
+    public Integer getIDVUsedNum() {
+        // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，不会维护已授权数目，所以需要从数据库同步数据
+        if (usedNum == null || getIDVTerminalLicenseNum() == -1) {
             usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
             LOGGER.info("从数据库同步idv授权usedNum值为:{}", usedNum);
         }
@@ -68,17 +68,22 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
-    public void updateTerminalLicenseNum(Integer licenseNum) {
+    public void updateIDVTerminalLicenseNum(Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not be null");
         Assert.isTrue(licenseNum >= TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + TERMINAL_AUTH_DEFAULT_NUM);
 
         LOGGER.info("licenseNum 更新为 {}", licenseNum);
         globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
+
+        if (getIDVTerminalLicenseNum() == -1 && licenseNum != -1) {
+            LOGGER.info("licenseNum为-1时不实时维护usedNum的值，不为-1时实时维护usedNum的值。licenseNum由-1变更为非-1，从数据库同步已授权终端数");
+            this.usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+        }
         this.licenseNum = licenseNum;
     }
 
     @Override
-    public synchronized boolean auth(String terminalId) {
+    public synchronized boolean authIDV(String terminalId) {
         Assert.hasText(terminalId,  "terminalId can not be empty");
 
         if (!basicInfoService.isNewTerminal(terminalId)) {
@@ -86,8 +91,8 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
             return true;
         }
 
-        Integer idvLicenseNum = getTerminalLicenseNum();
-        Integer idvUsedNum = getUsedNum();
+        Integer idvLicenseNum = getIDVTerminalLicenseNum();
+        Integer idvUsedNum = getIDVUsedNum();
 
         if (Objects.equals(idvLicenseNum, TERMINAL_AUTH_DEFAULT_NUM) || idvLicenseNum > idvUsedNum) {
             LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);

@@ -29,13 +29,13 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     @Override
     public void setIDVTerminalLicenseNum(Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not be null");
-        terminalLicenseService.updateTerminalLicenseNum(licenseNum);
+        terminalLicenseService.updateIDVTerminalLicenseNum(licenseNum);
     }
 
     @Override
     public CbbIDVTerminalLicenseNumDTO getIDVTerminalLicenseNum() {
-        Integer licenseNum = terminalLicenseService.getTerminalLicenseNum();
-        Integer usedNum = terminalLicenseService.getUsedNum();
+        Integer licenseNum = terminalLicenseService.getIDVTerminalLicenseNum();
+        Integer usedNum = terminalLicenseService.getIDVUsedNum();
 
         CbbIDVTerminalLicenseNumDTO licenseNumDTO = new CbbIDVTerminalLicenseNumDTO();
         licenseNumDTO.setLicenseNum(licenseNum);

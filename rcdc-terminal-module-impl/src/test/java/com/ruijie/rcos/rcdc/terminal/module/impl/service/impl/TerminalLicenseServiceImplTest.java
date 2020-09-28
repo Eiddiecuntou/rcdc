@@ -50,11 +50,11 @@ public class TerminalLicenseServiceImplTest {
                 result = "5";
             }
         };
-        int terminalLicenseNum = licenceLicenseService.getTerminalLicenseNum();
+        int terminalLicenseNum = licenceLicenseService.getIDVTerminalLicenseNum();
         System.out.println(licenceLicenseService);
         Assert.assertEquals(5, terminalLicenseNum);
 
-        licenceLicenseService.getTerminalLicenseNum();
+        licenceLicenseService.getIDVTerminalLicenseNum();
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
@@ -72,13 +72,14 @@ public class TerminalLicenseServiceImplTest {
             {
                 basicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
                 result = 2;
+                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                result = "2";
             }
         };
 
-        int usedNum = licenceLicenseService.getUsedNum();
+        int usedNum = licenceLicenseService.getIDVUsedNum();
         Assert.assertEquals(2, usedNum);
-
-        licenceLicenseService.getUsedNum();
+        licenceLicenseService.getIDVUsedNum();
         new Verifications() {
             {
                 basicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
@@ -93,14 +94,20 @@ public class TerminalLicenseServiceImplTest {
     @Test
     public void testUpdateTerminalLicenseNum() {
         try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateTerminalLicenseNum(-2),
+            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateIDVTerminalLicenseNum(-2),
                 "licenseNum must gt -1");
         } catch (Exception e) {
             Assert.fail();
         }
 
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                result = "2";
+            }
+        };
         try {
-            licenceLicenseService.updateTerminalLicenseNum(5);
+            licenceLicenseService.updateIDVTerminalLicenseNum(5);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -121,7 +128,7 @@ public class TerminalLicenseServiceImplTest {
                 result = 4;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.auth("123");
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123");
         Assert.assertTrue(isAuthedOrAuthSuccess);
 
     }
@@ -141,7 +148,7 @@ public class TerminalLicenseServiceImplTest {
                 result = 5;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.auth("123");
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123");
         Assert.assertTrue(!isAuthedOrAuthSuccess);
 
     }
@@ -157,7 +164,7 @@ public class TerminalLicenseServiceImplTest {
                 result = false;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.auth("123");
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123");
         Assert.assertTrue(isAuthedOrAuthSuccess);
 
         new Verifications() {
@@ -185,7 +192,7 @@ public class TerminalLicenseServiceImplTest {
                 result = 5;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.auth("123");
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123");
         Assert.assertTrue(isAuthedOrAuthSuccess);
 
     }
