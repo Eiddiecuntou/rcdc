@@ -187,7 +187,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setTerminalIdArr(terminalIdArr);
         request.setPackageId(upgradePackage.getId());
-        // ANDROID 只有极速刷机
+        // ANDROID 只有快速刷机
         request.setFlashModeEnums(CbbFlashModeEnums.FAST);
         try {
             cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask(request);
