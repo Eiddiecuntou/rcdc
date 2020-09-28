@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -33,6 +34,8 @@ public class CbbSystemUpgradeTaskDTO {
     private CbbSystemUpgradeModeEnums upgradeMode;
 
     private CbbTerminalTypeEnums packageType;
+
+    private CbbFlashModeEnums flashMode;
 
     public UUID getId() {
         return id;
@@ -96,5 +99,13 @@ public class CbbSystemUpgradeTaskDTO {
 
     public void setPackageType(CbbTerminalTypeEnums packageType) {
         this.packageType = packageType;
+    }
+
+    public CbbFlashModeEnums getFlashMode() {
+        return flashMode;
+    }
+
+    public void setFlashMode(CbbFlashModeEnums flashMode) {
+        this.flashMode = flashMode;
     }
 }
