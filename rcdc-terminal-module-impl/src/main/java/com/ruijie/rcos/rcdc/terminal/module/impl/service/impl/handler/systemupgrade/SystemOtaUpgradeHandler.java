@@ -62,6 +62,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
         resultContent.setUpgradeMode(upgradePackage.getUpgradeMode());
         resultContent.setPackageVersion(upgradeTask.getPackageVersion());
         resultContent.setTaskId(upgradeTask.getId());
+        resultContent.setFlashMode(upgradeTask.getFlashMode());
         resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
         resultContent.setOtaScriptPath(upgradePackage.getOtaScriptPath());
