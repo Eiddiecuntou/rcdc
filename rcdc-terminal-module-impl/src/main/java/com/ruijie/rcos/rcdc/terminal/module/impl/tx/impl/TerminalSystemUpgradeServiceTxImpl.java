@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -57,7 +58,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(request, "request can not be null");
 
-        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage);
+        TerminalSystemUpgradeEntity entity = addSystemUpgradeTaskEntity(upgradePackage, request.getFlashModeEnums());
 
         // 获取分组下的终端与选择的终端合并去重
         String[] terminalIdUnderGroupArr = obtainTerminalUnderGroup(request.getTerminalGroupIdArr(), upgradePackage.getPackageType());
@@ -164,9 +165,11 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
      * 添加刷机任务
      *
      * @param upgradePackage 刷机包对象
+     * @param flashModeEnums 刷机方式
      * @return 刷机任务对象
      */
-    private TerminalSystemUpgradeEntity addSystemUpgradeTaskEntity(TerminalSystemUpgradePackageEntity upgradePackage) {
+    private TerminalSystemUpgradeEntity addSystemUpgradeTaskEntity(TerminalSystemUpgradePackageEntity upgradePackage,
+                                                                   CbbFlashModeEnums flashModeEnums) {
         TerminalSystemUpgradeEntity entity = new TerminalSystemUpgradeEntity();
         entity.setUpgradePackageId(upgradePackage.getId());
         entity.setPackageName(upgradePackage.getPackageName());
@@ -174,6 +177,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         entity.setPackageType(upgradePackage.getPackageType());
         entity.setCreateTime(new Date());
         entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+        entity.setFlashMode(flashModeEnums);
         systemUpgradeDAO.save(entity);
         return entity;
     }

@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 
 import com.ruijie.rcos.base.sysmanage.module.def.api.BtClientAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -42,6 +43,9 @@ public class SystemOtaUpgradeHandlerTest {
 
     @Injectable
     private TerminalSystemUpgradeService systemUpgradeService;
+
+    @Injectable
+    private TerminalSystemUpgradeService terminalSystemUpgradeService;
 
     @Injectable
     private BtClientAPI btClientAPI;
@@ -94,10 +98,19 @@ public class SystemOtaUpgradeHandlerTest {
      * 测试获取系统升级消息
      */
     @Test
-    public void testGetSystemUpgradeMsg() {
+    public void testGetSystemUpgradeMsg() throws BusinessException {
         TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
         TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
 
+        TerminalSystemUpgradeEntity terminalSystemUpgradeEntity = new TerminalSystemUpgradeEntity();
+        terminalSystemUpgradeEntity.setId(upgradeEntity.getId());
+        terminalSystemUpgradeEntity.setFlashMode(CbbFlashModeEnums.FAST);
+        new Expectations() {
+            {
+                terminalSystemUpgradeService.getSystemUpgradeTask(upgradeEntity.getId());
+                result = terminalSystemUpgradeEntity;
+            }
+        };
         OtaCheckResultContent result =
                 (OtaCheckResultContent) handler.getSystemUpgradeMsg(packageEntity, upgradeEntity.getId());
 
@@ -130,6 +143,7 @@ public class SystemOtaUpgradeHandlerTest {
         content.setSeedMD5("cbd");
         content.setTaskId(upgradeEntity.getId());
         content.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
+        content.setFlashMode(CbbFlashModeEnums.FAST);
         return content;
     }
 
@@ -137,6 +151,7 @@ public class SystemOtaUpgradeHandlerTest {
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
         upgradeEntity.setId(UUID.randomUUID());
         upgradeEntity.setPackageVersion("1.1.1");
+        upgradeEntity.setFlashMode(CbbFlashModeEnums.FAST);
         return upgradeEntity;
     }
 

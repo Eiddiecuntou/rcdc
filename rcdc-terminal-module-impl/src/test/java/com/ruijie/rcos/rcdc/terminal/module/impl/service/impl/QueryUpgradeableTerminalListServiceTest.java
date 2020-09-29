@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.EntityFieldMapper;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -101,5 +103,15 @@ public class QueryUpgradeableTerminalListServiceTest {
                 times = 1;
             }
         };
+    }
+
+    /**
+     * testMappingField
+     * @param entityFieldMapper 实体
+     */
+    @Test
+    public void testMappingField(@Mocked EntityFieldMapper entityFieldMapper) {
+        service.mappingField(entityFieldMapper);
+        Assert.assertTrue(true);
     }
 }

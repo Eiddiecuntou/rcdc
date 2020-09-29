@@ -29,6 +29,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiParam (请求体字段说明) {CbbAddSystemUpgradeTaskDTO} request CbbAddSystemUpgradeTaskDTO
      * @apiParam (请求体字段说明) {UUID} request.packageId 升级包id
      * @apiParam (请求体字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} [request.upgradeMode] 升级模式：自动升级、手动升级
+     * @apiParam (请求体字段说明) {CbbFlashModeEnums="FAST","FULL"} request.flashMode 刷机模式：快速刷机，完整刷机
      * @apiParam (请求体字段说明) {String[]} [request.terminalIdArr] 终端id数组
      * @apiParam (请求体字段说明) {UUID[]} [request.terminalGroupIdArr] 终端组id数组
      *
@@ -141,6 +142,7 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiSuccess (响应字段说明) {String} result.itemArr.ip 终端ip
      * @apiSuccess (响应字段说明) {String} result.itemArr.mac 终端mac
      * @apiSuccess (响应字段说明) {Date} result.itemArr.startTime 开始时间
+     * @apiSuccess (响应字段说明) {CbbFlashModeEnums="FAST","FULL"} result.itemArr.flashMode 刷机模式：快速刷机，完整刷机
      * @apiSuccess (响应字段说明) {CbbSystemUpgradeStateEnums="WAIT","UPGRADING","SUCCESS","FAIL","UNDO","UNSUPPORTED",
      * "NO_NEED"} result.itemArr.terminalUpgradeState 终端升级状态
      * @apiSuccess (响应字段说明) {long} result.total 分页数据总数
