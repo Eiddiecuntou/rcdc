@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -22,6 +23,23 @@ public interface TerminalBasicInfoService {
      * @param shineTerminalBasicInfo 终端信息
      */
     void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo);
+
+    /**
+     * 判断当前接入的终端有没有在终端表中存在记录
+     * @param terminalId 终端id
+     * @return true 新终端；false 已接入过的终端
+     */
+    boolean  isNewTerminal(String terminalId);
+
+    /**
+     * 通过shine上报的终端基本信息，构建终端entity
+     * @param terminalId 终端id
+     * @param isNewConnection 是否是新连接
+     * @param shineTerminalBasicInfo shine上报的终端基本信息
+     * @return basicInfoEntity 终端entity
+     */
+    TerminalEntity convertBasicInfo2TerminalEntity(String terminalId, boolean isNewConnection,
+        CbbShineTerminalBasicInfo shineTerminalBasicInfo);
 
     /**
      * 修改终端名称

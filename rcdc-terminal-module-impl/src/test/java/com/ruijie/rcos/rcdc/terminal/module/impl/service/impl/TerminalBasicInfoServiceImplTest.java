@@ -1,5 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
@@ -24,15 +30,19 @@ import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
-import mockit.*;
+import java.io.IOException;
+import java.util.Date;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
+import mockit.Tested;
+import mockit.Verifications;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.io.IOException;
-import java.util.Date;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -556,6 +566,36 @@ public class TerminalBasicInfoServiceImplTest {
                 assertEquals(terminalId, noticeRequest.getTerminalBasicInfo().getTerminalId());
             }
         };
+    }
+
+    /**
+     * 测试isNewTerminal
+     */
+    @Test
+    public void test() {
+        try {
+            ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.isNewTerminal(""), "terminalId can not be empty");
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
+                result = null;
+            }
+        };
+        boolean isNewTerminal = basicInfoService.isNewTerminal("123");
+        Assert.assertTrue(isNewTerminal);
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
+                result = new TerminalEntity();
+            }
+        };
+        isNewTerminal = basicInfoService.isNewTerminal("123");
+        Assert.assertTrue(!isNewTerminal);
     }
 
     /**

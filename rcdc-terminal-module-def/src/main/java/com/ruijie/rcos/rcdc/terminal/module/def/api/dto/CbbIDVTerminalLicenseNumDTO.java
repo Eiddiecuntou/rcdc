@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.def.api.request;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 /**
  * Description: Function Description
@@ -13,26 +13,26 @@ public class CbbIDVTerminalLicenseNumDTO {
     /**
      * 总的授权数
      */
-    private int licenseNum;
+    private Integer licenseNum;
 
     /**
      * 已用授权数
      */
-    private int usedNum;
+    private Integer usedNum;
 
-    public int getLicenseNum() {
+    public Integer getLicenseNum() {
         return licenseNum;
     }
 
-    public void setLicenseNum(int licenseNum) {
+    public void setLicenseNum(Integer licenseNum) {
         this.licenseNum = licenseNum;
     }
 
-    public int getUsedNum() {
+    public Integer getUsedNum() {
         return usedNum;
     }
 
-    public void setUsedNum(int usedNum) {
+    public void setUsedNum(Integer usedNum) {
         this.usedNum = usedNum;
     }
 }
