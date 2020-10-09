@@ -20,12 +20,24 @@ public class TerminalSystemUpgradeTerminalGroupEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    /** 
+     * 刷机任务id 
+    **/
     private UUID sysUpgradeId;
 
+    /** 
+     * 终端分组id 
+    **/
     private UUID terminalGroupId;
 
+    /** 
+     * 创建时间 
+    **/
     private Date createTime;
 
+    /** 
+     * 版本号，实现乐观锁 
+    **/
     @Version
     private Integer version;
 
