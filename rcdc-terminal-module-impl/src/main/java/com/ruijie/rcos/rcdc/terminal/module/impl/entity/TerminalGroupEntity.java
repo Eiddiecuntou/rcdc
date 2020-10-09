@@ -27,12 +27,24 @@ public class TerminalGroupEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    /** 
+     * 所属组id 
+    **/
     private UUID parentId;
 
+    /** 
+     * 终端组名 
+    **/
     private String name;
 
+    /** 
+     * 生成时间 
+    **/
     private Date createTime;
 
+    /** 
+     * 版本号 
+    **/
     @Version
     private int version;
 

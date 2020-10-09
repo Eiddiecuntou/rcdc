@@ -25,10 +25,19 @@ public class TerminalSystemUpgradePackageEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    /** 
+     * 升级包名称 
+    **/
     private String imgName;
 
+    /** 
+     * 升级包名称 
+    **/
     private String packageName;
 
+    /** 
+     * 刷机包存放路径 
+    **/
     private String filePath;
 
     private String fileMd5;
@@ -41,20 +50,38 @@ public class TerminalSystemUpgradePackageEntity {
 
     private String otaScriptMd5;
 
+    /** 
+     * 升级包类型，包括android升级包、Linux vdi升级包、Linux IDV升级包 
+    **/
     @Enumerated(EnumType.STRING)
     private CbbTerminalTypeEnums packageType;
 
+    /** 
+     * 上传时间 
+    **/
     private Date uploadTime;
 
+    /** 
+     * 升级包版本号 
+    **/
     private String packageVersion;
 
+    /** 
+     * 版本号 
+    **/
     @Version
     private int version;
 
 
+    /** 
+     * 系统刷机包来源 
+    **/
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradePackageOriginEnums origin;
 
+    /** 
+     * 分发方式 
+    **/
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeDistributionModeEnums distributionMode;
 
