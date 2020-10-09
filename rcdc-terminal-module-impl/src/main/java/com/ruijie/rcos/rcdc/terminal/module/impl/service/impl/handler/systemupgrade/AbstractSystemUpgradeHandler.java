@@ -61,7 +61,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
 
         boolean enableUpgrade = isTerminalEnableUpgrade(terminalEntity, terminalType);
         if (!enableUpgrade) {
-            LOGGER.info("终端[{}]不升级");
+            LOGGER.info("终端[{}]不升级", terminalEntity.getTerminalId());
             return CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE;
         }
 

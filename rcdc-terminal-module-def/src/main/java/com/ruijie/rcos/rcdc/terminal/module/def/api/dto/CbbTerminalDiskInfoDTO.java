@@ -21,8 +21,11 @@ public class CbbTerminalDiskInfoDTO {
     @JSONField(name = "dev_form")
     private String devForm;
 
+    /**
+     * 磁盘空间总大小，单位是byte
+     */
     @JSONField(name = "dev_totalsize")
-    private Integer devTotalSize;
+    private Long devTotalSize;
 
     @JSONField(name = "dev_media")
     private String devMedia;
@@ -42,8 +45,11 @@ public class CbbTerminalDiskInfoDTO {
     @JSONField(name = "dev_powerOnhour")
     private Integer devPowerOnhour;
 
+    /**
+     * 表示磁盘曾经写入过多少G
+     */
     @JSONField(name = "dev_totalWritten")
-    private Integer devTotalWritten;
+    private Long devTotalWritten;
 
     @JSONField(name = "dev_readIops")
     private Integer devReadIops;
@@ -75,11 +81,11 @@ public class CbbTerminalDiskInfoDTO {
         this.devForm = devForm;
     }
 
-    public Integer getDevTotalSize() {
+    public Long getDevTotalSize() {
         return devTotalSize;
     }
 
-    public void setDevTotalSize(Integer devTotalSize) {
+    public void setDevTotalSize(Long devTotalSize) {
         this.devTotalSize = devTotalSize;
     }
 
@@ -131,11 +137,11 @@ public class CbbTerminalDiskInfoDTO {
         this.devPowerOnhour = devPowerOnhour;
     }
 
-    public Integer getDevTotalWritten() {
+    public Long getDevTotalWritten() {
         return devTotalWritten;
     }
 
-    public void setDevTotalWritten(Integer devTotalWritten) {
+    public void setDevTotalWritten(Long devTotalWritten) {
         this.devTotalWritten = devTotalWritten;
     }
 

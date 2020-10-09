@@ -68,6 +68,15 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
+    public synchronized void reCountIDVTerminalLicenseUsedNum() {
+        // idv终端授权数量为-1时，不需要关注已使用授权数量
+        if (getIDVTerminalLicenseNum() != -1) {
+            usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+            LOGGER.info("从数据库重新统计idv授权usedNum值为:{}", usedNum);
+        }
+    }
+
+    @Override
     public void updateIDVTerminalLicenseNum(Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not be null");
         Assert.isTrue(licenseNum >= TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + TERMINAL_AUTH_DEFAULT_NUM);

@@ -5,11 +5,13 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbChangePasswordDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbModifyTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -49,6 +51,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Autowired
     private TerminalGroupService terminalGroupService;
 
+    @Autowired
+    private TerminalLicenseService terminalLicenseService;
+
     @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
@@ -72,15 +77,17 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         Assert.hasText(terminalId, "terminalId不能为空");
         // 在线终端不允许删除
         boolean isOnline = basicInfoService.isTerminalOnline(terminalId);
+        CbbTerminalBasicInfoDTO basicInfo = findBasicInfoByTerminalId(terminalId);
         if (isOnline) {
-            CbbTerminalBasicInfoDTO basicInfo = findBasicInfoByTerminalId(terminalId);
             String terminalName = basicInfo.getTerminalName();
             String macAddr = basicInfo.getMacAddr();
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[] {terminalName, macAddr});
         }
 
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
-
+        if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.IDV) {
+            terminalLicenseService.reCountIDVTerminalLicenseUsedNum();
+        }
     }
 
     @Override

@@ -23,6 +23,11 @@ public interface TerminalLicenseService {
     Integer getIDVUsedNum();
 
     /**
+     * 重新统计idv终端已使用授权数量
+     */
+    void reCountIDVTerminalLicenseUsedNum();
+
+    /**
      * 更新终端授权总数
      * @param authNum 终端授权数量
      */
