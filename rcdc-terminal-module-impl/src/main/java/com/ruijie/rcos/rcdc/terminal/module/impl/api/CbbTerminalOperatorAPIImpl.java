@@ -86,7 +86,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
         if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.IDV) {
-            terminalLicenseService.reCountIDVTerminalLicenseUsedNum();
+            terminalLicenseService.decreaseIDVTerminalLicenseUsedNum();
         }
     }
 

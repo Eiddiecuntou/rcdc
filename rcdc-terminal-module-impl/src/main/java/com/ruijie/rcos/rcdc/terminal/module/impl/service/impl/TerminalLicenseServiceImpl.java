@@ -3,15 +3,15 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.util.Objects;
 
 /**
  * Description: TerminalService实现类
@@ -37,13 +37,11 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
-    @Autowired
-    private TerminalBasicInfoService basicInfoService;
-
     private Integer licenseNum;
 
     private Integer usedNum;
 
+    private Object usedNumLock = new Object();
 
     @Override
     public Integer getIDVTerminalLicenseNum() {
@@ -68,11 +66,9 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
-    public synchronized void reCountIDVTerminalLicenseUsedNum() {
-        // idv终端授权数量为-1时，不需要关注已使用授权数量
-        if (getIDVTerminalLicenseNum() != -1) {
-            usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
-            LOGGER.info("从数据库重新统计idv授权usedNum值为:{}", usedNum);
+    public void decreaseIDVTerminalLicenseUsedNum() {
+        synchronized (usedNumLock) {
+            usedNum--;
         }
     }
 
@@ -92,24 +88,19 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
-    public synchronized boolean authIDV(String terminalId) {
-        Assert.hasText(terminalId,  "terminalId can not be empty");
-
-        if (!basicInfoService.isNewTerminal(terminalId)) {
-            LOGGER.info("终端[{}]已授权成功，无须再次授权", terminalId);
-            return true;
-        }
-
+    public boolean authIDV(String terminalId) {
+        Assert.hasText(terminalId, "terminalId can not be empty");
         Integer idvLicenseNum = getIDVTerminalLicenseNum();
         Integer idvUsedNum = getIDVUsedNum();
-
-        if (Objects.equals(idvLicenseNum, TERMINAL_AUTH_DEFAULT_NUM) || idvLicenseNum > idvUsedNum) {
-            LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);
-            usedNum++;
-            return true;
+        synchronized (usedNumLock) {
+            if (Objects.equals(idvLicenseNum, TERMINAL_AUTH_DEFAULT_NUM) || idvLicenseNum > idvUsedNum) {
+                LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);
+                usedNum++;
+                return true;
+            }
+            LOGGER.info("idv终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", licenseNum, usedNum);
+            return false;
         }
-        LOGGER.info("idv终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", licenseNum, usedNum);
-        return false;
     }
 
 }

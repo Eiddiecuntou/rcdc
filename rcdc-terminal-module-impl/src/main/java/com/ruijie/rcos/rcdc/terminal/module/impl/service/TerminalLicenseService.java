@@ -23,9 +23,9 @@ public interface TerminalLicenseService {
     Integer getIDVUsedNum();
 
     /**
-     * 重新统计idv终端已使用授权数量
+     * 已授权数-1
      */
-    void reCountIDVTerminalLicenseUsedNum();
+    void decreaseIDVTerminalLicenseUsedNum();
 
     /**
      * 更新终端授权总数
