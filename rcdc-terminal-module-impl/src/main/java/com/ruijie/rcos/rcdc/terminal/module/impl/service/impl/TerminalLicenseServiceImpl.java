@@ -1,17 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import java.util.Objects;
 
 /**
  * Description: TerminalService实现类
@@ -36,6 +37,9 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
 
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
+
+    @Autowired
+    private TerminalBasicInfoService basicInfoService;
 
     private Integer licenseNum;
 
@@ -88,13 +92,19 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
-    public boolean authIDV(String terminalId) {
+    public boolean authIDV(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) {
         Assert.hasText(terminalId, "terminalId can not be empty");
-        Integer idvLicenseNum = getIDVTerminalLicenseNum();
-        Integer idvUsedNum = getIDVUsedNum();
+        Assert.notNull(basicInfo, "basicInfo can not be null");
         synchronized (usedNumLock) {
+            if (!basicInfoService.isNewTerminal(terminalId)) {
+                LOGGER.info("终端[{}]已授权成功，无须再次授权", terminalId);
+                return true;
+            }
+            Integer idvLicenseNum = getIDVTerminalLicenseNum();
+            Integer idvUsedNum = getIDVUsedNum();
             if (Objects.equals(idvLicenseNum, TERMINAL_AUTH_DEFAULT_NUM) || idvLicenseNum > idvUsedNum) {
                 LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);
+                basicInfoService.saveBasicInfo(terminalId, isNewConnection, basicInfo);
                 usedNum++;
                 return true;
             }

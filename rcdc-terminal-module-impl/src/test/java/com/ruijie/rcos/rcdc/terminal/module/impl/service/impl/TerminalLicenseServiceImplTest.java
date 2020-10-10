@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -128,7 +129,7 @@ public class TerminalLicenseServiceImplTest {
                 result = 4;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123");
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123", true, new CbbShineTerminalBasicInfo());
         Assert.assertTrue(isAuthedOrAuthSuccess);
 
     }
@@ -148,7 +149,7 @@ public class TerminalLicenseServiceImplTest {
                 result = 5;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123");
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123", true, new CbbShineTerminalBasicInfo());
         Assert.assertTrue(!isAuthedOrAuthSuccess);
 
     }
@@ -164,7 +165,7 @@ public class TerminalLicenseServiceImplTest {
                 result = false;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123");
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123", true, new CbbShineTerminalBasicInfo());
         Assert.assertTrue(isAuthedOrAuthSuccess);
 
         new Verifications() {
@@ -192,7 +193,7 @@ public class TerminalLicenseServiceImplTest {
                 result = 5;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123");
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123", true, new CbbShineTerminalBasicInfo());
         Assert.assertTrue(isAuthedOrAuthSuccess);
 
     }
