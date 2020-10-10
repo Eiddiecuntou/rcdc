@@ -72,6 +72,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         entity.setCpuType("intel");
         entity.setTerminalOsType("Linux");
         entity.setPlatform(CbbTerminalPlatformEnums.VDI);
+
         new Expectations() {
             {
                 basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
@@ -96,7 +97,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setTerminalId(terminalId);
             request.setRequestId("456");
-            request.setData(generateJson());
+            request.setData(generateLinuxIDVJson());
             request.setNewConnection(true);
             checkUpgradeHandler.dispatch(request);
 
@@ -116,9 +117,10 @@ public class CheckUpgradeHandlerSPIImplTest {
         TerminalEntity terminalEntity = new TerminalEntity();
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
         terminalEntity.setTerminalOsType("Linux");
+
         new Expectations() {
             {
-                basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
+                basicInfoService.convertBasicInfo2TerminalEntity(anyString, anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
                 basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
                 try {
@@ -140,7 +142,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
-            request.setData(generateJson());
+            request.setData(generateLinuxIDVJson());
             request.setNewConnection(true);
             checkUpgradeHandler.dispatch(request);
 
@@ -180,7 +182,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
-            request.setData(generateJson());
+            request.setData(generateLinuxIDVJson());
             request.setNewConnection(false);
             checkUpgradeHandler.dispatch(request);
         } catch (Exception e) {
@@ -214,13 +216,14 @@ public class CheckUpgradeHandlerSPIImplTest {
         terminalEntity.setTerminalOsType("Linux");
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
         versionResultDTO.setResult(0);
+
         new Expectations(MessageUtils.class) {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
                 basicInfoService.isNewTerminal(withEqual("123"));
                 result = true;
-                terminalLicenseService.authIDV(withEqual("123"));
+                terminalLicenseService.authIDV(withEqual("123"), true, (CbbShineTerminalBasicInfo) any);
                 result = false;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
@@ -230,7 +233,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         try {
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
-            request.setData(generateJson());
+            request.setData(generateLinuxIDVJson());
             request.setNewConnection(true);
             checkUpgradeHandler.dispatch(request);
         } catch (Exception e) {
@@ -261,6 +264,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         terminalEntity.setTerminalOsType("Linux");
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
         versionResultDTO.setResult(2);
+
         new Expectations(MessageUtils.class) {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
@@ -275,7 +279,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         try {
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
-            request.setData(generateJson());
+            request.setData(generateLinuxIDVJson());
             request.setNewConnection(true);
             checkUpgradeHandler.dispatch(request);
         } catch (Exception e) {
@@ -306,13 +310,14 @@ public class CheckUpgradeHandlerSPIImplTest {
         terminalEntity.setTerminalOsType("Linux");
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
         versionResultDTO.setResult(0);
+
         new Expectations(MessageUtils.class) {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
                 basicInfoService.isNewTerminal(withEqual("123"));
                 result = true;
-                terminalLicenseService.authIDV(withEqual("123"));
+                terminalLicenseService.authIDV(withEqual("123"), true, (CbbShineTerminalBasicInfo) any);
                 result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
@@ -322,7 +327,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         try {
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
-            request.setData(generateJson());
+            request.setData(generateLinuxIDVJson());
             request.setNewConnection(true);
             checkUpgradeHandler.dispatch(request);
         } catch (Exception e) {
@@ -333,7 +338,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 TerminalUpgradeResult terminalUpgradeResult;
                 basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
-                times = 1;
+                times = 0;
                 MessageUtils.buildResponseMessage(request, terminalUpgradeResult = withCapture());
                 times = 1;
                 Assert.assertEquals(Integer.valueOf(0), terminalUpgradeResult.getResult());
@@ -353,6 +358,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         terminalEntity.setTerminalOsType("Linux");
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
         versionResultDTO.setResult(2);
+
         new Expectations(MessageUtils.class) {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
@@ -367,10 +373,11 @@ public class CheckUpgradeHandlerSPIImplTest {
         try {
             request.setTerminalId(terminalId);
             request.setRequestId("4567");
-            request.setData(generateJson());
+            request.setData(generateLinuxIDVJson());
             request.setNewConnection(true);
             checkUpgradeHandler.dispatch(request);
         } catch (Exception e) {
+            e.printStackTrace();
             fail();
         }
 
@@ -398,12 +405,23 @@ public class CheckUpgradeHandlerSPIImplTest {
     }
 
 
-    private String generateJson() {
+    private String generateLinuxIDVJson() {
         CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
         info.setTerminalId("123");
         info.setTerminalName("t-box2");
         info.setCpuType("intel5");
+        info.setPlatform(CbbTerminalPlatformEnums.IDV);
+        info.setTerminalOsType("Linux");
         return JSON.toJSONString(info);
     }
 
+    private String generateLinuxVDIJson() {
+        CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
+        info.setTerminalId("123");
+        info.setTerminalName("t-box2");
+        info.setCpuType("intel5");
+        info.setPlatform(CbbTerminalPlatformEnums.VDI);
+        info.setTerminalOsType("Linux");
+        return JSON.toJSONString(info);
+    }
 }

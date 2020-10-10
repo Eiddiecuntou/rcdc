@@ -74,8 +74,8 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalType);
 
-        boolean isNeedSaveTerminalBasicInfo = processIdvTerminalLicense(basicInfo, terminalType, versionResult,
-            systemUpgradeCheckResult);
+        boolean isNeedSaveTerminalBasicInfo = processIdvTerminalLicense(basicInfo, request.getNewConnection(),
+            versionResult, systemUpgradeCheckResult);
 
         if (isNeedSaveTerminalBasicInfo) {
             basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
@@ -86,13 +86,15 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     /**
      * idv终端授权处理。idv新终端接入并且idv授权个数有限制的情况下，如果终端没有处于不需要升级状态、或者处于不需要升级状态但授权不足，则不保存终端信息
      * @param basicInfo shine上报的终端基本信息
-     * @param terminalType 终端类型
+     * @param isNewConnection 是否是新连接
      * @param versionResult 终端组件升级检查结果
      * @param systemUpgradeCheckResult 终端系统升级检查结果
      * @return true -需要保存终端信息；false -不需要保存终端信息
      */
-    private boolean processIdvTerminalLicense(CbbShineTerminalBasicInfo basicInfo, CbbTerminalTypeEnums terminalType,
-        TerminalVersionResultDTO versionResult,SystemUpgradeCheckResult systemUpgradeCheckResult) {
+    private boolean processIdvTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection,
+        TerminalVersionResultDTO versionResult, SystemUpgradeCheckResult systemUpgradeCheckResult) {
+        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(basicInfo.getPlatform().name(),
+            basicInfo.getTerminalOsType());
         String terminalId = basicInfo.getTerminalId();
         if (isNeedAuthTerminal(terminalType)) {
             LOGGER.info("终端[{}]{}是idv终端，并且当前限制idv授权数量", terminalId, basicInfo.getTerminalName());
@@ -100,15 +102,18 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
                 LOGGER.info("新终端[{}]{}接入", terminalId, basicInfo.getTerminalName());
                 if (isNotNeedUpgrade(versionResult, systemUpgradeCheckResult)) {
                     LOGGER.info("终端[{}]{}无须升级", terminalId, basicInfo.getTerminalName());
-                    if (!terminalLicenseService.authIDV(terminalId)) {
-                        LOGGER.info("授权数不足，不保存终端[{}]{}信息", terminalId, basicInfo.getTerminalName());
+                    if (!terminalLicenseService.authIDV(terminalId, isNewConnection, basicInfo)) {
+                        LOGGER.info("授权数不足，不保存idv终端[{}]{}信息", terminalId, basicInfo.getTerminalName());
                         versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
-                        return false;
+                    } else {
+                        LOGGER.info("idv终端[{}]{}授权成功", terminalId, basicInfo.getTerminalName());
                     }
                 } else {
                     LOGGER.info("终端升级检查结果为：{}、{}，暂不保存终端信息", versionResult.getResult(), systemUpgradeCheckResult.getSystemUpgradeCode());
-                    return false;
                 }
+                // 无须升级场景下，如果授权失败无须保存idv终端信息，如果授权成功，在授权时已经保存了idv终端信息，无须再次保存
+                // 终端不是处于不需要升级状态，不保存终端信息
+                return false;
             }
         }
         return true;
