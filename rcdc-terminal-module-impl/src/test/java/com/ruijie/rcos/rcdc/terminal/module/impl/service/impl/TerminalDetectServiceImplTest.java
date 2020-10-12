@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.*;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectItemStateEnums;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
@@ -391,21 +393,24 @@ public class TerminalDetectServiceImplTest {
         // 带宽检测异常
         TerminalDetectionEntity detectionEntity1 = new TerminalDetectionEntity();
         detectionEntity1.setDetectState(DetectStateEnums.SUCCESS);
+        detectionEntity1.setAccessInternet(DetectItemStateEnums.TRUE.getState());
         detectionEntity1.setBandwidth(15.0);
-        detectionEntity1.setIpConflict(0);
+        detectionEntity1.setIpConflict(null);
 
         // 外网连通异常
         TerminalDetectionEntity detectionEntity2 = new TerminalDetectionEntity();
         detectionEntity2.setDetectState(DetectStateEnums.SUCCESS);
         detectionEntity2.setAccessInternet(0);
+        detectionEntity2.setPacketLossRate(-1.0);
+        detectionEntity2.setNetworkDelay(-1.0);
         detectionEntity2.setBandwidth(50.0);
-        detectionEntity2.setIpConflict(0);
+        detectionEntity2.setIpConflict(Constants.TERMINAL_DETECT_ABNORMAL_COMMON_CODE);
 
         // 丢包异常
         TerminalDetectionEntity detectionEntity3 = new TerminalDetectionEntity();
         detectionEntity3.setDetectState(DetectStateEnums.SUCCESS);
-        detectionEntity3.setAccessInternet(1);
-        detectionEntity3.setBandwidth(50.0);
+        detectionEntity3.setAccessInternet(Constants.TERMINAL_DETECT_ABNORMAL_COMMON_CODE);
+        detectionEntity3.setBandwidth(-1.0);
         detectionEntity3.setPacketLossRate(11.0);
         detectionEntity3.setIpConflict(0);
         detectionEntity3.setNetworkDelay(10.0);
@@ -432,8 +437,8 @@ public class TerminalDetectServiceImplTest {
         };
         CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(CbbDetectDateEnums.YESTERDAY);
         assertEquals(3, result.getAccessInternet());
-        assertEquals(2, result.getBandwidth());
-        assertEquals(1, result.getIpConflict());
+        assertEquals(3, result.getBandwidth());
+        assertEquals(3, result.getIpConflict());
         assertEquals(4, result.getPacketLossRate());
         assertEquals(4, result.getDelay());
         assertEquals(0, result.getChecking());

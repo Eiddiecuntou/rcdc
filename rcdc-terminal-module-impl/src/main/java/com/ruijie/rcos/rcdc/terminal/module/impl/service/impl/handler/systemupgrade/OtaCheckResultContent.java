@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
@@ -32,6 +33,8 @@ public class OtaCheckResultContent extends EqualsHashcodeSupport {
     private String otaScriptMD5;
 
     private CbbSystemUpgradeModeEnums upgradeMode;
+
+    private CbbFlashModeEnums flashMode;
 
     private UUID taskId;
 
@@ -113,5 +116,13 @@ public class OtaCheckResultContent extends EqualsHashcodeSupport {
 
     public void setOtaScriptMD5(String otaScriptMD5) {
         this.otaScriptMD5 = otaScriptMD5;
+    }
+
+    public CbbFlashModeEnums getFlashMode() {
+        return flashMode;
+    }
+
+    public void setFlashMode(CbbFlashModeEnums flashMode) {
+        this.flashMode = flashMode;
     }
 }

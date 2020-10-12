@@ -69,6 +69,23 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         String isoFilePath = rootPath + "IDVSystemPackage.iso";
         new File(isoFilePath).delete();
     }
+
+    /**
+     * 系统升级包上传前处理方法
+     */
+    @Test
+    public void testPreUploadPackage() {
+        handler.preUploadPackage();
+    }
+
+    /**
+     * 系统升级包上传后处理方法
+     */
+    @Test
+    public void testPostUploadPackage() {
+        handler.postUploadPackage();
+    }
+    
     /**
      * 获取systemUpgradePackageService
      */

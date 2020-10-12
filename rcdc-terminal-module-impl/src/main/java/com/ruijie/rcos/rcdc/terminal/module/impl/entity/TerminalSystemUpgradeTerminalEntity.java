@@ -24,17 +24,35 @@ public class TerminalSystemUpgradeTerminalEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    /** 
+     * 刷机任务id 
+    **/
     private UUID sysUpgradeId;
 
+    /** 
+     * 刷机终端id 
+    **/
     private String terminalId;
 
+    /** 
+     * 开始刷机时间 
+    **/
     private Date startTime;
 
+    /** 
+     * 创建时间 
+    **/
     private Date createTime;
 
+    /** 
+     * 刷机状态 
+    **/
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeStateEnums state;
 
+    /** 
+     * 版本号，实现乐观锁 
+    **/
     @Version
     private Integer version;
 
