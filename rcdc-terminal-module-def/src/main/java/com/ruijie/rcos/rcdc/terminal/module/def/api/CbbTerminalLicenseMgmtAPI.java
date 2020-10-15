@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.request.CbbIDVTerminalLicenseNumDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbIDVTerminalLicenseNumDTO;
 
 /**
  * 终端授权管理

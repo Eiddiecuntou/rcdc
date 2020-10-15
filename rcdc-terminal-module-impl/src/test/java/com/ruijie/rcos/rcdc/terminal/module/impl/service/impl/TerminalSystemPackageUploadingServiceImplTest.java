@@ -1,13 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
 import mockit.Injectable;
 import mockit.Tested;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * test
@@ -32,4 +35,28 @@ public class TerminalSystemPackageUploadingServiceImplTest {
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.APP_ANDROID;
         assertEquals(false,impl.isUpgradeFileUploading(terminalType));
     }
+
+    /**
+     * testUploadUpgradePackage
+     */
+    @Test
+    public void testUploadUpgradePackageSuccess() throws Exception {
+        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
+        request.setFileName("test");
+        request.setFilePath("/test");
+        request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
+        request.setFileMD5("xxxx");
+
+        CbbTerminalTypeEnums vdiLinux = CbbTerminalTypeEnums.VDI_LINUX;
+
+        impl.uploadUpgradePackage(request, vdiLinux);
+
+        new Verifications() {
+            {
+                handlerFactory.getHandler(vdiLinux);
+                times = 1;
+            }
+        };
+    }
+
 }

@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -24,22 +25,46 @@ public class TerminalSystemUpgradeEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    /** 
+     * 系统刷机包id 
+    **/
     private UUID upgradePackageId;
 
+    /** 
+     * 刷机包版本号 
+    **/
     private String packageVersion;
 
+    /** 
+     * 刷机包镜像名称 
+    **/
     private String packageName;
 
     @Enumerated(EnumType.STRING)
     private CbbTerminalTypeEnums packageType;
 
+    /** 
+     * 生成时间 
+    **/
     private Date createTime;
 
+    /** 
+     * 任务状态 
+    **/
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeTaskStateEnums state;
 
+    /** 
+     * 版本号，实现乐观锁 
+    **/
     @Version
     private Integer version;
+
+    /** 
+     * 刷机方式 
+    **/
+    @Enumerated(EnumType.STRING)
+    private CbbFlashModeEnums flashMode;
 
     public UUID getId() {
         return id;
@@ -103,5 +128,13 @@ public class TerminalSystemUpgradeEntity {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public CbbFlashModeEnums getFlashMode() {
+        return flashMode;
+    }
+
+    public void setFlashMode(CbbFlashModeEnums flashMode) {
+        this.flashMode = flashMode;
     }
 }

@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -186,6 +187,8 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setTerminalIdArr(terminalIdArr);
         request.setPackageId(upgradePackage.getId());
+        // ANDROID 只有快速刷机
+        request.setFlashModeEnums(CbbFlashModeEnums.FAST);
         try {
             cbbTerminalSystemUpgradeAPI.addSystemUpgradeTask(request);
             LOGGER.info("自动添加Android VDI升级任务成功");

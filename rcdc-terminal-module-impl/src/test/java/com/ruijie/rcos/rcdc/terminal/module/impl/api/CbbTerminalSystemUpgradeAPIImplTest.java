@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
@@ -134,6 +135,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testAddSystemUpgradeTaskUpgradePackageNotExist() {
         CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
         request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
+        request.setFlashModeEnums(CbbFlashModeEnums.FAST);
 
         new Expectations() {
             {

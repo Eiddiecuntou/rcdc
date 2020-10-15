@@ -89,6 +89,28 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     private boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
+        TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
+        try {
+            basicInfoDAO.save(basicInfoEntity);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error("保存终端信息失败！将进行重试", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isNewTerminal(String terminalId) {
+        Assert.hasText(terminalId, "terminalId can not be empty");
+        return basicInfoDAO.findTerminalEntityByTerminalId(terminalId) == null;
+    }
+
+    @Override
+    public TerminalEntity convertBasicInfo2TerminalEntity(String terminalId, boolean isNewConnection,
+        CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
+        Assert.hasText(terminalId, "terminalId can not be empty");
+        Assert.notNull(shineTerminalBasicInfo, "shineTerminalBasicInfo can not be null");
+
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         Date now = new Date();
         if (basicInfoEntity == null) {
@@ -105,13 +127,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
         basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
-        try {
-            basicInfoDAO.save(basicInfoEntity);
-            return true;
-        } catch (Exception e) {
-            LOGGER.error("保存终端信息失败！将进行重试", e);
-            return false;
-        }
+        return basicInfoEntity;
     }
 
     private CbbTerminalNetworkInfoDTO[] obtainNetworkInfo(CbbShineTerminalBasicInfo basicInfo) {

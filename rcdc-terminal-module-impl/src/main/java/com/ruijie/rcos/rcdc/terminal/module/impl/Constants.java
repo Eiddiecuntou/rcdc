@@ -35,6 +35,11 @@ public interface Constants {
     String STORE_TERMINAL_LOG_PATH = "/opt/ftp/terminal/log/";
 
     /**
+     * 终端授权数在全局表的key
+     */
+    String TEMINAL_LICENSE_NUM = "terminal_license_num";
+
+    /**
      * 终端检测带宽正常标准值,小于等于20Mb为异常
      */
     double TERMINAL_DETECT_BINDWIDTH_NORM = 20;

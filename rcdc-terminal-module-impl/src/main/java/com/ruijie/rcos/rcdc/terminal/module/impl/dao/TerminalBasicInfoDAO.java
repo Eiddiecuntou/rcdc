@@ -1,16 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
 
 /**
  * Description: 终端基本信息表DAO
@@ -119,4 +118,11 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      */
     @Query("select distinct terminalOsType from TerminalEntity where platform in ?1")
     List<String> getTerminalOsTypeByPlatform(CbbTerminalPlatformEnums[] platformArr);
+
+    /**
+     * 根据终端类型统计该类型终端数量
+     * @param platform 终端平台类型
+     * @return 已接入的该类型的终端数量
+     */
+    long countByPlatform(CbbTerminalPlatformEnums platform);
 }

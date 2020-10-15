@@ -27,5 +27,4 @@ public class TerminalStatisticsDTOTest {
         Assert.assertEquals(2, dto.getCount().intValue());
         Assert.assertEquals("state2", dto.getState());
     }
-
 }

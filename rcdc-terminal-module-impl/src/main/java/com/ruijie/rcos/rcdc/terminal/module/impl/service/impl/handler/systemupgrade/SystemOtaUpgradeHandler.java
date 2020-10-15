@@ -34,6 +34,9 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
 
     @Autowired
+    private TerminalSystemUpgradeService terminalSystemUpgradeService;
+
+    @Autowired
     private TerminalSystemUpgradeService systemUpgradeService;
 
     @Autowired
@@ -62,6 +65,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
         resultContent.setUpgradeMode(upgradePackage.getUpgradeMode());
         resultContent.setPackageVersion(upgradeTask.getPackageVersion());
         resultContent.setTaskId(upgradeTask.getId());
+        resultContent.setFlashMode(upgradeTask.getFlashMode());
         resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
         resultContent.setOtaScriptPath(upgradePackage.getOtaScriptPath());
@@ -74,9 +78,11 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
     }
 
     @Override
-    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId) {
+    public Object getSystemUpgradeMsg(TerminalSystemUpgradePackageEntity upgradePackage, UUID upgradeTaskId) throws BusinessException {
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTaskId, "upgradeTaskId can not be null");
+
+        TerminalSystemUpgradeEntity systemUpgradeTask = terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
 
         OtaCheckResultContent resultContent = new OtaCheckResultContent();
         resultContent.setPackageMD5(upgradePackage.getFileMd5());
@@ -85,6 +91,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
         resultContent.setUpgradeMode(upgradePackage.getUpgradeMode());
         resultContent.setPackageVersion(upgradePackage.getPackageVersion());
         resultContent.setTaskId(upgradeTaskId);
+        resultContent.setFlashMode(systemUpgradeTask.getFlashMode());
         resultContent.setSeedName(new File(upgradePackage.getSeedPath()).getName());
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
         resultContent.setOtaScriptPath(upgradePackage.getOtaScriptPath());

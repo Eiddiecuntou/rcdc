@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
@@ -121,6 +122,12 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         if (request.getUpgradeMode() == null) {
             request.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         }
+
+        if (request.getFlashModeEnums() == null) {
+            // 兼容旧实现，默认使用快速刷机
+            request.setFlashModeEnums(CbbFlashModeEnums.FAST);
+        }
+
         UUID packageId = request.getPackageId();
         TerminalSystemUpgradePackageEntity upgradePackage = getUpgradePackageEntity(packageId);
         // 判断刷机包是否允许开启升级任务
