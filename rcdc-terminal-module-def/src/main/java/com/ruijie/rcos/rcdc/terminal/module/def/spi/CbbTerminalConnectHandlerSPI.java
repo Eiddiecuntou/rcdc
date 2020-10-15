@@ -14,10 +14,10 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 public interface CbbTerminalConnectHandlerSPI {
 
     /**
-     * @api {SPI} CbbTerminalConnectHandlerSPI.isAllowConnect 终端接入是否允许连接校验SPI
+     * @api {SPI} CbbTerminalConnectHandlerSPI.isAllowConnect 校验是否允许终端接入SPI
      * @apiName isAllowConnect
      * @apiGroup CbbTerminalConnectHandlerSPI
-     * @apiDescription 终端接入是否允许连接校验SPI
+     * @apiDescription 校验是否允许终端接入SPI
      * @apiParam (请求体字段说明) {CbbShineTerminalBasicInfo} terminalBasicInfo CbbShineTerminalBasicInfo
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.terminalName 终端名称
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.terminalId 终端唯一标识
@@ -40,12 +40,15 @@ public interface CbbTerminalConnectHandlerSPI {
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.rainOsVersion 终端系统版本号
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.rainUpgradeVersion 软件版本号，指组件升级包的版本号
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.hardwareVersion 硬件版本号
-     * @apiParam (请求体字段说明) {String} terminalBasicInfo.platform 平台（VDI/IDV/APP）
+     * @apiParam (请求体字段说明) {CbbTerminalPlatformEnums="VDI","IDV","APP"} terminalBasicInfo.platform 平台（VDI/IDV/软件客户端）
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.osInnerVersion 终端内部系统版本号
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.idvTerminalMode idv模式
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.ssid 无线网络ssid
      * @apiParam (请求体字段说明) {CbbTerminalWirelessAuthModeEnums="MODE_WPA_EAP","MODE_WPA_PSK","MODE_OPEN"} terminalBasicInfo.wirelessAuthMode 无线认证模式
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.productId 终端产品ID
+     * @apiParam (请求体字段说明) {Integer} terminalBasicInfo.wirelessNetCardNum 无线网卡数量
+     * @apiParam (请求体字段说明) {String} terminalBasicInfo.allDiskInfo 终端所有磁盘信息
+     * @apiParam (请求体字段说明) {Integer} terminalBasicInfo.ethernetNetCardNum 有线网卡数量
      * @apiParam (请求体字段说明) {CbbTerminalNetworkInfoDTO} terminalBasicInfo.networkInfoArr 终端所有网络信息集合
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.networkInfoArr.macAddr 终端mac
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.networkInfoArr.ip 终端ip
@@ -57,16 +60,13 @@ public interface CbbTerminalConnectHandlerSPI {
      * @apiParam (请求体字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} terminalBasicInfo.networkInfoArr.getDnsMode 获取DNS模式,自动、手动
      * @apiParam (请求体字段说明) {CbbNetworkModeEnums="WIRED","WIRELESS"} terminalBasicInfo.networkInfoArr.networkAccessMode 网络接入方式（有线、无线）
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.networkInfoArr.ssid 无线网络ssid
-     * @apiParam (请求体字段说明) {Integer} terminalBasicInfo.wirelessNetCardNum 无线网卡数量
-     * @apiParam (请求体字段说明) {String} terminalBasicInfo.allDiskInfo 终端所有磁盘信息
-     * @apiParam (请求体字段说明) {Integer} terminalBasicInfo.ethernetNetCardNum 有线网卡数量
      *
-     * @apiSuccess (响应字段说明) {boolean} boolean 是否允许终端接入
+     * @apiSuccess (响应字段说明) {boolean} -- 是否允许终端接入
      *
      *
      */
     /**
-     *  终端是否允许接入
+     *  终端是否允许接入校验
      *
      * @param terminalBasicInfo 终端信息
      * @return boolean 是否允许终端接入
