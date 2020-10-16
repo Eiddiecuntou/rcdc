@@ -12,12 +12,14 @@
                              connect-manager="serverConnectManager"
                              protocol="tcp"
                              compatible-handler="defaultCompatibleHandler"
+                             connect-listener="defaultConnnectListener"
     />
 
     <sk-connectkit:service base-package="com.ruijie.rcos.rcdc.terminal.module.openapi.connector.spi"
                            connect-manager="serverConnectManager"
                            protocol="tcp"
                            compatible-handler="defaultCompatibleHandler"
+                           connect-listener="defaultConnnectListener"
     />
 
 
