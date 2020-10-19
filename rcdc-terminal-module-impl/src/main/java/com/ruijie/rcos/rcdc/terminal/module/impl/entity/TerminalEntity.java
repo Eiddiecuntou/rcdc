@@ -125,6 +125,8 @@ public class TerminalEntity {
 
     private Integer ethernetNetCardNum;
 
+    private Boolean enableProxy;
+
     /**
      *  获取网络信息对象数组
      *
@@ -480,5 +482,13 @@ public class TerminalEntity {
 
     public void setEthernetNetCardNum(Integer ethernetNetCardNum) {
         this.ethernetNetCardNum = ethernetNetCardNum;
+    }
+
+    public Boolean getEnableProxy() {
+        return enableProxy;
+    }
+
+    public void setEnableProxy(Boolean enableProxy) {
+        this.enableProxy = enableProxy;
     }
 }

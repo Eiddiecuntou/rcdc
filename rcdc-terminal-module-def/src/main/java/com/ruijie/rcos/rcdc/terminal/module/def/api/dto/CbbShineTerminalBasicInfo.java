@@ -121,6 +121,9 @@ public class CbbShineTerminalBasicInfo {
     @Nullable
     private Integer ethernetNetCardNum;
 
+    @Nullable
+    private Boolean enableProxy;
+
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
@@ -378,5 +381,14 @@ public class CbbShineTerminalBasicInfo {
 
     public void setEthernetNetCardNum(@Nullable Integer ethernetNetCardNum) {
         this.ethernetNetCardNum = ethernetNetCardNum;
+    }
+
+    @Nullable
+    public Boolean getEnableProxy() {
+        return enableProxy;
+    }
+
+    public void setEnableProxy(@Nullable Boolean enableProxy) {
+        this.enableProxy = enableProxy;
     }
 }
