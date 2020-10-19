@@ -7,9 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.log.LoggerImpl;
 import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +24,6 @@ import java.util.List;
  */
 @RunWith(SkyEngineRunner.class)
 public class AbstractAppComponentUpgradeHandlerTest {
-
-    @Mocked
-    private LoggerImpl logger;
 
     /**
      *测试
@@ -162,8 +157,6 @@ public class AbstractAppComponentUpgradeHandlerTest {
                 result = true;
                 TerminalUpdateListCacheManager.get((CbbTerminalTypeEnums) any);
                 result = updatelist;
-                logger.isDebugEnabled();
-                result = true;
             }
         };
 
