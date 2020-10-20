@@ -60,7 +60,7 @@ public interface Constants {
     String RCDC_TERMINAL_ADMIN_PWD_GLOBAL_PARAMETER_KEY = "terminal_pwd";
 
 
-    /** rcdc服务器密码全局参数表key */
+    /** rcdc服务器VIP全局参数表key */
     String RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY = "cluster_virtual_ip";
 
     /**

@@ -1,8 +1,9 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.init;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
+
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -13,11 +14,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,17 +25,16 @@ import java.util.UUID;
 
 /**
  * Description: Function Description
- * Copyright: Copyright (c) 2020
+ * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
- * Create Time: 2020/2/18 11:40
+ * Create Time: 2019年3月4日
  *
- * @author zhangyichi
+ * @author ls
  */
-@RunWith(SkyEngineRunner.class)
-public class TerminalOtaUpgradeInitTest {
+public class TerminalOtaInitServiceImplTest {
 
     @Tested
-    private TerminalOtaUpgradeInit terminalOtaUpgradeInit;
+    private TerminalOtaInitServiceImpl initService;
 
     @Injectable
     private TerminalSystemUpgradePackageHandlerFactory handlerFactory;
@@ -55,8 +53,8 @@ public class TerminalOtaUpgradeInitTest {
 
     /**
      * 初始化方法，出厂包未初始化，正常流程
-     * 
-     * @throws IOException 异常
+     *
+     * @throws IOException       异常
      * @throws BusinessException 异常
      */
     @Test
@@ -82,14 +80,11 @@ public class TerminalOtaUpgradeInitTest {
                 handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_ANDROID);
                 result = handler;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
-                result = new Exception("123");
-
                 FileOperateUtil.deleteFile((File) any);
             }
         };
 
-        terminalOtaUpgradeInit.safeInit();
+        initService.initAndroidOta();
 
         new Verifications() {
             {
@@ -103,7 +98,6 @@ public class TerminalOtaUpgradeInitTest {
                 List<CbbTerminalTypeEnums> typeEnumsList = Lists.newArrayList();
                 handlerFactory.getHandler(this.withCapture(typeEnumsList));
                 Assert.assertTrue(typeEnumsList.contains(CbbTerminalTypeEnums.VDI_ANDROID));
-                Assert.assertTrue(typeEnumsList.contains(CbbTerminalTypeEnums.IDV_LINUX));
             }
         };
 
@@ -112,7 +106,7 @@ public class TerminalOtaUpgradeInitTest {
 
     /**
      * 初始化方法，出厂包未初始化，出厂包不存在
-     * 
+     *
      * @throws BusinessException 异常
      */
     @Test
@@ -134,12 +128,12 @@ public class TerminalOtaUpgradeInitTest {
             }
         };
 
-        terminalOtaUpgradeInit.safeInit();
+        initService.initAndroidOta();
 
         new Verifications() {
             {
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                times = 2;
+                times = 1;
                 handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 times = 0;
             }
@@ -148,7 +142,7 @@ public class TerminalOtaUpgradeInitTest {
 
     /**
      * 初始化方法，出厂包不存在
-     * 
+     *
      * @throws BusinessException 异常
      */
     @Test
@@ -166,9 +160,8 @@ public class TerminalOtaUpgradeInitTest {
         upgradePackage.setFilePath("123");
         upgradePackage.setSeedPath("456");
         List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
-        List<TerminalSystemUpgradeEntity> upgradingTask2List = Lists.newArrayList();
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
-        upgradingTask2List.add(upgradeEntity);
+        upgradingTaskList.add(upgradeEntity);
         new Expectations() {
             {
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
@@ -176,28 +169,27 @@ public class TerminalOtaUpgradeInitTest {
 
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId()
                         , (List<CbbSystemUpgradeTaskStateEnums>) any);
-                returns(upgradingTaskList, upgradingTask2List);
+                result = upgradingTaskList;
 
                 btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
                 result = new Exception("123");
             }
         };
 
-        terminalOtaUpgradeInit.safeInit();
+        initService.initAndroidOta();
 
         new Verifications() {
             {
                 terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                times = 2;
+                times = 1;
                 handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 times = 0;
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId()
                         , (List<CbbSystemUpgradeTaskStateEnums>) any);
-                times = 2;
+                times = 1;
                 btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
                 times = 1;
             }
         };
     }
-
 }
