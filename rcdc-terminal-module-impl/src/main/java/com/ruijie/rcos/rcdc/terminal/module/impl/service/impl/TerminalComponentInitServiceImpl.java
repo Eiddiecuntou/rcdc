@@ -56,7 +56,7 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
     private static final String TERMINAL_COMPONENT_PACKAGE_INIT_FAIL = "fail";
 
     private static final ExecutorService EXECUTOR_SERVICE =
-            ThreadExecutors.newBuilder(TerminalComponentUpgradeInit.class.getName()).maxThreadNum(3).queueSize(1).build();
+            ThreadExecutors.newBuilder(TerminalComponentInitServiceImpl.class.getName()).maxThreadNum(3).queueSize(1).build();
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
