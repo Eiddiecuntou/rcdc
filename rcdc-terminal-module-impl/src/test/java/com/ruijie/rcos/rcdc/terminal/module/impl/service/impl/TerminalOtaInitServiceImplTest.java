@@ -13,10 +13,13 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
+import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +34,7 @@ import java.util.UUID;
  *
  * @author ls
  */
+@RunWith(SkyEngineRunner.class)
 public class TerminalOtaInitServiceImplTest {
 
     @Tested
@@ -188,6 +192,147 @@ public class TerminalOtaInitServiceImplTest {
                         , (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 初始化方法，出厂包不存在
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testSafeInitPackage() throws BusinessException {
+
+        new MockUp<Md5Builder>() {
+            @Mock
+            public byte[] computeFileMd5(File file) {
+                return "123".getBytes();
+            }
+        };
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return true;
+            }
+        };
+
+        List<File> fileList = Lists.newArrayList();
+        fileList.add(new File("/123"));
+        new Expectations(FileOperateUtil.class) {
+            {
+                FileOperateUtil.listFile(anyString);
+                result = fileList;
+            }
+        };
+
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+        upgradePackage.setFilePath("123");
+        upgradePackage.setSeedPath("456");
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+        upgradingTaskList.add(upgradeEntity);
+        new Expectations() {
+            {
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                result = handler;
+
+                handler.preUploadPackage();
+
+                handler.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any);
+
+                handler.postUploadPackage();
+            }
+        };
+
+        initService.initAndroidOta();
+
+        new Verifications() {
+            {
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                times = 1;
+
+                handler.preUploadPackage();
+                times = 1;
+
+                handler.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any);
+                times = 1;
+
+                handler.postUploadPackage();
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 初始化方法，出厂包不存在
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testSafeInitPackageHasException() throws BusinessException {
+
+        new MockUp<Md5Builder>() {
+            @Mock
+            public byte[] computeFileMd5(File file) {
+                return "123".getBytes();
+            }
+        };
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return true;
+            }
+        };
+
+        List<File> fileList = Lists.newArrayList();
+        fileList.add(new File("/123"));
+        new Expectations(FileOperateUtil.class) {
+            {
+                FileOperateUtil.listFile(anyString);
+                result = fileList;
+            }
+        };
+
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+        upgradePackage.setFilePath("123");
+        upgradePackage.setSeedPath("456");
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+        upgradingTaskList.add(upgradeEntity);
+        new Expectations() {
+            {
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                result = handler;
+
+                handler.preUploadPackage();
+
+                handler.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any);
+
+                handler.postUploadPackage();
+                result = new Exception("123");
+            }
+        };
+
+        initService.initAndroidOta();
+
+        new Verifications() {
+            {
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                times = 1;
+
+                handler.preUploadPackage();
+                times = 1;
+
+                handler.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any);
+                times = 1;
+
+                handler.postUploadPackage();
                 times = 1;
             }
         };
