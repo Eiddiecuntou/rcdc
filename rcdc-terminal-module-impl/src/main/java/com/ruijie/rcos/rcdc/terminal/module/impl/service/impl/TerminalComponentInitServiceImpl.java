@@ -1,11 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.init;
-
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
@@ -15,31 +8,36 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxIDVUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentInitService;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
-import com.ruijie.rcos.sk.base.shell.ShellCommandRunner.ReturnValueResolver;
 import com.ruijie.rcos.sk.base.util.StringUtils;
-import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultRequest;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.io.File;
+import java.util.concurrent.ExecutorService;
 
 /**
- * Description: 终端组件升级bt服务初始化
+ * Description: Function Description
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019年1月27日
+ * Create Time: 2020/10/19
  *
- * @author nt
+ * @author nting
  */
 @Service
-public class TerminalComponentUpgradeInit implements SafetySingletonInitializer {
+public class TerminalComponentInitServiceImpl implements TerminalComponentInitService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalComponentUpgradeInit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalComponentInitServiceImpl.class);
 
     private static final String INIT_PYTHON_SCRIPT_PATH_VDI_LINUX = "/data/web/rcdc/shell/updateLinuxVDI.py";
 
@@ -58,7 +56,7 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
     private static final String TERMINAL_COMPONENT_PACKAGE_INIT_FAIL = "fail";
 
     private static final ExecutorService EXECUTOR_SERVICE =
-            ThreadExecutors.newBuilder(TerminalComponentUpgradeInit.class.getName()).maxThreadNum(3).queueSize(1).build();
+            ThreadExecutors.newBuilder(TerminalComponentInitServiceImpl.class.getName()).maxThreadNum(3).queueSize(1).build();
 
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
@@ -76,14 +74,30 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
     private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     @Override
-    public void safeInit() {
+    public void initLinuxVDI() {
         LOGGER.info("开始异步执行初始化Linux VDI终端升级组件");
         EXECUTOR_SERVICE.execute(() -> initLinuxVDITerminalComponent());
+
+        updateClusterVip();
+    }
+
+    @Override
+    public void initAndroidVDI() {
         LOGGER.info("开始异步执行初始化Android VDI终端升级组件");
         EXECUTOR_SERVICE.execute(() -> initAndroidVDITerminalComponent());
+
+        updateClusterVip();
+    }
+
+    @Override
+    public void initLinuxIDV() {
         LOGGER.info("开始异步执行初始化Linux IDV终端升级组件");
         EXECUTOR_SERVICE.execute(() -> initLinuxIDVTerminalComponent());
 
+        updateClusterVip();
+    }
+
+    private void updateClusterVip() {
         // 更新数据库中终端组件升级包使用的服务器ip
         try {
             globalParameterAPI.updateParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY, getLocalIP());
@@ -198,9 +212,9 @@ public class TerminalComponentUpgradeInit implements SafetySingletonInitializer 
      * Company: Ruijie Co., Ltd.
      * Create Time: 2019年1月28日
      *
-     * @author nt
+     * @author nting
      */
-    public class BtShareInitReturnValueResolver implements ReturnValueResolver<String> {
+    public class BtShareInitReturnValueResolver implements ShellCommandRunner.ReturnValueResolver<String> {
 
         private CbbTerminalTypeEnums terminalType;
 
