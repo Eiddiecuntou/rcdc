@@ -35,12 +35,11 @@ public interface CbbTerminalLicenseMgmtAPI {
      * @apiName getIDVTerminalLicenseNum
      * @apiGroup CbbTerminalLicenseMgmtAPI
      * @apiDescription 获取IDV终端授权数
-     * @apiParam (请求体字段说明) {void} 无请求参数
+     *
      *
      * @apiSuccess (响应字段说明) {CbbIDVTerminalLicenseNumDTO} response CbbIDVTerminalLicenseNumDTO
      * @apiSuccess (响应字段说明) {Integer} response.licenseNum 证书授权数
      * @apiSuccess (响应字段说明) {Integer} response.usedNum 已用授权数
-     *
      */
     /**
      * 获取IDV终端授权数

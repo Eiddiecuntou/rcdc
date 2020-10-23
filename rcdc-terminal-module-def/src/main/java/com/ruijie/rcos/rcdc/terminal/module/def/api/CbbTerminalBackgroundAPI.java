@@ -24,6 +24,9 @@ public interface CbbTerminalBackgroundAPI {
      * @apiParam (请求体字段说明) {String} md5 文件md5
      * @apiParam (请求体字段说明) {String} imagePath 文件路径
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_file_operate_fail message:文件操作失败}
+     *
      */
     /**
      * 上传终端背景图,保存背景图的相关配置，并且向在线终端同步背景图
@@ -54,6 +57,7 @@ public interface CbbTerminalBackgroundAPI {
      * @apiName initBackgroundImage
      * @apiGroup CbbTerminalBackgroundAPI
      * @apiDescription 初始化背景图
+     *
      */
     /**
      * 初始化背景图

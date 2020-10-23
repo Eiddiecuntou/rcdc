@@ -47,6 +47,7 @@ public interface CbbTerminalDetectAPI {
      * @apiSuccess (响应字段说明) {String} response.itemArr.checkState.message 响应实体数组DetectState类message信息
      * @apiSuccess (响应字段说明) {long} response.total 分页数据总数
      *
+     *
      */
     /**
      * 获取检测记录分页列表
@@ -81,6 +82,7 @@ public interface CbbTerminalDetectAPI {
      * @apiSuccess (响应字段说明) {DetectState} detectInfo.checkState 响应实体数组DetectState类
      * @apiSuccess (响应字段说明) {String} detectInfo.checkState.state 响应实体数组DetectState类state状态
      * @apiSuccess (响应字段说明) {String} detectInfo.checkState.message 响应实体数组DetectState类message信息
+     *
      */
     /**
      * 获取终端最后一次检测记录
@@ -112,8 +114,6 @@ public interface CbbTerminalDetectAPI {
      * @apiSuccess (响应字段说明) {Double} response.threshold.bandwidthThreshold  带宽阈值
      * @apiSuccess (响应字段说明) {Double} response.threshold.packetLossRateThreshold 丢包率阈值
      * @apiSuccess (响应字段说明) {Double} response.threshold.delayThreshold 时延阈值
-     *
-     *
      */
     /**
      * 获取终端检测记录结果
@@ -129,6 +129,10 @@ public interface CbbTerminalDetectAPI {
      * @apiGroup CbbTerminalDetectAPI
      * @apiDescription 终端检测
      * @apiParam (请求体字段说明) {String} terminalId 终端id
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_offline_cannot_detect message:当前终端[{0}({1})]处于离线状态，无法检测}
+     *  {code:rcdc_terminal_detect_is_doing message:终端正在检测中}
      *
      */
     /**

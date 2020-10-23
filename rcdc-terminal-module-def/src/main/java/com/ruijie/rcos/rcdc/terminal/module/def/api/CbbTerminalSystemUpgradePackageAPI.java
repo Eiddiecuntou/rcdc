@@ -32,6 +32,9 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiParam (请求体字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
      * "APP_IOS","APP_LINUX"} request.terminalType 终端类型
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_system_upgrade_task_is_running message:终端系统升级任务正在进行中}
+     *
      */
     /**
      * 
@@ -51,6 +54,9 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      *
      * @apiSuccess (响应字段说明) {String} packageName 文件名
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_upgrade_package_has_running_task_not_allow_delete message:终端升级包存在进行中的升级任务，不可删除}
+     *  {code:rcdc_terminal_system_upgrade_package_not_exist message:终端系统升级包不存在}
      */
     /**
      *
@@ -79,6 +85,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiSuccess (响应字段说明) {UUID} itemArr.upgradeTaskId 升级任务id
      * @apiSuccess (响应字段说明) {Date} itemArr.uploadTime 上传时间
      * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} itemArr.upgradeMode 升级模式，自动、手动
+     *
      */
     /**
      *
@@ -110,6 +117,9 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiSuccess (响应字段说明) {UUID} terminalSystemUpgradePackageInfoDTO.upgradeTaskId 升级任务id
      * @apiSuccess (响应字段说明) {Date} terminalSystemUpgradePackageInfoDTO.uploadTime 上传时间
      * @apiSuccess (响应字段说明) {CbbSystemUpgradeModeEnums="AUTO","MANUAL"} terminalSystemUpgradePackageInfoDTO.upgradeMode 升级模式，自动、手动
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_system_upgrade_package_not_exist message:终端系统升级包不存在}
      */
     /**
      * 获取终端升级包信息
@@ -132,6 +142,10 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiSuccess (响应字段说明) {CbbCheckAllowUploadPackageResultDTO} response CbbCheckAllowUploadPackageResultDTO
      * @apiSuccess (响应字段说明) {Boolean} response.allowUpload 是否允许上传
      * @apiSuccess (响应字段说明) {List} response.errorList 错误信息列表
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_system_upgrade_task_is_running message:终端系统升级任务正在进行中}
+     *  {code:rcdc_terminal_upgrade_package_disk_space_not_enough message:终端系统升级包存放磁盘空间不足}
      */
     /**
      * 校验升级包是否允许上传

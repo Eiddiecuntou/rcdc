@@ -26,6 +26,9 @@ public interface CbbTerminalLogoAPI {
      * @apiParam (请求体字段说明) {String} request.logoName 文件名称
      * @apiParam (请求体字段说明) {String} request.logoMD5 文件MD5
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_operate_action_send_logo_url message:更新终端Logo}
+     *
      */
     /**
      * 上传Logo
@@ -42,6 +45,7 @@ public interface CbbTerminalLogoAPI {
      * @apiDescription 获取logo路径
      *
      * @apiSuccess (响应字段说明) {String} logoPath logo相对ftp路径
+     *
      */
     /**
      * 获取logo路径
@@ -58,6 +62,8 @@ public interface CbbTerminalLogoAPI {
      * @apiGroup CbbTerminalLogoAPI
      * @apiDescription 初始化Logo
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_operate_action_send_logo_url message:更新终端Logo}
      */
     /**
      * 初始化Logo

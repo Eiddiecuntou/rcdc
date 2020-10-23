@@ -28,6 +28,7 @@ public interface CbbTerminalModelAPI {
      * @apiSuccess (响应字段说明) {String} response.productModel 终端型号
      * @apiSuccess (响应字段说明) {String} response.productId 终端型号id
      * @apiSuccess (响应字段说明) {String} response.cpuType cpu类型
+     *
      */
     /**
      *  查询终端类型列表
@@ -49,6 +50,10 @@ public interface CbbTerminalModelAPI {
      * @apiSuccess (响应字段说明) {String} terminalModelDTO.productModel 终端型号
      * @apiSuccess (响应字段说明) {String} terminalModelDTO.productId 终端型号id
      * @apiSuccess (响应字段说明) {String} terminalModelDTO.cpuType cpu类型
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_model_not_exist_error message:终端型号不存在，productId：{0}}
+     *
      */
     /**
      *  根据终端型号id查询终端型号
@@ -67,6 +72,7 @@ public interface CbbTerminalModelAPI {
      * @apiParam (请求体字段说明) {CbbTerminalPlatformEnums[]="VDI","IDV","APP","PC"} platformArr 终端类型数组
      *
      * @apiSuccess (响应字段说明) {List} terminalOsType 操作系统类型列表
+     *
      */
     /**
      * 查询终端运行平台类型
