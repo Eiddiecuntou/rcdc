@@ -149,6 +149,22 @@ public interface CbbTerminalOperatorAPI {
     void changePassword(CbbChangePasswordDTO request) throws BusinessException;
 
     /**
+     * @api {POST} CbbTerminalOperatorAPI.queryPassword 查询终端管理员密码
+     * @apiName queryPassword
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 查询终端管理员密码
+     * @apiSuccess (响应字段说明) {String} terminalPwd 终端管理员密码
+     *
+     */
+    /**
+     * 查询终端管理员密码
+     *
+     * @return 返回终端管理员密码
+     * @throws BusinessException 业务异常
+     */
+    String queryPassword() throws BusinessException;
+
+    /**
      * @api {POST} CbbTerminalOperatorAPI.relieveFault 解除故障
      * @apiName relieveFault
      * @apiGroup CbbTerminalOperatorAPI
