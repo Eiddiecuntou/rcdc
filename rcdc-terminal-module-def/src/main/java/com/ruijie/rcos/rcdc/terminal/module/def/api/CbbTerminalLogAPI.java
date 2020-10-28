@@ -19,7 +19,7 @@ public interface CbbTerminalLogAPI {
      * @apiName collectLog
      * @apiGroup CbbTerminalLogAPI
      * @apiDescription 收集终端日志
-     * @apiParam (请求体字段说明) {String} request.terminalId 终端id
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
      * @apiErrorExample {json} 异常码列表
      *  {code:rcdc_terminal_offline_cannot_collect_log message:当前终端[{0}({1})]处于离线状态，无法收集日志}
