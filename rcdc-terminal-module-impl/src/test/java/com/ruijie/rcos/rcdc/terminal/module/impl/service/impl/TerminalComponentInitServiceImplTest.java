@@ -1,12 +1,6 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.init;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-
-import org.junit.Test;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -22,13 +16,12 @@ import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
+import org.junit.Test;
+
+import java.io.File;
+
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -38,10 +31,10 @@ import mockit.Verifications;
  *
  * @author ls
  */
-public class TerminalComponentUpgradeInitTest {
+public class TerminalComponentInitServiceImplTest {
 
     @Tested
-    private TerminalComponentUpgradeInit init;
+    private TerminalComponentInitServiceImpl initService;
 
     @Injectable
     private GlobalParameterAPI globalParameterAPI;
@@ -67,9 +60,49 @@ public class TerminalComponentUpgradeInitTest {
      * @throws InterruptedException ex
      */
     @Test
-    public void testSafeInitIsDevelop() throws InterruptedException {
+    public void testInitAndroidVDI() throws InterruptedException {
         setEnviromentDevelop(true);
-        init.safeInit();
+        initService.initAndroidVDI();
+
+        Thread.sleep(1000);
+
+        new Verifications() {
+            {
+                globalParameterAPI.findParameter(anyString);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     * 测试safeInit，开发环境
+     *
+     * @throws InterruptedException ex
+     */
+    @Test
+    public void testInitLinuxVDI() throws InterruptedException {
+        setEnviromentDevelop(true);
+        initService.initLinuxVDI();
+
+        Thread.sleep(1000);
+
+        new Verifications() {
+            {
+                globalParameterAPI.findParameter(anyString);
+                times = 0;
+            }
+        };
+    }
+
+    /**
+     * 测试safeInit，开发环境
+     *
+     * @throws InterruptedException ex
+     */
+    @Test
+    public void testInitLinuxIDV() throws InterruptedException {
+        setEnviromentDevelop(true);
+        initService.initLinuxIDV();
 
         Thread.sleep(1000);
 
@@ -97,7 +130,7 @@ public class TerminalComponentUpgradeInitTest {
             }
         };
         try {
-            init.safeInit();
+            initService.initAndroidVDI();
             Thread.sleep(1000);
         } catch (Exception e) {
             fail();
@@ -121,7 +154,7 @@ public class TerminalComponentUpgradeInitTest {
             }
         };
         try {
-            init.safeInit();
+            initService.initLinuxIDV();
             Thread.sleep(1000);
         } catch (Exception e) {
             fail();
@@ -155,7 +188,7 @@ public class TerminalComponentUpgradeInitTest {
         };
 
         try {
-            init.safeInit();
+            initService.initLinuxVDI();
             Thread.sleep(1000);
         } catch (Exception e) {
             fail();
@@ -164,10 +197,8 @@ public class TerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 3;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
                 times = 1;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateAndroidVDI.py", "172.12.22.45"));
+                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
                 times = 1;
             }
         };
@@ -193,7 +224,7 @@ public class TerminalComponentUpgradeInitTest {
             }
         };
         try {
-            init.safeInit();
+            initService.initAndroidVDI();
             Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
@@ -202,17 +233,14 @@ public class TerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 3;
+                times = 1;
                 runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
                 times = 0;
                 runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateAndroidVDI.py", "172.12.22.45"));
                 times = 0;
-                linuxVDIUpdatelistCacheInit.init();
-                times = 1;
                 androidVDIUpdatelistCacheInit.init();
                 times = 1;
-                linuxIDVUpdatelistCacheInit.init();
-                times = 1;
+
             }
         };
     }
@@ -243,7 +271,7 @@ public class TerminalComponentUpgradeInitTest {
             }
         };
         try {
-            init.safeInit();
+            initService.initLinuxVDI();
             Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
@@ -252,10 +280,8 @@ public class TerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 3;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
                 times = 1;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateAndroidVDI.py", "172.12.22.45"));
+                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
                 times = 1;
             }
         };
@@ -279,12 +305,12 @@ public class TerminalComponentUpgradeInitTest {
                 result = DtoResponse.success(dto);
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
                 result = "172.22.25.45";
-                runner.execute((TerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
+                runner.execute((TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver) any);
                 result = new BusinessException("key");
             }
         };
         try {
-            init.safeInit();
+            initService.initLinuxIDV();
             Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
@@ -293,10 +319,10 @@ public class TerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 3;
+                times = 1;
 
-                runner.execute((TerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
-                times = 3;
+                runner.execute((TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver) any);
+                times = 1;
                 linuxVDIUpdatelistCacheInit.init();
                 times = 0;
                 androidVDIUpdatelistCacheInit.init();
@@ -327,7 +353,7 @@ public class TerminalComponentUpgradeInitTest {
             }
         };
         try {
-            init.safeInit();
+            initService.initLinuxVDI();
             Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
@@ -336,14 +362,10 @@ public class TerminalComponentUpgradeInitTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 3;
-                runner.execute((TerminalComponentUpgradeInit.BtShareInitReturnValueResolver) any);
-                times = 3;
+                times = 1;
+                runner.execute((TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver) any);
+                times = 1;
                 linuxVDIUpdatelistCacheInit.init();
-                times = 0;
-                androidVDIUpdatelistCacheInit.init();
-                times = 0;
-                linuxIDVUpdatelistCacheInit.init();
                 times = 0;
             }
         };
@@ -356,8 +378,8 @@ public class TerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver =
-                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolver =
+                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
@@ -369,8 +391,8 @@ public class TerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolverExitValueNotZero() {
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolver =
-                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolver =
+                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
         try {
             resolver.resolve("dsd", 1, "dsd");
             fail();
@@ -386,13 +408,13 @@ public class TerminalComponentUpgradeInitTest {
      */
     @Test
     public void testBtShareInitReturnValueResolver() throws BusinessException {
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxVDI =
-                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverAndroidVDI =
-                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
-        TerminalComponentUpgradeInit.BtShareInitReturnValueResolver resolverLinuxIDV =
-                init.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.IDV_LINUX);
-        new MockUp<TerminalComponentUpgradeInit>() {
+        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverLinuxVDI =
+                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverAndroidVDI =
+                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverLinuxIDV =
+                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.IDV_LINUX);
+        new MockUp<TerminalComponentInitServiceImpl>() {
             @Mock
             public String getLocalIP() {
                 return "192.168.1.2";

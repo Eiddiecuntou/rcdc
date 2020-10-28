@@ -126,4 +126,17 @@ public class TerminalUpdateListCacheManagerTest {
         assertEquals(false, isReady);
     }
 
+    /**
+     * 测试testIsCacheNotReadyIsNull
+     */
+    @Test
+    public void testIsCacheNotReadyIsNull() {
+
+        Map<CbbTerminalTypeEnums, Boolean> stateMap = Deencapsulation.getField(manager, "UPDATE_LIST_CACHE_READY_STATE_MAP");
+        stateMap.put(CbbTerminalTypeEnums.APP_WINDOWS, null);
+        boolean isReady = manager.isCacheReady(CbbTerminalTypeEnums.APP_WINDOWS);
+        assertEquals(false, isReady);
+        stateMap.put(CbbTerminalTypeEnums.APP_WINDOWS, false);
+    }
+
 }

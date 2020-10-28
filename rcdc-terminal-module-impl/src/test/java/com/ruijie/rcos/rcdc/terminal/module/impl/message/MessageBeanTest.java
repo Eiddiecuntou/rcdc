@@ -93,6 +93,25 @@ public class MessageBeanTest {
     }
 
     /**
+     * testTerminalSystemUpgradeMsgConstructWithArgs
+     */
+    @Test
+    public void testTerminalSystemUpgradeMsgConstructWithArgs() {
+        TerminalSystemUpgradeMsg msg = new TerminalSystemUpgradeMsg("123", "abc");
+        assertEquals("123", msg.getImgName());
+        assertEquals("abc", msg.getIsoVersion());
+    }
+
+    /**
+     * testTerminalSystemUpgradeMsgConstructWithArgs
+     */
+    @Test
+    public void testTerminalSystemUpgradeMsgToString() {
+        TerminalSystemUpgradeMsg msg = new TerminalSystemUpgradeMsg("123", "abc");
+        assertEquals("TerminalSystemUpgradeMsg [imgName=123, isoVersion=abc]", msg.toString());
+    }
+
+    /**
      * 测试SystemUpgradeResultInfo
      */
     @Test
@@ -112,5 +131,17 @@ public class MessageBeanTest {
 
         soft.setSoftwareVersion("456");
         assertEquals("456", soft.getSoftwareVersion());
+    }
+
+    /**
+     * 测试testChangeOfflineLoginConfig
+     */
+    @Test
+    public void testChangeOfflineLoginConfig() {
+        ChangeOfflineLoginConfig config = new ChangeOfflineLoginConfig(0);
+        assertEquals(0, config.getDisconnectServerUseDay().intValue());
+
+        config.setDisconnectServerUseDay(1);
+        assertEquals(1, config.getDisconnectServerUseDay().intValue());
     }
 }
