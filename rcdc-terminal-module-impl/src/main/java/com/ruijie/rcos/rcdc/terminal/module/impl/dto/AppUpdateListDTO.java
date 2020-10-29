@@ -9,7 +9,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.dto;
  * 
  * @author nt
  */
-public class WinAppUpdateListDTO extends BaseUpdateListDTO<WinAppComponentVersionInfoDTO> {
+public class AppUpdateListDTO extends BaseUpdateListDTO<AppComponentVersionInfoDTO> {
 
     private String name;
 
@@ -21,10 +21,10 @@ public class WinAppUpdateListDTO extends BaseUpdateListDTO<WinAppComponentVersio
 
     private String platform;
 
-    public WinAppUpdateListDTO() {
+    public AppUpdateListDTO() {
     }
 
-    public WinAppUpdateListDTO(String version, Integer componentSize) {
+    public AppUpdateListDTO(String version, Integer componentSize) {
         super(version, componentSize);
     }
 
