@@ -201,8 +201,8 @@ public interface CbbTerminalGroupMgmtAPI {
     /**
      * @api {POST} CbbTerminalGroupMgmtAPI.obtainGroupNamePathArr 获取终端分组路径数组
      * @apiName obtainGroupNamePathArr
-     * @apiGroup 获取终端分组路径数组
-     * @apiDescription 删除终端组
+     * @apiGroup CbbTerminalGroupMgmtAPI
+     * @apiDescription 获取终端分组路径数组
      * @apiParam (请求体字段说明) {UUID} groupId 终端组id
      *
      * @apiSuccess (响应字段说明) {String[]} groupNameArr 终端分组路径数组
