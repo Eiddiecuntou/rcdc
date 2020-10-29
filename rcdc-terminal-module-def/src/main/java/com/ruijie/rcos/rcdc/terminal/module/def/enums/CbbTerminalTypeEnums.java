@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.enums;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.AppTerminalOsTypeEnums;
 import org.springframework.util.Assert;
 
 /**
@@ -35,7 +36,7 @@ public enum CbbTerminalTypeEnums {
     /**
      * windows软终端
      */
-    APP_WINDOWS("APP", "Windows"),
+    APP_WINDOWS("APP", "Windows", AppTerminalOsTypeEnums.WINDOWS),
 
     /**
      * 安卓移动终端
@@ -55,11 +56,33 @@ public enum CbbTerminalTypeEnums {
     /**
      * linux软终端
      */
-    APP_LINUX("APP", "Linux");
+    APP_LINUX("APP", "Linux"),
+
+    /**
+     * linux中标麒麟软终端
+     */
+    APP_NEOKYLIN("APP", "NeoKylin", AppTerminalOsTypeEnums.NEOKYLIN),
+
+    /**
+     * linuxUOS软终端
+     */
+    APP_UOS("APP", "UOS", AppTerminalOsTypeEnums.UOS);
 
     private String platform;
 
     private String osType;
+
+    private AppTerminalOsTypeEnums cbbAppTerminalOsType;
+
+    public AppTerminalOsTypeEnums getCbbAppTerminalOsType() {
+        return cbbAppTerminalOsType;
+    }
+
+    CbbTerminalTypeEnums(String platform, String osType, AppTerminalOsTypeEnums cbbAppTerminalOsType) {
+        this.platform = platform;
+        this.osType = osType;
+        this.cbbAppTerminalOsType = cbbAppTerminalOsType;
+    }
 
     CbbTerminalTypeEnums(String platform, String osType) {
         this.platform = platform;

@@ -23,8 +23,10 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+
 import java.util.Date;
 import java.util.UUID;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
@@ -73,6 +75,24 @@ public class CbbTerminalOperatorAPIImplTest {
 
     @Injectable
     private TerminalLicenseService terminalLicenseService;
+
+    /**
+     * 测试查询终端管理密码
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testQueryPassword() throws BusinessException {
+
+        final String terminalPassword = "terminalPassword";
+        new Expectations() {
+            {
+                operatorService.getTerminalPassword();
+                result = terminalPassword;
+            }
+        };
+        assertEquals(terminalPassword, terminalOperatorAPI.queryPassword());
+    }
 
     /**
      * 查找不到数据
@@ -413,8 +433,6 @@ public class CbbTerminalOperatorAPIImplTest {
     }
 
 
-
-
     private CbbTerminalNetworkInfoDTO[] getItemArr() {
         CbbTerminalNetworkInfoDTO[] itemArr = new CbbTerminalNetworkInfoDTO[1];
         CbbTerminalNetworkInfoDTO dto = new CbbTerminalNetworkInfoDTO();
@@ -435,7 +453,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     /**
      * 测试关机
-     * 
+     *
      * @throws BusinessException 业务异常
      */
     @Test
@@ -460,7 +478,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     /**
      * 测试重启
-     * 
+     *
      * @throws BusinessException 业务异常
      */
     @Test
@@ -483,7 +501,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     /**
      * 测试changePassword，参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -494,7 +512,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     /**
      * 测试changePassword，
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -511,9 +529,9 @@ public class CbbTerminalOperatorAPIImplTest {
     }
 
     /**
-     *测试清空数据盘
+     * 测试清空数据盘
      *
-     *@throws BusinessException 业务异常
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testClearIdvTerminalDataDisk() throws BusinessException {
@@ -529,9 +547,9 @@ public class CbbTerminalOperatorAPIImplTest {
 
 
     /**
-     *测试IDV终端离线登录设置
+     * 测试IDV终端离线登录设置
      *
-     *@throws BusinessException 业务异常
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testIdvOfflineLoginSetting() throws BusinessException {
@@ -547,6 +565,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     /**
      * 测试 relieveFault 方法入参
+     *
      * @throws Exception
      */
     @Test
@@ -583,9 +602,9 @@ public class CbbTerminalOperatorAPIImplTest {
 
 
     /**
-     *测试queryOfflineLoginSetting
+     * 测试queryOfflineLoginSetting
      *
-     *@throws BusinessException 业务异常
+     * @throws BusinessException 业务异常
      */
     @Test
     public void testQueryOfflineLoginSetting() throws BusinessException {

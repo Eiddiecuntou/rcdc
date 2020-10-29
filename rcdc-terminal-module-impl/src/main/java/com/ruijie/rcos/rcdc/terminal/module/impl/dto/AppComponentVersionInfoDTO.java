@@ -2,14 +2,14 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.dto;
 
 /**
  * 
- * Description: windows软终端组件升级版本信息
+ * Description: 软终端组件升级版本信息
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年1月21日
  * 
  * @author nt
  */
-public class WinAppComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
+public class AppComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
 
     /**
      * 组件包文件名

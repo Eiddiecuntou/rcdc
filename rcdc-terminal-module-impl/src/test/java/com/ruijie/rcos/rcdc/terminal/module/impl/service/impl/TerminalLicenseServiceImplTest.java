@@ -115,6 +115,31 @@ public class TerminalLicenseServiceImplTest {
     }
 
     /**
+     * 测试updateTerminalLicenseNum
+     */
+    @Test
+    public void testUpdateTerminalLicenseNumOther() {
+        try {
+            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateIDVTerminalLicenseNum(-2),
+                    "licenseNum must gt -1");
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                result = "-1";
+            }
+        };
+        try {
+            licenceLicenseService.updateIDVTerminalLicenseNum(5);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    /**
      * 测试authedOrAuthSuccess方法，新终端接入，有剩余授权
      */
     @Test
