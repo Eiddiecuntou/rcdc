@@ -1,12 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dto;
 
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.test.GetSetTester;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Description: Function Description
@@ -20,14 +18,21 @@ import java.util.ArrayList;
 public class WinAppUpdateListDTOTest {
 
     /**
-     * 测试getAndSet方法
+     * 测试GetterAndSetter
      */
     @Test
-    public void testSetAndGet() {
-        GetSetTester getSetTester = new GetSetTester(WinAppUpdateListDTO.class);
-        getSetTester.registerTypeValueCreator(java.util.List.class, () -> new ArrayList<>());
-        WinAppUpdateListDTO winAppUpdateListDTO = new WinAppUpdateListDTO("xxx", 1);
-        getSetTester.runTest();
-        Assert.assertTrue(true);
+    public void testGetterAndSetter() {
+        AppUpdateListDTO dto = new AppUpdateListDTO();
+        dto.setCompletePackageName("completePackageName");
+        dto.setCompletePackageUrl("completePackageUrl");
+        dto.setMd5("md5");
+        dto.setName("name");
+        dto.setPlatform("window");
+        assertEquals("completePackageName", dto.getCompletePackageName());
+        assertEquals("completePackageUrl", dto.getCompletePackageUrl());
+        assertEquals("md5", dto.getMd5());
+        assertEquals("name", dto.getName());
+        assertEquals("window", dto.getPlatform());
+
     }
 }
