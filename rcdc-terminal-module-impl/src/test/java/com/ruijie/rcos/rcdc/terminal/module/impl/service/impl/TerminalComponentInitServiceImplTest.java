@@ -17,6 +17,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import mockit.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -54,6 +55,11 @@ public class TerminalComponentInitServiceImplTest {
     @Injectable
     private LinuxIDVUpdatelistCacheInit linuxIDVUpdatelistCacheInit;
 
+    @Before
+    public void before() {
+        Deencapsulation.setField(TerminalComponentInitServiceImpl.class, "EXECUTOR_SERVICE", new MockExecutor4Test());
+    }
+
     /**
      * 测试safeInit，开发环境
      *
@@ -63,8 +69,6 @@ public class TerminalComponentInitServiceImplTest {
     public void testInitAndroidVDI() throws InterruptedException {
         setEnviromentDevelop(true);
         initService.initAndroidVDI();
-
-        Thread.sleep(1000);
 
         new Verifications() {
             {
@@ -84,8 +88,6 @@ public class TerminalComponentInitServiceImplTest {
         setEnviromentDevelop(true);
         initService.initLinuxVDI();
 
-        Thread.sleep(1000);
-
         new Verifications() {
             {
                 globalParameterAPI.findParameter(anyString);
@@ -103,8 +105,6 @@ public class TerminalComponentInitServiceImplTest {
     public void testInitLinuxIDV() throws InterruptedException {
         setEnviromentDevelop(true);
         initService.initLinuxIDV();
-
-        Thread.sleep(1000);
 
         new Verifications() {
             {
@@ -131,7 +131,6 @@ public class TerminalComponentInitServiceImplTest {
         };
         try {
             initService.initAndroidVDI();
-            Thread.sleep(1000);
         } catch (Exception e) {
             fail();
         }
@@ -155,7 +154,6 @@ public class TerminalComponentInitServiceImplTest {
         };
         try {
             initService.initLinuxIDV();
-            Thread.sleep(1000);
         } catch (Exception e) {
             fail();
         }
@@ -189,7 +187,6 @@ public class TerminalComponentInitServiceImplTest {
 
         try {
             initService.initLinuxVDI();
-            Thread.sleep(1000);
         } catch (Exception e) {
             fail();
         }
@@ -215,6 +212,7 @@ public class TerminalComponentInitServiceImplTest {
         setEnviromentDevelop(false);
         ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
         dto.setClusterVirtualIpIp("172.12.22.45");
+
         new Expectations() {
             {
                 cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
@@ -225,7 +223,6 @@ public class TerminalComponentInitServiceImplTest {
         };
         try {
             initService.initAndroidVDI();
-            Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
         }
@@ -272,7 +269,6 @@ public class TerminalComponentInitServiceImplTest {
         };
         try {
             initService.initLinuxVDI();
-            Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
         }
@@ -311,7 +307,6 @@ public class TerminalComponentInitServiceImplTest {
         };
         try {
             initService.initLinuxIDV();
-            Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
         }
@@ -354,7 +349,6 @@ public class TerminalComponentInitServiceImplTest {
         };
         try {
             initService.initLinuxVDI();
-            Thread.sleep(1000);
         } catch (RuntimeException e) {
             fail();
         }
