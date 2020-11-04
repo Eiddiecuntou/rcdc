@@ -31,7 +31,7 @@ public class CbbAddSystemUpgradeTaskDTO {
     @Nullable
     private UUID[] terminalGroupIdArr;
 
-    @NotNull
+    @Nullable
     private CbbFlashModeEnums flashModeEnums;
 
     public UUID getPackageId() {

@@ -22,7 +22,7 @@ public class WinAppUpdateListDTOTest {
      */
     @Test
     public void testGetterAndSetter() {
-        WinAppUpdateListDTO dto = new WinAppUpdateListDTO();
+        AppUpdateListDTO dto = new AppUpdateListDTO();
         dto.setCompletePackageName("completePackageName");
         dto.setCompletePackageUrl("completePackageUrl");
         dto.setMd5("md5");
