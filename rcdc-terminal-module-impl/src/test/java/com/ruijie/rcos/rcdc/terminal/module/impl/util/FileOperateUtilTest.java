@@ -1091,34 +1091,6 @@ public class FileOperateUtilTest {
             fail();
         }
     }
-    /**
-     * 测试deleteFileByPath
-     */
-    @Test
-    public void testSkyengineFile() {
-
-        new MockUp<File>() {
-
-            @Mock
-            public boolean isDirectory() {
-                return false;
-            }
-
-            @Mock
-            public boolean exists() {
-                return true;
-            }
-        };
-
-        try {
-            FileOperateUtil.deleteFileByPath("test");
-            fail();
-        } catch (RuntimeException e) {
-            fail();
-        } catch (Exception exception) {
-
-        }
-    }
 
 
 }
