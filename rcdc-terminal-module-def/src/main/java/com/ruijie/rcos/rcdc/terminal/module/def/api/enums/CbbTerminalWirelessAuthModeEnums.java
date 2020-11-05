@@ -12,11 +12,13 @@ import org.springframework.util.Assert;
  */
 public enum CbbTerminalWirelessAuthModeEnums {
 
-    MODE_WPA_EAP("wpa-eap"),
+    MODE_WPA_EAP("eap"),
 
-    MODE_WPA_PSK("wpa-psk"),
+    MODE_WPA_PSK("wpa"),
 
-    MODE_OPEN("open");
+    MODE_OPEN("open"),
+
+    MODE_WEP("wep");
 
     private String name;
 
