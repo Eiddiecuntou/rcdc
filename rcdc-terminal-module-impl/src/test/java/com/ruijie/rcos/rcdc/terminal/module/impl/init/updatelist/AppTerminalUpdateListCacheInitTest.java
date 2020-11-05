@@ -1,18 +1,16 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
+import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import mockit.Tested;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.WinAppUpdateListDTO;
-import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
-import mockit.Tested;
+import java.util.List;
 
 /**
  * Description: Function Description
@@ -23,16 +21,17 @@ import mockit.Tested;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
-public class WinAppTerminalUpdatelistCacheInitTest {
+public class AppTerminalUpdateListCacheInitTest {
 
     @Tested
-    private WinAppTerminalUpdatelistCacheInit cacheInit;
+    private AppTerminalUpdateListCacheInit cacheInit;
 
     /**
      * testGetUpdateListPath
      */
     @Test
     public void testGetUpdateListPath() {
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
         String updateListPath = cacheInit.getUpdateListPath();
         Assert.assertEquals("/opt/ftp/terminal/terminal_component/windows_app/update.list", updateListPath);
     }
@@ -42,6 +41,8 @@ public class WinAppTerminalUpdatelistCacheInitTest {
      */
     @Test
     public void testGetTerminalType() {
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
+        AppTerminalUpdateListCacheInit cacheInit2 = new AppTerminalUpdateListCacheInit();
         CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
         Assert.assertEquals(CbbTerminalTypeEnums.APP_WINDOWS, terminalType);
     }
@@ -52,9 +53,11 @@ public class WinAppTerminalUpdatelistCacheInitTest {
     @Test
     public void testFillUpdateListHasIOException() {
 
-        WinAppUpdateListDTO dto = new WinAppUpdateListDTO();
-        List<WinAppComponentVersionInfoDTO> versionList = Lists.newArrayList();
-        WinAppComponentVersionInfoDTO versionInfoDTO = new WinAppComponentVersionInfoDTO();
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
+        AppUpdateListDTO dto = new AppUpdateListDTO();
+        List<AppComponentVersionInfoDTO> versionList = Lists.newArrayList();
+        AppComponentVersionInfoDTO versionInfoDTO = new AppComponentVersionInfoDTO();
+
         versionInfoDTO.setCompletePackageName("aaa");
         versionList.add(versionInfoDTO);
         dto.setComponentList(versionList);

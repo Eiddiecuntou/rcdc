@@ -36,7 +36,6 @@ public class SessionManagerTest {
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
 
     /**
-     *
      * 测试绑定终端session
      *
      * @param session 连接会话
@@ -59,7 +58,6 @@ public class SessionManagerTest {
     }
 
     /**
-     *
      * 测试移除session
      *
      * @param session 连接会话
@@ -88,7 +86,6 @@ public class SessionManagerTest {
     }
 
     /**
-     *
      * 测试移除session
      *
      * @param session 连接会话
@@ -191,6 +188,18 @@ public class SessionManagerTest {
         List<String> terminalIdList = sessionManager.getOnlineTerminalId();
         assertEquals(1, terminalIdList.size());
         assertEquals("12", terminalIdList.get(0));
+        sessionMap.clear();
+    }
+
+    /**
+     * 测试getSessionById
+     */
+    @Test
+    public void testGetSessionById(@Mocked Session session) {
+        final String sessionId = "sessionId";
+        final Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
+        sessionMap.put(sessionId, session);
+        assertEquals(session, sessionManager.getSessionById(sessionId));
         sessionMap.clear();
     }
 }

@@ -154,6 +154,11 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
+    public String queryPassword() throws BusinessException {
+        return operatorService.getTerminalPassword();
+    }
+
+    @Override
     public void relieveFault(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
 

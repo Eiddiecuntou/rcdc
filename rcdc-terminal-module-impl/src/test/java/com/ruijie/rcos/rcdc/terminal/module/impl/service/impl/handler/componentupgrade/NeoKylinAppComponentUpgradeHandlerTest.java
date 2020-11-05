@@ -8,27 +8,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- *
- * Description: Function Description
- * Copyright: Copyright (c) 2019
+ * Description:
+ * Copyright: Copyright (c) 2020
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019年8月10日
+ * Create Time: 2020/7/27 17:15
  *
- * @author nt
+ * @author conghaifeng
  */
 @RunWith(SkyEngineRunner.class)
-public class WinAppComponentUpgradeHandlerTest {
-
+public class NeoKylinAppComponentUpgradeHandlerTest {
     @Tested
-    private WinAppComponentUpgradeHandler handler;
+    private NeoKylinAppComponentUpgradeHandler handler;
 
     /**
-     * 测试getTerminalType
+     *测试getTerminalType
      */
     @Test
     public void testGetTerminalType() {
         CbbTerminalTypeEnums terminalType = handler.getTerminalType();
-        Assert.assertEquals(CbbTerminalTypeEnums.APP_WINDOWS, terminalType);
+        Assert.assertEquals(CbbTerminalTypeEnums.APP_NEOKYLIN, terminalType);
     }
-
 }
