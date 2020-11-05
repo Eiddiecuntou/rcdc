@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Description: Function Description
@@ -34,5 +35,8 @@ public class WinAppUpdateListDTOTest {
         assertEquals("name", dto.getName());
         assertEquals("window", dto.getPlatform());
 
+        AppUpdateListDTO dto1 = new AppUpdateListDTO("version", Integer.valueOf(1));
+        assertEquals("version", dto1.getVersion());
+        assertTrue(dto1.getComponentSize() == 1);
     }
 }
