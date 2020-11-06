@@ -36,6 +36,12 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiSuccess (响应字段说明) {CbbAddSystemUpgradeTaskResultDTO} response CbbAddSystemUpgradeTaskResultDTO
      * @apiSuccess (响应字段说明) {UUID} response.upgradeTaskId 升级任务id
      * @apiSuccess (响应字段说明) {String} response.imgName 升级包名称
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_system_upgrade_package_not_exist message:终端系统升级包不存在}
+     *  {code:rcdc_terminal_system_upgrade_package_is_uploading message:终端系统升级包正在上传中}
+     *  {code:rcdc_terminal_system_upgrade_task_is_running message:终端系统升级任务正在进行中}
+     *  {code:rcdc_terminal_system_upgrade_file_not_exist message:终端系统升级包[{0}]文件丢失}
      */
     /**
      * 添加刷机任务
@@ -56,6 +62,12 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiParam (请求体字段说明) {String} request.terminalId 终端id
      *
      * @apiSuccess (响应字段说明) {String} terminalName 终端名
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_not_found_terminal message:终端数据已不存在}
+     *  {code:rcdc_terminal_system_upgrade_task_not_exist message:终端系统升级任务不存在}
+     *  {code:rcdc_terminal_system_upgrade_task_has_closed message:终端系统升级任务已关闭或正在关闭中}
+     *  {code:rcdc_terminal_system_upgrade_terminal_exist message:刷机终端[{0}]已添加}
      */
     /**
      *

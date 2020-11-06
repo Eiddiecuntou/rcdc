@@ -59,6 +59,8 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiSuccess (响应字段说明) {String} itemArr.label 终端组名称
      * @apiSuccess (响应字段说明) {Boolean} itemArr.enableDefault 默认分组
      * @apiSuccess (响应字段说明) {UUID} itemArr.parentId 父级节点id，用于组装树形结构，序列化时忽略该属性
+     *
+     *
      */
     /**
      * 加载终端组树形结构(单层)
@@ -84,6 +86,8 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.parentGroupName 父级分组名称
      * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault 默认分组
+     *
+     *
      */
     /**
      * 根据分组名称及父分组id获取分组
@@ -108,6 +112,9 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.parentGroupName 父级分组名称
      * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault 默认分组
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminalgroup_group_not_exist message:终端分组[{0}]不存在}
      */
     /**
      * 加载指定id终端组对象
@@ -133,6 +140,14 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiSuccess (响应字段说明) {UUID} terminalGroupDTO.parentGroupId 父级分组id
      * @apiSuccess (响应字段说明) {String} terminalGroupDTO.parentGroupName 父级分组名称
      * @apiSuccess (响应字段说明) {Boolean} terminalGroupDTO.enableDefault 默认分组
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminalgroup_group_can_not_create_in_default message:默认未分组下不能创建终端分组}
+     *  {code:rcdc_terminalgroup_group_num_exceed_limit message:终端分组数量超出{0}限制}
+     *  {code:rcdc_terminal_usergroup_not_allow_reserve_name message:终端组不允许使用系统保留的组名[{0}]}
+     *  {code:rcdc_terminalgroup_group_name_duplicate message:终端分组名称[{0}]同级下重复}
+     *
+     *
      */
     /**
      * @description 创建终端组
@@ -152,6 +167,9 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiParam (请求体字段说明) {String} request.groupName 分组名称
      * @apiParam (请求体字段说明) {UUID} [request.parentGroupId] 父级分组id
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminalgroup_group_parent_can_not_select_itself message:不可选择自己为父分组}
+     *  {code:rcdc_terminalgroup_group_level_exceed_limit message:终端分组层级超出{0}层限制}
      */
     /**
      * @description 编辑终端组
@@ -169,6 +187,9 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiParam (请求体字段说明) {UUID} request.id 终端组id
      * @apiParam (请求体字段说明) {String} [request.moveGroupId] 删除后移动到终端组id
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminalgroup_group_not_exist message:终端分组[{0}]不存在}
+     *
      */
     /**
      * @description 删除终端组
@@ -180,11 +201,12 @@ public interface CbbTerminalGroupMgmtAPI {
     /**
      * @api {POST} CbbTerminalGroupMgmtAPI.obtainGroupNamePathArr 获取终端分组路径数组
      * @apiName obtainGroupNamePathArr
-     * @apiGroup 获取终端分组路径数组
-     * @apiDescription 删除终端组
+     * @apiGroup CbbTerminalGroupMgmtAPI
+     * @apiDescription 获取终端分组路径数组
      * @apiParam (请求体字段说明) {UUID} groupId 终端组id
      *
      * @apiSuccess (响应字段说明) {String[]} groupNameArr 终端分组路径数组
+     *
      */
     /**
      *  获取终端分组路径数组
@@ -207,6 +229,10 @@ public interface CbbTerminalGroupMgmtAPI {
      * @apiParam (请求体字段说明) {String} request.groupName 分组名称
      *
      * @apiSuccess (响应字段说明) {boolean} hasDuplication 是否存在
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_usergroup_not_allow_reserve_name message:终端组不允许使用系统保留的组名[{0}]}
+     *  {code:rcdc_terminalgroup_group_name_duplicate message:终端分组名称[{0}]同级下重复}
      */
     /**
      * 判断分组名称是否存在

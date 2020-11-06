@@ -20,6 +20,10 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 删除终端信息
      * @apiParam (请求体字段说明) {String} terminalId 终端id
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_not_found_terminal message:终端数据已不存在}
+     *  {code:rcdc_terminal_online_cannot_delete message:终端[{0}({1})]处于在线状态，不允许删除}
+     *
      */
     /**
      * 删除终端信息
@@ -68,6 +72,9 @@ public interface CbbTerminalOperatorAPI {
      * @apiSuccess (响应字段说明) {Integer} response.diskInfoArr 磁盘信息数组
      * @apiSuccess (响应字段说明) {Integer} response.wirelessNetCardNum 无线网卡数量
      * @apiSuccess (响应字段说明) {Integer} response.ethernetNetCardNum 有线网卡数量
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_not_found_terminal message:终端数据已不存在}
      */
     /**
      * 根据terminalId获取终端基本信息
@@ -88,6 +95,12 @@ public interface CbbTerminalOperatorAPI {
      * @apiParam (请求体字段说明) {String} request.terminalName 终端名称
      * @apiParam (请求体字段说明) {String} request.groupId 终端组Id
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_not_found_terminal message:终端数据已不存在}
+     *  {code:rcdc_terminalgroup_group_not_exist message:终端分组[{0}]不存在}
+     *  {code:rcdc_terminal_operate_msg_send_fail message:发送{0}消息超时，请检查网络或终端状态}
+     *  {code:rcdc_terminal_operate_action_modify_name message:修改终端名称}
+     *  {code:rcdc_terminal_offline message:终端连接断开}
      */
     /**
      *  编辑终端信息
@@ -103,6 +116,10 @@ public interface CbbTerminalOperatorAPI {
      * @apiGroup CbbTerminalOperatorAPI
      * @apiDescription 关闭终端
      * @apiParam (请求体字段说明) {String} terminalId 终端id
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_offline_cannot_shutdown message:当前终端[{0}({1})]处于离线状态，无法关机}
+     *  {code:rcdc_terminal_operate_action_shutdown message:关机}
      *
      */
     /**

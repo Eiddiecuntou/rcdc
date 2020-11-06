@@ -25,6 +25,9 @@ public interface CbbTerminalGroupOperNotifySPI {
      * @apiParam (请求体字段说明) {UUID} [terminalGroupOperNotifyRequest.moveGroupId] 变更终端分组id
      *
      * @apiSuccess (响应字段说明) {DefaultResponse} result DefaultResponse
+     *
+     *
+     *
      */
     /**
      * 消息通知：终端组织架构发生变更（删）

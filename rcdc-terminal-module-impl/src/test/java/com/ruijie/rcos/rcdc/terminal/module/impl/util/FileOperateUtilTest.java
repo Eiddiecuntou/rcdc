@@ -964,5 +964,133 @@ public class FileOperateUtilTest {
         }
 
     }
+    /**
+     * 测试deleteFile
+     */
+    @Test
+    public void testdeleteFile() {
+        String deleteFile = "test";
+
+        new MockUp<File>() {
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+
+            @Mock
+            public boolean isFile() {
+                return false;
+            }
+
+            @Mock
+            public File[] listFiles() {
+                return new File[0];
+            }
+        };
+
+        new MockUp<SkyengineFile>() {
+            @Mock
+            public boolean delete(boolean isMoveToRecy) {
+                return true;
+            }
+        };
+
+        try {
+            FileOperateUtil.deleteFile(new File(""));
+            fail();
+        } catch (Exception e) {
+
+        }
+    }
+
+    /**
+     * 测试listFile
+     */
+    @Test
+    public void testlistFilePath() {
+
+        new MockUp<File>() {
+
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+
+            @Mock
+            public boolean isFile() {
+                return true;
+            }
+        };
+
+        try {
+            List<File> fileList = FileOperateUtil.listFile("test");
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        } catch (Exception exception) {
+            fail();
+        }
+    }
+    /**
+     * 测试listFiles
+     */
+    @Test
+    public void testlistFiles() {
+
+        new MockUp<File>() {
+
+            @Mock
+            public boolean exists() {
+                return true;
+            }
+
+            @Mock
+            public boolean isFile() {
+                return false;
+            }
+            @Mock
+            public File[] listFiles() {
+                return new File[]{new File("wangwu")};
+            }
+
+        };
+
+        try {
+            List<File> fileList = FileOperateUtil.listFile("test");
+        } catch (IllegalArgumentException e) {
+              fail();
+        } catch (Exception exception) {
+
+        }
+    }
+    /**
+     * 测试deleteFileByPath
+     */
+    @Test
+    public void testdeleteFileByPath() {
+
+        new MockUp<File>() {
+
+            @Mock
+            public boolean isDirectory() {
+                return true;
+            }
+
+            @Mock
+            public boolean exists() {
+                return false;
+            }
+        };
+
+        try {
+            FileOperateUtil.deleteFileByPath("test");
+            fail();
+        } catch (RuntimeException e) {
+
+        } catch (Exception exception) {
+            fail();
+        }
+    }
+
 
 }
