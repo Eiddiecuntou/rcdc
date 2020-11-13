@@ -82,13 +82,14 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
         Assert.isTrue(licenseNum >= TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + TERMINAL_AUTH_DEFAULT_NUM);
 
         LOGGER.info("licenseNum 更新为 {}", licenseNum);
-        globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
-
-        if (getIDVTerminalLicenseNum() == -1 && licenseNum != -1) {
-            LOGGER.info("licenseNum为-1时不实时维护usedNum的值，不为-1时实时维护usedNum的值。licenseNum由-1变更为非-1，从数据库同步已授权终端数");
-            this.usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+        synchronized (usedNumLock) {
+            globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
+            if (getIDVTerminalLicenseNum() == -1 && licenseNum != -1) {
+                LOGGER.info("licenseNum为-1时不实时维护usedNum的值，不为-1时实时维护usedNum的值。licenseNum由-1变更为非-1，从数据库同步已授权终端数");
+                this.usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+            }
+            this.licenseNum = licenseNum;
         }
-        this.licenseNum = licenseNum;
     }
 
     @Override
@@ -102,14 +103,14 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
             }
             Integer idvLicenseNum = getIDVTerminalLicenseNum();
             Integer idvUsedNum = getIDVUsedNum();
-            if (Objects.equals(idvLicenseNum, TERMINAL_AUTH_DEFAULT_NUM) || idvLicenseNum > idvUsedNum) {
-                LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);
-                basicInfoService.saveBasicInfo(terminalId, isNewConnection, basicInfo);
-                usedNum++;
-                return true;
+            if (!Objects.equals(idvLicenseNum, TERMINAL_AUTH_DEFAULT_NUM) && idvUsedNum >= idvLicenseNum) {
+                LOGGER.info("idv终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", licenseNum, usedNum);
+                return false;
             }
-            LOGGER.info("idv终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", licenseNum, usedNum);
-            return false;
+            LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);
+            basicInfoService.saveBasicInfo(terminalId, isNewConnection, basicInfo);
+            usedNum++;
+            return true;
         }
     }
 
