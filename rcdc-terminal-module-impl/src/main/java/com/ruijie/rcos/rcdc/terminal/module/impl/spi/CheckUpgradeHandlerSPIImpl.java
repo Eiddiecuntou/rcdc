@@ -108,9 +108,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         }
 
         LOGGER.info("新终端[{}]{}接入", terminalId, basicInfo.getTerminalName());
-        if (!isNotNeedUpgrade(versionResult, systemUpgradeCheckResult)) {
+        if (isNeedUpgradeOrAbnormalUpgradeResult(versionResult, systemUpgradeCheckResult)) {
             LOGGER.info("终端升级检查结果为：{}、{}，暂不保存终端信息", versionResult.getResult(), systemUpgradeCheckResult.getSystemUpgradeCode());
-            // 终端不是处于不需要升级状态，不保存终端信息
+            // 终端需要升级，或者异常升级结果（不属于需要升级、不需要升级范畴，如：服务器准备中），不保存终端信息
             return false;
         }
 
@@ -141,9 +141,10 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         }
     }
 
-    private boolean isNotNeedUpgrade(TerminalVersionResultDTO versionResult, SystemUpgradeCheckResult systemUpgradeCheckResult) {
-        return versionResult.getResult() == CbbTerminalComponentUpgradeResultEnums.NOT.getResult() &&
-            systemUpgradeCheckResult.getSystemUpgradeCode() == CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult();
+    private boolean isNeedUpgradeOrAbnormalUpgradeResult(TerminalVersionResultDTO versionResult,
+        SystemUpgradeCheckResult systemUpgradeCheckResult) {
+        return versionResult.getResult() != CbbTerminalComponentUpgradeResultEnums.NOT.getResult() ||
+            systemUpgradeCheckResult.getSystemUpgradeCode() != CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult();
     }
 
     /**
