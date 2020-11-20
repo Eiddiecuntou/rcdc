@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetCardInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
@@ -127,6 +128,8 @@ public class TerminalEntity {
 
     private Boolean enableProxy;
 
+    private String allNetCardMacInfo;
+
     /**
      *  获取网络信息对象数组
      *
@@ -175,6 +178,26 @@ public class TerminalEntity {
         }
 
         return diskInfoDTOList.toArray(new CbbTerminalDiskInfoDTO[diskInfoDTOList.size()]);
+    }
+
+    /**
+     * 获取终端网卡mac信息数组
+     * @return CbbTerminalNetCardInfoDTO[]
+     * @throws BusinessException 业务异常
+     */
+    public CbbTerminalNetCardInfoDTO[] getNetCardInfoArr() throws BusinessException {
+        if (StringUtils.isBlank(allNetCardMacInfo)) {
+            return new CbbTerminalNetCardInfoDTO[0];
+        }
+
+        List<CbbTerminalNetCardInfoDTO> netCardInfoDTOList;
+        try {
+            netCardInfoDTOList = JSON.parseArray(allNetCardMacInfo, CbbTerminalNetCardInfoDTO.class);
+        } catch (Exception e) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NET_CARD_INFO_ERROR, e);
+        }
+
+        return netCardInfoDTOList.toArray(new CbbTerminalNetCardInfoDTO[netCardInfoDTOList.size()]);
     }
 
     /**
@@ -490,5 +513,13 @@ public class TerminalEntity {
 
     public void setEnableProxy(Boolean enableProxy) {
         this.enableProxy = enableProxy;
+    }
+
+    public String getAllNetCardMacInfo() {
+        return allNetCardMacInfo;
+    }
+
+    public void setAllNetCardMacInfo(String allNetCardMacInfo) {
+        this.allNetCardMacInfo = allNetCardMacInfo;
     }
 }

@@ -1,23 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 
+import static org.junit.Assert.fail;
+
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetCardInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.GetSetTester;
-import mockit.Expectations;
-import mockit.MockUp;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
-
-import static org.junit.Assert.fail;
 
 /**
  * Description:
@@ -38,6 +35,7 @@ public class TerminalEntityTest {
         GetSetTester tester = new GetSetTester(TerminalEntity.class);
         tester.addIgnoreProperty("networkInfoArr");
         tester.addIgnoreProperty("diskInfoArr");
+        tester.addIgnoreProperty("netCardInfoArr");
         tester.runTest();
         Assert.assertTrue(true);
     }
@@ -128,5 +126,51 @@ public class TerminalEntityTest {
 
         CbbTerminalDiskInfoDTO[] diskInfoArr = testEntity1.getDiskInfoArr();
         Assert.assertEquals(0, diskInfoArr.length);
+    }
+
+    /**
+     * 测试getNetCardInfoArr方法
+     */
+    @Test
+    public void testGetNetCardInfoArr() {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setAllNetCardMacInfo("[{\"iface\":\"eth0\", \"mac-address\":\"eth0mac\"},{\"iface\":\"wlan0\", "
+            + "\"mac-address\":\"wlan0mac\"}]");
+        try {
+            CbbTerminalNetCardInfoDTO[] netCardInfoArr = entity.getNetCardInfoArr();
+            Assert.assertTrue(netCardInfoArr.length == 2);
+            Assert.assertTrue(netCardInfoArr[1].getMacAddress().equals("wlan0mac"));
+        } catch (BusinessException e) {
+            Assert.fail();
+        }
+    }
+
+    /**
+     * 测试getNetCardInfoArr方法异常情况
+     */
+    @Test
+    public void testGetNetCardInfoArrException() {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setAllNetCardMacInfo("{}");
+        try {
+            entity.getNetCardInfoArr();
+        } catch (BusinessException e) {
+           Assert.assertTrue(e.getKey().equals(BusinessKey.RCDC_TERMINAL_NET_CARD_INFO_ERROR));
+        }
+    }
+
+    /**
+     * 测试getNetCardInfoArr方法，allNetCardMacInfo为空情况
+     */
+    @Test
+    public void testGetNetCardInfoArrAllNetCardMacInfoIsBlank() {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setAllNetCardMacInfo("");
+        try {
+            CbbTerminalNetCardInfoDTO[] netCardInfoArr = entity.getNetCardInfoArr();
+            Assert.assertTrue(netCardInfoArr.length == 0);
+        } catch (BusinessException e) {
+            Assert.fail();
+        }
     }
 }
