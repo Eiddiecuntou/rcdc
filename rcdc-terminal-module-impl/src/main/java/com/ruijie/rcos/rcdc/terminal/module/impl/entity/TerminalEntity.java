@@ -190,14 +190,14 @@ public class TerminalEntity {
             return new CbbTerminalNetCardMacInfoDTO[0];
         }
 
-        List<CbbTerminalNetCardMacInfoDTO> netCardInfoDTOList;
+        List<CbbTerminalNetCardMacInfoDTO> netCardMacInfoDTOList;
         try {
-            netCardInfoDTOList = JSON.parseArray(allNetCardMacInfo, CbbTerminalNetCardMacInfoDTO.class);
+            netCardMacInfoDTOList = JSON.parseArray(allNetCardMacInfo, CbbTerminalNetCardMacInfoDTO.class);
         } catch (Exception e) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NET_CARD_INFO_ERROR, e);
         }
 
-        return netCardInfoDTOList.toArray(new CbbTerminalNetCardMacInfoDTO[netCardInfoDTOList.size()]);
+        return netCardMacInfoDTOList.toArray(new CbbTerminalNetCardMacInfoDTO[netCardMacInfoDTOList.size()]);
     }
 
     /**
