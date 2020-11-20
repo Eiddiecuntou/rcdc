@@ -19,9 +19,20 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
     private String completePackageName;
 
     /**
+     * 组件文件相对路径（相对于安装包）
+     */
+    private String completePackageNameRelatePath;
+
+
+    /**
      * 差异包文件名
      */
     private String incrementalPackageName;
+
+    /**
+     * 差异包文件相对路径（相对于安装包）
+     */
+    private String incrementalPackageRelatePath;
 
     /**
      * 完整组件文件种子下载路径
@@ -143,4 +154,19 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
         this.basePackageMd5 = basePackageMd5;
     }
 
+    public String getIncrementalPackageRelatePath() {
+        return incrementalPackageRelatePath;
+    }
+
+    public void setIncrementalPackageRelatePath(String incrementalPackageRelatePath) {
+        this.incrementalPackageRelatePath = incrementalPackageRelatePath;
+    }
+
+    public String getCompletePackageNameRelatePath() {
+        return completePackageNameRelatePath;
+    }
+
+    public void setCompletePackageNameRelatePath(String completePackageNameRelatePath) {
+        this.completePackageNameRelatePath = completePackageNameRelatePath;
+    }
 }

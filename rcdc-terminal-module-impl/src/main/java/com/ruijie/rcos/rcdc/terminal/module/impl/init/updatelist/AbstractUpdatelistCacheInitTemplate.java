@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.BaseUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
@@ -35,9 +36,9 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends BaseUpdateLi
     public final void init() {
         // 开始初始化，将缓存就绪状态设为未就绪
         LOGGER.info("start init updatelist...");
-        CbbTerminalTypeEnums terminalType = getTerminalType();
-        LOGGER.info("terminal type: {}", terminalType.name());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(terminalType);
+        CbbTerminalOsTypeEnums osType = getTerminalOsType();
+        LOGGER.info("terminal type: {}", osType.name());
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(osType);
         String filePath = getUpdateListPath();
         File updateListFile = new File(filePath);
         if (!updateListFile.isFile()) {
@@ -53,7 +54,7 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends BaseUpdateLi
         T updatelist = JSON.parseObject(updateListContent, getTClass());
         putInCache(updatelist);
         // 完成初始化后将updatelist缓存状态更新为false
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(terminalType);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(osType);
         LOGGER.info("finish init updatelist...");
 
 
@@ -101,7 +102,7 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends BaseUpdateLi
         updatelist.setComponentSize(updatelist.getComponentList().size());
 
         // 将组件升级updatelist按终端类型，存入缓存中
-        TerminalUpdateListCacheManager.add(getTerminalType(), updatelist);
+        TerminalUpdateListCacheManager.add(getTerminalOsType(), updatelist);
     }
 
     /**
@@ -119,10 +120,10 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends BaseUpdateLi
     protected abstract void fillUpdateList(T updatelist);
 
     /**
-     * 获取终端类型
+     * 获取终端系统类型
      * 
-     * @return 终端类型
+     * @return 终端系统类型
      */
-    protected abstract CbbTerminalTypeEnums getTerminalType();
+    protected abstract CbbTerminalOsTypeEnums getTerminalOsType();
 
 }

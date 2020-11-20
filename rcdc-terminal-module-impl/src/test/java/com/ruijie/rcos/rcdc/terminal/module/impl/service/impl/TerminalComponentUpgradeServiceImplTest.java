@@ -6,7 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.LinuxVDIComponentUpgradeHandler;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.LinuxComponentUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandlerFactory;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -68,7 +68,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
         terminalEntity.setTerminalOsType("Linux");
 
-        TerminalComponentUpgradeHandler handler = new LinuxVDIComponentUpgradeHandler();
+        TerminalComponentUpgradeHandler handler = new LinuxComponentUpgradeHandler();
         new Expectations() {
             {
                 handlerFactory.getHandler((CbbTerminalTypeEnums) any);
@@ -76,7 +76,7 @@ public class TerminalComponentUpgradeServiceImplTest {
             }
         };
 
-        new MockUp<LinuxVDIComponentUpgradeHandler>() {
+        new MockUp<LinuxComponentUpgradeHandler>() {
 
             @Mock
             public TerminalVersionResultDTO getVersion(GetVersionDTO request) {
@@ -114,7 +114,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
         terminalEntity.setTerminalOsType("Linux");
 
-        TerminalComponentUpgradeHandler handler = new LinuxVDIComponentUpgradeHandler();
+        TerminalComponentUpgradeHandler handler = new LinuxComponentUpgradeHandler();
         new Expectations() {
             {
                 handlerFactory.getHandler((CbbTerminalTypeEnums) any);

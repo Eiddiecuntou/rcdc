@@ -25,7 +25,7 @@ public class NeoKylinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = handler.getTerminalType();
+        CbbTerminalTypeEnums terminalType = handler.getTerminalOsType();
         Assert.assertEquals(CbbTerminalTypeEnums.APP_NEOKYLIN, terminalType);
     }
 }

@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.component
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonComponentVersionInfoDTO;
@@ -34,15 +34,15 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
     public TerminalVersionResultDTO<CommonUpdateListDTO> getVersion(GetVersionDTO request) {
         Assert.notNull(request, "get version request can not be null");
 
-        CbbTerminalTypeEnums terminalType = getTerminalType();
+        CbbTerminalOsTypeEnums osType = getTerminalOsType();
 
-        LOGGER.debug("[{}]终端请求版本号", terminalType.name());
-        if (!TerminalUpdateListCacheManager.isCacheReady(terminalType)) {
-            LOGGER.debug("[{}]终端请求版本号未就绪", terminalType.name());
+        LOGGER.debug("终端系统类型为[{}]的终端请求版本号", osType.name());
+        if (!TerminalUpdateListCacheManager.isCacheReady(osType)) {
+            LOGGER.debug("终端系统类型为[{}]的终端请求版本号未就绪", osType.name());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult());
         }
 
-        CommonUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(terminalType);
+        CommonUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(osType);
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist or component is null, return not support");
@@ -112,6 +112,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         for (CommonComponentVersionInfoDTO componentInfo : componentList) {
             componentInfo.setIncrementalPackageMd5(null);
             componentInfo.setIncrementalPackageName(null);
+            componentInfo.setIncrementalPackageRelatePath(null);
             componentInfo.setIncrementalTorrentMd5(null);
             componentInfo.setIncrementalTorrentUrl(null);
             componentInfo.setBasePackageName(null);
@@ -133,10 +134,10 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
     }
 
     /**
-     * 获取组件升级的终端类型
-     * 
-     * @return 终端类型
+     * 获取组件升级的终端系统类型
+     *
+     * @return 终端系统类型
      */
-    protected abstract CbbTerminalTypeEnums getTerminalType();
+    protected abstract CbbTerminalOsTypeEnums getTerminalOsType();
 
 }

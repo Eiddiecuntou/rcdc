@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -351,8 +352,8 @@ public class AbstractCommonComponentUpgradeHandlerTest {
     private class TestedComponentUpgradeHandler extends AbstractCommonComponentUpgradeHandler {
 
         @Override
-        protected CbbTerminalTypeEnums getTerminalType() {
-            return CbbTerminalTypeEnums.VDI_ANDROID;
+        protected CbbTerminalOsTypeEnums getTerminalOsType() {
+            return CbbTerminalOsTypeEnums.LINUX;
         }
     }
 }

@@ -10,17 +10,17 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
  */
 public enum AppTerminalOsTypeEnums {
 
-    WINDOWS("/opt/ftp/terminal/terminal_component/windows_app/component/",
-            "/opt/ftp/terminal/terminal_component/windows_app/update.list",
-            "/terminal_component/windows_app/component/"),
+    WINDOWS("/opt/ftp/terminal/terminal_component/windows/component/",
+            "/opt/ftp/terminal/terminal_component/windows/update.list",
+            "/terminal_component/windows/component/"),
 
-    NEOKYLIN("/opt/ftp/terminal/terminal_component/linux_neokylin_app/component/",
-            "/opt/ftp/terminal/terminal_component/linux_neokylin_app/update.list",
-            "/terminal_component/linux_neokylin_app/component/"),
+    NEOKYLIN("/opt/ftp/terminal/terminal_component/neokylin/component/",
+            "/opt/ftp/terminal/terminal_component/neokylin/update.list",
+            "/terminal_component/neokylin/component/"),
 
-    UOS("/opt/ftp/terminal/terminal_component/linux_uos_app/component/",
-            "/opt/ftp/terminal/terminal_component/linux_uos_app/update.list",
-            "/terminal_component/linux_uos_app/component/");
+    UOS("/opt/ftp/terminal/terminal_component/uos/component/",
+            "/opt/ftp/terminal/terminal_component/uos/update.list",
+            "/terminal_component/uos/component/");
 
     /**
      * 软终端下载路径

@@ -6,9 +6,8 @@ import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxIDVUpdatelistCacheInit;
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.shell.ShellCommandRunner;
@@ -41,10 +40,10 @@ public class TerminalComponentInitServiceImplTest {
     private GlobalParameterAPI globalParameterAPI;
 
     @Injectable
-    private LinuxVDIUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
+    private LinuxUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
 
     @Injectable
-    private AndroidVDIUpdatelistCacheInit androidVDIUpdatelistCacheInit;
+    private AndroidUpdatelistCacheInit androidVDIUpdatelistCacheInit;
 
     @Mocked
     private ShellCommandRunner runner;

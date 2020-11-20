@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class AndroidVDITerminalUpdateCacheInitTest {
 
     @Tested
-    private AndroidVDIUpdatelistCacheInit cacheInit;
+    private AndroidUpdatelistCacheInit cacheInit;
 
     @Test
     public void testGetUpdateListPath() {
@@ -29,7 +29,7 @@ public class AndroidVDITerminalUpdateCacheInitTest {
 
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
+        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalOsType();
         Assert.assertEquals(CbbTerminalTypeEnums.VDI_ANDROID, terminalType);
     }
 

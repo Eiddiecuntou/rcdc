@@ -14,6 +14,26 @@ public class CommonUpdateListDTO extends BaseUpdateListDTO<CommonComponentVersio
 
     private String osLimit;
 
+    /**
+     * 组件升级包目录名
+     */
+    private String componentPackageDirName;
+
+    /**
+     * 组件升级包目录种子路径
+     */
+    private String componentPackageDirTorrentUrl;
+
+    /**
+     * 组件升级包目录种子md5
+     */
+    private String componentPackageDirTorrentMd5;
+
+    /**
+     * 组件升级包目录md5
+     */
+    private String componentPackageDirMd5;
+
     public String getBaseVersion() {
         return baseVersion;
     }
@@ -28,5 +48,37 @@ public class CommonUpdateListDTO extends BaseUpdateListDTO<CommonComponentVersio
 
     public void setOsLimit(String osLimit) {
         this.osLimit = osLimit;
+    }
+
+    public String getComponentPackageDirName() {
+        return componentPackageDirName;
+    }
+
+    public void setComponentPackageDirName(String componentPackageDirName) {
+        this.componentPackageDirName = componentPackageDirName;
+    }
+
+    public String getComponentPackageDirTorrentUrl() {
+        return componentPackageDirTorrentUrl;
+    }
+
+    public void setComponentPackageDirTorrentUrl(String componentPackageDirTorrentUrl) {
+        this.componentPackageDirTorrentUrl = componentPackageDirTorrentUrl;
+    }
+
+    public String getComponentPackageDirTorrentMd5() {
+        return componentPackageDirTorrentMd5;
+    }
+
+    public void setComponentPackageDirTorrentMd5(String componentPackageDirTorrentMd5) {
+        this.componentPackageDirTorrentMd5 = componentPackageDirTorrentMd5;
+    }
+
+    public String getComponentPackageDirMd5() {
+        return componentPackageDirMd5;
+    }
+
+    public void setComponentPackageDirMd5(String componentPackageDirMd5) {
+        this.componentPackageDirMd5 = componentPackageDirMd5;
     }
 }

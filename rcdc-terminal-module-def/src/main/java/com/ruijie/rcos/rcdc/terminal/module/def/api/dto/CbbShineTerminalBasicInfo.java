@@ -1,10 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnumsSerializer;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -123,6 +120,9 @@ public class CbbShineTerminalBasicInfo {
 
     @Nullable
     private Boolean enableProxy;
+
+    @Nullable
+    private CbbTerminalWorkModeEnums[] terminalWorkSupportModeArr;
 
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
@@ -390,5 +390,14 @@ public class CbbShineTerminalBasicInfo {
 
     public void setEnableProxy(@Nullable Boolean enableProxy) {
         this.enableProxy = enableProxy;
+    }
+
+    @Nullable
+    public CbbTerminalWorkModeEnums[] getTerminalWorkSupportModeArr() {
+        return terminalWorkSupportModeArr;
+    }
+
+    public void setTerminalWorkSupportModeArr(@Nullable CbbTerminalWorkModeEnums[] terminalWorkSupportModeArr) {
+        this.terminalWorkSupportModeArr = terminalWorkSupportModeArr;
     }
 }

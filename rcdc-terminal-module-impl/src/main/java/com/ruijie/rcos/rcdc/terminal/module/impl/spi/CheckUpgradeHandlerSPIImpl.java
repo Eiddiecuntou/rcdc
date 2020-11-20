@@ -7,8 +7,13 @@ import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
@@ -24,9 +29,13 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeRes
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+
+import java.util.stream.Stream;
 
 /**
  * Description: 终端检查升级，同时需要保存终端基本信息
@@ -54,6 +63,12 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     @Autowired
     private TerminalLicenseService terminalLicenseService;
 
+    @Autowired
+    private CbbTerminalConnectHandlerSPI connectHandlerSPI;
+
+    @Autowired
+    private SessionManager sessionManager;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerSPIImpl.class);
 
     @Override
@@ -61,18 +76,35 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
 
         LOGGER.info("组件升级处理请求开始处理。。。");
+
+        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
+
+        // 通知上层组件终端接入，判断是否允许接入
+        boolean allowConnect = connectHandlerSPI.isAllowConnect(basicInfo);
+        if (!allowConnect) {
+            Session session = sessionManager.getSessionById(basicInfo.getTerminalId());
+            sessionManager.removeSession(basicInfo.getTerminalId(), session);
+            session.close();
+            return;
+        }
+
+        // 获取业务配置，将上层设置的终端类型存入数据库
+        CbbTerminalBizConfigDTO terminalBizConfigDTO = connectHandlerSPI.notifyTerminalSupport(basicInfo);
+        basicInfo.setPlatform(terminalBizConfigDTO.getTerminalPlatform());
+
         // 保存终端基本信息
         String terminalId = request.getTerminalId();
-        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
         TerminalEntity terminalEntity = basicInfoService.convertBasicInfo2TerminalEntity(terminalId, request.getNewConnection(),
             basicInfo);
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
+//        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
 
         TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
 
-        SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalType);
+        SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalBizConfigDTO);
+
+        processTerminalAuth(request.getNewConnection(), basicInfo, terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
 
         boolean isNeedSaveTerminalBasicInfo = processIdvTerminalLicense(basicInfo, request.getNewConnection(),
             versionResult, systemUpgradeCheckResult);
@@ -80,7 +112,31 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         if (isNeedSaveTerminalBasicInfo) {
             basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
         }
-        responseToShine(request, versionResult, systemUpgradeCheckResult);
+        responseToShine(request, terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
+    }
+
+    // TODO 代码待重构
+    private boolean processTerminalAuth(Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo, CbbTerminalBizConfigDTO bizConfigDTO, TerminalVersionResultDTO versionResult, SystemUpgradeCheckResult systemUpgradeCheckResult) {
+
+        CbbTerminalWorkModeEnums[] workModeArr = bizConfigDTO.getTerminalWorkModeArr();
+        if (ArrayUtils.isEmpty(workModeArr)) {
+            LOGGER.info("终端工作模式为空，跳过授权");
+            return true;
+        }
+
+        for (CbbTerminalWorkModeEnums workMode : workModeArr) {
+            if (workMode == CbbTerminalWorkModeEnums.IDV) {
+                LOGGER.info("工作模式包含IDV，进行IDV授权");
+                return processIdvTerminalLicense(basicInfo, isNewConnection, versionResult, systemUpgradeCheckResult);
+            }
+
+            if (workMode == CbbTerminalWorkModeEnums.VOI) {
+                // TODO VOI授权暂未确定
+                return true;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -126,9 +182,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return false;
     }
 
-    private void responseToShine(CbbDispatcherRequest request, TerminalVersionResultDTO versionResult,
-        SystemUpgradeCheckResult systemUpgradeCheckResult) {
-        TerminalUpgradeResult terminalUpgradeResult = buildTerminalUpgradeResult(versionResult, systemUpgradeCheckResult);
+    private void responseToShine(CbbDispatcherRequest request, CbbTerminalBizConfigDTO terminalBizConfigDTO, TerminalVersionResultDTO versionResult,
+                                 SystemUpgradeCheckResult systemUpgradeCheckResult) {
+        TerminalUpgradeResult terminalUpgradeResult = buildTerminalUpgradeResult(terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
         try {
             CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, terminalUpgradeResult);
 
@@ -161,17 +217,20 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return terminalType == CbbTerminalTypeEnums.IDV_LINUX;
     }
 
-    private TerminalUpgradeResult buildTerminalUpgradeResult(TerminalVersionResultDTO versionResult,
-            SystemUpgradeCheckResult systemUpgradeCheckResult) {
+    private TerminalUpgradeResult buildTerminalUpgradeResult(CbbTerminalBizConfigDTO terminalBizConfig, TerminalVersionResultDTO versionResult, SystemUpgradeCheckResult systemUpgradeCheckResult) {
         TerminalUpgradeResult upgradeResult = new TerminalUpgradeResult();
         upgradeResult.setResult(versionResult.getResult());
         upgradeResult.setUpdatelist(versionResult.getUpdatelist());
         upgradeResult.setSystemUpgradeCode(systemUpgradeCheckResult.getSystemUpgradeCode());
         upgradeResult.setSystemUpgradeInfo(systemUpgradeCheckResult.getContent());
+        upgradeResult.setTerminalWorkModeArr(terminalBizConfig.getTerminalWorkModeArr());
         return upgradeResult;
     }
 
-    private SystemUpgradeCheckResult getSystemUpgradeCheckResult(TerminalEntity terminalEntity, CbbTerminalTypeEnums terminalType) {
+    private SystemUpgradeCheckResult getSystemUpgradeCheckResult(TerminalEntity terminalEntity, CbbTerminalBizConfigDTO terminalBizConfig) {
+
+        CbbTerminalTypeEnums terminalType = obtainSystemUpgradeTerminalType(terminalBizConfig.getTerminalWorkModeArr(), terminalEntity.getTerminalOsType());
+
         SystemUpgradeCheckResult systemUpgradeCheckResult;
         try {
             TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
@@ -185,6 +244,16 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         }
 
         return systemUpgradeCheckResult;
+    }
+
+    private CbbTerminalTypeEnums obtainSystemUpgradeTerminalType(CbbTerminalWorkModeEnums[] terminalWorkModeArr, String osType) {
+        // 只有VDI能力时返回VDI升级包类型，否则返回IDV升级包类型
+        if (terminalWorkModeArr.length == 1 && terminalWorkModeArr[0] == CbbTerminalWorkModeEnums.VDI) {
+            LOGGER.info("获取终端系统升级包类型， platform: {}, osType : {}", CbbTerminalPlatformEnums.VDI.name(), osType);
+            return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.VDI.name(), osType);
+        }
+
+        return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
     }
 
     private CbbShineTerminalBasicInfo convertJsondata(CbbDispatcherRequest request) {

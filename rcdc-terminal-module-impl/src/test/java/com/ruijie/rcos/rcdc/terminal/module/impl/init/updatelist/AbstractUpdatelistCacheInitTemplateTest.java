@@ -273,7 +273,7 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         }
 
         @Override
-        protected CbbTerminalTypeEnums getTerminalType() {
+        protected CbbTerminalTypeEnums getTerminalOsType() {
             return CbbTerminalTypeEnums.APP_WINDOWS;
         }
     }

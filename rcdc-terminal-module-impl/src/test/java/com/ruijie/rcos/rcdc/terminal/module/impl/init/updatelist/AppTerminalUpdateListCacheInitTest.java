@@ -43,7 +43,7 @@ public class AppTerminalUpdateListCacheInitTest {
     public void testGetTerminalType() {
         AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
         AppTerminalUpdateListCacheInit cacheInit2 = new AppTerminalUpdateListCacheInit();
-        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
+        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalOsType();
         Assert.assertEquals(CbbTerminalTypeEnums.APP_WINDOWS, terminalType);
     }
 

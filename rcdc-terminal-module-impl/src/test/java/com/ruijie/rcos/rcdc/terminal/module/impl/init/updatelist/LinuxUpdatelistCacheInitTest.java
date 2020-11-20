@@ -21,10 +21,10 @@ import mockit.Tested;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
-public class LinuxVDIUpdatelistCacheInitTest {
+public class LinuxUpdatelistCacheInitTest {
 
     @Tested
-    private LinuxVDIUpdatelistCacheInit cacheInit;
+    private LinuxUpdatelistCacheInit cacheInit;
 
     /**
      * testGetUpdateListPath
@@ -40,7 +40,7 @@ public class LinuxVDIUpdatelistCacheInitTest {
      */
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
+        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalOsType();
         Assert.assertEquals(CbbTerminalTypeEnums.VDI_LINUX, terminalType);
     }
 

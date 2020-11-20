@@ -27,7 +27,7 @@ public class WinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = handler.getTerminalType();
+        CbbTerminalTypeEnums terminalType = handler.getTerminalOsType();
         Assert.assertEquals(CbbTerminalTypeEnums.APP_WINDOWS, terminalType);
     }
 

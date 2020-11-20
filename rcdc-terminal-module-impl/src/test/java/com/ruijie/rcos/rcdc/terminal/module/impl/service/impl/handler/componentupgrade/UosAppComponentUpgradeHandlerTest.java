@@ -26,7 +26,7 @@ public class UosAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = handler.getTerminalType();
+        CbbTerminalTypeEnums terminalType = handler.getTerminalOsType();
         Assert.assertEquals(CbbTerminalTypeEnums.APP_UOS, terminalType);
     }
 

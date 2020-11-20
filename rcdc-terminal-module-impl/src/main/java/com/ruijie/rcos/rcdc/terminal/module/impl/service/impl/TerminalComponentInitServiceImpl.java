@@ -5,9 +5,8 @@ import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidVDIUpdatelistCacheInit;
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxIDVUpdatelistCacheInit;
-import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxVDIUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentInitService;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.env.Enviroment;
@@ -62,10 +61,10 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
     private GlobalParameterAPI globalParameterAPI;
 
     @Autowired
-    private LinuxVDIUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
+    private LinuxUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
 
     @Autowired
-    private AndroidVDIUpdatelistCacheInit androidVDIUpdatelistCacheInit;
+    private AndroidUpdatelistCacheInit androidVDIUpdatelistCacheInit;
 
     @Autowired
     private LinuxIDVUpdatelistCacheInit linuxIDVUpdatelistCacheInit;

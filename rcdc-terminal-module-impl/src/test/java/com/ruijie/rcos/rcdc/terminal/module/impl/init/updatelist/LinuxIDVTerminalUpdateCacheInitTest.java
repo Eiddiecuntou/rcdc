@@ -29,7 +29,7 @@ public class LinuxIDVTerminalUpdateCacheInitTest {
 
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
+        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalOsType();
         Assert.assertEquals(CbbTerminalTypeEnums.IDV_LINUX, terminalType);
     }
 

@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.AndroidVDIComponentUpgradeHandler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,11 +21,11 @@ import mockit.Tested;
 public class AndroidVDIComponentUpgradeHandlerTest {
 
     @Tested
-    private AndroidVDIComponentUpgradeHandler handler;
+    private AndroidComponentUpgradeHandler handler;
 
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = handler.getTerminalType();
+        CbbTerminalTypeEnums terminalType = handler.getTerminalOsType();
         Assert.assertEquals(CbbTerminalTypeEnums.VDI_ANDROID, terminalType);
     }
 }

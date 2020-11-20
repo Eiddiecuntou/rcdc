@@ -49,7 +49,6 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
             return buildUnSupportResult();
         }
 
-
         GetVersionDTO versionRequest = new GetVersionDTO();
         versionRequest.setTerminalId(terminalEntity.getTerminalId());
         versionRequest.setRainUpgradeVersion(terminalEntity.getRainUpgradeVersion());

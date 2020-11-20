@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
 import org.springframework.stereotype.Service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -16,12 +16,12 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
  * @author nt
  */
 @Service
-public class LinuxVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CommonUpdateListDTO> {
+public class LinuxUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CommonUpdateListDTO> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDIUpdatelistCacheInit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxUpdatelistCacheInit.class);
 
     private static final String UPDATE_LIST_PATH =
-            "/opt/upgrade/app/terminal_component/terminal_vdi_linux/origin/update.list";
+            "/opt/upgrade/app/terminal_component/terminal_linux/origin/update.list";
 
     @Override
     protected String getUpdateListPath() {
@@ -35,8 +35,8 @@ public class LinuxVDIUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemp
     }
 
     @Override
-    protected CbbTerminalTypeEnums getTerminalType() {
-        return CbbTerminalTypeEnums.VDI_LINUX;
+    protected CbbTerminalOsTypeEnums getTerminalOsType() {
+        return CbbTerminalOsTypeEnums.LINUX;
     }
 
 }

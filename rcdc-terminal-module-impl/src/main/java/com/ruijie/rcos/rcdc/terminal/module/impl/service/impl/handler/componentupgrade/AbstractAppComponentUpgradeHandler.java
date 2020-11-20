@@ -2,7 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.component
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
@@ -23,7 +23,7 @@ import java.util.Collections;
  *
  * @author conghaifeng
  */
-public abstract  class AbstractAppComponentUpgradeHandler extends AbstractTerminalComponentUpgradeHandler {
+public abstract class AbstractAppComponentUpgradeHandler extends AbstractTerminalComponentUpgradeHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAppComponentUpgradeHandler.class);
 
@@ -37,14 +37,14 @@ public abstract  class AbstractAppComponentUpgradeHandler extends AbstractTermin
     public TerminalVersionResultDTO getVersion(GetVersionDTO request) {
         Assert.notNull(request, "get version request can not be null");
 
-        CbbTerminalTypeEnums terminalType = getTerminalType();
-        LOGGER.debug("[{}]软终端请求版本号", terminalType.name());
-        if (!TerminalUpdateListCacheManager.isCacheReady(terminalType)) {
-            LOGGER.debug("[{}]软终端请求版本号服务端未就绪", terminalType.name());
+        CbbTerminalOsTypeEnums osType = getTerminalOsType();
+        LOGGER.debug("[{}]软终端请求版本号", osType.name());
+        if (!TerminalUpdateListCacheManager.isCacheReady(osType)) {
+            LOGGER.debug("[{}]软终端请求版本号服务端未就绪", osType.name());
             return new TerminalVersionResultDTO<>(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), new AppUpdateListDTO());
         }
 
-        AppUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(terminalType);
+        AppUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(osType);
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist不存在或updatelist中组件信息不存在，返回服务器异常响应");
@@ -106,6 +106,6 @@ public abstract  class AbstractAppComponentUpgradeHandler extends AbstractTermin
      *
      * @return 终端类型
      */
-    protected abstract CbbTerminalTypeEnums getTerminalType();
+    protected abstract CbbTerminalOsTypeEnums getTerminalOsType();
 
 }
