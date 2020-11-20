@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetCardInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetCardMacInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
@@ -185,19 +185,19 @@ public class TerminalEntity {
      * @return CbbTerminalNetCardInfoDTO[]
      * @throws BusinessException 业务异常
      */
-    public CbbTerminalNetCardInfoDTO[] getNetCardInfoArr() throws BusinessException {
+    public CbbTerminalNetCardMacInfoDTO[] getNetCardInfoArr() throws BusinessException {
         if (StringUtils.isBlank(allNetCardMacInfo)) {
-            return new CbbTerminalNetCardInfoDTO[0];
+            return new CbbTerminalNetCardMacInfoDTO[0];
         }
 
-        List<CbbTerminalNetCardInfoDTO> netCardInfoDTOList;
+        List<CbbTerminalNetCardMacInfoDTO> netCardInfoDTOList;
         try {
-            netCardInfoDTOList = JSON.parseArray(allNetCardMacInfo, CbbTerminalNetCardInfoDTO.class);
+            netCardInfoDTOList = JSON.parseArray(allNetCardMacInfo, CbbTerminalNetCardMacInfoDTO.class);
         } catch (Exception e) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NET_CARD_INFO_ERROR, e);
         }
 
-        return netCardInfoDTOList.toArray(new CbbTerminalNetCardInfoDTO[netCardInfoDTOList.size()]);
+        return netCardInfoDTOList.toArray(new CbbTerminalNetCardMacInfoDTO[netCardInfoDTOList.size()]);
     }
 
     /**

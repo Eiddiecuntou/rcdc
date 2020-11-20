@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
-import static org.junit.Assert.*;
-
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.GetSetTester;
 import org.junit.Assert;
@@ -17,14 +15,14 @@ import org.junit.runner.RunWith;
  * @author zhouhuan
  */
 @RunWith(SkyEngineRunner.class)
-public class CbbTerminalNetCardInfoDTOTest {
+public class CbbTerminalNetCardMacInfoDTOTest {
 
     /**
      * 测试get、set方法
      */
     @Test
     public void testGetAndSet() {
-        GetSetTester tester = new GetSetTester(CbbTerminalNetCardInfoDTO.class);
+        GetSetTester tester = new GetSetTester(CbbTerminalNetCardMacInfoDTO.class);
         tester.runTest();
         Assert.assertTrue(true);
     }

@@ -84,7 +84,7 @@ public class CbbTerminalBasicInfoDTO {
 
     private CbbTerminalDiskInfoDTO[] diskInfoArr;
 
-    private CbbTerminalNetCardInfoDTO[] netCardInfoArr;
+    private CbbTerminalNetCardMacInfoDTO[] netCardInfoArr;
 
     private Integer wirelessNetCardNum;
 
@@ -350,11 +350,11 @@ public class CbbTerminalBasicInfoDTO {
         this.ethernetNetCardNum = ethernetNetCardNum;
     }
 
-    public CbbTerminalNetCardInfoDTO[] getNetCardInfoArr() {
+    public CbbTerminalNetCardMacInfoDTO[] getNetCardInfoArr() {
         return netCardInfoArr;
     }
 
-    public void setNetCardInfoArr(CbbTerminalNetCardInfoDTO[] netCardInfoArr) {
+    public void setNetCardInfoArr(CbbTerminalNetCardMacInfoDTO[] netCardInfoArr) {
         this.netCardInfoArr = netCardInfoArr;
     }
 }

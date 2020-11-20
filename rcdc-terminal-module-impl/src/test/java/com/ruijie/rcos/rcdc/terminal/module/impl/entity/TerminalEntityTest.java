@@ -6,7 +6,7 @@ import static org.junit.Assert.fail;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetCardInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetCardMacInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -137,7 +137,7 @@ public class TerminalEntityTest {
         entity.setAllNetCardMacInfo("[{\"iface\":\"eth0\", \"mac-address\":\"eth0mac\"},{\"iface\":\"wlan0\", "
             + "\"mac-address\":\"wlan0mac\"}]");
         try {
-            CbbTerminalNetCardInfoDTO[] netCardInfoArr = entity.getNetCardInfoArr();
+            CbbTerminalNetCardMacInfoDTO[] netCardInfoArr = entity.getNetCardInfoArr();
             Assert.assertTrue(netCardInfoArr.length == 2);
             Assert.assertTrue(netCardInfoArr[1].getMacAddress().equals("wlan0mac"));
         } catch (BusinessException e) {
@@ -167,7 +167,7 @@ public class TerminalEntityTest {
         TerminalEntity entity = new TerminalEntity();
         entity.setAllNetCardMacInfo("");
         try {
-            CbbTerminalNetCardInfoDTO[] netCardInfoArr = entity.getNetCardInfoArr();
+            CbbTerminalNetCardMacInfoDTO[] netCardInfoArr = entity.getNetCardInfoArr();
             Assert.assertTrue(netCardInfoArr.length == 0);
         } catch (BusinessException e) {
             Assert.fail();

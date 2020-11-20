@@ -10,7 +10,7 @@ import com.alibaba.fastjson.annotation.JSONField;
  *
  * @author zhouhuan
  */
-public class CbbTerminalNetCardInfoDTO {
+public class CbbTerminalNetCardMacInfoDTO {
 
     private String iface;
 
