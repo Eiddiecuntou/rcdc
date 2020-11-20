@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Description:
+ * Description: TerminalEntity测试类
  * Copyright: Copyright (c) 2020
  * Company: Ruijie Co., Ltd.
  * Create Time: 2020/9/15 1:43 下午
