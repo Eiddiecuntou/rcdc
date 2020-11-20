@@ -35,7 +35,7 @@ public class TerminalEntityTest {
         GetSetTester tester = new GetSetTester(TerminalEntity.class);
         tester.addIgnoreProperty("networkInfoArr");
         tester.addIgnoreProperty("diskInfoArr");
-        tester.addIgnoreProperty("netCardInfoArr");
+        tester.addIgnoreProperty("netCardMacInfoArr");
         tester.runTest();
         Assert.assertTrue(true);
     }
@@ -129,15 +129,15 @@ public class TerminalEntityTest {
     }
 
     /**
-     * 测试getNetCardInfoArr方法
+     * 测试getNetCardMacInfoArr方法
      */
     @Test
-    public void testGetNetCardInfoArr() {
+    public void testGetNetCardMacInfoArr() {
         TerminalEntity entity = new TerminalEntity();
         entity.setAllNetCardMacInfo("[{\"iface\":\"eth0\", \"mac-address\":\"eth0mac\"},{\"iface\":\"wlan0\", "
             + "\"mac-address\":\"wlan0mac\"}]");
         try {
-            CbbTerminalNetCardMacInfoDTO[] netCardInfoArr = entity.getNetCardInfoArr();
+            CbbTerminalNetCardMacInfoDTO[] netCardInfoArr = entity.getNetCardMacInfoArr();
             Assert.assertTrue(netCardInfoArr.length == 2);
             Assert.assertTrue(netCardInfoArr[1].getMacAddress().equals("wlan0mac"));
         } catch (BusinessException e) {
@@ -146,28 +146,28 @@ public class TerminalEntityTest {
     }
 
     /**
-     * 测试getNetCardInfoArr方法异常情况
+     * 测试getNetCardMacInfoArr方法异常情况
      */
     @Test
-    public void testGetNetCardInfoArrException() {
+    public void testGetNetCardMacInfoArrException() {
         TerminalEntity entity = new TerminalEntity();
         entity.setAllNetCardMacInfo("{}");
         try {
-            entity.getNetCardInfoArr();
+            entity.getNetCardMacInfoArr();
         } catch (BusinessException e) {
            Assert.assertTrue(e.getKey().equals(BusinessKey.RCDC_TERMINAL_NET_CARD_INFO_ERROR));
         }
     }
 
     /**
-     * 测试getNetCardInfoArr方法，allNetCardMacInfo为空情况
+     * 测试getNetCardMacInfoArr方法，allNetCardMacInfo为空情况
      */
     @Test
-    public void testGetNetCardInfoArrAllNetCardMacInfoIsBlank() {
+    public void testGetNetCardMacInfoArrAllNetCardMacInfoIsBlank() {
         TerminalEntity entity = new TerminalEntity();
         entity.setAllNetCardMacInfo("");
         try {
-            CbbTerminalNetCardMacInfoDTO[] netCardInfoArr = entity.getNetCardInfoArr();
+            CbbTerminalNetCardMacInfoDTO[] netCardInfoArr = entity.getNetCardMacInfoArr();
             Assert.assertTrue(netCardInfoArr.length == 0);
         } catch (BusinessException e) {
             Assert.fail();

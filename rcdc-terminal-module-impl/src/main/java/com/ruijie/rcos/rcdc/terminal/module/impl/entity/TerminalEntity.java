@@ -185,7 +185,7 @@ public class TerminalEntity {
      * @return CbbTerminalNetCardInfoDTO[]
      * @throws BusinessException 业务异常
      */
-    public CbbTerminalNetCardMacInfoDTO[] getNetCardInfoArr() throws BusinessException {
+    public CbbTerminalNetCardMacInfoDTO[] getNetCardMacInfoArr() throws BusinessException {
         if (StringUtils.isBlank(allNetCardMacInfo)) {
             return new CbbTerminalNetCardMacInfoDTO[0];
         }

@@ -68,7 +68,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         basicInfoDTO.setTerminalPlatform(basicInfoEntity.getPlatform());
         basicInfoDTO.setNetworkInfoArr(basicInfoEntity.getNetworkInfoArr());
         basicInfoDTO.setDiskInfoArr(basicInfoEntity.getDiskInfoArr());
-        basicInfoDTO.setNetCardMacInfoArr(basicInfoEntity.getNetCardInfoArr());
+        basicInfoDTO.setNetCardMacInfoArr(basicInfoEntity.getNetCardMacInfoArr());
         return basicInfoDTO;
     }
 
