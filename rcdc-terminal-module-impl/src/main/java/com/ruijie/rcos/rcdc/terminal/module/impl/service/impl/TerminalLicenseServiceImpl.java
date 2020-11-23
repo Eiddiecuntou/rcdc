@@ -61,10 +61,12 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
 
     @Override
     public Integer getIDVUsedNum() {
-        // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，不会维护已授权数目，所以需要从数据库同步数据
-        if (usedNum == null || getIDVTerminalLicenseNum() == -1) {
-            usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
-            LOGGER.info("从数据库同步idv授权usedNum值为:{}", usedNum);
+        synchronized (usedNumLock) {
+            // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，不会维护已授权数目，所以需要从数据库同步数据
+            if (usedNum == null || getIDVTerminalLicenseNum() == -1) {
+                usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+                LOGGER.info("从数据库同步idv授权usedNum值为:{}", usedNum);
+            }
         }
         return usedNum;
     }
