@@ -124,6 +124,9 @@ public class CbbShineTerminalBasicInfo {
     @Nullable
     private Boolean enableProxy;
 
+    @Nullable
+    private String allNetCardMacInfo;
+
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
@@ -390,5 +393,14 @@ public class CbbShineTerminalBasicInfo {
 
     public void setEnableProxy(@Nullable Boolean enableProxy) {
         this.enableProxy = enableProxy;
+    }
+
+    @Nullable
+    public String getAllNetCardMacInfo() {
+        return allNetCardMacInfo;
+    }
+
+    public void setAllNetCardMacInfo(@Nullable String allNetCardMacInfo) {
+        this.allNetCardMacInfo = allNetCardMacInfo;
     }
 }
