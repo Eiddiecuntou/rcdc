@@ -112,7 +112,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         for (CommonComponentVersionInfoDTO componentInfo : componentList) {
             componentInfo.setIncrementalPackageMd5(null);
             componentInfo.setIncrementalPackageName(null);
-            componentInfo.setIncrementalPackageRelatePath(null);
+            componentInfo.setIncrementalPackageRelativePath(null);
             componentInfo.setIncrementalTorrentMd5(null);
             componentInfo.setIncrementalTorrentUrl(null);
             componentInfo.setBasePackageName(null);

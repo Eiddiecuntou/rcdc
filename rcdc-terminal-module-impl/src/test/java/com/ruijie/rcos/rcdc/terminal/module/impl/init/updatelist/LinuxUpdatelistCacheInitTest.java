@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import static org.junit.Assert.assertTrue;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class LinuxUpdatelistCacheInitTest {
     @Test
     public void testGetUpdateListPath() {
         String updateListPath = cacheInit.getUpdateListPath();
-        Assert.assertEquals("/opt/upgrade/app/terminal_component/terminal_vdi_linux/origin/update.list", updateListPath);
+        Assert.assertEquals("/opt/upgrade/app/terminal_component/terminal_linux/origin/update.list", updateListPath);
     }
 
     /**
@@ -40,8 +41,8 @@ public class LinuxUpdatelistCacheInitTest {
      */
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalOsType();
-        Assert.assertEquals(CbbTerminalTypeEnums.VDI_LINUX, terminalType);
+        CbbTerminalOsTypeEnums osType = cacheInit.getTerminalOsType();
+        Assert.assertEquals(CbbTerminalOsTypeEnums.LINUX, osType);
     }
 
     /**

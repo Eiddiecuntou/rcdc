@@ -18,6 +18,8 @@ public enum CbbTerminalOsTypeEnums {
 
     UOS,
 
-    NEOKYLIN
+    NEOKYLIN,
+
+    OTHER
 
 }

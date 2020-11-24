@@ -29,10 +29,6 @@ public class CommonUpdateListDTO extends BaseUpdateListDTO<CommonComponentVersio
      */
     private String componentPackageDirTorrentMd5;
 
-    /**
-     * 组件升级包目录md5
-     */
-    private String componentPackageDirMd5;
 
     public String getBaseVersion() {
         return baseVersion;
@@ -74,11 +70,4 @@ public class CommonUpdateListDTO extends BaseUpdateListDTO<CommonComponentVersio
         this.componentPackageDirTorrentMd5 = componentPackageDirTorrentMd5;
     }
 
-    public String getComponentPackageDirMd5() {
-        return componentPackageDirMd5;
-    }
-
-    public void setComponentPackageDirMd5(String componentPackageDirMd5) {
-        this.componentPackageDirMd5 = componentPackageDirMd5;
-    }
 }

@@ -61,13 +61,10 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
     private GlobalParameterAPI globalParameterAPI;
 
     @Autowired
-    private LinuxUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
+    private LinuxUpdatelistCacheInit linuxUpdatelistCacheInit;
 
     @Autowired
-    private AndroidUpdatelistCacheInit androidVDIUpdatelistCacheInit;
-
-    @Autowired
-    private LinuxIDVUpdatelistCacheInit linuxIDVUpdatelistCacheInit;
+    private AndroidUpdatelistCacheInit androidUpdatelistCacheInit;
 
     @Autowired
     private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
@@ -243,15 +240,11 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
         // 更新缓存中的updatelist
         if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
             LOGGER.info("init linux VDI updatelist cache");
-            linuxVDIUpdatelistCacheInit.init();
+            linuxUpdatelistCacheInit.init();
         }
         if (terminalType == CbbTerminalTypeEnums.VDI_ANDROID) {
             LOGGER.info("init android VDI updatelist cache");
-            androidVDIUpdatelistCacheInit.init();
-        }
-        if (terminalType == CbbTerminalTypeEnums.IDV_LINUX) {
-            LOGGER.info("init linux IDV updatelist cache");
-            linuxIDVUpdatelistCacheInit.init();
+            androidUpdatelistCacheInit.init();
         }
     }
 

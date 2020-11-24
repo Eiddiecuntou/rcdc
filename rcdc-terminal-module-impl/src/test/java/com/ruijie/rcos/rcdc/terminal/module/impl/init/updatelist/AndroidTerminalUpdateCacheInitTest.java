@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import mockit.Tested;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author XiaoJiaXin
  */
-public class AndroidVDITerminalUpdateCacheInitTest {
+public class AndroidTerminalUpdateCacheInitTest {
 
     @Tested
     private AndroidUpdatelistCacheInit cacheInit;
@@ -24,13 +24,13 @@ public class AndroidVDITerminalUpdateCacheInitTest {
     @Test
     public void testGetUpdateListPath() {
         String updateListPath = cacheInit.getUpdateListPath();
-        Assert.assertEquals("/opt/upgrade/app/terminal_component/terminal_vdi_android/origin/update.list", updateListPath);
+        Assert.assertEquals("/opt/upgrade/app/terminal_component/terminal_android/origin/update.list", updateListPath);
     }
 
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalOsType();
-        Assert.assertEquals(CbbTerminalTypeEnums.VDI_ANDROID, terminalType);
+        CbbTerminalOsTypeEnums osType = cacheInit.getTerminalOsType();
+        Assert.assertEquals(CbbTerminalOsTypeEnums.ANDROID, osType);
     }
 
     @Test

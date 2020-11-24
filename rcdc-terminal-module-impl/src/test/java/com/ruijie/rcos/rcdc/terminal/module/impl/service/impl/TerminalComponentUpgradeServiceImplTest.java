@@ -1,8 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
@@ -22,12 +23,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * 
  * Description: Function Description
  * Copyright: Copyright (c) 2019
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年1月23日
- * 
+ *
  * @author ls
  */
 @RunWith(JMockit.class)
@@ -41,7 +41,7 @@ public class TerminalComponentUpgradeServiceImplTest {
 
     /**
      * 测试getVersion,参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -50,7 +50,7 @@ public class TerminalComponentUpgradeServiceImplTest {
                 "terminalEntity can not be null");
         TerminalEntity terminalEntity1 = new TerminalEntity();
         ThrowExceptionTester.throwIllegalArgumentException(() -> serviceImpl.getVersion(terminalEntity1, null),
-                "platform can not be null");
+                "osType can not be null");
         assertTrue(true);
     }
 
@@ -71,7 +71,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         TerminalComponentUpgradeHandler handler = new LinuxComponentUpgradeHandler();
         new Expectations() {
             {
-                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                handlerFactory.getHandler((CbbTerminalOsTypeEnums) any);
                 result = handler;
             }
         };
@@ -94,7 +94,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals("sss", versionDTO.getUpdatelist());
         new Verifications() {
             {
-                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                handlerFactory.getHandler((CbbTerminalOsTypeEnums) any);
                 times = 1;
             }
         };
@@ -117,7 +117,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         TerminalComponentUpgradeHandler handler = new LinuxComponentUpgradeHandler();
         new Expectations() {
             {
-                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                handlerFactory.getHandler((CbbTerminalOsTypeEnums) any);
                 result = new BusinessException("key");
             }
         };
@@ -127,7 +127,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals(1, versionDTO.getResult().intValue());
         new Verifications() {
             {
-                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                handlerFactory.getHandler((CbbTerminalOsTypeEnums) any);
                 times = 1;
             }
         };

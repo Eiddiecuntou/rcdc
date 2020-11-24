@@ -32,9 +32,8 @@ public class TerminalComponentUpgradeHandlerFactory {
         upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.LINUX, new LinuxComponentUpgradeHandler());
         upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.WINDOWS, new WinAppComponentUpgradeHandler());
         upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.ANDROID, new AndroidComponentUpgradeHandler());
-        upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.UOS, new LinuxComponentUpgradeHandler());
-        upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.NEOKYLIN, new UosAppComponentUpgradeHandler());
-//        upgradeHandlerHolder.put(CbbTerminalTypeEnums.APP_NEOKYLIN, new NeoKylinAppComponentUpgradeHandler());
+        upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.UOS, new UosAppComponentUpgradeHandler());
+        upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.NEOKYLIN, new NeoKylinAppComponentUpgradeHandler());
         LOGGER.info("=======================完成注册终端组件升级处理器=================");
     }
 

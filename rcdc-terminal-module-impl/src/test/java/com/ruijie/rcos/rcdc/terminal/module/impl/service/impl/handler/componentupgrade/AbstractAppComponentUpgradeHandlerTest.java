@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.component
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
@@ -40,9 +39,9 @@ public class AbstractAppComponentUpgradeHandlerTest {
 
         new Expectations(TerminalUpdateListCacheManager.class) {
             {
-                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalOsTypeEnums) any);
                 result = true;
-                TerminalUpdateListCacheManager.get((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.get((CbbTerminalOsTypeEnums) any);
                 result = updatelist;
             }
         };
@@ -68,9 +67,9 @@ public class AbstractAppComponentUpgradeHandlerTest {
 
         new Expectations(TerminalUpdateListCacheManager.class) {
             {
-                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalOsTypeEnums) any);
                 result = true;
-                TerminalUpdateListCacheManager.get((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.get((CbbTerminalOsTypeEnums) any);
                 result = updatelist;
             }
         };
@@ -96,9 +95,9 @@ public class AbstractAppComponentUpgradeHandlerTest {
 
         new Expectations(TerminalUpdateListCacheManager.class) {
             {
-                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalOsTypeEnums) any);
                 result = true;
-                TerminalUpdateListCacheManager.get((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.get((CbbTerminalOsTypeEnums) any);
                 result = updatelist;
             }
         };
@@ -125,9 +124,9 @@ public class AbstractAppComponentUpgradeHandlerTest {
 
         new Expectations(TerminalUpdateListCacheManager.class) {
             {
-                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalOsTypeEnums) any);
                 result = true;
-                TerminalUpdateListCacheManager.get((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.get((CbbTerminalOsTypeEnums) any);
                 result = updatelist;
             }
         };
@@ -154,9 +153,9 @@ public class AbstractAppComponentUpgradeHandlerTest {
 
         new Expectations(TerminalUpdateListCacheManager.class) {
             {
-                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.isCacheReady((CbbTerminalOsTypeEnums) any);
                 result = true;
-                TerminalUpdateListCacheManager.get((CbbTerminalTypeEnums) any);
+                TerminalUpdateListCacheManager.get((CbbTerminalOsTypeEnums) any);
                 result = updatelist;
             }
         };

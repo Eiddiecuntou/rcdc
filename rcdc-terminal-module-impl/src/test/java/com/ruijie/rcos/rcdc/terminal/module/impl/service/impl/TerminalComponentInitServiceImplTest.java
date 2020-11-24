@@ -40,19 +40,16 @@ public class TerminalComponentInitServiceImplTest {
     private GlobalParameterAPI globalParameterAPI;
 
     @Injectable
-    private LinuxUpdatelistCacheInit linuxVDIUpdatelistCacheInit;
+    private LinuxUpdatelistCacheInit linuxUpdatelistCacheInit;
 
     @Injectable
-    private AndroidUpdatelistCacheInit androidVDIUpdatelistCacheInit;
+    private AndroidUpdatelistCacheInit androidUpdatelistCacheInit;
 
     @Mocked
     private ShellCommandRunner runner;
 
     @Injectable
     private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
-
-    @Injectable
-    private LinuxIDVUpdatelistCacheInit linuxIDVUpdatelistCacheInit;
 
     @Before
     public void before() {
@@ -234,7 +231,7 @@ public class TerminalComponentInitServiceImplTest {
                 times = 0;
                 runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateAndroidVDI.py", "172.12.22.45"));
                 times = 0;
-                androidVDIUpdatelistCacheInit.init();
+                androidUpdatelistCacheInit.init();
                 times = 1;
 
             }
@@ -317,11 +314,9 @@ public class TerminalComponentInitServiceImplTest {
 
                 runner.execute((TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver) any);
                 times = 1;
-                linuxVDIUpdatelistCacheInit.init();
+                linuxUpdatelistCacheInit.init();
                 times = 0;
-                androidVDIUpdatelistCacheInit.init();
-                times = 0;
-                linuxIDVUpdatelistCacheInit.init();
+                androidUpdatelistCacheInit.init();
                 times = 0;
             }
         };
@@ -358,7 +353,7 @@ public class TerminalComponentInitServiceImplTest {
                 times = 1;
                 runner.execute((TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver) any);
                 times = 1;
-                linuxVDIUpdatelistCacheInit.init();
+                linuxUpdatelistCacheInit.init();
                 times = 0;
             }
         };
@@ -420,11 +415,9 @@ public class TerminalComponentInitServiceImplTest {
 
         new Verifications() {
             {
-                linuxVDIUpdatelistCacheInit.init();
+                linuxUpdatelistCacheInit.init();
                 times = 1;
-                androidVDIUpdatelistCacheInit.init();
-                times = 1;
-                linuxIDVUpdatelistCacheInit.init();
+                androidUpdatelistCacheInit.init();
                 times = 1;
             }
         };

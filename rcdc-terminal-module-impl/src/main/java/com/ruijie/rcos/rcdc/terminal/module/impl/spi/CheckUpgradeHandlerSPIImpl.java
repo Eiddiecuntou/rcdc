@@ -35,8 +35,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import java.util.stream.Stream;
-
 /**
  * Description: 终端检查升级，同时需要保存终端基本信息
  * Copyright: Copyright (c) 2018
@@ -95,19 +93,14 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         // 保存终端基本信息
         String terminalId = request.getTerminalId();
         TerminalEntity terminalEntity = basicInfoService.convertBasicInfo2TerminalEntity(terminalId, request.getNewConnection(),
-            basicInfo);
+                basicInfo);
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-//        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
-
         TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
 
         SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalBizConfigDTO);
 
-        processTerminalAuth(request.getNewConnection(), basicInfo, terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
-
-        boolean isNeedSaveTerminalBasicInfo = processIdvTerminalLicense(basicInfo, request.getNewConnection(),
-            versionResult, systemUpgradeCheckResult);
+        boolean isNeedSaveTerminalBasicInfo = processTerminalAuth(request.getNewConnection(), basicInfo, terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
 
         if (isNeedSaveTerminalBasicInfo) {
             basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
@@ -141,16 +134,17 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     /**
      * idv终端授权处理。idv新终端接入并且idv授权个数有限制的情况下，如果终端没有处于不需要升级状态、或者处于不需要升级状态但授权不足，则不保存终端信息
-     * @param basicInfo shine上报的终端基本信息
-     * @param isNewConnection 是否是新连接
-     * @param versionResult 终端组件升级检查结果
+     *
+     * @param basicInfo                shine上报的终端基本信息
+     * @param isNewConnection          是否是新连接
+     * @param versionResult            终端组件升级检查结果
      * @param systemUpgradeCheckResult 终端系统升级检查结果
      * @return true -需要保存终端信息；false -不需要保存终端信息
      */
     private boolean processIdvTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection,
-        TerminalVersionResultDTO versionResult, SystemUpgradeCheckResult systemUpgradeCheckResult) {
+                                              TerminalVersionResultDTO versionResult, SystemUpgradeCheckResult systemUpgradeCheckResult) {
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(basicInfo.getPlatform().name(),
-            basicInfo.getTerminalOsType());
+                basicInfo.getTerminalOsType());
         String terminalId = basicInfo.getTerminalId();
 
         if (!isNeedAuthTerminal(terminalType)) {
@@ -198,13 +192,14 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private boolean isNeedUpgradeOrAbnormalUpgradeResult(TerminalVersionResultDTO versionResult,
-        SystemUpgradeCheckResult systemUpgradeCheckResult) {
+                                                         SystemUpgradeCheckResult systemUpgradeCheckResult) {
         return versionResult.getResult() != CbbTerminalComponentUpgradeResultEnums.NOT.getResult() ||
-            systemUpgradeCheckResult.getSystemUpgradeCode() != CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult();
+                systemUpgradeCheckResult.getSystemUpgradeCode() != CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult();
     }
 
     /**
      * 判断终端是否有可能需要授权
+     *
      * @param terminalType 终端类型
      * @return true idv终端，并且当前限制IDV终端授权个数（终端可能需要被授权）；false 非idv终端，或者当前不限制IDV终端授权个数
      */

@@ -21,7 +21,7 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
     /**
      * 组件文件相对路径（相对于安装包）
      */
-    private String completePackageNameRelatePath;
+    private String completePackageNameRelativePath;
 
 
     /**
@@ -32,7 +32,7 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
     /**
      * 差异包文件相对路径（相对于安装包）
      */
-    private String incrementalPackageRelatePath;
+    private String incrementalPackageRelativePath;
 
     /**
      * 完整组件文件种子下载路径
@@ -154,19 +154,19 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
         this.basePackageMd5 = basePackageMd5;
     }
 
-    public String getIncrementalPackageRelatePath() {
-        return incrementalPackageRelatePath;
+    public String getCompletePackageNameRelativePath() {
+        return completePackageNameRelativePath;
     }
 
-    public void setIncrementalPackageRelatePath(String incrementalPackageRelatePath) {
-        this.incrementalPackageRelatePath = incrementalPackageRelatePath;
+    public void setCompletePackageNameRelativePath(String completePackageNameRelativePath) {
+        this.completePackageNameRelativePath = completePackageNameRelativePath;
     }
 
-    public String getCompletePackageNameRelatePath() {
-        return completePackageNameRelatePath;
+    public String getIncrementalPackageRelativePath() {
+        return incrementalPackageRelativePath;
     }
 
-    public void setCompletePackageNameRelatePath(String completePackageNameRelatePath) {
-        this.completePackageNameRelatePath = completePackageNameRelatePath;
+    public void setIncrementalPackageRelativePath(String incrementalPackageRelativePath) {
+        this.incrementalPackageRelativePath = incrementalPackageRelativePath;
     }
 }
