@@ -100,7 +100,8 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalBizConfigDTO);
 
-        boolean isNeedSaveTerminalBasicInfo = processTerminalAuth(request.getNewConnection(), basicInfo, terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
+        boolean isNeedSaveTerminalBasicInfo = processTerminalAuth(request.getNewConnection(), basicInfo,
+                terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
 
         if (isNeedSaveTerminalBasicInfo) {
             basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
@@ -109,7 +110,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     // TODO 代码待重构
-    private boolean processTerminalAuth(Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo, CbbTerminalBizConfigDTO bizConfigDTO, TerminalVersionResultDTO versionResult, SystemUpgradeCheckResult systemUpgradeCheckResult) {
+    private boolean processTerminalAuth(Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo,
+                                        CbbTerminalBizConfigDTO bizConfigDTO, TerminalVersionResultDTO versionResult,
+                                        SystemUpgradeCheckResult systemUpgradeCheckResult) {
 
         CbbTerminalWorkModeEnums[] workModeArr = bizConfigDTO.getTerminalWorkModeArr();
         if (ArrayUtils.isEmpty(workModeArr)) {
@@ -212,7 +215,8 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return terminalType == CbbTerminalTypeEnums.IDV_LINUX;
     }
 
-    private TerminalUpgradeResult buildTerminalUpgradeResult(CbbTerminalBizConfigDTO terminalBizConfig, TerminalVersionResultDTO versionResult, SystemUpgradeCheckResult systemUpgradeCheckResult) {
+    private TerminalUpgradeResult buildTerminalUpgradeResult(CbbTerminalBizConfigDTO terminalBizConfig, TerminalVersionResultDTO versionResult,
+                                                             SystemUpgradeCheckResult systemUpgradeCheckResult) {
         TerminalUpgradeResult upgradeResult = new TerminalUpgradeResult();
         upgradeResult.setResult(versionResult.getResult());
         upgradeResult.setUpdatelist(versionResult.getUpdatelist());
@@ -222,9 +226,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return upgradeResult;
     }
 
-    private SystemUpgradeCheckResult getSystemUpgradeCheckResult(TerminalEntity terminalEntity, CbbTerminalBizConfigDTO terminalBizConfig) {
+    private SystemUpgradeCheckResult getSystemUpgradeCheckResult(TerminalEntity terminalEntity, CbbTerminalBizConfigDTO configDTO) {
 
-        CbbTerminalTypeEnums terminalType = obtainSystemUpgradeTerminalType(terminalBizConfig.getTerminalWorkModeArr(), terminalEntity.getTerminalOsType());
+        CbbTerminalTypeEnums terminalType = obtainSystemUpgradeTerminalType(configDTO.getTerminalWorkModeArr(), terminalEntity.getTerminalOsType());
 
         SystemUpgradeCheckResult systemUpgradeCheckResult;
         try {

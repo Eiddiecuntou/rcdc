@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalResetEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 
 /**
  * 
@@ -73,6 +74,8 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
      * 重启标识(NOW/LATER/NOT)
      */
     private CbbTerminalResetEnums restartFlag;
+
+    private CbbTerminalWorkModeEnums[] workModeArr;
 
     public String getCompletePackageName() {
         return completePackageName;
@@ -168,5 +171,13 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
 
     public void setIncrementalPackageRelativePath(String incrementalPackageRelativePath) {
         this.incrementalPackageRelativePath = incrementalPackageRelativePath;
+    }
+
+    public CbbTerminalWorkModeEnums[] getWorkModeArr() {
+        return workModeArr;
+    }
+
+    public void setWorkModeArr(CbbTerminalWorkModeEnums[] workModeArr) {
+        this.workModeArr = workModeArr;
     }
 }

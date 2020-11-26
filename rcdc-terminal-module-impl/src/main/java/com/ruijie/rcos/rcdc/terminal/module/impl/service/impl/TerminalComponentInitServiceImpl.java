@@ -236,6 +236,7 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
         }
     }
 
+    // TODO
     private void updateCache(CbbTerminalTypeEnums terminalType) {
         // 更新缓存中的updatelist
         if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
