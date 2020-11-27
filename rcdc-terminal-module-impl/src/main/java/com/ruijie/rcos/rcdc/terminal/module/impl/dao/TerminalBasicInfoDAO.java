@@ -36,7 +36,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @param authed 终端是否授权
      * @return 符合平台类型、授权情况的终端列表
      */
-    List<TerminalEntity> findTerminalEntityByPlatformAndAuthed(CbbTerminalPlatformEnums platform, Boolean authed);
+    List<TerminalEntity> findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums platform, Boolean authed);
 
     /**
      * 根据terminalId获取terminalName

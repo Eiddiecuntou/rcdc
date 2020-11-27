@@ -41,7 +41,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
         Assert.notNull(updateAuthState, "updateAuthState can not be null");
 
         List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO
-            .findTerminalEntityByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, expectAuthState);
+            .findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, expectAuthState);
         terminalEntityList.stream().forEach(terminalEntity -> {
             int affectedRows = terminalBasicInfoDAO
                 .modifyAuthed(terminalEntity.getTerminalId(), terminalEntity.getVersion(), updateAuthState);

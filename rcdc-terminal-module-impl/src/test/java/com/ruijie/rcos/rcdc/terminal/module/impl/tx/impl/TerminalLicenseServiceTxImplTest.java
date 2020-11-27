@@ -50,7 +50,7 @@ public class TerminalLicenseServiceTxImplTest {
 
         new Expectations() {
             {
-                basicInfoDAO.findTerminalEntityByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = terminalEntityList;
                 basicInfoDAO.modifyAuthed(withEqual("123"), anyInt, Boolean.FALSE);
                 result = 1;
@@ -84,7 +84,7 @@ public class TerminalLicenseServiceTxImplTest {
 
         new Expectations() {
             {
-                basicInfoDAO.findTerminalEntityByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = terminalEntityList;
                 basicInfoDAO.modifyAuthed(withEqual("123"), anyInt, Boolean.FALSE);
                 result = 0;
@@ -120,7 +120,7 @@ public class TerminalLicenseServiceTxImplTest {
 
         new Expectations() {
             {
-                basicInfoDAO.findTerminalEntityByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = terminalEntityList;
                 basicInfoDAO.modifyAuthed(withEqual("123"), anyInt, Boolean.FALSE);
                 result = 0;
