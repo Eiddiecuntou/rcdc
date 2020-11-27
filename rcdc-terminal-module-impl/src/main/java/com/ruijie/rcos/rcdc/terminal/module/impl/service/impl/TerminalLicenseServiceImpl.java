@@ -2,10 +2,13 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
@@ -15,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 /**
- * Description: TerminalService实现类
+ * Description: TerminalLicenseService实现类
  * Copyright: Copyright (c) 2020
  * Company: Ruijie Co., Ltd.
  * Create Time: 2020/9/17 5:35 下午
@@ -41,6 +44,9 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     @Autowired
     private TerminalBasicInfoService basicInfoService;
 
+    @Autowired
+    private TerminalLicenseServiceTx terminalLicenseServiceTx;
+
     private Integer licenseNum;
 
     private Integer usedNum;
@@ -64,7 +70,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
         synchronized (usedNumLock) {
             // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，不会维护已授权数目，所以需要从数据库同步数据
             if (usedNum == null || getIDVTerminalLicenseNum() == -1) {
-                usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+                usedNum = (int) terminalBasicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 LOGGER.info("从数据库同步idv授权usedNum值为:{}", usedNum);
             }
         }
@@ -79,19 +85,46 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
-    public void updateIDVTerminalLicenseNum(Integer licenseNum) {
+    public void updateIDVTerminalLicenseNum(Integer licenseNum) throws BusinessException {
         Assert.notNull(licenseNum, "licenseNum can not be null");
         Assert.isTrue(licenseNum >= TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + TERMINAL_AUTH_DEFAULT_NUM);
 
-        LOGGER.info("licenseNum 更新为 {}", licenseNum);
         synchronized (usedNumLock) {
-            globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
-            if (getIDVTerminalLicenseNum() == -1 && licenseNum != -1) {
-                LOGGER.info("licenseNum为-1时不实时维护usedNum的值，不为-1时实时维护usedNum的值。licenseNum由-1变更为非-1，从数据库同步已授权终端数");
-                this.usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+            if (needUpdateLicenseNum(licenseNum)) {
+                this.licenseNum = licenseNum;
             }
-            this.licenseNum = licenseNum;
         }
+    }
+
+    private boolean needUpdateLicenseNum(Integer licenseNum) throws BusinessException {
+        Integer currentNum = getIDVTerminalLicenseNum();
+        if (currentNum == licenseNum) {
+            LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
+            return false;
+        }
+
+        if (currentNum == TERMINAL_AUTH_DEFAULT_NUM) {
+            LOGGER.info("授权数量-1 -> 非-1场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+            // 将所有IDV终端置为未授权
+            terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(licenseNum, Boolean.TRUE, Boolean.FALSE);
+            this.usedNum = 0;
+
+            return true;
+        }
+        if (licenseNum == TERMINAL_AUTH_DEFAULT_NUM) {
+            LOGGER.info("授权数量非-1 -> -1场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+            terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(licenseNum, Boolean.FALSE, Boolean.TRUE);
+
+            return true;
+        }
+
+        LOGGER.info("当前授权数量和准备更新的授权数量不等，且都不等于-1。当前授权数量为{}, 准备更新授权数量为{}", currentNum, licenseNum);
+        if (currentNum > licenseNum) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ALLOW_REDUCE_TERMINAL_LICENSE_NUM);
+        }
+
+        globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
+        return true;
     }
 
     @Override
@@ -99,7 +132,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
         Assert.hasText(terminalId, "terminalId can not be empty");
         Assert.notNull(basicInfo, "basicInfo can not be null");
         synchronized (usedNumLock) {
-            if (!basicInfoService.isNewTerminal(terminalId)) {
+            if (basicInfoService.isAuthed(terminalId)) {
                 LOGGER.info("终端[{}]已授权成功，无须再次授权", terminalId);
                 return true;
             }

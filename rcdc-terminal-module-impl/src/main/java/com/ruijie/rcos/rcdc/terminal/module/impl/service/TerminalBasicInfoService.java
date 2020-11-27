@@ -29,7 +29,7 @@ public interface TerminalBasicInfoService {
      * @param terminalId 终端id
      * @return true 新终端；false 已接入过的终端
      */
-    boolean  isNewTerminal(String terminalId);
+    boolean isAuthed(String terminalId);
 
     /**
      * 通过shine上报的终端基本信息，构建终端entity

@@ -101,6 +101,8 @@ public class TerminalEntity {
 
     private Date lastOfflineTime;
 
+    private Boolean authed;
+
     @Version
     private Integer version;
 
@@ -521,5 +523,13 @@ public class TerminalEntity {
 
     public void setAllNetCardMacInfo(String allNetCardMacInfo) {
         this.allNetCardMacInfo = allNetCardMacInfo;
+    }
+
+    public Boolean getAuthed() {
+        return authed;
+    }
+
+    public void setAuthed(Boolean authed) {
+        this.authed = authed;
     }
 }

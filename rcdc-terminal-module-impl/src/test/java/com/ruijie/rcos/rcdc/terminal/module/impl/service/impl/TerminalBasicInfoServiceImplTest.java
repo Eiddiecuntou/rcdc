@@ -572,30 +572,45 @@ public class TerminalBasicInfoServiceImplTest {
      * 测试isNewTerminal
      */
     @Test
-    public void test() {
+    public void testIsNewTerminal() {
         try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.isNewTerminal(""), "terminalId can not be empty");
+            ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.isAuthed(""), "terminalId can not be empty");
         } catch (Exception e) {
             Assert.fail();
         }
 
+        // 数据库中不存在终端数据
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
                 result = null;
             }
         };
-        boolean isNewTerminal = basicInfoService.isNewTerminal("123");
-        Assert.assertTrue(isNewTerminal);
+        boolean isAuthed = basicInfoService.isAuthed("123");
+        Assert.assertTrue(!isAuthed);
 
+        // 数据库中存在终端数据，但是未授权
+        TerminalEntity entity = new TerminalEntity();
+        entity.setAuthed(Boolean.FALSE);
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
-                result = new TerminalEntity();
+                result = entity;
             }
         };
-        isNewTerminal = basicInfoService.isNewTerminal("123");
-        Assert.assertTrue(!isNewTerminal);
+        isAuthed = basicInfoService.isAuthed("123");
+        Assert.assertTrue(!isAuthed);
+
+        // 授权成功
+        entity.setAuthed(Boolean.TRUE);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
+                result = entity;
+            }
+        };
+        isAuthed = basicInfoService.isAuthed("123");
+        Assert.assertTrue(isAuthed);
     }
 
     /**

@@ -102,12 +102,12 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             return true;
         }
 
-        if (!basicInfoService.isNewTerminal(terminalId)) {
-            LOGGER.info("终端[{}]{}不是新终端，需要更新终端信息", terminalId, basicInfo.getTerminalName());
+        if (basicInfoService.isAuthed(terminalId)) {
+            LOGGER.info("终端[{}]{}已授权，需要更新终端信息", terminalId, basicInfo.getTerminalName());
             return true;
         }
 
-        LOGGER.info("新终端[{}]{}接入", terminalId, basicInfo.getTerminalName());
+        LOGGER.info("未授权终端[{}]{}接入", terminalId, basicInfo.getTerminalName());
         if (isNeedUpgradeOrAbnormalUpgradeResult(versionResult, systemUpgradeCheckResult)) {
             LOGGER.info("终端升级检查结果为：{}、{}，暂不保存终端信息", versionResult.getResult(), systemUpgradeCheckResult.getSystemUpgradeCode());
             // 终端需要升级，或者异常升级结果（不属于需要升级、不需要升级范畴，如：服务器准备中），不保存终端信息

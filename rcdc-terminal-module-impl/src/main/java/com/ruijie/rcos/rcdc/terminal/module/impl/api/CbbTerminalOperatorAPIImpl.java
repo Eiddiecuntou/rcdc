@@ -17,6 +17,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,8 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         }
 
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
-        if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.IDV) {
+        if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.IDV && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
+            LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
             terminalLicenseService.decreaseIDVTerminalLicenseUsedNum();
         }
     }

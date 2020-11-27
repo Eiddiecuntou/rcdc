@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbIDVTerminalLicenseNumDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.Expectations;
@@ -41,9 +42,10 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
 
     /**
      * 测试setIDVTerminalLicenseNum
+     * @throws BusinessException ex
      */
     @Test
-    public void testSetIDVTerminalLicenseNumDTO() {
+    public void testSetIDVTerminalLicenseNumDTO() throws BusinessException {
         new Expectations() {
             {
                 TerminalLicenseService.updateIDVTerminalLicenseNum(1);

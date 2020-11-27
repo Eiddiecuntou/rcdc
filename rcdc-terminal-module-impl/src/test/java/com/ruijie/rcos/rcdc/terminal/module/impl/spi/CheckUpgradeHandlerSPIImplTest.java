@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
@@ -17,13 +20,15 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeResult;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
+import mockit.Verifications;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -263,8 +268,8 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.isNewTerminal(withEqual("123"));
-                result = true;
+                basicInfoService.isAuthed(withEqual("123"));
+                result = false;
                 terminalLicenseService.authIDV(withEqual("123"), true, (CbbShineTerminalBasicInfo) any);
                 result = false;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
@@ -311,8 +316,8 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.isNewTerminal(withEqual(terminalId));
-                result = true;
+                basicInfoService.isAuthed(withEqual(terminalId));
+                result = false;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
             }
@@ -357,8 +362,8 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.isNewTerminal(withEqual("123"));
-                result = true;
+                basicInfoService.isAuthed(withEqual("123"));
+                result = false;
                 terminalLicenseService.authIDV(withEqual("123"), true, (CbbShineTerminalBasicInfo) any);
                 result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
@@ -405,8 +410,8 @@ public class CheckUpgradeHandlerSPIImplTest {
             {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.isNewTerminal(withEqual(terminalId));
-                result = true;
+                basicInfoService.isAuthed(withEqual(terminalId));
+                result = false;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
             }
