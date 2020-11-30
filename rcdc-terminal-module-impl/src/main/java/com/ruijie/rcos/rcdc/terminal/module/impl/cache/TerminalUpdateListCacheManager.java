@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.cache;
 
 import com.google.common.collect.Maps;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.BaseUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.util.Assert;
 
 import java.util.Map;
@@ -23,38 +23,38 @@ public class TerminalUpdateListCacheManager {
     /**
      * updatelist是否就绪状态缓存
      */
-    private static final Map<CbbTerminalTypeEnums, Boolean> UPDATE_LIST_CACHE_READY_STATE_MAP = Maps.newHashMap();
+    private static final Map<CbbTerminalOsTypeEnums, Boolean> UPDATE_LIST_CACHE_READY_STATE_MAP = Maps.newHashMap();
 
     /**
      * updatelist缓存
      */
-    private static final Map<CbbTerminalTypeEnums, ? super BaseUpdateListDTO> UPDATE_LIST_CACHE_MAP = Maps.newHashMap();
+    private static final Map<CbbTerminalOsTypeEnums, ? super BaseUpdateListDTO> UPDATE_LIST_CACHE_MAP = Maps.newHashMap();
 
     /**
      * 添加缓存
      *
      * @param <T> updatelist对象
-     * @param terminalType 终端平台类型
+     * @param osType 终端平台类型
      * @param updatelist 组件更新列表信息
      */
-    public static <T extends BaseUpdateListDTO> void add(CbbTerminalTypeEnums terminalType, T updatelist) {
-        Assert.notNull(terminalType, "terminalType can not be null");
+    public static <T extends BaseUpdateListDTO> void add(CbbTerminalOsTypeEnums osType, T updatelist) {
+        Assert.notNull(osType, "osType can not be null");
         Assert.notNull(updatelist, "updatelist can not be null");
 
-        UPDATE_LIST_CACHE_MAP.put(terminalType, updatelist);
+        UPDATE_LIST_CACHE_MAP.put(osType, updatelist);
     }
 
     /**
-     * 获取对应软终端类型缓存
+     * 获取对应终端系统的升级信息缓存
      *
      * @param <T> updatelist对象
-     * @param terminalType 软终端类型
+     * @param osType 终端系统类型
      * @return 返回对应缓存对象
      */
-    public static <T extends BaseUpdateListDTO> T get(CbbTerminalTypeEnums terminalType) {
-        Assert.notNull(terminalType, "terminalType can not be null");
+    public static <T extends BaseUpdateListDTO> T get(CbbTerminalOsTypeEnums osType) {
+        Assert.notNull(osType, "osType can not be null");
 
-        return (T) UPDATE_LIST_CACHE_MAP.get(terminalType);
+        return (T) UPDATE_LIST_CACHE_MAP.get(osType);
     }
 
     /**
@@ -62,40 +62,40 @@ public class TerminalUpdateListCacheManager {
      *
      * @return 返回集合对象
      */
-    public static Map<CbbTerminalTypeEnums, ? super BaseUpdateListDTO> getUpdateListCache() {
+    public static Map<CbbTerminalOsTypeEnums, ? super BaseUpdateListDTO> getUpdateListCache() {
         return UPDATE_LIST_CACHE_MAP;
     }
 
     /**
      * 设置updatelist缓存就绪状态
      *
-     * @param terminalType 终端类型
+     * @param osType 终端系统类型
      */
-    public static void setUpdatelistCacheReady(CbbTerminalTypeEnums terminalType) {
-        Assert.notNull(terminalType, "terminalType can not be null");
-        UPDATE_LIST_CACHE_READY_STATE_MAP.put(terminalType, true);
+    public static void setUpdatelistCacheReady(CbbTerminalOsTypeEnums osType) {
+        Assert.notNull(osType, "osType can not be null");
+        UPDATE_LIST_CACHE_READY_STATE_MAP.put(osType, true);
     }
 
     /**
      * 设置updatelist缓存为未就绪状态
      *
-     * @param terminalType 终端类型
+     * @param osType 终端系统类型
      */
-    public static void setUpdatelistCacheNotReady(CbbTerminalTypeEnums terminalType) {
-        Assert.notNull(terminalType, "terminalType can not be null");
-        UPDATE_LIST_CACHE_READY_STATE_MAP.put(terminalType, false);
+    public static void setUpdatelistCacheNotReady(CbbTerminalOsTypeEnums osType) {
+        Assert.notNull(osType, "osType can not be null");
+        UPDATE_LIST_CACHE_READY_STATE_MAP.put(osType, false);
     }
 
     /**
      * 判断updatelist缓存是否为未就绪状态
      *
-     * @param terminalType 终端类型
+     * @param osType 终端系统类型
      * @return 是否未就绪
      */
-    public static boolean isCacheReady(CbbTerminalTypeEnums terminalType) {
-        Assert.notNull(terminalType, "terminalType can not be null");
+    public static boolean isCacheReady(CbbTerminalOsTypeEnums osType) {
+        Assert.notNull(osType, "osType can not be null");
 
-        Boolean isReady = UPDATE_LIST_CACHE_READY_STATE_MAP.get(terminalType);
+        Boolean isReady = UPDATE_LIST_CACHE_READY_STATE_MAP.get(osType);
         if (isReady == null) {
             return false;
         }

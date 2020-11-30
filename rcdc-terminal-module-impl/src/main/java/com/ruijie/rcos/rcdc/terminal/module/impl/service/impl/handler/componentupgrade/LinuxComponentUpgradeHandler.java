@@ -1,8 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
 /**
  * Description: Function Description
@@ -12,13 +10,10 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
  *
  * @author nt
  */
-public class WinAppComponentUpgradeHandler extends AbstractAppComponentUpgradeHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(WinAppComponentUpgradeHandler.class);
+public class LinuxComponentUpgradeHandler extends AbstractCommonComponentUpgradeHandler {
 
     @Override
     protected CbbTerminalOsTypeEnums getTerminalOsType() {
-        return CbbTerminalOsTypeEnums.WINDOWS;
+        return CbbTerminalOsTypeEnums.LINUX;
     }
-
 }

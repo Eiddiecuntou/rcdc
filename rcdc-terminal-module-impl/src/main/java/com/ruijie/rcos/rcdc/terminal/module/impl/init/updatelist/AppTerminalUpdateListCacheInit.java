@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.AppTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
@@ -23,15 +25,15 @@ public class AppTerminalUpdateListCacheInit extends AbstractUpdatelistCacheInitT
 
     private String componentPackageDownloadUrlPre;
 
-    private CbbTerminalTypeEnums terminalType;
+    private CbbTerminalOsTypeEnums osType;
 
-    public AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums terminalType) {
-        Assert.notNull(terminalType, "terminalType can not be null");
-        Assert.notNull(terminalType.getCbbAppTerminalOsType(), "cbbAppTerminalOsType can not be null");
+    public AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums osType) {
+        Assert.notNull(osType, "osType can not be null");
 
-        this.terminalType = terminalType;
-        this.updateListPath = terminalType.getCbbAppTerminalOsType().getUpdateListPath();
-        this.componentPackageDownloadUrlPre = terminalType.getCbbAppTerminalOsType().getComponentPackageDownloadUrlPre();
+        this.osType = osType;
+        AppTerminalOsTypeEnums appOsType = AppTerminalOsTypeEnums.valueOf(osType.name());
+        this.updateListPath = appOsType.getUpdateListPath();
+        this.componentPackageDownloadUrlPre = appOsType.getComponentPackageDownloadUrlPre();
     }
 
     public AppTerminalUpdateListCacheInit() {
@@ -51,7 +53,7 @@ public class AppTerminalUpdateListCacheInit extends AbstractUpdatelistCacheInitT
     }
 
     @Override
-    protected CbbTerminalTypeEnums getTerminalType() {
-        return this.terminalType;
+    protected CbbTerminalOsTypeEnums getTerminalOsType() {
+        return this.osType;
     }
 }

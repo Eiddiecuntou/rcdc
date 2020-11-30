@@ -1,8 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.LinuxVDIComponentUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandler;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.TerminalComponentUpgradeHandlerFactory;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +34,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
     @Test
     public void testGetHandlerArgIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> handlerFactory.getHandler( null),
-                "terminal type can not be null");
+                "osType can not be null");
         Assert.assertTrue(true);
     }
 
@@ -46,8 +44,8 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
      */
     @Test
     public void testGetHandler() throws BusinessException {
-        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
-        Assert.assertTrue(handler instanceof LinuxVDIComponentUpgradeHandler);
+        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(CbbTerminalOsTypeEnums.LINUX);
+        Assert.assertTrue(handler instanceof LinuxComponentUpgradeHandler);
     }
 
     /**
@@ -58,7 +56,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
     public void testGetHandlerWhileTerminalTypeNotSupport() {
 
         try {
-            handlerFactory.getHandler(CbbTerminalTypeEnums.APP_IOS);
+            handlerFactory.getHandler(CbbTerminalOsTypeEnums.OTHER);
             Assert.fail();
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST, e.getKey());

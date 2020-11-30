@@ -1,12 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
@@ -37,18 +37,17 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
     @Override
     public TerminalVersionResultDTO getVersion(TerminalEntity terminalEntity, @Nullable String validateMd5) {
         Assert.notNull(terminalEntity, "terminalEntity can not be null");
-        Assert.notNull(terminalEntity.getPlatform(), "platform can not be null");
+        Assert.notNull(terminalEntity.getTerminalOsType(), "osType can not be null");
 
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
+        CbbTerminalOsTypeEnums osType = CbbTerminalOsTypeEnums.valueOf(terminalEntity.getTerminalOsType().toUpperCase());
         LOGGER.info("获取组件升级处理对象");
         TerminalComponentUpgradeHandler handler = null;
         try {
-            handler = handlerFactory.getHandler(terminalType);
+            handler = handlerFactory.getHandler(osType);
         } catch (BusinessException e) {
-            LOGGER.error("接入类型为[{}]的终端[{}]，组件升级不支持", terminalType.name(), terminalEntity.getTerminalId());
+            LOGGER.error("接入系统类型为[{}]的终端[{}]，组件升级不支持", osType.name(), terminalEntity.getTerminalId());
             return buildUnSupportResult();
         }
-
 
         GetVersionDTO versionRequest = new GetVersionDTO();
         versionRequest.setTerminalId(terminalEntity.getTerminalId());

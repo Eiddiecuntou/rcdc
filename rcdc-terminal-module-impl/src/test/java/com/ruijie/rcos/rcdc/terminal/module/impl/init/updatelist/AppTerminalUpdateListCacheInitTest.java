@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.google.common.collect.Lists;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
@@ -31,7 +32,7 @@ public class AppTerminalUpdateListCacheInitTest {
      */
     @Test
     public void testGetUpdateListPath() {
-        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.WINDOWS);
         String updateListPath = cacheInit.getUpdateListPath();
         Assert.assertEquals("/opt/ftp/terminal/terminal_component/windows_app/update.list", updateListPath);
     }
@@ -40,11 +41,10 @@ public class AppTerminalUpdateListCacheInitTest {
      * testGetTerminalType
      */
     @Test
-    public void testGetTerminalType() {
-        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
-        AppTerminalUpdateListCacheInit cacheInit2 = new AppTerminalUpdateListCacheInit();
-        CbbTerminalTypeEnums terminalType = cacheInit.getTerminalType();
-        Assert.assertEquals(CbbTerminalTypeEnums.APP_WINDOWS, terminalType);
+    public void testGetTerminalOsType() {
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.WINDOWS);
+        CbbTerminalOsTypeEnums osType = cacheInit.getTerminalOsType();
+        Assert.assertEquals(CbbTerminalOsTypeEnums.WINDOWS, osType);
     }
 
     /**
@@ -53,7 +53,7 @@ public class AppTerminalUpdateListCacheInitTest {
     @Test
     public void testFillUpdateListHasIOException() {
 
-        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalTypeEnums.APP_WINDOWS);
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.WINDOWS);
         AppUpdateListDTO dto = new AppUpdateListDTO();
         List<AppComponentVersionInfoDTO> versionList = Lists.newArrayList();
         AppComponentVersionInfoDTO versionInfoDTO = new AppComponentVersionInfoDTO();
