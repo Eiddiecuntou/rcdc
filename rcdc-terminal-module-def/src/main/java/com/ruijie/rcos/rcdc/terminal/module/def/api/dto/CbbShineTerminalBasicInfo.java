@@ -122,6 +122,9 @@ public class CbbShineTerminalBasicInfo {
     private Boolean enableProxy;
 
     @Nullable
+    private String allNetCardMacInfo;
+
+    @Nullable
     private CbbTerminalWorkModeEnums[] terminalWorkSupportModeArr;
 
     public CbbTerminalPlatformEnums getPlatform() {
@@ -399,5 +402,14 @@ public class CbbShineTerminalBasicInfo {
 
     public void setTerminalWorkSupportModeArr(@Nullable CbbTerminalWorkModeEnums[] terminalWorkSupportModeArr) {
         this.terminalWorkSupportModeArr = terminalWorkSupportModeArr;
+    }
+
+    @Nullable
+    public String getAllNetCardMacInfo() {
+        return allNetCardMacInfo;
+    }
+
+    public void setAllNetCardMacInfo(@Nullable String allNetCardMacInfo) {
+        this.allNetCardMacInfo = allNetCardMacInfo;
     }
 }
