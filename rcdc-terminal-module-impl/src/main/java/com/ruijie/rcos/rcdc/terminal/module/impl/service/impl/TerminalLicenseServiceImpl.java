@@ -90,41 +90,47 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
         Assert.isTrue(licenseNum >= TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + TERMINAL_AUTH_DEFAULT_NUM);
 
         synchronized (usedNumLock) {
-            if (needUpdateLicenseNum(licenseNum)) {
-                this.licenseNum = licenseNum;
+            Integer currentNum = getIDVTerminalLicenseNum();
+            if (currentNum == licenseNum) {
+                LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
+                return;
             }
+
+            // 授权证书为-1分为两种情况：RCDC首次初始化sql时将licenseNum初始化为-1。已导入临时证书，产品调用cbb接口，设licenseNum值为-1。
+            // 授权证书为-1时，不限制终端授权，可接入任意数量IDV终端。
+            if (currentNum == TERMINAL_AUTH_DEFAULT_NUM) {
+                processMinusOne2NotMinuxOne(currentNum, licenseNum);
+                return;
+            }
+            if (licenseNum == TERMINAL_AUTH_DEFAULT_NUM) {
+                processNotMinusOne2MinusOne(currentNum, licenseNum);
+                return;
+            }
+
+            LOGGER.info("当前授权数量和准备更新的授权数量不等，且都不等于-1。当前授权数量为{}, 准备更新授权数量为{}", currentNum, licenseNum);
+            if (currentNum > licenseNum) {
+                throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ALLOW_REDUCE_TERMINAL_LICENSE_NUM);
+            }
+
+            globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
+            this.licenseNum = licenseNum;
         }
     }
 
-    private boolean needUpdateLicenseNum(Integer licenseNum) throws BusinessException {
-        Integer currentNum = getIDVTerminalLicenseNum();
-        if (currentNum == licenseNum) {
-            LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
-            return false;
-        }
+    // 处理终端授权数量由-1，改成非-1的场景。更新数据库中所有已授权IDV终端授权状态为未授权，已授权数量改为0
+    private void processMinusOne2NotMinuxOne(Integer currentNum, Integer licenseNum) {
+        LOGGER.info("授权数量-1 -> 非-1场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+        // 将所有IDV终端置为未授权
+        terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(licenseNum, Boolean.TRUE, Boolean.FALSE);
+        this.usedNum = 0;
+        this.licenseNum = licenseNum;
+    }
 
-        if (currentNum == TERMINAL_AUTH_DEFAULT_NUM) {
-            LOGGER.info("授权数量-1 -> 非-1场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
-            // 将所有IDV终端置为未授权
-            terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(licenseNum, Boolean.TRUE, Boolean.FALSE);
-            this.usedNum = 0;
-
-            return true;
-        }
-        if (licenseNum == TERMINAL_AUTH_DEFAULT_NUM) {
-            LOGGER.info("授权数量非-1 -> -1场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
-            terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(licenseNum, Boolean.FALSE, Boolean.TRUE);
-
-            return true;
-        }
-
-        LOGGER.info("当前授权数量和准备更新的授权数量不等，且都不等于-1。当前授权数量为{}, 准备更新授权数量为{}", currentNum, licenseNum);
-        if (currentNum > licenseNum) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ALLOW_REDUCE_TERMINAL_LICENSE_NUM);
-        }
-
-        globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
-        return true;
+    // 处理终端授权数量由非-1，改成-1的场景。更新t_cbb_termianl中所有未授权IDV终端授权状态为已授权
+    private void processNotMinusOne2MinusOne(Integer currentNum, Integer licenseNum) {
+        LOGGER.info("授权数量非-1 -> -1场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+        terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(licenseNum, Boolean.FALSE, Boolean.TRUE);
+        this.licenseNum = licenseNum;
     }
 
     @Override
