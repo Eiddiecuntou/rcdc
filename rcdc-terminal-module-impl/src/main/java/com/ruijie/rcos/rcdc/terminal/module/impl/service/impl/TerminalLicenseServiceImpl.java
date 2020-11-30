@@ -120,7 +120,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     // 处理终端授权数量由-1，改成非-1的场景。更新数据库中所有已授权IDV终端授权状态为未授权，已授权数量改为0
     private void processMinusOne2NotMinuxOne(Integer currentNum, Integer licenseNum) {
         LOGGER.info("授权数量-1 -> 非-1场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
-        // 将所有IDV终端置为未授权
+        // 将所有已授权IDV终端置为未授权
         terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(licenseNum, Boolean.TRUE, Boolean.FALSE);
         this.usedNum = 0;
         this.licenseNum = licenseNum;
