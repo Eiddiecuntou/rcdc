@@ -32,10 +32,10 @@ public interface TerminalLicenseService {
 
     /**
      * 更新终端授权总数
-     * @param authNum 终端授权数量
+     * @param licenseNum 终端授权数量
      * @throws BusinessException 业务异常
      */
-    void updateIDVTerminalLicenseNum(Integer authNum) throws BusinessException;
+    void updateIDVTerminalLicenseNum(Integer licenseNum) throws BusinessException;
 
     /**
      * 授权1台idv终端；如果授权数量为-1，或者有授权剩余，则终端已使用授权数量+1
