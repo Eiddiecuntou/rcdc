@@ -3,7 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidUpdatelistCacheInit;
@@ -64,7 +64,7 @@ public class TerminalComponentInitServiceImplTest {
     @Test
     public void testInitAndroidVDI() throws InterruptedException {
         setEnviromentDevelop(true);
-        initService.initAndroidVDI();
+        initService.initAndroid();
 
         new Verifications() {
             {
@@ -82,25 +82,7 @@ public class TerminalComponentInitServiceImplTest {
     @Test
     public void testInitLinuxVDI() throws InterruptedException {
         setEnviromentDevelop(true);
-        initService.initLinuxVDI();
-
-        new Verifications() {
-            {
-                globalParameterAPI.findParameter(anyString);
-                times = 0;
-            }
-        };
-    }
-
-    /**
-     * 测试safeInit，开发环境
-     *
-     * @throws InterruptedException ex
-     */
-    @Test
-    public void testInitLinuxIDV() throws InterruptedException {
-        setEnviromentDevelop(true);
-        initService.initLinuxIDV();
+        initService.initLinux();
 
         new Verifications() {
             {
@@ -126,7 +108,7 @@ public class TerminalComponentInitServiceImplTest {
             }
         };
         try {
-            initService.initAndroidVDI();
+            initService.initAndroid();
         } catch (Exception e) {
             fail();
         }
@@ -149,7 +131,7 @@ public class TerminalComponentInitServiceImplTest {
             }
         };
         try {
-            initService.initLinuxIDV();
+            initService.initLinux();
         } catch (Exception e) {
             fail();
         }
@@ -182,7 +164,7 @@ public class TerminalComponentInitServiceImplTest {
         };
 
         try {
-            initService.initLinuxVDI();
+            initService.initLinux();
         } catch (Exception e) {
             fail();
         }
@@ -191,7 +173,7 @@ public class TerminalComponentInitServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
                 times = 1;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
+                runner.setCommand(String.format("python %s %s %s", "/data/web/rcdc/shell/update_component_package.py", "172.12.22.45", "linux"));
                 times = 1;
             }
         };
@@ -218,7 +200,7 @@ public class TerminalComponentInitServiceImplTest {
             }
         };
         try {
-            initService.initAndroidVDI();
+            initService.initAndroid();
         } catch (RuntimeException e) {
             fail();
         }
@@ -264,7 +246,7 @@ public class TerminalComponentInitServiceImplTest {
             }
         };
         try {
-            initService.initLinuxVDI();
+            initService.initLinux();
         } catch (RuntimeException e) {
             fail();
         }
@@ -273,7 +255,7 @@ public class TerminalComponentInitServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
                 times = 1;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
+                runner.setCommand(String.format("python %s %s %s", "/data/web/rcdc/shell/update_component_package.py", "172.12.22.45", "linux"));
                 times = 1;
             }
         };
@@ -302,7 +284,7 @@ public class TerminalComponentInitServiceImplTest {
             }
         };
         try {
-            initService.initLinuxIDV();
+            initService.initLinux();
         } catch (RuntimeException e) {
             fail();
         }
@@ -342,7 +324,7 @@ public class TerminalComponentInitServiceImplTest {
             }
         };
         try {
-            initService.initLinuxVDI();
+            initService.initLinux();
         } catch (RuntimeException e) {
             fail();
         }
@@ -367,7 +349,7 @@ public class TerminalComponentInitServiceImplTest {
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
         TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolver =
-                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+                initService.new BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums.LINUX);
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
@@ -380,7 +362,7 @@ public class TerminalComponentInitServiceImplTest {
     @Test
     public void testBtShareInitReturnValueResolverExitValueNotZero() {
         TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolver =
-                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
+                initService.new BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums.LINUX);
         try {
             resolver.resolve("dsd", 1, "dsd");
             fail();
@@ -396,12 +378,10 @@ public class TerminalComponentInitServiceImplTest {
      */
     @Test
     public void testBtShareInitReturnValueResolver() throws BusinessException {
-        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverLinuxVDI =
-                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_LINUX);
-        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverAndroidVDI =
-                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.VDI_ANDROID);
-        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverLinuxIDV =
-                initService.new BtShareInitReturnValueResolver(CbbTerminalTypeEnums.IDV_LINUX);
+        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverLinux =
+                initService.new BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums.LINUX);
+        TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverAndroid =
+                initService.new BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums.ANDROID);
         new MockUp<TerminalComponentInitServiceImpl>() {
             @Mock
             public String getLocalIP() {
@@ -409,9 +389,8 @@ public class TerminalComponentInitServiceImplTest {
             }
         };
 
-        resolverLinuxVDI.resolve("dsd", 0, "success");
-        resolverAndroidVDI.resolve("dsd", 0, "success");
-        resolverLinuxIDV.resolve("aa", 0, "success");
+        resolverLinux.resolve("dsd", 0, "success");
+        resolverAndroid.resolve("dsd", 0, "success");
 
         new Verifications() {
             {

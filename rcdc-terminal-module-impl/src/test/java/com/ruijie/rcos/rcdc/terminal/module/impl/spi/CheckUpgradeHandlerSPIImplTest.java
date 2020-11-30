@@ -12,15 +12,19 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
+import com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper.TerminalAuthHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeResult;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,6 +68,9 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Injectable
     private SessionManager sessionManager;
 
+    @Injectable
+    private TerminalAuthHelper terminalAuthHelper;
+
     /**
      * 测试检查组件升级- 更新终端信息
      */
@@ -97,6 +104,8 @@ public class CheckUpgradeHandlerSPIImplTest {
                 }
             }
         };
+
+        authHelperExpectations(true, TerminalAuthResultEnums.SUCCESS);
 
         new MockUp(CbbTerminalTypeEnums.class) {
             @Mock
@@ -163,6 +172,8 @@ public class CheckUpgradeHandlerSPIImplTest {
             }
         };
 
+        authHelperExpectations(true, TerminalAuthResultEnums.SUCCESS);
+
         try {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setTerminalId(terminalId);
@@ -211,8 +222,6 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = config;
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString, anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                terminalLicenseService.getIDVTerminalLicenseNum();
-                result = -1;
                 basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
                 try {
                     messageHandlerAPI.response((CbbResponseShineMessage) any);
@@ -222,12 +231,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             }
         };
 
-        new MockUp(CbbTerminalTypeEnums.class) {
-            @Mock
-            public CbbTerminalTypeEnums convert(String platform, String osType) {
-                return CbbTerminalTypeEnums.VDI_LINUX;
-            }
-        };
+        authHelperExpectations(true, TerminalAuthResultEnums.SUCCESS);
 
         try {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
@@ -348,14 +352,13 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = config;
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.isNewTerminal(withEqual("123"));
-                result = true;
-                terminalLicenseService.authIDV(withEqual("123"), true, (CbbShineTerminalBasicInfo) any);
-                result = false;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
             }
         };
+
+        authHelperExpectations(false, TerminalAuthResultEnums.FAIL);
+
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         try {
             request.setTerminalId(terminalId);
@@ -406,13 +409,14 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = config;
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.isNewTerminal(withEqual(terminalId));
-                result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
             }
         };
+
+        authHelperExpectations(false, TerminalAuthResultEnums.SUCCESS);
+
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         try {
             request.setTerminalId(terminalId);
@@ -442,7 +446,7 @@ public class CheckUpgradeHandlerSPIImplTest {
      * 测试idv场景、新终端接入无须升级、有授权
      */
     @Test
-    public void testDispatcherNewIDVNotUpgradeHasAuth() {
+    public void testDispatcherNewIDVNotUpgradeHasAuth() throws BusinessException {
         String terminalId = "123";
 
         TerminalEntity terminalEntity = new TerminalEntity();
@@ -463,14 +467,14 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = config;
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.isNewTerminal(withEqual("123"));
-                result = true;
-                terminalLicenseService.authIDV(withEqual("123"), true, (CbbShineTerminalBasicInfo) any);
-                result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
+
             }
         };
+
+        authHelperExpectations(false, TerminalAuthResultEnums.SUCCESS);
+
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         try {
             request.setTerminalId(terminalId);
@@ -521,12 +525,13 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = config;
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.isNewTerminal(withEqual(terminalId));
-                result = true;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
             }
         };
+
+        authHelperExpectations(false, TerminalAuthResultEnums.SUCCESS);
+
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         try {
             request.setTerminalId(terminalId);
@@ -552,6 +557,50 @@ public class CheckUpgradeHandlerSPIImplTest {
             }
         };
     }
+
+    /**
+     *  不允许接入
+     */
+    @Test
+    public void testDispatchNotAllowConnect() {
+
+        new Expectations() {
+            {
+                connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
+                result = false;
+            }
+        };
+        CbbDispatcherRequest request = new CbbDispatcherRequest();
+        request.setData(generateLinuxIDVJson());
+        request.setTerminalId("123");
+        checkUpgradeHandler.dispatch(request);
+
+        new Verifications() {
+            {
+                connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
+                times = 1;
+
+                sessionManager.getSessionById("123");
+                times = 1;
+
+                sessionManager.removeSession("123", (Session) any);
+                times = 1;
+            }
+        };
+
+    }
+
+    private void authHelperExpectations(boolean needSave, TerminalAuthResultEnums authResult) {
+        TerminalAuthResult resultInfo = new TerminalAuthResult(needSave, authResult);
+
+        new Expectations() {
+            {
+                terminalAuthHelper.processTerminalAuth(anyBoolean, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                result = resultInfo;
+            }
+        };
+    }
+
 
     private void saveVerifications() {
         new Verifications() {

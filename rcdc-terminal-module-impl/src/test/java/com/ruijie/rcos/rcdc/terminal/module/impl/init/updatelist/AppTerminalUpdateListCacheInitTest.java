@@ -34,7 +34,7 @@ public class AppTerminalUpdateListCacheInitTest {
     public void testGetUpdateListPath() {
         AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.WINDOWS);
         String updateListPath = cacheInit.getUpdateListPath();
-        Assert.assertEquals("/opt/ftp/terminal/terminal_component/windows/update.list", updateListPath);
+        Assert.assertEquals("/opt/ftp/terminal/terminal_component/windows_app/update.list", updateListPath);
     }
 
     /**
@@ -64,6 +64,6 @@ public class AppTerminalUpdateListCacheInitTest {
 
         cacheInit.fillUpdateList(dto);
 
-        Assert.assertEquals("/terminal_component/windows/component/aaa", versionInfoDTO.getCompletePackageUrl());
+        Assert.assertEquals("/terminal_component/windows_app/component/aaa", versionInfoDTO.getCompletePackageUrl());
     }
 }

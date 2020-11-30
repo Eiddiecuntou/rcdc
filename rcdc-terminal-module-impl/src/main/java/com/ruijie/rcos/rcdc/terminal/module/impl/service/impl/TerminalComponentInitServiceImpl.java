@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -38,13 +39,9 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalComponentInitServiceImpl.class);
 
-    private static final String INIT_PYTHON_SCRIPT_PATH_VDI_LINUX = "/data/web/rcdc/shell/updateLinuxVDI.py";
+    private static final String INIT_PYTHON_SCRIPT_PATH = "/data/web/rcdc/shell/update_component_package.py";
 
-    private static final String INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID = "/data/web/rcdc/shell/updateAndroidVDI.py";
-
-    private static final String INIT_PYTHON_SCRIPT_PATH_IDV_LINUX = "/data/web/rcdc/shell/updateLinuxIDV.py";
-
-    private static final String INIT_COMMAND = "python %s %s";
+    private static final String INIT_COMMAND = "python %s %s %s";
 
     private static final String EXECUTE_SHELL_SUCCESS_RESULT = "success";
 
@@ -70,25 +67,17 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
     private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
 
     @Override
-    public void initLinuxVDI() {
-        LOGGER.info("开始异步执行初始化Linux VDI终端升级组件");
-        EXECUTOR_SERVICE.execute(() -> initLinuxVDITerminalComponent());
+    public void initLinux() {
+        LOGGER.info("开始异步执行初始化Linux 终端升级组件");
+        EXECUTOR_SERVICE.execute(() -> initLinuxTerminalComponent());
 
         updateClusterVip();
     }
 
     @Override
-    public void initAndroidVDI() {
-        LOGGER.info("开始异步执行初始化Android VDI终端升级组件");
-        EXECUTOR_SERVICE.execute(() -> initAndroidVDITerminalComponent());
-
-        updateClusterVip();
-    }
-
-    @Override
-    public void initLinuxIDV() {
-        LOGGER.info("开始异步执行初始化Linux IDV终端升级组件");
-        EXECUTOR_SERVICE.execute(() -> initLinuxIDVTerminalComponent());
+    public void initAndroid() {
+        LOGGER.info("开始异步执行初始化Android 终端升级组件");
+        EXECUTOR_SERVICE.execute(() -> initAndroidTerminalComponent());
 
         updateClusterVip();
     }
@@ -102,31 +91,21 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
         }
     }
 
-    private void initLinuxVDITerminalComponent() {
-        String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_LINUX;
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI_LINUX;
-        String tempPath = Constants.LINUX_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
+    private void initLinuxTerminalComponent() {
+        CbbTerminalOsTypeEnums osType = CbbTerminalOsTypeEnums.LINUX;
+        String tempPath = Constants.LINUX_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
-        checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
+        checkAndUpgrade(osType, tempPath);
     }
 
-    private void initAndroidVDITerminalComponent() {
-        String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_VDI_ANDROID;
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.VDI_ANDROID;
-        String tempPath = Constants.ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
+    private void initAndroidTerminalComponent() {
+        CbbTerminalOsTypeEnums osType = CbbTerminalOsTypeEnums.ANDROID;
+        String tempPath = Constants.ANDROID_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
-        checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
+        checkAndUpgrade(osType, tempPath);
     }
 
-    private void initLinuxIDVTerminalComponent() {
-        String pythonScriptPath = INIT_PYTHON_SCRIPT_PATH_IDV_LINUX;
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.IDV_LINUX;
-        String tempPath = Constants.LINUX_IDV_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
-        // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
-        checkAndUpgrade(pythonScriptPath, terminalType, tempPath);
-    }
-
-    private void checkAndUpgrade(String pythonScriptPath, CbbTerminalTypeEnums terminalType, String upgradeTempPath) {
+    private void checkAndUpgrade(CbbTerminalOsTypeEnums osType, String upgradeTempPath) {
         // 添加操作系统判断，使初始化失败不影响开发阶段的调试
         boolean isDevelop = Enviroment.isDevelop();
         LOGGER.info("environment is develop: {}", isDevelop);
@@ -144,13 +123,13 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
             return;
         }
 
-        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + terminalType.name().toLowerCase();
+        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + osType.name().toLowerCase();
         String lastUpgradeStatus = globalParameterAPI.findParameter(globalParameterKey);
         if (needUpgrade(currentIp, upgradeTempPath, lastUpgradeStatus)) {
-            executeUpdate(currentIp, pythonScriptPath, terminalType);
+            executeUpdate(currentIp, osType);
             return;
         }
-        updateCache(terminalType);
+        updateCache(osType);
     }
 
     private boolean needUpgrade(String currentIp, String upgradeTempPath, String lastUpgradeStatus) {
@@ -168,6 +147,8 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
         }
 
         File tempDir = new File(upgradeTempPath);
+        LOGGER.info("upgradeTempPath: {}", upgradeTempPath);
+        LOGGER.info("tempDir.isDirectory() {}", tempDir.isDirectory());
         if (tempDir.isDirectory()) {
             // 系统补丁包升级后，需要制作新版本的升级业务
             return true;
@@ -176,23 +157,23 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
         return TERMINAL_COMPONENT_PACKAGE_INIT_FAIL.equals(lastUpgradeStatus);
     }
 
-    private void executeUpdate(String currentIp, String pythonScriptPath, CbbTerminalTypeEnums terminalType) {
+    private void executeUpdate(String currentIp, CbbTerminalOsTypeEnums osType) {
 
-        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + terminalType.name().toLowerCase();
+        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + osType.name().toLowerCase();
 
         // 先将执行结果设置为失败，防止异常中断不再执行脚本
         globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_FAIL);
 
         LOGGER.info("start invoke pythonScript...");
         ShellCommandRunner runner = new ShellCommandRunner();
-        String shellCmd = String.format(INIT_COMMAND, pythonScriptPath, currentIp);
+        String shellCmd = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH, currentIp, osType.name().toLowerCase());
         LOGGER.info("execute shell cmd : {}", shellCmd);
         runner.setCommand(shellCmd);
 
         try {
-            String outStr = runner.execute(new BtShareInitReturnValueResolver(terminalType));
+            String outStr = runner.execute(new BtShareInitReturnValueResolver(osType));
             LOGGER.debug("out String is :{}", outStr);
-            LOGGER.info("success invoke [{}] pythonScript...", terminalType.toString());
+            LOGGER.info("success invoke [{}] pythonScript...", osType.name());
         } catch (BusinessException e) {
             LOGGER.error("bt share init error", e);
             globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_FAIL);
@@ -212,11 +193,11 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
      */
     public class BtShareInitReturnValueResolver implements ShellCommandRunner.ReturnValueResolver<String> {
 
-        private CbbTerminalTypeEnums terminalType;
+        private CbbTerminalOsTypeEnums osType;
 
-        public BtShareInitReturnValueResolver(CbbTerminalTypeEnums terminalType) {
-            Assert.notNull(terminalType, "terminalType cannot be null");
-            this.terminalType = terminalType;
+        public BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums osType) {
+            Assert.notNull(osType, "osType cannot be null");
+            this.osType = osType;
         }
 
         @Override
@@ -231,20 +212,19 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
             }
 
             // 更新缓存中的updatelist
-            updateCache(terminalType);
+            updateCache(osType);
             return outStr;
         }
     }
 
-    // TODO
-    private void updateCache(CbbTerminalTypeEnums terminalType) {
+    private void updateCache(CbbTerminalOsTypeEnums osType) {
         // 更新缓存中的updatelist
-        if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
-            LOGGER.info("init linux VDI updatelist cache");
+        if (osType == CbbTerminalOsTypeEnums.LINUX) {
+            LOGGER.info("init linux updatelist cache");
             linuxUpdatelistCacheInit.init();
         }
-        if (terminalType == CbbTerminalTypeEnums.VDI_ANDROID) {
-            LOGGER.info("init android VDI updatelist cache");
+        if (osType == CbbTerminalOsTypeEnums.ANDROID) {
+            LOGGER.info("init android updatelist cache");
             androidUpdatelistCacheInit.init();
         }
     }

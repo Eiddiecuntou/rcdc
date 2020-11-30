@@ -221,20 +221,14 @@ public interface Constants {
     String TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR = "/opt/ftp/terminal/ota/bash/linux_idv/";
 
     /**
-     * 终端组件升级包路径
+     * Linux 终端组件升级包路径
      */
-    String LINUX_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_linux/temp";
+    String LINUX_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_linux/temp";
 
     /**
-     * Android VDI 终端组件升级包路径
+     * Android 终端组件升级包路径
      */
-    String ANDROID_VDI_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_vdi_android/temp";
-
-    /**
-     * Linux IDV 终端组件升级包路径
-     */
-    String LINUX_IDV_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_idv_linux/temp";
-
+    String ANDROID_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_android/temp";
 
     /**
      * 终端检测超时时间（单位:秒）

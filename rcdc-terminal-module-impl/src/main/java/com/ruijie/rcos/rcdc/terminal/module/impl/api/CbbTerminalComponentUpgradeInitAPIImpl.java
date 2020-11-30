@@ -22,24 +22,17 @@ public class CbbTerminalComponentUpgradeInitAPIImpl implements CbbTerminalCompon
     private TerminalComponentInitService terminalComponentInitService;
 
     @Override
-    public void initLinuxVDI() {
+    public void initLinux() {
 
-        LOGGER.info("开始调用初始化Linux VDI组件包");
-        terminalComponentInitService.initLinuxVDI();
-        LOGGER.info("完成调用初始化Linux VDI组件包");
+        LOGGER.info("开始调用初始化Linux 组件包");
+        terminalComponentInitService.initLinux();
+        LOGGER.info("完成调用初始化Linux 组件包");
     }
 
     @Override
-    public void initAndroidVDI() {
-        LOGGER.info("开始调用初始化Android VDI组件包");
-        terminalComponentInitService.initAndroidVDI();
-        LOGGER.info("完成调用初始化Android VDI组件包");
-    }
-
-    @Override
-    public void initLinuxIDV() {
-        LOGGER.info("开始调用初始化Linux IDV组件包");
-        terminalComponentInitService.initLinuxIDV();
-        LOGGER.info("完成调用初始化Linux IDV组件包");
+    public void initAndroid() {
+        LOGGER.info("开始调用初始化Android 组件包");
+        terminalComponentInitService.initAndroid();
+        LOGGER.info("完成调用初始化Android 组件包");
     }
 }

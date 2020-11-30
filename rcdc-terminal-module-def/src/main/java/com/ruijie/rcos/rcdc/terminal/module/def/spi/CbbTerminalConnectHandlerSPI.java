@@ -61,6 +61,7 @@ public interface CbbTerminalConnectHandlerSPI {
      * @apiParam (请求体字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} terminalBasicInfo.networkInfoArr.getDnsMode 获取DNS模式,自动、手动
      * @apiParam (请求体字段说明) {CbbNetworkModeEnums="WIRED","WIRELESS"} terminalBasicInfo.networkInfoArr.networkAccessMode 网络接入方式（有线、无线）
      * @apiParam (请求体字段说明) {String} terminalBasicInfo.networkInfoArr.ssid 无线网络ssid
+     * @apiParam (请求体字段说明) {CbbTerminalWorkModeEnums} terminalBasicInfo.terminalWorkSupportModeArr 终端支持工作模式集合
      *
      * @apiSuccess (响应字段说明) {boolean} -- 是否允许终端接入
      *
@@ -122,6 +123,7 @@ public interface CbbTerminalConnectHandlerSPI {
  * @apiParam (请求体字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} terminalBasicInfo.networkInfoArr.getDnsMode 获取DNS模式,自动、手动
  * @apiParam (请求体字段说明) {CbbNetworkModeEnums="WIRED","WIRELESS"} terminalBasicInfo.networkInfoArr.networkAccessMode 网络接入方式（有线、无线）
  * @apiParam (请求体字段说明) {String} terminalBasicInfo.networkInfoArr.ssid 无线网络ssid
+ * @apiParam (请求体字段说明) {CbbTerminalWorkModeEnums} terminalBasicInfo.terminalWorkSupportModeArr 终端支持工作模式集合
  *
  * @apiSuccess (响应字段说明) {boolean} -- 获取终端配置的能力（工作模式、终端类型）
  *
