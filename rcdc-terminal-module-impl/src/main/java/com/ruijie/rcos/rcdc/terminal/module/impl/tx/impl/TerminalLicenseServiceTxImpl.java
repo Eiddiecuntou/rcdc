@@ -35,22 +35,33 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     private GlobalParameterAPI globalParameterAPI;
 
     @Override
-    public void updateIDVTerminalAuthStateAndLicenseNum(Integer licenseNum, Boolean expectAuthState, Boolean updateAuthState) {
+    public void updateAllIDVTerminalAuthedAndUpdateLicenseNum(Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not null");
-        Assert.notNull(expectAuthState, "expectAuthState can not be null");
-        Assert.notNull(updateAuthState, "updateAuthState can not be null");
-
         List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO
-            .findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, expectAuthState);
-        terminalEntityList.stream().forEach(terminalEntity -> {
-            int affectedRows = terminalBasicInfoDAO
-                .modifyAuthed(terminalEntity.getTerminalId(), terminalEntity.getVersion(), updateAuthState);
-            if (affectedRows == 0) {
-                retryUpdateAuthed(terminalEntity.getTerminalId(), updateAuthState);
-            }
-        });
+            .findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
+        updateTerminalAuthState(terminalEntityList, Boolean.TRUE);
 
         globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
+    }
+
+    @Override
+    public void updateAllIDVTerminalUnauthedAndUpdateLicenseNum(Integer licenseNum) {
+        Assert.notNull(licenseNum, "licenseNum can not null");
+        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO
+            .findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+        updateTerminalAuthState(terminalEntityList, Boolean.FALSE);
+
+        globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
+    }
+
+    private void updateTerminalAuthState(List<TerminalEntity> terminalEntityList, Boolean authed) {
+        terminalEntityList.stream().forEach(terminalEntity -> {
+            int affectedRows = terminalBasicInfoDAO
+                .modifyAuthed(terminalEntity.getTerminalId(), terminalEntity.getVersion(), authed);
+            if (affectedRows == 0) {
+                retryUpdateAuthed(terminalEntity.getTerminalId(), authed);
+            }
+        });
     }
 
     /**

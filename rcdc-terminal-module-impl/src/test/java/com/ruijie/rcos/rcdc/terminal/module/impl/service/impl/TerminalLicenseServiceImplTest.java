@@ -192,7 +192,7 @@ public class TerminalLicenseServiceImplTest {
         }
         new Verifications() {
             {
-                terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(5, Boolean.TRUE, Boolean.FALSE);
+                terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(5);
                 times = 1;
             }
         };
@@ -217,7 +217,7 @@ public class TerminalLicenseServiceImplTest {
         }
         new Verifications() {
             {
-                terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(-1, Boolean.FALSE, Boolean.TRUE);
+                terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUpdateLicenseNum(-1);
                 times = 1;
             }
         };

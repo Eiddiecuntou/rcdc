@@ -36,6 +36,7 @@ import java.util.UUID;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
+
 public class TerminalAuthHelperTest {
 
     @Tested

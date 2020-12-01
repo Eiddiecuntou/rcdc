@@ -57,7 +57,7 @@ public class TerminalLicenseServiceTxImplTest {
             }
         };
         try {
-            terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(5, Boolean.TRUE, Boolean.FALSE);
+            terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(5);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -93,7 +93,7 @@ public class TerminalLicenseServiceTxImplTest {
             }
         };
         try {
-            terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(5, Boolean.TRUE, Boolean.FALSE);
+            terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(5);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -131,7 +131,7 @@ public class TerminalLicenseServiceTxImplTest {
             }
         };
         try {
-            terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(5, Boolean.TRUE, Boolean.FALSE);
+            terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(5);
         } catch (Exception e) {
             Assert.fail();
         }

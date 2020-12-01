@@ -91,7 +91,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
 
         synchronized (usedNumLock) {
             Integer currentNum = getIDVTerminalLicenseNum();
-            if (currentNum == licenseNum) {
+            if (Objects.equals(currentNum, licenseNum)) {
                 LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
                 return;
             }
@@ -99,11 +99,13 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
             // 授权证书为-1分为两种情况：RCDC首次初始化sql时将licenseNum初始化为-1。已导入临时证书，产品调用cbb接口，设licenseNum值为-1。
             // 授权证书为-1时，不限制终端授权，可接入任意数量IDV终端。
             if (currentNum == TERMINAL_AUTH_DEFAULT_NUM) {
-                processMinusOne2NotMinuxOne(currentNum, licenseNum);
+                LOGGER.info("从终端授权数量为-1，导入正式授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+                processImportOfficialLicense(licenseNum);
                 return;
             }
             if (licenseNum == TERMINAL_AUTH_DEFAULT_NUM) {
-                processNotMinusOne2MinusOne(currentNum, licenseNum);
+                LOGGER.info("从终端授权数量不是-1，导入临时授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+                processImportTempLicense();
                 return;
             }
 
@@ -117,20 +119,19 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
         }
     }
 
-    // 处理终端授权数量由-1，改成非-1的场景。更新数据库中所有已授权IDV终端授权状态为未授权，已授权数量改为0
-    private void processMinusOne2NotMinuxOne(Integer currentNum, Integer licenseNum) {
-        LOGGER.info("授权数量-1 -> 非-1场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
-        // 将所有已授权IDV终端置为未授权
-        terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(licenseNum, Boolean.TRUE, Boolean.FALSE);
+    // 处理从终端授权数量为-1，导入正式授权证书场景。
+    private void processImportOfficialLicense(Integer licenseNum) {
+        // 将所有已授权IDV终端置为未授权，并更新终端授权数量
+        terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(licenseNum);
         this.usedNum = 0;
         this.licenseNum = licenseNum;
     }
 
-    // 处理终端授权数量由非-1，改成-1的场景。更新t_cbb_termianl中所有未授权IDV终端授权状态为已授权
-    private void processNotMinusOne2MinusOne(Integer currentNum, Integer licenseNum) {
-        LOGGER.info("授权数量非-1 -> -1场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
-        terminalLicenseServiceTx.updateIDVTerminalAuthStateAndLicenseNum(licenseNum, Boolean.FALSE, Boolean.TRUE);
-        this.licenseNum = licenseNum;
+    // 处理导入临时证书场景。
+    private void processImportTempLicense() {
+        // 将所有未授权IDV终端置为已授权，并更新终端授权数量
+        terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUpdateLicenseNum(TERMINAL_AUTH_DEFAULT_NUM);
+        this.licenseNum = TERMINAL_AUTH_DEFAULT_NUM;
     }
 
     @Override
