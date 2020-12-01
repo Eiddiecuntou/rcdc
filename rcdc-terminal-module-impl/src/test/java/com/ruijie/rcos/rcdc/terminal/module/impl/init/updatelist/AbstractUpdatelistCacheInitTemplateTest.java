@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -273,8 +274,8 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         }
 
         @Override
-        protected CbbTerminalTypeEnums getTerminalType() {
-            return CbbTerminalTypeEnums.APP_WINDOWS;
+        protected CbbTerminalOsTypeEnums getTerminalOsType() {
+            return CbbTerminalOsTypeEnums.WINDOWS;
         }
     }
 }

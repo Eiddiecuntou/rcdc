@@ -14,41 +14,29 @@ public interface CbbTerminalComponentUpgradeInitAPI {
 
 
     /**
-     * @api {POST} CbbTerminalComponentUpgradeInitAPI.initLinuxVDI  初始化Linux vdi组件升级包
-     * @apiName initLinuxVDI
+     * @api {POST} CbbTerminalComponentUpgradeInitAPI.initLinux  初始化Linux 组件升级包
+     * @apiName initLinux
      * @apiGroup CbbTerminalComponentUpgradeInitAPI
-     * @apiDescription 初始化Linux vdi组件升级包
+     * @apiDescription 初始化Linux 组件升级包
      *
      */
     /**
-     * 初始化Linux vdi组件升级包
+     * 初始化Linux 组件升级包
      *
      */
-    void initLinuxVDI();
+    void initLinux();
 
     /**
-     * @api {POST} CbbTerminalComponentUpgradeInitAPI.initAndroidVDI  初始化Android vdi组件升级包
-     * @apiName initAndroidVDI
+     * @api {POST} CbbTerminalComponentUpgradeInitAPI.initAndroid  初始化Android 组件升级包
+     * @apiName initAndroid
      * @apiGroup CbbTerminalComponentUpgradeInitAPI
-     * @apiDescription 初始化Android vdi组件升级包
+     * @apiDescription 初始化Android 组件升级包
      *
      */
     /**
-     * 初始化Android vdi组件升级包
+     * 初始化Android 组件升级包
      *
      */
-    void initAndroidVDI();
+    void initAndroid();
 
-    /**
-     * @api {POST} CbbTerminalComponentUpgradeInitAPI.initLinuxIDV  初始化Linux idv组件升级包
-     * @apiName initAndroidOTA
-     * @apiGroup CbbTerminalComponentUpgradeInitAPI
-     * @apiDescription 初始化Linux idv组件升级包
-     *
-     */
-    /**
-     * 初始化Linux idv组件升级包
-     *
-     */
-    void initLinuxIDV();
 }

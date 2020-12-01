@@ -36,15 +36,15 @@ public class CbbTerminalComponentUpgradeInitAPIImplTest {
 
         new Expectations() {
             {
-                terminalComponentInitService.initAndroidVDI();
+                terminalComponentInitService.initAndroid();
             }
         };
 
-        terminalComponentUpgradeInitAPI.initAndroidVDI();
+        terminalComponentUpgradeInitAPI.initAndroid();
 
         new Verifications() {
             {
-                terminalComponentInitService.initAndroidVDI();
+                terminalComponentInitService.initAndroid();
                 times = 1;
             }
         };
@@ -60,15 +60,15 @@ public class CbbTerminalComponentUpgradeInitAPIImplTest {
 
         new Expectations() {
             {
-                terminalComponentInitService.initAndroidVDI();
+                terminalComponentInitService.initAndroid();
             }
         };
 
-        terminalComponentUpgradeInitAPI.initAndroidVDI();
+        terminalComponentUpgradeInitAPI.initAndroid();
 
         new Verifications() {
             {
-                terminalComponentInitService.initAndroidVDI();
+                terminalComponentInitService.initAndroid();
                 times = 1;
             }
         };
@@ -84,39 +84,15 @@ public class CbbTerminalComponentUpgradeInitAPIImplTest {
 
         new Expectations() {
             {
-                terminalComponentInitService.initLinuxVDI();
+                terminalComponentInitService.initLinux();
             }
         };
 
-        terminalComponentUpgradeInitAPI.initLinuxVDI();
+        terminalComponentUpgradeInitAPI.initLinux();
 
         new Verifications() {
             {
-                terminalComponentInitService.initLinuxVDI();
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     * testInitLinuxVDI
-     *
-     * @throws Exception 异常
-     */
-    @Test
-    public void testInitLinuxIDV() throws Exception {
-
-        new Expectations() {
-            {
-                terminalComponentInitService.initLinuxIDV();
-            }
-        };
-
-        terminalComponentUpgradeInitAPI.initLinuxIDV();
-
-        new Verifications() {
-            {
-                terminalComponentInitService.initLinuxIDV();
+                terminalComponentInitService.initLinux();
                 times = 1;
             }
         };

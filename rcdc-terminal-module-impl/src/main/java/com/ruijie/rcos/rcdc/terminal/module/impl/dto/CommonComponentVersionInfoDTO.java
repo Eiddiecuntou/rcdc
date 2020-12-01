@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalResetEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 
 /**
  * 
@@ -19,9 +20,20 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
     private String completePackageName;
 
     /**
+     * 组件文件相对路径（相对于安装包）
+     */
+    private String completePackageNameRelativePath;
+
+
+    /**
      * 差异包文件名
      */
     private String incrementalPackageName;
+
+    /**
+     * 差异包文件相对路径（相对于安装包）
+     */
+    private String incrementalPackageRelativePath;
 
     /**
      * 完整组件文件种子下载路径
@@ -62,6 +74,8 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
      * 重启标识(NOW/LATER/NOT)
      */
     private CbbTerminalResetEnums restartFlag;
+
+    private CbbTerminalWorkModeEnums[] workModeArr;
 
     public String getCompletePackageName() {
         return completePackageName;
@@ -143,4 +157,27 @@ public class CommonComponentVersionInfoDTO extends BaseComponentVersionInfoDTO {
         this.basePackageMd5 = basePackageMd5;
     }
 
+    public String getCompletePackageNameRelativePath() {
+        return completePackageNameRelativePath;
+    }
+
+    public void setCompletePackageNameRelativePath(String completePackageNameRelativePath) {
+        this.completePackageNameRelativePath = completePackageNameRelativePath;
+    }
+
+    public String getIncrementalPackageRelativePath() {
+        return incrementalPackageRelativePath;
+    }
+
+    public void setIncrementalPackageRelativePath(String incrementalPackageRelativePath) {
+        this.incrementalPackageRelativePath = incrementalPackageRelativePath;
+    }
+
+    public CbbTerminalWorkModeEnums[] getWorkModeArr() {
+        return workModeArr;
+    }
+
+    public void setWorkModeArr(CbbTerminalWorkModeEnums[] workModeArr) {
+        this.workModeArr = workModeArr;
+    }
 }

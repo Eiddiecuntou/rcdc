@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.Tested;
@@ -26,8 +27,8 @@ public class UosAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetTerminalType() {
-        CbbTerminalTypeEnums terminalType = handler.getTerminalType();
-        Assert.assertEquals(CbbTerminalTypeEnums.APP_UOS, terminalType);
+        CbbTerminalOsTypeEnums osType = handler.getTerminalOsType();
+        Assert.assertEquals(CbbTerminalOsTypeEnums.UOS, osType);
     }
 
 }

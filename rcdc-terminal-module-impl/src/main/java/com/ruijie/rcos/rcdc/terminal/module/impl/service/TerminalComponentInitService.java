@@ -13,16 +13,12 @@ public interface TerminalComponentInitService {
     /**
      * 初始化Linux VDI组件升级包
      */
-    void initLinuxVDI();
+    void initLinux();
 
     /**
      * 初始化Android VDI组件升级包
      */
-    void initAndroidVDI();
+    void initAndroid();
 
-    /**
-     * 初始化Linux IDV组件升级包
-     */
-    void initLinuxIDV();
 
 }
