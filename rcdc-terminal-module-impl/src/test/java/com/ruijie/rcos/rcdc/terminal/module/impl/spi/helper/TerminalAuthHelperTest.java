@@ -138,7 +138,7 @@ public class TerminalAuthHelperTest {
         basicInfo.setTerminalId(terminalId);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, false, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SKIP);
-        Assert.assertTrue(authResult.isNeedSaveTerminalInfo());
+        Assert.assertTrue(!authResult.isNeedSaveTerminalInfo());
 
         new Verifications() {
             {
