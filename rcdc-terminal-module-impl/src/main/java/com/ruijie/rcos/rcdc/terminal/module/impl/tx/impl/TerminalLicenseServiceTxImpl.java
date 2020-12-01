@@ -35,13 +35,13 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     private GlobalParameterAPI globalParameterAPI;
 
     @Override
-    public void updateAllIDVTerminalAuthedAndUpdateLicenseNum(Integer licenseNum) {
-        Assert.notNull(licenseNum, "licenseNum can not null");
+    public void updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth() {
+
         List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO
             .findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
         updateTerminalAuthState(terminalEntityList, Boolean.TRUE);
 
-        globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
+        globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(Constants.IDV_TERMINAL_AUTH_DEFAULT_NUM));
     }
 
     @Override

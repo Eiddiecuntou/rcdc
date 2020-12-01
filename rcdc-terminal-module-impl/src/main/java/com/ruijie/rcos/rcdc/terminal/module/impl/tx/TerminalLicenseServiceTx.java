@@ -11,10 +11,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 public interface TerminalLicenseServiceTx {
 
     /**
-     * 将所有IDV终端，更新授权状态为已授权。并且更新数据库中IDV终端授权数量
-     * @param licenseNum 授权数量
+     * 将所有IDV终端，更新授权状态为已授权。并且更新数据库中IDV终端授权数量为-1，-1表示不限制idv终端授权数量
      */
-    void updateAllIDVTerminalAuthedAndUpdateLicenseNum(Integer licenseNum);
+    void updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
 
     /**
      * 将所有IDV终端，更新授权状态为未授权。并且更新数据库中IDV终端授权数量

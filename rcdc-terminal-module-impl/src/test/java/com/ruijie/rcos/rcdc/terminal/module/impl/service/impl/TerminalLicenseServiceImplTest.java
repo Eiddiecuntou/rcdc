@@ -217,7 +217,7 @@ public class TerminalLicenseServiceImplTest {
         }
         new Verifications() {
             {
-                terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUpdateLicenseNum(-1);
+                terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
                 times = 1;
             }
         };
