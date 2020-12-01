@@ -101,19 +101,6 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     int modifyTerminalStateOffline(CbbTerminalStateEnums state, Date lastOfflineTime, String terminalId, Integer version);
 
     /**
-     * 修改终端授权情况
-     *
-     * @param temrinalId 终端id
-     * @param version 数据版本号
-     * @param authed 是否授权
-     * @return 返回影响行数
-     */
-    @Modifying
-    @Transactional
-    @Query("update TerminalEntity set authed=?3,version=version+1 where terminalId=?1 and version=?2")
-    int modifyAuthed(String temrinalId, Integer version, Boolean authed);
-
-    /**
      *  根据分组id查询终端
      *
      * @param groupId 分组id

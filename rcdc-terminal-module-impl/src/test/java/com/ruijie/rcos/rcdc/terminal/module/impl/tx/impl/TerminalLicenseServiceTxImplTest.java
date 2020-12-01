@@ -38,26 +38,26 @@ public class TerminalLicenseServiceTxImplTest {
 
 
     /**
-     * 测试updateIDVTerminalAuthStateAndLicenseNum方法
+     * 测试updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth方法
      */
     @Test
-    public void testUpdateIDVTerminalAuthStateAndLicenseNum() {
+    public void testUpdateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth() {
         List<TerminalEntity> terminalEntityList = new ArrayList<>();
         TerminalEntity entity = new TerminalEntity();
         entity.setTerminalId("123");
-        entity.setVersion(1);
+        entity.setAuthed(Boolean.FALSE);
         terminalEntityList.add(entity);
 
         new Expectations() {
             {
-                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
                 result = terminalEntityList;
-                basicInfoDAO.modifyAuthed(withEqual("123"), anyInt, Boolean.FALSE);
-                result = 1;
+                basicInfoDAO.save(entity);
             }
         };
+
         try {
-            terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(5);
+            terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
         } catch (Exception e) {
             Assert.fail();
         }
@@ -65,35 +65,37 @@ public class TerminalLicenseServiceTxImplTest {
             {
                 globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, anyString);
                 times = 1;
-                basicInfoDAO.modifyAuthed(withEqual("123"), 1, Boolean.FALSE);
+                basicInfoDAO.save(entity);
                 times = 1;
             }
         };
     }
 
     /**
-     * 测试updateIDVTerminalAuthStateAndLicenseNum方法，更新终端授权状态重试失败
+     * 测试updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth方法，更新终端授权状态重试失败
      */
     @Test
-    public void testUpdateIDVTerminalAuthStateAndLicenseNumUpdateTermianlAuthStateFail() {
+    public void testUpdateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuthUpdateTermianlAuthStateFail() {
         List<TerminalEntity> terminalEntityList = new ArrayList<>();
         TerminalEntity entity = new TerminalEntity();
         entity.setTerminalId("123");
         entity.setVersion(1);
+        entity.setAuthed(Boolean.FALSE);
         terminalEntityList.add(entity);
 
-        new Expectations() {
+        new Expectations(entity) {
             {
-                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
                 result = terminalEntityList;
-                basicInfoDAO.modifyAuthed(withEqual("123"), anyInt, Boolean.FALSE);
-                result = 0;
+                basicInfoDAO.save(entity);
+                result = new Exception("xx");
+                entity.setAuthed(Boolean.TRUE);
                 basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
                 result = entity;
             }
         };
         try {
-            terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(5);
+            terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
         } catch (Exception e) {
             Assert.fail();
         }
@@ -101,37 +103,39 @@ public class TerminalLicenseServiceTxImplTest {
             {
                 globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, anyString);
                 times = 1;
-                basicInfoDAO.modifyAuthed(withEqual("123"), 1, Boolean.FALSE);
+                basicInfoDAO.save(entity);
                 times = 4;
             }
         };
     }
 
     /**
-     * 测试updateIDVTerminalAuthStateAndLicenseNum方法，在第2次重试时才成功更新授权状态成功
+     * 测试updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth方法，在第2次重试时才成功更新授权状态成功
      */
     @Test
-    public void testUpdateIDVTerminalAuthStateAndLicenseNumUpdateAuthStateSuccessInTheSecondTime() {
+    public void testUpdateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuthUpdateAuthStateSuccessInTheSecondTime() {
         List<TerminalEntity> terminalEntityList = new ArrayList<>();
         TerminalEntity entity = new TerminalEntity();
         entity.setTerminalId("123");
         entity.setVersion(1);
+        entity.setAuthed(Boolean.FALSE);
         terminalEntityList.add(entity);
 
-        new Expectations() {
+        new Expectations(entity) {
             {
-                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
                 result = terminalEntityList;
-                basicInfoDAO.modifyAuthed(withEqual("123"), anyInt, Boolean.FALSE);
-                result = 0;
-                result = 0;
-                result = 1;
+                basicInfoDAO.save(entity);
+                result = new Exception("xx");
+                result = new Exception("xx");
+                result = new TerminalEntity();
+                entity.setAuthed(Boolean.TRUE);
                 basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
                 result = entity;
             }
         };
         try {
-            terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(5);
+            terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
         } catch (Exception e) {
             Assert.fail();
         }
@@ -139,7 +143,7 @@ public class TerminalLicenseServiceTxImplTest {
             {
                 globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, anyString);
                 times = 1;
-                basicInfoDAO.modifyAuthed(withEqual("123"), 1, Boolean.FALSE);
+                basicInfoDAO.save(entity);
                 times = 3;
             }
         };

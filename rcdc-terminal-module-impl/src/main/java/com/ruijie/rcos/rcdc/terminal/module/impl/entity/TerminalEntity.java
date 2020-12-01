@@ -43,6 +43,8 @@ public class TerminalEntity {
 
     public static final String BEAN_COPY_IGNORE_DISK_INFO_ARR = "diskInfoArr";
 
+    public static final String BEAN_COPY_IGGNORE_NET_CARD_MAC_INFO_ARR = "netCardMacInfoArr";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

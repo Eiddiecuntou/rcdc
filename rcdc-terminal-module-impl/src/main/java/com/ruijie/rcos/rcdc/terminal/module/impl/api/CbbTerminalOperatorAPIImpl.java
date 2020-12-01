@@ -65,7 +65,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
         CbbTerminalBasicInfoDTO basicInfoDTO = new CbbTerminalBasicInfoDTO();
         BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO, TerminalEntity.BEAN_COPY_IGNORE_NETWORK_INFO_ARR,
-            TerminalEntity.BEAN_COPY_IGNORE_DISK_INFO_ARR);
+            TerminalEntity.BEAN_COPY_IGNORE_DISK_INFO_ARR, TerminalEntity.BEAN_COPY_IGGNORE_NET_CARD_MAC_INFO_ARR);
         basicInfoDTO.setTerminalPlatform(basicInfoEntity.getPlatform());
         basicInfoDTO.setNetworkInfoArr(basicInfoEntity.getNetworkInfoArr());
         basicInfoDTO.setDiskInfoArr(basicInfoEntity.getDiskInfoArr());

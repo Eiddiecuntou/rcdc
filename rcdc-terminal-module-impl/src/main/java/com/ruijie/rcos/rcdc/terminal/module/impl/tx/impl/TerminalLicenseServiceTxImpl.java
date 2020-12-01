@@ -56,9 +56,15 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
 
     private void updateTerminalAuthState(List<TerminalEntity> terminalEntityList, Boolean authed) {
         terminalEntityList.stream().forEach(terminalEntity -> {
-            int affectedRows = terminalBasicInfoDAO
-                .modifyAuthed(terminalEntity.getTerminalId(), terminalEntity.getVersion(), authed);
-            if (affectedRows == 0) {
+            if (authed.equals(terminalEntity.getAuthed())) {
+                LOGGER.info("更新终端授权状态为{}时，发现终端此时的授权状态已经是{}。无须更新终端状态", authed, authed);
+                return;
+            }
+            terminalEntity.setAuthed(authed);
+            try {
+                terminalBasicInfoDAO.save(terminalEntity);
+            } catch (Exception e) {
+                LOGGER.error("更新终端[" +  terminalEntity.getTerminalId() + "]的授权状态为" + authed + "失败！", e);
                 retryUpdateAuthed(terminalEntity.getTerminalId(), authed);
             }
         });
@@ -73,13 +79,21 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
         int retry = 0;
 
         while (retry++ < FAIL_TRY_COUNT) {
-            LOGGER.warn("第{}次重试更新终端[{}]的授权状态为：{}", retry, terminalId, authed);
+            LOGGER.warn("第{}次重试更新终端[{}]的授权状态为{}", retry, terminalId, authed);
             TerminalEntity entity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-            int affectedRows = terminalBasicInfoDAO.modifyAuthed(terminalId, entity.getVersion(), authed);
-            if (affectedRows != 0) {
-                LOGGER.info("成功通过重试更新终端[{}]的授权状态为：{}", terminalId, authed);
+            if (authed.equals(entity.getAuthed())) {
+                LOGGER.info("重试更新终端授权状态为{}时，发现终端此时的授权状态已经是{}。无须重试更新终端状态", authed, authed);
                 return;
             }
+            entity.setAuthed(authed);
+            try {
+                terminalBasicInfoDAO.save(entity);
+            } catch (Exception e) {
+                LOGGER.error("第" + retry + "次重试更新终端[" + terminalId + "]的授权状态为" + authed + "失败！", e);
+                continue;
+            }
+            LOGGER.info("成功通过重试更新终端[{}]的授权状态为：{}", terminalId, authed);
+            return;
         }
 
         LOGGER.error("重试{}次，仍然无法成功将终端[{}]的授权状态更新为：{}", FAIL_TRY_COUNT, terminalId, authed);
