@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.PackageObtainModeEnums;
 import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
 /**
@@ -15,6 +16,8 @@ import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 public class SystemUpgradeCheckResult<T> extends EqualsHashcodeSupport {
 
     private Integer systemUpgradeCode;
+
+    private PackageObtainModeEnums packageObtainMode;
 
     private T content;
 
@@ -32,5 +35,13 @@ public class SystemUpgradeCheckResult<T> extends EqualsHashcodeSupport {
 
     public void setContent(T content) {
         this.content = content;
+    }
+
+    public PackageObtainModeEnums getPackageObtainMode() {
+        return packageObtainMode;
+    }
+
+    public void setPackageObtainMode(PackageObtainModeEnums packageObtainMode) {
+        this.packageObtainMode = packageObtainMode;
     }
 }

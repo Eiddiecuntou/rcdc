@@ -145,6 +145,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         upgradeResult.setSystemUpgradeCode(systemUpgradeCheckResult.getSystemUpgradeCode());
         upgradeResult.setSystemUpgradeInfo(systemUpgradeCheckResult.getContent());
         upgradeResult.setTerminalWorkModeArr(terminalBizConfig.getTerminalWorkModeArr());
+        upgradeResult.setPackageObtainMode(systemUpgradeCheckResult.getPackageObtainMode());
         return upgradeResult;
     }
 
