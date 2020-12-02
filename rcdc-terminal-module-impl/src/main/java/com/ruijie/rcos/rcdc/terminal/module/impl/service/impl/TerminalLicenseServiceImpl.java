@@ -2,10 +2,13 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
@@ -15,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 /**
- * Description: TerminalService实现类
+ * Description: TerminalLicenseService实现类
  * Copyright: Copyright (c) 2020
  * Company: Ruijie Co., Ltd.
  * Create Time: 2020/9/17 5:35 下午
@@ -27,11 +30,6 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
 
     private static Logger LOGGER = LoggerFactory.getLogger(TerminalLicenseServiceImpl.class);
 
-    /**
-     * 终端证书默认数量，-1表示授权不受限制。同时也是授权数量的最小值
-     */
-    private static Integer TERMINAL_AUTH_DEFAULT_NUM = -1;
-
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
 
@@ -40,6 +38,9 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
+
+    @Autowired
+    private TerminalLicenseServiceTx terminalLicenseServiceTx;
 
     private Integer licenseNum;
 
@@ -64,7 +65,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
         synchronized (usedNumLock) {
             // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，不会维护已授权数目，所以需要从数据库同步数据
             if (usedNum == null || getIDVTerminalLicenseNum() == -1) {
-                usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+                usedNum = (int) terminalBasicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 LOGGER.info("从数据库同步idv授权usedNum值为:{}", usedNum);
             }
         }
@@ -79,19 +80,58 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
     }
 
     @Override
-    public void updateIDVTerminalLicenseNum(Integer licenseNum) {
+    public void updateIDVTerminalLicenseNum(Integer licenseNum) throws BusinessException {
         Assert.notNull(licenseNum, "licenseNum can not be null");
-        Assert.isTrue(licenseNum >= TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + TERMINAL_AUTH_DEFAULT_NUM);
+        Assert.isTrue(licenseNum >= Constants.IDV_TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + Constants.IDV_TERMINAL_AUTH_DEFAULT_NUM);
 
-        LOGGER.info("licenseNum 更新为 {}", licenseNum);
         synchronized (usedNumLock) {
-            globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
-            if (getIDVTerminalLicenseNum() == -1 && licenseNum != -1) {
-                LOGGER.info("licenseNum为-1时不实时维护usedNum的值，不为-1时实时维护usedNum的值。licenseNum由-1变更为非-1，从数据库同步已授权终端数");
-                this.usedNum = (int) terminalBasicInfoDAO.countByPlatform(CbbTerminalPlatformEnums.IDV);
+            Integer currentNum = getIDVTerminalLicenseNum();
+            if (Objects.equals(currentNum, licenseNum)) {
+                LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
+                return;
             }
+
+            // 授权证书为-1分为两种情况：RCDC首次初始化sql时将licenseNum初始化为-1。已导入临时证书，产品调用cbb接口，设licenseNum值为-1。
+            // 授权证书为-1时，不限制终端授权，可接入任意数量IDV终端。
+            if (currentNum == Constants.IDV_TERMINAL_AUTH_DEFAULT_NUM) {
+                LOGGER.info("从终端授权数量为-1，导入正式授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+                processImportOfficialLicense(licenseNum);
+                return;
+            }
+            if (licenseNum == Constants.IDV_TERMINAL_AUTH_DEFAULT_NUM) {
+                LOGGER.info("从终端授权数量不是-1，导入临时授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+                processImportTempLicense();
+                return;
+            }
+
+            LOGGER.info("当前授权数量和准备更新的授权数量不等，且都不等于-1。当前授权数量为{}, 准备更新授权数量为{}", currentNum, licenseNum);
+            if (currentNum > licenseNum) {
+                throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ALLOW_REDUCE_TERMINAL_LICENSE_NUM);
+            }
+
+            globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
             this.licenseNum = licenseNum;
         }
+    }
+
+    /**
+     * 处理从终端授权数量为-1，导入正式授权证书场景。
+     * @param licenseNum 终端授权数量
+     */
+    private void processImportOfficialLicense(Integer licenseNum) {
+        // 将所有已授权IDV终端置为未授权，并更新终端授权数量
+        terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(licenseNum);
+        this.usedNum = 0;
+        this.licenseNum = licenseNum;
+    }
+
+    /**
+     * 处理从终端授权数量不为-1，导入临时证书场景
+     */
+    private void processImportTempLicense() {
+        // 将所有未授权IDV终端置为已授权，并更新终端授权数量
+        terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
+        this.licenseNum = Constants.IDV_TERMINAL_AUTH_DEFAULT_NUM;
     }
 
     @Override
@@ -99,13 +139,13 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
         Assert.hasText(terminalId, "terminalId can not be empty");
         Assert.notNull(basicInfo, "basicInfo can not be null");
         synchronized (usedNumLock) {
-            if (!basicInfoService.isNewTerminal(terminalId)) {
+            if (basicInfoService.isAuthed(terminalId)) {
                 LOGGER.info("终端[{}]已授权成功，无须再次授权", terminalId);
                 return true;
             }
             Integer idvLicenseNum = getIDVTerminalLicenseNum();
             Integer idvUsedNum = getIDVUsedNum();
-            if (!Objects.equals(idvLicenseNum, TERMINAL_AUTH_DEFAULT_NUM) && idvUsedNum >= idvLicenseNum) {
+            if (!Objects.equals(idvLicenseNum, Constants.IDV_TERMINAL_AUTH_DEFAULT_NUM) && idvUsedNum >= idvLicenseNum) {
                 LOGGER.info("idv终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", licenseNum, usedNum);
                 return false;
             }

@@ -36,6 +36,7 @@ import java.util.UUID;
  * @author nt
  */
 @RunWith(SkyEngineRunner.class)
+
 public class TerminalAuthHelperTest {
 
     @Tested
@@ -61,8 +62,8 @@ public class TerminalAuthHelperTest {
 
         new Expectations() {
             {
-                basicInfoService.isNewTerminal(terminalId);
-                result = false;
+                basicInfoService.isAuthed(terminalId);
+                result = true;
             }
         };
         CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
@@ -76,7 +77,7 @@ public class TerminalAuthHelperTest {
                 connectHandlerSPI.notifyTerminalSupport(basicInfo);
                 times = 1;
 
-                basicInfoService.isNewTerminal(terminalId);
+                basicInfoService.isAuthed(terminalId);
                 times = 1;
             }
         };
@@ -93,8 +94,8 @@ public class TerminalAuthHelperTest {
 
         new Expectations() {
             {
-                basicInfoService.isNewTerminal(terminalId);
-                result = true;
+                basicInfoService.isAuthed(terminalId);
+                result = false;
             }
         };
         CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
@@ -108,7 +109,7 @@ public class TerminalAuthHelperTest {
                 connectHandlerSPI.notifyTerminalSupport(basicInfo);
                 times = 1;
 
-                basicInfoService.isNewTerminal(terminalId);
+                basicInfoService.isAuthed(terminalId);
                 times = 1;
             }
         };
@@ -129,8 +130,8 @@ public class TerminalAuthHelperTest {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 result = bizConfigDTO;
 
-                basicInfoService.isNewTerminal(terminalId);
-                result = true;
+                basicInfoService.isAuthed(terminalId);
+                result = false;
             }
         };
 
@@ -138,14 +139,14 @@ public class TerminalAuthHelperTest {
         basicInfo.setTerminalId(terminalId);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, false, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SKIP);
-        Assert.assertTrue(authResult.isNeedSaveTerminalInfo());
+        Assert.assertTrue(!authResult.isNeedSaveTerminalInfo());
 
         new Verifications() {
             {
                 connectHandlerSPI.notifyTerminalSupport(basicInfo);
                 times = 1;
 
-                basicInfoService.isNewTerminal(terminalId);
+                basicInfoService.isAuthed(terminalId);
                 times = 1;
             }
         };
@@ -172,8 +173,8 @@ public class TerminalAuthHelperTest {
                 terminalLicenseService.authIDV(terminalId, true, basicInfo);
                 result = true;
 
-                basicInfoService.isNewTerminal(terminalId);
-                result = true;
+                basicInfoService.isAuthed(terminalId);
+                result = false;
             }
         };
 
@@ -187,7 +188,7 @@ public class TerminalAuthHelperTest {
                 connectHandlerSPI.notifyTerminalSupport(basicInfo);
                 times = 1;
 
-                basicInfoService.isNewTerminal(terminalId);
+                basicInfoService.isAuthed(terminalId);
                 times = 1;
 
                 terminalLicenseService.getIDVTerminalLicenseNum();
@@ -217,8 +218,8 @@ public class TerminalAuthHelperTest {
                 terminalLicenseService.getIDVTerminalLicenseNum();
                 result = -1;
 
-                basicInfoService.isNewTerminal(terminalId);
-                result = true;
+                basicInfoService.isAuthed(terminalId);
+                result = false;
             }
         };
 
@@ -232,7 +233,7 @@ public class TerminalAuthHelperTest {
                 connectHandlerSPI.notifyTerminalSupport(basicInfo);
                 times = 1;
 
-                basicInfoService.isNewTerminal(terminalId);
+                basicInfoService.isAuthed(terminalId);
                 times = 1;
 
                 terminalLicenseService.getIDVTerminalLicenseNum();
@@ -256,8 +257,8 @@ public class TerminalAuthHelperTest {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 result = bizConfigDTO;
 
-                basicInfoService.isNewTerminal(terminalId);
-                result = true;
+                basicInfoService.isAuthed(terminalId);
+                result = false;
 
                 terminalLicenseService.getIDVTerminalLicenseNum();
                 result = 100;
@@ -277,7 +278,7 @@ public class TerminalAuthHelperTest {
                 connectHandlerSPI.notifyTerminalSupport(basicInfo);
                 times = 1;
 
-                basicInfoService.isNewTerminal(terminalId);
+                basicInfoService.isAuthed(terminalId);
                 times = 1;
 
                 terminalLicenseService.getIDVTerminalLicenseNum();

@@ -100,9 +100,10 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     @Override
-    public boolean isNewTerminal(String terminalId) {
+    public boolean isAuthed(String terminalId) {
         Assert.hasText(terminalId, "terminalId can not be empty");
-        return basicInfoDAO.findTerminalEntityByTerminalId(terminalId) == null;
+        TerminalEntity termianlEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        return termianlEntity != null && termianlEntity.getAuthed() != null && termianlEntity.getAuthed();
     }
 
     @Override
@@ -127,6 +128,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
         CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
         basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
+        basicInfoEntity.setAuthed(Boolean.TRUE);
         return basicInfoEntity;
     }
 

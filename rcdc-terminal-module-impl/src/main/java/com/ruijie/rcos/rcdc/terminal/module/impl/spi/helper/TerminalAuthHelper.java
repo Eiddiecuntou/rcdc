@@ -54,12 +54,12 @@ public class TerminalAuthHelper {
         CbbTerminalBizConfigDTO bizConfigDTO = connectHandlerSPI.notifyTerminalSupport(basicInfo);
 
         String terminalId = basicInfo.getTerminalId();
-        if (!basicInfoService.isNewTerminal(terminalId)) {
-            LOGGER.info("终端[{}]{}不是新终端，需要更新终端信息", terminalId, basicInfo.getTerminalName());
+        if (basicInfoService.isAuthed(terminalId)) {
+            LOGGER.info("终端[{}]{}已授权，需要更新终端信息", terminalId, basicInfo.getTerminalName());
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
         }
 
-        LOGGER.info("新终端[{}]{}接入", terminalId, basicInfo.getTerminalName());
+        LOGGER.info("未授权终端[{}]{}接入", terminalId, basicInfo.getTerminalName());
         if (isInUpgradeProcess) {
             LOGGER.info("终端处于升级过程中，暂不保存终端信息");
             // 终端需要升级，或者异常升级结果（不属于需要升级、不需要升级范畴，如：服务器准备中），不保存终端信息
@@ -68,8 +68,8 @@ public class TerminalAuthHelper {
 
         CbbTerminalWorkModeEnums[] workModeArr = bizConfigDTO.getTerminalWorkModeArr();
         if (ArrayUtils.isEmpty(workModeArr)) {
-            LOGGER.info("终端工作模式为空，跳过授权");
-            return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
+            LOGGER.error("终端工作模式为空，跳过授权");
+            return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
         TerminalAuthResult finalResult = new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
@@ -82,7 +82,6 @@ public class TerminalAuthHelper {
 
             if (workMode == CbbTerminalWorkModeEnums.VOI) {
                 // TODO VOI授权暂未确定
-                setAuthResult(finalResult, new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP));
             }
         }
 

@@ -31,6 +31,14 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     TerminalEntity findTerminalEntityByTerminalId(String terminalId);
 
     /**
+     * 获取符合平台类型、授权情况的终端列表
+     * @param platform 终端平台类型
+     * @param authed 终端是否授权
+     * @return 符合平台类型、授权情况的终端列表
+     */
+    List<TerminalEntity> findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums platform, Boolean authed);
+
+    /**
      * 根据terminalId获取terminalName
      *
      * @param terminalId 终端id
@@ -120,9 +128,10 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     List<String> getTerminalOsTypeByPlatform(CbbTerminalPlatformEnums[] platformArr);
 
     /**
-     * 根据终端类型统计该类型终端数量
+     * 根据终端类型、是否授权统计终端数量
      * @param platform 终端平台类型
-     * @return 已接入的该类型的终端数量
+     * @param authed 终端是否授权
+     * @return 符合终端类型、授权情况的终端数量
      */
-    long countByPlatform(CbbTerminalPlatformEnums platform);
+    long countByPlatformAndAuthed(CbbTerminalPlatformEnums platform, Boolean authed);
 }
