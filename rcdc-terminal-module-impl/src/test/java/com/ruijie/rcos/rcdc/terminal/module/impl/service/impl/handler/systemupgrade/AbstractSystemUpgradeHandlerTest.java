@@ -82,6 +82,42 @@ public class AbstractSystemUpgradeHandlerTest {
     }
 
     /**
+     * 测试testCheckSystemUpgradeCannotUpgrade2 - 不能升级
+     */
+    @Test
+    public void testCheckSystemUpgradeCannotUpgrade2() throws BusinessException {
+        TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
+
+        TerminalEntity terminalEntity = buildTerminalEntity();
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
+
+        new MockUp<TestedSystemUpgradeHandler>() {
+            @Mock
+            public boolean isTerminalEnableUpgrade(TerminalEntity terminal, CbbTerminalTypeEnums terminalType) {
+                return false;
+            }
+        };
+
+        SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.IDV_LINUX, terminalEntity);
+
+        SystemUpgradeCheckResult expectedResult = new SystemUpgradeCheckResult();
+        expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult());
+        expectedResult.setContent(null);
+        expectedResult.setPackageObtainMode(PackageObtainModeEnums.OTA);
+        assertEquals(expectedResult, checkResult);
+
+        new Verifications() {
+            {
+                systemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                times = 0;
+
+                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId((UUID) any);
+                times = 0;
+            }
+        };
+    }
+
+    /**
      * 测试CheckSystemUpgrade - 可以升级，并且是新接入终端
      */
     @Test

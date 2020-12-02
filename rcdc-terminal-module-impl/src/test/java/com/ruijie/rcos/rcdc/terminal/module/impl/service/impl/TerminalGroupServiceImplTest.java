@@ -718,4 +718,54 @@ public class TerminalGroupServiceImplTest {
         String[] terminalGroupNameArr = terminalGroupService.getTerminalGroupNameArr(uuid);
         Assert.assertEquals(2, terminalGroupNameArr.length);
     }
+
+    /**
+     * testFindAll
+     */
+    @Test
+    public void testFindAll() {
+        List<TerminalGroupEntity> groupEntityList = Lists.newArrayList();
+        new Expectations() {
+            {
+                terminalGroupDAO.findAll();
+                result = groupEntityList;
+            }
+        };
+
+        List<TerminalGroupEntity> resultList = terminalGroupService.findAll();
+        assertEquals(groupEntityList, resultList);
+
+        new Verifications() {
+            {
+                terminalGroupDAO.findAll();
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * testGetByName
+     */
+    @Test
+    public void testGetByName() {
+        List<TerminalGroupEntity> groupEntityList = Lists.newArrayList();
+        UUID parentGroupId = UUID.randomUUID();
+        String groupName = "123";
+        new Expectations() {
+            {
+                terminalGroupDAO.findByParentIdAndName(parentGroupId, groupName);
+                result = groupEntityList;
+            }
+        };
+
+        List<TerminalGroupEntity> resultList = terminalGroupService.getByName(parentGroupId, groupName);
+        assertEquals(groupEntityList, resultList);
+
+        new Verifications() {
+            {
+                terminalGroupDAO.findByParentIdAndName(parentGroupId, groupName);
+                times = 1;
+            }
+        };
+    }
 }
