@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi.response;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.PackageObtainModeEnums;
 
 /**
  * Description: Function Description
@@ -17,6 +18,8 @@ public class TerminalUpgradeResult {
     private Object updatelist;
 
     private Integer systemUpgradeCode;
+
+    private PackageObtainModeEnums packageObtainMode;
 
     private Object systemUpgradeInfo;
 
@@ -60,5 +63,13 @@ public class TerminalUpgradeResult {
 
     public void setTerminalWorkModeArr(CbbTerminalWorkModeEnums[] terminalWorkModeArr) {
         this.terminalWorkModeArr = terminalWorkModeArr;
+    }
+
+    public PackageObtainModeEnums getPackageObtainMode() {
+        return packageObtainMode;
+    }
+
+    public void setPackageObtainMode(PackageObtainModeEnums packageObtainMode) {
+        this.packageObtainMode = packageObtainMode;
     }
 }

@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
@@ -73,16 +74,10 @@ public class TerminalAuthHelper {
         }
 
         TerminalAuthResult finalResult = new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
-        for (CbbTerminalWorkModeEnums workMode : workModeArr) {
-            if (workMode == CbbTerminalWorkModeEnums.IDV) {
-                LOGGER.info("工作模式包含IDV，进行IDV授权");
-                TerminalAuthResult authResult = processIdvTerminalLicense(basicInfo, isNewConnection);
-                setAuthResult(finalResult, authResult);
-            }
-
-            if (workMode == CbbTerminalWorkModeEnums.VOI) {
-                // TODO VOI授权暂未确定
-            }
+        if (basicInfo.getPlatform() == CbbTerminalPlatformEnums.IDV) {
+            LOGGER.info("平台类型为IDV，进行IDV授权");
+            TerminalAuthResult authResult = processIdvTerminalLicense(basicInfo, isNewConnection);
+            setAuthResult(finalResult, authResult);
         }
 
         return finalResult;

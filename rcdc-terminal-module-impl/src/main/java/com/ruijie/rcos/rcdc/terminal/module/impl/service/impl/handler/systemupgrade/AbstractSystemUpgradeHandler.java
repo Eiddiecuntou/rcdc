@@ -10,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEnt
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.PackageObtainModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -46,14 +47,14 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         CheckSystemUpgradeResultEnums checkSystemUpgradeResult = isTerminalNeedUpgrade(terminalEntity, terminalType);
         if (checkSystemUpgradeResult == CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE
                 || checkSystemUpgradeResult == CheckSystemUpgradeResultEnums.UNSUPPORT) {
-            return buildNoNeedCheckResult(checkSystemUpgradeResult);
+            return buildNoNeedCheckResult(checkSystemUpgradeResult, terminalEntity);
         }
 
         TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageType(terminalType);
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         SystemUpgradeCheckResult<T> checkResult = getCheckResult(upgradePackage, upgradeTask);
         checkResult.setSystemUpgradeCode(checkSystemUpgradeResult.getResult());
-
+        
         return checkResult;
     }
 
@@ -156,10 +157,18 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         return false;
     }
 
-    private SystemUpgradeCheckResult<T> buildNoNeedCheckResult(CheckSystemUpgradeResultEnums checkSystemUpgradeResult) {
+    private SystemUpgradeCheckResult<T> buildNoNeedCheckResult(CheckSystemUpgradeResultEnums result, TerminalEntity terminalEntity) {
         SystemUpgradeCheckResult<T> noNeedResult = new SystemUpgradeCheckResult();
-        noNeedResult.setSystemUpgradeCode(checkSystemUpgradeResult.getResult());
+        noNeedResult.setSystemUpgradeCode(result.getResult());
         noNeedResult.setContent(null);
+
+        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
+        if (terminalType == CbbTerminalTypeEnums.VDI_LINUX) {
+            noNeedResult.setPackageObtainMode(PackageObtainModeEnums.SAMBA);
+        } else {
+            noNeedResult.setPackageObtainMode(PackageObtainModeEnums.OTA);
+        }
+
         return noNeedResult;
     }
 

@@ -9,6 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.PackageObtainModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.BtClientService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.BtClientServiceImpl;
@@ -90,6 +91,7 @@ public class SystemOtaUpgradeHandlerTest {
         OtaCheckResultContent content = buildExpectedAndroidVDICheckResultContent(upgradeEntity);
         expectedResult.setContent(content);
         expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
+        expectedResult.setPackageObtainMode(PackageObtainModeEnums.OTA);
 
         assertEquals(expectedResult, checkResult);
     }
