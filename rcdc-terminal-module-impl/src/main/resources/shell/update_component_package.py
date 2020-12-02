@@ -11,10 +11,10 @@ import shutil
 import sys
 import traceback
 
-from bt_api import bt_server_init, start_bt_share, bt_make_seed_block, \
+from terminal_bt_api import bt_server_init, start_bt_share, bt_make_seed_block, \
     stop_bt_share
-from common import LOGGER, RJUpgradeException, FILE_SPERATOR, read_file, create_directory, md5sum, shell_call
-from consts import RAINOS_UPDATE_UPDATE_LIST_RELATIVE_PATH, UPDATELIST_RELATIVE_PATH, \
+from terminal_common import LOGGER, RJUpgradeException, FILE_SPERATOR, read_file, create_directory, md5sum, shell_call
+from terminal_consts import RAINOS_UPDATE_UPDATE_LIST_RELATIVE_PATH, UPDATELIST_RELATIVE_PATH, \
     RAINOS_UPDATE_FULL_COMPONENT_RELATIVE_PATH, RAINOS_UPDATE_FULL_COMPONENT_TORRENT_RELATIVE_PATH, \
     RAINOS_UPDATE_DIFF_COMPONENT_RELATIVE_PATH, DIFF_COMPONENT_SUFFIX, \
     RAINOS_UPDATE_DIFF_COMPONENT_TORRENT_RELATIVE_PATH

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2020/11/20 16:52
 # @Author  : nting
-# @File    : bt_api.py
+# @File    : terminal_bt_api.py
 
 import json
 import os
@@ -10,7 +10,7 @@ import sys
 import traceback
 from ctypes import c_char, string_at, cdll
 
-from common import LOGGER
+from terminal_common import LOGGER
 
 # bt服务so库路径
 BT_SERVICE_SO_PATH = "/usr/local/lib/libsysabslayer_linux.so"
