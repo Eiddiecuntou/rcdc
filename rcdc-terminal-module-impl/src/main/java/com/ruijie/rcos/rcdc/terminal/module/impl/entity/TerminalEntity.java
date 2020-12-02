@@ -43,6 +43,8 @@ public class TerminalEntity {
 
     public static final String BEAN_COPY_IGNORE_DISK_INFO_ARR = "diskInfoArr";
 
+    public static final String BEAN_COPY_IGGNORE_NET_CARD_MAC_INFO_ARR = "netCardMacInfoArr";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -100,6 +102,8 @@ public class TerminalEntity {
     private Date lastOnlineTime;
 
     private Date lastOfflineTime;
+
+    private Boolean authed;
 
     @Version
     private Integer version;
@@ -521,5 +525,13 @@ public class TerminalEntity {
 
     public void setAllNetCardMacInfo(String allNetCardMacInfo) {
         this.allNetCardMacInfo = allNetCardMacInfo;
+    }
+
+    public Boolean getAuthed() {
+        return authed;
+    }
+
+    public void setAuthed(Boolean authed) {
+        this.authed = authed;
     }
 }

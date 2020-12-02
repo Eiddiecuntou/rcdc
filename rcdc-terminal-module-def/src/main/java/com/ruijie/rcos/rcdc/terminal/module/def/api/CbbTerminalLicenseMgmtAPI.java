@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbIDVTerminalLicenseNumDTO;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
  * 终端授权管理
@@ -22,13 +23,16 @@ public interface CbbTerminalLicenseMgmtAPI {
      * @apiDescription 设置IDV终端授权数，限制IDV终端接入数量
      * @apiParam (请求体字段说明) {Integer} licenseNum 授权数
      *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_not_allow_reduce_terminal_license_num message:终端正式授权证书个数不允许减少}
      */
     /**
      * 设置IDV终端授权数，限制IDV终端接入数量
      *
      * @param licenseNum 授权数
+     * @throws BusinessException 业务异常
      */
-    void setIDVTerminalLicenseNum(Integer licenseNum);
+    void setIDVTerminalLicenseNum(Integer licenseNum) throws BusinessException;
 
     /**
      * @api {GET} CbbTerminalLicenseMgmtAPI.getIDVTerminalLicenseNum 获取IDV终端授权信息

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbIDVTerminalLicenseNumDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
 
 
     @Override
-    public void setIDVTerminalLicenseNum(Integer licenseNum) {
+    public void setIDVTerminalLicenseNum(Integer licenseNum) throws BusinessException {
         Assert.notNull(licenseNum, "licenseNum can not be null");
         terminalLicenseService.updateIDVTerminalLicenseNum(licenseNum);
     }

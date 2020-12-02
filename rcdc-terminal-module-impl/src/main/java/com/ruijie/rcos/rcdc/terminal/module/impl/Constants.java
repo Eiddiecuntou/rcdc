@@ -257,4 +257,9 @@ public interface Constants {
 
     /**  维护模式dispatchKey - 终端 **/
     String MAINTENANCE_MODE_TERMINAL = "terminal";
+
+    /**
+     * 终端证书默认数量，-1表示授权不受限制。同时也是授权数量的最小值
+     */
+    Integer IDV_TERMINAL_AUTH_DEFAULT_NUM = -1;
 }

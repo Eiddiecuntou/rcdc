@@ -374,4 +374,6 @@ public interface BusinessKey {
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_FILE_ERROR = "rcdc_terminal_system_upgrade_package_ota_file_error";
 
     String RCDC_TERMINAL_SAMBA_UNMOUNT = "rcdc_terminal_samba_unmount";
+
+    String RCDC_TERMINAL_NOT_ALLOW_REDUCE_TERMINAL_LICENSE_NUM = "rcdc_terminal_not_allow_reduce_terminal_license_num";
 }

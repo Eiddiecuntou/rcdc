@@ -75,6 +75,8 @@ public class CbbTerminalBasicInfoDTO {
 
     private Date lastOfflineTime;
 
+    private Boolean authed;
+
     private Integer version;
 
     @Enumerated(EnumType.STRING)
@@ -356,5 +358,13 @@ public class CbbTerminalBasicInfoDTO {
 
     public void setNetCardMacInfoArr(CbbTerminalNetCardMacInfoDTO[] netCardMacInfoArr) {
         this.netCardMacInfoArr = netCardMacInfoArr;
+    }
+
+    public Boolean getAuthed() {
+        return authed;
+    }
+
+    public void setAuthed(Boolean authed) {
+        this.authed = authed;
     }
 }
