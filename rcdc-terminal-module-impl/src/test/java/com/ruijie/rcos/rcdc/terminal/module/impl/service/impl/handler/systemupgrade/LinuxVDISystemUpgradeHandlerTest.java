@@ -9,6 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTermin
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.PackageObtainModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.SambaInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.SambaInfoService;
@@ -112,6 +113,7 @@ public class LinuxVDISystemUpgradeHandlerTest {
 
         expectedResult.setContent(content);
         expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());
+        expectedResult.setPackageObtainMode(PackageObtainModeEnums.SAMBA);
 
         assertEquals(expectedResult, checkResult);
     }

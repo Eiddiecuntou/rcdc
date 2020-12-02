@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEnt
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.PackageObtainModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -66,6 +67,7 @@ public class AbstractSystemUpgradeHandlerTest {
         SystemUpgradeCheckResult expectedResult = new SystemUpgradeCheckResult();
         expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult());
         expectedResult.setContent(null);
+        expectedResult.setPackageObtainMode(PackageObtainModeEnums.SAMBA);
         assertEquals(expectedResult, checkResult);
 
         new Verifications() {
@@ -184,6 +186,7 @@ public class AbstractSystemUpgradeHandlerTest {
         SystemUpgradeCheckResult expectedResult = new SystemUpgradeCheckResult();
         expectedResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE.getResult());
         expectedResult.setContent(null);
+        expectedResult.setPackageObtainMode(PackageObtainModeEnums.SAMBA);
         assertEquals(expectedResult, checkResult);
 
         new Verifications() {
