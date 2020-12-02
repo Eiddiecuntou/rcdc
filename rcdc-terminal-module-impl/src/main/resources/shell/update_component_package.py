@@ -43,6 +43,8 @@ def update(os_type):
     try:
         LOGGER.info("init bt server %s" % os_type)
         bt_server_init(os_type)
+        LOGGER.info("deal_with_old_package %s" % os_type)
+        deal_with_old_package(os_type)
         LOGGER.info("finish init bt server %s " % os_type)
         LOGGER.info("start upgrade terminal [%s] package update..." % os_type)
         package_update(os_type)
@@ -423,14 +425,15 @@ def generate_dir():
 
 
 def stop_and_remove_package(old_package_path, share_file_path):
-    old_origin_path = '%s%s%s' % (old_package_path, FILE_SPERATOR, ORIGIN_DIR_NAME)
-    LOGGER.info("old_origin_path: %s" % old_package_path)
-    if not os.path.exists(old_origin_path):
+    old_origin_dir = '%s%s%s' % (old_package_path, FILE_SPERATOR, ORIGIN_DIR_NAME)
+    LOGGER.info("old_origin_dir: %s" % old_origin_dir)
+    if not os.path.exists(old_origin_dir):
         LOGGER.info("old package not exit, skip")
         return
 
-    old_update_list_path = '%s%s' % (old_origin_path, RAINOS_UPDATE_UPDATE_LIST_RELATIVE_PATH)
-    old_update_list = json.loads(old_update_list_path)
+    old_update_list_path = '%s%s' % (old_origin_dir, RAINOS_UPDATE_UPDATE_LIST_RELATIVE_PATH)
+    LOGGER.info("old_update_list_path: %s" % old_update_list_path)
+    old_update_list = json.loads(read_file(old_update_list_path))
     old_component_list = None if (old_update_list is None) else old_update_list['componentList']
     LOGGER.info("stop old package bt share")
     try:
@@ -469,7 +472,6 @@ if __name__ == '__main__':
         print "fail"
     else:
         os_type = sys.argv[2]
-        deal_with_old_package(os_type)
         result = update(os_type)
         LOGGER.info("update result : %s" % result)
         print result
