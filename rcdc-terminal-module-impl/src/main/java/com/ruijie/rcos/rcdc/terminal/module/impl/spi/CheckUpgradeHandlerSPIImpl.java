@@ -23,7 +23,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeCheckResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
@@ -96,9 +95,18 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         basicInfo.setPlatform(terminalBizConfigDTO.getTerminalPlatform());
 
         // 保存终端基本信息
-        String terminalId = request.getTerminalId();
-        TerminalEntity terminalEntity = basicInfoService.convertBasicInfo2TerminalEntity(terminalId, request.getNewConnection(),
+        TerminalEntity terminalEntity = basicInfoService.convertBasicInfo2TerminalEntity(request.getTerminalId(), request.getNewConnection(),
                 basicInfo);
+
+        if (terminalEntity.getPlatform() == CbbTerminalPlatformEnums.IDV) {
+            handleIdvProcess(request, terminalEntity, basicInfo, terminalBizConfigDTO);
+        } else {
+            handleVdiProcess(request, terminalEntity, basicInfo, terminalBizConfigDTO);
+        }
+    }
+
+    private void handleIdvProcess(CbbDispatcherRequest request, TerminalEntity terminalEntity, CbbShineTerminalBasicInfo basicInfo,
+                                  CbbTerminalBizConfigDTO terminalBizConfigDTO) {
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
         TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
@@ -108,13 +116,25 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         TerminalAuthResult authResult = terminalAuthHelper.processTerminalAuth(request.getNewConnection(), isInUpgradeProcess, basicInfo);
 
         if (authResult.isNeedSaveTerminalInfo()) {
-            basicInfoService.saveBasicInfo(terminalId, request.getNewConnection(), basicInfo);
+            basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo);
         }
 
         if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
             LOGGER.info("终端授权失败");
             versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
         }
+
+        responseToShine(request, terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
+    }
+
+    private void handleVdiProcess(CbbDispatcherRequest request, TerminalEntity terminalEntity, CbbShineTerminalBasicInfo basicInfo,
+                                  CbbTerminalBizConfigDTO terminalBizConfigDTO) {
+
+        basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo);
+
+        // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
+        TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
+        SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalBizConfigDTO);
 
         responseToShine(request, terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
     }

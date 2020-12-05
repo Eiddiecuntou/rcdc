@@ -105,8 +105,6 @@ public class CheckUpgradeHandlerSPIImplTest {
             }
         };
 
-        authHelperExpectations(true, TerminalAuthResultEnums.SUCCESS);
-
         new MockUp(CbbTerminalTypeEnums.class) {
             @Mock
             public CbbTerminalTypeEnums convert(String platform, String osType) {
@@ -172,8 +170,6 @@ public class CheckUpgradeHandlerSPIImplTest {
             }
         };
 
-        authHelperExpectations(true, TerminalAuthResultEnums.SUCCESS);
-
         try {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setTerminalId(terminalId);
@@ -230,8 +226,6 @@ public class CheckUpgradeHandlerSPIImplTest {
                 }
             }
         };
-
-        authHelperExpectations(true, TerminalAuthResultEnums.SUCCESS);
 
         try {
             CbbDispatcherRequest request = new CbbDispatcherRequest();
