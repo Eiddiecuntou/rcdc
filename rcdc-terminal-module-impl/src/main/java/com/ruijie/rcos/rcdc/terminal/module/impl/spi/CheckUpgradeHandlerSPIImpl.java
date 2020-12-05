@@ -99,8 +99,10 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
                 basicInfo);
 
         if (terminalEntity.getPlatform() == CbbTerminalPlatformEnums.IDV) {
+            LOGGER.info("平台类型为IDV,进行idv处理（包含idv授权）");
             handleIdvProcess(request, terminalEntity, basicInfo, terminalBizConfigDTO);
         } else {
+            LOGGER.info("平台类型为[{}],进行升级处理", terminalEntity.getPlatform().name());
             handleVdiProcess(request, terminalEntity, basicInfo, terminalBizConfigDTO);
         }
     }
