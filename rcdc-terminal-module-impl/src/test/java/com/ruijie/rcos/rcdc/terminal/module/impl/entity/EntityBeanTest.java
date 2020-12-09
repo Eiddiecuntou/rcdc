@@ -171,4 +171,14 @@ public class EntityBeanTest {
         assertTrue(true);
     }
 
+    /**
+     * 测试TerminalModelDriverEntity
+     */
+    @Test
+    public void testViewTerminalStatEntity() {
+        GetSetTester tester = new GetSetTester(ViewTerminalStatEntity.class);
+        tester.runTest();
+        assertTrue(true);
+    }
+
 }
