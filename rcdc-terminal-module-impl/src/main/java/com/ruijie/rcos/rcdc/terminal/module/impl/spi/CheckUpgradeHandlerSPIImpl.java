@@ -195,9 +195,20 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     private CbbTerminalTypeEnums obtainSystemUpgradeTerminalType(CbbTerminalWorkModeEnums[] terminalWorkModeArr, String osType) {
         // 只有VDI能力时返回VDI升级包类型，否则返回IDV升级包类型
-        if (terminalWorkModeArr.length == 1 && terminalWorkModeArr[0] == CbbTerminalWorkModeEnums.VDI) {
-            LOGGER.info("获取终端系统升级包类型， platform: {}, osType : {}", CbbTerminalPlatformEnums.VDI.name(), osType);
-            return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.VDI.name(), osType);
+        if (terminalWorkModeArr.length == 1) {
+            CbbTerminalWorkModeEnums workMode = terminalWorkModeArr[0];
+            LOGGER.info("获取终端系统升级包类型， terminalWorkMode: {}, osType : {}", workMode.name(), osType);
+            switch (workMode) {
+                case VDI:
+                    return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.VDI.name(), osType);
+                case APP:
+                    return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.APP.name(), osType);
+                case IDV:
+                case VOI:
+                    return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
+                default:
+                    throw new IllegalArgumentException("配置的终端工作类型[" + workMode.name() + "]不支持系统升级");
+            }
         }
 
         return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
