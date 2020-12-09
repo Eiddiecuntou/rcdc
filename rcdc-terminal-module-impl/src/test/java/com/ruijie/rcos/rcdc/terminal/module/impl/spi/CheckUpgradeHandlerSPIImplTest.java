@@ -145,12 +145,12 @@ public class CheckUpgradeHandlerSPIImplTest {
         String terminalId = "123";
 
         TerminalEntity terminalEntity = new TerminalEntity();
-        terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.APP);
         terminalEntity.setTerminalOsType("Linux");
 
         CbbTerminalBizConfigDTO config = new CbbTerminalBizConfigDTO();
-        config.setTerminalPlatform(CbbTerminalPlatformEnums.VDI);
-        config.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.VDI});
+        config.setTerminalPlatform(CbbTerminalPlatformEnums.APP);
+        config.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.APP});
 
         new Expectations() {
             {
@@ -406,10 +406,11 @@ public class CheckUpgradeHandlerSPIImplTest {
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
+
+                terminalAuthHelper.processTerminalAuth(anyBoolean, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                result = new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
             }
         };
-
-        authHelperExpectations(false, TerminalAuthResultEnums.SUCCESS);
 
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         try {
@@ -428,10 +429,67 @@ public class CheckUpgradeHandlerSPIImplTest {
                 times = 1;
 
                 basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
-                times = 0;
+                times = 1;
 
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
                 times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试idv场景、新终端接入需要升级、无授权
+     */
+    @Test
+    public void testDispatcherWorkModeIllegal() {
+        String terminalId = "123";
+
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        terminalEntity.setTerminalOsType("Linux");
+        TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
+        versionResultDTO.setResult(2);
+
+        CbbTerminalBizConfigDTO config = new CbbTerminalBizConfigDTO();
+        config.setTerminalPlatform(CbbTerminalPlatformEnums.IDV);
+        config.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.UNKNOWN});
+
+        new Expectations() {
+            {
+                connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
+                result = true;
+                connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
+                result = config;
+                basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
+                result = terminalEntity;
+                componentUpgradeService.getVersion(terminalEntity, anyString);
+                result = versionResultDTO;
+            }
+        };
+
+        CbbDispatcherRequest request = new CbbDispatcherRequest();
+        try {
+            request.setTerminalId(terminalId);
+            request.setRequestId("4567");
+            request.setData(generateLinuxIDVJson());
+            request.setNewConnection(true);
+            checkUpgradeHandler.dispatch(request);
+            fail();
+        } catch (IllegalArgumentException e) {
+            assertEquals("配置的终端工作类型[UNKNOWN]不支持系统升级", e.getMessage());
+
+        }
+
+        new Verifications() {
+            {
+                connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
+                times = 1;
+
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                times = 0;
+
+                messageHandlerAPI.response((CbbResponseShineMessage) any);
+                times = 0;
             }
         };
     }
