@@ -2,15 +2,20 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
+import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+import com.ruijie.rcos.sk.base.util.StringUtils;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.Tested;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -53,6 +58,20 @@ public class AppTerminalUpdateListCacheInitTest {
     @Test
     public void testFillUpdateListHasIOException() {
 
+        new MockUp<Md5Builder>() {
+            @Mock
+            public byte[] computeFileMd5(File file) {
+                return "123".getBytes();
+            }
+        };
+
+        new MockUp<StringUtils>() {
+            @Mock
+            public String bytes2Hex(byte[] byteArr) {
+                return "123";
+            }
+        };
+
         AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.WINDOWS);
         AppUpdateListDTO dto = new AppUpdateListDTO();
         List<AppComponentVersionInfoDTO> versionList = Lists.newArrayList();
@@ -65,5 +84,40 @@ public class AppTerminalUpdateListCacheInitTest {
         cacheInit.fillUpdateList(dto);
 
         Assert.assertEquals("/terminal_component/windows_app/component/aaa", versionInfoDTO.getCompletePackageUrl());
+    }
+
+    /**
+     * 测试填充updatelist计算MD5时出现IOException2
+     */
+    @Test
+    public void testFillUpdateListHasIOException2() {
+
+        new MockUp<Md5Builder>() {
+            @Mock
+            public byte[] computeFileMd5(File file) throws IOException {
+                throw new IOException("123");
+            }
+        };
+
+        new MockUp<StringUtils>() {
+            @Mock
+            public String bytes2Hex(byte[] byteArr) {
+                return "123";
+            }
+        };
+
+        AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.WINDOWS);
+        AppUpdateListDTO dto = new AppUpdateListDTO();
+        List<AppComponentVersionInfoDTO> versionList = Lists.newArrayList();
+        AppComponentVersionInfoDTO versionInfoDTO = new AppComponentVersionInfoDTO();
+
+        versionInfoDTO.setCompletePackageName("aaa");
+        versionList.add(versionInfoDTO);
+        dto.setComponentList(versionList);
+
+        cacheInit.fillUpdateList(dto);
+
+        Assert.assertEquals("/terminal_component/windows_app/component/aaa", versionInfoDTO.getCompletePackageUrl());
+        Assert.assertEquals("default_validate_md5", dto.getValidateMd5());
     }
 }
