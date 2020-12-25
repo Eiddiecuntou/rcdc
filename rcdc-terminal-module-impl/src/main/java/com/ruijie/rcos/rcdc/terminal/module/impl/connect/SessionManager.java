@@ -121,8 +121,8 @@ public class SessionManager {
      */
     public List<String> getOnlineTerminalId() {
         List<String> terminalIdList = new ArrayList<>();
-        SESSION_MAP.forEach((k, v) -> terminalIdList.add(k));
-        LOGGER.debug("当前在线终端数量:{},返回的终端在线数量：{}", SESSION_MAP.size(), terminalIdList.size());
+        SESSION_ALIAS_MAP.forEach((k, v) -> terminalIdList.add(k));
+        LOGGER.debug("当前在线终端数量:{},返回的终端在线数量：{}", SESSION_ALIAS_MAP.size(), terminalIdList.size());
         return terminalIdList;
     }
 
