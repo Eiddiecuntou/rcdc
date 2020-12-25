@@ -12,21 +12,21 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
  */
 public class TerminalAuthResult {
 
-    private boolean needSaveTerminalInfo;
+    private boolean authed;
 
     private TerminalAuthResultEnums authResult;
 
-    public TerminalAuthResult(boolean needSaveTerminalInfo, TerminalAuthResultEnums authResult) {
-        this.needSaveTerminalInfo = needSaveTerminalInfo;
+    public TerminalAuthResult(boolean authed, TerminalAuthResultEnums authResult) {
+        this.authed = authed;
         this.authResult = authResult;
     }
 
-    public boolean isNeedSaveTerminalInfo() {
-        return needSaveTerminalInfo;
+    public boolean isAuthed() {
+        return authed;
     }
 
-    public void setNeedSaveTerminalInfo(boolean needSaveTerminalInfo) {
-        this.needSaveTerminalInfo = needSaveTerminalInfo;
+    public void setAuthed(boolean authed) {
+        this.authed = authed;
     }
 
     public TerminalAuthResultEnums getAuthResult() {

@@ -70,7 +70,7 @@ public class TerminalAuthHelperTest {
         basicInfo.setTerminalId(terminalId);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, true, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SKIP);
-        Assert.assertTrue(authResult.isNeedSaveTerminalInfo());
+        Assert.assertTrue(authResult.isAuthed());
 
         new Verifications() {
             {
@@ -102,7 +102,7 @@ public class TerminalAuthHelperTest {
         basicInfo.setTerminalId(terminalId);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, true, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SKIP);
-        Assert.assertTrue(!authResult.isNeedSaveTerminalInfo());
+        Assert.assertTrue(!authResult.isAuthed());
 
         new Verifications() {
             {
@@ -139,7 +139,7 @@ public class TerminalAuthHelperTest {
         basicInfo.setTerminalId(terminalId);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, false, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SKIP);
-        Assert.assertTrue(!authResult.isNeedSaveTerminalInfo());
+        Assert.assertTrue(!authResult.isAuthed());
 
         new Verifications() {
             {
@@ -182,7 +182,7 @@ public class TerminalAuthHelperTest {
         basicInfo.setPlatform(CbbTerminalPlatformEnums.IDV);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, false, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SUCCESS);
-        Assert.assertTrue(!authResult.isNeedSaveTerminalInfo());
+        Assert.assertTrue(!authResult.isAuthed());
 
         new Verifications() {
             {
@@ -228,7 +228,7 @@ public class TerminalAuthHelperTest {
         basicInfo.setPlatform(CbbTerminalPlatformEnums.IDV);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, false, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SUCCESS);
-        Assert.assertTrue(authResult.isNeedSaveTerminalInfo());
+        Assert.assertTrue(authResult.isAuthed());
 
         new Verifications() {
             {
@@ -274,7 +274,7 @@ public class TerminalAuthHelperTest {
         basicInfo.setPlatform(CbbTerminalPlatformEnums.IDV);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, false, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.FAIL);
-        Assert.assertTrue(!authResult.isNeedSaveTerminalInfo());
+        Assert.assertTrue(!authResult.isAuthed());
 
         new Verifications() {
             {
