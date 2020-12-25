@@ -148,4 +148,35 @@ public class TerminalLicenseServiceTxImplTest {
             }
         };
     }
+
+    @Test
+    public void testUpdateAllIDVTerminalUnauthedAndUpdateLicenseNum() {
+        List<TerminalEntity> terminalEntityList = new ArrayList<>();
+        TerminalEntity entity = new TerminalEntity();
+        entity.setTerminalId("123");
+        entity.setVersion(1);
+        entity.setAuthed(Boolean.FALSE);
+        terminalEntityList.add(entity);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                result = terminalEntityList;
+
+                globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, "111");
+            }
+        };
+
+        terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(111);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                times = 1;
+
+                globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, "111");
+                times = 1;
+            }
+        };
+
+    }
 }
