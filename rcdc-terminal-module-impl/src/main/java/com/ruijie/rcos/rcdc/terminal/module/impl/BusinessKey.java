@@ -285,7 +285,7 @@ public interface BusinessKey {
     String RCDC_TERMINALGROUP_GROUP_CAN_NOT_CREATE_IN_DEFAULT = "rcdc_terminalgroup_group_can_not_create_in_default";
     String RCDC_TERMINALGROUP_GROUP_LEVEL_EXCEED_LIMIT = "rcdc_terminalgroup_group_level_exceed_limit";
     String RCDC_TERMINALGROUP_GROUP_CAN_NOT_DELETE_DEFAULT = "rcdc_terminal_group_can_not_delete_default";
-    String RCDC_TERMINALGROUP_GROUP_PARENT_CAN_NOT_SELECT_ITSELF = "rcdc_terminalgroup_group_parent_can_not_select_itself";
+    String RCDC_TERMINALGROUP_GROUP_PARENT_CAN_NOT_SELECT_ITSELF_OR_SUB = "rcdc_terminalgroup_group_parent_can_not_select_itself_or_sub";
     String RCDC_TERMINAL_GROUP_DEFAULT_NAME_OVERVIEW = "rcdc_terminal_group_default_name_overview";
     String RCDC_TERMINAL_GROUP_DEFAULT_NAME_UNGROUPED = "rcdc_terminal_group_default_name_ungrouped";
     String RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME = "rcdc_terminal_usergroup_not_allow_reserve_name";
