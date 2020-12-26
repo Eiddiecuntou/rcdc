@@ -11,6 +11,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -31,6 +32,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
@@ -75,7 +77,7 @@ public class CbbTerminalOperatorAPIImplTest {
 
     @Injectable
     private TerminalLicenseService terminalLicenseService;
-
+    
     /**
      * 测试查询终端管理密码
      *
@@ -527,6 +529,22 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
     }
+    
+    /**
+     * 测试changePassword，
+     *
+     * @throws Exception 异常
+     */
+    @Test
+    public void testChangePasswordError() throws Exception {
+        CbbChangePasswordDTO request = new CbbChangePasswordDTO();
+        request.setPassword("1");
+        try {            
+            terminalOperatorAPI.changePassword(request);
+        } catch (BusinessException e) {
+            assertEquals(BusinessKey.RCDC_TERMINAL_ADMIN_PWD_ILLEGAL, e.getKey());
+        }
+    }
 
     /**
      * 测试清空数据盘
@@ -617,6 +635,42 @@ public class CbbTerminalOperatorAPIImplTest {
         };
 
         Assert.assertEquals("0", terminalOperatorAPI.queryOfflineLoginSetting());
+    }
+    
+    /**
+     * 测试删除终端
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testDeleteIDV(@Mocked
+            CbbTerminalBasicInfoDTO basicInfo) throws BusinessException {
+        TerminalEntity entity = new TerminalEntity();
+        entity.setVersion(1);
+        new Expectations() {
+            {
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
+                basicInfo.getAuthed();
+                result = true;
+                basicInfo.getTerminalPlatform();
+                result = CbbTerminalPlatformEnums.IDV;
+            }
+        };
+
+        try {
+            terminalOperatorAPI.delete("123");
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        new Verifications() {
+            {
+                terminalBasicInfoServiceTx.deleteTerminal(anyString);
+                times = 1;
+                terminalLicenseService.decreaseIDVTerminalLicenseUsedNum();
+                times = 1;
+            }
+        };
     }
 
 }
