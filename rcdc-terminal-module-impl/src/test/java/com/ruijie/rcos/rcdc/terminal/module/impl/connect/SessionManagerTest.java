@@ -1,22 +1,29 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
 import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
-import mockit.*;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import mockit.Deencapsulation;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Mocked;
+import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -183,12 +190,12 @@ public class SessionManagerTest {
     @Test
     public void testGetOnlineTerminalId(@Mocked Session session) {
         String terminalId = "12";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
-        sessionMap.put(terminalId, session);
+        Map<String, Session> sessionAliasMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
+        sessionAliasMap.put(terminalId, session);
         List<String> terminalIdList = sessionManager.getOnlineTerminalId();
         assertEquals(1, terminalIdList.size());
         assertEquals("12", terminalIdList.get(0));
-        sessionMap.clear();
+        sessionAliasMap.clear();
     }
 
     /**
