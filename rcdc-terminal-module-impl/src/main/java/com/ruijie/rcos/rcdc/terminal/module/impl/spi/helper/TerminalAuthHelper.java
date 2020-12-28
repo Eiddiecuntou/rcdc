@@ -62,7 +62,7 @@ public class TerminalAuthHelper {
 
         LOGGER.info("未授权终端[{}]{}接入", terminalId, basicInfo.getTerminalName());
         if (isInUpgradeProcess) {
-            LOGGER.info("终端处于升级过程中，暂不保存终端信息");
+            LOGGER.info("终端处于升级过程中");
             // 终端需要升级，或者异常升级结果（不属于需要升级、不需要升级范畴，如：服务器准备中），不保存终端信息
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
@@ -77,22 +77,10 @@ public class TerminalAuthHelper {
         if (basicInfo.getPlatform() == CbbTerminalPlatformEnums.IDV) {
             LOGGER.info("平台类型为IDV，进行IDV授权");
             TerminalAuthResult authResult = processIdvTerminalLicense(basicInfo, isNewConnection);
-            setAuthResult(finalResult, authResult);
+            return authResult;
         }
 
         return finalResult;
-    }
-
-    private void setAuthResult(TerminalAuthResult finalResult, TerminalAuthResult authResult) {
-        if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
-            LOGGER.info("授权失败");
-            finalResult.setAuthResult(TerminalAuthResultEnums.FAIL);
-        }
-
-        if (!authResult.isNeedSaveTerminalInfo()) {
-            LOGGER.info("需要更新终端信息");
-            finalResult.setNeedSaveTerminalInfo(false);
-        }
     }
 
     /**
@@ -114,10 +102,10 @@ public class TerminalAuthHelper {
         // 不需要升级场景下，如果授权失败无须保存idv终端信息；如果授权成功，在授权时已经保存了idv终端信息，无须再次保存
         if (terminalLicenseService.authIDV(terminalId, isNewConnection, basicInfo)) {
             LOGGER.info("idv终端[{}]{}授权成功", terminalId, basicInfo.getTerminalName());
-            return new TerminalAuthResult(false, TerminalAuthResultEnums.SUCCESS);
+            return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
         }
 
-        LOGGER.info("授权数不足，不保存idv终端[{}]{}信息", terminalId, basicInfo.getTerminalName());
+        LOGGER.info("授权数不足，保存idv终端[{}]{}信息为未授权状态", terminalId, basicInfo.getTerminalName());
         return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
     }
 
