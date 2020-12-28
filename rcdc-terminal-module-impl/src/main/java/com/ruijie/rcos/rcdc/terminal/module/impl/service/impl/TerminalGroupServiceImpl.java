@@ -151,6 +151,11 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
     }
 
     private void checkParentGroup(UUID id, UUID parentGroupId) throws BusinessException {
+        
+        if (parentGroupId == null) {
+            return;
+        }
+        
      // 不可选取自己或自己的子节点为父分组
         if (Objects.equals(id, parentGroupId)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_PARENT_CAN_NOT_SELECT_ITSELF_OR_SUB);
@@ -158,9 +163,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         
         TerminalGroupEntity parentGroup = checkGroupExist(parentGroupId);
         
-        if (parentGroup.getParentId() != null) {
-            checkParentGroup(id, parentGroup.getParentId());
-        }
+        checkParentGroup(id, parentGroup.getParentId());
         
     }
 
