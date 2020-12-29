@@ -66,20 +66,21 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private static final int FAIL_TRY_COUNT = 3;
 
     @Override
-    public void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
+    public void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo, Boolean authed) {
         Assert.hasText(terminalId, "terminalId 不能为空");
         Assert.notNull(shineTerminalBasicInfo, "终端信息不能为空");
+        Assert.notNull(authed, "authed can not be null");
 
         // 自学习终端型号
         saveTerminalModel(shineTerminalBasicInfo);
 
         // 保存终端基础信息
-        boolean isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo);
+        boolean isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
         int count = 0;
         // 失败，尝试3次
         while (!isSaveSuccess && count++ < FAIL_TRY_COUNT) {
             LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, terminalId);
-            isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo);
+            isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
         }
 
         // 通知其他组件终端为在线状态
@@ -88,8 +89,10 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 
-    private boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
+    private boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection,
+        CbbShineTerminalBasicInfo shineTerminalBasicInfo, Boolean authed) {
         TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
+        basicInfoEntity.setAuthed(authed);
         try {
             basicInfoDAO.save(basicInfoEntity);
             return true;
