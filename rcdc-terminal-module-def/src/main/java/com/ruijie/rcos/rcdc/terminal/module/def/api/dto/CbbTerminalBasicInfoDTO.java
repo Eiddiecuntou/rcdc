@@ -55,6 +55,8 @@ public class CbbTerminalBasicInfoDTO {
     private Long memorySize;
 
     private Long diskSize;
+    
+    private Long dataDiskSize;
 
     private String terminalOsType;
 
@@ -91,6 +93,14 @@ public class CbbTerminalBasicInfoDTO {
     private Integer wirelessNetCardNum;
 
     private Integer ethernetNetCardNum;
+
+    public Long getDataDiskSize() {
+        return dataDiskSize;
+    }
+
+    public void setDataDiskSize(Long dataDiskSize) {
+        this.dataDiskSize = dataDiskSize;
+    }
 
     public UUID getId() {
         return id;
