@@ -83,6 +83,8 @@ public class TerminalEntity {
     private Long memorySize;
 
     private Long diskSize;
+    
+    private Long dataDiskSize;
 
     private String terminalOsType;
 
@@ -228,6 +230,14 @@ public class TerminalEntity {
 
     public void setTerminalName(String terminalName) {
         this.terminalName = terminalName;
+    }
+    
+    public Long getDataDiskSize() {
+        return dataDiskSize;
+    }
+
+    public void setDataDiskSize(Long dataDiskSize) {
+        this.dataDiskSize = dataDiskSize;
     }
 
     public String getTerminalId() {

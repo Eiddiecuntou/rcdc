@@ -8,3 +8,6 @@ COMMENT ON COLUMN t_cbb_terminal.all_net_card_mac_info IS '终端所有网卡mac
 -- 新增字段
 ALTER TABLE t_cbb_terminal ADD COLUMN authed bool default true ;
 COMMENT ON COLUMN t_cbb_terminal.authed IS '终端是否授权';
+-- 新增字段
+ALTER table t_cbb_terminal ADD COLUMN data_disk_size int8;
+COMMENT ON COLUMN t_cbb_terminal.data_disk_size IS '数据分区大小';
