@@ -136,6 +136,8 @@ public class TerminalEntity {
 
     private String allNetCardMacInfo;
 
+    private String supportWorkMode;
+
     /**
      *  获取网络信息对象数组
      *
@@ -543,5 +545,13 @@ public class TerminalEntity {
 
     public void setAuthed(Boolean authed) {
         this.authed = authed;
+    }
+
+    public String getSupportWorkMode() {
+        return supportWorkMode;
+    }
+
+    public void setSupportWorkMode(String supportWorkMode) {
+        this.supportWorkMode = supportWorkMode;
     }
 }

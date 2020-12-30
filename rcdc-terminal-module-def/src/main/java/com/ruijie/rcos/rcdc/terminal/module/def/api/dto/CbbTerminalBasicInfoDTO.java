@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import java.util.Date;
 import java.util.UUID;
@@ -55,7 +56,7 @@ public class CbbTerminalBasicInfoDTO {
     private Long memorySize;
 
     private Long diskSize;
-    
+
     private Long dataDiskSize;
 
     private String terminalOsType;
@@ -93,6 +94,8 @@ public class CbbTerminalBasicInfoDTO {
     private Integer wirelessNetCardNum;
 
     private Integer ethernetNetCardNum;
+
+    private CbbTerminalWorkModeEnums[] supportWorkMode;
 
     public Long getDataDiskSize() {
         return dataDiskSize;
@@ -376,5 +379,13 @@ public class CbbTerminalBasicInfoDTO {
 
     public void setAuthed(Boolean authed) {
         this.authed = authed;
+    }
+
+    public CbbTerminalWorkModeEnums[] getSupportWorkMode() {
+        return supportWorkMode;
+    }
+
+    public void setSupportWorkMode(CbbTerminalWorkModeEnums[] supportWorkMode) {
+        this.supportWorkMode = supportWorkMode;
     }
 }

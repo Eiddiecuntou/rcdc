@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
@@ -132,6 +133,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
         basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
         basicInfoEntity.setAuthed(Boolean.TRUE);
+        if (shineTerminalBasicInfo.getTerminalWorkSupportModeArr() != null) {
+            basicInfoEntity.setSupportWorkMode(JSON.toJSONString(shineTerminalBasicInfo.getTerminalWorkSupportModeArr()));
+        }
         return basicInfoEntity;
     }
 

@@ -1,10 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.alibaba.fastjson.JSONArray;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalOperatorAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbChangePasswordDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbModifyTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -17,8 +19,12 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -70,6 +76,10 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         basicInfoDTO.setNetworkInfoArr(basicInfoEntity.getNetworkInfoArr());
         basicInfoDTO.setDiskInfoArr(basicInfoEntity.getDiskInfoArr());
         basicInfoDTO.setNetCardMacInfoArr(basicInfoEntity.getNetCardMacInfoArr());
+        if (StringUtils.isNotBlank(basicInfoEntity.getSupportWorkMode())) {
+            List<CbbTerminalWorkModeEnums> supportWorkModeList = JSONArray.parseArray(basicInfoEntity.getSupportWorkMode(), CbbTerminalWorkModeEnums.class);
+            basicInfoDTO.setSupportWorkMode(supportWorkModeList.toArray(new CbbTerminalWorkModeEnums[supportWorkModeList.size()]));
+        }
         return basicInfoDTO;
     }
 
