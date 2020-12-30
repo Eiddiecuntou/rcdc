@@ -95,7 +95,7 @@ public class CbbTerminalBasicInfoDTO {
 
     private Integer ethernetNetCardNum;
 
-    private CbbTerminalWorkModeEnums[] supportWorkMode;
+    private CbbTerminalWorkModeEnums[] supportWorkModeArr;
 
     public Long getDataDiskSize() {
         return dataDiskSize;
@@ -381,11 +381,11 @@ public class CbbTerminalBasicInfoDTO {
         this.authed = authed;
     }
 
-    public CbbTerminalWorkModeEnums[] getSupportWorkMode() {
-        return supportWorkMode;
+    public CbbTerminalWorkModeEnums[] getSupportWorkModeArr() {
+        return supportWorkModeArr;
     }
 
-    public void setSupportWorkMode(CbbTerminalWorkModeEnums[] supportWorkMode) {
-        this.supportWorkMode = supportWorkMode;
+    public void setSupportWorkModeArr(CbbTerminalWorkModeEnums[] supportWorkModeArr) {
+        this.supportWorkModeArr = supportWorkModeArr;
     }
 }

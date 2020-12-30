@@ -199,7 +199,7 @@ public class CbbTerminalOperatorAPIImplTest {
             assertEquals(dto.getTerminalName(), name);
             assertEquals(dto.getCreateTime(), now);
             assertEquals(dto.getGetIpMode(), CbbGetNetworkModeEnums.AUTO);
-            assertEquals(3, dto.getSupportWorkMode().length);
+            assertEquals(3, dto.getSupportWorkModeArr().length);
         } catch (BusinessException e) {
             fail();
         }
