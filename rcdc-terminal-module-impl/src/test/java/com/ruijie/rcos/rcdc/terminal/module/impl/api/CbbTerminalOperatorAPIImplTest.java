@@ -173,6 +173,50 @@ public class CbbTerminalOperatorAPIImplTest {
     }
 
     /**
+     * 测试返回结果
+     */
+    @Test
+    public void testFindBasicInfoByTerminalIdReturnValue2() {
+        String terminalId = "123";
+        String name = "t-box01";
+        Date now = new Date();
+        TerminalEntity entity = new TerminalEntity();
+        entity.setTerminalId(terminalId);
+        entity.setTerminalName(name);
+        entity.setGetIpMode(CbbGetNetworkModeEnums.AUTO);
+        entity.setCreateTime(now);
+        entity.setSupportWorkMode("[\"IDV\",\"VDI\",\"VOI\"]");
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = entity;
+            }
+        };
+
+        try {
+            CbbTerminalBasicInfoDTO dto = terminalOperatorAPI.findBasicInfoByTerminalId(terminalId);
+            assertEquals(dto.getTerminalId(), terminalId);
+            assertEquals(dto.getTerminalName(), name);
+            assertEquals(dto.getCreateTime(), now);
+            assertEquals(dto.getGetIpMode(), CbbGetNetworkModeEnums.AUTO);
+            assertEquals(3, dto.getSupportWorkModeArr().length);
+        } catch (BusinessException e) {
+            fail();
+        }
+
+        try {
+            new Verifications() {
+                {
+                    basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                    times = 1;
+                }
+            };
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    /**
      * 测试删除终端失败,在线终端
      *
      * @throws BusinessException 业务异常

@@ -11,3 +11,7 @@ COMMENT ON COLUMN t_cbb_terminal.authed IS '终端是否授权';
 -- 新增字段
 ALTER table t_cbb_terminal ADD COLUMN data_disk_size int8;
 COMMENT ON COLUMN t_cbb_terminal.data_disk_size IS '数据分区大小';
+
+-- 新增字段
+ALTER table t_cbb_terminal ADD COLUMN support_work_mode varchar(128);
+COMMENT ON COLUMN t_cbb_terminal.support_work_mode IS '终端支持模式';
