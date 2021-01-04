@@ -301,7 +301,7 @@ public class TerminalGroupServiceImplTest {
             terminalGroupService.modifyGroupById(dto);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINALGROUP_GROUP_PARENT_CAN_NOT_SELECT_ITSELF, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINALGROUP_GROUP_PARENT_CAN_NOT_SELECT_ITSELF_OR_SUB, e.getKey());
         }
     }
 

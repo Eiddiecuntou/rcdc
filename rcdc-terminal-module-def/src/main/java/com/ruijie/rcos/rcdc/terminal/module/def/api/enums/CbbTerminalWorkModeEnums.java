@@ -33,5 +33,10 @@ public enum CbbTerminalWorkModeEnums {
     /**
      *  利旧终端
      */
-    UNKNOWN
+    UNKNOWN,
+    
+    /**
+     * PC
+     */
+    PC
 }

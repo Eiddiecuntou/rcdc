@@ -67,6 +67,9 @@ public class CbbShineTerminalBasicInfo {
 
     @Nullable
     private Long diskSize;
+    
+    @Nullable
+    private Long dataDiskSize;
 
     @Nullable
     private String terminalOsType;
@@ -411,5 +414,13 @@ public class CbbShineTerminalBasicInfo {
 
     public void setAllNetCardMacInfo(@Nullable String allNetCardMacInfo) {
         this.allNetCardMacInfo = allNetCardMacInfo;
+    }
+
+    public Long getDataDiskSize() {
+        return dataDiskSize;
+    }
+
+    public void setDataDiskSize(Long dataDiskSize) {
+        this.dataDiskSize = dataDiskSize;
     }
 }

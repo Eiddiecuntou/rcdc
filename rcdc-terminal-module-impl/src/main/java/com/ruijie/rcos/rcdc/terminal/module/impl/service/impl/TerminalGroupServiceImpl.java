@@ -129,10 +129,8 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         String groupName = terminalGroup.getGroupName();
         Assert.hasText(groupName, "terminal group name can not be blank");
 
-        // 不可选取自己为父分组
-        if (Objects.equals(id, parentGroupId)) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_PARENT_CAN_NOT_SELECT_ITSELF);
-        }
+        checkParentGroup(id, parentGroupId);
+        
         // 校验分组是否存在
         TerminalGroupEntity groupEntity = checkGroupExist(id);
         // 变更分组需检验分组是否超过10级限制
@@ -150,6 +148,23 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         // 检验分组名称是否同级唯一
         checkGroupNameUnique(terminalGroup);
         modifyGroupNameAndParent(id, groupName, parentGroupId);
+    }
+
+    private void checkParentGroup(UUID id, UUID parentGroupId) throws BusinessException {
+        
+        if (parentGroupId == null) {
+            return;
+        }
+        
+     // 不可选取自己或自己的子节点为父分组
+        if (Objects.equals(id, parentGroupId)) {
+            throw new BusinessException(BusinessKey.RCDC_TERMINALGROUP_GROUP_PARENT_CAN_NOT_SELECT_ITSELF_OR_SUB);
+        }
+        
+        TerminalGroupEntity parentGroup = checkGroupExist(parentGroupId);
+        
+        checkParentGroup(id, parentGroup.getParentId());
+        
     }
 
     /**
