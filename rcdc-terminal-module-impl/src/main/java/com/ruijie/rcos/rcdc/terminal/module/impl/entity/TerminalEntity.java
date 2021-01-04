@@ -83,6 +83,8 @@ public class TerminalEntity {
     private Long memorySize;
 
     private Long diskSize;
+    
+    private Long dataDiskSize;
 
     private String terminalOsType;
 
@@ -133,6 +135,8 @@ public class TerminalEntity {
     private Boolean enableProxy;
 
     private String allNetCardMacInfo;
+
+    private String supportWorkMode;
 
     /**
      *  获取网络信息对象数组
@@ -228,6 +232,14 @@ public class TerminalEntity {
 
     public void setTerminalName(String terminalName) {
         this.terminalName = terminalName;
+    }
+    
+    public Long getDataDiskSize() {
+        return dataDiskSize;
+    }
+
+    public void setDataDiskSize(Long dataDiskSize) {
+        this.dataDiskSize = dataDiskSize;
     }
 
     public String getTerminalId() {
@@ -533,5 +545,13 @@ public class TerminalEntity {
 
     public void setAuthed(Boolean authed) {
         this.authed = authed;
+    }
+
+    public String getSupportWorkMode() {
+        return supportWorkMode;
+    }
+
+    public void setSupportWorkMode(String supportWorkMode) {
+        this.supportWorkMode = supportWorkMode;
     }
 }

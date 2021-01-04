@@ -58,6 +58,7 @@ public interface CbbTerminalOperatorAPI {
      * @apiSuccess (响应字段说明) {String} response.cpuMode cpu模式
      * @apiSuccess (响应字段说明) {String} response.memorySize 内存大小
      * @apiSuccess (响应字段说明) {String} response.diskSize 磁盘大小
+     * @apiSuccess (响应字段说明) {String} response.dataDiskSize 数据分区大小
      * @apiSuccess (响应字段说明) {String} response.terminalOsType 终端操作系统类型
      * @apiSuccess (响应字段说明) {String} response.terminalOsVersion 终端操作系统版本
      * @apiSuccess (响应字段说明) {String} response.rainOsVersion rainOs版本

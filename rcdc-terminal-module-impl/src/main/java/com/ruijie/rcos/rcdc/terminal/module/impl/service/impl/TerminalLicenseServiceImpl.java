@@ -150,7 +150,7 @@ public class TerminalLicenseServiceImpl implements TerminalLicenseService {
                 return false;
             }
             LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);
-            basicInfoService.saveBasicInfo(terminalId, isNewConnection, basicInfo);
+            basicInfoService.saveBasicInfo(terminalId, isNewConnection, basicInfo, Boolean.TRUE);
             usedNum++;
             return true;
         }

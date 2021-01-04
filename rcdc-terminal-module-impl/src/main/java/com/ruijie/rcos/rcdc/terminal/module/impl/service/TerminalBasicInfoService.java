@@ -21,8 +21,10 @@ public interface TerminalBasicInfoService {
      * @param terminalId 终端id
      * @param isNewConnection 是否终端上线信息
      * @param shineTerminalBasicInfo 终端信息
+     * @param authed 是否授权
      */
-    void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo);
+    void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
+        Boolean authed);
 
     /**
      * 判断当前接入的终端有没有在终端表中存在记录

@@ -1,5 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
@@ -25,13 +28,15 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeRes
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
-import mockit.*;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
+import mockit.Tested;
+import mockit.Verifications;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -94,7 +99,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = true;
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 result = config;
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = entity;
                 try {
@@ -161,7 +166,7 @@ public class CheckUpgradeHandlerSPIImplTest {
 
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString, anyBoolean,(CbbShineTerminalBasicInfo) any);
                 result = terminalEntity;
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 try {
                     messageHandlerAPI.response((CbbResponseShineMessage) any);
                 } catch (Exception e) {
@@ -218,7 +223,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = config;
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString, anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 try {
                     messageHandlerAPI.response((CbbResponseShineMessage) any);
                 } catch (Exception e) {
@@ -369,7 +374,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 times = 1;
                 TerminalUpgradeResult terminalUpgradeResult;
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 times = 0;
                 MessageUtils.buildResponseMessage(request, terminalUpgradeResult = withCapture());
                 times = 1;
@@ -428,7 +433,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 times = 1;
 
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 times = 1;
 
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
@@ -485,7 +490,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 times = 1;
 
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 times = 0;
 
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
@@ -543,7 +548,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 times = 1;
                 TerminalUpgradeResult terminalUpgradeResult;
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 times = 0;
                 MessageUtils.buildResponseMessage(request, terminalUpgradeResult = withCapture());
                 times = 1;
@@ -601,7 +606,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 times = 1;
                 TerminalUpgradeResult terminalUpgradeResult;
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 times = 0;
                 MessageUtils.buildResponseMessage(request, terminalUpgradeResult = withCapture());
                 times = 1;
@@ -657,7 +662,7 @@ public class CheckUpgradeHandlerSPIImplTest {
     private void saveVerifications() {
         new Verifications() {
             {
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
+                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 times = 1;
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 times = 1;
