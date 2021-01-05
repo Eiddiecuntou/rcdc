@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDT
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -210,4 +211,22 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         return offlineLoginSetting;
     }
 
+    @Override
+    public void setTerminalStartMode(String terminalId, CbbTerminalStartMode startMode) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId cannot be empty");
+        Assert.notNull(startMode, "startMode cannot be null");
+
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        if (terminalEntity == null) {
+            LOGGER.error("终端[{}]不存在", terminalId);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+        }
+        try {
+            terminalEntity.setStartMode(startMode.getMode());
+            basicInfoDAO.save(terminalEntity);
+        } catch (Exception e) {
+            LOGGER.error("设置终端[" + terminalId + "]启动模式[" + startMode + "]失败", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SET_START_MODE_FAIL, terminalEntity.getTerminalName());
+        }
+    }
 }

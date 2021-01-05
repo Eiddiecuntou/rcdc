@@ -138,6 +138,8 @@ public class TerminalEntity {
 
     private String supportWorkMode;
 
+    private String startMode;
+
     /**
      *  获取网络信息对象数组
      *
@@ -553,5 +555,13 @@ public class TerminalEntity {
 
     public void setSupportWorkMode(String supportWorkMode) {
         this.supportWorkMode = supportWorkMode;
+    }
+
+    public String getStartMode() {
+        return startMode;
+    }
+
+    public void setStartMode(String startMode) {
+        this.startMode = startMode;
     }
 }
