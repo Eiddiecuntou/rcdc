@@ -226,7 +226,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             basicInfoDAO.save(terminalEntity);
         } catch (Exception e) {
             LOGGER.error("设置终端[" + terminalId + "]启动模式[" + startMode + "]失败", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SET_START_MODE_FAIL, terminalEntity.getTerminalName());
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SET_START_MODE_FAIL, e, terminalEntity.getTerminalName());
         }
     }
 }
