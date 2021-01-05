@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.server.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.server.SynCTerminalStartModeTcpServer;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.server.SyncTerminalStartModeTcpServer;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -18,9 +18,9 @@ import org.springframework.util.Assert;
  *
  * @author jarman
  */
-public class SynCTerminalStartModeTcpServerImpl implements SynCTerminalStartModeTcpServer {
+public class SyncTerminalStartModeTcpServerImpl implements SyncTerminalStartModeTcpServer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SynCTerminalStartModeTcpServerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SyncTerminalStartModeTcpServerImpl.class);
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;

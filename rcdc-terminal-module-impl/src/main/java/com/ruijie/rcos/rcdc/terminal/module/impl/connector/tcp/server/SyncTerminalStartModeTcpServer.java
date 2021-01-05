@@ -14,7 +14,7 @@ import com.ruijie.rcos.sk.connectkit.api.annotation.tcp.Tcp;
  * @author jarman
  */
 @Tcp
-public interface SynCTerminalStartModeTcpServer {
+public interface SyncTerminalStartModeTcpServer {
 
     /**
      * 同步终端启动方式
