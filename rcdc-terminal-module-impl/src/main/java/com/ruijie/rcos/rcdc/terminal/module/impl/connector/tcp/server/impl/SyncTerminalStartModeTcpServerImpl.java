@@ -33,6 +33,7 @@ public class SyncTerminalStartModeTcpServerImpl implements SyncTerminalStartMode
             LOGGER.error("终端[{}]不存在", terminalId);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
         }
-        return terminalEntity.getStartMode();
+        LOGGER.info("获取到终端[{}]启动方式为:[{}]", terminalEntity.getIp(), terminalEntity.getStartMode());
+        return terminalEntity.getStartMode().getMode();
     }
 }
