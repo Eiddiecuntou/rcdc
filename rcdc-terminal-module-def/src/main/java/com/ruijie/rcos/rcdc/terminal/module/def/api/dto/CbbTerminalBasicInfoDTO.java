@@ -5,6 +5,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
+
 import java.util.Date;
 import java.util.UUID;
 import javax.persistence.EnumType;
@@ -96,6 +98,8 @@ public class CbbTerminalBasicInfoDTO {
     private Integer ethernetNetCardNum;
 
     private CbbTerminalWorkModeEnums[] supportWorkModeArr;
+
+    private CbbTerminalStartMode startMode;
 
     public Long getDataDiskSize() {
         return dataDiskSize;
@@ -387,5 +391,13 @@ public class CbbTerminalBasicInfoDTO {
 
     public void setSupportWorkModeArr(CbbTerminalWorkModeEnums[] supportWorkModeArr) {
         this.supportWorkModeArr = supportWorkModeArr;
+    }
+
+    public CbbTerminalStartMode getStartMode() {
+        return startMode;
+    }
+
+    public void setStartMode(CbbTerminalStartMode startMode) {
+        this.startMode = startMode;
     }
 }

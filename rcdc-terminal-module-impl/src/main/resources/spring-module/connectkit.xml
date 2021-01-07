@@ -45,5 +45,9 @@
           class="com.ruijie.rcos.rcdc.terminal.module.impl.connect.DefaultConnectorListener">
     </bean>
 
+    <sk-connectkit:service base-package="com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.server"
+                           protocol="tcp"
+                           connect-manager="serverConnectManager"
+                           compatible-handler="defaultCompatibleHandler"/>
 
 </beans>

@@ -10,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import java.util.Date;
@@ -137,6 +138,9 @@ public class TerminalEntity {
     private String allNetCardMacInfo;
 
     private String supportWorkMode;
+
+    @Enumerated(EnumType.STRING)
+    private CbbTerminalStartMode startMode;
 
     /**
      *  获取网络信息对象数组
@@ -553,5 +557,13 @@ public class TerminalEntity {
 
     public void setSupportWorkMode(String supportWorkMode) {
         this.supportWorkMode = supportWorkMode;
+    }
+
+    public CbbTerminalStartMode getStartMode() {
+        return startMode;
+    }
+
+    public void setStartMode(CbbTerminalStartMode startMode) {
+        this.startMode = startMode;
     }
 }
