@@ -1,8 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
@@ -28,15 +25,13 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeRes
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Description: Function Description
@@ -637,7 +632,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 times = 1;
 
-                sessionManager.getSessionById("123");
+                sessionManager.getSessionByAlias("123");
                 times = 1;
 
                 sessionManager.removeSession("123", (Session) any);

@@ -81,7 +81,8 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         // 通知上层组件终端接入，判断是否允许接入
         boolean allowConnect = connectHandlerSPI.isAllowConnect(basicInfo);
         if (!allowConnect) {
-            Session session = sessionManager.getSessionById(basicInfo.getTerminalId());
+            LOGGER.info("终端:{}不允许接入", basicInfo.getIp());
+            Session session = sessionManager.getSessionByAlias(basicInfo.getTerminalId());
             sessionManager.removeSession(basicInfo.getTerminalId(), session);
             session.close();
             return;
