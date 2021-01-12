@@ -255,6 +255,48 @@ public class SyncSystemUpgradeResultHelperTest {
         };
     }
 
+    /**
+     * testDealSystemUpgradeResultWithProcessing
+     */
+    @Test
+    public void testDealSystemUpgradeResultWithProcessing2() {
+
+        TerminalEntity basicInfoEntity = buildTerminalEntity();
+
+        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
+
+        CbbDispatcherRequest request = buildRequest(upgradeEntity.getId(), CbbSystemUpgradeStateEnums.UPGRADING);
+
+        TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = new TerminalSystemUpgradeTerminalEntity();
+        upgradeTerminalEntity.setState(CbbSystemUpgradeStateEnums.UPGRADING);
+
+        new Expectations() {
+            {
+                handler.isTerminalEnableUpgrade(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX);
+                result = true;
+
+                handler.checkAndHoldUpgradeQuota(request.getTerminalId());
+                result = true;
+
+                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List) any);
+                result = upgradeEntity;
+
+                systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeEntity.getId(), basicInfoEntity.getTerminalId());
+                result = upgradeTerminalEntity;
+            }
+        };
+
+        helper.dealSystemUpgradeResult(basicInfoEntity, handler, request);
+
+        new Verifications() {
+            {
+                handler.isTerminalEnableUpgrade(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX);
+                times = 1;
+
+            }
+        };
+    }
+
     private TerminalSystemUpgradeEntity buildUpgradeEntity() {
         TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
         upgradeEntity.setId(UUID.randomUUID());
