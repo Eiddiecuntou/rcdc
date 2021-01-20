@@ -189,7 +189,7 @@ public class SyncSystemUpgradeResultHelper {
     }
 
     private void updateUpgradeTerminal(TerminalSystemUpgradeTerminalEntity upgradeTerminal, CbbSystemUpgradeStateEnums state) {
-        if (state == CbbSystemUpgradeStateEnums.UPGRADING) {
+        if (state == CbbSystemUpgradeStateEnums.UPGRADING && upgradeTerminal.getStartTime() == null) {
             upgradeTerminal.setStartTime(new Date());
         }
 
