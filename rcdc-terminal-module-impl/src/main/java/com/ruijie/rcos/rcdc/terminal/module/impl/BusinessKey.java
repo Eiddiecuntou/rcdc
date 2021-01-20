@@ -27,6 +27,10 @@ public interface BusinessKey {
     /** 终端离线状态不能进行检测操作 */
     String RCDC_TERMINAL_OFFLINE_CANNOT_DETECT = "rcdc_terminal_offline_cannot_detect";
 
+    /**
+     * 设置终端启动方式失败
+     */
+    String RCDC_TERMINAL_SET_START_MODE_FAIL = "rcdc_terminal_set_start_mode_fail";
 
     /**
      * 正在收集终端日志中
