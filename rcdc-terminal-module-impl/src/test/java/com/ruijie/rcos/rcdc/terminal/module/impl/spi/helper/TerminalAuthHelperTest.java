@@ -21,7 +21,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.SystemUpgradeResultInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseIDVServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiUpgradeServiceImpl;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
 import mockit.Expectations;
@@ -45,7 +47,13 @@ public class TerminalAuthHelperTest {
     private TerminalAuthHelper helper;
 
     @Injectable
-    private TerminalLicenseService terminalLicenseService;
+    private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
+
+    @Injectable
+    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVoiUpgradeServiceImpl;
+
+    @Injectable
+    private TerminalLicenseVoiServiceImpl terminalLicenseVoiServiceImpl;
 
     @Injectable
     private TerminalBasicInfoService basicInfoService;
@@ -169,10 +177,10 @@ public class TerminalAuthHelperTest {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 result = bizConfigDTO;
 
-                terminalLicenseService.getTerminalLicenseNum();
+                terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 result = 100;
 
-                terminalLicenseService.auth(terminalId, true, basicInfo);
+                terminalLicenseIDVServiceImpl.auth(terminalId, true, basicInfo);
                 result = true;
 
                 basicInfoService.isAuthed(terminalId);
@@ -194,10 +202,10 @@ public class TerminalAuthHelperTest {
                 basicInfoService.isAuthed(terminalId);
                 times = 1;
 
-                terminalLicenseService.getTerminalLicenseNum();
+                terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 times = 1;
 
-                terminalLicenseService.auth(terminalId, true, basicInfo);
+                terminalLicenseIDVServiceImpl.auth(terminalId, true, basicInfo);
                 times = 1;
             }
         };
@@ -218,7 +226,7 @@ public class TerminalAuthHelperTest {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 result = bizConfigDTO;
 
-                terminalLicenseService.getTerminalLicenseNum();
+                terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 result = -1;
 
                 basicInfoService.isAuthed(terminalId);
@@ -240,7 +248,7 @@ public class TerminalAuthHelperTest {
                 basicInfoService.isAuthed(terminalId);
                 times = 1;
 
-                terminalLicenseService.getTerminalLicenseNum();
+                terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 times = 1;
             }
         };
@@ -264,10 +272,10 @@ public class TerminalAuthHelperTest {
                 basicInfoService.isAuthed(terminalId);
                 result = false;
 
-                terminalLicenseService.getTerminalLicenseNum();
+                terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 result = 100;
 
-                terminalLicenseService.auth(terminalId, true, basicInfo);
+                terminalLicenseIDVServiceImpl.auth(terminalId, true, basicInfo);
                 result = false;
             }
         };
@@ -286,10 +294,10 @@ public class TerminalAuthHelperTest {
                 basicInfoService.isAuthed(terminalId);
                 times = 1;
 
-                terminalLicenseService.getTerminalLicenseNum();
+                terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 times = 1;
 
-                terminalLicenseService.auth(terminalId, true, basicInfo);
+                terminalLicenseIDVServiceImpl.auth(terminalId, true, basicInfo);
                 times = 1;
             }
         };

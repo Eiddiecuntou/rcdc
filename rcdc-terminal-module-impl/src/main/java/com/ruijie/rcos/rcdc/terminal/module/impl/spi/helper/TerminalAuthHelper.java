@@ -13,7 +13,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseIDVServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiUpgradeServiceImpl;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -33,7 +35,13 @@ public class TerminalAuthHelper {
     private static final int NO_AUTH_LIMIT = -1;
 
     @Autowired
-    private TerminalLicenseService terminalLicenseService;
+    private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
+
+    @Autowired
+    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVoiUpgradeServiceImpl;
+
+    @Autowired
+    private TerminalLicenseVoiServiceImpl terminalLicenseVoiServiceImpl;
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
@@ -81,6 +89,12 @@ public class TerminalAuthHelper {
             return authResult;
         }
 
+        if (basicInfo.getPlatform() == CbbTerminalPlatformEnums.VOI) {
+            LOGGER.info("平台类型为VOI，进行VOI授权");
+            TerminalAuthResult authResult = processVoiTerminalLicense(basicInfo, isNewConnection);
+            return authResult;
+        }
+
         return finalResult;
     }
 
@@ -94,19 +108,53 @@ public class TerminalAuthHelper {
     private TerminalAuthResult processIdvTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection) {
         String terminalId = basicInfo.getTerminalId();
 
-        int licenseNum = terminalLicenseService.getTerminalLicenseNum();
+        int licenseNum = terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
         if (licenseNum == NO_AUTH_LIMIT) {
             LOGGER.info("当前不限制IDV终端授权");
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
         }
 
         // 不需要升级场景下，如果授权失败无须保存idv终端信息；如果授权成功，在授权时已经保存了idv终端信息，无须再次保存
-        if (terminalLicenseService.auth(terminalId, isNewConnection, basicInfo)) {
+        if (terminalLicenseIDVServiceImpl.auth(terminalId, isNewConnection, basicInfo)) {
             LOGGER.info("idv终端[{}]{}授权成功", terminalId, basicInfo.getTerminalName());
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
         }
 
+        if (terminalLicenseVoiUpgradeServiceImpl.auth(terminalId, isNewConnection, basicInfo)) {
+            LOGGER.info("idv终端[{}]{}使用VOI升级授权成功", terminalId, basicInfo.getTerminalName());
+            // VOI授权数也需要+1
+            terminalLicenseVoiServiceImpl.increaseCacheLicenseUsedNum();
+            return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
+        }
+
         LOGGER.info("授权数不足，保存idv终端[{}]{}信息为未授权状态", terminalId, basicInfo.getTerminalName());
+        return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
+    }
+
+
+    /**
+     * voi终端授权处理。voi新终端接入并且voi授权个数有限制的情况下，如果终端没有处于不需要升级状态、或者处于不需要升级状态但授权不足，则不保存终端信息
+     *
+     * @param basicInfo shine上报的终端基本信息
+     * @param isNewConnection 是否是新连接
+     * @return TerminalAuthResult needSaveTerminalInfo -需要保存终端信息；false -不需要保存终端信息
+     */
+    private TerminalAuthResult processVoiTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection) {
+        String terminalId = basicInfo.getTerminalId();
+
+        int licenseNum = terminalLicenseVoiServiceImpl.getTerminalLicenseNum();
+        if (licenseNum == NO_AUTH_LIMIT) {
+            LOGGER.info("当前不限制VOI终端授权");
+            return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
+        }
+
+        // 不需要升级场景下，如果授权失败无须保存idv终端信息；如果授权成功，在授权时已经保存了idv终端信息，无须再次保存
+        if (terminalLicenseVoiServiceImpl.auth(terminalId, isNewConnection, basicInfo)) {
+            LOGGER.info("voi终端[{}]{}授权成功", terminalId, basicInfo.getTerminalName());
+            return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
+        }
+
+        LOGGER.info("授权数不足，保存voi终端[{}]{}信息为未授权状态", terminalId, basicInfo.getTerminalName());
         return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
     }
 

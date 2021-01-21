@@ -8,7 +8,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseType
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -27,9 +26,6 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
 
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
-
-    @Autowired
-    private TerminalLicenseServiceTx terminalLicenseServiceTx;
 
     private Integer licenseNum;
 
