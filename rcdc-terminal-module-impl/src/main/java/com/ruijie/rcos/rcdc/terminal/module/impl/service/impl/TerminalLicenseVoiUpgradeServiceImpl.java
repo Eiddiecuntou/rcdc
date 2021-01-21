@@ -58,11 +58,11 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
         synchronized (this.getLock()) {
             // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，代表临时授权不会维护已授权数目，所以需要从数据库同步数据
             final Integer terminalLicenseNum = super.getTerminalLicenseNum();
-            final boolean tempLicense = getTerminalLicenseNum() == Constants.TERMINAL_AUTH_DEFAULT_NUM;
-            if (usedNum == null || tempLicense) {
+            final boolean isTempLicense = getTerminalLicenseNum() == Constants.TERMINAL_AUTH_DEFAULT_NUM;
+            if (usedNum == null || isTempLicense) {
                 long count = terminalBasicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 LOGGER.info("从数据库同步idv授权已用数为：{},idv授权数为：{}", usedNum, terminalLicenseNum);
-                if (tempLicense) {
+                if (isTempLicense) {
                     usedNum = Constants.TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM;
                 } else {
                     usedNum = count > terminalLicenseNum ? (int) (count - terminalLicenseNum) : Constants.TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM;

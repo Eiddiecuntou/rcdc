@@ -30,12 +30,14 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
 
     @Override
     public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, Integer licenseNum) throws BusinessException {
+        Assert.notNull(licenseType, "licenseType can not be null");
         Assert.notNull(licenseNum, "licenseNum can not be null");
         licenseFactoryProvider.getService(licenseType).updateTerminalLicenseNum(licenseNum);
     }
 
     @Override
     public CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType) {
+        Assert.notNull(licenseType, "licenseType can not be null");
         Integer licenseNum = licenseFactoryProvider.getService(licenseType).getTerminalLicenseNum();
         Integer usedNum = licenseFactoryProvider.getService(licenseType).getUsedNum();
 
