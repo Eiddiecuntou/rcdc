@@ -1,15 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbIDVTerminalLicenseNumDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseNumDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTerminalLicenseFactoryProvider;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 /**
  * Description: 终端授权管理apiImpl
@@ -24,21 +26,20 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     public static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalLicenseMgmtAPIImpl.class);
 
     @Autowired
-    TerminalLicenseService terminalLicenseService;
-
+    CbbTerminalLicenseFactoryProvider licenseFactoryProvider;
 
     @Override
-    public void setIDVTerminalLicenseNum(Integer licenseNum) throws BusinessException {
+    public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, Integer licenseNum) throws BusinessException {
         Assert.notNull(licenseNum, "licenseNum can not be null");
-        terminalLicenseService.updateIDVTerminalLicenseNum(licenseNum);
+        licenseFactoryProvider.getService(licenseType).updateTerminalLicenseNum(licenseNum);
     }
 
     @Override
-    public CbbIDVTerminalLicenseNumDTO getIDVTerminalLicenseNum() {
-        Integer licenseNum = terminalLicenseService.getIDVTerminalLicenseNum();
-        Integer usedNum = terminalLicenseService.getIDVUsedNum();
+    public CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType) {
+        Integer licenseNum = licenseFactoryProvider.getService(licenseType).getTerminalLicenseNum();
+        Integer usedNum = licenseFactoryProvider.getService(licenseType).getUsedNum();
 
-        CbbIDVTerminalLicenseNumDTO licenseNumDTO = new CbbIDVTerminalLicenseNumDTO();
+        CbbTerminalLicenseNumDTO licenseNumDTO = new CbbTerminalLicenseNumDTO();
         licenseNumDTO.setLicenseNum(licenseNum);
         licenseNumDTO.setUsedNum(usedNum);
 

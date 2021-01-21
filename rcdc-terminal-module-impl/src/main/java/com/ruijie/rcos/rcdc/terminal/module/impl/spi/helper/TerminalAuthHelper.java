@@ -1,5 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
@@ -11,10 +16,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoServic
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 /**
  * Description: TerminalAuthHelper
@@ -43,9 +44,9 @@ public class TerminalAuthHelper {
     /**
      * 终端进行授权
      *
-     * @param isNewConnection    是否新连接
+     * @param isNewConnection 是否新连接
      * @param isInUpgradeProcess 是否处于升级进程中
-     * @param basicInfo          终端基本信息
+     * @param basicInfo 终端基本信息
      * @return TerminalAuthResult 授权结果
      */
     public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
@@ -86,21 +87,21 @@ public class TerminalAuthHelper {
     /**
      * idv终端授权处理。idv新终端接入并且idv授权个数有限制的情况下，如果终端没有处于不需要升级状态、或者处于不需要升级状态但授权不足，则不保存终端信息
      *
-     * @param basicInfo       shine上报的终端基本信息
+     * @param basicInfo shine上报的终端基本信息
      * @param isNewConnection 是否是新连接
-     * @return TerminalAuthResult  needSaveTerminalInfo -需要保存终端信息；false -不需要保存终端信息
+     * @return TerminalAuthResult needSaveTerminalInfo -需要保存终端信息；false -不需要保存终端信息
      */
     private TerminalAuthResult processIdvTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection) {
         String terminalId = basicInfo.getTerminalId();
 
-        int licenseNum = terminalLicenseService.getIDVTerminalLicenseNum();
+        int licenseNum = terminalLicenseService.getTerminalLicenseNum();
         if (licenseNum == NO_AUTH_LIMIT) {
             LOGGER.info("当前不限制IDV终端授权");
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
         }
 
         // 不需要升级场景下，如果授权失败无须保存idv终端信息；如果授权成功，在授权时已经保存了idv终端信息，无须再次保存
-        if (terminalLicenseService.authIDV(terminalId, isNewConnection, basicInfo)) {
+        if (terminalLicenseService.auth(terminalId, isNewConnection, basicInfo)) {
             LOGGER.info("idv终端[{}]{}授权成功", terminalId, basicInfo.getTerminalName());
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
         }

@@ -438,7 +438,7 @@ public class TerminalDetectServiceImplTest {
         CbbTerminalDetectStatisticsDTO result = detectService.getDetectResult(CbbDetectDateEnums.YESTERDAY);
         assertEquals(3, result.getAccessInternet());
         assertEquals(3, result.getBandwidth());
-        assertEquals(3, result.getIpConflict());
+        assertEquals(1, result.getIpConflict());
         assertEquals(4, result.getPacketLossRate());
         assertEquals(4, result.getDelay());
         assertEquals(0, result.getChecking());

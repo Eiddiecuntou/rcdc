@@ -1,5 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper;
 
+import java.util.UUID;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
@@ -17,15 +23,11 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.UUID;
 
 /**
  * Description:
@@ -124,7 +126,7 @@ public class TerminalAuthHelperTest {
         String terminalId = "123";
         CbbTerminalBizConfigDTO bizConfigDTO = new CbbTerminalBizConfigDTO();
         bizConfigDTO.setTerminalPlatform(CbbTerminalPlatformEnums.IDV);
-        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[]{});
+        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {});
         new Expectations() {
             {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
@@ -161,16 +163,16 @@ public class TerminalAuthHelperTest {
         String terminalId = "123";
         CbbTerminalBizConfigDTO bizConfigDTO = new CbbTerminalBizConfigDTO();
         bizConfigDTO.setTerminalPlatform(CbbTerminalPlatformEnums.IDV);
-        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[]{CbbTerminalWorkModeEnums.IDV, CbbTerminalWorkModeEnums.VOI});
+        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.IDV, CbbTerminalWorkModeEnums.VOI});
         new Expectations() {
             {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 result = bizConfigDTO;
 
-                terminalLicenseService.getIDVTerminalLicenseNum();
+                terminalLicenseService.getTerminalLicenseNum();
                 result = 100;
 
-                terminalLicenseService.authIDV(terminalId, true, basicInfo);
+                terminalLicenseService.auth(terminalId, true, basicInfo);
                 result = true;
 
                 basicInfoService.isAuthed(terminalId);
@@ -192,10 +194,10 @@ public class TerminalAuthHelperTest {
                 basicInfoService.isAuthed(terminalId);
                 times = 1;
 
-                terminalLicenseService.getIDVTerminalLicenseNum();
+                terminalLicenseService.getTerminalLicenseNum();
                 times = 1;
 
-                terminalLicenseService.authIDV(terminalId, true, basicInfo);
+                terminalLicenseService.auth(terminalId, true, basicInfo);
                 times = 1;
             }
         };
@@ -210,13 +212,13 @@ public class TerminalAuthHelperTest {
         String terminalId = "123";
         CbbTerminalBizConfigDTO bizConfigDTO = new CbbTerminalBizConfigDTO();
         bizConfigDTO.setTerminalPlatform(CbbTerminalPlatformEnums.IDV);
-        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[]{CbbTerminalWorkModeEnums.IDV});
+        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.IDV});
         new Expectations() {
             {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 result = bizConfigDTO;
 
-                terminalLicenseService.getIDVTerminalLicenseNum();
+                terminalLicenseService.getTerminalLicenseNum();
                 result = -1;
 
                 basicInfoService.isAuthed(terminalId);
@@ -238,7 +240,7 @@ public class TerminalAuthHelperTest {
                 basicInfoService.isAuthed(terminalId);
                 times = 1;
 
-                terminalLicenseService.getIDVTerminalLicenseNum();
+                terminalLicenseService.getTerminalLicenseNum();
                 times = 1;
             }
         };
@@ -253,7 +255,7 @@ public class TerminalAuthHelperTest {
         String terminalId = "123";
         CbbTerminalBizConfigDTO bizConfigDTO = new CbbTerminalBizConfigDTO();
         bizConfigDTO.setTerminalPlatform(CbbTerminalPlatformEnums.IDV);
-        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[]{CbbTerminalWorkModeEnums.IDV});
+        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.IDV});
         new Expectations() {
             {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
@@ -262,10 +264,10 @@ public class TerminalAuthHelperTest {
                 basicInfoService.isAuthed(terminalId);
                 result = false;
 
-                terminalLicenseService.getIDVTerminalLicenseNum();
+                terminalLicenseService.getTerminalLicenseNum();
                 result = 100;
 
-                terminalLicenseService.authIDV(terminalId, true, basicInfo);
+                terminalLicenseService.auth(terminalId, true, basicInfo);
                 result = false;
             }
         };
@@ -284,10 +286,10 @@ public class TerminalAuthHelperTest {
                 basicInfoService.isAuthed(terminalId);
                 times = 1;
 
-                terminalLicenseService.getIDVTerminalLicenseNum();
+                terminalLicenseService.getTerminalLicenseNum();
                 times = 1;
 
-                terminalLicenseService.authIDV(terminalId, true, basicInfo);
+                terminalLicenseService.auth(terminalId, true, basicInfo);
                 times = 1;
             }
         };
@@ -297,7 +299,7 @@ public class TerminalAuthHelperTest {
 
         CbbTerminalBizConfigDTO bizConfigDTO = new CbbTerminalBizConfigDTO();
         bizConfigDTO.setTerminalPlatform(CbbTerminalPlatformEnums.IDV);
-        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[]{CbbTerminalWorkModeEnums.VDI});
+        bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.VDI});
         new Expectations() {
             {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);

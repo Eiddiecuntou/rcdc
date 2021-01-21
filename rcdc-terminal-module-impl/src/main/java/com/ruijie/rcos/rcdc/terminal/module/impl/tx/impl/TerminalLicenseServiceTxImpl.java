@@ -1,5 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -8,10 +14,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 /**
  * Description: TerminalLicenseServiceTx接口实现类
@@ -35,23 +37,21 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     private GlobalParameterAPI globalParameterAPI;
 
     @Override
-    public void updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth() {
+    public void updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums platform, String licenseKey) {
 
-        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO
-            .findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
+        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(platform, Boolean.FALSE);
         updateTerminalAuthState(terminalEntityList, Boolean.TRUE);
 
-        globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(Constants.IDV_TERMINAL_AUTH_DEFAULT_NUM));
+        globalParameterAPI.updateParameter(licenseKey, String.valueOf(Constants.TERMINAL_AUTH_DEFAULT_NUM));
     }
 
     @Override
-    public void updateAllIDVTerminalUnauthedAndUpdateLicenseNum(Integer licenseNum) {
+    public void updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums platform, String licenseKey, Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not null");
-        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO
-            .findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(platform, Boolean.TRUE);
         updateTerminalAuthState(terminalEntityList, Boolean.FALSE);
 
-        globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, String.valueOf(licenseNum));
+        globalParameterAPI.updateParameter(licenseKey, String.valueOf(licenseNum));
     }
 
     private void updateTerminalAuthState(List<TerminalEntity> terminalEntityList, Boolean authed) {
@@ -64,7 +64,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
             try {
                 terminalBasicInfoDAO.save(terminalEntity);
             } catch (Exception e) {
-                LOGGER.error("更新终端[" +  terminalEntity.getTerminalId() + "]的授权状态为" + authed + "失败！", e);
+                LOGGER.error("更新终端[" + terminalEntity.getTerminalId() + "]的授权状态为" + authed + "失败！", e);
                 retryUpdateAuthed(terminalEntity.getTerminalId(), authed);
             }
         });
@@ -72,6 +72,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
 
     /**
      * 重试更新终端授权状态
+     * 
      * @param terminalId 终端id
      * @param authed 是否授权
      */

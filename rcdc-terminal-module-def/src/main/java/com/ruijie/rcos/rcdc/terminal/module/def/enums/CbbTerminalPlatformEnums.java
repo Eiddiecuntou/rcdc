@@ -18,6 +18,11 @@ public enum CbbTerminalPlatformEnums {
     VDI,
 
     /**
+     * VOI
+     */
+    VOI,
+
+    /**
      * IDV
      */
     IDV,
@@ -26,7 +31,7 @@ public enum CbbTerminalPlatformEnums {
      * 软终端
      */
     APP,
-    
+
     /**
      * PC
      */

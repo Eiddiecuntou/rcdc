@@ -1,5 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -10,13 +14,11 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Description:TerminalLicenseServiceImpl测试类
@@ -30,7 +32,7 @@ import org.junit.runner.RunWith;
 public class TerminalLicenseServiceImplTest {
 
     @Tested
-    TerminalLicenseServiceImpl licenceLicenseService;
+    TerminalLicenseIDVServiceImpl licenceLicenseService;
 
     @Injectable
     private GlobalParameterAPI globalParameterAPI;
@@ -56,14 +58,11 @@ public class TerminalLicenseServiceImplTest {
                 result = "5";
             }
         };
-        int terminalLicenseNum = licenceLicenseService.getIDVTerminalLicenseNum();
-        System.out.println(licenceLicenseService);
-        Assert.assertEquals(5, terminalLicenseNum);
 
-        licenceLicenseService.getIDVTerminalLicenseNum();
+        licenceLicenseService.getTerminalLicenseNum();
         new Verifications() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(licenceLicenseService.getLicenseConstansKey());
                 times = 1;
             }
         };
@@ -83,9 +82,9 @@ public class TerminalLicenseServiceImplTest {
             }
         };
 
-        int usedNum = licenceLicenseService.getIDVUsedNum();
+        int usedNum = licenceLicenseService.getUsedNum();
         Assert.assertEquals(2, usedNum);
-        licenceLicenseService.getIDVUsedNum();
+        licenceLicenseService.getUsedNum();
         new Verifications() {
             {
                 basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
@@ -100,8 +99,7 @@ public class TerminalLicenseServiceImplTest {
     @Test
     public void testUpdateTerminalLicenseNum() {
         try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateIDVTerminalLicenseNum(-2),
-                "licenseNum must gt -1");
+            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateTerminalLicenseNum(-2), "licenseNum must gt -1");
         } catch (Exception e) {
             Assert.fail();
         }
@@ -113,7 +111,7 @@ public class TerminalLicenseServiceImplTest {
             }
         };
         try {
-            licenceLicenseService.updateIDVTerminalLicenseNum(5);
+            licenceLicenseService.updateTerminalLicenseNum(5);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -125,8 +123,7 @@ public class TerminalLicenseServiceImplTest {
     @Test
     public void testUpdateTerminalLicenseNumExcepiton() {
         try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateIDVTerminalLicenseNum(-2),
-                "licenseNum must gt -1");
+            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateTerminalLicenseNum(-2), "licenseNum must gt -1");
         } catch (Exception e) {
             Assert.fail();
         }
@@ -138,7 +135,7 @@ public class TerminalLicenseServiceImplTest {
             }
         };
         try {
-            licenceLicenseService.updateIDVTerminalLicenseNum(2);
+            licenceLicenseService.updateTerminalLicenseNum(2);
         } catch (BusinessException e) {
             Assert.assertTrue(e.getKey().equals("rcdc_terminal_not_allow_reduce_terminal_license_num"));
             return;
@@ -161,7 +158,7 @@ public class TerminalLicenseServiceImplTest {
             }
         };
         try {
-            licenceLicenseService.updateIDVTerminalLicenseNum(-1);
+            licenceLicenseService.updateTerminalLicenseNum(-1);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -186,13 +183,13 @@ public class TerminalLicenseServiceImplTest {
             }
         };
         try {
-            licenceLicenseService.updateIDVTerminalLicenseNum(5);
+            licenceLicenseService.updateTerminalLicenseNum(5);
         } catch (Exception e) {
             Assert.fail();
         }
         new Verifications() {
             {
-                terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(5);
+                terminalLicenseServiceTx.updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.IDV, (String) any, 5);
                 times = 1;
             }
         };
@@ -211,13 +208,13 @@ public class TerminalLicenseServiceImplTest {
             }
         };
         try {
-            licenceLicenseService.updateIDVTerminalLicenseNum(-1);
+            licenceLicenseService.updateTerminalLicenseNum(-1);
         } catch (Exception e) {
             Assert.fail();
         }
         new Verifications() {
             {
-                terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
+                terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, (String) any);
                 times = 1;
             }
         };
@@ -238,7 +235,7 @@ public class TerminalLicenseServiceImplTest {
                 result = 4;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123", true, new CbbShineTerminalBasicInfo());
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.auth("123", true, new CbbShineTerminalBasicInfo());
         Assert.assertTrue(isAuthedOrAuthSuccess);
 
     }
@@ -258,7 +255,7 @@ public class TerminalLicenseServiceImplTest {
                 result = 5;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123", true, new CbbShineTerminalBasicInfo());
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.auth("123", true, new CbbShineTerminalBasicInfo());
         Assert.assertTrue(!isAuthedOrAuthSuccess);
 
     }
@@ -274,7 +271,7 @@ public class TerminalLicenseServiceImplTest {
                 result = true;
             }
         };
-        boolean isAuthedOrAuthSuccess = licenceLicenseService.authIDV("123", true, new CbbShineTerminalBasicInfo());
+        boolean isAuthedOrAuthSuccess = licenceLicenseService.auth("123", true, new CbbShineTerminalBasicInfo());
         Assert.assertTrue(isAuthedOrAuthSuccess);
 
         new Verifications() {
@@ -302,7 +299,7 @@ public class TerminalLicenseServiceImplTest {
                 result = 5;
             }
         };
-        boolean isAuthed = licenceLicenseService.authIDV("123", true, new CbbShineTerminalBasicInfo());
+        boolean isAuthed = licenceLicenseService.auth("123", true, new CbbShineTerminalBasicInfo());
         Assert.assertTrue(isAuthed);
 
     }
