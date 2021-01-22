@@ -108,6 +108,8 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             if (voiUpgradeUsed > 0) {
                 LOGGER.info("存在voi升级授权，则先扣除voi升级授权");
                 licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.VOI_PLUS_UPGRADED).decreaseCacheLicenseUsedNum();
+                licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.VOI).decreaseCacheLicenseUsedNum();
+
             } else {
                 licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.IDV).decreaseCacheLicenseUsedNum();
             }
