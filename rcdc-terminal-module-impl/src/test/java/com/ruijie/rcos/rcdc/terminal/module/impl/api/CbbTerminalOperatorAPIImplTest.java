@@ -28,7 +28,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTerminalLicenseFactoryProvider;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseIDVServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiUpgradeServiceImpl;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -81,7 +83,13 @@ public class CbbTerminalOperatorAPIImplTest {
     private TerminalLicenseService terminalLicenseService;
 
     @Injectable
-    CbbTerminalLicenseFactoryProvider licenseFactoryProvider;
+    private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
+
+    @Injectable
+    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVoiUpgradeServiceImpl;
+
+    @Injectable
+    private TerminalLicenseVoiServiceImpl terminalLicenseVoiServiceImpl;
 
     /**
      * 测试查询终端管理密码
@@ -714,7 +722,7 @@ public class CbbTerminalOperatorAPIImplTest {
             {
                 terminalBasicInfoServiceTx.deleteTerminal(anyString);
                 times = 1;
-                terminalLicenseService.decreaseCacheLicenseUsedNum();
+                terminalLicenseIDVServiceImpl.decreaseCacheLicenseUsedNum();
                 times = 1;
             }
         };

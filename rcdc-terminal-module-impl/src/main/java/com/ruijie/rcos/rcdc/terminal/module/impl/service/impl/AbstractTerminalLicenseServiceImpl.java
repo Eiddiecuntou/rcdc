@@ -35,6 +35,8 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     @Autowired
     private TerminalBasicInfoService basicInfoService;
 
+    protected final Object usedNumLock = new Object();
+
     @Override
     public Integer getTerminalLicenseNum() {
         // licenseNum如果为null，表示licenseNum还没有从数据库同步数据。

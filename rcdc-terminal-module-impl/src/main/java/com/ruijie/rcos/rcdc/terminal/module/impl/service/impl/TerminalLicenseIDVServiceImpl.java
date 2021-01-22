@@ -35,8 +35,6 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
 
     private Integer usedNum;
 
-    private Object usedNumLock = new Object();
-
     @Override
     public CbbTerminalLicenseTypeEnums getLicenseType() {
         return CbbTerminalLicenseTypeEnums.IDV;

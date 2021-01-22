@@ -15,7 +15,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseIDVServiceImpl;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiServiceImpl;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiUpgradeServiceImpl;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -36,9 +35,6 @@ public class TerminalAuthHelper {
 
     @Autowired
     private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
-
-    @Autowired
-    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVoiUpgradeServiceImpl;
 
     @Autowired
     private TerminalLicenseVoiServiceImpl terminalLicenseVoiServiceImpl;
@@ -120,10 +116,8 @@ public class TerminalAuthHelper {
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
         }
 
-        if (terminalLicenseVoiUpgradeServiceImpl.auth(terminalId, isNewConnection, basicInfo)) {
+        if (terminalLicenseVoiServiceImpl.authByIdv(terminalId, isNewConnection, basicInfo)) {
             LOGGER.info("idv终端[{}]{}使用VOI升级授权成功", terminalId, basicInfo.getTerminalName());
-            // VOI授权数也需要+1
-            terminalLicenseVoiServiceImpl.increaseCacheLicenseUsedNum();
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
         }
 

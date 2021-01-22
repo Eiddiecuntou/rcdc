@@ -15,7 +15,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbChangePasswordDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbModifyTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
@@ -25,7 +24,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTerminalLicenseFactoryProvider;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseIDVServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiUpgradeServiceImpl;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -61,7 +62,13 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     private TerminalGroupService terminalGroupService;
 
     @Autowired
-    CbbTerminalLicenseFactoryProvider licenseFactoryProvider;
+    private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
+
+    @Autowired
+    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVoiUpgradeServiceImpl;
+
+    @Autowired
+    private TerminalLicenseVoiServiceImpl terminalLicenseVoiServiceImpl;
 
     @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(String terminalId) throws BusinessException {
@@ -103,16 +110,20 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.IDV && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
             LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
             // 如果存在VOI升级授权，则先扣除VOI升级授权
-            Integer voiUpgradeUsed = licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.VOI_PLUS_UPGRADED).getUsedNum();
+            Integer voiUpgradeUsed = terminalLicenseVoiUpgradeServiceImpl.getUsedNum();
             LOGGER.info("VOI升级授权已用数为：[{}]", voiUpgradeUsed);
             if (voiUpgradeUsed > 0) {
                 LOGGER.info("存在voi升级授权，则先扣除voi升级授权");
-                licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.VOI_PLUS_UPGRADED).decreaseCacheLicenseUsedNum();
-                licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.VOI).decreaseCacheLicenseUsedNum();
-
+                terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNumByIdv();
             } else {
-                licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.IDV).decreaseCacheLicenseUsedNum();
+                terminalLicenseIDVServiceImpl.decreaseCacheLicenseUsedNum();
             }
+        }
+
+        if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.VOI && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
+            LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1", terminalId);
+            // 如果存在VOI升级授权，则先扣除VOI升级授权
+            terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNum();
         }
     }
 

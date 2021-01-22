@@ -31,8 +31,6 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
 
     private Integer usedNum;
 
-    private Object usedNumLock = new Object();
-
     @Override
     public CbbTerminalLicenseTypeEnums getLicenseType() {
         return CbbTerminalLicenseTypeEnums.VOI_PLUS_UPGRADED;
@@ -75,6 +73,9 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
 
     @Override
     public void decreaseCacheLicenseUsedNum() {
+        if (usedNum == null) {
+            getUsedNum();
+        }
         synchronized (usedNumLock) {
             usedNum--;
         }
