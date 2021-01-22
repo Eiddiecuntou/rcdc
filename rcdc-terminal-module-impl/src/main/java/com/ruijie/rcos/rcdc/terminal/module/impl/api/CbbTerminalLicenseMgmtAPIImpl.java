@@ -42,10 +42,11 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
         Integer usedNum = licenseFactoryProvider.getService(licenseType).getUsedNum();
 
         CbbTerminalLicenseNumDTO licenseNumDTO = new CbbTerminalLicenseNumDTO();
+        licenseNumDTO.setLicenseType(licenseType);
         licenseNumDTO.setLicenseNum(licenseNum);
         licenseNumDTO.setUsedNum(usedNum);
 
-        LOGGER.info("idv终端授权数量：{}", JSON.toJSONString(licenseNumDTO, SerializerFeature.PrettyFormat));
+        LOGGER.info("终端授权数量：{}", JSON.toJSONString(licenseNumDTO, SerializerFeature.PrettyFormat));
         return licenseNumDTO;
     }
 }
