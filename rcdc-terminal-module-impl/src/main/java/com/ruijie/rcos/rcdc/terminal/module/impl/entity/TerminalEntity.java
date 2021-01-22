@@ -24,7 +24,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetCardMacInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWirelessAuthModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -111,9 +110,6 @@ public class TerminalEntity {
     private Date lastOfflineTime;
 
     private Boolean authed;
-
-    @Enumerated(EnumType.STRING)
-    private CbbTerminalLicenseTypeEnums authType;
 
     @Version
     private Integer version;
