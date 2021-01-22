@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseIDVServiceImpl;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiServiceImpl;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -38,6 +36,9 @@ public class TerminalAuthHelper {
 
     @Autowired
     private TerminalLicenseVoiServiceImpl terminalLicenseVoiServiceImpl;
+
+    @Autowired
+    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVoiUpgradeServiceImpl;
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
@@ -150,6 +151,28 @@ public class TerminalAuthHelper {
 
         LOGGER.info("授权数不足，保存voi终端[{}]{}信息为未授权状态", terminalId, basicInfo.getTerminalName());
         return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
+    }
+
+    /**
+     * 处理IDV终端授权扣除逻辑
+     */
+    public void processDecreaseIdvTerminalLicense() {
+        // 如果存在VOI升级授权，则先扣除VOI升级授权
+        Integer voiUpgradeUsed = terminalLicenseVoiUpgradeServiceImpl.getUsedNum();
+        LOGGER.info("VOI升级授权已用数为：[{}]", voiUpgradeUsed);
+        if (voiUpgradeUsed > 0) {
+            LOGGER.info("存在voi升级授权，则先扣除voi升级授权");
+            terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNumByIdv();
+        } else {
+            terminalLicenseIDVServiceImpl.decreaseCacheLicenseUsedNum();
+        }
+    }
+
+    /**
+     * 处理VOI终端授权扣除逻辑
+     */
+    public void processDecreaseVoiTerminalLicense() {
+        terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNum();
     }
 
 }

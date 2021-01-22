@@ -24,9 +24,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseIDVServiceImpl;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiServiceImpl;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseVoiUpgradeServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -62,13 +60,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     private TerminalGroupService terminalGroupService;
 
     @Autowired
-    private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
-
-    @Autowired
-    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVoiUpgradeServiceImpl;
-
-    @Autowired
-    private TerminalLicenseVoiServiceImpl terminalLicenseVoiServiceImpl;
+    private TerminalAuthHelper terminalAuthHelper;
 
     @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(String terminalId) throws BusinessException {
@@ -109,21 +101,12 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
         if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.IDV && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
             LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
-            // 如果存在VOI升级授权，则先扣除VOI升级授权
-            Integer voiUpgradeUsed = terminalLicenseVoiUpgradeServiceImpl.getUsedNum();
-            LOGGER.info("VOI升级授权已用数为：[{}]", voiUpgradeUsed);
-            if (voiUpgradeUsed > 0) {
-                LOGGER.info("存在voi升级授权，则先扣除voi升级授权");
-                terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNumByIdv();
-            } else {
-                terminalLicenseIDVServiceImpl.decreaseCacheLicenseUsedNum();
-            }
+            terminalAuthHelper.processDecreaseIdvTerminalLicense();
         }
 
         if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.VOI && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
             LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1", terminalId);
-            // 如果存在VOI升级授权，则先扣除VOI升级授权
-            terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNum();
+            terminalAuthHelper.processDecreaseVoiTerminalLicense();
         }
     }
 
