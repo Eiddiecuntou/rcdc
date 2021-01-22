@@ -1,6 +1,23 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetCardMacInfoDTO;
@@ -13,20 +30,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
 /**
  * Description: 终端基本信息实体类
@@ -84,7 +87,7 @@ public class TerminalEntity {
     private Long memorySize;
 
     private Long diskSize;
-    
+
     private Long dataDiskSize;
 
     private String terminalOsType;
@@ -143,7 +146,7 @@ public class TerminalEntity {
     private CbbTerminalStartMode startMode;
 
     /**
-     *  获取网络信息对象数组
+     * 获取网络信息对象数组
      *
      * @return CbbTerminalNetworkInfoDTO[]
      * @throws BusinessException 业务异常
@@ -168,7 +171,7 @@ public class TerminalEntity {
     }
 
     /**
-     *  获取磁盘信息数组
+     * 获取磁盘信息数组
      *
      * @return CbbTerminalDiskInfoDTO[]
      * @throws BusinessException 业务异常
@@ -194,6 +197,7 @@ public class TerminalEntity {
 
     /**
      * 获取终端网卡mac信息数组
+     * 
      * @return CbbTerminalNetCardInfoDTO[]
      * @throws BusinessException 业务异常
      */
@@ -213,7 +217,8 @@ public class TerminalEntity {
     }
 
     /**
-     *  设置终端网络信息
+     * 设置终端网络信息
+     * 
      * @param networkInfoDTOArr 网络信息数组
      */
     public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoDTOArr) {
@@ -237,7 +242,7 @@ public class TerminalEntity {
     public void setTerminalName(String terminalName) {
         this.terminalName = terminalName;
     }
-    
+
     public Long getDataDiskSize() {
         return dataDiskSize;
     }
