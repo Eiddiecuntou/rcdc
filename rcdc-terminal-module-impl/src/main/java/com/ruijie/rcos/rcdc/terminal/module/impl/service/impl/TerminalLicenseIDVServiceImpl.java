@@ -78,7 +78,7 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
     @Override
     public void decreaseCacheLicenseUsedNum() {
         if (usedNum == null) {
-            getUsedNum();
+            usedNum = getUsedNum();
         }
         synchronized (usedNumLock) {
             usedNum--;

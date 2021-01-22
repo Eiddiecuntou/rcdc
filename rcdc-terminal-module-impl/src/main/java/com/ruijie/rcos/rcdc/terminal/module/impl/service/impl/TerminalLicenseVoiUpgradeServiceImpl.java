@@ -27,6 +27,9 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
+    @Autowired
+    private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
+
     private Integer licenseNum;
 
     private Integer usedNum;
@@ -55,16 +58,18 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
     public Integer getUsedNum() {
         synchronized (this.getLock()) {
             // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，代表临时授权不会维护已授权数目，所以需要从数据库同步数据
-            final Integer terminalLicenseNum = super.getTerminalLicenseNum();
+            final Integer terminalLicenseNum = this.getTerminalLicenseNum();
             final boolean isTempLicense = getTerminalLicenseNum() == Constants.TERMINAL_AUTH_DEFAULT_NUM;
             if (usedNum == null || isTempLicense) {
-                long count = terminalBasicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
-                LOGGER.info("从数据库同步idv授权已用数为：{},idv授权数为：{}", usedNum, terminalLicenseNum);
+                LOGGER.info("从数据库同步voi升级授权已用数为：{},voi升级授权数为：{}", usedNum, terminalLicenseNum);
                 if (isTempLicense) {
                     usedNum = Constants.TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM;
-                } else {
-                    usedNum = count > terminalLicenseNum ? (int) (count - terminalLicenseNum) : Constants.TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM;
+                    return usedNum;
                 }
+                final Integer idvLicenseNum = terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
+                long count = terminalBasicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                LOGGER.info("从数据库同步idv授权已用数为：{},idv授权数为：{}", count, idvLicenseNum);
+                usedNum = count > idvLicenseNum ? (int) (count - idvLicenseNum) : Constants.TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM;
                 LOGGER.info("从数据库同步voi升级授权usedNum值为:{}", usedNum);
             }
         }
