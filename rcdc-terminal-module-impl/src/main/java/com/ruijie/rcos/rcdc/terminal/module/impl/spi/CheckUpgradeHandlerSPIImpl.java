@@ -77,6 +77,10 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         LOGGER.info("组件升级处理请求开始处理。。。");
 
         CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
+        if (CbbTerminalPlatformEnums.PC == basicInfo.getPlatform()) {
+            LOGGER.info("终端[{}]，其平台类型为PC，无需升级处理", basicInfo.getTerminalId());
+            return;
+        }
 
         // 通知上层组件终端接入，判断是否允许接入
         boolean allowConnect = connectHandlerSPI.isAllowConnect(basicInfo);

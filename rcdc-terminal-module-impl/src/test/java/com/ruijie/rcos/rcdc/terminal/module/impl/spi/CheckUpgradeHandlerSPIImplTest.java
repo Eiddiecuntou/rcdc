@@ -71,6 +71,23 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Injectable
     private TerminalAuthHelper terminalAuthHelper;
 
+    @Test
+    public void testDispatchUpdateTerminalWherePlatformTypeIsPc() {
+        CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
+        info.setPlatform(CbbTerminalPlatformEnums.PC);
+
+        CbbDispatcherRequest request = new CbbDispatcherRequest();
+        request.setData(JSON.toJSONString(info));
+        checkUpgradeHandler.dispatch(request);
+
+        new Verifications() {
+            {
+                connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
+                times = 0;
+            }
+        };
+    }
+
     /**
      * 测试检查组件升级- 更新终端信息
      */
