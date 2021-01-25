@@ -74,15 +74,37 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Test
     public void testDispatchUpdateTerminalWherePlatformTypeIsPc() {
         CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
+        info.setTerminalId("123");
         info.setPlatform(CbbTerminalPlatformEnums.PC);
+        info.setTerminalOsType("Windows");
+
+        CbbTerminalBizConfigDTO config = new CbbTerminalBizConfigDTO();
+        config.setTerminalPlatform(CbbTerminalPlatformEnums.PC);
+        config.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.VDI});
+
+        new Expectations() {
+            {
+                connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
+                result = true;
+                connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
+                result = config;
+            }
+        };
 
         CbbDispatcherRequest request = new CbbDispatcherRequest();
         request.setData(JSON.toJSONString(info));
+        request.setNewConnection(true);
         checkUpgradeHandler.dispatch(request);
 
         new Verifications() {
             {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
+                times = 1;
+
+                connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
+                times = 1;
+
+                basicInfoService.convertBasicInfo2TerminalEntity(anyString, true, (CbbShineTerminalBasicInfo) any);
                 times = 0;
             }
         };

@@ -73,19 +73,14 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
-
-        LOGGER.info("组件升级处理请求开始处理。。。");
+        LOGGER.info("组件升级处理请求开始处理，请求参数为[{}]", JSON.toJSONString(request));
 
         CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
-        if (CbbTerminalPlatformEnums.PC == basicInfo.getPlatform()) {
-            LOGGER.info("终端[{}]，其平台类型为PC，无需升级处理", basicInfo.getTerminalId());
-            return;
-        }
 
         // 通知上层组件终端接入，判断是否允许接入
         boolean allowConnect = connectHandlerSPI.isAllowConnect(basicInfo);
         if (!allowConnect) {
-            LOGGER.info("终端:{}不允许接入", basicInfo.getIp());
+            LOGGER.info("终端[{}]不允许接入", basicInfo.getTerminalId());
             Session session = sessionManager.getSessionByAlias(basicInfo.getTerminalId());
             sessionManager.removeSession(basicInfo.getTerminalId(), session);
             session.close();
@@ -97,6 +92,11 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         LOGGER.info("terminalBizConfigDTO: {}", JSON.toJSONString(terminalBizConfigDTO));
         Assert.notEmpty(terminalBizConfigDTO.getTerminalWorkModeArr(), "TerminalWorkModeArr can not empty");
         Assert.notNull(terminalBizConfigDTO.getTerminalPlatform(), "TerminalPlatform can not null");
+
+        if (terminalBizConfigDTO.getTerminalPlatform() == CbbTerminalPlatformEnums.PC) {
+            LOGGER.info("终端[{}]，其平台类型为PC，无需升级处理", basicInfo.getTerminalId());
+            return;
+        }
         basicInfo.setPlatform(terminalBizConfigDTO.getTerminalPlatform());
 
         // 保存终端基本信息
