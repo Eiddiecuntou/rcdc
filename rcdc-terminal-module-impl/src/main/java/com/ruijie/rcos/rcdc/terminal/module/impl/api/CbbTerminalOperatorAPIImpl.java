@@ -249,6 +249,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         boolean isOnline = sessionManager.getSessionByAlias(terminalId) != null;
         if (isOnline) {
             try {
+                LOGGER.info("终端[{}]在线,发送终端启动方式[{}]给shine", terminalId, startMode);
                 syncTerminalStartModeTcpAPI.handle(terminalId, startMode.getMode());
             } catch (BusinessException e) {
                 LOGGER.error("发送终端[" + terminalId + "]启动方式[" + startMode + "]失败", e);
