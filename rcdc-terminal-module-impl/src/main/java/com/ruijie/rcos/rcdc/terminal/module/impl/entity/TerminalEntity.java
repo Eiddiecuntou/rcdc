@@ -145,7 +145,7 @@ public class TerminalEntity {
     @Enumerated(EnumType.STRING)
     private CbbTerminalStartMode startMode;
 
-    private boolean supportTcStart;
+    private Boolean supportTcStart = Boolean.FALSE;
 
     /**
      * 获取网络信息对象数组
@@ -574,11 +574,11 @@ public class TerminalEntity {
         this.startMode = startMode;
     }
 
-    public boolean isSupportTcStart() {
+    public Boolean isSupportTcStart() {
         return supportTcStart;
     }
 
-    public void setSupportTcStart(boolean supportTcStart) {
+    public void setSupportTcStart(Boolean supportTcStart) {
         this.supportTcStart = supportTcStart;
     }
 }
