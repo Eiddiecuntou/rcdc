@@ -74,6 +74,8 @@ public interface CbbTerminalOperatorAPI {
      * @apiSuccess (响应字段说明) {Integer} response.diskInfoArr 磁盘信息数组
      * @apiSuccess (响应字段说明) {Integer} response.wirelessNetCardNum 无线网卡数量
      * @apiSuccess (响应字段说明) {Integer} response.ethernetNetCardNum 有线网卡数量
+     * @apiSuccess (响应字段说明) {Integer} response.startMode 终端启动方式:auto、uefi、tc
+     * @apiSuccess (响应字段说明) {boolean} response.supportTcStart 终端是否支持tc启动
      *
      * @apiErrorExample {json} 异常码列表
      *  {code:rcdc_terminal_not_found_terminal message:终端数据已不存在}
