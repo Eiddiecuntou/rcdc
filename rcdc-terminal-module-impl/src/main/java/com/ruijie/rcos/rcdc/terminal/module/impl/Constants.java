@@ -41,6 +41,11 @@ public interface Constants {
     String TEMINAL_LICENSE_NUM = "terminal_license_num";
 
     /**
+     * FTP密码key
+     */
+    String FTP_PASSWORD_KEY = "SHINEFTPPASSWORD";
+
+    /**
      * 终端授权数在全局表的key
      */
     String VOI_TEMINAL_LICENSE_NUM = "voi_terminal_license_num";
