@@ -8,26 +8,29 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDT
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.api.SyncTerminalStartModeTcpAPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 /**
  * Description: 终端操作实现类
@@ -59,7 +62,13 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     private TerminalGroupService terminalGroupService;
 
     @Autowired
-    private TerminalLicenseService terminalLicenseService;
+    private TerminalAuthHelper terminalAuthHelper;
+
+    @Autowired
+    private SyncTerminalStartModeTcpAPI syncTerminalStartModeTcpAPI;
+
+    @Autowired
+    private SessionManager sessionManager;
 
     @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(String terminalId) throws BusinessException {
@@ -71,14 +80,14 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
         CbbTerminalBasicInfoDTO basicInfoDTO = new CbbTerminalBasicInfoDTO();
         BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO, TerminalEntity.BEAN_COPY_IGNORE_NETWORK_INFO_ARR,
-            TerminalEntity.BEAN_COPY_IGNORE_DISK_INFO_ARR, TerminalEntity.BEAN_COPY_IGGNORE_NET_CARD_MAC_INFO_ARR);
+                TerminalEntity.BEAN_COPY_IGNORE_DISK_INFO_ARR, TerminalEntity.BEAN_COPY_IGGNORE_NET_CARD_MAC_INFO_ARR);
         basicInfoDTO.setTerminalPlatform(basicInfoEntity.getPlatform());
         basicInfoDTO.setNetworkInfoArr(basicInfoEntity.getNetworkInfoArr());
         basicInfoDTO.setDiskInfoArr(basicInfoEntity.getDiskInfoArr());
         basicInfoDTO.setNetCardMacInfoArr(basicInfoEntity.getNetCardMacInfoArr());
         if (StringUtils.isNotBlank(basicInfoEntity.getSupportWorkMode())) {
             List<CbbTerminalWorkModeEnums> supportWorkModeList = JSONArray.parseArray( //
-                    basicInfoEntity.getSupportWorkMode(),  //
+                    basicInfoEntity.getSupportWorkMode(), //
                     CbbTerminalWorkModeEnums.class);
             basicInfoDTO.setSupportWorkModeArr(supportWorkModeList.toArray(new CbbTerminalWorkModeEnums[supportWorkModeList.size()]));
         }
@@ -94,13 +103,18 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         if (isOnline) {
             String terminalName = basicInfo.getTerminalName();
             String macAddr = basicInfo.getMacAddr();
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[] {terminalName, macAddr});
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[]{terminalName, macAddr});
         }
 
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
         if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.IDV && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
             LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
-            terminalLicenseService.decreaseIDVTerminalLicenseUsedNum();
+            terminalAuthHelper.processDecreaseIdvTerminalLicense();
+        }
+
+        if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.VOI && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
+            LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1", terminalId);
+            terminalAuthHelper.processDecreaseVoiTerminalLicense();
         }
     }
 
@@ -181,7 +195,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Override
     public void clearIdvTerminalDataDisk(String terminalId) throws BusinessException {
-        Assert.hasText(terminalId,"terminalId can not be blank");
+        Assert.hasText(terminalId, "terminalId can not be blank");
 
         operatorService.diskClear(terminalId);
     }
@@ -210,4 +224,36 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         return offlineLoginSetting;
     }
 
+    @Override
+    public void setTerminalStartMode(String terminalId, CbbTerminalStartMode startMode) throws BusinessException {
+        Assert.hasText(terminalId, "terminalId cannot be empty");
+        Assert.notNull(startMode, "startMode cannot be null");
+
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        if (terminalEntity == null) {
+            LOGGER.error("终端[{}]不存在", terminalId);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL);
+        }
+        try {
+            terminalEntity.setStartMode(startMode);
+            basicInfoDAO.save(terminalEntity);
+            sendStartModeToShine(terminalId, startMode);
+        } catch (Exception e) {
+            LOGGER.error("设置终端[" + terminalId + "]启动模式[" + startMode + "]失败", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SET_START_MODE_FAIL, e, terminalEntity.getTerminalName());
+        }
+    }
+
+    private void sendStartModeToShine(String terminalId, CbbTerminalStartMode startMode) {
+        // 终端在线则下发到终端
+        boolean isOnline = sessionManager.getSessionByAlias(terminalId) != null;
+        if (isOnline) {
+            try {
+                LOGGER.info("终端[{}]在线,发送终端启动方式[{}]给shine", terminalId, startMode);
+                syncTerminalStartModeTcpAPI.handle(terminalId, startMode.getMode());
+            } catch (BusinessException e) {
+                LOGGER.error("发送终端[" + terminalId + "]启动方式[" + startMode + "]失败", e);
+            }
+        }
+    }
 }

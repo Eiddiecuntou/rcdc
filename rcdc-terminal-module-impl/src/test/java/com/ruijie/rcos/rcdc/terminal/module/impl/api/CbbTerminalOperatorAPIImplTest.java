@@ -1,44 +1,30 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbChangePasswordDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbModifyTerminalDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.api.SyncTerminalStartModeTcpAPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
-
-import java.util.Date;
-import java.util.UUID;
-
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+import mockit.*;
 import mockit.integration.junit4.JMockit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Date;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 /**
  * Description: Function Description
@@ -77,7 +63,16 @@ public class CbbTerminalOperatorAPIImplTest {
 
     @Injectable
     private TerminalLicenseService terminalLicenseService;
-    
+
+    @Injectable
+    private SyncTerminalStartModeTcpAPI syncTerminalStartModeTcpAPI;
+
+    @Injectable
+    private SessionManager sessionManager;
+
+    @Injectable
+    private TerminalAuthHelper terminalAuthHelper;
+
     /**
      * 测试查询终端管理密码
      *
@@ -573,7 +568,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试changePassword，
      *
@@ -583,7 +578,7 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testChangePasswordError() throws Exception {
         CbbChangePasswordDTO request = new CbbChangePasswordDTO();
         request.setPassword("1");
-        try {            
+        try {
             terminalOperatorAPI.changePassword(request);
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_ADMIN_PWD_ILLEGAL, e.getKey());
@@ -632,8 +627,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testRelieveFaultValidateParams() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null),
-                "terminalId不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null), "terminalId不能为空");
         assertTrue(true);
     }
 
@@ -680,15 +674,14 @@ public class CbbTerminalOperatorAPIImplTest {
 
         Assert.assertEquals("0", terminalOperatorAPI.queryOfflineLoginSetting());
     }
-    
+
     /**
      * 测试删除终端
      *
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testDeleteIDV(@Mocked
-            CbbTerminalBasicInfoDTO basicInfo) throws BusinessException {
+    public void testDeleteIDV(@Mocked CbbTerminalBasicInfoDTO basicInfo) throws BusinessException {
         TerminalEntity entity = new TerminalEntity();
         entity.setVersion(1);
         new Expectations() {
@@ -711,7 +704,7 @@ public class CbbTerminalOperatorAPIImplTest {
             {
                 terminalBasicInfoServiceTx.deleteTerminal(anyString);
                 times = 1;
-                terminalLicenseService.decreaseIDVTerminalLicenseUsedNum();
+                terminalAuthHelper.processDecreaseIdvTerminalLicense();
                 times = 1;
             }
         };

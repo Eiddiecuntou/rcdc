@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2020
@@ -8,7 +10,9 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
  *
  * @author jarman
  */
-public class CbbIDVTerminalLicenseNumDTO {
+public class CbbTerminalLicenseNumDTO {
+
+    private CbbTerminalLicenseTypeEnums licenseType;
 
     /**
      * 总的授权数
@@ -19,6 +23,14 @@ public class CbbIDVTerminalLicenseNumDTO {
      * 已用授权数
      */
     private Integer usedNum;
+
+    public CbbTerminalLicenseTypeEnums getLicenseType() {
+        return licenseType;
+    }
+
+    public void setLicenseType(CbbTerminalLicenseTypeEnums licenseType) {
+        this.licenseType = licenseType;
+    }
 
     public Integer getLicenseNum() {
         return licenseNum;

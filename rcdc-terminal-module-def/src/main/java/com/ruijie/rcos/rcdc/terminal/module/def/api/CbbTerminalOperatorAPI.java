@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
@@ -73,6 +74,8 @@ public interface CbbTerminalOperatorAPI {
      * @apiSuccess (响应字段说明) {Integer} response.diskInfoArr 磁盘信息数组
      * @apiSuccess (响应字段说明) {Integer} response.wirelessNetCardNum 无线网卡数量
      * @apiSuccess (响应字段说明) {Integer} response.ethernetNetCardNum 有线网卡数量
+     * @apiSuccess (响应字段说明) {Integer} response.startMode 终端启动方式:auto、uefi、tc
+     * @apiSuccess (响应字段说明) {boolean} response.supportTcStart 终端是否支持tc启动
      *
      * @apiErrorExample {json} 异常码列表
      *  {code:rcdc_terminal_not_found_terminal message:终端数据已不存在}
@@ -247,4 +250,24 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     void clearIdvTerminalDataDisk(String terminalId) throws BusinessException;
+
+    /**
+     * @api {POST} CbbTerminalOperatorAPI.setTerminalStartMode 设置终端启动方式
+     * @apiName setTerminalStartMode
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 设置终端启动方式
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
+     * @apiParam (请求体字段说明) {CbbTerminalStartMode} startMode 请求方式
+     * @apiParam (请求体字段说明) {CbbTerminalStartMode} startMode.AUTO 自动
+     * @apiParam (请求体字段说明) {CbbTerminalStartMode} startMode.TC tc启动
+     * @apiParam (请求体字段说明) {CbbTerminalStartMode} startMode.UEFI uefi启动
+     */
+    /**
+     * 设置终端启动方式
+     *
+     * @param terminalId 终端id
+     * @param startMode  请求参数
+     * @throws BusinessException 业务异常
+     */
+    void setTerminalStartMode(String terminalId, CbbTerminalStartMode startMode) throws BusinessException;
 }

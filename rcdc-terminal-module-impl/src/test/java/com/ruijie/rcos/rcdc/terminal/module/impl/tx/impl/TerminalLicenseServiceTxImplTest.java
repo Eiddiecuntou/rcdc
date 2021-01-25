@@ -1,20 +1,23 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-import java.util.ArrayList;
-import java.util.List;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Description:TerminalLicenseServiceTxImpl测试类
@@ -57,7 +60,7 @@ public class TerminalLicenseServiceTxImplTest {
         };
 
         try {
-            terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
+            terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, Constants.TEMINAL_LICENSE_NUM);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -95,7 +98,7 @@ public class TerminalLicenseServiceTxImplTest {
             }
         };
         try {
-            terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
+            terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, Constants.TEMINAL_LICENSE_NUM);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -135,7 +138,7 @@ public class TerminalLicenseServiceTxImplTest {
             }
         };
         try {
-            terminalLicenseServiceTx.updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth();
+            terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, Constants.TEMINAL_LICENSE_NUM);
         } catch (Exception e) {
             Assert.fail();
         }
@@ -166,7 +169,7 @@ public class TerminalLicenseServiceTxImplTest {
             }
         };
 
-        terminalLicenseServiceTx.updateAllIDVTerminalUnauthedAndUpdateLicenseNum(111);
+        terminalLicenseServiceTx.updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.IDV, Constants.TEMINAL_LICENSE_NUM, 111);
 
         new Verifications() {
             {

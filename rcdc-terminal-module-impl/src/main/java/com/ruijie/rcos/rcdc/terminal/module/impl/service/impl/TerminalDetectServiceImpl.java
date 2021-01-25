@@ -185,6 +185,9 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
 
             if (isIpConflict(detectEntity.getIpConflict())) {
                 ipConflict++;
+            }
+
+            if (isIpConflictOrAbnormal(detectEntity.getIpConflict())) {
                 isDetectAbnormal = true;
             }
 
@@ -245,9 +248,13 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
                 || bandwidth <= Constants.TERMINAL_DETECT_BINDWIDTH_NORM;
     }
 
-    private boolean isIpConflict(Integer ipConflict) {
+    private boolean isIpConflictOrAbnormal(Integer ipConflict) {
         return ipConflict == null || ipConflict == Constants.TERMINAL_DETECT_ABNORMAL_COMMON_CODE
                 || ipConflict == DetectItemStateEnums.TRUE.getState();
+    }
+
+    private boolean isIpConflict(Integer ipConflict) {
+        return ipConflict != null && ipConflict == DetectItemStateEnums.TRUE.getState();
     }
 
     @Override
