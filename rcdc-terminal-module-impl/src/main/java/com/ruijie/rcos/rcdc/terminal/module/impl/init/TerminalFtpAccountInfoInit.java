@@ -48,8 +48,10 @@ public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
 
     private static final ThreadExecutor NOTICE_HANDLER_THREAD_POOL =
             ThreadExecutors.newBuilder(TerminalFtpAccountInfoInit.class.getName()).maxThreadNum(20).queueSize(50).build();
+
     @Autowired
     private SessionManager sessionManager;
+
     @Autowired
     private TerminalFtpAccountInfoAPI terminalFtpAccountInfoAPI;
 
@@ -77,7 +79,7 @@ public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
         NOTICE_HANDLER_THREAD_POOL.execute(() -> sendFtpAccountInfoToOnlineTerminal());
     }
 
-    public void sendFtpAccountInfoToOnlineTerminal() {
+    private void sendFtpAccountInfoToOnlineTerminal() {
         List<String> onlineTerminalIdList = sessionManager.getOnlineTerminalId();
         if (CollectionUtils.isEmpty(onlineTerminalIdList)) {
             LOGGER.info("无在线终端");
