@@ -16,8 +16,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalGroupService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -30,6 +30,7 @@ import org.springframework.util.Assert;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+
 
 /**
  * Description: 终端操作实现类
@@ -61,7 +62,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     private TerminalGroupService terminalGroupService;
 
     @Autowired
-    private TerminalLicenseService terminalLicenseService;
+    private TerminalAuthHelper terminalAuthHelper;
 
     @Autowired
     private SyncTerminalStartModeTcpAPI syncTerminalStartModeTcpAPI;
@@ -86,7 +87,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         basicInfoDTO.setNetCardMacInfoArr(basicInfoEntity.getNetCardMacInfoArr());
         if (StringUtils.isNotBlank(basicInfoEntity.getSupportWorkMode())) {
             List<CbbTerminalWorkModeEnums> supportWorkModeList = JSONArray.parseArray( //
-                    basicInfoEntity.getSupportWorkMode(),  //
+                    basicInfoEntity.getSupportWorkMode(), //
                     CbbTerminalWorkModeEnums.class);
             basicInfoDTO.setSupportWorkModeArr(supportWorkModeList.toArray(new CbbTerminalWorkModeEnums[supportWorkModeList.size()]));
         }
@@ -108,7 +109,12 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
         if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.IDV && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
             LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
-            terminalLicenseService.decreaseIDVTerminalLicenseUsedNum();
+            terminalAuthHelper.processDecreaseIdvTerminalLicense();
+        }
+
+        if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.VOI && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
+            LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1", terminalId);
+            terminalAuthHelper.processDecreaseVoiTerminalLicense();
         }
     }
 

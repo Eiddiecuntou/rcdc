@@ -11,6 +11,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.api.SyncTerminalS
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
@@ -69,6 +70,8 @@ public class CbbTerminalOperatorAPIImplTest {
     @Injectable
     private SessionManager sessionManager;
     
+    private TerminalAuthHelper terminalAuthHelper;
+
     /**
      * 测试查询终端管理密码
      *
@@ -564,7 +567,7 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
     }
-    
+
     /**
      * 测试changePassword，
      *
@@ -574,7 +577,7 @@ public class CbbTerminalOperatorAPIImplTest {
     public void testChangePasswordError() throws Exception {
         CbbChangePasswordDTO request = new CbbChangePasswordDTO();
         request.setPassword("1");
-        try {            
+        try {
             terminalOperatorAPI.changePassword(request);
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_ADMIN_PWD_ILLEGAL, e.getKey());
@@ -623,8 +626,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testRelieveFaultValidateParams() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null),
-                "terminalId不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null), "terminalId不能为空");
         assertTrue(true);
     }
 
@@ -671,15 +673,14 @@ public class CbbTerminalOperatorAPIImplTest {
 
         Assert.assertEquals("0", terminalOperatorAPI.queryOfflineLoginSetting());
     }
-    
+
     /**
      * 测试删除终端
      *
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testDeleteIDV(@Mocked
-            CbbTerminalBasicInfoDTO basicInfo) throws BusinessException {
+    public void testDeleteIDV(@Mocked CbbTerminalBasicInfoDTO basicInfo) throws BusinessException {
         TerminalEntity entity = new TerminalEntity();
         entity.setVersion(1);
         new Expectations() {
@@ -702,7 +703,7 @@ public class CbbTerminalOperatorAPIImplTest {
             {
                 terminalBasicInfoServiceTx.deleteTerminal(anyString);
                 times = 1;
-                terminalLicenseService.decreaseIDVTerminalLicenseUsedNum();
+                terminalAuthHelper.processDecreaseIdvTerminalLicense();
                 times = 1;
             }
         };

@@ -24,31 +24,36 @@ import mockit.Tested;
 import mockit.Verifications;
 
 /**
- * Description:TerminalLicenseServiceImpl测试类
+ * Description:TerminalLicenseVoiServiceImpl测试类
  * Copyright: Copyright (c) 2020
  * Company: Ruijie Co., Ltd.
- * Create Time: 2020/9/23 4:27 下午
+ * Create Time: 2021/1/22 4:27 下午
  *
- * @author zhouhuan
+ * @author lin
  */
 @RunWith(SkyEngineRunner.class)
-public class TerminalLicenseServiceImplTest {
+public class TerminalLicenseVoiUpgradeServiceImplTest {
 
     @Tested
-    TerminalLicenseIDVServiceImpl licenceLicenseService;
-
-    @Injectable
-    private GlobalParameterAPI globalParameterAPI;
+    private TerminalLicenseVoiUpgradeServiceImpl licenceLicenseService;
 
     @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Injectable
+    private TerminalLicenseServiceTx terminalLicenseServiceTx;
+
+    @Injectable
     private TerminalBasicInfoService basicInfoService;
 
     @Injectable
-    private TerminalLicenseServiceTx terminalLicenseServiceTx;
+    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVOIUpgradeServiceImpl;
 
+    @Injectable
+    private GlobalParameterAPI globalParameterAPI;
+
+    @Injectable
+    private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
 
     /**
      * 测试getTerminalLicenseNum方法
@@ -57,7 +62,7 @@ public class TerminalLicenseServiceImplTest {
     public void testGetTerminalLicenseNum() {
         new Expectations() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "5";
             }
         };
@@ -78,10 +83,12 @@ public class TerminalLicenseServiceImplTest {
     public void testGetUsedNum() {
         new Expectations() {
             {
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
-                result = 2;
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "2";
+                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                result = 4;
+                terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
+                result = 2;
             }
         };
 
@@ -109,7 +116,7 @@ public class TerminalLicenseServiceImplTest {
 
         new Expectations() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "2";
             }
         };
@@ -133,7 +140,7 @@ public class TerminalLicenseServiceImplTest {
 
         new Expectations() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "5";
             }
         };
@@ -156,7 +163,7 @@ public class TerminalLicenseServiceImplTest {
 
         new Expectations() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "-1";
             }
         };
@@ -167,7 +174,7 @@ public class TerminalLicenseServiceImplTest {
         }
         new Verifications() {
             {
-                globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, anyString);
+                globalParameterAPI.updateParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM, anyString);
                 times = 0;
             }
         };
@@ -181,7 +188,7 @@ public class TerminalLicenseServiceImplTest {
 
         new Expectations() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "-1";
             }
         };
@@ -190,12 +197,6 @@ public class TerminalLicenseServiceImplTest {
         } catch (Exception e) {
             Assert.fail();
         }
-        new Verifications() {
-            {
-                terminalLicenseServiceTx.updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.IDV, (String) any, 5);
-                times = 1;
-            }
-        };
     }
 
     /**
@@ -206,7 +207,7 @@ public class TerminalLicenseServiceImplTest {
 
         new Expectations() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "5";
             }
         };
@@ -215,12 +216,6 @@ public class TerminalLicenseServiceImplTest {
         } catch (Exception e) {
             Assert.fail();
         }
-        new Verifications() {
-            {
-                terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, (String) any);
-                times = 1;
-            }
-        };
     }
 
     /**
@@ -232,7 +227,7 @@ public class TerminalLicenseServiceImplTest {
             {
                 basicInfoService.isAuthed(withEqual("123"));
                 result = false;
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "5";
                 basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 4;
@@ -252,7 +247,7 @@ public class TerminalLicenseServiceImplTest {
             {
                 basicInfoService.isAuthed(withEqual("123"));
                 result = false;
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "5";
                 basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
@@ -279,7 +274,7 @@ public class TerminalLicenseServiceImplTest {
 
         new Verifications() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 times = 0;
                 basicInfoDAO.count();
                 times = 0;
@@ -288,13 +283,32 @@ public class TerminalLicenseServiceImplTest {
     }
 
     /**
+     * 测试auth方法，授权总数为-1的情况
+     */
+    @Test
+    public void testAuth() {
+        new Expectations() {
+            {
+                basicInfoService.isAuthed(withEqual("123"));
+                result = false;
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
+                result = "-1";
+            }
+        };
+        boolean isAuthed = licenceLicenseService.auth("123", true, new CbbShineTerminalBasicInfo());
+        Assert.assertTrue(isAuthed);
+
+    }
+
+
+    /**
      * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
      */
     @Test
     public void testdecreaseCacheLicenseUsedNum() {
         new Expectations() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "10";
                 basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
@@ -312,64 +326,7 @@ public class TerminalLicenseServiceImplTest {
     public void testgetUsedNum() {
         new Expectations() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
-                result = "10";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
-                result = 30;
-            }
-        };
-        int used = licenceLicenseService.getUsedNum();
-        assertEquals(used, 10);
-    }
-
-    /**
-     * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
-     */
-    @Test
-    public void testdecreaseCacheLicenseUsedNumTemp() {
-        new Expectations() {
-            {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
-                result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
-                result = 5;
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
-                result = 4;
-            }
-        };
-        licenceLicenseService.decreaseCacheLicenseUsedNum();
-        int used = licenceLicenseService.getUsedNum();
-        assertEquals(used, 4);
-    }
-
-    /**
-     * 测试auth方法，授权总数为-1的情况
-     */
-    @Test
-    public void testAuth() {
-        new Expectations() {
-            {
-                basicInfoService.isAuthed(withEqual("123"));
-                result = false;
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
-                result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
-                result = 5;
-            }
-        };
-        boolean isAuthed = licenceLicenseService.auth("123", true, new CbbShineTerminalBasicInfo());
-        Assert.assertTrue(isAuthed);
-
-    }
-
-    /**
-     * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
-     */
-    @Test
-    public void testgetUsedNum2() {
-        new Expectations() {
-            {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "30";
             }
         };
@@ -382,18 +339,51 @@ public class TerminalLicenseServiceImplTest {
      * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
      */
     @Test
+    public void testgetUsedNum2() {
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
+                result = "30";
+                terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
+                result = 20;
+                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                result = 8;
+            }
+        };
+        int used = licenceLicenseService.getUsedNum();
+        assertEquals(used, 0);
+    }
+
+    /**
+     * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
+     */
+    @Test
     public void testgetUsedNumTemp() {
         new Expectations() {
             {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
-                result = 5;
             }
         };
         Deencapsulation.setField(licenceLicenseService, "usedNum", 100);
         int used = licenceLicenseService.getUsedNum();
-        assertEquals(used, 5);
+        assertEquals(used, 0);
+    }
+
+    /**
+     * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
+     */
+    @Test
+    public void testdecreaseCacheLicenseUsedNumTemp() {
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
+                result = "-1";
+            }
+        };
+        licenceLicenseService.decreaseCacheLicenseUsedNum();
+        int used = licenceLicenseService.getUsedNum();
+        assertEquals(used, 0);
     }
 
 }

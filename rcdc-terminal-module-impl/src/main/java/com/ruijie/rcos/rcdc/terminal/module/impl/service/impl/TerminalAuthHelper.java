@@ -1,4 +1,9 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper;
+package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
@@ -8,13 +13,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 /**
  * Description: TerminalAuthHelper
@@ -32,7 +32,13 @@ public class TerminalAuthHelper {
     private static final int NO_AUTH_LIMIT = -1;
 
     @Autowired
-    private TerminalLicenseService terminalLicenseService;
+    private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
+
+    @Autowired
+    private TerminalLicenseVoiServiceImpl terminalLicenseVoiServiceImpl;
+
+    @Autowired
+    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVoiUpgradeServiceImpl;
 
     @Autowired
     private TerminalBasicInfoService basicInfoService;
@@ -43,9 +49,9 @@ public class TerminalAuthHelper {
     /**
      * 终端进行授权
      *
-     * @param isNewConnection    是否新连接
+     * @param isNewConnection 是否新连接
      * @param isInUpgradeProcess 是否处于升级进程中
-     * @param basicInfo          终端基本信息
+     * @param basicInfo 终端基本信息
      * @return TerminalAuthResult 授权结果
      */
     public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
@@ -80,33 +86,93 @@ public class TerminalAuthHelper {
             return authResult;
         }
 
+        if (basicInfo.getPlatform() == CbbTerminalPlatformEnums.VOI) {
+            LOGGER.info("平台类型为VOI，进行VOI授权");
+            TerminalAuthResult authResult = processVoiTerminalLicense(basicInfo, isNewConnection);
+            return authResult;
+        }
+
         return finalResult;
     }
 
     /**
      * idv终端授权处理。idv新终端接入并且idv授权个数有限制的情况下，如果终端没有处于不需要升级状态、或者处于不需要升级状态但授权不足，则不保存终端信息
      *
-     * @param basicInfo       shine上报的终端基本信息
+     * @param basicInfo shine上报的终端基本信息
      * @param isNewConnection 是否是新连接
-     * @return TerminalAuthResult  needSaveTerminalInfo -需要保存终端信息；false -不需要保存终端信息
+     * @return TerminalAuthResult needSaveTerminalInfo -需要保存终端信息；false -不需要保存终端信息
      */
     private TerminalAuthResult processIdvTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection) {
         String terminalId = basicInfo.getTerminalId();
 
-        int licenseNum = terminalLicenseService.getIDVTerminalLicenseNum();
+        int licenseNum = terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
         if (licenseNum == NO_AUTH_LIMIT) {
             LOGGER.info("当前不限制IDV终端授权");
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
         }
 
         // 不需要升级场景下，如果授权失败无须保存idv终端信息；如果授权成功，在授权时已经保存了idv终端信息，无须再次保存
-        if (terminalLicenseService.authIDV(terminalId, isNewConnection, basicInfo)) {
+        if (terminalLicenseIDVServiceImpl.auth(terminalId, isNewConnection, basicInfo)) {
             LOGGER.info("idv终端[{}]{}授权成功", terminalId, basicInfo.getTerminalName());
+            return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
+        }
+
+        if (terminalLicenseVoiServiceImpl.authByIdv(terminalId, isNewConnection, basicInfo)) {
+            LOGGER.info("idv终端[{}]{}使用VOI升级授权成功", terminalId, basicInfo.getTerminalName());
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
         }
 
         LOGGER.info("授权数不足，保存idv终端[{}]{}信息为未授权状态", terminalId, basicInfo.getTerminalName());
         return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
+    }
+
+
+    /**
+     * voi终端授权处理。voi新终端接入并且voi授权个数有限制的情况下，如果终端没有处于不需要升级状态、或者处于不需要升级状态但授权不足，则不保存终端信息
+     *
+     * @param basicInfo shine上报的终端基本信息
+     * @param isNewConnection 是否是新连接
+     * @return TerminalAuthResult needSaveTerminalInfo -需要保存终端信息；false -不需要保存终端信息
+     */
+    private TerminalAuthResult processVoiTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection) {
+        String terminalId = basicInfo.getTerminalId();
+
+        int licenseNum = terminalLicenseVoiServiceImpl.getTerminalLicenseNum();
+        if (licenseNum == NO_AUTH_LIMIT) {
+            LOGGER.info("当前不限制VOI终端授权");
+            return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
+        }
+
+        // 不需要升级场景下，如果授权失败无须保存idv终端信息；如果授权成功，在授权时已经保存了idv终端信息，无须再次保存
+        if (terminalLicenseVoiServiceImpl.auth(terminalId, isNewConnection, basicInfo)) {
+            LOGGER.info("voi终端[{}]{}授权成功", terminalId, basicInfo.getTerminalName());
+            return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
+        }
+
+        LOGGER.info("授权数不足，保存voi终端[{}]{}信息为未授权状态", terminalId, basicInfo.getTerminalName());
+        return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
+    }
+
+    /**
+     * 处理IDV终端授权扣除逻辑
+     */
+    public void processDecreaseIdvTerminalLicense() {
+        // 如果存在VOI升级授权，则先扣除VOI升级授权
+        Integer voiUpgradeUsed = terminalLicenseVoiUpgradeServiceImpl.getUsedNum();
+        LOGGER.info("VOI升级授权已用数为：[{}]", voiUpgradeUsed);
+        if (voiUpgradeUsed > 0) {
+            LOGGER.info("存在voi升级授权，则先扣除voi升级授权");
+            terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNumByIdv();
+        } else {
+            terminalLicenseIDVServiceImpl.decreaseCacheLicenseUsedNum();
+        }
+    }
+
+    /**
+     * 处理VOI终端授权扣除逻辑
+     */
+    public void processDecreaseVoiTerminalLicense() {
+        terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNum();
     }
 
 }

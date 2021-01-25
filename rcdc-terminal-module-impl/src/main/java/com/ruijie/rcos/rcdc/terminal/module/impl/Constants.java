@@ -1,7 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import java.util.UUID;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 
 /**
  * Description: 常量
@@ -38,6 +39,16 @@ public interface Constants {
      * 终端授权数在全局表的key
      */
     String TEMINAL_LICENSE_NUM = "terminal_license_num";
+
+    /**
+     * 终端授权数在全局表的key
+     */
+    String VOI_TEMINAL_LICENSE_NUM = "voi_terminal_license_num";
+
+    /**
+     * 终端授权数在全局表的key
+     */
+    String VOI_UPGRADE_TEMINAL_LICENSE_NUM = "voi_upgrade_terminal_license_num";
 
     /**
      * 终端检测带宽正常标准值,小于等于20Mb为异常
@@ -105,13 +116,13 @@ public interface Constants {
     String PXE_SAMBA_LINUX_VDI_ISO_PATH = "/opt/samba/pxeuser/linux_vdi/";
 
     /**
-     *  linux vdi刷机ISO文件路径
+     * linux vdi刷机ISO文件路径
      */
 
     String PXE_SAMBA_PACKAGE_PATH = "/opt/samba/pxeuser/";
 
     /**
-     *  linux vdi刷机samba相对路径
+     * linux vdi刷机samba相对路径
      */
     String PXE_ISO_SAMBA_LINUX_VDI_RELATE_PATH = "/linux_vdi/";
 
@@ -255,11 +266,16 @@ public interface Constants {
     /** IDV终端最大离线登录时间全局参数表key */
     String OFFLINE_LOGIN_TIME_KEY = "offline_time";
 
-    /**  维护模式dispatchKey - 终端 **/
+    /** 维护模式dispatchKey - 终端 **/
     String MAINTENANCE_MODE_TERMINAL = "terminal";
 
     /**
      * 终端证书默认数量，-1表示授权不受限制。同时也是授权数量的最小值
      */
-    Integer IDV_TERMINAL_AUTH_DEFAULT_NUM = -1;
+    Integer TERMINAL_AUTH_DEFAULT_NUM = -1;
+
+    /**
+     * voi升级授权默认使用数量为0
+     */
+    Integer TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM = 0;
 }

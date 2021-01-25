@@ -1,17 +1,21 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbIDVTerminalLicenseNumDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseNumDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLicenseIDVServiceImpl;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTerminalLicenseFactoryProvider;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Description:CbbTerminalLicenseMgmtAPIImpl测试类
@@ -28,37 +32,43 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     CbbTerminalLicenseMgmtAPIImpl cbbTerminalLicenseMgmtAPI;
 
     @Injectable
-    TerminalLicenseService TerminalLicenseService;
+    TerminalLicenseIDVServiceImpl TerminalLicenseService;
+
+    @Injectable
+    CbbTerminalLicenseFactoryProvider licenseFactoryProvider;
 
     /**
      * 测试setIDVTerminalLicenseNum
+     * 
      * @throws Exception ex
      */
     @Test
     public void testSetIDVTerminalLicenseNumDTOArgsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> cbbTerminalLicenseMgmtAPI.setIDVTerminalLicenseNum(null),"licenseNum can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(
+                () -> cbbTerminalLicenseMgmtAPI.setTerminalLicenseNum(CbbTerminalLicenseTypeEnums.IDV, null), "licenseNum can not be null");
         Assert.assertTrue(true);
     }
 
     /**
      * 测试setIDVTerminalLicenseNum
+     * 
      * @throws BusinessException ex
      */
     @Test
     public void testSetIDVTerminalLicenseNumDTO() throws BusinessException {
         new Expectations() {
             {
-                TerminalLicenseService.updateIDVTerminalLicenseNum(1);
+                TerminalLicenseService.updateTerminalLicenseNum(1);
             }
         };
         try {
-            cbbTerminalLicenseMgmtAPI.setIDVTerminalLicenseNum(1);
+            cbbTerminalLicenseMgmtAPI.setTerminalLicenseNum(CbbTerminalLicenseTypeEnums.IDV, 1);
         } catch (Exception e) {
             Assert.fail();
         }
         new Verifications() {
             {
-                TerminalLicenseService.updateIDVTerminalLicenseNum(1);
+                TerminalLicenseService.updateTerminalLicenseNum(1);
                 times = 1;
             }
         };
@@ -71,13 +81,13 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     public void testGetIDVTerminalLicenseNum() {
         new Expectations() {
             {
-                TerminalLicenseService.getIDVTerminalLicenseNum();
+                TerminalLicenseService.getTerminalLicenseNum();
                 result = 1;
-                TerminalLicenseService.getIDVUsedNum();
+                TerminalLicenseService.getUsedNum();
                 result = 2;
             }
         };
-        CbbIDVTerminalLicenseNumDTO licenseNumDTO = cbbTerminalLicenseMgmtAPI.getIDVTerminalLicenseNum();
+        CbbTerminalLicenseNumDTO licenseNumDTO = cbbTerminalLicenseMgmtAPI.getTerminalLicenseNum(CbbTerminalLicenseTypeEnums.IDV);
         Assert.assertEquals(Integer.valueOf(1), licenseNumDTO.getLicenseNum());
         Assert.assertEquals(Integer.valueOf(2), licenseNumDTO.getUsedNum());
     }
