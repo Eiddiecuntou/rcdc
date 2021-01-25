@@ -69,7 +69,8 @@ public class CbbTerminalOperatorAPIImplTest {
 
     @Injectable
     private SessionManager sessionManager;
-    
+
+    @Injectable
     private TerminalAuthHelper terminalAuthHelper;
 
     /**
