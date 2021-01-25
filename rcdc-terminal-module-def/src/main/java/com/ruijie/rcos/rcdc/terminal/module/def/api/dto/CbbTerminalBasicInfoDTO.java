@@ -101,7 +101,7 @@ public class CbbTerminalBasicInfoDTO {
 
     private CbbTerminalStartMode startMode;
 
-    private boolean supportTcStart;
+    private Boolean supportTcStart;
 
     public Long getDataDiskSize() {
         return dataDiskSize;
@@ -403,11 +403,11 @@ public class CbbTerminalBasicInfoDTO {
         this.startMode = startMode;
     }
 
-    public boolean isSupportTcStart() {
+    public Boolean isSupportTcStart() {
         return supportTcStart;
     }
 
-    public void setSupportTcStart(boolean supportTcStart) {
+    public void setSupportTcStart(Boolean supportTcStart) {
         this.supportTcStart = supportTcStart;
     }
 }

@@ -127,7 +127,7 @@ public class CbbShineTerminalBasicInfo {
     @Nullable
     private String allNetCardMacInfo;
 
-    private boolean supportTcStart;
+    private Boolean supportTcStart;
 
     @Nullable
     private CbbTerminalWorkModeEnums[] terminalWorkSupportModeArr;
@@ -426,11 +426,11 @@ public class CbbShineTerminalBasicInfo {
         this.dataDiskSize = dataDiskSize;
     }
 
-    public boolean isSupportTcStart() {
+    public Boolean isSupportTcStart() {
         return supportTcStart;
     }
 
-    public void setSupportTcStart(boolean supportTcStart) {
+    public void setSupportTcStart(Boolean supportTcStart) {
         this.supportTcStart = supportTcStart;
     }
 }
