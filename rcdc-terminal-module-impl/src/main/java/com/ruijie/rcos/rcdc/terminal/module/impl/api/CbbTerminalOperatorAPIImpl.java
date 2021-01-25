@@ -10,6 +10,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnu
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.api.SyncTerminalStartModeTcpAPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -20,15 +22,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Description: 终端操作实现类
@@ -62,6 +63,12 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Autowired
     private TerminalLicenseService terminalLicenseService;
 
+    @Autowired
+    private SyncTerminalStartModeTcpAPI syncTerminalStartModeTcpAPI;
+
+    @Autowired
+    private SessionManager sessionManager;
+
     @Override
     public CbbTerminalBasicInfoDTO findBasicInfoByTerminalId(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
@@ -72,7 +79,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
         CbbTerminalBasicInfoDTO basicInfoDTO = new CbbTerminalBasicInfoDTO();
         BeanUtils.copyProperties(basicInfoEntity, basicInfoDTO, TerminalEntity.BEAN_COPY_IGNORE_NETWORK_INFO_ARR,
-            TerminalEntity.BEAN_COPY_IGNORE_DISK_INFO_ARR, TerminalEntity.BEAN_COPY_IGGNORE_NET_CARD_MAC_INFO_ARR);
+                TerminalEntity.BEAN_COPY_IGNORE_DISK_INFO_ARR, TerminalEntity.BEAN_COPY_IGGNORE_NET_CARD_MAC_INFO_ARR);
         basicInfoDTO.setTerminalPlatform(basicInfoEntity.getPlatform());
         basicInfoDTO.setNetworkInfoArr(basicInfoEntity.getNetworkInfoArr());
         basicInfoDTO.setDiskInfoArr(basicInfoEntity.getDiskInfoArr());
@@ -95,7 +102,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         if (isOnline) {
             String terminalName = basicInfo.getTerminalName();
             String macAddr = basicInfo.getMacAddr();
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[] {terminalName, macAddr});
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[]{terminalName, macAddr});
         }
 
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
@@ -182,7 +189,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     @Override
     public void clearIdvTerminalDataDisk(String terminalId) throws BusinessException {
-        Assert.hasText(terminalId,"terminalId can not be blank");
+        Assert.hasText(terminalId, "terminalId can not be blank");
 
         operatorService.diskClear(terminalId);
     }
@@ -224,9 +231,22 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         try {
             terminalEntity.setStartMode(startMode);
             basicInfoDAO.save(terminalEntity);
+            sendStartModeToShine(terminalId, startMode);
         } catch (Exception e) {
             LOGGER.error("设置终端[" + terminalId + "]启动模式[" + startMode + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SET_START_MODE_FAIL, e, terminalEntity.getTerminalName());
+        }
+    }
+
+    private void sendStartModeToShine(String terminalId, CbbTerminalStartMode startMode) {
+        // 终端在线则下发到终端
+        boolean isOnline = sessionManager.getSessionByAlias(terminalId) != null;
+        if (isOnline) {
+            try {
+                syncTerminalStartModeTcpAPI.handle(terminalId, startMode.getMode());
+            } catch (BusinessException e) {
+                LOGGER.error("发送终端[" + terminalId + "]启动方式[" + startMode + "]失败", e);
+            }
         }
     }
 }
