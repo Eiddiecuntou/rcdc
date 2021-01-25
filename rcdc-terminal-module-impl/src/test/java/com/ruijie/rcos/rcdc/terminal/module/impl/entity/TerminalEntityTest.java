@@ -36,6 +36,7 @@ public class TerminalEntityTest {
         tester.addIgnoreProperty("networkInfoArr");
         tester.addIgnoreProperty("diskInfoArr");
         tester.addIgnoreProperty("netCardMacInfoArr");
+        tester.addIgnoreProperty("supportTcStart");
         tester.runTest();
         Assert.assertTrue(true);
     }

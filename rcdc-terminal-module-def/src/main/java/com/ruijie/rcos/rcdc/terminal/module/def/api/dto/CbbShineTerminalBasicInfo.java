@@ -127,6 +127,7 @@ public class CbbShineTerminalBasicInfo {
     @Nullable
     private String allNetCardMacInfo;
 
+    @Nullable
     private Boolean supportTcStart;
 
     @Nullable
@@ -426,11 +427,12 @@ public class CbbShineTerminalBasicInfo {
         this.dataDiskSize = dataDiskSize;
     }
 
-    public Boolean isSupportTcStart() {
+    @Nullable
+    public Boolean getSupportTcStart() {
         return supportTcStart;
     }
 
-    public void setSupportTcStart(Boolean supportTcStart) {
+    public void setSupportTcStart(@Nullable Boolean supportTcStart) {
         this.supportTcStart = supportTcStart;
     }
 }
