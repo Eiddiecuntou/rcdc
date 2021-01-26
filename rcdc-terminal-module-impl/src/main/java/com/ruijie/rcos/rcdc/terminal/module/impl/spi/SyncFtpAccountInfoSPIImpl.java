@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.FtpConfigInfo;
@@ -31,8 +32,6 @@ public class SyncFtpAccountInfoSPIImpl implements CbbDispatcherHandlerSPI {
 
     private static final String TERMINAL_FTP_CONFIG_KEY = "terminal_ftp_config";
 
-    private static final String FTP_PASSWORD_KEY = "SHINEFTPPASSWORD";
-
     @Autowired
     private GlobalParameterAPI globalParameterAPI;
 
@@ -49,7 +48,7 @@ public class SyncFtpAccountInfoSPIImpl implements CbbDispatcherHandlerSPI {
 
             String passwd = config.getFtpUserPassword();
             Assert.notNull(passwd, "passwd can not be null");
-            config.setFtpUserPassword(AesUtil.encrypt(passwd, FTP_PASSWORD_KEY));
+            config.setFtpUserPassword(AesUtil.encrypt(passwd, Constants.FTP_PASSWORD_KEY));
             CbbResponseShineMessage responseMessage = MessageUtils.buildResponseMessage(request, config);
             messageHandlerAPI.response(responseMessage);
         } catch (Exception e) {
