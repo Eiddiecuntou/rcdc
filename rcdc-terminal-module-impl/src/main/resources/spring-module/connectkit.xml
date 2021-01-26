@@ -57,8 +57,4 @@
                              compatible-handler="defaultCompatibleHandler"
     />
 
-    <sk-connectkit:reference base-package="com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.api"
-                           protocol="tcp"
-                           connect-manager="serverConnectManager"
-                           compatible-handler="defaultCompatibleHandler"/>
 </beans>
