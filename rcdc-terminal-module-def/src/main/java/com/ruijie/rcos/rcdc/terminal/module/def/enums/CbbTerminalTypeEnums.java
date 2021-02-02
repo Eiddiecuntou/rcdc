@@ -66,7 +66,12 @@ public enum CbbTerminalTypeEnums {
     /**
      * linuxUOS软终端
      */
-    APP_UOS("APP", "UOS", AppTerminalOsTypeEnums.UOS);
+    APP_UOS("APP", "UOS", AppTerminalOsTypeEnums.UOS),
+
+    /**
+     * 其他
+     */
+    OTHER("", "");
 
     private String platform;
 
@@ -93,7 +98,7 @@ public enum CbbTerminalTypeEnums {
      * 获取终端对应类型
      *
      * @param platform 平台类型
-     * @param osType 操作系统类型
+     * @param osType   操作系统类型
      * @return 终端类型枚举对象
      */
     public static CbbTerminalTypeEnums convert(String platform, String osType) {
@@ -105,8 +110,7 @@ public enum CbbTerminalTypeEnums {
                 return type;
             }
         }
-
-        throw new IllegalArgumentException("终端类型【" + platform + "】【" + osType + "】未定义，不支持该类型的终端");
+        return CbbTerminalTypeEnums.OTHER;
     }
 
     public String getPlatform() {
