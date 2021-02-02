@@ -153,6 +153,18 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiSuccess (响应字段说明) {String} result.itemArr.terminalName 终端名称
      * @apiSuccess (响应字段说明) {String} result.itemArr.ip 终端ip
      * @apiSuccess (响应字段说明) {String} result.itemArr.mac 终端mac
+     * @apiSuccess (响应字段说明) {CbbNetworkModeEnums="WIRED","WIRELESS"} result.itemArr.networkMode 网络接入方式 有线、无线
+     * @apiSuccess (响应字段说明) {CbbTerminalNetworkInfoDTO[]} result.itemArr.networkInfoArr 终端网络信息
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.macAddr 终端mac
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.ip 终端ip
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.subnetMask 子网掩码
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.gateway 网关
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.mainDns 首选DNS
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.secondDns 备选DNS
+     * @apiSuccess (请求体字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} result.itemArr.networkInfoArr.getIpMode 获取IP模式 自动、手动
+     * @apiSuccess (请求体字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} result.itemArr.networkInfoArr.getDnsMode 获取DNS模式 自动、手动
+     * @apiSuccess (请求体字段说明) {CbbNetworkModeEnums="WIRED","WIRELESS"} result.itemArr.networkInfoArr.networkAccessMode 网络接入方式 有线、无线
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.ssid 无线网络ssid
      * @apiSuccess (响应字段说明) {Date} result.itemArr.startTime 开始时间
      * @apiSuccess (响应字段说明) {CbbFlashModeEnums="FAST","FULL"} result.itemArr.flashMode 刷机模式：快速刷机，完整刷机
      * @apiSuccess (响应字段说明) {CbbSystemUpgradeStateEnums="WAIT","UPGRADING","SUCCESS","FAIL","UNDO","UNSUPPORTED",
@@ -165,8 +177,9 @@ public interface CbbTerminalSystemUpgradeAPI {
      *
      * @param request 请求参数
      * @return 刷机终端列表
+     * @throws BusinessException 业务异常
      */
-    DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> pageQuerySystemUpgradeTaskTerminal(PageSearchRequest request);
+    DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> pageQuerySystemUpgradeTaskTerminal(PageSearchRequest request) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalSystemUpgradeAPI.pageQuerySystemUpgradeTaskTerminalGroup 获取刷机任务终端分组列表
@@ -235,6 +248,18 @@ public interface CbbTerminalSystemUpgradeAPI {
      * @apiSuccess (响应字段说明) {String} response.itemArr.terminalName 终端名称
      * @apiSuccess (响应字段说明) {String} response.itemArr.ip 终端ip
      * @apiSuccess (响应字段说明) {String} response.itemArr.mac 终端mac
+     * @apiSuccess (响应字段说明) {CbbNetworkModeEnums="WIRED","WIRELESS"} result.itemArr.networkMode 网络接入方式 有线、无线
+     * @apiSuccess (响应字段说明) {CbbTerminalNetworkInfoDTO[]} result.itemArr.networkInfoArr 终端网络信息
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.macAddr 终端mac
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.ip 终端ip
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.subnetMask 子网掩码
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.gateway 网关
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.mainDns 首选DNS
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.secondDns 备选DNS
+     * @apiSuccess (请求体字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} result.itemArr.networkInfoArr.getIpMode 获取IP模式 自动、手动
+     * @apiSuccess (请求体字段说明) {CbbGetNetworkModeEnums="AUTO","MANUAL"} result.itemArr.networkInfoArr.getDnsMode 获取DNS模式 自动、手动
+     * @apiSuccess (请求体字段说明) {CbbNetworkModeEnums="WIRED","WIRELESS"} result.itemArr.networkInfoArr.networkAccessMode 网络接入方式 有线、无线
+     * @apiSuccess (请求体字段说明) {String} result.itemArr.networkInfoArr.ssid 无线网络ssid
      * @apiSuccess (响应字段说明) {CbbTerminalStateEnums="OFFLINE","ONLINE","UPGRADING"} response.itemArr.terminalState 终端状态
      * @apiSuccess (响应字段说明) {String} response.itemArr.productType 产品型号
      * @apiSuccess (响应字段说明) {Date} response.itemArr.lastUpgradeTime 最后一次升级时间
