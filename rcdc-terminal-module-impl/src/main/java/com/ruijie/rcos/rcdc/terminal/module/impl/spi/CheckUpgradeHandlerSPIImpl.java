@@ -189,9 +189,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         try {
             TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
             systemUpgradeCheckResult = handler.checkSystemUpgrade(terminalType, terminalEntity);
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             // 这里有不支持系统升级的终端接入，如软终端，为避免大量的日志级别改为debug
-            LOGGER.debug("获取终端系统升级处理对象异常，不支持升级", e);
+            LOGGER.error("获取终端系统升级处理对象异常，不支持升级", e);
             systemUpgradeCheckResult = new SystemUpgradeCheckResult();
             systemUpgradeCheckResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.UNSUPPORT.getResult());
             systemUpgradeCheckResult.setContent(null);
