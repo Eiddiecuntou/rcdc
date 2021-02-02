@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 
 import java.util.Date;
@@ -49,6 +50,10 @@ public class CbbUpgradeableTerminalListDTO {
     private Date lastUpgradeTime;
 
     private UUID groupId;
+
+    private CbbNetworkModeEnums networkMode;
+
+    private CbbTerminalNetworkInfoDTO[] networkInfoArr;
 
     public String getId() {
         return id;
@@ -112,5 +117,21 @@ public class CbbUpgradeableTerminalListDTO {
 
     public void setGroupId(UUID groupId) {
         this.groupId = groupId;
+    }
+
+    public CbbNetworkModeEnums getNetworkMode() {
+        return networkMode;
+    }
+
+    public void setNetworkMode(CbbNetworkModeEnums networkMode) {
+        this.networkMode = networkMode;
+    }
+
+    public CbbTerminalNetworkInfoDTO[] getNetworkInfoArr() {
+        return networkInfoArr;
+    }
+
+    public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoArr) {
+        this.networkInfoArr = networkInfoArr;
     }
 }

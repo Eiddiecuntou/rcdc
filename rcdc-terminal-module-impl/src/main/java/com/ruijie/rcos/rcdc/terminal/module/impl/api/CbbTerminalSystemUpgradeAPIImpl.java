@@ -283,25 +283,26 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     @Override
-    public DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> pageQuerySystemUpgradeTaskTerminal(PageSearchRequest request) {
+    public DefaultPageResponse<CbbSystemUpgradeTaskTerminalDTO> pageQuerySystemUpgradeTaskTerminal(PageSearchRequest request)
+            throws BusinessException {
+
         Assert.notNull(request, "request can not be null");
 
         Page<TerminalSystemUpgradeTerminalEntity> upgradeTaskTerminalPage =
                 querySystemUpgradeTerminalListService.pageQuery(request, TerminalSystemUpgradeTerminalEntity.class);
 
         // 将列表转换为dto输出
-        final int numberOfElements = upgradeTaskTerminalPage.getNumberOfElements();
         final List<TerminalSystemUpgradeTerminalEntity> taskList = upgradeTaskTerminalPage.getContent();
-        CbbSystemUpgradeTaskTerminalDTO[] dtoArr = new CbbSystemUpgradeTaskTerminalDTO[numberOfElements];
-        Stream.iterate(0, i -> i + 1).limit(numberOfElements).forEach(i -> {
-            final TerminalSystemUpgradeTerminalEntity entity = taskList.get(i);
+        final List<CbbSystemUpgradeTaskTerminalDTO> respList = Lists.newArrayList();
+        for (TerminalSystemUpgradeTerminalEntity entity : taskList) {
             CbbSystemUpgradeTaskTerminalDTO dto = buildUpgradeTerminalDTO(entity);
             dto.setTerminalUpgradeState(entity.getState());
             completeTerminalInfo(dto, entity.getTerminalId());
-            dtoArr[i] = dto;
-        });
+            respList.add(dto);
+        }
+        final CbbSystemUpgradeTaskTerminalDTO[] respArr = respList.toArray(new CbbSystemUpgradeTaskTerminalDTO[0]);
 
-        return DefaultPageResponse.Builder.success(upgradeTaskTerminalPage.getSize(), (int) upgradeTaskTerminalPage.getTotalElements(), dtoArr);
+        return DefaultPageResponse.Builder.success(upgradeTaskTerminalPage.getSize(), (int) upgradeTaskTerminalPage.getTotalElements(), respArr);
     }
 
     @Override
@@ -335,12 +336,15 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
      *
      * @param dto 刷机终端dto
      * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
-    private void completeTerminalInfo(CbbSystemUpgradeTaskTerminalDTO dto, String terminalId) {
+    private void completeTerminalInfo(CbbSystemUpgradeTaskTerminalDTO dto, String terminalId) throws BusinessException {
         TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         dto.setTerminalName(terminalEntity.getTerminalName());
         dto.setIp(terminalEntity.getIp());
         dto.setMac(terminalEntity.getMacAddr());
+        dto.setNetworkMode(terminalEntity.getNetworkAccessMode());
+        dto.setNetworkInfoArr(terminalEntity.getNetworkInfoArr());
     }
 
     @Override
@@ -368,16 +372,18 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
                 upgradeableTerminalListService.pageQuery(request, ViewUpgradeableTerminalEntity.class);
 
         // 将列表转换为dto输出
-        final int numberOfElements = upgradeableTerminalPage.getNumberOfElements();
         final List<ViewUpgradeableTerminalEntity> taskList = upgradeableTerminalPage.getContent();
-        CbbUpgradeableTerminalListDTO[] dtoArr = new CbbUpgradeableTerminalListDTO[numberOfElements];
-        Stream.iterate(0, i -> i + 1).limit(numberOfElements).forEach(i -> {
-            CbbUpgradeableTerminalListDTO dto = new CbbUpgradeableTerminalListDTO();
-            fillTerminalListDTO(dto, taskList.get(i));
-            dtoArr[i] = dto;
-        });
+        final List<CbbUpgradeableTerminalListDTO> respList = Lists.newArrayList();
 
-        return DefaultPageResponse.Builder.success(upgradeableTerminalPage.getSize(), (int) upgradeableTerminalPage.getTotalElements(), dtoArr);
+        for (ViewUpgradeableTerminalEntity viewUpgradeableTerminalEntity : taskList) {
+            CbbUpgradeableTerminalListDTO dto = new CbbUpgradeableTerminalListDTO();
+            fillTerminalListDTO(dto, viewUpgradeableTerminalEntity);
+            respList.add(dto);
+        }
+
+        CbbUpgradeableTerminalListDTO[] respArr = respList.toArray(new CbbUpgradeableTerminalListDTO[0]);
+
+        return DefaultPageResponse.Builder.success(upgradeableTerminalPage.getSize(), (int) upgradeableTerminalPage.getTotalElements(), respArr);
     }
 
     /**
@@ -424,7 +430,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         matchEqualList.addAll(convertMEList);
     }
 
-    private void fillTerminalListDTO(CbbUpgradeableTerminalListDTO dto, ViewUpgradeableTerminalEntity viewEntity) {
+    private void fillTerminalListDTO(CbbUpgradeableTerminalListDTO dto, ViewUpgradeableTerminalEntity viewEntity) throws BusinessException {
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(viewEntity.getTerminalId());
         dto.setId(viewEntity.getTerminalId());
         dto.setTerminalName(viewEntity.getTerminalName());
         dto.setIp(viewEntity.getIp());
@@ -432,6 +439,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         dto.setProductType(viewEntity.getProductType());
         dto.setTerminalState(viewEntity.getState());
         dto.setLastUpgradeTime(viewEntity.getLastUpgradeTime());
+        dto.setNetworkMode(terminalEntity.getNetworkAccessMode());
+        dto.setNetworkInfoArr(terminalEntity.getNetworkInfoArr());
     }
 
 

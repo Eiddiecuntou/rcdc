@@ -646,8 +646,6 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 querySystemUpgradeTerminalListService.pageQuery(request, TerminalSystemUpgradeTerminalEntity.class);
                 result = upgradeTaskTerminalPage;
-                upgradeTaskTerminalPage.getNumberOfElements();
-                result = 1;
                 upgradeTaskTerminalPage.getContent();
                 result = taskList;
                 upgradeTaskTerminalPage.getSize();
@@ -664,8 +662,6 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         new Verifications() {
             {
                 querySystemUpgradeTerminalListService.pageQuery(request, TerminalSystemUpgradeTerminalEntity.class);
-                times = 1;
-                upgradeTaskTerminalPage.getNumberOfElements();
                 times = 1;
                 upgradeTaskTerminalPage.getContent();
                 times = 1;
