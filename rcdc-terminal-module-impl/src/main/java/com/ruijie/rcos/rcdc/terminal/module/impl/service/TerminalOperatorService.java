@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalDetectionEntity;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.springframework.lang.Nullable;
 
 /**
  * Description: 终端操作接口
@@ -72,9 +73,10 @@ public interface TerminalOperatorService {
     /**
      * 解除报障
      * @param terminalId 终端id
+     * @param content 业务扩展字段
      * @throws BusinessException 业务异常
      */
-    void relieveFault(String terminalId) throws BusinessException;
+    void relieveFault(String terminalId, @Nullable Object content) throws BusinessException;
 
     /**
      * 终端离线登录设置

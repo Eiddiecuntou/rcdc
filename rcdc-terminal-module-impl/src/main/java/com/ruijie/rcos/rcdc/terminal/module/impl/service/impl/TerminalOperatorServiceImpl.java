@@ -37,6 +37,7 @@ import com.ruijie.rcos.sk.commkit.base.message.base.BaseMessage;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -280,10 +281,11 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
     }
 
     @Override
-    public void relieveFault(String terminalId) throws BusinessException {
+    public void relieveFault(String terminalId, @Nullable Object content) throws BusinessException {
         Assert.hasText(terminalId, "terminalId 不能为空");
+
         // 解除故障允许在终端离线的情况下进行，所以无需校验终端是否在线
-        operateTerminal(terminalId, SendTerminalEventEnums.RELIEVE_FAULT, "", BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_RELIEVE_FAULT);
+        operateTerminal(terminalId, SendTerminalEventEnums.RELIEVE_FAULT, content, BusinessKey.RCDC_TERMINAL_OPERATE_ACTION_RELIEVE_FAULT);
     }
 
     /**
