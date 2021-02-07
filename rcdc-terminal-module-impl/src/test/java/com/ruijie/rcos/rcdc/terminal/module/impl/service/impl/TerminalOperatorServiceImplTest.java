@@ -721,7 +721,7 @@ public class TerminalOperatorServiceImplTest {
         };
         String terminalId = "123";
 
-        operatorService.relieveFault(terminalId);
+        operatorService.relieveFault(terminalId, null);
 
         new Verifications() {
             {

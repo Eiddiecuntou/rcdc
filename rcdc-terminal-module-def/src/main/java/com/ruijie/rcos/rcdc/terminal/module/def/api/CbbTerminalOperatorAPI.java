@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.springframework.lang.Nullable;
 
 /**
  * Description: 终端操作接口
@@ -192,15 +193,17 @@ public interface CbbTerminalOperatorAPI {
      * @apiDescription 解除故障
      * @apiParam (请求体字段说明) {CbbTerminalIdRequest} request CbbTerminalIdRequest
      * @apiParam (请求体字段说明) {String} request.terminalId 终端id
+     * @apiParam (请求体字段说明) {String} request.content 业务扩展字段
      *
      */
     /**
      * 解除故障
      *
      * @param terminalId 终端id请求参数对象
+     * @param content 业务扩展字段
      * @throws BusinessException 业务异常
      */
-    void relieveFault(String terminalId) throws BusinessException;
+    void relieveFault(String terminalId, @Nullable Object content) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalOperatorAPI.idvOfflineLoginSetting IDV终端离线登录设置

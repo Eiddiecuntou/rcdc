@@ -25,6 +25,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -187,10 +188,10 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public void relieveFault(String terminalId) throws BusinessException {
+    public void relieveFault(String terminalId, @Nullable Object content) throws BusinessException {
         Assert.hasText(terminalId, "terminalId不能为空");
 
-        operatorService.relieveFault(terminalId);
+        operatorService.relieveFault(terminalId, content);
     }
 
     @Override
