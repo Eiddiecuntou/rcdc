@@ -103,6 +103,8 @@ public class CbbTerminalBasicInfoDTO {
 
     private Boolean supportTcStart;
 
+    private String productId;
+
     public Long getDataDiskSize() {
         return dataDiskSize;
     }
@@ -409,5 +411,13 @@ public class CbbTerminalBasicInfoDTO {
 
     public void setSupportTcStart(Boolean supportTcStart) {
         this.supportTcStart = supportTcStart;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }

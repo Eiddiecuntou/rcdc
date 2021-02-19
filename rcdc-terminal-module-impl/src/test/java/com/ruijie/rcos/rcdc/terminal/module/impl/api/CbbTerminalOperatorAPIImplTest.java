@@ -627,7 +627,7 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testRelieveFaultValidateParams() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null), "terminalId不能为空");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalOperatorAPI.relieveFault(null, null), "terminalId不能为空");
         assertTrue(true);
     }
 
@@ -639,7 +639,7 @@ public class CbbTerminalOperatorAPIImplTest {
         try {
             String terminalId = "123";
 
-            terminalOperatorAPI.relieveFault(terminalId);
+            terminalOperatorAPI.relieveFault(terminalId, null);
         } catch (BusinessException e) {
             fail();
         }
@@ -647,7 +647,7 @@ public class CbbTerminalOperatorAPIImplTest {
         new Verifications() {
             {
                 try {
-                    operatorService.relieveFault(anyString);
+                    operatorService.relieveFault(anyString, null);
                     times = 1;
                 } catch (BusinessException e) {
                     fail();
