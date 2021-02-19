@@ -405,7 +405,7 @@ public class CbbTerminalBasicInfoDTO {
         this.startMode = startMode;
     }
 
-    public Boolean isSupportTcStart() {
+    public Boolean getSupportTcStart() {
         return supportTcStart;
     }
 
