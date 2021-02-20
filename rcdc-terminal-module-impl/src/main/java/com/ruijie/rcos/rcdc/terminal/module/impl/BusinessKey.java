@@ -43,6 +43,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_COLLECT_LOG_NOT_EXIST = "rcdc_terminal_collect_log_not_exist";
 
     /**
+     * 启动默认定时删除终端采集日志任务失败
+     */
+    String RCDC_TERMINAL_START_DEFAULT_CLEAN_COLLECT_LOG_FAIL = "rcdc_terminal_start_default_clean_collect_log_fail";
+
+    /**
      * 终端管理员密码记录不存在
      */
     String RCDC_TERMINAL_ADMIN_PWD_RECORD_NOT_EXIST = "rcdc_terminal_admin_pwd_record_not_exist";

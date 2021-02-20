@@ -9,14 +9,18 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.TerminalCollectLogCleanQuartzTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.io.File;
+import java.text.ParseException;
 
 /**
  * Description: Function Description
@@ -35,6 +39,9 @@ public class CbbTerminalLogAPIImpl implements CbbTerminalLogAPI {
 
     @Autowired
     private CollectLogCacheManager collectLogCacheManager;
+
+    @Autowired
+    private TerminalCollectLogCleanQuartzTask terminalCollectLogCleanQuartzTask;
 
     @Override
     public void collectLog(String terminalId) throws BusinessException {
@@ -101,5 +108,19 @@ public class CbbTerminalLogAPIImpl implements CbbTerminalLogAPI {
             suffix = fileName.substring(lastIndexOf + 1);
         }
         return suffix;
+    }
+
+    @Override
+    public void startDefaultCleanCollectLogTask() throws BusinessException {
+        String cronExpression = "0 0 2 * * ? *";
+        try {
+            LOGGER.info("启动缺省清理终端采集日志任务，cronExpression：{}", cronExpression);
+            ThreadExecutors.scheduleWithCron(TerminalCollectLogCleanQuartzTask.class.getSimpleName(),
+                    terminalCollectLogCleanQuartzTask, cronExpression);
+        } catch (Exception e) {
+            LOGGER.error("启动缺省清理终端采集日志任务[{}]失败，异常原因：{}", TerminalCollectLogCleanQuartzTask.class.getName(),
+                    ExceptionUtils.getStackTrace(e));
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_START_DEFAULT_CLEAN_COLLECT_LOG_FAIL);
+        }
     }
 }
