@@ -231,4 +231,23 @@ public class CbbTerminalLogAPIimplTest {
         };
     }
 
+    @Test
+    public void testStartDefaultCleanCollectLogTaskWithException() throws BusinessException, ParseException {
+        String cronExpression = "0 0 2 * * ? *";
+        new Expectations(ThreadExecutors.class) {
+            {
+                ThreadExecutors.scheduleWithCron(TerminalCollectLogCleanQuartzTask.class.getSimpleName(),
+                        terminalCollectLogCleanQuartzTask, cronExpression);;
+                result = new RuntimeException("test");
+            }
+        };
+
+        try {
+            cbbTerminalLogAPI.startDefaultCleanCollectLogTask();
+            Assert.fail();
+        } catch (BusinessException e) {
+            Assert.assertEquals(e.getKey(), BusinessKey.RCDC_TERMINAL_START_DEFAULT_CLEAN_COLLECT_LOG_FAIL);
+        }
+    }
+
 }
