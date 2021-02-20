@@ -120,7 +120,7 @@ public class CbbTerminalLogAPIImpl implements CbbTerminalLogAPI {
         } catch (Exception e) {
             LOGGER.error("启动缺省清理终端采集日志任务[{}]失败，异常原因：{}", TerminalCollectLogCleanQuartzTask.class.getName(),
                     ExceptionUtils.getStackTrace(e));
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_START_DEFAULT_CLEAN_COLLECT_LOG_FAIL);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_START_DEFAULT_CLEAN_COLLECT_LOG_FAIL, e);
         }
     }
 }
