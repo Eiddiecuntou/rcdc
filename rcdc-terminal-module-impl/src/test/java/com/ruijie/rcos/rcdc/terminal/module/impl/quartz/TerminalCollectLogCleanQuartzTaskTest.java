@@ -214,33 +214,4 @@ public class TerminalCollectLogCleanQuartzTaskTest {
             }
         };
     }
-
-    /**
-     * 测试异常方法
-     *
-     * @throws ParseException 解析异常
-     */
-    @Test
-    public void testSafeInitWhileException() throws ParseException {
-        new Expectations(ThreadExecutors.class) {
-            {
-                ThreadExecutors.scheduleWithCron(anyString, (Runnable) any, anyString);
-                result = new ParseException("", 0);
-            }
-        };
-        try {
-            quartz.safeInit();
-            Assert.fail();
-        } catch (Exception e) {
-            assertEquals(e.getMessage(), "定时任务[" + quartz.getClass() + "]cron表达式[0 0 2 * * ? *]解析异常");
-        }
-
-        new Verifications() {
-            {
-                ThreadExecutors.scheduleWithCron(anyString, (Runnable) any, anyString);
-                times = 1;
-            }
-        };
-    }
-
 }

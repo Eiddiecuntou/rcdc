@@ -7,16 +7,21 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCache;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.quartz.TerminalCollectLogCleanQuartzTask;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalOperatorService;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import mockit.*;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.text.ParseException;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -46,6 +51,9 @@ public class CbbTerminalLogAPIimplTest {
 
     @Injectable
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
+
+    @Injectable
+    private TerminalCollectLogCleanQuartzTask terminalCollectLogCleanQuartzTask;
 
     /**
      * 测试收集日志
@@ -206,6 +214,21 @@ public class CbbTerminalLogAPIimplTest {
         assertEquals("/opt/ftp/terminal/log/logFileName", response.getLogFilePath());
         assertEquals("logFileName", response.getLogFileName());
         assertEquals("", response.getSuffix());
+    }
+
+    @Test
+    public void testStartDefaultCleanCollectLogTask() throws BusinessException, ParseException {
+        String cronExpression = "0 0 2 * * ? *";
+
+        cbbTerminalLogAPI.startDefaultCleanCollectLogTask();
+
+        new Verifications() {
+            {
+                ThreadExecutors.scheduleWithCron(TerminalCollectLogCleanQuartzTask.class.getSimpleName(),
+                        terminalCollectLogCleanQuartzTask, cronExpression);
+                times = 1;
+            }
+        };
     }
 
 }
