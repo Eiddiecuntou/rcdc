@@ -31,7 +31,7 @@ import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
  * @author nt
  */
 @Service
-public class TerminalCollectLogCleanQuartzTask implements SafetySingletonInitializer, Runnable {
+public class TerminalCollectLogCleanQuartzTask implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalCollectLogCleanQuartzTask.class);
 
@@ -39,16 +39,6 @@ public class TerminalCollectLogCleanQuartzTask implements SafetySingletonInitial
 
     @Autowired
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;
-
-    @Override
-    public void safeInit() {
-        String cronExpression = "0 0 2 * * ? *";
-        try {
-            ThreadExecutors.scheduleWithCron(this.getClass().getSimpleName(), this, cronExpression);
-        } catch (ParseException e) {
-            throw new RuntimeException("定时任务[" + this.getClass() + "]cron表达式[" + cronExpression + "]解析异常", e);
-        }
-    }
 
     @Override
     public void run() {

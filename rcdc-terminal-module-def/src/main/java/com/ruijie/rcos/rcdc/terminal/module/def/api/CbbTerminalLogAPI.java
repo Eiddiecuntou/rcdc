@@ -79,4 +79,20 @@ public interface CbbTerminalLogAPI {
      * @throws BusinessException 业务异常
      */
     CbbTerminalLogFileInfoDTO getTerminalLogFileInfo(String logName) throws BusinessException;
+
+    /**
+     * @api {POST} CbbTerminalLogAPI.startDefaultCleanCollectLogTask 开启缺省清理终端采集日志定时任务
+     * @apiName startDefaultCleanCollectLogTask
+     * @apiGroup CbbTerminalLogAPI
+     * @apiDescription 开启缺省清理终端采集日志定时任务
+     *
+     * @apiErrorExample {json} 异常码列表
+     *  {code:rcdc_terminal_start_default_clean_collect_log_fail message:启动默认定时删除终端采集日志任务失败}
+     *
+     */
+    /**
+     * 开启缺省清理终端采集日志定时任务
+     * @throws BusinessException 业务异常
+     */
+    void startDefaultCleanCollectLogTask() throws BusinessException;
 }
