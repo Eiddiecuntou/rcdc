@@ -112,14 +112,14 @@ public class CbbTerminalLogAPIImpl implements CbbTerminalLogAPI {
 
     @Override
     public void startDefaultCleanCollectLogTask() throws BusinessException {
+        // 每日凌晨2点触发
         String cronExpression = "0 0 2 * * ? *";
         try {
             LOGGER.info("启动缺省清理终端采集日志任务，cronExpression：{}", cronExpression);
             ThreadExecutors.scheduleWithCron(TerminalCollectLogCleanQuartzTask.class.getSimpleName(),
                     terminalCollectLogCleanQuartzTask, cronExpression);
         } catch (Exception e) {
-            LOGGER.error("启动缺省清理终端采集日志任务[{}]失败，异常原因：{}", TerminalCollectLogCleanQuartzTask.class.getName(),
-                    ExceptionUtils.getStackTrace(e));
+            LOGGER.error("启动缺省清理终端采集日志任务" + TerminalCollectLogCleanQuartzTask.class.getName() + "失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_START_DEFAULT_CLEAN_COLLECT_LOG_FAIL, e);
         }
     }
