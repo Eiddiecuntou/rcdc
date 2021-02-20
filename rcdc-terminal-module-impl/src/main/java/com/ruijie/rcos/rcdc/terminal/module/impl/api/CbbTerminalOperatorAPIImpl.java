@@ -22,6 +22,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -256,5 +257,15 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
                 LOGGER.error("发送终端[" + terminalId + "]启动方式[" + startMode + "]失败", e);
             }
         }
+    }
+
+    @Override
+    public void closeTerminalConnection(String terminalId) {
+        Assert.hasText(terminalId, "terminalId can not be null");
+        LOGGER.info("收到关闭终端[{}]连接请求", terminalId);
+
+        Session session = sessionManager.getSessionByAlias(terminalId);
+        sessionManager.removeSession(terminalId, session);
+        session.close();
     }
 }

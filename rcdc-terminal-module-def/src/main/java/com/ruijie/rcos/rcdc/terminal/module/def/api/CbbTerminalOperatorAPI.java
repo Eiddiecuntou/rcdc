@@ -273,4 +273,18 @@ public interface CbbTerminalOperatorAPI {
      * @throws BusinessException 业务异常
      */
     void setTerminalStartMode(String terminalId, CbbTerminalStartMode startMode) throws BusinessException;
+
+    /**
+     * @api {POST} CbbTerminalOperatorAPI.closeTerminalConnection 关闭终端与rcdc的连接
+     * @apiName closeTerminalConnection
+     * @apiGroup CbbTerminalOperatorAPI
+     * @apiDescription 关闭终端与rcdc的连接
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
+     *
+     */
+    /**
+     * 关闭终端与rcdc的连接
+     * @param terminalId 终端id
+     */
+    void closeTerminalConnection(String terminalId);
 }
