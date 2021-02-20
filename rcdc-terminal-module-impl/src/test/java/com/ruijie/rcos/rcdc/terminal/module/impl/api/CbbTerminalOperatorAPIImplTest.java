@@ -15,6 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalBasicInfoServiceTx;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
+import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import mockit.*;
 import mockit.integration.junit4.JMockit;
 import org.junit.Assert;
@@ -705,6 +706,17 @@ public class CbbTerminalOperatorAPIImplTest {
                 terminalBasicInfoServiceTx.deleteTerminal(anyString);
                 times = 1;
                 terminalAuthHelper.processDecreaseIdvTerminalLicense();
+                times = 1;
+            }
+        };
+    }
+
+    @Test
+    public void testCloseTerminalConnection() {
+        terminalOperatorAPI.closeTerminalConnection("123");
+        new Verifications() {
+            {
+                sessionManager.removeSession("123", (Session) any);
                 times = 1;
             }
         };
