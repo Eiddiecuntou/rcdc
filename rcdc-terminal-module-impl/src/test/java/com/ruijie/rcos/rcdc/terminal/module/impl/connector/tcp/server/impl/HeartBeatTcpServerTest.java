@@ -31,7 +31,7 @@ public class HeartBeatTcpServerTest {
     @Test
     public void testHeartBeat() {
 
-        Object obj = heartBeatTcpServer.heartBeat("123");
+        Object obj = heartBeatTcpServer.heartBeat();
 
         Assert.assertTrue(obj instanceof Object);
 

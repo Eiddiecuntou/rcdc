@@ -18,10 +18,9 @@ public class HeartBeatTcpServerImpl implements HeartBeatTcpServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartBeatTcpServerImpl.class);
 
     @Override
-    public Object heartBeat(String terminalId) {
-        Assert.hasText(terminalId, "terminalId can not be blank");
-        
-        LOGGER.info("收到业务心跳报文， terminalId : {}", terminalId);
+    public Object heartBeat() {
+
+        LOGGER.info("收到业务心跳报文");
         return new Object();
     }
 }
