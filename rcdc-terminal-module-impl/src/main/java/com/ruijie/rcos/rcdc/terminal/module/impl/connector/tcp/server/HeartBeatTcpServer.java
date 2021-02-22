@@ -19,9 +19,8 @@ public interface HeartBeatTcpServer {
     /**
      * 获取IDV终端虚拟化策略信息
      *
-     * @param terminalId 终端id
      * @return Object obj
      */
     @ApiAction("heartBeat")
-    Object heartBeat(@SessionAlias String terminalId);
+    Object heartBeat();
 }
