@@ -65,10 +65,10 @@ public class SessionManager {
         SESSION_MAP.remove(session.getId());
         boolean isSuccess = SESSION_ALIAS_MAP.remove(terminalId, session);
         if (isSuccess) {
-            LOGGER.info("移除终端session，terminalId={};ip={},当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
+            LOGGER.info("移除终端session，terminalId={};当前在线终端数量为：{}", terminalId, SESSION_MAP.size());
             return true;
         }
-        LOGGER.info("关闭前一次连接的session，不移除当前绑定的terminalId={};ip={}的session;当前在线终端数量为：{}", terminalId,
+        LOGGER.info("关闭前一次连接的session，不移除当前绑定的terminalId={} session;当前在线终端数量为：{}", terminalId,
                 SESSION_MAP.size());
         return false;
     }
