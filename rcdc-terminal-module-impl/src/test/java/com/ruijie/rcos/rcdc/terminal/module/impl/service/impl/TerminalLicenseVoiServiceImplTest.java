@@ -23,6 +23,8 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 
+import java.util.UUID;
+
 /**
  * Description:TerminalLicenseVoiServiceImpl测试类
  * Copyright: Copyright (c) 2020
@@ -380,6 +382,169 @@ public class TerminalLicenseVoiServiceImplTest {
         licenceLicenseService.decreaseCacheLicenseUsedNum();
         int used = licenceLicenseService.getUsedNum();
         assertEquals(used, 4);
+    }
+
+    @Test
+    public void testAuthByIdvVoiUpgradeUsedNumGTELicense() throws Exception {
+        String terminalId = UUID.randomUUID().toString();
+        boolean isNewConnection = true;
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+
+        new Expectations(TerminalLicenseVoiServiceImpl.class) {
+            {
+                terminalLicenseVOIUpgradeServiceImpl.getUsedNum();
+                result = 1;
+
+                terminalLicenseVOIUpgradeServiceImpl.getTerminalLicenseNum();
+                result = 0;
+
+                licenceLicenseService.getUsedNum();
+                result = 1;
+
+                licenceLicenseService.getTerminalLicenseNum();
+                result = 0;
+            }
+        };
+
+        boolean isAuth = licenceLicenseService.authByIdv(terminalId, isNewConnection, basicInfo);
+        Assert.assertFalse(isAuth);
+
+        new Verifications() {
+            {
+                terminalLicenseVOIUpgradeServiceImpl.auth(terminalId, isNewConnection, basicInfo);
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void testAuthByIdvVoiUsedNumGTELicense() throws Exception {
+        String terminalId = UUID.randomUUID().toString();
+        boolean isNewConnection = true;
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+
+        new Expectations(TerminalLicenseVoiServiceImpl.class) {
+            {
+                terminalLicenseVOIUpgradeServiceImpl.getUsedNum();
+                result = 1;
+
+                terminalLicenseVOIUpgradeServiceImpl.getTerminalLicenseNum();
+                result = 2;
+
+                licenceLicenseService.getUsedNum();
+                result = 1;
+
+                licenceLicenseService.getTerminalLicenseNum();
+                result = 0;
+            }
+        };
+
+        boolean isAuth = licenceLicenseService.authByIdv(terminalId, isNewConnection, basicInfo);
+        Assert.assertFalse(isAuth);
+
+        new Verifications() {
+            {
+                terminalLicenseVOIUpgradeServiceImpl.auth(terminalId, isNewConnection, basicInfo);
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void testAuthByIdvLicenseNotEmpty() throws Exception {
+        String terminalId = UUID.randomUUID().toString();
+        boolean isNewConnection = true;
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+
+        new Expectations(TerminalLicenseVoiServiceImpl.class, TerminalLicenseVoiUpgradeServiceImpl.class) {
+            {
+                terminalLicenseVOIUpgradeServiceImpl.getUsedNum();
+                result = 1;
+
+                terminalLicenseVOIUpgradeServiceImpl.getTerminalLicenseNum();
+                result = 2;
+
+                licenceLicenseService.getUsedNum();
+                result = 1;
+
+                licenceLicenseService.getTerminalLicenseNum();
+                result = 2;
+
+                terminalLicenseVOIUpgradeServiceImpl.auth(terminalId, isNewConnection, basicInfo);
+                result = false;
+            }
+        };
+
+        boolean isAuth = licenceLicenseService.authByIdv(terminalId, isNewConnection, basicInfo);
+        Assert.assertFalse(isAuth);
+
+        new Verifications() {
+            {
+                terminalLicenseVOIUpgradeServiceImpl.auth(terminalId, isNewConnection, basicInfo);
+                times = 1;
+            }
+        };
+    }
+
+    @Test
+    public void testAuthByIdvLicenseAuthFail() throws Exception {
+        String terminalId = UUID.randomUUID().toString();
+        boolean isNewConnection = true;
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+
+        new Expectations(TerminalLicenseVoiServiceImpl.class, TerminalLicenseVoiUpgradeServiceImpl.class) {
+            {
+                terminalLicenseVOIUpgradeServiceImpl.getUsedNum();
+                result = 1;
+
+                terminalLicenseVOIUpgradeServiceImpl.getTerminalLicenseNum();
+                result = 2;
+
+                licenceLicenseService.getUsedNum();
+                result = 1;
+
+                licenceLicenseService.getTerminalLicenseNum();
+                result = 2;
+
+                terminalLicenseVOIUpgradeServiceImpl.auth(terminalId, isNewConnection, basicInfo);
+                result = false;
+            }
+        };
+
+        boolean isAuth = licenceLicenseService.authByIdv(terminalId, isNewConnection, basicInfo);
+        Assert.assertFalse(isAuth);
+    }
+
+    @Test
+    public void testAuthByIdvLicenseAuthTrue() throws Exception {
+        String terminalId = UUID.randomUUID().toString();
+        boolean isNewConnection = true;
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+
+        new Expectations(TerminalLicenseVoiServiceImpl.class, TerminalLicenseVoiUpgradeServiceImpl.class) {
+            {
+                terminalLicenseVOIUpgradeServiceImpl.getUsedNum();
+                result = 1;
+
+                terminalLicenseVOIUpgradeServiceImpl.getTerminalLicenseNum();
+                result = 2;
+
+                licenceLicenseService.getUsedNum();
+                result = 1;
+
+                licenceLicenseService.getTerminalLicenseNum();
+                result = 2;
+
+                terminalLicenseVOIUpgradeServiceImpl.auth(terminalId, isNewConnection, basicInfo);
+                result = true;
+
+                licenceLicenseService.increaseCacheLicenseUsedNum();
+
+            }
+        };
+
+        boolean isAuth = licenceLicenseService.authByIdv(terminalId, isNewConnection, basicInfo);
+        Assert.assertTrue(isAuth);
     }
 
 }
