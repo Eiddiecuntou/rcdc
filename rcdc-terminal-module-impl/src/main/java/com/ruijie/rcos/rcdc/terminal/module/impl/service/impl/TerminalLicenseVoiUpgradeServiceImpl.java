@@ -78,10 +78,11 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
 
     @Override
     public void decreaseCacheLicenseUsedNum() {
-        if (usedNum == null) {
-            getUsedNum();
-        }
         synchronized (usedNumLock) {
+            if (usedNum == null) {
+                getUsedNum();
+            }
+
             usedNum--;
         }
     }
@@ -98,6 +99,8 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
         // 将所有已授权IDV终端置为未授权，并更新终端授权数量
         this.usedNum = 0;
         this.licenseNum = licenseNum;
+
+        globalParameterAPI.updateParameter(getLicenseConstansKey(), String.valueOf(licenseNum));
     }
 
     @Override
@@ -109,6 +112,10 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
     @Override
     public void increaseCacheLicenseUsedNum() {
         synchronized (usedNumLock) {
+            if (usedNum == null) {
+                getUsedNum();
+            }
+
             usedNum++;
         }
     }

@@ -103,6 +103,16 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
         Assert.notNull(basicInfo, "basicInfo can not be null");
         synchronized (getLock()) {
             LOGGER.info("idv 使用voi授权进行授权");
+            Integer voiUpgradeUsedNum = terminalLicenseVOIUpgradeServiceImpl.getUsedNum();
+            Integer voiUpgradeTerminalLicenseNum = terminalLicenseVOIUpgradeServiceImpl.getTerminalLicenseNum();
+            Integer voiUsedNum = this.getUsedNum();
+            Integer voiTerminalLicenseNum = this.getTerminalLicenseNum();
+            if (voiUpgradeUsedNum >= voiUpgradeTerminalLicenseNum || voiUsedNum >= voiTerminalLicenseNum) {
+                LOGGER.error("idv 使用voi授权进行授权数量不足，已使用VOI升级授权数：{}，VOI升级可用授权数：{}，已使用VOI授权数，VOI可用授权数：{}",
+                        voiUpgradeUsedNum, voiUpgradeTerminalLicenseNum, voiUsedNum, voiTerminalLicenseNum);
+                return false;
+            }
+
             if (terminalLicenseVOIUpgradeServiceImpl.auth(terminalId, isNewConnection, basicInfo)) {
                 this.increaseCacheLicenseUsedNum();
                 return true;
@@ -114,10 +124,11 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
 
     @Override
     public void decreaseCacheLicenseUsedNum() {
-        if (usedNum == null) {
-            getUsedNum();
-        }
         synchronized (usedNumLock) {
+            if (usedNum == null) {
+                getUsedNum();
+            }
+
             usedNum--;
         }
     }
@@ -147,6 +158,10 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
     @Override
     public void increaseCacheLicenseUsedNum() {
         synchronized (usedNumLock) {
+            if (usedNum == null) {
+                getUsedNum();
+            }
+
             usedNum++;
         }
     }
