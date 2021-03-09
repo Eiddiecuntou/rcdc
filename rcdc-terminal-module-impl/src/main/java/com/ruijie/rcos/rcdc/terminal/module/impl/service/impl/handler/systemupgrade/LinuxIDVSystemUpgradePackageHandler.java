@@ -47,7 +47,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     /**
      * OTA包文件名
      */
-    private static final String OTA_PACKAGE_NAME = "rainos-img.squashfs";
+    private static final String OTA_PACKAGE_NAME = "rainos.sqfs";
 
     /**
      * OTA脚本文件名

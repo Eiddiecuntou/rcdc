@@ -125,7 +125,7 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         prop.setProperty("version", "1.0");
 
         List<String> otaFileInfoList = Lists.newArrayList();
-        otaFileInfoList.add("packageMD5 /rainos-img.squashfs");
+        otaFileInfoList.add("packageMD5 /rainos.sqfs");
         otaFileInfoList.add("scriptMD5 /OTAPreRunFun.bash");
 
         LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
@@ -456,7 +456,7 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
         prop.setProperty("version", "1.0");
 
         List<String> otaFileInfoList = Lists.newArrayList();
-        otaFileInfoList.add("packageMD5 /rainos-img.squashfs");
+        otaFileInfoList.add("packageMD5 /rainos.sqfs");
         otaFileInfoList.add("scriptMD5 /OTAPreRunFun.bash");
 
         LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
