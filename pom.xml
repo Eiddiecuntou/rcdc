@@ -19,8 +19,8 @@
     </modules>
     
     <properties>
-    	<base-sysmanage-module.version>1.7.7-SNAPSHOT</base-sysmanage-module.version>
-    	<base-aaa-module.version>1.7.7-SNAPSHOT</base-aaa-module.version>
+    	<base-sysmanage-module.version>1.7.8-SNAPSHOT</base-sysmanage-module.version>
+    	<base-aaa-module.version>1.7.8-SNAPSHOT</base-aaa-module.version>
         <rcdc-codec-adapter.version>1.0.0-SNAPSHOT</rcdc-codec-adapter.version>
     </properties>
 
