@@ -62,7 +62,8 @@ public class SyncSystemUpgradeResultHelper {
      * @param handler 系统升级处理对象
      * @param request 请求信息
      */
-    public void dealSystemUpgradeResult(TerminalEntity basicInfoEntity, CbbTerminalTypeEnums terminalType, TerminalSystemUpgradeHandler handler, CbbDispatcherRequest request) {
+    public void dealSystemUpgradeResult(TerminalEntity basicInfoEntity, CbbTerminalTypeEnums terminalType, TerminalSystemUpgradeHandler handler
+            , CbbDispatcherRequest request) {
         Assert.notNull(basicInfoEntity, "basicInfoEntity can not be null");
         Assert.notNull(terminalType, "terminalType can not be null");
         Assert.notNull(handler, "handler can not be null");
