@@ -58,17 +58,17 @@ public class SyncSystemUpgradeResultHelper {
      * 处理终端系统升级状态消息
      *
      * @param basicInfoEntity 终端信息
+     * @param terminalType 平台类型
      * @param handler 系统升级处理对象
      * @param request 请求信息
      */
-    public void dealSystemUpgradeResult(TerminalEntity basicInfoEntity, TerminalSystemUpgradeHandler handler, CbbDispatcherRequest request) {
+    public void dealSystemUpgradeResult(TerminalEntity basicInfoEntity, CbbTerminalTypeEnums terminalType, TerminalSystemUpgradeHandler handler, CbbDispatcherRequest request) {
         Assert.notNull(basicInfoEntity, "basicInfoEntity can not be null");
+        Assert.notNull(terminalType, "terminalType can not be null");
         Assert.notNull(handler, "handler can not be null");
         Assert.notNull(request, "request can not be null");
         Assert.notNull(basicInfoEntity.getTerminalId(), "terminalId can not be null");
         Assert.notNull(basicInfoEntity.getTerminalOsType(), "osType can not be null");
-
-        CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(basicInfoEntity.getPlatform().name(), basicInfoEntity.getTerminalOsType());
 
         boolean enableUpgrade = handler.isTerminalEnableUpgrade(basicInfoEntity, terminalType);
 

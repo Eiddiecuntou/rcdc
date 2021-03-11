@@ -734,7 +734,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
         TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
         packageEntity.setIsDelete(false);
-        packageEntity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+        packageEntity.setPackageType(CbbTerminalTypeEnums.IDV_LINUX);
 
         List<ViewUpgradeableTerminalEntity> entityList = new ArrayList<>();
         entityList.add(new ViewUpgradeableTerminalEntity());
