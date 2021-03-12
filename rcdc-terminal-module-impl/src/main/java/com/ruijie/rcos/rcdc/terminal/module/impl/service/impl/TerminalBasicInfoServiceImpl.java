@@ -129,7 +129,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             basicInfoEntity.setLastOnlineTime(now);
         }
 
-        basicInfoEntity.setState(CbbTerminalStateEnums.ONLINE);
+        Session session = sessionManager.getSessionByAlias(terminalId);
+        CbbTerminalStateEnums state = session == null ? CbbTerminalStateEnums.OFFLINE : CbbTerminalStateEnums.ONLINE;
+        basicInfoEntity.setState(state);
         CbbTerminalNetworkInfoDTO[] networkInfoDTOArr = obtainNetworkInfo(shineTerminalBasicInfo);
         basicInfoEntity.setNetworkInfoArr(networkInfoDTOArr);
         basicInfoEntity.setAuthed(Boolean.TRUE);
