@@ -82,7 +82,7 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
                 upgradeResultHelper.responseNotUpgrade(request);
                 times = 1;
 
-                upgradeResultHelper.dealSystemUpgradeResult(entity, (TerminalSystemUpgradeHandler) any, request);
+                upgradeResultHelper.dealSystemUpgradeResult(entity, (CbbTerminalTypeEnums) any, (TerminalSystemUpgradeHandler) any, request);
                 times = 0;
             }
         };
@@ -99,14 +99,14 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
         entity.setTerminalName("t-box3");
         entity.setCpuType("intel");
         entity.setTerminalOsType("Linux");
-        entity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        entity.setPlatform(CbbTerminalPlatformEnums.VOI);
 
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = entity;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
                 result = handler;
 
             }
@@ -124,13 +124,13 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
                 times = 1;
 
                 upgradeResultHelper.responseNotUpgrade(request);
                 times = 0;
 
-                upgradeResultHelper.dealSystemUpgradeResult(entity, handler, request);
+                upgradeResultHelper.dealSystemUpgradeResult(entity, (CbbTerminalTypeEnums) any, handler, request);
                 times = 1;
             }
         };

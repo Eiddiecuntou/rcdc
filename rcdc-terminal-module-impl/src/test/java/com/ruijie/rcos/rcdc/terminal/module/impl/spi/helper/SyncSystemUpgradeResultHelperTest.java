@@ -73,7 +73,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
 
         new Verifications() {
             {
@@ -119,7 +119,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
 
         new Verifications() {
             {
@@ -183,7 +183,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
 
         new Verifications() {
             {
@@ -236,7 +236,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
 
         new Verifications() {
             {
@@ -286,7 +286,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
 
         new Verifications() {
             {

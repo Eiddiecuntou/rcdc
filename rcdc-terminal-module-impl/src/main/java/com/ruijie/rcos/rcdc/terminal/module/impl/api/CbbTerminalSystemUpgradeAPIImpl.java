@@ -417,7 +417,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
                 TerminalSystemUpgradePackageEntity packageEntity = getUpgradePackageEntity(packageId);
                 CbbTerminalTypeEnums packageType = packageEntity.getPackageType();
                 MatchEqual platformME = new MatchEqual(ENTITY_FILED_PLATFORM,
-                        new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.convert(packageType.getPlatform())});
+                        obtainTerminalPlatform(packageType));
                 MatchEqual osTypeME = new MatchEqual(ENTITY_FILED_TERMINAL_OS_TYPE, new String[] {packageType.getOsType()});
                 convertMEList.add(platformME);
                 convertMEList.add(osTypeME);
@@ -428,6 +428,17 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
 
         matchEqualList.addAll(convertMEList);
+    }
+
+    CbbTerminalPlatformEnums[] obtainTerminalPlatform(CbbTerminalTypeEnums packageType) {
+        List<CbbTerminalPlatformEnums> terminalPlatformList = Lists.newArrayList();
+        terminalPlatformList.add(CbbTerminalPlatformEnums.convert(packageType.getPlatform()));
+        if (CbbTerminalPlatformEnums.convert(packageType.getPlatform()) == CbbTerminalPlatformEnums.IDV) {
+            LOGGER.info("IDV平台类型刷机包过滤终端条件增加VOI终端平台类型");
+            terminalPlatformList.add(CbbTerminalPlatformEnums.VOI);
+        }
+
+        return terminalPlatformList.toArray(new CbbTerminalPlatformEnums[terminalPlatformList.size()]);
     }
 
     private void fillTerminalListDTO(CbbUpgradeableTerminalListDTO dto, ViewUpgradeableTerminalEntity viewEntity) throws BusinessException {
