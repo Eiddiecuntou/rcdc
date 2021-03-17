@@ -17,6 +17,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.UpgradeableTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
@@ -31,6 +32,8 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
+import com.ruijie.rcos.sk.pagekit.api.PageQueryRequest;
+import com.ruijie.rcos.sk.pagekit.api.PageQueryResponse;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
@@ -114,6 +117,9 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     @Autowired
     private TerminalGroupService terminalGroupService;
+
+    @Autowired
+    private UpgradeableTerminalDAO upgradeableTerminalDAO;
 
     @Override
     public CbbAddSystemUpgradeTaskResultDTO addSystemUpgradeTask(CbbAddSystemUpgradeTaskDTO request) throws BusinessException {
@@ -384,6 +390,27 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         CbbUpgradeableTerminalListDTO[] respArr = respList.toArray(new CbbUpgradeableTerminalListDTO[0]);
 
         return DefaultPageResponse.Builder.success(upgradeableTerminalPage.getSize(), (int) upgradeableTerminalPage.getTotalElements(), respArr);
+    }
+
+    @Override
+    public PageQueryResponse<CbbUpgradeableTerminalListDTO> pageQuery(PageQueryRequest request) throws BusinessException {
+        Assert.notNull(request, "request can not be null");
+
+        PageQueryResponse<ViewUpgradeableTerminalEntity> pageQueryResponse = upgradeableTerminalDAO.pageQuery(request);
+
+        ViewUpgradeableTerminalEntity[] upgradeableTerminalEntitieArr = pageQueryResponse.getItemArr();
+        List<CbbUpgradeableTerminalListDTO> respList = Lists.newArrayList();
+        for (ViewUpgradeableTerminalEntity entity : upgradeableTerminalEntitieArr) {
+            CbbUpgradeableTerminalListDTO dto = new CbbUpgradeableTerminalListDTO();
+            fillTerminalListDTO(dto, entity);
+            respList.add(dto);
+        }
+
+        PageQueryResponse<CbbUpgradeableTerminalListDTO> queryResponse = new PageQueryResponse<>();
+        queryResponse.setItemArr(respList.toArray(new CbbUpgradeableTerminalListDTO[respList.size()]));
+        queryResponse.setTotal(pageQueryResponse.getTotal());
+
+        return queryResponse;
     }
 
     /**

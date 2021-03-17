@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskResultDTO;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
+import com.ruijie.rcos.sk.pagekit.api.PageQueryAPI;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +20,7 @@ import java.util.UUID;
  *
  * @author nt
  */
-public interface CbbTerminalSystemUpgradeAPI {
+public interface CbbTerminalSystemUpgradeAPI extends PageQueryAPI<CbbUpgradeableTerminalListDTO> {
 
     /**
      * @api {POST} CbbTerminalSystemUpgradeAPI.addSystemUpgradeTask 添加刷机任务
