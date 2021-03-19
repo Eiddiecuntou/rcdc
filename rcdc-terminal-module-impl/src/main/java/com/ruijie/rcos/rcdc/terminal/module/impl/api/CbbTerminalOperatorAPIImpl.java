@@ -239,23 +239,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         try {
             terminalEntity.setStartMode(startMode);
             basicInfoDAO.save(terminalEntity);
-            sendStartModeToShine(terminalId, startMode);
         } catch (Exception e) {
             LOGGER.error("设置终端[" + terminalId + "]启动模式[" + startMode + "]失败", e);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SET_START_MODE_FAIL, e, terminalEntity.getTerminalName());
-        }
-    }
-
-    private void sendStartModeToShine(String terminalId, CbbTerminalStartMode startMode) {
-        // 终端在线则下发到终端
-        boolean isOnline = sessionManager.getSessionByAlias(terminalId) != null;
-        if (isOnline) {
-            try {
-                LOGGER.info("终端[{}]在线,发送终端启动方式[{}]给shine", terminalId, startMode);
-                syncTerminalStartModeTcpAPI.handle(terminalId, startMode.getMode());
-            } catch (BusinessException e) {
-                LOGGER.error("发送终端[" + terminalId + "]启动方式[" + startMode + "]失败", e);
-            }
         }
     }
 
