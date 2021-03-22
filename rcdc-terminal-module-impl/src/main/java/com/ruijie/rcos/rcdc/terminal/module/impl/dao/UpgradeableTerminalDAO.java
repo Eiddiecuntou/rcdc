@@ -16,7 +16,8 @@ import java.util.UUID;
  *
  * @author nt
  */
-public interface UpgradeableTerminalDAO extends SkyEngineJpaRepository<ViewUpgradeableTerminalEntity, UUID>, PageQueryDAO<ViewUpgradeableTerminalEntity> {
+public interface UpgradeableTerminalDAO extends SkyEngineJpaRepository<ViewUpgradeableTerminalEntity, UUID>
+        , PageQueryDAO<ViewUpgradeableTerminalEntity> {
 
     /**
      * 根据终端平台类型和操作系统获取全部终端
