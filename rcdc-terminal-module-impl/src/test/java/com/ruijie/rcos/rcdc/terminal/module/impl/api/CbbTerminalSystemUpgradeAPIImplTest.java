@@ -15,6 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.UpgradeableTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
@@ -27,6 +28,9 @@ import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.DefaultPageResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Response.Status;
+import com.ruijie.rcos.sk.pagekit.api.PageQueryRequest;
+import com.ruijie.rcos.sk.pagekit.api.PageQueryResponse;
+import com.ruijie.rcos.sk.pagekit.kernel.request.DefaultPageQueryRequest;
 import com.ruijie.rcos.sk.webmvc.api.request.PageWebRequest;
 import mockit.*;
 import org.junit.Test;
@@ -112,6 +116,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
 
     @Injectable
     private TerminalGroupService terminalGroupService;
+
+    @Injectable
+    private UpgradeableTerminalDAO upgradeableTerminalDAO;
 
     /**
      * 测试升级包上传，参数为空
@@ -801,6 +808,25 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 times = 1;
             }
         };
+    }
+
+    @Test
+    public void testPageQuery() throws BusinessException {
+        PageQueryResponse<ViewUpgradeableTerminalEntity> pageQueryResponse = new PageQueryResponse();
+        ViewUpgradeableTerminalEntity[] entityArr = new ViewUpgradeableTerminalEntity[]{new ViewUpgradeableTerminalEntity()};
+        pageQueryResponse.setTotal(10);
+        pageQueryResponse.setItemArr(entityArr);
+
+        PageQueryRequest request = new DefaultPageQueryRequest();
+        new Expectations() {
+            {
+                upgradeableTerminalDAO.pageQuery((PageQueryRequest) any);
+                result = pageQueryResponse;
+            }
+        };
+
+        PageQueryResponse<CbbUpgradeableTerminalListDTO> response = upgradeAPIImpl.pageQuery(request);
+        assertEquals(10, response.getTotal());
     }
 
     /**
