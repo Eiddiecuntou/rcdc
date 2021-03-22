@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.ViewUpgradeableTerminalEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
+import com.ruijie.rcos.sk.pagekit.api.PageQueryDAO;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,8 @@ import java.util.UUID;
  *
  * @author nt
  */
-public interface UpgradeableTerminalDAO extends SkyEngineJpaRepository<ViewUpgradeableTerminalEntity, UUID> {
+public interface UpgradeableTerminalDAO extends SkyEngineJpaRepository<ViewUpgradeableTerminalEntity, UUID>
+        , PageQueryDAO<ViewUpgradeableTerminalEntity> {
 
     /**
      * 根据终端平台类型和操作系统获取全部终端
