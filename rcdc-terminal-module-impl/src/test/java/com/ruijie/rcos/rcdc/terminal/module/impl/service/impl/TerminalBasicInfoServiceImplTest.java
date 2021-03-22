@@ -480,6 +480,8 @@ public class TerminalBasicInfoServiceImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = terminalEntity;
+                sessionManager.getSessionByAlias(terminalId);
+                result = null;
             }
         };
 
@@ -496,7 +498,7 @@ public class TerminalBasicInfoServiceImplTest {
                 assertEquals(213L, saveEntity.getMemorySize().longValue());
                 assertEquals("gateway", saveEntity.getGateway());
                 assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
-                assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
+                assertEquals(CbbTerminalStateEnums.OFFLINE, saveEntity.getState());
 
                 terminalModelDriverDAO.findByProductId(anyString);
                 times = 0;

@@ -7,7 +7,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.api.SyncTerminalStartModeTcpAPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
@@ -64,9 +63,6 @@ public class CbbTerminalOperatorAPIImplTest {
 
     @Injectable
     private TerminalLicenseService terminalLicenseService;
-
-    @Injectable
-    private SyncTerminalStartModeTcpAPI syncTerminalStartModeTcpAPI;
 
     @Injectable
     private SessionManager sessionManager;
