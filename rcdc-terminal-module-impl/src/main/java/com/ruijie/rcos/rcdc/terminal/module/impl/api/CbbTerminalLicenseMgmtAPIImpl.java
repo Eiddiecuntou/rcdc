@@ -1,5 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -28,6 +32,12 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     @Autowired
     CbbTerminalLicenseFactoryProvider licenseFactoryProvider;
 
+    @Autowired
+    private TerminalBasicInfoDAO basicInfoDAO;
+
+    @Autowired
+    private TerminalAuthHelper terminalAuthHelper;
+
     @Override
     public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, Integer licenseNum) throws BusinessException {
         Assert.notNull(licenseType, "licenseType can not be null");
@@ -48,5 +58,28 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
 
         LOGGER.info("终端授权数量：{}", JSON.toJSONString(licenseNumDTO, SerializerFeature.PrettyFormat));
         return licenseNumDTO;
+    }
+
+    @Override
+    public void cancelTerminalAuth(String terminalId) {
+        Assert.notNull(terminalId, "terminalId can not be null");
+        LOGGER.info("收到取消终端:{}授权请求", terminalId);
+
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        if (terminalEntity == null) {
+            LOGGER.error("不存在终端:{}信息，无需取消授权", terminalId);
+            return;
+        }
+
+        if (terminalEntity.getAuthed() == Boolean.FALSE) {
+            LOGGER.info("终端:{}未授权，无需取消授权", terminalId);
+            return;
+        }
+        //处理终端授权扣除逻辑
+        terminalAuthHelper.processDecreaseTerminalLicense(terminalId, terminalEntity.getPlatform(), terminalEntity.getAuthed());
+
+        //更新数据库
+        terminalEntity.setAuthed(Boolean.FALSE);
+        basicInfoDAO.save(terminalEntity);
     }
 }

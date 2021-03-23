@@ -57,5 +57,19 @@ public interface CbbTerminalLicenseMgmtAPI {
      */
     CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType);
 
+    /**
+     * @api {GET} CbbTerminalLicenseMgmtAPI.cancelTerminalAuth 取消终端授权
+     * @apiName cancelTerminalAuth
+     * @apiGroup CbbTerminalLicenseMgmtAPI
+     * @apiDescription 取消终端授权
+     *
+     * @apiSuccess (请求体字段说明) {String} terminalId 终端id
+     */
+    /**
+     * 取消终端授权
+     *
+     * @param terminalId 终端id
+     */
+    void cancelTerminalAuth(String terminalId);
 
 }

@@ -678,16 +678,15 @@ public class CbbTerminalOperatorAPIImplTest {
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testDeleteIDV(@Mocked CbbTerminalBasicInfoDTO basicInfo) throws BusinessException {
+    public void testDeleteIDV() throws BusinessException {
         TerminalEntity entity = new TerminalEntity();
         entity.setVersion(1);
+        entity.setAuthed(true);
+        entity.setPlatform(CbbTerminalPlatformEnums.IDV);
         new Expectations() {
             {
-                terminalBasicInfoServiceTx.deleteTerminal(anyString);
-                basicInfo.getAuthed();
-                result = true;
-                basicInfo.getTerminalPlatform();
-                result = CbbTerminalPlatformEnums.IDV;
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                result = entity;
             }
         };
 
@@ -700,8 +699,6 @@ public class CbbTerminalOperatorAPIImplTest {
         new Verifications() {
             {
                 terminalBasicInfoServiceTx.deleteTerminal(anyString);
-                times = 1;
-                terminalAuthHelper.processDecreaseIdvTerminalLicense();
                 times = 1;
             }
         };
