@@ -87,7 +87,7 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
             basicInfoDAO.save(terminalEntity);
         } catch (Exception e) {
             LOGGER.error("保存终端信息失败", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_CANCEL_AUTH_FAIL);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_CANCEL_AUTH_FAIL, e);
         }
 
         //处理终端授权扣除逻辑
