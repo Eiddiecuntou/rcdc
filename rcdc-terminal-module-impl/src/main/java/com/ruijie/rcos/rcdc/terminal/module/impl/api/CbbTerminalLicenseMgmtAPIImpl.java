@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -61,7 +62,7 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     }
 
     @Override
-    public void cancelTerminalAuth(String terminalId) {
+    public void cancelTerminalAuth(String terminalId) throws BusinessException {
         Assert.notNull(terminalId, "terminalId can not be null");
 
         LOGGER.info("收到取消终端:{}授权请求", terminalId);
@@ -75,11 +76,21 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
             LOGGER.info("终端:{}未授权，无需取消授权", terminalId);
             return;
         }
-        //处理终端授权扣除逻辑
-        terminalAuthHelper.processDecreaseTerminalLicense(terminalId, terminalEntity.getPlatform(), terminalEntity.getAuthed());
 
-        //更新数据库
-        terminalEntity.setAuthed(Boolean.FALSE);
-        basicInfoDAO.save(terminalEntity);
+        cancelAuth(terminalEntity);
+    }
+
+    private void cancelAuth(TerminalEntity terminalEntity) throws BusinessException {
+        try {
+            //更新数据库
+            terminalEntity.setAuthed(Boolean.FALSE);
+            basicInfoDAO.save(terminalEntity);
+        } catch (Exception e) {
+            LOGGER.error("保存终端信息失败", e);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_CANCEL_AUTH_FAIL);
+        }
+
+        //处理终端授权扣除逻辑
+        terminalAuthHelper.processDecreaseTerminalLicense(terminalEntity.getTerminalId(), terminalEntity.getPlatform(), Boolean.TRUE);
     }
 }

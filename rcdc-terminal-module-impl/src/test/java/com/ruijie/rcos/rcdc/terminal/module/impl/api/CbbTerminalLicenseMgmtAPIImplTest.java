@@ -104,7 +104,7 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     }
 
     @Test
-    public void testCancelTerminalAuth() {
+    public void testCancelTerminalAuth() throws BusinessException {
         TerminalEntity terminalEntity = new TerminalEntity();
         terminalEntity.setAuthed(false);
         new Expectations() {
@@ -123,7 +123,7 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     }
 
     @Test
-    public void testCancelTerminalAuth2() {
+    public void testCancelTerminalAuth2() throws BusinessException {
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId("123");
@@ -140,14 +140,16 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     }
 
     @Test
-    public void testCancelTerminalAuth3() {
+    public void testCancelTerminalAuth3() throws BusinessException {
         TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setTerminalId("123");
         terminalEntity.setAuthed(Boolean.TRUE);
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId("123");
                 result = terminalEntity;
+                basicInfoDAO.save(terminalEntity);
             }
         };
         cbbTerminalLicenseMgmtAPI.cancelTerminalAuth("123");

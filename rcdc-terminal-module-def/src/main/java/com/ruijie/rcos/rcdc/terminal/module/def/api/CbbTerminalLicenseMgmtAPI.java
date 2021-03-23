@@ -63,13 +63,16 @@ public interface CbbTerminalLicenseMgmtAPI {
      * @apiGroup CbbTerminalLicenseMgmtAPI
      * @apiDescription 取消终端授权
      *
-     * @apiSuccess (请求体字段说明) {String} terminalId 终端id
+     * @apiParam (请求体字段说明) {String} terminalId 终端id
+     * @apiErrorExample {json} 异常码列表
+     *                 {code:rcdc_terminal_cancel_auth_fail message:取消终端授权失败}
      */
     /**
      * 取消终端授权
      *
      * @param terminalId 终端id
+     * @throws BusinessException 业务异常
      */
-    void cancelTerminalAuth(String terminalId);
+    void cancelTerminalAuth(String terminalId) throws BusinessException;
 
 }
