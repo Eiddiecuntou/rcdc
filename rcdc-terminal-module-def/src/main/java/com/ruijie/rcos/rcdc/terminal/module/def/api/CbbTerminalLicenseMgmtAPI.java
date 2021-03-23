@@ -68,6 +68,7 @@ public interface CbbTerminalLicenseMgmtAPI {
     /**
      * 取消终端授权
      *
+     *
      * @param terminalId 终端id
      */
     void cancelTerminalAuth(String terminalId);
