@@ -63,6 +63,7 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     @Override
     public void cancelTerminalAuth(String terminalId) {
         Assert.notNull(terminalId, "terminalId can not be null");
+
         LOGGER.info("收到取消终端:{}授权请求", terminalId);
         TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (terminalEntity == null) {

@@ -62,6 +62,7 @@ public class TerminalAuthHelperTest {
     @Injectable
     private CbbTerminalConnectHandlerSPI connectHandlerSPI;
 
+
     /**
      * testProcessTerminalAuth
      */

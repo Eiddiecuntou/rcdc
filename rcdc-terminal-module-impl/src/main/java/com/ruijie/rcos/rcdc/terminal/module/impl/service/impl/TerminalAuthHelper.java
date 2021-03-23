@@ -173,7 +173,6 @@ public class TerminalAuthHelper {
             LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
             processDecreaseIdvTerminalLicense();
         }
-
         if (terminalPlatform == CbbTerminalPlatformEnums.VOI && Objects.equals(authed, Boolean.TRUE)) {
             LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1",  terminalId);
             processDecreaseVoiTerminalLicense();
