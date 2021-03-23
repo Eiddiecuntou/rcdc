@@ -165,6 +165,10 @@ public class TerminalAuthHelper {
      */
     public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums terminalPlatform
             , Boolean authed) {
+        Assert.notNull(terminalId, "terminalId can not be null");
+        Assert.notNull(terminalPlatform, "terminalPlatform can not be null");
+        Assert.notNull(authed, "authed can not be null");
+
         if (terminalPlatform == CbbTerminalPlatformEnums.IDV && Objects.equals(authed, Boolean.TRUE)) {
             LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
             processDecreaseIdvTerminalLicense();

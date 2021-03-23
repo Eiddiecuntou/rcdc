@@ -304,6 +304,51 @@ public class TerminalAuthHelperTest {
         };
     }
 
+    @Test
+    public void testProcessDecreaseTerminalLicense() {
+        new Expectations() {
+            {
+                terminalLicenseVoiUpgradeServiceImpl.getUsedNum();
+                result = 1;
+            }
+        };
+        helper.processDecreaseTerminalLicense("123", CbbTerminalPlatformEnums.IDV,  Boolean.TRUE);
+        new Verifications() {
+            {
+                terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNumByIdv();
+                times = 1;
+            }
+        };
+    }
+
+    @Test
+    public void testProcessDecreaseTerminalLicense2() {
+        helper.processDecreaseTerminalLicense("123", CbbTerminalPlatformEnums.VOI,  Boolean.TRUE);
+        new Verifications() {
+            {
+                terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNum();
+                times = 1;
+            }
+        };
+    }
+
+    @Test
+    public void testProcessDecreaseTerminalLicense3() {
+        new Expectations() {
+            {
+                terminalLicenseVoiUpgradeServiceImpl.getUsedNum();
+                result = 0;
+            }
+        };
+        helper.processDecreaseTerminalLicense("123", CbbTerminalPlatformEnums.IDV,  Boolean.TRUE);
+        new Verifications() {
+            {
+                terminalLicenseIDVServiceImpl.decreaseCacheLicenseUsedNum();
+                times = 1;
+            }
+        };
+    }
+
     private void commonExpectations() {
 
         CbbTerminalBizConfigDTO bizConfigDTO = new CbbTerminalBizConfigDTO();
