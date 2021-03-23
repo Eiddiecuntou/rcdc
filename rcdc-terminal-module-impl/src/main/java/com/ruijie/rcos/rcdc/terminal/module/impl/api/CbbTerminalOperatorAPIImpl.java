@@ -105,15 +105,8 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         }
 
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
-        if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.IDV && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
-            LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
-            terminalAuthHelper.processDecreaseIdvTerminalLicense();
-        }
-
-        if (basicInfo.getTerminalPlatform() == CbbTerminalPlatformEnums.VOI && Objects.equals(basicInfo.getAuthed(), Boolean.TRUE)) {
-            LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1", terminalId);
-            terminalAuthHelper.processDecreaseVoiTerminalLicense();
-        }
+        //处理终端授权扣除逻辑
+        terminalAuthHelper.processDecreaseTerminalLicense(terminalId, basicInfo.getTerminalPlatform(), basicInfo.getAuthed());
     }
 
     @Override

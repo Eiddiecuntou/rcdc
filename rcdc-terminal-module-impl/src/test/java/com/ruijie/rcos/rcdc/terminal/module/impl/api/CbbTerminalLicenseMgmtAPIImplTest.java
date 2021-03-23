@@ -1,5 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +20,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Description:CbbTerminalLicenseMgmtAPIImpl测试类
@@ -36,6 +41,12 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
 
     @Injectable
     CbbTerminalLicenseFactoryProvider licenseFactoryProvider;
+
+    @Injectable
+    private TerminalBasicInfoDAO basicInfoDAO;
+
+    @Injectable
+    private TerminalAuthHelper terminalAuthHelper;
 
     /**
      * 测试setIDVTerminalLicenseNum
@@ -90,5 +101,63 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
         CbbTerminalLicenseNumDTO licenseNumDTO = cbbTerminalLicenseMgmtAPI.getTerminalLicenseNum(CbbTerminalLicenseTypeEnums.IDV);
         Assert.assertEquals(Integer.valueOf(1), licenseNumDTO.getLicenseNum());
         Assert.assertEquals(Integer.valueOf(2), licenseNumDTO.getUsedNum());
+    }
+
+    @Test
+    public void testCancelTerminalAuth() throws BusinessException {
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setAuthed(false);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId("123");
+                result = terminalEntity;
+            }
+        };
+        cbbTerminalLicenseMgmtAPI.cancelTerminalAuth("123");
+        new Verifications() {
+            {
+                terminalAuthHelper.processDecreaseTerminalLicense(anyString, (CbbTerminalPlatformEnums) any, false);
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void testCancelTerminalAuth2() throws BusinessException {
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId("123");
+                result = null;
+            }
+        };
+        cbbTerminalLicenseMgmtAPI.cancelTerminalAuth("123");
+        new Verifications() {
+            {
+                terminalAuthHelper.processDecreaseTerminalLicense(anyString, (CbbTerminalPlatformEnums) any, false);
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void testCancelTerminalAuth3() throws BusinessException {
+        TerminalEntity terminalEntity = new TerminalEntity();
+        terminalEntity.setTerminalId("123");
+        terminalEntity.setAuthed(Boolean.TRUE);
+        terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId("123");
+                result = terminalEntity;
+                basicInfoDAO.save(terminalEntity);
+            }
+        };
+        cbbTerminalLicenseMgmtAPI.cancelTerminalAuth("123");
+        new Verifications() {
+            {
+                terminalAuthHelper.processDecreaseTerminalLicense("123", CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                times = 1;
+            }
+        };
     }
 }

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+
+import java.util.Objects;
 
 /**
  * Description: TerminalAuthHelper
@@ -154,9 +157,29 @@ public class TerminalAuthHelper {
     }
 
     /**
-     * 处理IDV终端授权扣除逻辑
+     * 处理终端授权扣除逻辑
+     *
+     * @param terminalId 终端id
+     * @param terminalPlatform 平台类型
+     * @param authed 是否授权
      */
-    public void processDecreaseIdvTerminalLicense() {
+    public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums terminalPlatform
+            , Boolean authed) {
+        Assert.notNull(terminalId, "terminalId can not be null");
+        Assert.notNull(terminalPlatform, "terminalPlatform can not be null");
+        Assert.notNull(authed, "authed can not be null");
+
+        if (terminalPlatform == CbbTerminalPlatformEnums.IDV && Objects.equals(authed, Boolean.TRUE)) {
+            LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
+            processDecreaseIdvTerminalLicense();
+        }
+        if (terminalPlatform == CbbTerminalPlatformEnums.VOI && Objects.equals(authed, Boolean.TRUE)) {
+            LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1",  terminalId);
+            processDecreaseVoiTerminalLicense();
+        }
+    }
+
+    private void processDecreaseIdvTerminalLicense() {
         // 如果存在VOI升级授权，则先扣除VOI升级授权
         Integer voiUpgradeUsed = terminalLicenseVoiUpgradeServiceImpl.getUsedNum();
         LOGGER.info("VOI升级授权已用数为：[{}]", voiUpgradeUsed);
@@ -168,10 +191,7 @@ public class TerminalAuthHelper {
         }
     }
 
-    /**
-     * 处理VOI终端授权扣除逻辑
-     */
-    public void processDecreaseVoiTerminalLicense() {
+    private void processDecreaseVoiTerminalLicense() {
         terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNum();
     }
 
