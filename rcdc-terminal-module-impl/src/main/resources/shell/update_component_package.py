@@ -121,6 +121,11 @@ def package_update(os_type):
     old_component_list = None if (old_update_list is None) else old_update_list['componentList']
     complete_update_package(origin_path, temp_dir, new_component_list, old_component_list)
 
+    # 设置workModeArr
+    set_work_mode(new_component_list)
+
+    update_updatelist_file_content(new_update_list, temp_dir)
+
     # 停止原种子的bt服务（根据原updatelist获取路径）
     stop_old_bt_share(new_update_list, old_component_list)
 
@@ -136,12 +141,13 @@ def package_update(os_type):
     # 开启bt分享
     start_all_bt_share(new_update_list, new_component_list)
 
-    # 设置workModeArr
-    set_work_mode(new_component_list)
-
     # 更新updatelist文件
-    with open('%s%s' % (origin_path, RAINOS_UPDATE_UPDATE_LIST_RELATIVE_PATH), 'w+') as update_list_file:
-        update_list_file.write(json.dumps(new_update_list))
+    update_updatelist_file_content(new_update_list, origin_path)
+
+
+def update_updatelist_file_content(update_list, path):
+    with open('%s%s' % (path, RAINOS_UPDATE_UPDATE_LIST_RELATIVE_PATH), 'w+') as update_list_file:
+        update_list_file.write(json.dumps(update_list))
 
 
 '''
