@@ -16,7 +16,7 @@
         <property name="port" value="9209"/>
         <property name="heartbeatIdleConfig">
             <bean class="com.ruijie.rcos.sk.connectkit.api.connect.HeartbeatIdleConfig">
-                <property name="readerIdleTime" value="0" />
+                <property name="readerIdleTime" value="10000" />
             </bean>
         </property>
         <property name="sslConfig">
