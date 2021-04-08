@@ -1,21 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
-import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.Objects;
 
@@ -49,6 +48,9 @@ public class TerminalAuthHelper {
     @Autowired
     private CbbTerminalConnectHandlerSPI connectHandlerSPI;
 
+    @Autowired
+    private CbbTerminalWhiteListHandlerSPI whiteListHandlerSPI;
+
     /**
      * 终端进行授权
      *
@@ -59,6 +61,12 @@ public class TerminalAuthHelper {
      */
     public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
         Assert.notNull(basicInfo, "basicInfo can not be null");
+
+        boolean isInWhiteList = whiteListHandlerSPI.checkWhiteList(basicInfo);
+        if (isInWhiteList) {
+            LOGGER.info("终端在白名单中，无需认证");
+            return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
+        }
 
         // 获取业务配置
         CbbTerminalBizConfigDTO bizConfigDTO = connectHandlerSPI.notifyTerminalSupport(basicInfo);
