@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper;
 
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,8 @@ public class TerminalAuthHelperTest {
     @Injectable
     private CbbTerminalConnectHandlerSPI connectHandlerSPI;
 
+    @Injectable
+    private CbbTerminalWhiteListHandlerSPI whiteListHandlerSPI;
 
     /**
      * testProcessTerminalAuth
@@ -90,6 +93,35 @@ public class TerminalAuthHelperTest {
                 times = 1;
 
                 basicInfoService.isAuthed(terminalId);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * testProcessTerminalAuth
+     */
+    @Test
+    public void testProcessTerminalAuthInWhiteList() {
+
+        String terminalId = "123";
+
+        new Expectations() {
+            {
+                whiteListHandlerSPI.checkWhiteList((CbbShineTerminalBasicInfo) any);
+                result = true;
+
+            }
+        };
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+        basicInfo.setTerminalId(terminalId);
+        TerminalAuthResult authResult = helper.processTerminalAuth(true, true, basicInfo);
+        Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SKIP);
+        Assert.assertTrue(!authResult.isAuthed());
+
+        new Verifications() {
+            {
+                whiteListHandlerSPI.checkWhiteList((CbbShineTerminalBasicInfo) any);
                 times = 1;
             }
         };
@@ -357,6 +389,9 @@ public class TerminalAuthHelperTest {
         bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.VDI});
         new Expectations() {
             {
+                whiteListHandlerSPI.checkWhiteList((CbbShineTerminalBasicInfo) any);
+                result = false;
+
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 result = bizConfigDTO;
             }
