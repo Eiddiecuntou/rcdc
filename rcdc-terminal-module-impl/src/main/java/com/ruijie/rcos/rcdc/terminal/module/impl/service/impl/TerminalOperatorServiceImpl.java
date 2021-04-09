@@ -342,7 +342,9 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ONLINE_CANNOT_CLEAR_DISK,
                     entity.getTerminalName(), terminalId);
         }
-        if (entity.getPlatform() != CbbTerminalPlatformEnums.IDV) {
+        CbbTerminalPlatformEnums terminalPlatform = entity.getPlatform();
+        LOGGER.info("清空数据盘校验，当前终端类型为：{}", terminalPlatform);
+        if (terminalPlatform != CbbTerminalPlatformEnums.IDV && terminalPlatform != CbbTerminalPlatformEnums.VOI) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_IDV_CANNOT_CLEAR_DISK,
                     entity.getTerminalName(), terminalId);
         }
