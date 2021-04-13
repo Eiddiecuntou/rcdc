@@ -240,7 +240,6 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         LOGGER.info("收到关闭终端[{}]连接请求", terminalId);
 
         Session session = sessionManager.getSessionByAlias(terminalId);
-        sessionManager.removeSession(terminalId, session);
         session.close();
     }
 }

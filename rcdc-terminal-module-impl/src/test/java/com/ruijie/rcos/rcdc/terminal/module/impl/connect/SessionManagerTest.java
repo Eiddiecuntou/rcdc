@@ -50,17 +50,21 @@ public class SessionManagerTest {
     @Test
     public void testBindSession(@Mocked Session session) {
         String terminalId = "123";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
+        Map<String, String> map1 = Deencapsulation.getField(sessionManager, "SESSIONID_TERMINALID_MAPPING_MAP");
+        Map<String, String> map2 = Deencapsulation.getField(sessionManager, "TERMINALID_SESSIONID_MAPPING_MAP");
         Map<String, Session> sessionAliseMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
         new Expectations() {
             {
                 session.getId();
-                result = "123";
+                result = "aaa";
             }
         };
         sessionManager.bindSession(terminalId, session);
-        Assert.assertEquals(1, sessionMap.size());
-        sessionMap.clear();
+        Assert.assertEquals(1, sessionAliseMap.size());
+        Assert.assertEquals(1, map1.size());
+        Assert.assertEquals(1, map2.size());
+        map1.clear();
+        map2.clear();
         sessionAliseMap.clear();
     }
 
@@ -72,24 +76,34 @@ public class SessionManagerTest {
     @Test
     public void testRemoveSession(@Mocked Session session) {
         String terminalId = "321";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
+        String sessionId = "aaa";
+        Map<String, String> map1 = Deencapsulation.getField(sessionManager, "SESSIONID_TERMINALID_MAPPING_MAP");
+        Map<String, String> map2 = Deencapsulation.getField(sessionManager, "TERMINALID_SESSIONID_MAPPING_MAP");
         Map<String, Session> sessionAliseMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
+
+        new Expectations() {
+            {
+                session.getId();
+                result = "aaa";
+
+            }
+        };
         new MockUp<BaseCreateSystemLogRequest>() {
             @Mock
             public void $init(String key, String... args) {
 
             }
         };
-        new Expectations() {
-            {
-                session.getId();
-                result = "123";
-            }
-        };
+
+        map1.put(sessionId, terminalId);
+        map2.put(terminalId, sessionId);
         sessionAliseMap.put(terminalId, session);
-        sessionManager.removeSession(terminalId, session);
+        boolean isSuccess = sessionManager.removeSession(session.getId());
+        Assert.assertTrue(isSuccess);
         Assert.assertEquals(0, sessionAliseMap.size());
         sessionAliseMap.clear();
+        map1.clear();
+        map2.clear();
     }
 
     /**
@@ -100,7 +114,9 @@ public class SessionManagerTest {
     @Test
     public void testRemoveSessionFail(@Mocked Session session) {
         String terminalId = "321";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
+        String sessionId = "aaa";
+        Map<String, String> map1 = Deencapsulation.getField(sessionManager, "SESSIONID_TERMINALID_MAPPING_MAP");
+        Map<String, String> map2 = Deencapsulation.getField(sessionManager, "TERMINALID_SESSIONID_MAPPING_MAP");
         Map<String, Session> sessionAliseMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
 
         new MockUp<ConcurrentHashMap>() {
@@ -124,11 +140,36 @@ public class SessionManagerTest {
 
             }
         };
+
+        map1.put(sessionId, terminalId);
+        map2.put(terminalId, sessionId);
         sessionAliseMap.put(terminalId, session);
-        boolean isSuccess = sessionManager.removeSession(terminalId, session);
+        boolean isSuccess = sessionManager.removeSession(session.getId());
         assertFalse(isSuccess);
         Assert.assertEquals(1, sessionAliseMap.size());
         sessionAliseMap.clear();
+        map1.clear();
+        map2.clear();
+    }
+
+    /**
+     * testRemoveSessionSessionHasChanged
+     *
+     */
+    @Test
+    public void testRemoveSessionSessionHasChanged() {
+        String terminalId = "321";
+        String sessionId = "aaa";
+        Map<String, String> map1 = Deencapsulation.getField(sessionManager, "SESSIONID_TERMINALID_MAPPING_MAP");
+        Map<String, String> map2 = Deencapsulation.getField(sessionManager, "TERMINALID_SESSIONID_MAPPING_MAP");
+
+
+        map1.put(sessionId, terminalId);
+        map2.put(terminalId, "bbb");
+        boolean isSuccess = sessionManager.removeSession(sessionId);
+        assertFalse(isSuccess);
+        map1.clear();
+        map2.clear();
     }
 
     /**
@@ -139,7 +180,6 @@ public class SessionManagerTest {
     @Test
     public void testGetSession(@Mocked Session session) {
         String terminalId = "123456";
-        Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
         Map<String, Session> sessionAliasMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
 
         sessionAliasMap.put(terminalId, session);
@@ -204,9 +244,68 @@ public class SessionManagerTest {
     @Test
     public void testGetSessionById(@Mocked Session session) {
         final String sessionId = "sessionId";
-        final Map<String, Session> sessionMap = Deencapsulation.getField(sessionManager, "SESSION_MAP");
-        sessionMap.put(sessionId, session);
+        final Map<String, String> sessionidTerminalidMappingMap = Deencapsulation.getField(sessionManager, "SESSIONID_TERMINALID_MAPPING_MAP");
+        final Map<String, Session> sessionAliasMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
+        sessionidTerminalidMappingMap.put(sessionId, "123");
+        sessionAliasMap.put("123", session);
+
+        new Expectations() {
+            {
+                session.getId();
+                result = sessionId;
+            }
+        };
+
         assertEquals(session, sessionManager.getSessionById(sessionId));
-        sessionMap.clear();
+        sessionidTerminalidMappingMap.clear();
+        sessionAliasMap.clear();
+    }
+
+    /**
+     * testGetSessionByIdTerminalIdIsBlank
+     */
+    @Test
+    public void testGetSessionByIdTerminalIdIsBlank(@Mocked Session session) {
+        final String sessionId = "sessionId";
+
+        assertEquals(null, sessionManager.getSessionById(sessionId));
+    }
+
+    /**
+     * testGetSessionByIdSessionChanged
+     */
+    @Test
+    public void testGetSessionByIdSessionChanged(@Mocked Session session) {
+        final String sessionId = "sessionId";
+        final Map<String, String> sessionidTerminalidMappingMap = Deencapsulation.getField(sessionManager, "SESSIONID_TERMINALID_MAPPING_MAP");
+        final Map<String, Session> sessionAliasMap = Deencapsulation.getField(sessionManager, "SESSION_ALIAS_MAP");
+        sessionidTerminalidMappingMap.put(sessionId, "123");
+        sessionAliasMap.put("123", session);
+
+        new MockUp<Session>() {
+            @Mock
+            public String getId() {
+                return "aaa";
+            }
+        };
+
+        assertEquals(null, sessionManager.getSessionById(sessionId));
+        sessionidTerminalidMappingMap.clear();
+        sessionAliasMap.clear();
+    }
+
+    /**
+     * testGetTerminalIdBySessionId
+     */
+    @Test
+    public void testGetTerminalIdBySessionId() {
+        String terminalId = "123";
+        String sessionId = "aaa";
+        final Map<String, String> map1 = Deencapsulation.getField(sessionManager, "SESSIONID_TERMINALID_MAPPING_MAP");
+        map1.put(sessionId, terminalId);
+
+        String result = sessionManager.getTerminalIdBySessionId(sessionId);
+        assertEquals(terminalId, result);
+        map1.clear();
     }
 }
