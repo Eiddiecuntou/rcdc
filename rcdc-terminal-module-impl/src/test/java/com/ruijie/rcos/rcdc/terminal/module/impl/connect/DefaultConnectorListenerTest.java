@@ -83,9 +83,6 @@ public class DefaultConnectorListenerTest {
      */
     @Test
     public void testOnCloseRemoveSessionSuccess() {
-        CbbDispatcherRequest request = new CbbDispatcherRequest();
-        request.setDispatcherKey(ShineAction.CONNECT_CLOSE);
-        request.setTerminalId("123");
 
         new Expectations() {
             {
@@ -94,7 +91,7 @@ public class DefaultConnectorListenerTest {
                 sessionManager.removeSession(anyString);
                 result = true;
 
-                cbbDispatcherHandlerSPI.dispatch(request);
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
             }
         };
         connectorListener.onClose(connectInfo);
@@ -104,7 +101,7 @@ public class DefaultConnectorListenerTest {
                 times = 1;
                 sessionManager.removeSession(anyString);
                 times = 1;
-                cbbDispatcherHandlerSPI.dispatch(request);
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
                 times = 1;
             }
         };
