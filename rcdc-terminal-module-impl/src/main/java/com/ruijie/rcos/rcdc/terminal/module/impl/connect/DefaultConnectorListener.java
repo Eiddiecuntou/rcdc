@@ -32,7 +32,7 @@ public class DefaultConnectorListener implements ConnectorListener {
     public void onOpen(ConnectInfo connectInfo) {
         Assert.notNull(connectInfo, "connectInfo can not be null");
 
-        LOGGER.info("连接建立成功");
+        LOGGER.info("连接建立成功:{}", connectInfo.getId());
 
     }
 
@@ -47,6 +47,7 @@ public class DefaultConnectorListener implements ConnectorListener {
         boolean isSuccess = sessionManager.removeSession(connectInfo.getId());
         // 发送连接关闭事件，只对当前的连接发送关闭通知
         if (isSuccess) {
+            LOGGER.info("通知终端[{}]连接断开", terminalId);
             CbbDispatcherRequest request = new CbbDispatcherRequest();
             request.setDispatcherKey(ShineAction.CONNECT_CLOSE);
             request.setTerminalId(terminalId);

@@ -80,7 +80,7 @@ public class SessionManager {
 
         String terminalId = SESSIONID_TERMINALID_MAPPING_MAP.remove(sessionId);
         if (StringUtils.isEmpty(terminalId)) {
-            LOGGER.info("session未绑定，跳过");
+            LOGGER.info("session[{}]未与终端[{}]绑定，跳过", sessionId, terminalId);
             return false;
         }
 
@@ -88,7 +88,7 @@ public class SessionManager {
             getTerminalIdLock(terminalId).lock();
             String bindSessionId = TERMINALID_SESSIONID_MAPPING_MAP.get(terminalId);
             if (!sessionId.equals(bindSessionId)) {
-                LOGGER.info("终端已绑定其他连接，sessionId : {}", bindSessionId);
+                LOGGER.info("终端[{}]已绑定其他连接，sessionId : [{}]", terminalId, bindSessionId);
                 return false;
             }
 
