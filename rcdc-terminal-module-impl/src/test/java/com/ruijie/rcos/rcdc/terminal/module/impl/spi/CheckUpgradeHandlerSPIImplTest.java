@@ -674,8 +674,6 @@ public class CheckUpgradeHandlerSPIImplTest {
                 sessionManager.getSessionByAlias("123");
                 times = 1;
 
-                sessionManager.removeSession("123", (Session) any);
-                times = 1;
             }
         };
 

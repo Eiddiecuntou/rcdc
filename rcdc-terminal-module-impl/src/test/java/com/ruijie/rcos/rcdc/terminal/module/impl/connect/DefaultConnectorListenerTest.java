@@ -60,18 +60,18 @@ public class DefaultConnectorListenerTest {
     public void testOnCloseRemoveSessionFalse() {
         new Expectations() {
             {
-                sessionManager.getSessionById(anyString);
-                result = session;
-                sessionManager.removeSession(anyString, session);
-                result = false;
+                sessionManager.getTerminalIdBySessionId(anyString);
+                result = "123";
+                sessionManager.removeSession(anyString);
+                result = true;
             }
         };
         connectorListener.onClose(connectInfo);
         new Verifications() {
             {
-                sessionManager.getSessionById(anyString);
+                sessionManager.getTerminalIdBySessionId(anyString);
                 times = 1;
-                sessionManager.removeSession(anyString, session);
+                sessionManager.removeSession(anyString);
                 times = 1;
 
             }
@@ -82,29 +82,27 @@ public class DefaultConnectorListenerTest {
      * 测试onClose
      */
     @Test
-    public void testOnCloseRemoveSessionSucess() {
-        CbbDispatcherRequest request = new CbbDispatcherRequest();
-        request.setDispatcherKey(ShineAction.CONNECT_CLOSE);
-        request.setTerminalId("123");
+    public void testOnCloseRemoveSessionSuccess() {
 
         new Expectations() {
             {
-                sessionManager.getSessionById(anyString);
-                result = session;
-                session.getSessionAlias();
+                sessionManager.getTerminalIdBySessionId(anyString);
                 result = "123";
-                sessionManager.removeSession("123", session);
+                sessionManager.removeSession(anyString);
                 result = true;
+
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
             }
         };
         connectorListener.onClose(connectInfo);
         new Verifications() {
             {
-                sessionManager.getSessionById(anyString);
+                sessionManager.getTerminalIdBySessionId(anyString);
                 times = 1;
-                sessionManager.removeSession(anyString, session);
+                sessionManager.removeSession(anyString);
                 times = 1;
-
+                cbbDispatcherHandlerSPI.dispatch((CbbDispatcherRequest) any);
+                times = 1;
             }
         };
     }

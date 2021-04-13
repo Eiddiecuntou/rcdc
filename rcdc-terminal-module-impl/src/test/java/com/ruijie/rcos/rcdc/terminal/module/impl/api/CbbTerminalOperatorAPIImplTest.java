@@ -709,7 +709,7 @@ public class CbbTerminalOperatorAPIImplTest {
         terminalOperatorAPI.closeTerminalConnection("123");
         new Verifications() {
             {
-                sessionManager.removeSession("123", (Session) any);
+                sessionManager.getSessionByAlias("123");
                 times = 1;
             }
         };
