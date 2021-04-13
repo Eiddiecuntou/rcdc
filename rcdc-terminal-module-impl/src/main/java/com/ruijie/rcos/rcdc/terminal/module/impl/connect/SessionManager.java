@@ -180,6 +180,8 @@ public class SessionManager {
      * @return 终端id
      */
     public String getTerminalIdBySessionId(String sessionId) {
+        Assert.hasText(sessionId, "sessionId can not be blank");
+
         return SESSIONID_TERMINALID_MAPPING_MAP.get(sessionId);
     }
 
