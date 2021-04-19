@@ -13,6 +13,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
+import java.util.Objects;
+
 /**
  * Description: terminalLicenseVOIServiceImpl voi授权
  * Copyright: Copyright (c) 2020
@@ -63,8 +65,8 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
     public Integer getUsedNum() {
         synchronized (this.getLock()) {
             // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，代表临时授权不会维护已授权数目，所以需要从数据库同步数据
-            final Integer terminalLicenseNum = super.getTerminalLicenseNum();
-            final boolean isTempLicense = getTerminalLicenseNum() == Constants.TERMINAL_AUTH_DEFAULT_NUM;
+            final Integer terminalLicenseNum = this.getTerminalLicenseNum();
+            final boolean isTempLicense = isTempLicense(terminalLicenseNum);
             if (usedNum == null || isTempLicense) {
                 long count = terminalBasicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 LOGGER.info("从数据库同步voi授权已用数为：{},voi授权数为：{}", usedNum, terminalLicenseNum);

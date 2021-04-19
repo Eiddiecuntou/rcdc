@@ -77,10 +77,37 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
     }
 
     /**
-     * 测试getUsedNum方法
+     * 测试getUsedNum方法，idv授权为临时授权的情况
      */
     @Test
-    public void testGetUsedNum() {
+    public void testGetUsedNumWhileIdvLicenseIsTempLicense() {
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
+                result = "2";
+                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                result = 4;
+                terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
+                result = -1;
+            }
+        };
+
+        int usedNum = licenceLicenseService.getUsedNum();
+        Assert.assertEquals(0, usedNum);
+        licenceLicenseService.getUsedNum();
+        new Verifications() {
+            {
+                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 测试getUsedNum方法，idv授权非临时授权的情况
+     */
+    @Test
+    public void testGetUsedNumWhileIdvLicenseNotTempLicense() {
         new Expectations() {
             {
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
@@ -305,7 +332,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
      * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
      */
     @Test
-    public void testdecreaseCacheLicenseUsedNum() {
+    public void testDecreaseCacheLicenseUsedNum() {
         new Expectations() {
             {
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
@@ -323,7 +350,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
      * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
      */
     @Test
-    public void testgetUsedNum() {
+    public void testGetUsedNum() {
         new Expectations() {
             {
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
@@ -339,7 +366,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
      * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
      */
     @Test
-    public void testgetUsedNum2() {
+    public void testGetUsedNum2() {
         new Expectations() {
             {
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
@@ -358,7 +385,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
      * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
      */
     @Test
-    public void testgetUsedNumTemp() {
+    public void testGetUsedNumTemp() {
         new Expectations() {
             {
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
@@ -374,7 +401,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
      * 测试decreaseCacheLicenseUsedNum方法，已授权终端接入
      */
     @Test
-    public void testdecreaseCacheLicenseUsedNumTemp() {
+    public void testDecreaseCacheLicenseUsedNumTemp() {
         new Expectations() {
             {
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
@@ -382,8 +409,21 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
             }
         };
         licenceLicenseService.decreaseCacheLicenseUsedNum();
-        int used = licenceLicenseService.getUsedNum();
-        assertEquals(used, 0);
+        Integer usedNum = Deencapsulation.getField(licenceLicenseService, "usedNum");
+        assertEquals(usedNum.intValue(), -1);
+    }
+
+    @Test
+    public void testIncreaseCacheLicenseUsedNum() {
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
+                result = "-1";
+            }
+        };
+        licenceLicenseService.increaseCacheLicenseUsedNum();
+        Integer usedNum = Deencapsulation.getField(licenceLicenseService, "usedNum");
+        assertEquals(usedNum.intValue(), 1);
     }
 
 }
