@@ -48,6 +48,11 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 @DispatcherImplemetion(ShineAction.CHECK_UPGRADE)
 public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
+    /**
+     * RG-CT3120 productId
+     */
+    private static final String SPECIAL_PRODUCT_ID_CT3120 = "80020101";
+
     @Autowired
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
 
@@ -182,7 +187,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     private SystemUpgradeCheckResult getSystemUpgradeCheckResult(TerminalEntity terminalEntity, CbbTerminalBizConfigDTO configDTO) {
 
-        CbbTerminalTypeEnums terminalType = obtainSystemUpgradeTerminalType(configDTO.getTerminalWorkModeArr(), terminalEntity.getTerminalOsType());
+        CbbTerminalTypeEnums terminalType = obtainSystemUpgradeTerminalType(configDTO.getTerminalWorkModeArr(), terminalEntity);
 
         SystemUpgradeCheckResult systemUpgradeCheckResult;
         try {
@@ -199,7 +204,16 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return systemUpgradeCheckResult;
     }
 
-    private CbbTerminalTypeEnums obtainSystemUpgradeTerminalType(CbbTerminalWorkModeEnums[] terminalWorkModeArr, String osType) {
+    private CbbTerminalTypeEnums obtainSystemUpgradeTerminalType(CbbTerminalWorkModeEnums[] terminalWorkModeArr, TerminalEntity terminalEntity) {
+
+        String osType = terminalEntity.getTerminalOsType();
+
+        // TODO 临时方案，后续版本需修订
+        if (SPECIAL_PRODUCT_ID_CT3120.equals(terminalEntity.getProductId())) {
+            LOGGER.info("CT3120终端系统升级返回IDV平台");
+            return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
+        }
+
         // 只有VDI能力时返回VDI升级包类型，否则返回IDV升级包类型
         if (terminalWorkModeArr.length == 1) {
             CbbTerminalWorkModeEnums workMode = terminalWorkModeArr[0];
