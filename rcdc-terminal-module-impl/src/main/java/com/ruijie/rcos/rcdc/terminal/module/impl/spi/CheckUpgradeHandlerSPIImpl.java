@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -47,11 +48,6 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  */
 @DispatcherImplemetion(ShineAction.CHECK_UPGRADE)
 public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
-
-    /**
-     * RG-CT3120 productId
-     */
-    private static final String SPECIAL_PRODUCT_ID_CT3120 = "80020101";
 
     @Autowired
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
@@ -209,7 +205,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         String osType = terminalEntity.getTerminalOsType();
 
         // TODO 临时方案，后续版本需修订
-        if (SPECIAL_PRODUCT_ID_CT3120.equals(terminalEntity.getProductId())) {
+        if (Constants.SPECIAL_PRODUCT_ID_CT3120.equals(terminalEntity.getProductId())) {
             LOGGER.info("CT3120终端系统升级返回IDV平台");
             return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
         }
