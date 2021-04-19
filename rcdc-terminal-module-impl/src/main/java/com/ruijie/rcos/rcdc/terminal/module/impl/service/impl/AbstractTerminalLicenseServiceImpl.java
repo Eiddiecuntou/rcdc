@@ -109,4 +109,8 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         }
     }
 
+    boolean isTempLicense(Integer LicenseNum) {
+        return Objects.equals(LicenseNum, Constants.TERMINAL_AUTH_DEFAULT_NUM);
+    }
+
 }

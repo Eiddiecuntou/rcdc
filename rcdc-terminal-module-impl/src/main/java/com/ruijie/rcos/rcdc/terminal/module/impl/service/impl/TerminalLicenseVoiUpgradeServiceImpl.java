@@ -11,6 +11,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
+import java.util.Objects;
+
 /**
  * Description: terminalLicenseVOIServiceImpl voi升级授权
  * Copyright: Copyright (c) 2020
@@ -59,7 +61,7 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
         synchronized (this.getLock()) {
             // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，代表临时授权不会维护已授权数目，所以需要从数据库同步数据
             final Integer terminalLicenseNum = this.getTerminalLicenseNum();
-            final boolean isTempLicense = getTerminalLicenseNum() == Constants.TERMINAL_AUTH_DEFAULT_NUM;
+            final boolean isTempLicense = isTempLicense(terminalLicenseNum);
             if (usedNum == null || isTempLicense) {
                 LOGGER.info("从数据库同步voi升级授权已用数为：{},voi升级授权数为：{}", usedNum, terminalLicenseNum);
                 if (isTempLicense) {
@@ -69,7 +71,14 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
                 final Integer idvLicenseNum = terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 long count = terminalBasicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 LOGGER.info("从数据库同步idv授权已用数为：{},idv授权数为：{}", count, idvLicenseNum);
-                usedNum = count > idvLicenseNum ? (int) (count - idvLicenseNum) : Constants.TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM;
+
+                boolean isIdvTempLicense = isTempLicense(idvLicenseNum);
+                if (isIdvTempLicense) {
+                    LOGGER.info("查询数据库，idv授权类型为临时授权，不存在voi升级授权被idv使用的情况");
+                    usedNum = Constants.TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM;
+                } else {
+                    usedNum = count > idvLicenseNum ? (int) (count - idvLicenseNum) : Constants.TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM;
+                }
                 LOGGER.info("从数据库同步voi升级授权usedNum值为:{}", usedNum);
             }
         }
@@ -82,7 +91,6 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
             if (usedNum == null) {
                 getUsedNum();
             }
-
             usedNum--;
         }
     }
@@ -115,7 +123,6 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
             if (usedNum == null) {
                 getUsedNum();
             }
-
             usedNum++;
         }
     }
