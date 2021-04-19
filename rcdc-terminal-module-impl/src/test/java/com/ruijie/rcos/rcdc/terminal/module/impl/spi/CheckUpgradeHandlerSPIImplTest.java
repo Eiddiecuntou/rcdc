@@ -370,6 +370,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         TerminalEntity terminalEntity = new TerminalEntity();
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
         terminalEntity.setTerminalOsType("Linux");
+        terminalEntity.setProductId("80020101");
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
         versionResultDTO.setResult(0);
 

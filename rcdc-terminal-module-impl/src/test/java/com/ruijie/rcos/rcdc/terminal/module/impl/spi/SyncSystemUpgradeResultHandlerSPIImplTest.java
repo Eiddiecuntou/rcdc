@@ -136,6 +136,54 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
         };
     }
 
+    /**
+     * 测试检查组件升级- CT3120终端
+     */
+    @Test
+    public void testDispatchUpdateTerminalBasicInfoIsCT3120(@Mocked TerminalSystemUpgradeHandler handler) throws BusinessException {
+        String terminalId = "123";
+        TerminalEntity entity = new TerminalEntity();
+        entity.setTerminalId("123456");
+        entity.setTerminalName("t-box3");
+        entity.setCpuType("intel");
+        entity.setTerminalOsType("Linux");
+        entity.setPlatform(CbbTerminalPlatformEnums.VOI);
+        entity.setProductId("80020101");
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = entity;
+
+                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
+                result = handler;
+
+            }
+        };
+
+        CbbDispatcherRequest request = new CbbDispatcherRequest();
+        request.setTerminalId(terminalId);
+        request.setRequestId("456");
+        request.setData(generateJson());
+
+        syncSystemUpgradeResultHandlerSPI.dispatch(request);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
+                times = 1;
+
+                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
+                times = 1;
+
+                upgradeResultHelper.responseNotUpgrade(request);
+                times = 0;
+
+                upgradeResultHelper.dealSystemUpgradeResult(entity, (CbbTerminalTypeEnums) any, handler, request);
+                times = 1;
+            }
+        };
+    }
 
     private String generateJson() {
         CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();

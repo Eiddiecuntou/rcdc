@@ -283,4 +283,9 @@ public interface Constants {
      * voi升级授权默认使用数量为0
      */
     Integer TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM = 0;
+
+    /**
+     *  特殊终端RG-CT3120的productId
+     */
+    String SPECIAL_PRODUCT_ID_CT3120 = "80020101";
 }
