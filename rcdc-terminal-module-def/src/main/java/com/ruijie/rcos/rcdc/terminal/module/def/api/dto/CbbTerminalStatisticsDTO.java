@@ -18,6 +18,8 @@ public class CbbTerminalStatisticsDTO {
 
     private TerminalStatisticsItem pc;
 
+    private TerminalStatisticsItem voi;
+
     private Integer total = 0;
 
     private Integer totalOnline = 0;
@@ -68,5 +70,13 @@ public class CbbTerminalStatisticsDTO {
 
     public void setIdv(TerminalStatisticsItem idv) {
         this.idv = idv;
+    }
+
+    public TerminalStatisticsItem getVoi() {
+        return voi;
+    }
+
+    public void setVoi(TerminalStatisticsItem voi) {
+        this.voi = voi;
     }
 }
