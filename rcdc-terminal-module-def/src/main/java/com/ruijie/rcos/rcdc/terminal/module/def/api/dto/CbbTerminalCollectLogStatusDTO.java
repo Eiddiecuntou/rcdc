@@ -34,5 +34,9 @@ public class CbbTerminalCollectLogStatusDTO {
         this.logName = logName;
     }
 
-
+    public static void main(String[] args) {
+        String str = "20210512160816_172.20.94.231_300D9E37E46C_shine.zip";
+        str = str.substring(0,str.lastIndexOf("."));
+        System.out.println(str);
+    }
 }
