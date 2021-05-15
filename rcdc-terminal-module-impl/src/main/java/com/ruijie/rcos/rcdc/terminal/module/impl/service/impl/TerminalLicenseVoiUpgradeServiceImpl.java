@@ -11,8 +11,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
-import java.util.Objects;
-
 /**
  * Description: terminalLicenseVOIServiceImpl voi升级授权
  * Copyright: Copyright (c) 2020
@@ -69,7 +67,7 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
                     return usedNum;
                 }
                 final Integer idvLicenseNum = terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
-                long count = terminalBasicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                long count = terminalBasicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 LOGGER.info("从数据库同步idv授权已用数为：{},idv授权数为：{}", count, idvLicenseNum);
 
                 boolean isIdvTempLicense = isTempLicense(idvLicenseNum);

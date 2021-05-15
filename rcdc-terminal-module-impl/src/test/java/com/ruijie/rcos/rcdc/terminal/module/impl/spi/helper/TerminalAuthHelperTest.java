@@ -205,6 +205,7 @@ public class TerminalAuthHelperTest {
         String terminalId = "123";
         CbbTerminalBizConfigDTO bizConfigDTO = new CbbTerminalBizConfigDTO();
         bizConfigDTO.setTerminalPlatform(CbbTerminalPlatformEnums.IDV);
+        bizConfigDTO.setAuthMode(CbbTerminalPlatformEnums.IDV);
         bizConfigDTO.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.IDV, CbbTerminalWorkModeEnums.VOI});
         new Expectations() {
             {
@@ -224,6 +225,7 @@ public class TerminalAuthHelperTest {
 
         basicInfo.setTerminalId(terminalId);
         basicInfo.setPlatform(CbbTerminalPlatformEnums.IDV);
+        basicInfo.setAuthMode(CbbTerminalPlatformEnums.IDV);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, false, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SUCCESS);
         Assert.assertTrue(authResult.isAuthed());
@@ -270,6 +272,7 @@ public class TerminalAuthHelperTest {
 
         basicInfo.setTerminalId(terminalId);
         basicInfo.setPlatform(CbbTerminalPlatformEnums.IDV);
+        basicInfo.setAuthMode(CbbTerminalPlatformEnums.IDV);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, false, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.SKIP);
         Assert.assertTrue(authResult.isAuthed());
@@ -316,6 +319,7 @@ public class TerminalAuthHelperTest {
 
         basicInfo.setTerminalId(terminalId);
         basicInfo.setPlatform(CbbTerminalPlatformEnums.IDV);
+        basicInfo.setAuthMode(CbbTerminalPlatformEnums.IDV);
         TerminalAuthResult authResult = helper.processTerminalAuth(true, false, basicInfo);
         Assert.assertEquals(authResult.getAuthResult(), TerminalAuthResultEnums.FAIL);
         Assert.assertTrue(!authResult.isAuthed());

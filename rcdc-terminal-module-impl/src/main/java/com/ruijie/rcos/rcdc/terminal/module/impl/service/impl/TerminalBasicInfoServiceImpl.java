@@ -201,7 +201,8 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             return lockMap.get(terminalId);
         }
         Lock lock = new ReentrantLock();
-        return lockMap.put(terminalId, lock);
+        lockMap.put(terminalId, lock);
+        return lockMap.get(terminalId);
     }
 
     @Override

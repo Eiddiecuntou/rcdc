@@ -105,6 +105,8 @@ public class CbbTerminalBasicInfoDTO {
 
     private String productId;
 
+    private CbbTerminalPlatformEnums authMode;
+
     public Long getDataDiskSize() {
         return dataDiskSize;
     }
@@ -419,5 +421,13 @@ public class CbbTerminalBasicInfoDTO {
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    public CbbTerminalPlatformEnums getAuthMode() {
+        return authMode;
+    }
+
+    public void setAuthMode(CbbTerminalPlatformEnums authMode) {
+        this.authMode = authMode;
     }
 }

@@ -78,7 +78,7 @@ public class TerminalLicenseServiceImplTest {
     public void testGetUsedNum() {
         new Expectations() {
             {
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 2;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "2";
@@ -90,7 +90,7 @@ public class TerminalLicenseServiceImplTest {
         licenceLicenseService.getUsedNum();
         new Verifications() {
             {
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 times = 1;
             }
         };
@@ -234,7 +234,7 @@ public class TerminalLicenseServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 4;
             }
         };
@@ -254,7 +254,7 @@ public class TerminalLicenseServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -296,7 +296,7 @@ public class TerminalLicenseServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "10";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -314,7 +314,7 @@ public class TerminalLicenseServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "10";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 30;
             }
         };
@@ -331,9 +331,9 @@ public class TerminalLicenseServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 4;
             }
         };
@@ -353,7 +353,7 @@ public class TerminalLicenseServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -387,7 +387,7 @@ public class TerminalLicenseServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };

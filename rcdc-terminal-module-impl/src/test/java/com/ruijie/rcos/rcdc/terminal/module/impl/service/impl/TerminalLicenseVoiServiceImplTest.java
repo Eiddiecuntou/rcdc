@@ -82,7 +82,7 @@ public class TerminalLicenseVoiServiceImplTest {
     public void testGetUsedNum() {
         new Expectations() {
             {
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 result = 2;
                 globalParameterAPI.findParameter(Constants.VOI_TEMINAL_LICENSE_NUM);
                 result = "2";
@@ -94,7 +94,7 @@ public class TerminalLicenseVoiServiceImplTest {
         licenceLicenseService.getUsedNum();
         new Verifications() {
             {
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 times = 1;
             }
         };
@@ -238,7 +238,7 @@ public class TerminalLicenseVoiServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.VOI_TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 result = 4;
             }
         };
@@ -258,7 +258,7 @@ public class TerminalLicenseVoiServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.VOI_TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -302,7 +302,7 @@ public class TerminalLicenseVoiServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.VOI_TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -321,7 +321,7 @@ public class TerminalLicenseVoiServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.VOI_TEMINAL_LICENSE_NUM);
                 result = "10";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -355,7 +355,7 @@ public class TerminalLicenseVoiServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.VOI_TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -373,9 +373,9 @@ public class TerminalLicenseVoiServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.VOI_TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 result = 5;
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 result = 4;
             }
         };

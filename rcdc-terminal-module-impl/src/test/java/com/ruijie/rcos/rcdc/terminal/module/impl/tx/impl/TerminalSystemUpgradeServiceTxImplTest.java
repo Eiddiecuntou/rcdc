@@ -114,7 +114,7 @@ public class TerminalSystemUpgradeServiceTxImplTest {
         terminalEntityList.add(entity);
         new Expectations() {
             {
-                basicInfoDAO.findByGroupIdAndPlatformAndTerminalOsType((UUID) any, (CbbTerminalPlatformEnums) any, anyString);
+                basicInfoDAO.findByGroupIdAndAuthModeAndTerminalOsType((UUID) any, (CbbTerminalPlatformEnums) any, anyString);
                 result = terminalEntityList;
 
             }

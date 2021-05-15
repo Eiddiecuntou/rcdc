@@ -18,6 +18,7 @@ import mockit.Tested;
 import mockit.Verifications;
 import org.apache.commons.compress.utils.Lists;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,6 +51,11 @@ public class TerminalFtpAccountInfoInitTest {
     @Mocked
     Process process;
 
+    @BeforeClass
+    public static void before() {
+        System.setProperty("os.name", "Linux");
+    }
+
     /**
      * 测试sateInit方法
      */
@@ -58,9 +64,9 @@ public class TerminalFtpAccountInfoInitTest {
         UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
         new Expectations(UUID.class) {
             {
+
                 globalParameterAPI.findParameter("terminal_ftp_config");
-                result =  "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\","
-                    + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
+                result = "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\"," + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
                 UUID.randomUUID();
                 result = uuid;
             }
@@ -88,8 +94,7 @@ public class TerminalFtpAccountInfoInitTest {
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminal_ftp_config");
-                result = "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\","
-                        + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
+                result = "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\"," + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
                 processBuilder.start();
                 result = new IOException();
                 sessionManager.getOnlineTerminalId();
@@ -112,6 +117,7 @@ public class TerminalFtpAccountInfoInitTest {
 
     /**
      * 测试sateInit方法, 执行系统命令失败
+     * 
      * @throws InterruptedException ex
      */
     @Test
@@ -121,8 +127,7 @@ public class TerminalFtpAccountInfoInitTest {
         new Expectations() {
             {
                 globalParameterAPI.findParameter("terminal_ftp_config");
-                result = "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\","
-                        + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
+                result = "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\"," + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
                 process.waitFor();
                 result = 1;
                 sessionManager.getOnlineTerminalId();

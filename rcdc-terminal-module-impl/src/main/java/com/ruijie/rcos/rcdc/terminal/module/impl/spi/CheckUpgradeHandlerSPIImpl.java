@@ -99,12 +99,13 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             return;
         }
         basicInfo.setPlatform(terminalBizConfigDTO.getTerminalPlatform());
+        basicInfo.setAuthMode(terminalBizConfigDTO.getAuthMode());
 
         // 保存终端基本信息
         TerminalEntity terminalEntity =
                 basicInfoService.convertBasicInfo2TerminalEntity(request.getTerminalId(), request.getNewConnection(), basicInfo);
 
-        if (terminalEntity.getPlatform() == CbbTerminalPlatformEnums.IDV || terminalEntity.getPlatform() == CbbTerminalPlatformEnums.VOI) {
+        if (terminalEntity.getAuthMode() == CbbTerminalPlatformEnums.IDV || terminalEntity.getAuthMode() == CbbTerminalPlatformEnums.VOI) {
             LOGGER.info("平台类型为[{}],进行升级包处理（包含授权）", terminalEntity.getPlatform());
             handleIdvProcess(request, terminalEntity, basicInfo, terminalBizConfigDTO);
         } else {

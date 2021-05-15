@@ -32,11 +32,11 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
 
     /**
      * 获取符合平台类型、授权情况的终端列表
-     * @param platform 终端平台类型
+     * @param authMode 终端平台类型
      * @param authed 终端是否授权
      * @return 符合平台类型、授权情况的终端列表
      */
-    List<TerminalEntity> findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums platform, Boolean authed);
+    List<TerminalEntity> findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums authMode, Boolean authed);
 
     /**
      * 根据terminalId获取terminalName
@@ -116,7 +116,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @param osType 系统类型
      * @return 终端列表
      */
-    List<TerminalEntity> findByGroupIdAndPlatformAndTerminalOsType(UUID groupId, CbbTerminalPlatformEnums platform, String osType);
+    List<TerminalEntity> findByGroupIdAndAuthModeAndTerminalOsType(UUID groupId, CbbTerminalPlatformEnums platform, String osType);
 
 
     /**
@@ -128,10 +128,10 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     List<String> getTerminalOsTypeByPlatform(CbbTerminalPlatformEnums[] platformArr);
 
     /**
-     * 根据终端类型、是否授权统计终端数量
-     * @param platform 终端平台类型
+     * 根据授权类型、是否授权统计终端数量
+     * @param authMode 终端平台类型
      * @param authed 终端是否授权
      * @return 符合终端类型、授权情况的终端数量
      */
-    long countByPlatformAndAuthed(CbbTerminalPlatformEnums platform, Boolean authed);
+    long countByAuthModeAndAuthed(CbbTerminalPlatformEnums authMode, Boolean authed);
 }
