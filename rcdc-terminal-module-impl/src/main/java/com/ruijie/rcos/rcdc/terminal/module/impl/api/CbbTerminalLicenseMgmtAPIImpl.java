@@ -91,6 +91,6 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
         }
 
         //处理终端授权扣除逻辑
-        terminalAuthHelper.processDecreaseTerminalLicense(terminalEntity.getTerminalId(), terminalEntity.getPlatform(), Boolean.TRUE);
+        terminalAuthHelper.processDecreaseTerminalLicense(terminalEntity.getTerminalId(), terminalEntity.getAuthMode(), Boolean.TRUE);
     }
 }

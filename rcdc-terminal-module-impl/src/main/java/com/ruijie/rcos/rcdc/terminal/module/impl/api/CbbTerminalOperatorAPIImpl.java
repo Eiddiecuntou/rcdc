@@ -106,7 +106,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
         //处理终端授权扣除逻辑
-        terminalAuthHelper.processDecreaseTerminalLicense(terminalId, basicInfo.getTerminalPlatform(), basicInfo.getAuthed());
+        terminalAuthHelper.processDecreaseTerminalLicense(terminalId, basicInfo.getAuthMode(), basicInfo.getAuthed());
     }
 
     @Override

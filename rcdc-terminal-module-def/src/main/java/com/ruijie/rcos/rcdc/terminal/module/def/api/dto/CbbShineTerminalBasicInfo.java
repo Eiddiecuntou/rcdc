@@ -133,6 +133,9 @@ public class CbbShineTerminalBasicInfo {
     @Nullable
     private CbbTerminalWorkModeEnums[] terminalWorkSupportModeArr;
 
+    @Nullable
+    private CbbTerminalPlatformEnums authMode;
+
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
@@ -434,5 +437,14 @@ public class CbbShineTerminalBasicInfo {
 
     public void setSupportTcStart(@Nullable Boolean supportTcStart) {
         this.supportTcStart = supportTcStart;
+    }
+
+    @Nullable
+    public CbbTerminalPlatformEnums getAuthMode() {
+        return authMode;
+    }
+
+    public void setAuthMode(@Nullable CbbTerminalPlatformEnums authMode) {
+        this.authMode = authMode;
     }
 }

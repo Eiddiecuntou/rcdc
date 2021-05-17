@@ -40,7 +40,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     public void updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums platform, String licenseKey) {
         Assert.notNull(platform, "platform can not be empty");
         Assert.hasText(licenseKey, "licenseKey can not be empty");
-        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(platform, Boolean.FALSE);
+        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(platform, Boolean.FALSE);
         updateTerminalAuthState(terminalEntityList, Boolean.TRUE);
 
         globalParameterAPI.updateParameter(licenseKey, String.valueOf(Constants.TERMINAL_AUTH_DEFAULT_NUM));
@@ -51,7 +51,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
         Assert.notNull(platform, "platform can not be empty");
         Assert.hasText(licenseKey, "licenseKey can not be empty");
         Assert.notNull(licenseNum, "licenseNum can not null");
-        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(platform, Boolean.TRUE);
+        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(platform, Boolean.TRUE);
         updateTerminalAuthState(terminalEntityList, Boolean.FALSE);
 
         globalParameterAPI.updateParameter(licenseKey, String.valueOf(licenseNum));

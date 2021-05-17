@@ -53,7 +53,7 @@ public class TerminalLicenseServiceTxImplTest {
 
         new Expectations() {
             {
-                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
+                basicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
                 result = terminalEntityList;
                 basicInfoDAO.save(entity);
             }
@@ -88,7 +88,7 @@ public class TerminalLicenseServiceTxImplTest {
 
         new Expectations(entity) {
             {
-                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
+                basicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
                 result = terminalEntityList;
                 basicInfoDAO.save(entity);
                 result = new Exception("xx");
@@ -126,7 +126,7 @@ public class TerminalLicenseServiceTxImplTest {
 
         new Expectations(entity) {
             {
-                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
+                basicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
                 result = terminalEntityList;
                 basicInfoDAO.save(entity);
                 result = new Exception("xx");
@@ -162,7 +162,7 @@ public class TerminalLicenseServiceTxImplTest {
         terminalEntityList.add(entity);
         new Expectations() {
             {
-                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = terminalEntityList;
 
                 globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, "111");
@@ -173,7 +173,7 @@ public class TerminalLicenseServiceTxImplTest {
 
         new Verifications() {
             {
-                basicInfoDAO.findTerminalEntitiesByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 times = 1;
 
                 globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, "111");

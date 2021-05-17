@@ -111,7 +111,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
 
         List<TerminalEntity> terminalList = Lists.newArrayList();
         Arrays.stream(terminalGroupIdArr).forEach(terminalGroupId -> {
-            List<TerminalEntity> underGroupTerminalList = basicInfoDAO.findByGroupIdAndPlatformAndTerminalOsType(terminalGroupId,
+            List<TerminalEntity> underGroupTerminalList = basicInfoDAO.findByGroupIdAndAuthModeAndTerminalOsType(terminalGroupId,
                     CbbTerminalPlatformEnums.convert(terminalType.getPlatform()), terminalType.getOsType());
             if (CollectionUtils.isEmpty(underGroupTerminalList)) {
                 return;

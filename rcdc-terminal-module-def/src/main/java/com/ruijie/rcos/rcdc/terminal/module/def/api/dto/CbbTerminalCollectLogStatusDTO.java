@@ -33,6 +33,4 @@ public class CbbTerminalCollectLogStatusDTO {
     public void setLogName(String logName) {
         this.logName = logName;
     }
-
-
 }

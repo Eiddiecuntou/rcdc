@@ -36,6 +36,10 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -66,6 +70,11 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     private static final int FAIL_TRY_COUNT = 3;
 
+    /**
+     * key - terminalId , value - lock
+     */
+    private static Map<String, Lock> lockMap = new ConcurrentHashMap<>();
+
     @Override
     public void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo, Boolean authed) {
         Assert.hasText(terminalId, "terminalId 不能为空");
@@ -90,8 +99,8 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 
-    private boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection,
-        CbbShineTerminalBasicInfo shineTerminalBasicInfo, Boolean authed) {
+    private boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
+            Boolean authed) {
         TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
         basicInfoEntity.setAuthed(authed);
         try {
@@ -112,7 +121,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     @Override
     public TerminalEntity convertBasicInfo2TerminalEntity(String terminalId, boolean isNewConnection,
-        CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
+            CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
         Assert.hasText(terminalId, "terminalId can not be empty");
         Assert.notNull(shineTerminalBasicInfo, "shineTerminalBasicInfo can not be null");
 
@@ -158,23 +167,42 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     private void saveTerminalModel(CbbShineTerminalBasicInfo basicInfo) {
+
         if (StringUtils.isEmpty(basicInfo.getProductId())) {
             // 无产品id, 一般为软终端
             return;
         }
 
-        List<TerminalModelDriverEntity> modelEntityList = terminalModelDriverDAO.findByProductId(basicInfo.getProductId());
-        if (!CollectionUtils.isEmpty(modelEntityList)) {
-            // 已存在，不需处理
-            return;
+        Lock lock = getLock(basicInfo.getTerminalId());
+        lock.lock();
+
+        try {
+            List<TerminalModelDriverEntity> modelEntityList = terminalModelDriverDAO.findByProductId(basicInfo.getProductId());
+            if (!CollectionUtils.isEmpty(modelEntityList)) {
+                // 已存在，不需处理
+                return;
+            }
+
+            TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
+            modelDriverEntity.setProductId(basicInfo.getProductId());
+            modelDriverEntity.setCpuType(basicInfo.getCpuType());
+            modelDriverEntity.setProductModel(basicInfo.getProductType());
+            modelDriverEntity.setPlatform(basicInfo.getPlatform());
+            terminalModelDriverDAO.save(modelDriverEntity);
+
+        } finally {
+            lock.unlock();
         }
 
-        TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
-        modelDriverEntity.setProductId(basicInfo.getProductId());
-        modelDriverEntity.setCpuType(basicInfo.getCpuType());
-        modelDriverEntity.setProductModel(basicInfo.getProductType());
-        modelDriverEntity.setPlatform(basicInfo.getPlatform());
-        terminalModelDriverDAO.save(modelDriverEntity);
+    }
+
+    private synchronized Lock getLock(String terminalId) {
+        if (lockMap.containsKey(terminalId)) {
+            return lockMap.get(terminalId);
+        }
+        Lock lock = new ReentrantLock();
+        lockMap.put(terminalId, lock);
+        return lockMap.get(terminalId);
     }
 
     @Override

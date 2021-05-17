@@ -145,6 +145,7 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
         terminalEntity.setTerminalId("123");
         terminalEntity.setAuthed(Boolean.TRUE);
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
+        terminalEntity.setAuthMode(CbbTerminalPlatformEnums.IDV);
         new Expectations() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId("123");
