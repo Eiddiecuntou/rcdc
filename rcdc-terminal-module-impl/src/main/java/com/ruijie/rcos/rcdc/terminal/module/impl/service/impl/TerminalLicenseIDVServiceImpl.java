@@ -81,7 +81,9 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
             if (usedNum == null) {
                 usedNum = getUsedNum();
             }
-            usedNum--;
+            if (usedNum > 0) {
+                usedNum--;
+            }
         }
     }
 
