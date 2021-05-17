@@ -89,7 +89,9 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
             if (usedNum == null) {
                 getUsedNum();
             }
-            usedNum--;
+            if (usedNum > 0) {
+                usedNum--;
+            }
         }
     }
 

@@ -108,8 +108,8 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
             Integer voiUsedNum = this.getUsedNum();
             Integer voiTerminalLicenseNum = this.getTerminalLicenseNum();
             if (voiUpgradeUsedNum >= voiUpgradeTerminalLicenseNum || voiUsedNum >= voiTerminalLicenseNum) {
-                LOGGER.error("idv 使用voi授权进行授权数量不足，已使用VOI升级授权数：{}，VOI升级可用授权数：{}，已使用VOI授权数，VOI可用授权数：{}",
-                        voiUpgradeUsedNum, voiUpgradeTerminalLicenseNum, voiUsedNum, voiTerminalLicenseNum);
+                LOGGER.error("idv 使用voi授权进行授权数量不足，已使用VOI升级授权数：{}，VOI升级可用授权数：{}，已使用VOI授权数，VOI可用授权数：{}", voiUpgradeUsedNum,
+                        voiUpgradeTerminalLicenseNum, voiUsedNum, voiTerminalLicenseNum);
                 return false;
             }
 
@@ -128,8 +128,9 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
             if (usedNum == null) {
                 getUsedNum();
             }
-
-            usedNum--;
+            if (usedNum > 0) {
+                usedNum--;
+            }
         }
     }
 
