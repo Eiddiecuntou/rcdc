@@ -410,7 +410,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
         };
         licenceLicenseService.decreaseCacheLicenseUsedNum();
         Integer usedNum = Deencapsulation.getField(licenceLicenseService, "usedNum");
-        assertEquals(usedNum.intValue(), -1);
+        assertEquals(usedNum.intValue(), 0);
     }
 
     @Test
