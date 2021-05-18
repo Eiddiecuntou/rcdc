@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 
 /**
  * 
@@ -34,6 +35,8 @@ public class CbbSystemUpgradeTaskTerminalDTO {
     private CbbNetworkModeEnums networkMode;
 
     private CbbTerminalNetworkInfoDTO[] networkInfoArr;
+
+    private CbbTerminalPlatformEnums platform;
 
     public UUID getId() {
         return id;
@@ -105,5 +108,13 @@ public class CbbSystemUpgradeTaskTerminalDTO {
 
     public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoArr) {
         this.networkInfoArr = networkInfoArr;
+    }
+
+    public CbbTerminalPlatformEnums getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(CbbTerminalPlatformEnums platform) {
+        this.platform = platform;
     }
 }
