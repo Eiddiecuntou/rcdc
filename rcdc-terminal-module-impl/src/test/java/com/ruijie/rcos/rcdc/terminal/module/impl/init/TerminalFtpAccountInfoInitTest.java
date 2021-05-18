@@ -51,11 +51,6 @@ public class TerminalFtpAccountInfoInitTest {
     @Mocked
     Process process;
 
-    @BeforeClass
-    public static void before() {
-        System.setProperty("os.name", "Linux");
-    }
-
     /**
      * 测试sateInit方法
      */
