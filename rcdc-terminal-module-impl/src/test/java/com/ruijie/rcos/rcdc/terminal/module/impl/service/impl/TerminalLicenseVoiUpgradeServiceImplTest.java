@@ -179,7 +179,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
 
 
         }
-        Assert.fail();
+        Assert.assertEquals(licenceLicenseService.getCacheLicenseNum() ,new Integer(2));
     }
 
     /**

@@ -67,6 +67,32 @@ public class TerminalLicenseServiceImplTest {
     }
 
     /**
+     * 测试updateTerminalLicenseNum，异常情况：减少证书授权证书的数量
+     */
+    @Test
+    public void testUpdateTerminalLicenseNumExcepiton() {
+        try {
+            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateTerminalLicenseNum(-2), "licenseNum must gt -1");
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                result = "5";
+            }
+        };
+        try {
+            licenceLicenseService.updateTerminalLicenseNum(2);
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        }
+        Assert.assertEquals(licenceLicenseService.getCacheLicenseNum() ,new Integer(2));
+
+    }
+
+    /**
      * 测试getUsedNum方法
      */
     @Test
