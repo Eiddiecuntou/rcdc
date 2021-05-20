@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,12 +17,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
-import mockit.Deencapsulation;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Tested;
-import mockit.Verifications;
 
 /**
  * Description:TerminalLicenseServiceImpl测试类
@@ -137,15 +132,20 @@ public class TerminalLicenseServiceImplTest {
                 result = "5";
             }
         };
+        new MockUp<TerminalLicenseIDVServiceImpl>(){
+
+            @Mock
+            public Integer getUsedNum() {
+                return 2;
+            }
+        };
         try {
             licenceLicenseService.updateTerminalLicenseNum(2);
         } catch (BusinessException e) {
-            Assert.assertTrue(e.getKey().equals("rcdc_terminal_not_allow_reduce_terminal_license_num"));
-            return;
-
-
+            e.printStackTrace();
         }
-        Assert.fail();
+        Assert.assertEquals(licenceLicenseService.getUsedNum() ,new Integer(2));
+
     }
 
     /**
