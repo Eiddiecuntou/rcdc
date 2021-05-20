@@ -68,6 +68,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
             // 授权证书为-1时，不限制终端授权，可接入任意数量IDV终端。
             if (currentNum == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
                 LOGGER.info("从终端授权数量为-1，导入正式授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+                // fixMe 此处需考虑通知产品，断开shine连接
                 processImportOfficialLicense(licenseNum);
                 return;
             }
@@ -79,9 +80,13 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
 
             LOGGER.info("当前授权数量和准备更新的授权数量不等，且都不等于-1。当前授权数量为{}, 准备更新授权数量为{}", currentNum, licenseNum);
             if (currentNum > licenseNum) {
-                throw new BusinessException(BusinessKey.RCDC_TERMINAL_NOT_ALLOW_REDUCE_TERMINAL_LICENSE_NUM);
+                LOGGER.info("当前授权数量为{}，准备更新授权数量为{}，当前授权数小于准备更新授权数，回收授权", currentNum, licenseNum);
+                // fixMe 此处需考虑通知产品，断开shine连接
+                processImportOfficialLicense(licenseNum);
+                return;
             }
 
+            LOGGER.info("当前授权数量为{}, 准备更新授权数量为{}，当前授权数大于准备更新授权数，更新授权数量", currentNum, licenseNum);
             globalParameterAPI.updateParameter(getLicenseConstansKey(), String.valueOf(licenseNum));
             updateCacheLicenseNum(licenseNum);
         }
