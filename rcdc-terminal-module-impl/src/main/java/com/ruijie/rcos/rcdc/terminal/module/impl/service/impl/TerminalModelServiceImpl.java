@@ -71,10 +71,11 @@ public class TerminalModelServiceImpl implements TerminalModelService {
     }
 
     @Override
-    public CbbTerminalModelDTO queryByProductId(String productId) throws BusinessException {
+    public CbbTerminalModelDTO queryByProductIdAndPlatform(String productId, CbbTerminalPlatformEnums platformEnums) throws BusinessException {
         Assert.hasText(productId, "productId can not be null");
+        Assert.notNull(platformEnums, "platformEnums can not be null");
 
-        List<TerminalModelDriverEntity> entityList = terminalModelDriverDAO.findByProductId(productId);
+        List<TerminalModelDriverEntity> entityList = terminalModelDriverDAO.findByProductIdAndPlatform(productId, platformEnums);
         if (CollectionUtils.isEmpty(entityList)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_MODEL_NOT_EXIST_ERROR, new String[] {productId});
         }

@@ -32,10 +32,11 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
     }
 
     @Override
-    public CbbTerminalModelDTO findByProductId(String productId) throws BusinessException {
+    public CbbTerminalModelDTO findByProductIdAndPlatform(String productId, CbbTerminalPlatformEnums platformEnums) throws BusinessException {
         Assert.notNull(productId, "productId can not be null");
+        Assert.notNull(platformEnums, "platformEnums can not be null");
 
-        CbbTerminalModelDTO terminalModelDTO = terminalModelService.queryByProductId(productId);
+        CbbTerminalModelDTO terminalModelDTO = terminalModelService.queryByProductIdAndPlatform(productId, platformEnums);
         return terminalModelDTO;
     }
 
