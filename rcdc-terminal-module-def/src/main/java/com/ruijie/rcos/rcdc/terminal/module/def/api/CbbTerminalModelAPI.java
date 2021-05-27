@@ -60,6 +60,7 @@ public interface CbbTerminalModelAPI {
      *  根据终端型号id查询终端型号
      *
      * @param productId 请求参数
+     * @param platformEnums 平台类型
      * @return 终端型号信息
      * @throws BusinessException 业务异常
      */
