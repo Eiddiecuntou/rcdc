@@ -45,6 +45,7 @@ public interface CbbTerminalModelAPI {
      * @apiGroup CbbTerminalModelAPI
      * @apiDescription 根据终端型号id查询终端型号
      * @apiParam (请求体字段说明) {String} productId 终端型号id
+     * @apiParam (请求体字段说明) {CbbTerminalPlatformEnums} platformEnums 终端类型
      *
      * @apiSuccess (响应字段说明) {CbbTerminalModelDTO} terminalModelDTO CbbTerminalModelDTO
      * @apiSuccess (响应字段说明) {String} terminalModelDTO.productModel 终端型号
@@ -62,7 +63,7 @@ public interface CbbTerminalModelAPI {
      * @return 终端型号信息
      * @throws BusinessException 业务异常
      */
-    CbbTerminalModelDTO findByProductId(String productId) throws BusinessException;
+    CbbTerminalModelDTO findByProductIdAndPlatform(String productId, CbbTerminalPlatformEnums platformEnums) throws BusinessException;
 
     /**
      * @api {POST} CbbTerminalModelAPI.listTerminalOsType 查询终端运行平台类型

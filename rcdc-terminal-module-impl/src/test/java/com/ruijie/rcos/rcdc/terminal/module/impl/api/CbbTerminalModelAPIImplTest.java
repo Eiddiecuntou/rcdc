@@ -35,6 +35,8 @@ public class CbbTerminalModelAPIImplTest {
     @Injectable
     TerminalModelService terminalModelService;
 
+    private static final CbbTerminalPlatformEnums PLATFORM_ENUMS = CbbTerminalPlatformEnums.IDV;
+
     /**
      * 测试listTerminalModel参数为空
      *
@@ -62,7 +64,7 @@ public class CbbTerminalModelAPIImplTest {
             }
         };
 
-        CbbTerminalModelDTO[] modelDTOArr = terminalModelAPI.listTerminalModel(new CbbTerminalPlatformEnums[]{});
+        CbbTerminalModelDTO[] modelDTOArr = terminalModelAPI.listTerminalModel(new CbbTerminalPlatformEnums[] {});
         assertEquals(modelDTOArr, terminalModelArr);
     }
 
@@ -73,7 +75,10 @@ public class CbbTerminalModelAPIImplTest {
      */
     @Test
     public void testQueryByProductIdArgumentIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.findByProductId(null), "productId can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.findByProductIdAndPlatform(null, null),
+                "productId can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> terminalModelAPI.findByProductIdAndPlatform("ss", null),
+                "platformEnums can not be null");
         assertTrue(true);
     }
 
@@ -86,10 +91,10 @@ public class CbbTerminalModelAPIImplTest {
     public void testQueryByProductIdSuccess() throws Exception {
         new Expectations() {
             {
-                terminalModelAPI.findByProductId("aaa");
+                terminalModelAPI.findByProductIdAndPlatform("aaa", PLATFORM_ENUMS);
             }
         };
-        CbbTerminalModelDTO modelDTO = terminalModelAPI.findByProductId("aaa");
+        CbbTerminalModelDTO modelDTO = terminalModelAPI.findByProductIdAndPlatform("aaa", PLATFORM_ENUMS);
 
     }
 
@@ -101,12 +106,12 @@ public class CbbTerminalModelAPIImplTest {
 
         new Expectations() {
             {
-                terminalModelService.queryTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
+                terminalModelService.queryTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.APP});
                 result = Lists.newArrayList("Windows");
             }
         };
 
-        List<String> terminalOsTypeList = terminalModelAPI.listTerminalOsType(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
+        List<String> terminalOsTypeList = terminalModelAPI.listTerminalOsType(new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.APP});
 
         Assert.assertEquals(terminalOsTypeList.get(0), "Windows");
     }

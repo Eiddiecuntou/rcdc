@@ -177,7 +177,8 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         lock.lock();
 
         try {
-            List<TerminalModelDriverEntity> modelEntityList = terminalModelDriverDAO.findByProductId(basicInfo.getProductId());
+            List<TerminalModelDriverEntity> modelEntityList =
+                    terminalModelDriverDAO.findByProductIdAndPlatform(basicInfo.getProductId(), basicInfo.getPlatform());
             if (!CollectionUtils.isEmpty(modelEntityList)) {
                 // 已存在，不需处理
                 return;

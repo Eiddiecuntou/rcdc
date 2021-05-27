@@ -45,13 +45,15 @@ public class TerminalModelServiceImplTest {
     @Injectable
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
+    private static final CbbTerminalPlatformEnums PLATFORM = CbbTerminalPlatformEnums.IDV;
+
     /**
      * 测试根据平台类型查询终端类型 - 列表为空
      *
      */
     @Test
     public void testQueryTerminalModelByPlatform() {
-        CbbTerminalPlatformEnums[] platformArr = new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP};
+        CbbTerminalPlatformEnums[] platformArr = new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.APP};
 
         new Expectations() {
             {
@@ -78,7 +80,7 @@ public class TerminalModelServiceImplTest {
      */
     @Test
     public void testQueryTerminalModelByPlatformHasDuplicate() {
-        CbbTerminalPlatformEnums[] platformArr = new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.VDI};
+        CbbTerminalPlatformEnums[] platformArr = new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.VDI};
 
         TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
         modelDriverEntity.setId(UUID.randomUUID());
@@ -127,7 +129,7 @@ public class TerminalModelServiceImplTest {
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testQueryByProductId() throws BusinessException {
+    public void testqueryByProductIdAndPlatform() throws BusinessException {
         String productId = "123";
 
         TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
@@ -138,12 +140,12 @@ public class TerminalModelServiceImplTest {
 
         new Expectations() {
             {
-                terminalModelDriverDAO.findByProductId(productId);
+                terminalModelDriverDAO.findByProductIdAndPlatform(productId, PLATFORM);
                 result = Lists.newArrayList(modelDriverEntity);
             }
         };
 
-        CbbTerminalModelDTO result = terminalModelService.queryByProductId(productId);
+        CbbTerminalModelDTO result = terminalModelService.queryByProductIdAndPlatform(productId, PLATFORM);
 
         CbbTerminalModelDTO expectDTO = new CbbTerminalModelDTO();
         expectDTO.setProductId("123");
@@ -153,7 +155,7 @@ public class TerminalModelServiceImplTest {
 
         new Verifications() {
             {
-                terminalModelDriverDAO.findByProductId(productId);
+                terminalModelDriverDAO.findByProductIdAndPlatform(productId, PLATFORM);
                 times = 1;
             }
         };
@@ -166,18 +168,18 @@ public class TerminalModelServiceImplTest {
      * @throws BusinessException 业务异常
      */
     @Test
-    public void testQueryByProductIdNotExist() throws BusinessException {
+    public void testqueryByProductIdAndPlatformNotExist() throws BusinessException {
         String productId = "123";
 
         new Expectations() {
             {
-                terminalModelDriverDAO.findByProductId(productId);
+                terminalModelDriverDAO.findByProductIdAndPlatform(productId, PLATFORM);
                 result = Lists.newArrayList();
             }
         };
 
         try {
-            terminalModelService.queryByProductId(productId);
+            terminalModelService.queryByProductIdAndPlatform(productId, PLATFORM);
             fail();
         } catch (BusinessException e) {
             assertEquals(BusinessKey.RCDC_TERMINAL_MODEL_NOT_EXIST_ERROR, e.getKey());
@@ -185,7 +187,7 @@ public class TerminalModelServiceImplTest {
 
         new Verifications() {
             {
-                terminalModelDriverDAO.findByProductId(productId);
+                terminalModelDriverDAO.findByProductIdAndPlatform(productId, PLATFORM);
                 times = 1;
             }
         };
@@ -201,11 +203,11 @@ public class TerminalModelServiceImplTest {
 
         new Expectations() {
             {
-                terminalBasicInfoDAO.getTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
+                terminalBasicInfoDAO.getTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.APP});
                 result = Lists.newArrayList("Windows");
             }
         };
-        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
+        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.APP});
         Assert.assertEquals(osTypeList.get(0), "Windows");
     }
 
@@ -217,11 +219,11 @@ public class TerminalModelServiceImplTest {
 
         new Expectations() {
             {
-                terminalBasicInfoDAO.getTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
+                terminalBasicInfoDAO.getTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.APP});
                 result = null;
             }
         };
-        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[]{CbbTerminalPlatformEnums.APP});
+        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(new CbbTerminalPlatformEnums[] {CbbTerminalPlatformEnums.APP});
         Assert.assertEquals(osTypeList.size(), 0);
     }
 }

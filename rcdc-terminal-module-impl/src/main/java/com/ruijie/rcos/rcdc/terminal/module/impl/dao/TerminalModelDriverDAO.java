@@ -19,7 +19,7 @@ public interface TerminalModelDriverDAO extends SkyEngineJpaRepository<TerminalM
 
 
     /**
-     *  根据平台类型查询终端类型
+     * 根据平台类型查询终端类型
      *
      * @param platformArr 平台类型
      * @return 终端类型列表
@@ -27,11 +27,10 @@ public interface TerminalModelDriverDAO extends SkyEngineJpaRepository<TerminalM
     List<TerminalModelDriverEntity> findByPlatformIn(CbbTerminalPlatformEnums[] platformArr);
 
     /**
-     *  根据终端类型id查询
+     * 根据终端类型id查询
      *
      * @param productId 终端型号id
      * @return 终端类型列表
      */
-    List<TerminalModelDriverEntity> findByProductId(String productId);
+    List<TerminalModelDriverEntity> findByProductIdAndPlatform(String productId, CbbTerminalPlatformEnums platform);
 }
-
