@@ -38,6 +38,8 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
+import java.util.Set;
+
 /**
  * Description: 终端检查升级，同时需要保存终端基本信息
  * Copyright: Copyright (c) 2018
@@ -206,8 +208,8 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         String osType = terminalEntity.getTerminalOsType();
 
         // TODO 临时方案，后续版本需修订
-        if (Constants.SPECIAL_PRODUCT_ID_CT3120.equals(terminalEntity.getProductId())) {
-            LOGGER.info("CT3120终端系统升级返回IDV平台");
+        if (Constants.IDV_USE_AS_VDI_PRODUCT_ID_SET.contains(terminalEntity.getProductId())) {
+            LOGGER.info("终端[{}]IDV用作VDI终端系统升级返回IDV平台", terminalEntity.getTerminalId());
             return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
         }
 
