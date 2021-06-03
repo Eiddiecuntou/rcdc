@@ -68,8 +68,8 @@ public class SyncSystemUpgradeResultHandlerSPIImpl implements CbbDispatcherHandl
         String osType = terminalEntity.getTerminalOsType();
 
         // TODO 临时解决方案，后续版本需修订
-        if (Constants.SPECIAL_PRODUCT_ID_CT3120.equals(terminalEntity.getProductId())) {
-            LOGGER.info("3120终端系统升级返回IDV平台");
+        if (Constants.IDV_USE_AS_VDI_PRODUCT_ID_SET.contains(terminalEntity.getProductId())) {
+            LOGGER.info("终端[{}]IDV用作VDI终端系统升级返回IDV平台", terminalEntity.getTerminalId());
             return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
         }
 
