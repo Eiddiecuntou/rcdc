@@ -14,6 +14,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradePackageHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
+import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
@@ -24,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,6 +54,8 @@ public class TerminalOtaInitServiceImpl implements TerminalOtaInitService {
     @Autowired
     private BtClientService btClientService;
 
+    private static final String BT_SHARE_FILE_PATH = "/opt/share_file";
+
     @Override
     public void initAndroidOta() {
         // 初始化VDI Android的OTA包
@@ -76,8 +80,37 @@ public class TerminalOtaInitServiceImpl implements TerminalOtaInitService {
             return;
         }
 
-        LOGGER.info("初始化bt分享");
-        initBtServer(upgradePackage);
+        if (needStartBtShare(upgradePackage)) {
+            LOGGER.info("初始化bt分享");
+            initBtServer(upgradePackage);
+        }
+    }
+
+    private boolean needStartBtShare(TerminalSystemUpgradePackageEntity upgradePackage) {
+        //TODO 临时方案，后续版本需要BT组件提供查询是否开启分享接口
+        if (StringUtils.isBlank(upgradePackage.getSeedPath())) {
+            LOGGER.info("bt种子文件不存在，不需开启分享");
+            return false;
+        }
+
+        File shareFile = new File(BT_SHARE_FILE_PATH);
+        if (!shareFile.isFile()) {
+            LOGGER.info("bt分享文件不存在，需要开启分享");
+            return true;
+        }
+
+        try {
+            String shareFileContent = FileUtils.readFileToString(shareFile, Charset.forName("UTF-8"));
+            if (shareFileContent.contains(upgradePackage.getSeedPath())) {
+                LOGGER.info("已开启分享，不需重复开启分享");
+                return false;
+            }
+
+            return true;
+        } catch (IOException e) {
+            LOGGER.error("读取bt分享文件内容失败");
+            return true;
+        }
     }
 
     private void initBtServer(TerminalSystemUpgradePackageEntity upgradePackage) {
