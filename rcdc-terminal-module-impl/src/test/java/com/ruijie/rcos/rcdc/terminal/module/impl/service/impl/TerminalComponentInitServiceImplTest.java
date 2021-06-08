@@ -262,49 +262,6 @@ public class TerminalComponentInitServiceImplTest {
     }
     
     /**
-     * 测试safeInit，ip和本地ip不同,executeUpdate有BusinessException
-     *
-     * @throws BusinessException 异常
-     * @throws InterruptedException ex
-     */
-    @Test
-    public void testSafeInitIpDifferentCurrentIpExecuteUpdateHasBusinessException()
-            throws BusinessException, InterruptedException {
-        setEnviromentDevelop(false);
-        ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
-        dto.setClusterVirtualIpIp("172.12.22.45");
-        new Expectations() {
-            {
-                cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
-                result = DtoResponse.success(dto);
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                result = "172.22.25.45";
-                runner.execute((TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver) any);
-                result = new BusinessException("key");
-            }
-        };
-        try {
-            initService.initLinux();
-        } catch (RuntimeException e) {
-            fail();
-        }
-
-        new Verifications() {
-            {
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 1;
-
-                runner.execute((TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver) any);
-                times = 1;
-                linuxUpdatelistCacheInit.init();
-                times = 0;
-                androidUpdatelistCacheInit.init();
-                times = 0;
-            }
-        };
-    }
-    
-    /**
      * 测试safeInit，ip和本地ip不同
      *
      * @throws BusinessException 异常

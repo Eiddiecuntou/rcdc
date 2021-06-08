@@ -174,13 +174,24 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
             String outStr = runner.execute(new BtShareInitReturnValueResolver(osType));
             LOGGER.debug("out String is :{}", outStr);
             LOGGER.info("success invoke [{}] pythonScript...", osType.name());
-        } catch (BusinessException e) {
-            LOGGER.error("bt share init error", e);
+            globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_SUCCESS);
+        } catch (BusinessException ex) {
+          LOGGER.error("bt share init error", ex);
+            // 脚本执行失败后进行重试
+            LOGGER.info("invoke [{}] pythonScript failed, retry", osType.name());
             globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_FAIL);
-            return;
+            waitSeconds();
+            executeUpdate(currentIp, osType);
         }
 
-        globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_SUCCESS);
+    }
+
+    private void waitSeconds() {
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            LOGGER.error("等待异常！", e);
+        }
     }
 
     /**
