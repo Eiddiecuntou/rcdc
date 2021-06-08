@@ -87,6 +87,7 @@ public class TerminalOtaInitServiceImpl implements TerminalOtaInitService {
     }
 
     private boolean needStartBtShare(TerminalSystemUpgradePackageEntity upgradePackage) {
+        //TODO 临时方案，后续版本需要BT组件提供查询是否开启分享接口
         if (StringUtils.isBlank(upgradePackage.getSeedPath())) {
             LOGGER.info("bt种子文件不存在，不需开启分享");
             return false;
