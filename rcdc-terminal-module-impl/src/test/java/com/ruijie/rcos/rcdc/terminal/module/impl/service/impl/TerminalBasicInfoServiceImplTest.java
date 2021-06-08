@@ -73,6 +73,8 @@ public class TerminalBasicInfoServiceImplTest {
     @Injectable
     private TerminalModelDriverDAO terminalModelDriverDAO;
 
+    private static final CbbTerminalPlatformEnums PLATFORM_ENUMS = CbbTerminalPlatformEnums.IDV;
+
     @Before
     public void before() {
 
@@ -487,7 +489,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         basicInfoService.saveBasicInfo(terminalId, false, basicInfo, Boolean.TRUE);
 
-        new  Verifications() {
+        new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
@@ -500,7 +502,7 @@ public class TerminalBasicInfoServiceImplTest {
                 assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
                 assertEquals(CbbTerminalStateEnums.OFFLINE, saveEntity.getState());
 
-                terminalModelDriverDAO.findByProductId(anyString);
+                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, PLATFORM_ENUMS);
                 times = 0;
 
                 terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
@@ -534,7 +536,7 @@ public class TerminalBasicInfoServiceImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = terminalEntity;
 
-                terminalModelDriverDAO.findByProductId("aaaa");
+                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
                 result = Lists.newArrayList(modelDriverEntity);
 
             }
@@ -542,7 +544,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         basicInfoService.saveBasicInfo(terminalId, false, basicInfo, Boolean.TRUE);
 
-        new  Verifications() {
+        new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
@@ -555,7 +557,7 @@ public class TerminalBasicInfoServiceImplTest {
                 assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
                 assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
 
-                terminalModelDriverDAO.findByProductId("aaaa");
+                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
                 times = 1;
 
                 terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
@@ -637,7 +639,7 @@ public class TerminalBasicInfoServiceImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = terminalEntity;
 
-                terminalModelDriverDAO.findByProductId("aaaa");
+                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
                 result = Lists.newArrayList();
 
             }
@@ -645,7 +647,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         basicInfoService.saveBasicInfo(terminalId, false, basicInfo, Boolean.TRUE);
 
-        new  Verifications() {
+        new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
@@ -658,7 +660,7 @@ public class TerminalBasicInfoServiceImplTest {
                 assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
                 assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
 
-                terminalModelDriverDAO.findByProductId("aaaa");
+                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
                 times = 1;
 
                 TerminalModelDriverEntity driverEntity;
@@ -696,7 +698,7 @@ public class TerminalBasicInfoServiceImplTest {
 
         basicInfoService.saveBasicInfo(terminalId, false, basicInfo, Boolean.TRUE);
 
-        new  Verifications() {
+        new Verifications() {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 times = 1;
@@ -710,7 +712,7 @@ public class TerminalBasicInfoServiceImplTest {
                 assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
                 assertEquals(Constants.DEFAULT_TERMINAL_GROUP_UUID, saveEntity.getGroupId());
 
-                terminalModelDriverDAO.findByProductId(anyString);
+                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, PLATFORM_ENUMS);
                 times = 0;
 
                 terminalModelDriverDAO.save((TerminalModelDriverEntity) any);

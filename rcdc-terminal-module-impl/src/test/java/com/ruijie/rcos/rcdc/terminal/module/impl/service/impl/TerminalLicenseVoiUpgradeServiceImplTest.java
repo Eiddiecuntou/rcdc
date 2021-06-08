@@ -85,7 +85,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "2";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 4;
                 terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 result = -1;
@@ -97,7 +97,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
         licenceLicenseService.getUsedNum();
         new Verifications() {
             {
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 times = 1;
             }
         };
@@ -112,7 +112,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "2";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 4;
                 terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 result = 2;
@@ -124,7 +124,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
         licenceLicenseService.getUsedNum();
         new Verifications() {
             {
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 times = 1;
             }
         };
@@ -179,7 +179,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
 
 
         }
-        Assert.fail();
+        Assert.assertEquals(licenceLicenseService.getCacheLicenseNum() ,new Integer(2));
     }
 
     /**
@@ -256,7 +256,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 4;
             }
         };
@@ -276,7 +276,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -337,7 +337,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM);
                 result = "10";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -373,7 +373,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
                 result = "30";
                 terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
                 result = 20;
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 8;
             }
         };
@@ -410,7 +410,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
         };
         licenceLicenseService.decreaseCacheLicenseUsedNum();
         Integer usedNum = Deencapsulation.getField(licenceLicenseService, "usedNum");
-        assertEquals(usedNum.intValue(), -1);
+        assertEquals(usedNum.intValue(), 0);
     }
 
     @Test

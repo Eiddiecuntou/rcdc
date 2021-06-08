@@ -17,6 +17,11 @@ public class CbbTerminalBizConfigDTO {
 
     private CbbTerminalPlatformEnums terminalPlatform;
 
+    /**
+     * 认证类型
+     */
+    private CbbTerminalPlatformEnums authMode;
+
     public CbbTerminalWorkModeEnums[] getTerminalWorkModeArr() {
         return terminalWorkModeArr;
     }
@@ -31,5 +36,13 @@ public class CbbTerminalBizConfigDTO {
 
     public void setTerminalPlatform(CbbTerminalPlatformEnums terminalPlatform) {
         this.terminalPlatform = terminalPlatform;
+    }
+
+    public CbbTerminalPlatformEnums getAuthMode() {
+        return authMode;
+    }
+
+    public void setAuthMode(CbbTerminalPlatformEnums authMode) {
+        this.authMode = authMode;
     }
 }

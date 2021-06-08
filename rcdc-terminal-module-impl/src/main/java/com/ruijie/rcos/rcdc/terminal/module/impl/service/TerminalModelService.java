@@ -17,7 +17,7 @@ import java.util.List;
 public interface TerminalModelService {
 
     /**
-     *  查询所有终端类型
+     * 查询所有终端类型
      *
      * @param platformArr 平台类型
      * @return CbbTerminalModelDTO数组
@@ -25,16 +25,18 @@ public interface TerminalModelService {
     CbbTerminalModelDTO[] queryTerminalModelByPlatform(CbbTerminalPlatformEnums[] platformArr);
 
     /**
-     *  根据终端类型查询支持的cpu型号
+     * 根据终端类型查询支持的cpu型号
      *
      * @param productId 终端型号id
+     * @param platform 终端类型 VDI|IDV|VOI
      * @return CbbTerminalModelDTO
      * @throws BusinessException 业务异常
      */
-    CbbTerminalModelDTO queryByProductId(String productId) throws BusinessException;
+    CbbTerminalModelDTO queryByProductIdAndPlatform(String productId, CbbTerminalPlatformEnums platform) throws BusinessException;
 
     /**
      * 查询所有终端运行平台类型
+     * 
      * @param platformArr 终端平台类型
      * @return List<String>
      */

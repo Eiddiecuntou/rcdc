@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -146,6 +147,9 @@ public class TerminalEntity {
     private CbbTerminalStartMode startMode;
 
     private Boolean supportTcStart = Boolean.FALSE;
+
+    @Enumerated(EnumType.STRING)
+    private CbbTerminalPlatformEnums authMode;
 
     /**
      * 获取网络信息对象数组
@@ -580,5 +584,13 @@ public class TerminalEntity {
 
     public void setSupportTcStart(Boolean supportTcStart) {
         this.supportTcStart = supportTcStart;
+    }
+
+    public CbbTerminalPlatformEnums getAuthMode() {
+        return authMode;
+    }
+
+    public void setAuthMode(CbbTerminalPlatformEnums authMode) {
+        this.authMode = authMode;
     }
 }

@@ -55,9 +55,25 @@ public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
     @Autowired
     private TerminalFtpAccountInfoAPI terminalFtpAccountInfoAPI;
 
+    /**
+     * linux系统名称
+     */
+    private static final String LINUX_OS_NAME = "Linux";
+
+    /**
+     * 系统属性-os.name
+     */
+    private static final String SYSTEM_PROPERTY_OS_NAME = "os.name";
+
     @Override
     public void safeInit() {
         LOGGER.info("start to update terminal ftp passwd");
+
+        if (!System.getProperty(SYSTEM_PROPERTY_OS_NAME).equals(LINUX_OS_NAME)) {
+            LOGGER.info("本地调试启动服务，无需设置ftp密码");
+            return;
+        }
+
         String passwd = getRandomFtpPasswd();
         String ftpConfigInfo = globalParameterAPI.findParameter(TERMINAL_FTP_CONFIG_KEY);
         FtpConfigInfo config = JSONObject.parseObject(ftpConfigInfo, FtpConfigInfo.class);
@@ -66,7 +82,7 @@ public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
 
         try {
             String command = String.format("echo %s|passwd --stdin %s", passwd, userName);
-            String[] commandArr = new String[]{"sh", "-c", command};
+            String[] commandArr = new String[] {"sh", "-c", command};
             updatePasswd(commandArr);
             globalParameterAPI.updateParameter(TERMINAL_FTP_CONFIG_KEY, JSON.toJSONString(config));
         } catch (Exception e) {
@@ -113,7 +129,7 @@ public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
         }
     }
 
-    //生成随机密码，截取UUID的前8位
+    // 生成随机密码，截取UUID的前8位
     private String getRandomFtpPasswd() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().substring(0, FTP_PASSWORD_LENGTH);

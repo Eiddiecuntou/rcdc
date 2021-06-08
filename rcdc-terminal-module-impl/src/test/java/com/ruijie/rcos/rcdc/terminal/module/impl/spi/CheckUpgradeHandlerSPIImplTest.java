@@ -372,6 +372,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         terminalEntity.setTerminalOsType("Linux");
         terminalEntity.setProductId("80020101");
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
+        terminalEntity.setAuthMode(CbbTerminalPlatformEnums.IDV);
         versionResultDTO.setResult(0);
 
         CbbTerminalBizConfigDTO config = new CbbTerminalBizConfigDTO();
@@ -428,6 +429,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         TerminalEntity terminalEntity = new TerminalEntity();
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
         terminalEntity.setTerminalOsType("Linux");
+        terminalEntity.setAuthMode(CbbTerminalPlatformEnums.IDV);
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
         versionResultDTO.setResult(2);
 
@@ -487,6 +489,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         TerminalEntity terminalEntity = new TerminalEntity();
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
         terminalEntity.setTerminalOsType("Linux");
+        terminalEntity.setAuthMode(CbbTerminalPlatformEnums.IDV);
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
         versionResultDTO.setResult(2);
 
@@ -544,6 +547,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         TerminalEntity terminalEntity = new TerminalEntity();
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
         terminalEntity.setTerminalOsType("Linux");
+        terminalEntity.setAuthMode(CbbTerminalPlatformEnums.IDV);
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
         versionResultDTO.setResult(0);
 
@@ -602,6 +606,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         TerminalEntity terminalEntity = new TerminalEntity();
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.IDV);
         terminalEntity.setTerminalOsType("Linux");
+        terminalEntity.setAuthMode(CbbTerminalPlatformEnums.IDV);
         TerminalVersionResultDTO versionResultDTO = new TerminalVersionResultDTO();
         versionResultDTO.setResult(2);
 

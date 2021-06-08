@@ -188,6 +188,9 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
         response.setIdv(itemIDV);
         TerminalStatisticsItem itemAPP = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.APP, groupIdArr);
         response.setApp(itemAPP);
+
+        TerminalStatisticsItem itemVOI = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.VOI, groupIdArr);
+        response.setVoi(itemVOI);
         //统计所有终端在线情况
         return response;
     }

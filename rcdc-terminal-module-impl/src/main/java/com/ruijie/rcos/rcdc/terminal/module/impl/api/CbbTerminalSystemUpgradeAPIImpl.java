@@ -350,6 +350,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         dto.setMac(terminalEntity.getMacAddr());
         dto.setNetworkMode(terminalEntity.getNetworkAccessMode());
         dto.setNetworkInfoArr(terminalEntity.getNetworkInfoArr());
+        dto.setPlatform(terminalEntity.getPlatform());
     }
 
     @Override

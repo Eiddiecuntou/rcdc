@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,12 +17,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
-import mockit.Deencapsulation;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Tested;
-import mockit.Verifications;
 
 /**
  * Description:TerminalLicenseServiceImpl测试类
@@ -72,13 +67,39 @@ public class TerminalLicenseServiceImplTest {
     }
 
     /**
+     * 测试updateTerminalLicenseNum，异常情况：减少证书授权证书的数量
+     */
+    @Test
+    public void testUpdateTerminalLicenseNumExcepiton() {
+        try {
+            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateTerminalLicenseNum(-2), "licenseNum must gt -1");
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        new Expectations() {
+            {
+                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
+                result = "5";
+            }
+        };
+        try {
+            licenceLicenseService.updateTerminalLicenseNum(2);
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        }
+        Assert.assertEquals(licenceLicenseService.getCacheLicenseNum() ,new Integer(2));
+
+    }
+
+    /**
      * 测试getUsedNum方法
      */
     @Test
     public void testGetUsedNum() {
         new Expectations() {
             {
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 2;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "2";
@@ -90,7 +111,7 @@ public class TerminalLicenseServiceImplTest {
         licenceLicenseService.getUsedNum();
         new Verifications() {
             {
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 times = 1;
             }
         };
@@ -120,33 +141,6 @@ public class TerminalLicenseServiceImplTest {
         }
     }
 
-    /**
-     * 测试updateTerminalLicenseNum，异常情况：减少证书授权证书的数量
-     */
-    @Test
-    public void testUpdateTerminalLicenseNumExcepiton() {
-        try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> licenceLicenseService.updateTerminalLicenseNum(-2), "licenseNum must gt -1");
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        new Expectations() {
-            {
-                globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
-                result = "5";
-            }
-        };
-        try {
-            licenceLicenseService.updateTerminalLicenseNum(2);
-        } catch (BusinessException e) {
-            Assert.assertTrue(e.getKey().equals("rcdc_terminal_not_allow_reduce_terminal_license_num"));
-            return;
-
-
-        }
-        Assert.fail();
-    }
 
     /**
      * 测试updateTerminalLicenseNum
@@ -234,7 +228,7 @@ public class TerminalLicenseServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 4;
             }
         };
@@ -254,7 +248,7 @@ public class TerminalLicenseServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "5";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -296,7 +290,7 @@ public class TerminalLicenseServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "10";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -314,7 +308,7 @@ public class TerminalLicenseServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "10";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 30;
             }
         };
@@ -331,9 +325,9 @@ public class TerminalLicenseServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 4;
             }
         };
@@ -353,7 +347,7 @@ public class TerminalLicenseServiceImplTest {
                 result = false;
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };
@@ -387,7 +381,7 @@ public class TerminalLicenseServiceImplTest {
             {
                 globalParameterAPI.findParameter(Constants.TEMINAL_LICENSE_NUM);
                 result = "-1";
-                basicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                basicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
                 result = 5;
             }
         };

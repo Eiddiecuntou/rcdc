@@ -13,8 +13,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
-import java.util.Objects;
-
 /**
  * Description: terminalLicenseVOIServiceImpl voi授权
  * Copyright: Copyright (c) 2020
@@ -68,7 +66,7 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
             final Integer terminalLicenseNum = this.getTerminalLicenseNum();
             final boolean isTempLicense = isTempLicense(terminalLicenseNum);
             if (usedNum == null || isTempLicense) {
-                long count = terminalBasicInfoDAO.countByPlatformAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                long count = terminalBasicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
                 LOGGER.info("从数据库同步voi授权已用数为：{},voi授权数为：{}", usedNum, terminalLicenseNum);
                 if (isTempLicense) {
                     usedNum = (int) count;
@@ -110,8 +108,8 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
             Integer voiUsedNum = this.getUsedNum();
             Integer voiTerminalLicenseNum = this.getTerminalLicenseNum();
             if (voiUpgradeUsedNum >= voiUpgradeTerminalLicenseNum || voiUsedNum >= voiTerminalLicenseNum) {
-                LOGGER.error("idv 使用voi授权进行授权数量不足，已使用VOI升级授权数：{}，VOI升级可用授权数：{}，已使用VOI授权数，VOI可用授权数：{}",
-                        voiUpgradeUsedNum, voiUpgradeTerminalLicenseNum, voiUsedNum, voiTerminalLicenseNum);
+                LOGGER.error("idv 使用voi授权进行授权数量不足，已使用VOI升级授权数：{}，VOI升级可用授权数：{}，已使用VOI授权数，VOI可用授权数：{}", voiUpgradeUsedNum,
+                        voiUpgradeTerminalLicenseNum, voiUsedNum, voiTerminalLicenseNum);
                 return false;
             }
 
@@ -130,8 +128,9 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
             if (usedNum == null) {
                 getUsedNum();
             }
-
-            usedNum--;
+            if (usedNum > 0) {
+                usedNum--;
+            }
         }
     }
 

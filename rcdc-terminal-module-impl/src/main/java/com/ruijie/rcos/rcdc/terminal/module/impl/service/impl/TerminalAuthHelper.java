@@ -91,13 +91,13 @@ public class TerminalAuthHelper {
         }
 
         TerminalAuthResult finalResult = new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
-        if (basicInfo.getPlatform() == CbbTerminalPlatformEnums.IDV) {
+        if (basicInfo.getAuthMode() == CbbTerminalPlatformEnums.IDV) {
             LOGGER.info("平台类型为IDV，进行IDV授权");
             TerminalAuthResult authResult = processIdvTerminalLicense(basicInfo, isNewConnection);
             return authResult;
         }
 
-        if (basicInfo.getPlatform() == CbbTerminalPlatformEnums.VOI) {
+        if (basicInfo.getAuthMode() == CbbTerminalPlatformEnums.VOI) {
             LOGGER.info("平台类型为VOI，进行VOI授权");
             TerminalAuthResult authResult = processVoiTerminalLicense(basicInfo, isNewConnection);
             return authResult;
@@ -168,21 +168,20 @@ public class TerminalAuthHelper {
      * 处理终端授权扣除逻辑
      *
      * @param terminalId 终端id
-     * @param terminalPlatform 平台类型
+     * @param authMode 平台类型
      * @param authed 是否授权
      */
-    public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums terminalPlatform
-            , Boolean authed) {
+    public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums authMode, Boolean authed) {
         Assert.notNull(terminalId, "terminalId can not be null");
-        Assert.notNull(terminalPlatform, "terminalPlatform can not be null");
+        Assert.notNull(authMode, "authMode can not be null");
         Assert.notNull(authed, "authed can not be null");
 
-        if (terminalPlatform == CbbTerminalPlatformEnums.IDV && Objects.equals(authed, Boolean.TRUE)) {
+        if (authMode == CbbTerminalPlatformEnums.IDV && Objects.equals(authed, Boolean.TRUE)) {
             LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
             processDecreaseIdvTerminalLicense();
         }
-        if (terminalPlatform == CbbTerminalPlatformEnums.VOI && Objects.equals(authed, Boolean.TRUE)) {
-            LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1",  terminalId);
+        if (authMode == CbbTerminalPlatformEnums.VOI && Objects.equals(authed, Boolean.TRUE)) {
+            LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1", terminalId);
             processDecreaseVoiTerminalLicense();
         }
     }
