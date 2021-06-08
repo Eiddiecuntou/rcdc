@@ -176,7 +176,7 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
             LOGGER.info("success invoke [{}] pythonScript...", osType.name());
             globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_SUCCESS);
         } catch (BusinessException ex) {
-          LOGGER.error("bt share init error", ex);
+            LOGGER.error("bt share init error", ex);
             // 脚本执行失败后进行重试
             LOGGER.info("invoke [{}] pythonScript failed, retry", osType.name());
             globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_FAIL);
