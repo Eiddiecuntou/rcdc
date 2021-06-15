@@ -4,6 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.CollectLogCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -713,6 +714,85 @@ public class CbbTerminalOperatorAPIImplTest {
                 times = 1;
             }
         };
+    }
+
+    /**
+     * testSetTerminalStartModeTerminalNotExist
+     */
+    @Test
+    public void testSetTerminalStartModeTerminalNotExist() {
+        String terminalId = "123";
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = null;
+            }
+        };
+
+        try {
+            terminalOperatorAPI.setTerminalStartMode("123", CbbTerminalStartMode.AUTO);
+            fail();
+        } catch (BusinessException e) {
+            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_NOT_FOUND_TERMINAL, e.getKey());
+        }
+    }
+
+    /**
+     * testSetTerminalStartModeTerminalNotExist
+     */
+    @Test
+    public void testSetTerminalStartModeTerminalSaveException() {
+        String terminalId = "123";
+        TerminalEntity terminalEntity =  new TerminalEntity();
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = terminalEntity;
+
+                basicInfoDAO.save(terminalEntity);
+                result = new Exception();
+            }
+        };
+
+        try {
+            terminalOperatorAPI.setTerminalStartMode("123", CbbTerminalStartMode.AUTO);
+            fail();
+        } catch (BusinessException e) {
+            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SET_START_MODE_FAIL, e.getKey());
+        }
+    }
+
+    /**
+     * testSetTerminalStartMode
+     */
+    @Test
+    public void testSetTerminalStartMode() throws BusinessException {
+        String terminalId = "123";
+        TerminalEntity terminalEntity =  new TerminalEntity();
+
+        new Expectations() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                result = terminalEntity;
+
+                basicInfoDAO.save(terminalEntity);
+            }
+        };
+
+
+        terminalOperatorAPI.setTerminalStartMode("123", CbbTerminalStartMode.AUTO);
+
+        new Verifications() {
+            {
+                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                times = 1;
+
+                basicInfoDAO.save(terminalEntity);
+                times = 1;
+            }
+        };
+
     }
 
 }
