@@ -15,6 +15,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.*;
 import org.junit.Assert;
@@ -23,6 +24,7 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
 
@@ -188,6 +190,174 @@ public class TerminalOtaInitServiceImplTest {
                 times = 1;
                 handlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 times = 0;
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId()
+                        , (List<CbbSystemUpgradeTaskStateEnums>) any);
+                times = 1;
+                btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
+                times = 1;
+            }
+        };
+    }
+
+    /**
+     * 初始化方法，出厂包不存在,不需要开启分享
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testSafeInitPackageNotDirectoryAndNotNeedInitBt() throws BusinessException {
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return false;
+            }
+
+            @Mock
+            public boolean isFile() {
+                return false;
+            }
+        };
+
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+        upgradePackage.setFilePath("123");
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+        upgradingTaskList.add(upgradeEntity);
+        new Expectations() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                result = upgradePackage;
+            }
+        };
+
+        initService.initAndroidOta();
+
+        new Verifications() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                times = 1;
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                times = 0;
+
+            }
+        };
+    }
+
+    /**
+     * 初始化方法，出厂包不存在,不需要开启分享
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testSafeInitPackageNotDirectoryAndNotNeedInitBt2() throws BusinessException {
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return false;
+            }
+
+            @Mock
+            public boolean isFile() {
+                return true;
+            }
+        };
+
+        new MockUp<FileUtils>() {
+
+            @Mock
+            public String readFileToString(File file, Charset charset) {
+                return "aaabb";
+            }
+        };
+
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+        upgradePackage.setFilePath("123");
+        upgradePackage.setSeedPath("aaa");
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+        upgradingTaskList.add(upgradeEntity);
+        new Expectations() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                result = upgradePackage;
+            }
+        };
+
+        initService.initAndroidOta();
+
+        new Verifications() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                times = 1;
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                times = 0;
+
+            }
+        };
+    }
+
+    /**
+     * 初始化方法，出厂包不存在,需要开启分享
+     *
+     * @throws BusinessException 异常
+     */
+    @Test
+    public void testSafeInitPackageNotDirectoryAndNotNeedInitBt3() throws BusinessException {
+
+        new MockUp<File>() {
+            @Mock
+            public boolean isDirectory() {
+                return false;
+            }
+
+            @Mock
+            public boolean isFile() {
+                return true;
+            }
+        };
+
+        new MockUp<FileUtils>() {
+
+            @Mock
+            public String readFileToString(File file, Charset charset) {
+                return "";
+            }
+        };
+
+        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+        upgradePackage.setId(UUID.randomUUID());
+        upgradePackage.setFilePath("123");
+        upgradePackage.setSeedPath("aaa");
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = Lists.newArrayList();
+        TerminalSystemUpgradeEntity upgradeEntity = new TerminalSystemUpgradeEntity();
+        upgradingTaskList.add(upgradeEntity);
+        new Expectations() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                result = upgradePackage;
+
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId()
+                        , (List<CbbSystemUpgradeTaskStateEnums>) any);
+                result = upgradingTaskList;
+
+                btClientService.startBtShare(upgradePackage.getFilePath(), upgradePackage.getSeedPath());
+                result = new Exception("123");
+            }
+        };
+
+        initService.initAndroidOta();
+
+        new Verifications() {
+            {
+                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
+                times = 1;
+                handlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                times = 0;
+
                 terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId()
                         , (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
