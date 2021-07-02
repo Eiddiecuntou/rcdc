@@ -801,7 +801,6 @@ public class CbbTerminalOperatorAPIImplTest {
      */
     @Test
     public void testgetTerminalList() throws BusinessException {
-        terminalOperatorAPI.getTerminalList();
         List<String> terminalList = Arrays.asList();
         new Expectations() {
             {
