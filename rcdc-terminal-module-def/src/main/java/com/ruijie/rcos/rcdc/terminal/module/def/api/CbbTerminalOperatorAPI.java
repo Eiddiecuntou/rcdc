@@ -295,5 +295,5 @@ public interface CbbTerminalOperatorAPI {
      *
      * @return 在线终端集合
      */
-    List<String> getTerminalList();
+    List<String> getOnlineTerminalIdList();
 }

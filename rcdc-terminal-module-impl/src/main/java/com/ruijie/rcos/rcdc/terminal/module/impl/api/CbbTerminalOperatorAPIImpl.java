@@ -244,7 +244,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     }
 
     @Override
-    public List<String> getTerminalList() {
+    public List<String> getOnlineTerminalIdList() {
         return sessionManager.getOnlineTerminalId();
     }
 }
