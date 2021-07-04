@@ -242,4 +242,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         Session session = sessionManager.getSessionByAlias(terminalId);
         session.close();
     }
+
+    @Override
+    public List<String> getOnlineTerminalIdList() {
+        return sessionManager.getOnlineTerminalId();
+    }
 }
