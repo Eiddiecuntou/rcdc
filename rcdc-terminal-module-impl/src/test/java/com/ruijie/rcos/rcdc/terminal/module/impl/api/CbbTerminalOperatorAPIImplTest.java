@@ -809,6 +809,6 @@ public class CbbTerminalOperatorAPIImplTest {
             }
         };
 
-        Assert.assertEquals(terminalList, terminalOperatorAPI.getTerminalList());
+        Assert.assertEquals(terminalList, terminalOperatorAPI.getOnlineTerminalIdList());
     }
 }
