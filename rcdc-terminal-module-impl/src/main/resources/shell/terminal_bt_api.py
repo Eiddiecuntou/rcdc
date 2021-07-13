@@ -93,6 +93,9 @@ def bt_server_init(call_type):
 
 
 def bt_make_seed_block(file_path, seed_save_path, ip):
+    if not os.path.exists(file_path):
+        raise Exception("make file bt seed failed, file not exist, file path : " + file_path)
+
     req = BtSeedMakeRequest(ip, file_path, seed_save_path)
     resp = (c_char * 1024)()
     api.abslayer_btMakeSeed_block(build_call_c_pointer_param(req), resp, 1024)

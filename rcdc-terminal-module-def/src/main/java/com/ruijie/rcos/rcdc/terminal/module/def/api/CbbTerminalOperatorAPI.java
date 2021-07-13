@@ -5,6 +5,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
+
 /**
  * Description: 终端操作接口
  * Copyright: Copyright (c) 2018
@@ -287,4 +289,11 @@ public interface CbbTerminalOperatorAPI {
      * @param terminalId 终端id
      */
     void closeTerminalConnection(String terminalId);
+
+    /**
+     * 获取在线终端集合
+     *
+     * @return 在线终端集合
+     */
+    List<String> getOnlineTerminalIdList();
 }

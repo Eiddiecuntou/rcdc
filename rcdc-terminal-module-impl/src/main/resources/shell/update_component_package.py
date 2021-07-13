@@ -334,6 +334,9 @@ def make_bt_seeds(origin_path, new_update_list, component_list):
             origin_path, RAINOS_UPDATE_DIFF_COMPONENT_RELATIVE_PATH, FILE_SPERATOR, diff_file_name)
         LOGGER.info(full_path)
         LOGGER.info(diff_path)
+        if not os.path.exists(full_path):
+            raise Exception("make file bt seed failed, file not exist, file path : " + full_path)
+
         complete_torrent_url = bt_make_seed_block(full_path, full_seed_save_path, ip)
         component['completeTorrentUrl'] = get_ftp_relative_path(complete_torrent_url)
         component['completeTorrentMd5'] = md5sum(complete_torrent_url)
