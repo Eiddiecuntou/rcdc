@@ -22,8 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -795,4 +794,21 @@ public class CbbTerminalOperatorAPIImplTest {
 
     }
 
+    /**
+     * 测试getTerminalList
+     *
+     * @throws BusinessException 业务异常
+     */
+    @Test
+    public void testgetTerminalList() throws BusinessException {
+        List<String> terminalList = Arrays.asList();
+        new Expectations() {
+            {
+                sessionManager.getOnlineTerminalId();
+                result = terminalList;
+            }
+        };
+
+        Assert.assertEquals(terminalList, terminalOperatorAPI.getOnlineTerminalIdList());
+    }
 }
