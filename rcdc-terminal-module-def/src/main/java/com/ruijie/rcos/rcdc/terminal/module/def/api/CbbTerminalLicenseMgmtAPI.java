@@ -1,8 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseNumDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.springframework.lang.Nullable;
+
+import java.util.List;
 
 /**
  * 终端授权管理
@@ -50,12 +54,12 @@ public interface CbbTerminalLicenseMgmtAPI {
      * @apiSuccess (响应字段说明) {Integer} response.usedNum 已用授权数
      */
     /**
-     * 获取终端授权数
+     * 获取终端授权信息
      *
      * @param licenseType 授权类型
      * @return IDV终端授权信息
      */
-    CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType);
+    List<CbbTerminalLicenseInfoDTO> getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, @Nullable List<String> licenseCodeList);
 
     /**
      * @api {GET} CbbTerminalLicenseMgmtAPI.cancelTerminalAuth 取消终端授权

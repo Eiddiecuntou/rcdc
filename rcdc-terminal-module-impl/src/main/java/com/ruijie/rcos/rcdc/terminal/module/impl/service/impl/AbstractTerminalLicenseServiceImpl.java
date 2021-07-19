@@ -1,13 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import com.google.common.collect.Maps;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
@@ -28,6 +32,8 @@ import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLicenseService {
 
     private static Logger LOGGER = LoggerFactory.getLogger(AbstractTerminalLicenseServiceImpl.class);
+
+    private static final Map<CbbTerminalLicenseTypeEnums, List<CbbTerminalLicenseInfoDTO>> LICENSE_MAP = Maps.newConcurrentMap();
 
     @Autowired
     protected GlobalParameterAPI globalParameterAPI;
