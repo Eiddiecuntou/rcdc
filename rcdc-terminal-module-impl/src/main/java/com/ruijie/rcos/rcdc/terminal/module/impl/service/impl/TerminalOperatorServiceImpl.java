@@ -83,7 +83,7 @@ public class TerminalOperatorServiceImpl implements TerminalOperatorService {
      * 终端通知处理线程池,分配1个线程数
      */
     private static final ThreadExecutor NOTICE_HANDLER_THREAD_POOL =
-            ThreadExecutors.newBuilder(TerminalOperatorServiceImpl.class.getName()).maxThreadNum(1).queueSize(1).build();
+            ThreadExecutors.newBuilder(TerminalOperatorServiceImpl.class.getName()).maxThreadNum(1).queueSize(20).build();
 
     @Override
     public void shutdown(String terminalId) throws BusinessException {

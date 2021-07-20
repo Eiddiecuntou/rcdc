@@ -37,6 +37,7 @@ import org.springframework.util.StringUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -173,15 +174,24 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             return;
         }
 
-        Lock lock = getLock(basicInfo.getTerminalId());
+        String lockKey = basicInfo.getProductId() + basicInfo.getPlatform();
+        Lock lock = getLock(lockKey);
         lock.lock();
 
         try {
             List<TerminalModelDriverEntity> modelEntityList =
                     terminalModelDriverDAO.findByProductIdAndPlatform(basicInfo.getProductId(), basicInfo.getPlatform());
+
             if (!CollectionUtils.isEmpty(modelEntityList)) {
-                // 已存在，不需处理
-                return;
+                boolean isDriverModeExist = modelEntityList.stream()
+                        .filter(modelDriver -> Objects.equals(modelDriver.getProductId(), basicInfo.getProductId())
+                                && Objects.equals(modelDriver.getProductModel(), basicInfo.getProductType())
+                                && Objects.equals(modelDriver.getCpuType(), basicInfo.getCpuType()))
+                        .findFirst().isPresent();
+                if (isDriverModeExist) {
+                    // 已存在类型，无需处理
+                    return;
+                }
             }
 
             TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
@@ -197,13 +207,13 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     }
 
-    private synchronized Lock getLock(String terminalId) {
-        if (lockMap.containsKey(terminalId)) {
-            return lockMap.get(terminalId);
+    private synchronized Lock getLock(String lockKey) {
+        if (lockMap.containsKey(lockKey)) {
+            return lockMap.get(lockKey);
         }
         Lock lock = new ReentrantLock();
-        lockMap.put(terminalId, lock);
-        return lockMap.get(terminalId);
+        lockMap.put(lockKey, lock);
+        return lockMap.get(lockKey);
     }
 
     @Override
