@@ -37,6 +37,7 @@ import org.springframework.util.StringUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -183,9 +184,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
             if (!CollectionUtils.isEmpty(modelEntityList)) {
                 boolean isDriverModeExist = modelEntityList.stream()
-                        .filter(modelDriver -> modelDriver.getProductId().equals(basicInfo.getProductId())
-                                && modelDriver.getProductModel().equals(basicInfo.getProductType())
-                                && modelDriver.getCpuType().equals(basicInfo.getCpuType()))
+                        .filter(modelDriver -> Objects.equals(modelDriver.getProductId(), basicInfo.getProductId())
+                                && Objects.equals(modelDriver.getProductModel(), basicInfo.getProductType())
+                                && Objects.equals(modelDriver.getCpuType(), basicInfo.getCpuType()))
                         .findFirst().isPresent();
                 if (isDriverModeExist) {
                     // 已存在类型，无需处理

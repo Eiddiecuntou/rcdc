@@ -527,9 +527,14 @@ public class TerminalBasicInfoServiceImplTest {
         TerminalEntity terminalEntity = buildTerminalEntity();
 
         TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
+        modelDriverEntity.setProductId("aaaa");
+        modelDriverEntity.setProductModel("sss");
+        modelDriverEntity.setCpuType("sss");
 
         CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
         basicInfo.setProductId("aaaa");
+        basicInfo.setProductType("sss");
+        basicInfo.setCpuType("sss");
 
         new Expectations() {
             {
