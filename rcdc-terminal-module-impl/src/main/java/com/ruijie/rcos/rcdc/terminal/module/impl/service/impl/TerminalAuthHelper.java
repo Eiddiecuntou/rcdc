@@ -65,7 +65,7 @@ public class TerminalAuthHelper {
      * @param basicInfo 终端基本信息
      * @return TerminalAuthResult 授权结果
      */
-    public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) throws BusinessException {
+    public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
         Assert.notNull(basicInfo, "basicInfo can not be null");
 
         boolean isInWhiteList = whiteListHandlerSPI.checkWhiteList(basicInfo);
@@ -124,7 +124,7 @@ public class TerminalAuthHelper {
     private TerminalAuthResult processIdvTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection) {
         String terminalId = basicInfo.getTerminalId();
 
-        int licenseNum = terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
+        int licenseNum = terminalLicenseIDVServiceImpl.getTerminalLicenseNum(null);
         if (licenseNum == NO_AUTH_LIMIT) {
             LOGGER.info("当前不限制IDV终端授权");
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
@@ -156,7 +156,7 @@ public class TerminalAuthHelper {
     private TerminalAuthResult processVoiTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection) {
         String terminalId = basicInfo.getTerminalId();
 
-        int licenseNum = terminalLicenseVoiServiceImpl.getTerminalLicenseNum();
+        int licenseNum = terminalLicenseVoiServiceImpl.getTerminalLicenseNum(null);
         if (licenseNum == NO_AUTH_LIMIT) {
             LOGGER.info("当前不限制VOI终端授权");
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);

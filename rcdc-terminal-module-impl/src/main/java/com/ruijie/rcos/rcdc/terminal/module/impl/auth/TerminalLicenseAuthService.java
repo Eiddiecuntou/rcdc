@@ -44,7 +44,7 @@ public class TerminalLicenseAuthService {
      * @param basicInfo 终端基本信息
      * @return 授权结果
      */
-    public TerminalAuthResult auth(Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) throws BusinessException {
+    public TerminalAuthResult auth(Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) {
         Assert.notNull(isNewConnection, "isNewConnection can not be null");
         Assert.notNull(basicInfo, "basicInfo can not be null");
 
@@ -52,7 +52,7 @@ public class TerminalLicenseAuthService {
         List<TerminalLicenseStrategyAuthConfigDTO> allocateList = strategyConfig.getAllocateList();
         if (CollectionUtils.isEmpty(allocateList)) {
             LOGGER.error("授权分配策略为空，无法授权，请检查初始化过程");
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_LICENSE_STRATE_ERROR);
+            return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
         }
 
         boolean isAuthSuccess = false;
