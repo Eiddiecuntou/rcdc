@@ -85,42 +85,42 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     abstract protected Integer getCacheLicenseNum();
 
     @Override
-    public void updateTerminalLicenseNum(Integer licenseNum) throws BusinessException {
-        Assert.notNull(licenseNum, "licenseNum can not be null");
-        Assert.isTrue(licenseNum >= Constants.TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + Constants.TERMINAL_AUTH_DEFAULT_NUM);
+    public void updateTerminalLicenseNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList) throws BusinessException {
+        Assert.notNull(licenseInfoList, "licenseNum can not be null");
+
 
         synchronized (getLock()) {
-            Integer currentNum = getTerminalLicenseNum(null);
-            if (Objects.equals(currentNum, licenseNum)) {
-                LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
-                return;
-            }
-
-            // 授权证书为-1分为两种情况：RCDC首次初始化sql时将licenseNum初始化为-1。已导入临时证书，产品调用cbb接口，设licenseNum值为-1。
-            // 授权证书为-1时，不限制终端授权，可接入任意数量IDV终端。
-            if (currentNum == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
-                LOGGER.info("从终端授权数量为-1，导入正式授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
-                // fixMe 此处需考虑通知产品，断开shine连接
-                processImportOfficialLicense(licenseNum);
-                return;
-            }
-            if (licenseNum == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
-                LOGGER.info("从终端授权数量不是-1，导入临时授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
-                processImportTempLicense();
-                return;
-            }
-
-            LOGGER.info("当前授权数量和准备更新的授权数量不等，且都不等于-1。当前授权数量为{}, 准备更新授权数量为{}", currentNum, licenseNum);
-            if (currentNum > licenseNum) {
-                LOGGER.info("当前授权数量为{}，准备更新授权数量为{}，当前授权数小于准备更新授权数，回收授权", currentNum, licenseNum);
-                // fixMe 此处需考虑通知产品，断开shine连接
-                processImportOfficialLicense(licenseNum);
-                return;
-            }
-
-            LOGGER.info("当前授权数量为{}, 准备更新授权数量为{}，当前授权数大于准备更新授权数，更新授权数量", currentNum, licenseNum);
-            globalParameterAPI.updateParameter(getLicenseConstansKey(), String.valueOf(licenseNum));
-            updateCacheLicenseNum(licenseNum);
+//            Integer currentNum = getTerminalLicenseNum(null);
+//            if (Objects.equals(currentNum, licenseNum)) {
+//                LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
+//                return;
+//            }
+//
+//            // 授权证书为-1分为两种情况：RCDC首次初始化sql时将licenseNum初始化为-1。已导入临时证书，产品调用cbb接口，设licenseNum值为-1。
+//            // 授权证书为-1时，不限制终端授权，可接入任意数量IDV终端。
+//            if (currentNum == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
+//                LOGGER.info("从终端授权数量为-1，导入正式授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+//                // fixMe 此处需考虑通知产品，断开shine连接
+//                processImportOfficialLicense(licenseNum);
+//                return;
+//            }
+//            if (licenseNum == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
+//                LOGGER.info("从终端授权数量不是-1，导入临时授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+//                processImportTempLicense();
+//                return;
+//            }
+//
+//            LOGGER.info("当前授权数量和准备更新的授权数量不等，且都不等于-1。当前授权数量为{}, 准备更新授权数量为{}", currentNum, licenseNum);
+//            if (currentNum > licenseNum) {
+//                LOGGER.info("当前授权数量为{}，准备更新授权数量为{}，当前授权数小于准备更新授权数，回收授权", currentNum, licenseNum);
+//                // fixMe 此处需考虑通知产品，断开shine连接
+//                processImportOfficialLicense(licenseNum);
+//                return;
+//            }
+//
+//            LOGGER.info("当前授权数量为{}, 准备更新授权数量为{}，当前授权数大于准备更新授权数，更新授权数量", currentNum, licenseNum);
+//            globalParameterAPI.updateParameter(getLicenseConstansKey(), String.valueOf(licenseNum));
+//            updateCacheLicenseNum(licenseNum);
         }
     }
 

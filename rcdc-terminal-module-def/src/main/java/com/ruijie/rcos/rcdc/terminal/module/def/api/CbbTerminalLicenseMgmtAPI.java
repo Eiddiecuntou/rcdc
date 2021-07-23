@@ -36,10 +36,10 @@ public interface CbbTerminalLicenseMgmtAPI {
      * 设置IDV终端授权数，限制IDV终端接入数量
      *
      * @param licenseType 授权类型
-     * @param licenseNum 授权数
+     * @param licenseInfoList 授权信息
      * @throws BusinessException 业务异常
      */
-    void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, Integer licenseNum) throws BusinessException;
+    void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, List<CbbTerminalLicenseInfoDTO> licenseInfoList) throws BusinessException;
 
     /**
      * @api {GET} CbbTerminalLicenseMgmtAPI.getIDVTerminalLicenseNum 获取IDV终端授权信息

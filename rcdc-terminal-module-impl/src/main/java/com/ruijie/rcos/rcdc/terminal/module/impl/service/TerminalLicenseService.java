@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import org.springframework.lang.Nullable;
@@ -72,10 +73,10 @@ public interface TerminalLicenseService {
     /**
      * 更新终端授权总数
      * 
-     * @param licenseNum 终端授权数量
+     * @param licenseInfoList 终端授权数量信息
      * @throws BusinessException 业务异常
      */
-    void updateTerminalLicenseNum(Integer licenseNum) throws BusinessException;
+    void updateTerminalLicenseNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList) throws BusinessException;
 
     /**
      * 授权1台终端；如果授权数量为-1，或者有授权剩余，则终端已使用授权数量+1

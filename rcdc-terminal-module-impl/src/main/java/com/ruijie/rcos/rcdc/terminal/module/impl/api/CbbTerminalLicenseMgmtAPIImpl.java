@@ -44,10 +44,10 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     private TerminalAuthHelper terminalAuthHelper;
 
     @Override
-    public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, Integer licenseNum) throws BusinessException {
+    public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, List<CbbTerminalLicenseInfoDTO> licenseInfoList) throws BusinessException {
         Assert.notNull(licenseType, "licenseType can not be null");
-        Assert.notNull(licenseNum, "licenseNum can not be null");
-        licenseFactoryProvider.getService(licenseType).updateTerminalLicenseNum(licenseNum);
+        Assert.notNull(licenseInfoList, "licenseInfoList can not be null");
+        licenseFactoryProvider.getService(licenseType).updateTerminalLicenseNum(licenseInfoList);
     }
 
     @Override
