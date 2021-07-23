@@ -63,7 +63,7 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
     public Integer getUsedNum() {
         synchronized (this.getLock()) {
             // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，代表临时授权不会维护已授权数目，所以需要从数据库同步数据
-            final Integer terminalLicenseNum = this.getTerminalLicenseNum();
+            final Integer terminalLicenseNum = this.getTerminalLicenseNum(null);
             final boolean isTempLicense = isTempLicense(terminalLicenseNum);
             if (usedNum == null || isTempLicense) {
                 long count = terminalBasicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
@@ -104,9 +104,9 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
         synchronized (getLock()) {
             LOGGER.info("idv 使用voi授权进行授权");
             Integer voiUpgradeUsedNum = terminalLicenseVOIUpgradeServiceImpl.getUsedNum();
-            Integer voiUpgradeTerminalLicenseNum = terminalLicenseVOIUpgradeServiceImpl.getTerminalLicenseNum();
+            Integer voiUpgradeTerminalLicenseNum = terminalLicenseVOIUpgradeServiceImpl.getTerminalLicenseNum(null);
             Integer voiUsedNum = this.getUsedNum();
-            Integer voiTerminalLicenseNum = this.getTerminalLicenseNum();
+            Integer voiTerminalLicenseNum = this.getTerminalLicenseNum(null);
             if (voiUpgradeUsedNum >= voiUpgradeTerminalLicenseNum || voiUsedNum >= voiTerminalLicenseNum) {
                 LOGGER.error("idv 使用voi授权进行授权数量不足，已使用VOI升级授权数：{}，VOI升级可用授权数：{}，已使用VOI授权数，VOI可用授权数：{}", voiUpgradeUsedNum,
                         voiUpgradeTerminalLicenseNum, voiUsedNum, voiTerminalLicenseNum);

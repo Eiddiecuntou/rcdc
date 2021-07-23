@@ -6,9 +6,12 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnu
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.apache.commons.lang3.ArrayUtils;
@@ -51,6 +54,9 @@ public class TerminalAuthHelper {
     @Autowired
     private CbbTerminalWhiteListHandlerSPI whiteListHandlerSPI;
 
+    @Autowired
+    private TerminalLicenseAuthService terminalLicenseAuthService;
+
     /**
      * 终端进行授权
      *
@@ -59,7 +65,7 @@ public class TerminalAuthHelper {
      * @param basicInfo 终端基本信息
      * @return TerminalAuthResult 授权结果
      */
-    public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
+    public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) throws BusinessException {
         Assert.notNull(basicInfo, "basicInfo can not be null");
 
         boolean isInWhiteList = whiteListHandlerSPI.checkWhiteList(basicInfo);
@@ -90,20 +96,22 @@ public class TerminalAuthHelper {
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
-        TerminalAuthResult finalResult = new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
-        if (basicInfo.getAuthMode() == CbbTerminalPlatformEnums.IDV) {
-            LOGGER.info("平台类型为IDV，进行IDV授权");
-            TerminalAuthResult authResult = processIdvTerminalLicense(basicInfo, isNewConnection);
-            return authResult;
-        }
+        return terminalLicenseAuthService.auth(isNewConnection, basicInfo);
 
-        if (basicInfo.getAuthMode() == CbbTerminalPlatformEnums.VOI) {
-            LOGGER.info("平台类型为VOI，进行VOI授权");
-            TerminalAuthResult authResult = processVoiTerminalLicense(basicInfo, isNewConnection);
-            return authResult;
-        }
-
-        return finalResult;
+//        TerminalAuthResult finalResult = new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
+//        if (basicInfo.getAuthMode() == CbbTerminalPlatformEnums.IDV) {
+//            LOGGER.info("平台类型为IDV，进行IDV授权");
+//            TerminalAuthResult authResult = processIdvTerminalLicense(basicInfo, isNewConnection);
+//            return authResult;
+//        }
+//
+//        if (basicInfo.getAuthMode() == CbbTerminalPlatformEnums.VOI) {
+//            LOGGER.info("平台类型为VOI，进行VOI授权");
+//            TerminalAuthResult authResult = processVoiTerminalLicense(basicInfo, isNewConnection);
+//            return authResult;
+//        }
+//
+//        return finalResult;
     }
 
     /**

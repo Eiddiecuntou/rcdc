@@ -43,6 +43,10 @@ public class CbbTerminalLicenseStrategyFactory {
         this.strategyConfig = strategyConfig;
     }
 
+    public TerminalLicenseStrategyConfigDTO getStrategyConfig() {
+        return strategyConfig;
+    }
+
     /**
      * 获取授权策略服务对象
      *

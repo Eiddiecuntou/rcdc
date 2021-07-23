@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -11,6 +13,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Description: terminalLicenseIDVServiceImpl idv授权
@@ -47,6 +51,7 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
 
     @Override
     protected Integer getCacheLicenseNum() {
+        List<CbbTerminalLicenseInfoDTO> licenseInfoList = LICENSE_MAP.get(getLicenseType());
         return licenseNum;
     }
 
@@ -59,7 +64,7 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
     public Integer getUsedNum() {
         synchronized (this.getLock()) {
             // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，代表临时授权不会维护已授权数目，所以需要从数据库同步数据
-            final Integer terminalLicenseNum = this.getTerminalLicenseNum();
+            final Integer terminalLicenseNum = this.getTerminalLicenseNum(null);
             final boolean isTempLicense = isTempLicense(terminalLicenseNum);
             if (usedNum == null || isTempLicense) {
                 long count = terminalBasicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);

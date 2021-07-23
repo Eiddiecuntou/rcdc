@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -19,6 +21,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Description: TerminalLicenseService实现类
@@ -33,7 +36,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
 
     private static Logger LOGGER = LoggerFactory.getLogger(AbstractTerminalLicenseServiceImpl.class);
 
-    private static final Map<CbbTerminalLicenseTypeEnums, List<CbbTerminalLicenseInfoDTO>> LICENSE_MAP = Maps.newConcurrentMap();
+    protected static final Map<CbbTerminalLicenseTypeEnums, List<CbbTerminalLicenseInfoDTO>> LICENSE_MAP = Maps.newConcurrentMap();
 
     @Autowired
     protected GlobalParameterAPI globalParameterAPI;
@@ -44,16 +47,39 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     protected final Object usedNumLock = new Object();
 
     @Override
-    public Integer getTerminalLicenseNum() {
-        // licenseNum如果为null，表示licenseNum还没有从数据库同步数据。
-        Integer licenseNum = getCacheLicenseNum();
-        if (licenseNum == null) {
-            String terminalLicenseNum = globalParameterAPI.findParameter(getLicenseConstansKey());
-            Assert.hasText(terminalLicenseNum, "terminalLicenseNum can not be empty");
-            licenseNum = Integer.valueOf(terminalLicenseNum);
-            LOGGER.info("从数据库同步[{}]licenseNum的值为:{}", getLicenseType(), licenseNum);
+    public Integer getTerminalLicenseNum(@Nullable List<String> licenseCodeList) {
+        List<CbbTerminalLicenseInfoDTO> licenseInfoList = LICENSE_MAP.get(getLicenseType());
+
+        if (CollectionUtils.isEmpty(licenseInfoList)) {
+            licenseInfoList = loadByDB();
         }
+
+        int licenseNum = 0;
+        for (CbbTerminalLicenseInfoDTO infoDTO : licenseInfoList) {
+            if (CollectionUtils.isEmpty(licenseCodeList)) {
+                licenseNum += infoDTO.getTotalNum();
+                continue;
+            }
+
+            for (String licenseCode : licenseCodeList) {
+                if (licenseCode.equals(infoDTO.getLicenseCode())) {
+                    licenseNum += infoDTO.getTotalNum();
+                }
+            }
+        }
+
         return licenseNum;
+    }
+
+    private List<CbbTerminalLicenseInfoDTO> loadByDB() {
+        String terminalLicenseNum = globalParameterAPI.findParameter(getLicenseConstansKey());
+        Assert.hasText(terminalLicenseNum, "terminalLicenseNum can not be empty");
+        // [{"licenseCode": 123}, {"licenseCode": 123}]
+        List<CbbTerminalLicenseInfoDTO> licenseInfoList = JSON.parseArray(terminalLicenseNum, CbbTerminalLicenseInfoDTO.class);
+        LOGGER.info("从数据库同步[{}]licenseNum的值为:{}", getLicenseType(), terminalLicenseNum);
+        LICENSE_MAP.put(getLicenseType(), licenseInfoList);
+
+        return licenseInfoList;
     }
 
     abstract protected Integer getCacheLicenseNum();
@@ -64,7 +90,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         Assert.isTrue(licenseNum >= Constants.TERMINAL_AUTH_DEFAULT_NUM, "licenseNum must gt " + Constants.TERMINAL_AUTH_DEFAULT_NUM);
 
         synchronized (getLock()) {
-            Integer currentNum = getTerminalLicenseNum();
+            Integer currentNum = getTerminalLicenseNum(null);
             if (Objects.equals(currentNum, licenseNum)) {
                 LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
                 return;
@@ -107,7 +133,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
                 LOGGER.info("终端[{}]已授权成功，无须再次授权", terminalId);
                 return true;
             }
-            Integer licenseNum = getTerminalLicenseNum();
+            Integer licenseNum = getTerminalLicenseNum(null);
             Integer usedNum = getUsedNum();
             if (!Objects.equals(licenseNum, Constants.TERMINAL_AUTH_DEFAULT_NUM) && usedNum >= licenseNum) {
                 LOGGER.info("{}类型终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", getLicenseType(), usedNum, licenseNum);

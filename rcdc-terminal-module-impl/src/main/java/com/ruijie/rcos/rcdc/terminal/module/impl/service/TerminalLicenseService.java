@@ -3,6 +3,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.springframework.lang.Nullable;
+
+import java.util.List;
 
 /**
  * Description: 终端授权service
@@ -19,7 +22,7 @@ public interface TerminalLicenseService {
      * 
      * @return 授权总数
      */
-    Integer getTerminalLicenseNum();
+    Integer getTerminalLicenseNum(@Nullable List<String> licenseCodeList);
 
     /**
      * 更新缓存值

@@ -1,11 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import com.alibaba.fastjson.JSON;
@@ -17,6 +19,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTermina
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Description: 终端授权管理apiImpl
@@ -47,9 +51,9 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     }
 
     @Override
-    public CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType) {
+    public CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, @Nullable List<String> licenseCodeList) {
         Assert.notNull(licenseType, "licenseType can not be null");
-        Integer licenseNum = licenseFactoryProvider.getService(licenseType).getTerminalLicenseNum();
+        Integer licenseNum = licenseFactoryProvider.getService(licenseType).getTerminalLicenseNum(licenseCodeList);
         Integer usedNum = licenseFactoryProvider.getService(licenseType).getUsedNum();
 
         CbbTerminalLicenseNumDTO licenseNumDTO = new CbbTerminalLicenseNumDTO();
