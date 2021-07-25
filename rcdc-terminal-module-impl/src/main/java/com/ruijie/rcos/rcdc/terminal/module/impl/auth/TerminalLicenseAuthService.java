@@ -82,7 +82,7 @@ public class TerminalLicenseAuthService {
     public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode) {
         Assert.notNull(authMode, "authMode can not be null");
         Assert.hasText(terminalId, "terminalId can not be blank");
-        
+
         TerminalLicenseStrategyConfigDTO strategyConfig = licenseStrategyFactory.getStrategyConfig();
         List<TerminalLicenseStrategyAuthConfigDTO> recycleList = strategyConfig.getRecycleList();
         if (CollectionUtils.isEmpty(recycleList)) {
