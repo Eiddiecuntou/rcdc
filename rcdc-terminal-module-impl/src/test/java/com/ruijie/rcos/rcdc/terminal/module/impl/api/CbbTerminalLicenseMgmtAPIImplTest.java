@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
@@ -43,65 +44,14 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     CbbTerminalLicenseFactoryProvider licenseFactoryProvider;
 
     @Injectable
+    TerminalAuthorizeDAO terminalAuthorizeDAO;
+
+    @Injectable
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Injectable
     private TerminalAuthHelper terminalAuthHelper;
 
-    /**
-     * 测试setIDVTerminalLicenseNum
-     * 
-     * @throws Exception ex
-     */
-    @Test
-    public void testSetIDVTerminalLicenseNumDTOArgsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(
-                () -> cbbTerminalLicenseMgmtAPI.setTerminalLicenseNum(CbbTerminalLicenseTypeEnums.IDV, null), "licenseNum can not be null");
-        Assert.assertTrue(true);
-    }
-
-    /**
-     * 测试setIDVTerminalLicenseNum
-     * 
-     * @throws BusinessException ex
-     */
-    @Test
-    public void testSetIDVTerminalLicenseNumDTO() throws BusinessException {
-        new Expectations() {
-            {
-                TerminalLicenseService.updateTerminalLicenseNum(1);
-            }
-        };
-        try {
-            cbbTerminalLicenseMgmtAPI.setTerminalLicenseNum(CbbTerminalLicenseTypeEnums.IDV, 1);
-        } catch (Exception e) {
-            Assert.fail();
-        }
-        new Verifications() {
-            {
-                TerminalLicenseService.updateTerminalLicenseNum(1);
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     * 测试getIDVTerminalLicenseNum方法
-     */
-    @Test
-    public void testGetIDVTerminalLicenseNum() {
-        new Expectations() {
-            {
-                TerminalLicenseService.getTerminalLicenseNum();
-                result = 1;
-                TerminalLicenseService.getUsedNum();
-                result = 2;
-            }
-        };
-        CbbTerminalLicenseNumDTO licenseNumDTO = cbbTerminalLicenseMgmtAPI.getTerminalLicenseNum(CbbTerminalLicenseTypeEnums.IDV);
-        Assert.assertEquals(Integer.valueOf(1), licenseNumDTO.getLicenseNum());
-        Assert.assertEquals(Integer.valueOf(2), licenseNumDTO.getUsedNum());
-    }
 
     @Test
     public void testCancelTerminalAuth() throws BusinessException {
