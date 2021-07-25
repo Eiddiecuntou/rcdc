@@ -14,7 +14,7 @@ public class TerminalLicenseStrategyInitConfigDTO {
 
     private Integer trialDuration;
 
-    private Integer LicenseNum;
+    private Integer licenseNum;
 
     private String licenseCode;
 
@@ -35,11 +35,11 @@ public class TerminalLicenseStrategyInitConfigDTO {
     }
 
     public Integer getLicenseNum() {
-        return LicenseNum;
+        return licenseNum;
     }
 
     public void setLicenseNum(Integer licenseNum) {
-        LicenseNum = licenseNum;
+        this.licenseNum = licenseNum;
     }
 
     public String getLicenseCode() {

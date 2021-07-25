@@ -57,6 +57,7 @@ public interface CbbTerminalLicenseMgmtAPI {
      * 获取终端授权信息
      *
      * @param licenseType 授权类型
+     * @param licenseCodeList 证书码列表
      * @return IDV终端授权信息
      */
     CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, @Nullable List<String> licenseCodeList);

@@ -73,9 +73,10 @@ public class TerminalLicenseAuthService {
     }
 
     /**
-     *  回收授权
+     * 回收授权
+     *
      * @param terminalId 终端id
-     * @param authMode 授权模式
+     * @param authMode   授权模式
      * @return 是否回收成功
      */
     public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode) {
@@ -100,7 +101,8 @@ public class TerminalLicenseAuthService {
         return isSuccess;
     }
 
-    private boolean doRecycle(List<TerminalLicenseStrategyAuthSupportConfigDTO> supportLicenseTypeList, String terminalId, CbbTerminalPlatformEnums authMode) {
+    private boolean doRecycle(List<TerminalLicenseStrategyAuthSupportConfigDTO> supportLicenseTypeList,
+                              String terminalId, CbbTerminalPlatformEnums authMode) {
         for (TerminalLicenseStrategyAuthSupportConfigDTO supportType : supportLicenseTypeList) {
             StrategyService service = licenseStrategyFactory.getService(supportType.getStrategyType());
             boolean isSuccess = service.recycle(terminalId, authMode, supportType.getLicenseTypeList());
@@ -113,7 +115,8 @@ public class TerminalLicenseAuthService {
         return false;
     }
 
-    private boolean doAuth(List<TerminalLicenseStrategyAuthSupportConfigDTO> supportLicenseTypeList, Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) {
+    private boolean doAuth(List<TerminalLicenseStrategyAuthSupportConfigDTO> supportLicenseTypeList,
+                           Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) {
         for (TerminalLicenseStrategyAuthSupportConfigDTO supportType : supportLicenseTypeList) {
             StrategyService service = licenseStrategyFactory.getService(supportType.getStrategyType());
             boolean isSuccess = service.allocate(supportType.getLicenseTypeList(), isNewConnection, basicInfo);

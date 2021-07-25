@@ -20,7 +20,8 @@ public interface TerminalLicenseService {
 
     /**
      * 获取终端授权总数
-     * 
+     *
+     * @param licenseCodeList 证书码列表
      * @return 授权总数
      */
     Integer getTerminalLicenseNum(@Nullable List<String> licenseCodeList);
