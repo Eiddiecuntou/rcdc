@@ -1,8 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.auth.enums.CbbTerminalAuthModeEnums;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -26,12 +24,11 @@ public class TerminalAuthorizeEntity {
 
     private String terminalId;
 
-    @Enumerated(EnumType.STRING)
-    private CbbTerminalLicenseTypeEnums licenseType;
+    private String licenseType;
 
 
     @Enumerated(EnumType.STRING)
-    private CbbTerminalAuthModeEnums authMode;
+    private CbbTerminalPlatformEnums authMode;
 
     private Boolean authed;
 
@@ -54,19 +51,19 @@ public class TerminalAuthorizeEntity {
         this.terminalId = terminalId;
     }
 
-    public CbbTerminalLicenseTypeEnums getLicenseType() {
+    public String getLicenseType() {
         return licenseType;
     }
 
-    public void setLicenseType(CbbTerminalLicenseTypeEnums licenseType) {
+    public void setLicenseType(String licenseType) {
         this.licenseType = licenseType;
     }
 
-    public CbbTerminalAuthModeEnums getAuthMode() {
+    public CbbTerminalPlatformEnums getAuthMode() {
         return authMode;
     }
 
-    public void setAuthMode(CbbTerminalAuthModeEnums authMode) {
+    public void setAuthMode(CbbTerminalPlatformEnums authMode) {
         this.authMode = authMode;
     }
 

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -35,6 +36,9 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
     @Autowired
     private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVOIUpgradeServiceImpl;
 
+    @Autowired
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
+
     private Integer licenseNum;
 
     private Integer usedNum;
@@ -66,7 +70,7 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
             final Integer terminalLicenseNum = this.getTerminalLicenseNum(null);
             final boolean isTempLicense = isTempLicense(terminalLicenseNum);
             if (usedNum == null || isTempLicense) {
-                long count = terminalBasicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.VOI, Boolean.TRUE);
+                long count = terminalAuthorizeDAO.countByLicenseType(CbbTerminalLicenseTypeEnums.VOI.name());
                 LOGGER.info("从数据库同步voi授权已用数为：{},voi授权数为：{}", usedNum, terminalLicenseNum);
                 if (isTempLicense) {
                     usedNum = (int) count;
@@ -123,18 +127,6 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
     }
 
     @Override
-    public void decreaseCacheLicenseUsedNum() {
-        synchronized (usedNumLock) {
-            if (usedNum == null) {
-                getUsedNum();
-            }
-            if (usedNum > 0) {
-                usedNum--;
-            }
-        }
-    }
-
-    @Override
     public void updateCacheLicenseNum(Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not be null");
         this.licenseNum = licenseNum;
@@ -156,15 +148,5 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
         this.licenseNum = Constants.TERMINAL_AUTH_DEFAULT_NUM;
     }
 
-    @Override
-    public void increaseCacheLicenseUsedNum() {
-        synchronized (usedNumLock) {
-            if (usedNum == null) {
-                getUsedNum();
-            }
-
-            usedNum++;
-        }
-    }
 
 }

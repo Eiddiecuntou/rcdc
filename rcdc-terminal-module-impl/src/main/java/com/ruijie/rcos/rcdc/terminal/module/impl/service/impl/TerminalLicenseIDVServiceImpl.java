@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,9 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
     @Autowired
     private TerminalLicenseServiceTx terminalLicenseServiceTx;
 
+    @Autowired
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
+
     private Integer licenseNum;
 
     private Integer usedNum;
@@ -67,7 +72,7 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
             final Integer terminalLicenseNum = this.getTerminalLicenseNum(null);
             final boolean isTempLicense = isTempLicense(terminalLicenseNum);
             if (usedNum == null || isTempLicense) {
-                long count = terminalBasicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                long count = terminalAuthorizeDAO.countByLicenseType(CbbTerminalLicenseTypeEnums.IDV.name());
                 LOGGER.info("从数据库同步idv授权已用数为：{},idv授权数为：{}", usedNum, terminalLicenseNum);
                 if (isTempLicense) {
                     usedNum = (int) count;
@@ -78,18 +83,6 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
             }
         }
         return usedNum;
-    }
-
-    @Override
-    public void decreaseCacheLicenseUsedNum() {
-        synchronized (usedNumLock) {
-            if (usedNum == null) {
-                usedNum = getUsedNum();
-            }
-            if (usedNum > 0) {
-                usedNum--;
-            }
-        }
     }
 
     @Override
@@ -114,15 +107,5 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
         this.licenseNum = Constants.TERMINAL_AUTH_DEFAULT_NUM;
     }
 
-    @Override
-    public void increaseCacheLicenseUsedNum() {
-        synchronized (usedNumLock) {
-            if (usedNum == null) {
-                usedNum = getUsedNum();
-            }
-
-            usedNum++;
-        }
-    }
 
 }

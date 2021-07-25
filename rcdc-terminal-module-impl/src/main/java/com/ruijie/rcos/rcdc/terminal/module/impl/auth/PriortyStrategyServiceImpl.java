@@ -1,9 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -23,9 +28,15 @@ public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PriortyStrategyServiceImpl.class);
 
+    @Autowired
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
+
+
     @Override
-    public boolean allocate(List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
+    public boolean allocate(List<CbbTerminalLicenseTypeEnums> licenseTypeList, Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfoDTO) {
         Assert.notNull(licenseTypeList, "licenseTypeList can not be null");
+        Assert.notNull(isNewConnection, "isNewConnection can not be null");
+        Assert.notNull(basicInfoDTO, "basicInfoDTO can not be null");
 
         if (CollectionUtils.isEmpty(licenseTypeList)) {
             LOGGER.info("优先授权策略的授权证书类型为空，不符合预期，返回授权失败");
@@ -34,17 +45,32 @@ public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
 
         for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
             TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
-//            boolean isAuthed = licenseService.auth();
-//            if (isAuthed) {
-//                return true;
-//            }
+            boolean isAuthed = licenseService.auth(basicInfoDTO.getTerminalId(), isNewConnection, basicInfoDTO);
+            if (isAuthed) {
+                LOGGER.info("终端[{}]授权成功，授权方式[{}]", basicInfoDTO.getTerminalId(), licenseType);
+                saveTerminalAuthorize(licenseType, basicInfoDTO);
+                return true;
+            }
         }
+
         return false;
     }
 
+    private void saveTerminalAuthorize(CbbTerminalLicenseTypeEnums licenseType, CbbShineTerminalBasicInfo basicInfoDTO) {
+        TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
+        entity.setAuthed(true);
+        entity.setAuthMode(basicInfoDTO.getAuthMode());
+        entity.setLicenseType(licenseType.name());
+        entity.setTerminalId(basicInfoDTO.getTerminalId());
+
+        terminalAuthorizeDAO.save(entity);
+    }
+
     @Override
-    public boolean recycle(List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
+    public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
         Assert.notNull(licenseTypeList, "licenseTypeList can not be null");
+        Assert.notNull(authMode, "authMode can not be null");
+        Assert.hasText(terminalId, "terminalId can not be blank");
 
         if (CollectionUtils.isEmpty(licenseTypeList)) {
             LOGGER.info("优先授权回收策略的授权证书类型为空，不符合预期，返回授权回收失败");
@@ -53,12 +79,32 @@ public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
 
         for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
             TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
-//            boolean isAuthed = licenseService.recycle();
-//            if (isAuthed) {
-//                return true;
-//            }
+            int count = terminalAuthorizeDAO.countByLicenseTypeAndAuthMode(licenseType.name(), authMode);
+            if (count > 0) {
+                licenseService.decreaseCacheLicenseUsedNum();
+                LOGGER.info("终端授权回收成功，回收授权[{}]", licenseType);
+
+                // 如果当前终端的授权记录不是预期回收的，则将修改一个为删除终端的授权类型
+                TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+                if (!authorizeEntity.getLicenseType().equals(licenseType)) {
+                    LOGGER.info("终端的授权记录不是预期回收的， 修改一个授权类型[{}]为删除终端的授权类型[{}]", licenseType, authorizeEntity.getLicenseType());
+                    convertAuthLicenseType(authMode, licenseType, authorizeEntity.getLicenseType());
+                }
+
+                terminalAuthorizeDAO.deleteByTerminalId(terminalId);
+
+                return true;
+            }
         }
 
         return false;
+    }
+
+    private void convertAuthLicenseType(CbbTerminalPlatformEnums authMode, CbbTerminalLicenseTypeEnums licenseType, String updateLicenseType) {
+        List<TerminalAuthorizeEntity> authorizeEntityList = terminalAuthorizeDAO.findByLicenseTypeAndAuthMode(licenseType.name(), authMode);
+
+        TerminalAuthorizeEntity authorizeEntity = authorizeEntityList.get(0);
+        authorizeEntity.setLicenseType(updateLicenseType);
+        terminalAuthorizeDAO.save(authorizeEntity);
     }
 }

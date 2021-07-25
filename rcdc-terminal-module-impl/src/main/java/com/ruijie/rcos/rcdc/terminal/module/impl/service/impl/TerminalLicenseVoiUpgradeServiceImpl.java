@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -29,6 +30,9 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
 
     @Autowired
     private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
+
+    @Autowired
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
     private Integer licenseNum;
 
@@ -67,7 +71,7 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
                     return usedNum;
                 }
                 final Integer idvLicenseNum = terminalLicenseIDVServiceImpl.getTerminalLicenseNum(null);
-                long count = terminalBasicInfoDAO.countByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
+                long count = terminalAuthorizeDAO.countByLicenseType(CbbTerminalLicenseTypeEnums.VOI_PLUS_UPGRADED.name());
                 LOGGER.info("从数据库同步idv授权已用数为：{},idv授权数为：{}", count, idvLicenseNum);
 
                 boolean isIdvTempLicense = isTempLicense(idvLicenseNum);
@@ -81,18 +85,6 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
             }
         }
         return usedNum;
-    }
-
-    @Override
-    public void decreaseCacheLicenseUsedNum() {
-        synchronized (usedNumLock) {
-            if (usedNum == null) {
-                getUsedNum();
-            }
-            if (usedNum > 0) {
-                usedNum--;
-            }
-        }
     }
 
     @Override
@@ -115,16 +107,6 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
     public void processImportTempLicense() {
         // 将所有未授权IDV终端置为已授权，并更新终端授权数量
         this.licenseNum = Constants.TERMINAL_AUTH_DEFAULT_NUM;
-    }
-
-    @Override
-    public void increaseCacheLicenseUsedNum() {
-        synchronized (usedNumLock) {
-            if (usedNum == null) {
-                getUsedNum();
-            }
-            usedNum++;
-        }
     }
 
 }
