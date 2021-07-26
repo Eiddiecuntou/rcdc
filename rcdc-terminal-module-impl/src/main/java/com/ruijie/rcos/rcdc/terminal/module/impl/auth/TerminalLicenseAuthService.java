@@ -9,6 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrateg
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class TerminalLicenseAuthService {
      * @param basicInfo       终端基本信息
      * @return 授权结果
      */
-    public TerminalAuthResult auth(Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) {
+    public TerminalAuthResult auth(Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) throws BusinessException {
         Assert.notNull(isNewConnection, "isNewConnection can not be null");
         Assert.notNull(basicInfo, "basicInfo can not be null");
 

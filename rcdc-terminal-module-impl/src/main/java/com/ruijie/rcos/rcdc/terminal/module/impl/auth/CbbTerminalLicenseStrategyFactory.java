@@ -1,8 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.enums.CbbTerminalLicenseStrategyEnums;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -85,7 +87,7 @@ public class CbbTerminalLicenseStrategyFactory {
         }
     }
 
-    public TerminalLicenseStrategyConfigDTO getDefaultStrategyConfig() {
+    public TerminalLicenseStrategyConfigDTO getDefaultStrategyConfig() throws BusinessException {
         if (defaultStrategyConfig == null) {
             defaultStrategyConfig = loadDefaultStrategyConfig();
         }
@@ -93,7 +95,7 @@ public class CbbTerminalLicenseStrategyFactory {
         return defaultStrategyConfig;
     }
 
-    private TerminalLicenseStrategyConfigDTO loadDefaultStrategyConfig() {
+    private TerminalLicenseStrategyConfigDTO loadDefaultStrategyConfig() throws BusinessException {
         URL url = this.getClass().getResource(DEFAULT_AUTH_CONFIG_FILE);
         File file = new File(url.getPath());
         if (file.exists()) {
@@ -106,6 +108,6 @@ public class CbbTerminalLicenseStrategyFactory {
         }
 
         LOGGER.warn("加载默认授权策略配置文件异常或文件不存在");
-        return null;
+        throw new BusinessException(BusinessKey.RCDC_TERMINAL_LOAD_DEFAULT_LICENSE_STRATEGY_ERROR);
     }
 }

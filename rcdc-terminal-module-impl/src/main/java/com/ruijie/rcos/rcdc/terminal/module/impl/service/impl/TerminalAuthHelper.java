@@ -10,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.apache.commons.lang3.ArrayUtils;
@@ -85,7 +86,12 @@ public class TerminalAuthHelper {
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
-        return terminalLicenseAuthService.auth(isNewConnection, basicInfo);
+        try {
+            return terminalLicenseAuthService.auth(isNewConnection, basicInfo);
+        } catch (BusinessException e) {
+            LOGGER.error("终端[" + basicInfo.getTerminalId() + "]授权异常", e);
+            return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
+        }
 
     }
 
