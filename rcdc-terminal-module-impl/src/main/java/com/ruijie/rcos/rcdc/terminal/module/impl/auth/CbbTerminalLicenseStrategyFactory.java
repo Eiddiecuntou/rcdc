@@ -25,7 +25,7 @@ public class CbbTerminalLicenseStrategyFactory {
     private TerminalLicenseStrategyConfigDTO strategyConfig;
 
     @Autowired
-    @Qualifier("overlayStrategyServiceImpl")
+    @Qualifier("overlayStrategyService")
     private StrategyService overlayStrategyService;
 
     @Autowired

@@ -1,5 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
+
 /**
  * Description: 授权证书信息
  * Copyright: Copyright (c) 2021
@@ -10,6 +12,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
  */
 public class CbbTerminalLicenseInfoDTO {
 
+    @NotBlank
     private String licenseCode;
 
     private int totalNum;

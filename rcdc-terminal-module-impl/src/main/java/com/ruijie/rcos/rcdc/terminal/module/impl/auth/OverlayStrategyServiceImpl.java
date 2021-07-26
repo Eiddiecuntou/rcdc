@@ -70,16 +70,6 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
         return false;
     }
 
-    private void saveTerminalAuthorize(String licenseTypeStr, CbbShineTerminalBasicInfo basicInfoDTO) {
-        TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
-        entity.setAuthed(true);
-        entity.setAuthMode(basicInfoDTO.getAuthMode());
-        entity.setLicenseType(licenseTypeStr);
-        entity.setTerminalId(basicInfoDTO.getTerminalId());
-
-        terminalAuthorizeDAO.save(entity);
-    }
-
     @Override
     public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
         Assert.notNull(licenseTypeList, "licenseTypeList can not be null");

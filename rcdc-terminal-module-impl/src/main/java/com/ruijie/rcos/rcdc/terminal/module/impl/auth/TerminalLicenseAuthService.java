@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -52,20 +53,15 @@ public class TerminalLicenseAuthService {
             return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
         }
 
-        boolean isAuthSuccess = false;
-        for (TerminalLicenseStrategyAuthConfigDTO allocateStratesy : allocateList) {
-            if (isFitStrategy(allocateStratesy.getLicenseType(), basicInfo.getAuthMode())) {
-                LOGGER.info("进行[{}]授权", basicInfo.getAuthMode());
-                isAuthSuccess = doAuth(allocateStratesy.getSupportLicenseTypeList(), isNewConnection, basicInfo);
+        for (TerminalLicenseStrategyAuthConfigDTO allocateStrategy : allocateList) {
+            if (isFitStrategy(allocateStrategy.getLicenseType(), basicInfo.getAuthMode())) {
+                LOGGER.info("终端[{}]进行[{}]授权", basicInfo.getTerminalId(), basicInfo.getAuthMode());
+                boolean isAuthSuccess = doAuth(allocateStrategy.getSupportLicenseTypeList(), isNewConnection, basicInfo);
                 if (isAuthSuccess) {
-                    break;
+                    LOGGER.info("终端[{}]进行[{}]授权", basicInfo.getTerminalId(), basicInfo.getAuthMode());
+                    return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
                 }
             }
-        }
-
-        if (isAuthSuccess) {
-            LOGGER.info("授权成功");
-            return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
         }
 
         LOGGER.info("授权失败");
@@ -90,46 +86,39 @@ public class TerminalLicenseAuthService {
             return false;
         }
 
-        boolean isSuccess = false;
         for (TerminalLicenseStrategyAuthConfigDTO recycle : recycleList) {
             if (isFitStrategy(recycle.getLicenseType(), authMode)) {
-                LOGGER.info("进行[{}]授权回收", authMode);
-                isSuccess = doRecycle(recycle.getSupportLicenseTypeList(), terminalId, authMode);
+                LOGGER.info("终端[{}]进行[{}]授权回收", terminalId, authMode);
+                boolean isSuccess = doRecycle(recycle.getSupportLicenseTypeList(), terminalId, authMode);
                 if (isSuccess) {
-                    break;
+                    LOGGER.info("终端[{}]进行[{}]授权回收成功", terminalId, authMode);
+                    return true;
                 }
             }
         }
 
-        return isSuccess;
+        return false;
     }
 
     private boolean doRecycle(List<TerminalLicenseStrategyAuthSupportConfigDTO> supportLicenseTypeList,
                               String terminalId, CbbTerminalPlatformEnums authMode) {
-        for (TerminalLicenseStrategyAuthSupportConfigDTO supportType : supportLicenseTypeList) {
-            StrategyService service = licenseStrategyFactory.getService(supportType.getStrategyType());
-            boolean isSuccess = service.recycle(terminalId, authMode, supportType.getLicenseTypeList());
-            if (isSuccess) {
-                LOGGER.info("授权成功，返回");
-                return isSuccess;
-            }
-        }
 
-        return false;
+        return supportLicenseTypeList.stream().anyMatch(supportType -> {
+            LOGGER.info("终端[{}][{}]镜像授权回收, 授权回收使用策略[{}]", terminalId, authMode, JSON.toJSONString(supportType));
+            StrategyService service = licenseStrategyFactory.getService(supportType.getStrategyType());
+            return service.recycle(terminalId, authMode, supportType.getLicenseTypeList());
+        });
+
     }
 
     private boolean doAuth(List<TerminalLicenseStrategyAuthSupportConfigDTO> supportLicenseTypeList,
                            Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) {
-        for (TerminalLicenseStrategyAuthSupportConfigDTO supportType : supportLicenseTypeList) {
-            StrategyService service = licenseStrategyFactory.getService(supportType.getStrategyType());
-            boolean isSuccess = service.allocate(supportType.getLicenseTypeList(), isNewConnection, basicInfo);
-            if (isSuccess) {
-                LOGGER.info("授权成功，返回");
-                return isSuccess;
-            }
-        }
 
-        return false;
+        return supportLicenseTypeList.stream().anyMatch(supportType -> {
+            LOGGER.info("终端[{}][{}]镜像授权回收, 授权回收使用策略[{}]", basicInfo.getTerminalId(), basicInfo.getAuthMode(), JSON.toJSONString(supportType));
+            StrategyService service = licenseStrategyFactory.getService(supportType.getStrategyType());
+            return service.allocate(supportType.getLicenseTypeList(), isNewConnection, basicInfo);
+        });
     }
 
     private boolean isFitStrategy(CbbTerminalLicenseTypeEnums licenseType, CbbTerminalPlatformEnums authMode) {

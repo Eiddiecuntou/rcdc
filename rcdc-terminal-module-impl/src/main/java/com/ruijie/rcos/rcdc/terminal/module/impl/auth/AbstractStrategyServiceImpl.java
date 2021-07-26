@@ -1,7 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TempLicCreateDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTerminalLicenseFactoryProvider;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -24,6 +27,9 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
     @Autowired
     private CbbTerminalLicenseFactoryProvider terminalLicenseFactoryProvider;
 
+    @Autowired
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
+
 
     @Override
     public void init(TempLicCreateDTO tempLicCreateDTO) {
@@ -40,5 +46,15 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
         Assert.notNull(licenseType, "licenseType can not be null");
 
         return terminalLicenseFactoryProvider.getService(licenseType);
+    }
+
+    protected void saveTerminalAuthorize(String licenseTypeStr, CbbShineTerminalBasicInfo basicInfoDTO) {
+        TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
+        entity.setAuthed(true);
+        entity.setAuthMode(basicInfoDTO.getAuthMode());
+        entity.setLicenseType(licenseTypeStr);
+        entity.setTerminalId(basicInfoDTO.getTerminalId());
+
+        terminalAuthorizeDAO.save(entity);
     }
 }

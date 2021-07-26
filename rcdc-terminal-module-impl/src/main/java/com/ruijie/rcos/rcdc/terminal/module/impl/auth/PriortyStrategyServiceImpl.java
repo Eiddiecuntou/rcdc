@@ -48,7 +48,7 @@ public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
             boolean isAuthed = licenseService.auth(basicInfoDTO.getTerminalId(), isNewConnection, basicInfoDTO);
             if (isAuthed) {
                 LOGGER.info("终端[{}]授权成功，授权方式[{}]", basicInfoDTO.getTerminalId(), licenseType);
-                saveTerminalAuthorize(licenseType, basicInfoDTO);
+                saveTerminalAuthorize(licenseType.name(), basicInfoDTO);
                 return true;
             }
         }
@@ -56,15 +56,6 @@ public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
         return false;
     }
 
-    private void saveTerminalAuthorize(CbbTerminalLicenseTypeEnums licenseType, CbbShineTerminalBasicInfo basicInfoDTO) {
-        TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
-        entity.setAuthed(true);
-        entity.setAuthMode(basicInfoDTO.getAuthMode());
-        entity.setLicenseType(licenseType.name());
-        entity.setTerminalId(basicInfoDTO.getTerminalId());
-
-        terminalAuthorizeDAO.save(entity);
-    }
 
     @Override
     public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList) {

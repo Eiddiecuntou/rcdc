@@ -21,10 +21,17 @@ public interface TerminalLicenseService {
     /**
      * 获取终端授权总数
      *
+     * @return 授权总数
+     */
+    Integer getAllTerminalLicenseNum();
+
+    /**
+     * 根据证书码获取终端授权数量
+     *
      * @param licenseCodeList 证书码列表
      * @return 授权总数
      */
-    Integer getTerminalLicenseNum(@Nullable List<String> licenseCodeList);
+    Integer getTerminalLicenseNum(List<String> licenseCodeList);
 
     /**
      * 更新缓存值

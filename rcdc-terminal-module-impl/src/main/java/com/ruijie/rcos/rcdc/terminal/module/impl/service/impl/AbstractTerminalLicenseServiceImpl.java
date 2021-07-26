@@ -70,7 +70,19 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     }
 
     @Override
-    public Integer getTerminalLicenseNum(@Nullable List<String> licenseCodeList) {
+    public Integer getAllTerminalLicenseNum() {
+        return countLicenseNum(null);
+    }
+
+    @Override
+    public Integer getTerminalLicenseNum(List<String> licenseCodeList) {
+        Assert.notNull(licenseCodeList, "licenseCodeList can not be null");
+        Assert.isTrue(licenseCodeList.size() > 0, "licenseCodeList is empty");
+
+        return countLicenseNum(licenseCodeList);
+    }
+
+    private Integer countLicenseNum(List<String> licenseCodeList) {
         List<CbbTerminalLicenseInfoDTO> licenseInfoList = LICENSE_MAP.get(getLicenseType());
 
         if (CollectionUtils.isEmpty(licenseInfoList)) {
@@ -122,7 +134,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         if (licenseNum < Constants.TERMINAL_AUTH_DEFAULT_NUM) {
             licenseNum = Constants.TERMINAL_AUTH_DEFAULT_NUM;
         }
-        Integer currentNum = getTerminalLicenseNum(null);
+        Integer currentNum = getAllTerminalLicenseNum();
         if (Objects.equals(currentNum, licenseNum)) {
             LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
             return;
@@ -165,7 +177,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
                 LOGGER.info("终端[{}]已授权成功，无须再次授权", terminalId);
                 return true;
             }
-            Integer licenseNum = getTerminalLicenseNum(null);
+            Integer licenseNum = getAllTerminalLicenseNum();
             Integer usedNum = getUsedNum();
             if (!Objects.equals(licenseNum, Constants.TERMINAL_AUTH_DEFAULT_NUM) && usedNum >= licenseNum) {
                 LOGGER.info("{}类型终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", getLicenseType(), usedNum, licenseNum);
