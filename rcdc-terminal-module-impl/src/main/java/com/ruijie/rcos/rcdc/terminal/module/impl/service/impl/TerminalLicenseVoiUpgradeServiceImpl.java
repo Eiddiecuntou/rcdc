@@ -1,15 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
  * Description: terminalLicenseVOIServiceImpl voi升级授权
@@ -28,6 +24,7 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
     public CbbTerminalLicenseTypeEnums getLicenseType() {
         return CbbTerminalLicenseTypeEnums.VOI_PLUS_UPGRADED;
     }
+
     @Override
     public String getLicenseConstansKey() {
         return Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM;

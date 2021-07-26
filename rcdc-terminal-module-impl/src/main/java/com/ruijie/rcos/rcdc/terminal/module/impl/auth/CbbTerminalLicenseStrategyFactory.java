@@ -87,6 +87,12 @@ public class CbbTerminalLicenseStrategyFactory {
         }
     }
 
+    /**
+     *  获取默认策略
+     *
+     * @return 默认授权策略
+     * @throws BusinessException 业务异常
+     */
     public TerminalLicenseStrategyConfigDTO getDefaultStrategyConfig() throws BusinessException {
         if (defaultStrategyConfig == null) {
             defaultStrategyConfig = loadDefaultStrategyConfig();

@@ -42,6 +42,7 @@ public class TerminalLicenseAuthService {
      * @param isNewConnection 是否新连接
      * @param basicInfo       终端基本信息
      * @return 授权结果
+     * @throws BusinessException 业务异常
      */
     public TerminalAuthResult auth(Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) throws BusinessException {
         Assert.notNull(isNewConnection, "isNewConnection can not be null");
