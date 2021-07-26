@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -13,7 +14,6 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -43,7 +43,29 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     @Autowired
     private TerminalBasicInfoService basicInfoService;
 
+    @Autowired
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
+
     protected final Object usedNumLock = new Object();
+
+    protected Integer usedNum;
+
+    @Override
+    public Integer getUsedNum() {
+
+        synchronized (this.getLock()) {
+            // 如果usedNum值为null，表示usedNum还没有从数据库同步数据;licenseNum为-1时，代表临时授权不会维护已授权数目，所以需要从数据库同步数据
+            final Integer terminalLicenseNum = this.getAllTerminalLicenseNum();
+            final boolean isTempLicense = isTempLicense(terminalLicenseNum);
+            if (usedNum == null || isTempLicense) {
+                long count = terminalAuthorizeDAO.countByLicenseTypeContaining(getLicenseType().name());
+                usedNum = (int) count;
+                LOGGER.info("从数据库同步[{}]授权已用数为：{},授权数为：{}", getLicenseType(), usedNum, terminalLicenseNum);
+            }
+        }
+
+        return usedNum;
+    }
 
     @Override
     public void increaseCacheLicenseUsedNum() {
@@ -117,7 +139,6 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         return licenseInfoList;
     }
 
-    abstract protected Integer getCacheLicenseNum();
 
     @Override
     public void updateTerminalLicenseNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList) throws BusinessException {
@@ -135,6 +156,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
             licenseNum = Constants.TERMINAL_AUTH_DEFAULT_NUM;
         }
         Integer currentNum = getAllTerminalLicenseNum();
+
         if (Objects.equals(currentNum, licenseNum)) {
             LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
             return;
@@ -146,22 +168,20 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
             LOGGER.info("从终端授权数量为-1，导入正式授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
             // fixMe 此处需考虑通知产品，断开shine连接
             processImportOfficialLicense(licenseNum);
-            return;
-        }
-        if (licenseNum == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
+        } else if (licenseNum == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
             LOGGER.info("从终端授权数量不是-1，导入临时授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
             processImportTempLicense();
-            return;
-        }
-
-        LOGGER.info("当前授权数量和准备更新的授权数量不等，且都不等于-1。当前授权数量为{}, 准备更新授权数量为{}", currentNum, licenseNum);
-        if (currentNum > licenseNum) {
+        } else if (currentNum > licenseNum) {
             LOGGER.info("当前授权数量为{}，准备更新授权数量为{}，当前授权数小于准备更新授权数，回收授权", currentNum, licenseNum);
             // fixMe 此处需考虑通知产品，断开shine连接
             processImportOfficialLicense(licenseNum);
-            return;
         }
 
+        updateCacheAndDbLicenseNum(licenseInfoList, licenseNum, currentNum);
+
+    }
+
+    private void updateCacheAndDbLicenseNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList, int licenseNum, Integer currentNum) {
         LOGGER.info("当前授权数量为{}, 准备更新授权数量为{}，当前授权数大于准备更新授权数，更新授权数量", currentNum, licenseNum);
 
         globalParameterAPI.updateParameter(getLicenseConstansKey(), JSON.toJSONString(licenseInfoList));

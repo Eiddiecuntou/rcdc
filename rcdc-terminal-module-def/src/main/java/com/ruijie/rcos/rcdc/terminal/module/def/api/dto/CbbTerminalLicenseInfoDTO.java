@@ -15,9 +15,9 @@ public class CbbTerminalLicenseInfoDTO {
     @NotBlank
     private String licenseCode;
 
-    private int totalNum;
+    private Integer totalNum;
 
-    private int usedNum;
+    private Integer usedNum;
 
     public String getLicenseCode() {
         return licenseCode;
@@ -27,19 +27,19 @@ public class CbbTerminalLicenseInfoDTO {
         this.licenseCode = licenseCode;
     }
 
-    public int getTotalNum() {
+    public Integer getTotalNum() {
         return totalNum;
     }
 
-    public void setTotalNum(int totalNum) {
+    public void setTotalNum(Integer totalNum) {
         this.totalNum = totalNum;
     }
 
-    public int getUsedNum() {
+    public Integer getUsedNum() {
         return usedNum;
     }
 
-    public void setUsedNum(int usedNum) {
+    public void setUsedNum(Integer usedNum) {
         this.usedNum = usedNum;
     }
 }

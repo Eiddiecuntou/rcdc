@@ -49,8 +49,9 @@ public class TerminalLicenseAuthService {
         TerminalLicenseStrategyConfigDTO strategyConfig = licenseStrategyFactory.getStrategyConfig();
         List<TerminalLicenseStrategyAuthConfigDTO> allocateList = strategyConfig.getAllocateList();
         if (CollectionUtils.isEmpty(allocateList)) {
-            LOGGER.error("授权分配策略为空，无法授权，请检查初始化过程");
-            return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
+            LOGGER.error("授权分配策略为空，无法授权，使用默认授权策略");
+            TerminalLicenseStrategyConfigDTO defaultStrategyConfig = licenseStrategyFactory.getDefaultStrategyConfig();
+            allocateList = defaultStrategyConfig.getAllocateList();
         }
 
         for (TerminalLicenseStrategyAuthConfigDTO allocateStrategy : allocateList) {

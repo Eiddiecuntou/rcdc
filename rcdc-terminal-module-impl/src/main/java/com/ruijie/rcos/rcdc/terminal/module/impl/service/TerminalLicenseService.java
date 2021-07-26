@@ -4,7 +4,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -32,13 +31,6 @@ public interface TerminalLicenseService {
      * @return 授权总数
      */
     Integer getTerminalLicenseNum(List<String> licenseCodeList);
-
-    /**
-     * 更新缓存值
-     * 
-     * @param licenseNum 授权数量
-     */
-    void updateCacheLicenseNum(Integer licenseNum);
 
     /**
      * 获取已使用的终端授权数量

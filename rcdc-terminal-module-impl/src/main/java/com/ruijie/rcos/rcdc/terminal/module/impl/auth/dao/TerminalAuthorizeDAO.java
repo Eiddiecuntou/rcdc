@@ -56,5 +56,5 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
      * @param licenseType 授权证书类型
      * @return 数量
      */
-    int countByLicenseType(String licenseType);
+    int countByLicenseTypeContaining(String licenseType);
 }
