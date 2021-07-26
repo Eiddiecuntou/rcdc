@@ -1,8 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseNumDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import org.springframework.lang.Nullable;
+
+import java.util.List;
 
 /**
  * 终端授权管理
@@ -32,10 +36,10 @@ public interface CbbTerminalLicenseMgmtAPI {
      * 设置IDV终端授权数，限制IDV终端接入数量
      *
      * @param licenseType 授权类型
-     * @param licenseNum 授权数
+     * @param licenseInfoList 授权信息
      * @throws BusinessException 业务异常
      */
-    void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, Integer licenseNum) throws BusinessException;
+    void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, List<CbbTerminalLicenseInfoDTO> licenseInfoList) throws BusinessException;
 
     /**
      * @api {GET} CbbTerminalLicenseMgmtAPI.getIDVTerminalLicenseNum 获取IDV终端授权信息
@@ -50,12 +54,13 @@ public interface CbbTerminalLicenseMgmtAPI {
      * @apiSuccess (响应字段说明) {Integer} response.usedNum 已用授权数
      */
     /**
-     * 获取终端授权数
+     * 获取终端授权信息
      *
      * @param licenseType 授权类型
+     * @param licenseCodeList 证书码列表
      * @return IDV终端授权信息
      */
-    CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType);
+    CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, @Nullable List<String> licenseCodeList);
 
     /**
      * @api {GET} CbbTerminalLicenseMgmtAPI.cancelTerminalAuth 取消终端授权

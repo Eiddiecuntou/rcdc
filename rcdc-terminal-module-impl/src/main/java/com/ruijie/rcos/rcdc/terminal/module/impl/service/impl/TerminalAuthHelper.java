@@ -6,9 +6,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnu
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.apache.commons.lang3.ArrayUtils;
@@ -34,15 +36,6 @@ public class TerminalAuthHelper {
     private static final int NO_AUTH_LIMIT = -1;
 
     @Autowired
-    private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
-
-    @Autowired
-    private TerminalLicenseVoiServiceImpl terminalLicenseVoiServiceImpl;
-
-    @Autowired
-    private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVoiUpgradeServiceImpl;
-
-    @Autowired
     private TerminalBasicInfoService basicInfoService;
 
     @Autowired
@@ -51,12 +44,15 @@ public class TerminalAuthHelper {
     @Autowired
     private CbbTerminalWhiteListHandlerSPI whiteListHandlerSPI;
 
+    @Autowired
+    private TerminalLicenseAuthService terminalLicenseAuthService;
+
     /**
      * 终端进行授权
      *
-     * @param isNewConnection 是否新连接
+     * @param isNewConnection    是否新连接
      * @param isInUpgradeProcess 是否处于升级进程中
-     * @param basicInfo 终端基本信息
+     * @param basicInfo          终端基本信息
      * @return TerminalAuthResult 授权结果
      */
     public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
@@ -90,116 +86,36 @@ public class TerminalAuthHelper {
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
-        TerminalAuthResult finalResult = new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
-        if (basicInfo.getAuthMode() == CbbTerminalPlatformEnums.IDV) {
-            LOGGER.info("平台类型为IDV，进行IDV授权");
-            TerminalAuthResult authResult = processIdvTerminalLicense(basicInfo, isNewConnection);
-            return authResult;
+        try {
+            return terminalLicenseAuthService.auth(isNewConnection, basicInfo);
+        } catch (BusinessException e) {
+            LOGGER.error("终端[" + basicInfo.getTerminalId() + "]授权异常", e);
+            return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
         }
 
-        if (basicInfo.getAuthMode() == CbbTerminalPlatformEnums.VOI) {
-            LOGGER.info("平台类型为VOI，进行VOI授权");
-            TerminalAuthResult authResult = processVoiTerminalLicense(basicInfo, isNewConnection);
-            return authResult;
-        }
-
-        return finalResult;
-    }
-
-    /**
-     * idv终端授权处理。idv新终端接入并且idv授权个数有限制的情况下，如果终端没有处于不需要升级状态、或者处于不需要升级状态但授权不足，则不保存终端信息
-     *
-     * @param basicInfo shine上报的终端基本信息
-     * @param isNewConnection 是否是新连接
-     * @return TerminalAuthResult needSaveTerminalInfo -需要保存终端信息；false -不需要保存终端信息
-     */
-    private TerminalAuthResult processIdvTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection) {
-        String terminalId = basicInfo.getTerminalId();
-
-        int licenseNum = terminalLicenseIDVServiceImpl.getTerminalLicenseNum();
-        if (licenseNum == NO_AUTH_LIMIT) {
-            LOGGER.info("当前不限制IDV终端授权");
-            return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
-        }
-
-        // 不需要升级场景下，如果授权失败无须保存idv终端信息；如果授权成功，在授权时已经保存了idv终端信息，无须再次保存
-        if (terminalLicenseIDVServiceImpl.auth(terminalId, isNewConnection, basicInfo)) {
-            LOGGER.info("idv终端[{}]{}授权成功", terminalId, basicInfo.getTerminalName());
-            return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
-        }
-
-        if (terminalLicenseVoiServiceImpl.authByIdv(terminalId, isNewConnection, basicInfo)) {
-            LOGGER.info("idv终端[{}]{}使用VOI升级授权成功", terminalId, basicInfo.getTerminalName());
-            return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
-        }
-
-        LOGGER.info("授权数不足，保存idv终端[{}]{}信息为未授权状态", terminalId, basicInfo.getTerminalName());
-        return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
-    }
-
-
-    /**
-     * voi终端授权处理。voi新终端接入并且voi授权个数有限制的情况下，如果终端没有处于不需要升级状态、或者处于不需要升级状态但授权不足，则不保存终端信息
-     *
-     * @param basicInfo shine上报的终端基本信息
-     * @param isNewConnection 是否是新连接
-     * @return TerminalAuthResult needSaveTerminalInfo -需要保存终端信息；false -不需要保存终端信息
-     */
-    private TerminalAuthResult processVoiTerminalLicense(CbbShineTerminalBasicInfo basicInfo, boolean isNewConnection) {
-        String terminalId = basicInfo.getTerminalId();
-
-        int licenseNum = terminalLicenseVoiServiceImpl.getTerminalLicenseNum();
-        if (licenseNum == NO_AUTH_LIMIT) {
-            LOGGER.info("当前不限制VOI终端授权");
-            return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
-        }
-
-        // 不需要升级场景下，如果授权失败无须保存idv终端信息；如果授权成功，在授权时已经保存了idv终端信息，无须再次保存
-        if (terminalLicenseVoiServiceImpl.auth(terminalId, isNewConnection, basicInfo)) {
-            LOGGER.info("voi终端[{}]{}授权成功", terminalId, basicInfo.getTerminalName());
-            return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
-        }
-
-        LOGGER.info("授权数不足，保存voi终端[{}]{}信息为未授权状态", terminalId, basicInfo.getTerminalName());
-        return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
     }
 
     /**
      * 处理终端授权扣除逻辑
      *
      * @param terminalId 终端id
-     * @param authMode 平台类型
-     * @param authed 是否授权
+     * @param authMode   平台类型
+     * @param authed     是否授权
      */
     public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums authMode, Boolean authed) {
         Assert.notNull(terminalId, "terminalId can not be null");
         Assert.notNull(authMode, "authMode can not be null");
         Assert.notNull(authed, "authed can not be null");
 
-        if (authMode == CbbTerminalPlatformEnums.IDV && Objects.equals(authed, Boolean.TRUE)) {
-            LOGGER.info("删除已授权IDV终端[{}]，IDV终端授权数量-1", terminalId);
-            processDecreaseIdvTerminalLicense();
+        if (Objects.equals(authed, Boolean.TRUE)) {
+            LOGGER.info("删除已授权终端[{}]，终端授权数量-1", terminalId);
+            terminalLicenseAuthService.recycle(terminalId, authMode);
+            return;
         }
-        if (authMode == CbbTerminalPlatformEnums.VOI && Objects.equals(authed, Boolean.TRUE)) {
-            LOGGER.info("删除已授权VOI终端[{}]，VOI终端授权数量-1", terminalId);
-            processDecreaseVoiTerminalLicense();
-        }
+
+        LOGGER.info("删除未授权终端[{}]，无需处理", terminalId);
+
     }
 
-    private void processDecreaseIdvTerminalLicense() {
-        // 如果存在VOI升级授权，则先扣除VOI升级授权
-        Integer voiUpgradeUsed = terminalLicenseVoiUpgradeServiceImpl.getUsedNum();
-        LOGGER.info("VOI升级授权已用数为：[{}]", voiUpgradeUsed);
-        if (voiUpgradeUsed > 0) {
-            LOGGER.info("存在voi升级授权，则先扣除voi升级授权");
-            terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNumByIdv();
-        } else {
-            terminalLicenseIDVServiceImpl.decreaseCacheLicenseUsedNum();
-        }
-    }
-
-    private void processDecreaseVoiTerminalLicense() {
-        terminalLicenseVoiServiceImpl.decreaseCacheLicenseUsedNum();
-    }
 
 }

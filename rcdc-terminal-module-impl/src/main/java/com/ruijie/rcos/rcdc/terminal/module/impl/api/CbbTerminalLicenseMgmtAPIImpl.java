@@ -1,22 +1,24 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseNumDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTerminalLicenseFactoryProvider;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+
+import java.util.List;
 
 /**
  * Description: 终端授权管理apiImpl
@@ -40,16 +42,17 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     private TerminalAuthHelper terminalAuthHelper;
 
     @Override
-    public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, Integer licenseNum) throws BusinessException {
+    public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, List<CbbTerminalLicenseInfoDTO> licenseInfoList)
+            throws BusinessException {
         Assert.notNull(licenseType, "licenseType can not be null");
-        Assert.notNull(licenseNum, "licenseNum can not be null");
-        licenseFactoryProvider.getService(licenseType).updateTerminalLicenseNum(licenseNum);
+        Assert.notNull(licenseInfoList, "licenseInfoList can not be null");
+        licenseFactoryProvider.getService(licenseType).updateTerminalLicenseNum(licenseInfoList);
     }
 
     @Override
-    public CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType) {
+    public CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, @Nullable List<String> licenseCodeList) {
         Assert.notNull(licenseType, "licenseType can not be null");
-        Integer licenseNum = licenseFactoryProvider.getService(licenseType).getTerminalLicenseNum();
+        Integer licenseNum = licenseFactoryProvider.getService(licenseType).getTerminalLicenseNum(licenseCodeList);
         Integer usedNum = licenseFactoryProvider.getService(licenseType).getUsedNum();
 
         CbbTerminalLicenseNumDTO licenseNumDTO = new CbbTerminalLicenseNumDTO();

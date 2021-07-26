@@ -387,4 +387,7 @@ public interface BusinessKey {
     String RCDC_TERMINAL_NOT_ALLOW_REDUCE_TERMINAL_LICENSE_NUM = "rcdc_terminal_not_allow_reduce_terminal_license_num";
 
     String RCDC_TERMINAL_CANCEL_AUTH_FAIL = "rcdc_terminal_cancel_auth_fail";
+
+    String RCDC_TERMINAL_LICENSE_STRATEGY_ERROR = "rcdc_terminal_license_strategy_error";
+    String RCDC_TERMINAL_LOAD_DEFAULT_LICENSE_STRATEGY_ERROR = "rcdc_terminal_load_default_license_strategy_error";
 }
