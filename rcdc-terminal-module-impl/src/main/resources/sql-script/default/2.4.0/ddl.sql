@@ -1,10 +1,10 @@
 
 alter table t_cbb_terminal DROP column auth_mode;
 
-CREATE TABLE "public"."t_cbb_terminal_authorize" (
+CREATE TABLE if not EXISTS "public"."t_cbb_terminal_authorize" (
   "id" uuid NOT NULL,
   "terminal_id" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
-  "license_type" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "license_type" text COLLATE "pg_catalog"."default" NOT NULL,
   "auth_mode" varchar(64) COLLATE "pg_catalog"."default",
   "authed" bool,
   "version" int4,
