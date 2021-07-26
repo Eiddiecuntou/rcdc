@@ -54,14 +54,14 @@
 		<dependency>
 			<groupId>com.ruijie.rcos.base.aaa.module</groupId>
 			<artifactId>base-aaa-module-impl</artifactId>
-			<version>${base-aaa-module.version}</version>
+			<version>${skyengine.version}</version>
 		</dependency>
 
 		
         <dependency>
             <groupId>com.ruijie.rcos.base.sysmanage.module</groupId>
             <artifactId>base-sysmanage-module-impl</artifactId>
-            <version>${base-sysmanage-module.version}</version>
+            <version>${skyengine.version}</version>
         </dependency>
 
 		<dependency>
