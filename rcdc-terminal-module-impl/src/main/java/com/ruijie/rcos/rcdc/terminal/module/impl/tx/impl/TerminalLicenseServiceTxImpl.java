@@ -1,19 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.util.List;
 
 /**
  * Description: TerminalLicenseServiceTx接口实现类
@@ -34,16 +33,33 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     @Autowired
-    private GlobalParameterAPI globalParameterAPI;
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
     @Override
     public void updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums platform, String licenseKey) {
         Assert.notNull(platform, "platform can not be empty");
         Assert.hasText(licenseKey, "licenseKey can not be empty");
+
         List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(platform, Boolean.FALSE);
         updateTerminalAuthState(terminalEntityList, Boolean.TRUE);
+        // 临时授权需要添加记录到授权记录表
+        saveAuthRecord(platform, terminalEntityList);
 
-        globalParameterAPI.updateParameter(licenseKey, String.valueOf(Constants.TERMINAL_AUTH_DEFAULT_NUM));
+    }
+
+    private void saveAuthRecord(CbbTerminalPlatformEnums platform, List<TerminalEntity> terminalEntityList) {
+        terminalEntityList.stream().forEach(terminalEntity -> {
+            TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalEntity.getTerminalId());
+            if (authorizeEntity == null) {
+                LOGGER.debug("终端不存在");
+                authorizeEntity = new TerminalAuthorizeEntity();
+            }
+            authorizeEntity.setAuthMode(platform);
+            authorizeEntity.setTerminalId(terminalEntity.getTerminalId());
+            authorizeEntity.setAuthed(true);
+            authorizeEntity.setLicenseType(platform.name());
+            terminalAuthorizeDAO.save(authorizeEntity);
+        });
     }
 
     @Override
@@ -51,10 +67,13 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
         Assert.notNull(platform, "platform can not be empty");
         Assert.hasText(licenseKey, "licenseKey can not be empty");
         Assert.notNull(licenseNum, "licenseNum can not null");
+
         List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(platform, Boolean.TRUE);
         updateTerminalAuthState(terminalEntityList, Boolean.FALSE);
+        // 临时授权变更为正式授权需要删除授权记录
+        terminalEntityList.stream().forEach(terminalEntity -> terminalAuthorizeDAO.deleteByTerminalId(terminalEntity.getTerminalId()));
 
-        globalParameterAPI.updateParameter(licenseKey, String.valueOf(licenseNum));
+
     }
 
     private void updateTerminalAuthState(List<TerminalEntity> terminalEntityList, Boolean authed) {
@@ -75,9 +94,9 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
 
     /**
      * 重试更新终端授权状态
-     * 
+     *
      * @param terminalId 终端id
-     * @param authed 是否授权
+     * @param authed     是否授权
      */
     private void retryUpdateAuthed(String terminalId, Boolean authed) {
         int retry = 0;

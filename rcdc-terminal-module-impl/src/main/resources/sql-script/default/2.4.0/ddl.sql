@@ -1,5 +1,4 @@
 
-alter table t_cbb_terminal DROP column auth_mode;
 
 CREATE TABLE if not EXISTS "public"."t_cbb_terminal_authorize" (
   "id" uuid NOT NULL,
