@@ -1,23 +1,22 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Description:TerminalLicenseServiceTxImpl测试类
@@ -37,7 +36,7 @@ public class TerminalLicenseServiceTxImplTest {
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Injectable
-    private GlobalParameterAPI globalParameterAPI;
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
 
     /**
@@ -66,120 +65,11 @@ public class TerminalLicenseServiceTxImplTest {
         }
         new Verifications() {
             {
-                globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, anyString);
+                terminalAuthorizeDAO.save((TerminalAuthorizeEntity) any);
                 times = 1;
                 basicInfoDAO.save(entity);
                 times = 1;
             }
         };
-    }
-
-    /**
-     * 测试updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth方法，更新终端授权状态重试失败
-     */
-    @Test
-    public void testUpdateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuthUpdateTermianlAuthStateFail() {
-        List<TerminalEntity> terminalEntityList = new ArrayList<>();
-        TerminalEntity entity = new TerminalEntity();
-        entity.setTerminalId("123");
-        entity.setVersion(1);
-        entity.setAuthed(Boolean.FALSE);
-        terminalEntityList.add(entity);
-
-        new Expectations(entity) {
-            {
-                basicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
-                result = terminalEntityList;
-                basicInfoDAO.save(entity);
-                result = new Exception("xx");
-                entity.setAuthed(Boolean.TRUE);
-                basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
-                result = entity;
-            }
-        };
-        try {
-            terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, Constants.TEMINAL_LICENSE_NUM);
-        } catch (Exception e) {
-            Assert.fail();
-        }
-        new Verifications() {
-            {
-                globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, anyString);
-                times = 1;
-                basicInfoDAO.save(entity);
-                times = 4;
-            }
-        };
-    }
-
-    /**
-     * 测试updateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuth方法，在第2次重试时才成功更新授权状态成功
-     */
-    @Test
-    public void testUpdateAllIDVTerminalAuthedAndUnlimitIDVTerminalAuthUpdateAuthStateSuccessInTheSecondTime() {
-        List<TerminalEntity> terminalEntityList = new ArrayList<>();
-        TerminalEntity entity = new TerminalEntity();
-        entity.setTerminalId("123");
-        entity.setVersion(1);
-        entity.setAuthed(Boolean.FALSE);
-        terminalEntityList.add(entity);
-
-        new Expectations(entity) {
-            {
-                basicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.FALSE);
-                result = terminalEntityList;
-                basicInfoDAO.save(entity);
-                result = new Exception("xx");
-                result = new Exception("xx");
-                result = new TerminalEntity();
-                entity.setAuthed(Boolean.TRUE);
-                basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
-                result = entity;
-            }
-        };
-        try {
-            terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, Constants.TEMINAL_LICENSE_NUM);
-        } catch (Exception e) {
-            Assert.fail();
-        }
-        new Verifications() {
-            {
-                globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, anyString);
-                times = 1;
-                basicInfoDAO.save(entity);
-                times = 3;
-            }
-        };
-    }
-
-    @Test
-    public void testUpdateAllIDVTerminalUnauthedAndUpdateLicenseNum() {
-        List<TerminalEntity> terminalEntityList = new ArrayList<>();
-        TerminalEntity entity = new TerminalEntity();
-        entity.setTerminalId("123");
-        entity.setVersion(1);
-        entity.setAuthed(Boolean.FALSE);
-        terminalEntityList.add(entity);
-        new Expectations() {
-            {
-                basicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
-                result = terminalEntityList;
-
-                globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, "111");
-            }
-        };
-
-        terminalLicenseServiceTx.updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.IDV, Constants.TEMINAL_LICENSE_NUM, 111);
-
-        new Verifications() {
-            {
-                basicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums.IDV, Boolean.TRUE);
-                times = 1;
-
-                globalParameterAPI.updateParameter(Constants.TEMINAL_LICENSE_NUM, "111");
-                times = 1;
-            }
-        };
-
     }
 }
