@@ -2,12 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper.SyncSystemUpgradeResultHelper;
@@ -32,6 +31,8 @@ public class SyncSystemUpgradeResultHandlerSPIImpl implements CbbDispatcherHandl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncSystemUpgradeResultHandlerSPIImpl.class);
 
+    @Autowired
+    private TerminalBasicInfoService basicInfoService;
 
     @Autowired
     private TerminalBasicInfoDAO basicInfoDAO;
@@ -48,7 +49,7 @@ public class SyncSystemUpgradeResultHandlerSPIImpl implements CbbDispatcherHandl
         Assert.hasText(request.getData(), "request.getData() can not be blank");
 
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
-        CbbTerminalTypeEnums terminalType = obtainTerminalType(basicInfoEntity);
+        CbbTerminalTypeEnums terminalType = basicInfoService.obtainTerminalType(basicInfoEntity);
 
         TerminalSystemUpgradeHandler handler;
         try {
@@ -61,26 +62,4 @@ public class SyncSystemUpgradeResultHandlerSPIImpl implements CbbDispatcherHandl
 
         upgradeResultHelper.dealSystemUpgradeResult(basicInfoEntity, terminalType, handler, request);
     }
-
-    CbbTerminalTypeEnums obtainTerminalType(TerminalEntity terminalEntity) {
-
-        CbbTerminalPlatformEnums terminalPlatform = terminalEntity.getPlatform();
-        String osType = terminalEntity.getTerminalOsType();
-
-        // TODO 临时解决方案，后续版本需修订
-        if (Constants.IDV_USE_AS_VDI_PRODUCT_ID_SET.contains(terminalEntity.getProductId())) {
-            LOGGER.info("终端[{}]IDV用作VDI终端系统升级返回IDV平台", terminalEntity.getTerminalId());
-            return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
-        }
-
-        if (terminalPlatform == CbbTerminalPlatformEnums.VOI) {
-            LOGGER.info("VOI平台类型终端快刷转换成IDV类型");
-            return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
-        }
-
-        return CbbTerminalTypeEnums.convert(terminalPlatform.name(), osType);
-
-    }
-
-
 }

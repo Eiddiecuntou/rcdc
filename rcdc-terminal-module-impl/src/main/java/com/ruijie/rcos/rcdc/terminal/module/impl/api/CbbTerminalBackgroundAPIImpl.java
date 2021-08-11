@@ -128,8 +128,10 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
             File temporaryImageFile = new File(temporaryImagePath);
             Files.move(temporaryImageFile, imageFile);
             // 必须给文件加上读和可执行权限,让其他用户可读、可执行，否则会导致ftp账号没有权限下载:
-            imageFile.setReadable(true, false);
-            imageFile.setExecutable(true, false);
+            boolean isSuccess = imageFile.setReadable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
+            isSuccess = imageFile.setExecutable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
         } catch (IOException e) {
             LOGGER.error("从[{}] 移动文件到[{}]失败", temporaryImagePath, imageFile.getAbsoluteFile());
             throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);

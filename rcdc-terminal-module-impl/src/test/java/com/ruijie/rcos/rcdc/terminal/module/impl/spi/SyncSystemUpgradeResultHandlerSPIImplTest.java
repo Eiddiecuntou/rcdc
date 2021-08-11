@@ -7,6 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper.SyncSystemUpgradeResultHelper;
@@ -39,6 +40,8 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
     @Injectable
     private TerminalSystemUpgradeHandlerFactory handlerFactory;
 
+    @Injectable
+    private TerminalBasicInfoService basicInfoService;
 
     /**
      * 测试同步终端升级状态 - 获取处理对象异常
@@ -57,7 +60,8 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = entity;
-
+                basicInfoService.obtainTerminalType(entity);
+                result = CbbTerminalTypeEnums.VDI_LINUX;
                 handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
                 result = new BusinessException("123");
 
@@ -105,7 +109,8 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = entity;
-
+                basicInfoService.obtainTerminalType(entity);
+                result = CbbTerminalTypeEnums.IDV_LINUX;
                 handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
                 result = handler;
 
@@ -154,7 +159,8 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = entity;
-
+                basicInfoService.obtainTerminalType(entity);
+                result = CbbTerminalTypeEnums.IDV_LINUX;
                 handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
                 result = handler;
 
