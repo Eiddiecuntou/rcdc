@@ -96,7 +96,7 @@ public class TerminalGroupServiceImpl implements TerminalGroupService {
         }
 
         // 编辑未分组，groupId不为未分组，组名为“未分组”
-        if (this.getDefaultGroupNameList().contains(groupName) && groupId != null && !groupId.equals(Constants.DEFAULT_TERMINAL_GROUP_UUID)) {
+        if (this.getDefaultGroupNameList().contains(groupName) && !Constants.DEFAULT_TERMINAL_GROUP_UUID.equals(groupId)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_USERGROUP_NOT_ALLOW_RESERVE_NAME, groupName);
         }
 

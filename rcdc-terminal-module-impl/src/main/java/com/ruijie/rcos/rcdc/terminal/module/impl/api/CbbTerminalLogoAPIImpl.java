@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
@@ -88,7 +89,7 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
         String saveLogoFile = configFacade.read("file.busiz.dir.terminal.logo");
         String saveLogoPath = saveLogoFile + TERMINAL_LOGO_NAME;
         File saveLogo = new File(saveLogoPath);
-        createLogoFilePath(saveLogoFile);
+        FileOperateUtil.checkAndGetDirectory(saveLogoFile);
         try {
             Files.move(logo.toPath(), saveLogo.toPath());
             boolean isSuccess = saveLogo.setReadable(true, false);
@@ -112,17 +113,6 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
             skyengineFile.delete(false);
         }
         return logoPath;
-    }
-
-    private void createLogoFilePath(String logoPath) {
-        File logo = new File(logoPath);
-        if (!logo.exists()) {
-            logo.mkdir();
-            boolean isSuccess = logo.setReadable(true, false);
-            LOGGER.info("操作结果：[{}]", isSuccess);
-            isSuccess = logo.setExecutable(true, false);
-            LOGGER.info("操作结果：[{}]", isSuccess);
-        }
     }
 
     private String getLogoPath(String logoInfo) {
