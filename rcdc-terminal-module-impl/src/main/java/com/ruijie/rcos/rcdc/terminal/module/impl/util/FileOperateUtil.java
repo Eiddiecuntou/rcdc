@@ -237,10 +237,7 @@ public class FileOperateUtil {
         File packageDir = new File(directoryPath);
         if (!packageDir.exists() || !packageDir.isDirectory()) {
             try {
-                packageDir.mkdir();
-                packageDir.setReadable(true, false);
-                packageDir.setExecutable(true, false);
-                packageDir.setWritable(true, false);
+                createFile(packageDir);
             } catch (Exception e) {
                 throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
             }
@@ -295,10 +292,11 @@ public class FileOperateUtil {
 
     private static void createFile(File file) {
         file.mkdir();
-        file.setReadable(true, false);
-        file.setExecutable(true, false);
-        file.setWritable(true, false);
+        boolean isSuccess = file.setReadable(true, false);
+        LOGGER.info("操作结果：[{}]", isSuccess);
+        isSuccess = file.setExecutable(true, false);
+        LOGGER.info("操作结果：[{}]", isSuccess);
+        isSuccess = file.setWritable(true, false);
+        LOGGER.info("操作结果：[{}]", isSuccess);        
     }
-
-
 }

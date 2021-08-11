@@ -2,8 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.api.TerminalFtpAccountInfoAPI;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.FtpConfigInfo;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 
@@ -18,7 +16,7 @@ import mockit.Tested;
 import mockit.Verifications;
 import org.apache.commons.compress.utils.Lists;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,6 +48,19 @@ public class TerminalFtpAccountInfoInitTest {
 
     @Mocked
     Process process;
+
+    /**
+     * 初始化加载
+     */
+    @Before
+    public void before() {
+        new Expectations(System.class) {
+            {
+                System.getProperty(anyString);
+                result = "Linux";
+            }
+        };
+    }
 
     /**
      * 测试sateInit方法
@@ -84,18 +95,19 @@ public class TerminalFtpAccountInfoInitTest {
      */
     @Test
     public void testSafeInitExecuteSystemCmdFail() throws Exception {
+        UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
         List<String> onlineTerminalIdList = Lists.newArrayList();
         onlineTerminalIdList.add("1.1.1.1");
-        new Expectations() {
+        new Expectations(UUID.class) {
             {
                 globalParameterAPI.findParameter("terminal_ftp_config");
                 result = "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\"," + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
+                UUID.randomUUID();
+                result = uuid;
                 processBuilder.start();
                 result = new IOException();
                 sessionManager.getOnlineTerminalId();
                 result = onlineTerminalIdList;
-                terminalFtpAccountInfoAPI.syncFtpAccountInfo(anyString, (FtpConfigInfo) any);
-                result = new BusinessException("key");
             }
         };
         terminalFtpAccountInfoInit.safeInit();
@@ -117,12 +129,15 @@ public class TerminalFtpAccountInfoInitTest {
      */
     @Test
     public void testSafeInitExecuteSystemCmdCodeNotZero() throws InterruptedException {
+        UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
         List<String> onlineTerminalIdList = Lists.newArrayList();
         onlineTerminalIdList.add("1.1.1.1");
-        new Expectations() {
+        new Expectations(UUID.class) {
             {
                 globalParameterAPI.findParameter("terminal_ftp_config");
                 result = "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\"," + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
+                UUID.randomUUID();
+                result = uuid;
                 process.waitFor();
                 result = 1;
                 sessionManager.getOnlineTerminalId();

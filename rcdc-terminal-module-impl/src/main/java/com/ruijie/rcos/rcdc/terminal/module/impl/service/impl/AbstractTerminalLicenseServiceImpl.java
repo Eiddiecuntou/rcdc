@@ -164,7 +164,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
 
         // 授权证书为-1分为两种情况：RCDC首次初始化sql时将licenseNum初始化为-1。已导入临时证书，产品调用cbb接口，设licenseNum值为-1。
         // 授权证书为-1时，不限制终端授权，可接入任意数量IDV终端。
-        if (currentNum == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
+        if (Objects.equals(currentNum, Constants.TERMINAL_AUTH_DEFAULT_NUM)) {
             LOGGER.info("从终端授权数量为-1，导入正式授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
             // fixMe 此处需考虑通知产品，断开shine连接
             processImportOfficialLicense(licenseNum);

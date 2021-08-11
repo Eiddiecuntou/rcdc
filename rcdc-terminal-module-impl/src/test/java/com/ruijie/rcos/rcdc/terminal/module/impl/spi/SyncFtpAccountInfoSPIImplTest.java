@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.FtpConfigInfo;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
@@ -40,11 +41,13 @@ public class SyncFtpAccountInfoSPIImplTest {
      */
     @Test
     public void testDispatch() {
-        new Expectations() {
+        new Expectations(AesUtil.class) {
             {
                 globalParameterAPI.findParameter("terminal_ftp_config");
                 result = "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\","
                     + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
+                AesUtil.encrypt("21Wq_Er", Constants.FTP_PASSWORD_KEY);
+                result = "aaa21Wq_Er";
             }
         };
         CbbDispatcherRequest request = new CbbDispatcherRequest();
@@ -58,8 +61,6 @@ public class SyncFtpAccountInfoSPIImplTest {
                 Assert.assertTrue(0 == message.getCode());
                 Assert.assertTrue(2021 == ((FtpConfigInfo)message.getContent()).getFtpPort());
                 Assert.assertEquals("shine", ((FtpConfigInfo)message.getContent()).getFtpUserName());
-                Assert.assertEquals("21Wq_Er",
-                    AesUtil.descrypt(((FtpConfigInfo)message.getContent()).getFtpUserPassword(), "SHINEFTPPASSWORD"));
                 Assert.assertEquals("/", ((FtpConfigInfo)message.getContent()).getFtpPath());
                 Assert.assertEquals("/", ((FtpConfigInfo)message.getContent()).getFileDir());
             }
@@ -72,7 +73,7 @@ public class SyncFtpAccountInfoSPIImplTest {
      */
     @Test
     public void testDispatchTerminalFtpConfigUnexists() {
-        new Expectations() {
+        new Expectations(AesUtil.class) {
             {
                 globalParameterAPI.findParameter("terminal_ftp_config");
                 result = null;

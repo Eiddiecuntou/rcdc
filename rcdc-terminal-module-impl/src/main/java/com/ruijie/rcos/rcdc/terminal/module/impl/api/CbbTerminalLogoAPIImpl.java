@@ -91,8 +91,10 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
         createLogoFilePath(saveLogoFile);
         try {
             Files.move(logo.toPath(), saveLogo.toPath());
-            saveLogo.setReadable(true, false);
-            saveLogo.setExecutable(true, false);
+            boolean isSuccess = saveLogo.setReadable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
+            isSuccess = saveLogo.setExecutable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
 
         } catch (IOException e) {
             LOGGER.error("从[{}] 移动文件到[{}]失败", logoPath, saveLogoPath);
@@ -116,10 +118,11 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
         File logo = new File(logoPath);
         if (!logo.exists()) {
             logo.mkdir();
-            logo.setReadable(true, false);
-            logo.setExecutable(true, false);
+            boolean isSuccess = logo.setReadable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
+            isSuccess = logo.setExecutable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
         }
-
     }
 
     private String getLogoPath(String logoInfo) {

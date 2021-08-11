@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
@@ -25,6 +26,13 @@ public interface TerminalBasicInfoService {
      */
     void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
         Boolean authed);
+
+    /**
+     * 根据终端信息获取终端类型
+     * @param terminalEntity 终端实体类
+     * @return 终端类型
+     */
+    CbbTerminalTypeEnums obtainTerminalType(TerminalEntity terminalEntity);
 
     /**
      * 判断当前接入的终端有没有在终端表中存在记录

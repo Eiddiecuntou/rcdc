@@ -24,7 +24,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeResult;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -317,6 +316,9 @@ public class CheckUpgradeHandlerSPIImplTest {
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo) any);
                 result = terminalEntity;
 
+                basicInfoService.obtainTerminalType(terminalEntity);
+                result = CbbTerminalTypeEnums.VDI_LINUX;
+
                 handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
                 result = new BusinessException("123");
 
@@ -505,23 +507,19 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = config;
                 basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
                 result = terminalEntity;
+                basicInfoService.obtainTerminalType(terminalEntity);
+                result = CbbTerminalTypeEnums.IDV_LINUX;
                 componentUpgradeService.getVersion(terminalEntity, anyString);
                 result = versionResultDTO;
             }
         };
 
         CbbDispatcherRequest request = new CbbDispatcherRequest();
-        try {
-            request.setTerminalId(terminalId);
-            request.setRequestId("4567");
-            request.setData(generateLinuxIDVJson());
-            request.setNewConnection(true);
-            checkUpgradeHandler.dispatch(request);
-            fail();
-        } catch (IllegalArgumentException e) {
-            assertEquals("配置的终端工作类型[UNKNOWN]不支持系统升级", e.getMessage());
-
-        }
+        request.setTerminalId(terminalId);
+        request.setRequestId("4567");
+        request.setData(generateLinuxIDVJson());
+        request.setNewConnection(true);
+        checkUpgradeHandler.dispatch(request);
 
         new Verifications() {
             {
@@ -532,7 +530,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 times = 0;
 
                 messageHandlerAPI.response((CbbResponseShineMessage) any);
-                times = 0;
+                times = 1;
             }
         };
     }
