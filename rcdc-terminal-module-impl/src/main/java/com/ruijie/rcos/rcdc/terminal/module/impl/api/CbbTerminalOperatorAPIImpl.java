@@ -45,7 +45,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalOperatorAPIImpl.class);
 
-    private static final String REGEX_PASSWORD = "^(?=.*[0-9])(?=.*[a-zA-Z])(.{8,16})$";
+    private static final String REGEX_PASSWORD = "^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]+$)(?![a-z0-9]+$)" +
+            "(?![a-z`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]+$)(?![0-9`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]+$)" +
+            "[a-zA-Z0-9`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]{8,16}$";
 
     @Autowired
     private TerminalOperatorService operatorService;
