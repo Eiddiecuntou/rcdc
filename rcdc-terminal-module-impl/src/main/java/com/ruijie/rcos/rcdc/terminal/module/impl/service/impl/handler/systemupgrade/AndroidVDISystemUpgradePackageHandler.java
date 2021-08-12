@@ -110,9 +110,12 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
             File sourceSeedFile = new File(seedFileInfo.getSeedFilePath());
             File destSeedFile = new File(OLD_ANDROID_OTA_SEED_DIR + sourceSeedFile.getName());
             FileOperateUtil.copyfile(seedFileInfo.getSeedFilePath(), OLD_ANDROID_OTA_SEED_DIR + sourceSeedFile.getName());
-            destSeedFile.setReadable(true, false);
-            destSeedFile.setExecutable(true, false);
-            destSeedFile.setWritable(true, false);
+            boolean isSuccess = destSeedFile.setReadable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
+            isSuccess = destSeedFile.setExecutable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
+            isSuccess = destSeedFile.setWritable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);  
 
             upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
             upgradeInfo.setPackageName(fileName);

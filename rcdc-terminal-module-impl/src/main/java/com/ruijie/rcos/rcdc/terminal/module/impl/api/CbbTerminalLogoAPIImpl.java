@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalLogoInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
@@ -88,11 +89,13 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
         String saveLogoFile = configFacade.read("file.busiz.dir.terminal.logo");
         String saveLogoPath = saveLogoFile + TERMINAL_LOGO_NAME;
         File saveLogo = new File(saveLogoPath);
-        createLogoFilePath(saveLogoFile);
+        FileOperateUtil.checkAndGetDirectory(saveLogoFile);
         try {
             Files.move(logo.toPath(), saveLogo.toPath());
-            saveLogo.setReadable(true, false);
-            saveLogo.setExecutable(true, false);
+            boolean isSuccess = saveLogo.setReadable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
+            isSuccess = saveLogo.setExecutable(true, false);
+            LOGGER.info("操作结果：[{}]", isSuccess);
 
         } catch (IOException e) {
             LOGGER.error("从[{}] 移动文件到[{}]失败", logoPath, saveLogoPath);
@@ -110,16 +113,6 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
             skyengineFile.delete(false);
         }
         return logoPath;
-    }
-
-    private void createLogoFilePath(String logoPath) {
-        File logo = new File(logoPath);
-        if (!logo.exists()) {
-            logo.mkdir();
-            logo.setReadable(true, false);
-            logo.setExecutable(true, false);
-        }
-
     }
 
     private String getLogoPath(String logoInfo) {

@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.quartz;
 
 import java.io.File;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -14,12 +13,9 @@ import com.ruijie.rcos.base.aaa.module.def.api.BaseSystemLogMgmtAPI;
 import com.ruijie.rcos.base.aaa.module.def.api.request.systemlog.BaseCreateSystemLogRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
-
 
 /**
  *
@@ -35,7 +31,7 @@ public class TerminalCollectLogCleanQuartzTask implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalCollectLogCleanQuartzTask.class);
 
-    public static final long TERMINAL_LOG_FILE_EXPIRE_TIME = 24 * 60 * 60 * 1000;
+    public static final long TERMINAL_LOG_FILE_EXPIRE_TIME = 24 * 60 * 60 * 1000L;
 
     @Autowired
     private BaseSystemLogMgmtAPI baseSystemLogMgmtAPI;

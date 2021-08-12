@@ -75,7 +75,7 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
             return;
         }
 
-        if (terminalEntity.getAuthed() == Boolean.FALSE) {
+        if (Boolean.FALSE.equals(terminalEntity.getAuthed())) {
             LOGGER.info("终端:{}未授权，无需取消授权", terminalId);
             return;
         }

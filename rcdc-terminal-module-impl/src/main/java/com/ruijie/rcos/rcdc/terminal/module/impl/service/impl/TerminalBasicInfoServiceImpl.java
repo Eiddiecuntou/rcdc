@@ -1,12 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Sets;
 import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -38,6 +41,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -55,7 +59,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalBasicInfoServiceImpl.class);
-
 
     @Autowired
     private SessionManager sessionManager;
@@ -75,6 +78,11 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
      * key - terminalId , value - lock
      */
     private static Map<String, Lock> lockMap = new ConcurrentHashMap<>();
+
+    /**
+     *  特殊终端-IDV用作VDI的productId  (RG-CT3120：80020101、Rain400W：80060041、Rain400W V2：80060042、Rain300W：80060022)
+     */
+    private static final Set<String> IDV_USE_AS_VDI_PRODUCT_ID_SET = Sets.newHashSet("80020101", "80060041", "80060042", "80060022");
 
     @Override
     public void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo, Boolean authed) {
@@ -111,6 +119,27 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             LOGGER.error("保存终端信息失败！将进行重试", e);
             return false;
         }
+    }
+
+    @Override
+    public CbbTerminalTypeEnums obtainTerminalType(TerminalEntity terminalEntity) {
+        Assert.notNull(terminalEntity, "terminalEntity can not be null");
+        CbbTerminalPlatformEnums terminalPlatform = terminalEntity.getPlatform();
+        String osType = terminalEntity.getTerminalOsType();
+
+        // TODO 临时解决方案，后续版本需修订
+        if (IDV_USE_AS_VDI_PRODUCT_ID_SET.contains(terminalEntity.getProductId())) {
+            LOGGER.info("终端[{}]IDV用作VDI终端系统升级返回IDV平台", terminalEntity.getTerminalId());
+            return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
+        }
+
+        if (terminalPlatform == CbbTerminalPlatformEnums.VOI) {
+            LOGGER.info("VOI平台类型终端快刷转换成IDV类型");
+            return CbbTerminalTypeEnums.convert(CbbTerminalPlatformEnums.IDV.name(), osType);
+        }
+
+        return CbbTerminalTypeEnums.convert(terminalPlatform.name(), osType);
+
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -286,9 +285,4 @@ public interface Constants {
      * voi升级授权默认使用数量为0
      */
     Integer TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM = 0;
-
-    /**
-     *  特殊终端-IDV用作VDI的productId  (RG-CT3120：80020101、Rain400W：80060041、Rain400W V2：80060042、Rain300W：80060022)
-     */
-    Set<String> IDV_USE_AS_VDI_PRODUCT_ID_SET = Sets.newHashSet("80020101", "80060041", "80060042", "80060022");
 }
