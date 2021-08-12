@@ -24,10 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -149,9 +146,9 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     public void deleteTerminalGroup(CbbDeleteTerminalGroupDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        List<UUID> deleteIdList = terminalGroupServiceTx.deleteGroup(request.getId(), request.getMoveGroupId());
+        Set<UUID> deleteIdList = terminalGroupServiceTx.deleteGroup(request.getId(), request.getMoveGroupId());
         CbbTerminalGroupOperNotifyRequest cbbTerminalGroupOperNotifyRequest = new CbbTerminalGroupOperNotifyRequest();
-        cbbTerminalGroupOperNotifyRequest.setDeleteIdList(deleteIdList);
+        cbbTerminalGroupOperNotifyRequest.setDeleteIdSet(deleteIdList);
         cbbTerminalGroupOperNotifyRequest.setId(request.getId());
         cbbTerminalGroupOperNotifyRequest.setMoveGroupId(request.getMoveGroupId());
         LOGGER.info("发布通知事件，通知参数是：{}", JSON.toJSONString(cbbTerminalGroupOperNotifyRequest));
