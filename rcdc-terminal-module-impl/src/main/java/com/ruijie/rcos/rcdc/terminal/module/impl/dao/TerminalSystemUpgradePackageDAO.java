@@ -73,7 +73,7 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
      */
     @Modifying
     @Transactional
-    @Query(value = "update TerminalSystemUpgradePackageEntity set seedMd5=?2 where id=?1")
+    @Query(value = "update TerminalSystemUpgradePackageEntity set seedMd5=?2,version = version + 1  where id=?1 and version = version")
     void updateSeedMd5ById(UUID id, String seedMd5);
 
 }
