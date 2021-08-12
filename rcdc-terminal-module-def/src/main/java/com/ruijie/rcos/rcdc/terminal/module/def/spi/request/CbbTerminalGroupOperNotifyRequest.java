@@ -18,9 +18,6 @@ import java.util.UUID;
 public class CbbTerminalGroupOperNotifyRequest {
 
     @NotNull
-    private UUID id;
-
-    @NotNull
     private Set<UUID> deleteIdSet;
 
     @Nullable
@@ -43,11 +40,4 @@ public class CbbTerminalGroupOperNotifyRequest {
         this.deleteIdSet = deleteIdSet;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 }

@@ -149,7 +149,6 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
         Set<UUID> deleteIdList = terminalGroupServiceTx.deleteGroup(request.getId(), request.getMoveGroupId());
         CbbTerminalGroupOperNotifyRequest cbbTerminalGroupOperNotifyRequest = new CbbTerminalGroupOperNotifyRequest();
         cbbTerminalGroupOperNotifyRequest.setDeleteIdSet(deleteIdList);
-        cbbTerminalGroupOperNotifyRequest.setId(request.getId());
         cbbTerminalGroupOperNotifyRequest.setMoveGroupId(request.getMoveGroupId());
         LOGGER.info("发布通知事件，通知参数是：{}", JSON.toJSONString(cbbTerminalGroupOperNotifyRequest));
         cbbTerminalGroupOperNotifySPI.notifyTerminalGroupChange(cbbTerminalGroupOperNotifyRequest);
