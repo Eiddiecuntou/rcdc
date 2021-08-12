@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,20 +54,23 @@ public class TerminalGroupServiceTxImpl implements TerminalGroupServiceTx {
     private TerminalSystemUpgradeTerminalGroupDAO systemUpgradeTerminalGroupDAO;
 
     @Override
-    public void deleteGroup(UUID id, @Nullable UUID moveGroupId) throws BusinessException {
+    public List<UUID> deleteGroup(UUID id, @Nullable UUID moveGroupId) throws BusinessException {
         Assert.notNull(id, "terminal group id can not be null");
 
         LOGGER.warn("delete terminal group, id[{}]", id);
 
         validator.validate(id, moveGroupId);
         terminalGroupService.checkGroupExist(id);
-        deleteAndMoveGroup(id, moveGroupId);
+        List<UUID> subGroupIdList = new ArrayList<>();
+        subGroupIdList.add(id);
+        deleteAndMoveGroup(id, moveGroupId,subGroupIdList);
 
         // 删除升级任务的终端分组记录
         systemUpgradeTerminalGroupDAO.deleteByTerminalGroupId(id);
+        return subGroupIdList;
     }
 
-    private void deleteAndMoveGroup(UUID id, UUID moveGroupId) {
+    private void deleteAndMoveGroup(UUID id, UUID moveGroupId,List<UUID> subGroupIdList) {
         doDeleteGroup(id, moveGroupId);
         // 选择的移动分组不是未分组，则将删除分组的子分组移动至选择分组下
         List<TerminalGroupEntity> subGroupList = terminalGroupDAO.findByParentId(id);
@@ -77,9 +81,9 @@ public class TerminalGroupServiceTxImpl implements TerminalGroupServiceTx {
             updateSubGroupParent(subGroupList, moveGroupId);
             return;
         }
-
+        subGroupIdList.addAll(subGroupIdList);
         for (TerminalGroupEntity groupEntity : subGroupList) {
-            deleteAndMoveGroup(groupEntity.getId(), moveGroupId);
+            deleteAndMoveGroup(groupEntity.getId(), moveGroupId,subGroupIdList);
         }
     }
 

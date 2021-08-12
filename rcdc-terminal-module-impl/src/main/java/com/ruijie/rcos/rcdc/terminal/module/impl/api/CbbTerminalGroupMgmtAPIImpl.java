@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
@@ -86,7 +87,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
         if (CollectionUtils.isEmpty(groupList)) {
             return new CbbTerminalGroupTreeNodeDTO[0];
         }
-        //过滤掉未分组
+        // 过滤掉未分组
         if (request.getEnableFilterDefaultGroup()) {
             terminalGroupHandler.filterDefaultGroup(groupList);
         }
@@ -100,7 +101,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
 
         List<TerminalGroupEntity> groupEntityList = terminalGroupService.getByName(request.getParentGroupId(), request.getGroupName());
         if (CollectionUtils.isEmpty(groupEntityList)) {
-            //groupEntityList为空，返回null
+            // groupEntityList为空，返回null
             return null;
         }
 
@@ -139,8 +140,8 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     public void editTerminalGroup(CbbEditTerminalGroupDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        CbbTerminalGroupDetailDTO terminalGroupDTO = new CbbTerminalGroupDetailDTO(request.getId()
-                , request.getGroupName(), request.getParentGroupId());
+        CbbTerminalGroupDetailDTO terminalGroupDTO =
+                new CbbTerminalGroupDetailDTO(request.getId(), request.getGroupName(), request.getParentGroupId());
         terminalGroupService.modifyGroupById(terminalGroupDTO);
     }
 
@@ -148,10 +149,12 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     public void deleteTerminalGroup(CbbDeleteTerminalGroupDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        terminalGroupServiceTx.deleteGroup(request.getId(), request.getMoveGroupId());
+        List<UUID> deleteIdList = terminalGroupServiceTx.deleteGroup(request.getId(), request.getMoveGroupId());
         CbbTerminalGroupOperNotifyRequest cbbTerminalGroupOperNotifyRequest = new CbbTerminalGroupOperNotifyRequest();
+        cbbTerminalGroupOperNotifyRequest.setDeleteIdList(deleteIdList);
         cbbTerminalGroupOperNotifyRequest.setId(request.getId());
         cbbTerminalGroupOperNotifyRequest.setMoveGroupId(request.getMoveGroupId());
+        LOGGER.info("发布通知事件，通知参数是：{}", JSON.toJSONString(cbbTerminalGroupOperNotifyRequest));
         cbbTerminalGroupOperNotifySPI.notifyTerminalGroupChange(cbbTerminalGroupOperNotifyRequest);
     }
 
@@ -168,8 +171,8 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
 
         boolean isNameUnique;
         try {
-            isNameUnique = terminalGroupService.checkGroupNameUnique(new CbbTerminalGroupDetailDTO(request.getId(),
-                    request.getGroupName(), request.getParentId()));
+            isNameUnique = terminalGroupService
+                    .checkGroupNameUnique(new CbbTerminalGroupDetailDTO(request.getId(), request.getGroupName(), request.getParentId()));
         } catch (BusinessException e) {
             isNameUnique = false;
         }
@@ -181,7 +184,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
     public CbbTerminalStatisticsDTO statisticsTerminal(UUID[] groupIdArr) {
         Assert.notNull(groupIdArr, "groupIdArr");
         CbbTerminalStatisticsDTO response = new CbbTerminalStatisticsDTO();
-        //统计各类型终端在线情况
+        // 统计各类型终端在线情况
         TerminalStatisticsItem itemVDI = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.VDI, groupIdArr);
         response.setVdi(itemVDI);
         TerminalStatisticsItem itemIDV = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.IDV, groupIdArr);
@@ -191,7 +194,7 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
 
         TerminalStatisticsItem itemVOI = buildTerminalStatisticsItem(CbbTerminalPlatformEnums.VOI, groupIdArr);
         response.setVoi(itemVOI);
-        //统计所有终端在线情况
+        // 统计所有终端在线情况
         return response;
     }
 
@@ -201,10 +204,8 @@ public class CbbTerminalGroupMgmtAPIImpl implements CbbTerminalGroupMgmtAPI {
         if (ArrayUtils.isEmpty(groupIdArr)) {
             resultList = viewTerminalStatDAO.statisticsByTerminalState(terminalPlatform);
         } else {
-            List<UUID> terminalGroupIdList = HibernateUtil
-                    .handleQueryIncludeList(Arrays.asList(groupIdArr));
-            resultList = viewTerminalStatDAO.statisticsByTerminalStateAndGroupId(terminalPlatform,
-                    terminalGroupIdList);
+            List<UUID> terminalGroupIdList = HibernateUtil.handleQueryIncludeList(Arrays.asList(groupIdArr));
+            resultList = viewTerminalStatDAO.statisticsByTerminalStateAndGroupId(terminalPlatform, terminalGroupIdList);
         }
         if (CollectionUtils.isEmpty(resultList)) {
             LOGGER.debug("没有终端类型为[{}]的数据", terminalPlatform);
