@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
 
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -17,18 +18,11 @@ import java.util.UUID;
 public class CbbTerminalGroupOperNotifyRequest {
 
     @NotNull
-    private UUID id;
+    private Set<UUID> deleteIdSet;
 
     @Nullable
     private UUID moveGroupId;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public UUID getMoveGroupId() {
         return moveGroupId;
@@ -37,4 +31,13 @@ public class CbbTerminalGroupOperNotifyRequest {
     public void setMoveGroupId(UUID moveGroupId) {
         this.moveGroupId = moveGroupId;
     }
+
+    public Set<UUID> getDeleteIdSet() {
+        return deleteIdSet;
+    }
+
+    public void setDeleteIdSet(Set<UUID> deleteIdSet) {
+        this.deleteIdSet = deleteIdSet;
+    }
+
 }
