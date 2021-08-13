@@ -60,7 +60,6 @@ public class TerminalGroupServiceTxImpl implements TerminalGroupServiceTx {
         validator.validate(id, moveGroupId);
         terminalGroupService.checkGroupExist(id);
         Set<UUID> subGroupIdSet = new HashSet<>();
-        subGroupIdSet.add(id);
         deleteAndMoveGroup(id, moveGroupId, subGroupIdSet);
 
         // 删除升级任务的终端分组记录
