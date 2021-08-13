@@ -103,8 +103,11 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     @Override
-    public List<CbbSystemUpgradePackageInfoDTO> listNotDelCbbSystemUpgradePackageInfo() {
-        List<TerminalSystemUpgradePackageEntity> terminalSystemUpgradePackageEntityList = terminalSystemUpgradePackageDAO.findByIsDelete(false);
+    public List<CbbSystemUpgradePackageInfoDTO> listUpgradePackageByPackageTypeAndIsDelete(CbbTerminalTypeEnums packageType, Boolean isDelete) {
+        Assert.notNull(packageType, "id can not be null");
+        Assert.notNull(isDelete, "seedMd5 can not be null or empty");
+        List<TerminalSystemUpgradePackageEntity> terminalSystemUpgradePackageEntityList =
+                terminalSystemUpgradePackageDAO.findByPackageTypeAndIsDelete(packageType, isDelete);
         return terminalSystemUpgradePackageEntityList.stream().map(terminalSystemUpgradePackageEntity -> {
             CbbSystemUpgradePackageInfoDTO cbbSystemUpgradePackageInfoDTO = new CbbSystemUpgradePackageInfoDTO();
             BeanUtils.copyProperties(terminalSystemUpgradePackageEntity, cbbSystemUpgradePackageInfoDTO);

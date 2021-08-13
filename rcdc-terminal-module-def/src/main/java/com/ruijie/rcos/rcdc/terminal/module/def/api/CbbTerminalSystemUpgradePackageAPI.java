@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 import java.util.List;
@@ -155,9 +156,11 @@ public interface CbbTerminalSystemUpgradePackageAPI {
     /**
      * 返回未删除的终端升级包信息
      *
+     * @param packageType 升级包类型
+     * @param isDelete    是否被删除
      * @return List<CbbSystemUpgradePackageInfoDTO>
      */
-    List<CbbSystemUpgradePackageInfoDTO> listNotDelCbbSystemUpgradePackageInfo();
+    List<CbbSystemUpgradePackageInfoDTO> listUpgradePackageByPackageTypeAndIsDelete(CbbTerminalTypeEnums packageType, Boolean isDelete);
 
     /**
      * 根据id 更新seed的md5

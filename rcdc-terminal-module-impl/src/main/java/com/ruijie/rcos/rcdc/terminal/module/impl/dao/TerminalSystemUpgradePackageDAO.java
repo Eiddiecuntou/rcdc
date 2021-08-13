@@ -35,9 +35,10 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
      * 获取系统升级包列表信息
      *
      * @param packageType 升级包类型
+     * @param isDelete    是否被删除
      * @return 返回系统升级包信息
      */
-    List<TerminalSystemUpgradePackageEntity> findByPackageType(CbbTerminalTypeEnums packageType);
+    List<TerminalSystemUpgradePackageEntity> findByPackageTypeAndIsDelete(CbbTerminalTypeEnums packageType, boolean isDelete);
 
     /**
      * 查询终端系统升级包列表
