@@ -29,6 +29,8 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OverlayStrategyServiceImpl.class);
 
+    private static final String LICENSE_TYPE_SPLIT = ",";
+
     @Autowired
     private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
@@ -101,9 +103,9 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
     private String buildQueryLicenseType(List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
         StringBuilder licenseTypeStr  = new StringBuilder();
         for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
-            licenseTypeStr.append("," + licenseType.name());
+            licenseTypeStr.append(LICENSE_TYPE_SPLIT + licenseType.name());
         }
 
-        return licenseTypeStr.toString().substring(0, licenseTypeStr.lastIndexOf(",") - 1);
+        return licenseTypeStr.toString().substring(1, licenseTypeStr.length());
     }
 }

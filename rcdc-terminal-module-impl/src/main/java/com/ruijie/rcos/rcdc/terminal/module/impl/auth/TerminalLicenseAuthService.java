@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyAuthConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyAuthSupportConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyConfigDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -35,7 +38,6 @@ public class TerminalLicenseAuthService {
     @Autowired
     private CbbTerminalLicenseStrategyFactory licenseStrategyFactory;
 
-
     /**
      * 授权
      *
@@ -50,24 +52,19 @@ public class TerminalLicenseAuthService {
 
         TerminalLicenseStrategyConfigDTO strategyConfig = licenseStrategyFactory.getStrategyConfig();
         List<TerminalLicenseStrategyAuthConfigDTO> allocateList = strategyConfig.getAllocateList();
-        if (CollectionUtils.isEmpty(allocateList)) {
-            LOGGER.error("授权分配策略为空，无法授权，使用默认授权策略");
-            TerminalLicenseStrategyConfigDTO defaultStrategyConfig = licenseStrategyFactory.getDefaultStrategyConfig();
-            allocateList = defaultStrategyConfig.getAllocateList();
-        }
 
         for (TerminalLicenseStrategyAuthConfigDTO allocateStrategy : allocateList) {
             if (isFitStrategy(allocateStrategy.getLicenseType(), basicInfo.getAuthMode())) {
                 LOGGER.info("终端[{}]进行[{}]授权", basicInfo.getTerminalId(), basicInfo.getAuthMode());
                 boolean isAuthSuccess = doAuth(allocateStrategy.getSupportLicenseTypeList(), isNewConnection, basicInfo);
                 if (isAuthSuccess) {
-                    LOGGER.info("终端[{}]进行[{}]授权", basicInfo.getTerminalId(), basicInfo.getAuthMode());
+                    LOGGER.info("终端[{}]进行[{}]授权成功", basicInfo.getTerminalId(), basicInfo.getAuthMode());
                     return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
                 }
             }
         }
 
-        LOGGER.info("授权失败");
+        LOGGER.info("终端[{}]进行[{}]授权失败", basicInfo.getTerminalId(), basicInfo.getAuthMode());
         return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
     }
 
@@ -77,8 +74,9 @@ public class TerminalLicenseAuthService {
      * @param terminalId 终端id
      * @param authMode   授权模式
      * @return 是否回收成功
+     * @throws BusinessException 业务异常
      */
-    public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode) {
+    public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode) throws BusinessException {
         Assert.notNull(authMode, "authMode can not be null");
         Assert.hasText(terminalId, "terminalId can not be blank");
 
@@ -107,7 +105,7 @@ public class TerminalLicenseAuthService {
                               String terminalId, CbbTerminalPlatformEnums authMode) {
 
         return supportLicenseTypeList.stream().anyMatch(supportType -> {
-            LOGGER.info("终端[{}][{}]镜像授权回收, 授权回收使用策略[{}]", terminalId, authMode, JSON.toJSONString(supportType));
+            LOGGER.info("终端[{}][{}]进行授权回收, 授权回收使用策略[{}]", terminalId, authMode, JSON.toJSONString(supportType));
             StrategyService service = licenseStrategyFactory.getService(supportType.getStrategyType());
             return service.recycle(terminalId, authMode, supportType.getLicenseTypeList());
         });
@@ -118,7 +116,7 @@ public class TerminalLicenseAuthService {
                            Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) {
 
         return supportLicenseTypeList.stream().anyMatch(supportType -> {
-            LOGGER.info("终端[{}][{}]镜像授权回收, 授权回收使用策略[{}]", basicInfo.getTerminalId(), basicInfo.getAuthMode(), JSON.toJSONString(supportType));
+            LOGGER.info("终端[{}][{}]进行授权, 授权使用策略[{}]", basicInfo.getTerminalId(), basicInfo.getAuthMode(), JSON.toJSONString(supportType));
             StrategyService service = licenseStrategyFactory.getService(supportType.getStrategyType());
             return service.allocate(supportType.getLicenseTypeList(), isNewConnection, basicInfo);
         });

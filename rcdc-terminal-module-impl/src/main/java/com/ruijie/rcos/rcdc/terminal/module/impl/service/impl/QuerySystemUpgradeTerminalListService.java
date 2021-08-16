@@ -16,7 +16,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.EntityFieldMapper;
 
 /**
  * 
- * Description: 终端升级服务实现类
+ * Description: 系统升级终端查询服务实现类
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月20日
@@ -48,7 +48,7 @@ public class QuerySystemUpgradeTerminalListService extends AbstractPageQueryTemp
     @Override
     protected Page<TerminalSystemUpgradeTerminalEntity> find(Specification<TerminalSystemUpgradeTerminalEntity> specification, Pageable pageable) {
         if (specification == null) {
-            systemUpgradeTerminalDAO.findAll(pageable);
+            return systemUpgradeTerminalDAO.findAll(pageable);
         }
         return systemUpgradeTerminalDAO.findAll(specification, pageable);
     }

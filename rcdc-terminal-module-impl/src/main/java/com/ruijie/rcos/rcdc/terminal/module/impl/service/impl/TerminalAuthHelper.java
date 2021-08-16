@@ -7,9 +7,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseCommonService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -33,11 +33,6 @@ public class TerminalAuthHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalAuthHelper.class);
 
-    private static final int NO_AUTH_LIMIT = -1;
-
-    @Autowired
-    private TerminalBasicInfoService basicInfoService;
-
     @Autowired
     private CbbTerminalConnectHandlerSPI connectHandlerSPI;
 
@@ -46,6 +41,9 @@ public class TerminalAuthHelper {
 
     @Autowired
     private TerminalLicenseAuthService terminalLicenseAuthService;
+
+    @Autowired
+    private TerminalLicenseCommonService terminalLicenseCommonService;
 
     /**
      * 终端进行授权
@@ -68,7 +66,8 @@ public class TerminalAuthHelper {
         CbbTerminalBizConfigDTO bizConfigDTO = connectHandlerSPI.notifyTerminalSupport(basicInfo);
 
         String terminalId = basicInfo.getTerminalId();
-        if (basicInfoService.isAuthed(terminalId)) {
+
+        if (terminalLicenseCommonService.isTerminalAuthed(terminalId)) {
             LOGGER.info("终端[{}]{}已授权，需要更新终端信息", terminalId, basicInfo.getTerminalName());
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
         }
@@ -101,8 +100,9 @@ public class TerminalAuthHelper {
      * @param terminalId 终端id
      * @param authMode   平台类型
      * @param authed     是否授权
+     * @throws BusinessException 业务异常
      */
-    public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums authMode, Boolean authed) {
+    public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums authMode, Boolean authed) throws BusinessException {
         Assert.notNull(terminalId, "terminalId can not be null");
         Assert.notNull(authMode, "authMode can not be null");
         Assert.notNull(authed, "authed can not be null");
