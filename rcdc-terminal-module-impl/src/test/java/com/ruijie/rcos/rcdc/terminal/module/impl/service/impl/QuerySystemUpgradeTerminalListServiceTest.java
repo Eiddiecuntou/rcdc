@@ -86,7 +86,7 @@ public class QuerySystemUpgradeTerminalListServiceTest {
 
         new Expectations() {
             {
-                systemUpgradeTerminalDAO.findAll(specification, pageable);
+                systemUpgradeTerminalDAO.findAll(pageable);
                 result = page;
             }
         };
