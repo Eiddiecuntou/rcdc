@@ -74,6 +74,7 @@ public class TerminalLicenseAuthService {
      * @param terminalId 终端id
      * @param authMode   授权模式
      * @return 是否回收成功
+     * @throws BusinessException 业务异常
      */
     public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode) throws BusinessException {
         Assert.notNull(authMode, "authMode can not be null");

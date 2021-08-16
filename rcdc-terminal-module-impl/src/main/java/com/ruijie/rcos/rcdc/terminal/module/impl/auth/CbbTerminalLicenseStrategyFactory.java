@@ -27,7 +27,7 @@ import org.springframework.util.StringUtils;
 public class CbbTerminalLicenseStrategyFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalLicenseStrategyFactory.class);
-    
+
     public static final String TERMINAL_AUTH_DEFAULT_STRATEGY_JSON = "terminal_auth_default_strategy_json";
 
     /**
@@ -61,6 +61,7 @@ public class CbbTerminalLicenseStrategyFactory {
      * 获取策略
      *
      * @return 配置策略
+     * @throws BusinessException 业务异常
      */
     public TerminalLicenseStrategyConfigDTO getStrategyConfig() throws BusinessException {
         if (needLoadStrategyByConfig(strategyConfig)) {

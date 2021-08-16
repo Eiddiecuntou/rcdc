@@ -96,7 +96,7 @@ public class QuerySystemUpgradeTerminalListServiceTest {
                 systemUpgradeTerminalDAO.findAll(pageable);
                 times = 1;
                 systemUpgradeTerminalDAO.findAll(specification, pageable);
-                times = 1;
+                times = 0;
             }
         };
     }

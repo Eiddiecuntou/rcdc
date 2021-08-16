@@ -100,6 +100,7 @@ public class TerminalAuthHelper {
      * @param terminalId 终端id
      * @param authMode   平台类型
      * @param authed     是否授权
+     * @throws BusinessException 业务异常
      */
     public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums authMode, Boolean authed) throws BusinessException {
         Assert.notNull(terminalId, "terminalId can not be null");
