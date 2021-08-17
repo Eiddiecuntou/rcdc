@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.lang.Nullable;
@@ -22,6 +23,7 @@ public interface TerminalGroupServiceTx {
      * @param id 分组id
      * @param moveGroupId 子分组及终端移动分组id
      * @throws BusinessException 业务异常
+     * @return 删除的子ID
      */
-    void deleteGroup(UUID id, @Nullable UUID moveGroupId) throws BusinessException;
+    Set<UUID> deleteGroup(UUID id, @Nullable UUID moveGroupId) throws BusinessException;
 }

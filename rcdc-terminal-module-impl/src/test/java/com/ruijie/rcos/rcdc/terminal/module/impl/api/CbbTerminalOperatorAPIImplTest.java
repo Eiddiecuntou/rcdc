@@ -556,7 +556,7 @@ public class CbbTerminalOperatorAPIImplTest {
     @Test
     public void testChangePassword() throws Exception {
         CbbChangePasswordDTO request = new CbbChangePasswordDTO();
-        request.setPassword("password123");
+        request.setPassword("Password123");
         terminalOperatorAPI.changePassword(request);
         new Verifications() {
             {
