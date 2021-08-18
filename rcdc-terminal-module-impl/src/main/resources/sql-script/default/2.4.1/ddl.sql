@@ -31,4 +31,10 @@ alter table t_cbb_terminal alter column serial_number type text;
 
 alter table t_cbb_terminal alter column product_id type text;
 
+alter table t_cbb_terminal alter column cpu_type type text;
+
 alter table t_cbb_terminal_model_driver  alter column product_id type text;
+
+alter table t_cbb_terminal_model_driver  alter column product_model type text;
+
+alter table t_cbb_terminal_model_driver  alter column cpu_type type text;
