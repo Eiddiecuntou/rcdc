@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
+import org.springframework.lang.Nullable;
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 
 /**
  * Description: 授权证书信息
@@ -15,8 +17,10 @@ public class CbbTerminalLicenseInfoDTO {
     @NotBlank
     private String licenseCode;
 
+    @NotNull
     private Integer totalNum;
 
+    @Nullable
     private Integer usedNum;
 
     public String getLicenseCode() {
