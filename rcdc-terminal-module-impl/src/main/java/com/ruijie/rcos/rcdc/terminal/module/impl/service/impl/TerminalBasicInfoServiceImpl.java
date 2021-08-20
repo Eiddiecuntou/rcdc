@@ -75,12 +75,12 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private static final int FAIL_TRY_COUNT = 3;
 
     /**
-     * key - terminalId , value - lock
+     * key - lockKey , value - lock
      */
-    private static Map<String, Lock> lockMap = new ConcurrentHashMap<>();
+    private static final Map<String, Lock> LOCK_MAP = new ConcurrentHashMap<>();
 
     /**
-     *  特殊终端-IDV用作VDI的productId  (RG-CT3120：80020101、Rain400W：80060041、Rain400W V2：80060042、Rain300W：80060022)
+     * 特殊终端-IDV用作VDI的productId (RG-CT3120：80020101、Rain400W：80060041、Rain400W V2：80060042、Rain300W：80060022)
      */
     private static final Set<String> IDV_USE_AS_VDI_PRODUCT_ID_SET = Sets.newHashSet("80020101", "80060041", "80060042", "80060022");
 
@@ -93,22 +93,27 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         // 自学习终端型号
         saveTerminalModel(shineTerminalBasicInfo);
 
-        // 保存终端基础信息
-        boolean isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
-        int count = 0;
-        // 失败，尝试3次
-        while (!isSaveSuccess && count++ < FAIL_TRY_COUNT) {
-            LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, terminalId);
-            isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
+        Lock lock = getLock(terminalId);
+        lock.lock();
+        try {
+            // 保存终端基础信息
+            boolean isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
+            int count = 0;
+            // 失败，尝试3次
+            while (!isSaveSuccess && count++ < FAIL_TRY_COUNT) {
+                LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, terminalId);
+                isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
+            }
+        } finally {
+            lock.unlock();
         }
-
         // 通知其他组件终端为在线状态
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
         noticeRequest.setTerminalBasicInfo(shineTerminalBasicInfo);
         terminalEventNoticeSPI.notify(noticeRequest);
     }
 
-    private boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
+    private synchronized boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
             Boolean authed) {
         TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
         basicInfoEntity.setAuthed(authed);
@@ -116,7 +121,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             basicInfoDAO.save(basicInfoEntity);
             return true;
         } catch (Exception e) {
-            LOGGER.error("保存终端信息失败！将进行重试", e);
+            LOGGER.error("保存终端[" + terminalId + "]信息失败！将进行重试", e);
             return false;
         }
     }
@@ -140,13 +145,6 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
         return CbbTerminalTypeEnums.convert(terminalPlatform.name(), osType);
 
-    }
-
-    @Override
-    public boolean isAuthed(String terminalId) {
-        Assert.hasText(terminalId, "terminalId can not be empty");
-        TerminalEntity termianlEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-        return termianlEntity != null && termianlEntity.getAuthed() != null && termianlEntity.getAuthed();
     }
 
     @Override
@@ -213,10 +211,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
             if (!CollectionUtils.isEmpty(modelEntityList)) {
                 boolean isDriverModeExist = modelEntityList.stream()
-                        .filter(modelDriver -> Objects.equals(modelDriver.getProductId(), basicInfo.getProductId())
+                        .anyMatch(modelDriver -> Objects.equals(modelDriver.getProductId(), basicInfo.getProductId())
                                 && Objects.equals(modelDriver.getProductModel(), basicInfo.getProductType())
-                                && Objects.equals(modelDriver.getCpuType(), basicInfo.getCpuType()))
-                        .findFirst().isPresent();
+                                && Objects.equals(modelDriver.getCpuType(), basicInfo.getCpuType()));
                 if (isDriverModeExist) {
                     // 已存在类型，无需处理
                     return;
@@ -237,12 +234,12 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     private synchronized Lock getLock(String lockKey) {
-        if (lockMap.containsKey(lockKey)) {
-            return lockMap.get(lockKey);
+        if (LOCK_MAP.containsKey(lockKey)) {
+            return LOCK_MAP.get(lockKey);
         }
         Lock lock = new ReentrantLock();
-        lockMap.put(lockKey, lock);
-        return lockMap.get(lockKey);
+        LOCK_MAP.put(lockKey, lock);
+        return LOCK_MAP.get(lockKey);
     }
 
     @Override

@@ -60,17 +60,18 @@ public class RcdcMessageHandler implements MessageHandler {
      * @param message 报文对象
      */
     private void handleMessage(ResponseMessageSender sender, BaseMessage message) {
-        LOGGER.info("接收到的报文：action:{};data:{}", message.getAction(), String.valueOf(message.getData()));
         // 处理非业务报文
         if (handleNonBusinessMessage(sender, message)) {
             return;
         }
+
         // 检查session是否已绑定终端，未绑定且不是升级报文则不处理报文
         if (!hasBindSession(sender.getSession(), message.getAction())) {
             LOGGER.warn("终端未绑定session，不处理报文。action：{};data:{}", message.getAction(), String.valueOf(message.getData()));
             return;
         }
 
+        LOGGER.info("接收到的报文：action:{};data:{}", message.getAction(), String.valueOf(message.getData()));
         boolean isNewConnection = false;
         // 处理升级报文，获取terminalId绑定终端
         if (ShineAction.CHECK_UPGRADE.equals(message.getAction())) {
@@ -159,8 +160,7 @@ public class RcdcMessageHandler implements MessageHandler {
             LOGGER.info("分发消息，terminalId:{}; action: {}; data:{}", terminalId, message.getAction(), data);
             cbbDispatcherHandlerSPI.dispatch(request);
         } catch (Exception e) {
-            LOGGER.error("消息分发执行异常;", "action:" + message.getAction()
-                    + ",terminalId:" + terminalId + ",data:" + message.getData(), e);
+            LOGGER.error("消息分发执行异常;", "action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + message.getData(), e);
         }
     }
 

@@ -35,13 +35,6 @@ public interface TerminalBasicInfoService {
     CbbTerminalTypeEnums obtainTerminalType(TerminalEntity terminalEntity);
 
     /**
-     * 判断当前接入的终端有没有在终端表中存在记录
-     * @param terminalId 终端id
-     * @return true 新终端；false 已接入过的终端
-     */
-    boolean isAuthed(String terminalId);
-
-    /**
      * 通过shine上报的终端基本信息，构建终端entity
      * @param terminalId 终端id
      * @param isNewConnection 是否是新连接

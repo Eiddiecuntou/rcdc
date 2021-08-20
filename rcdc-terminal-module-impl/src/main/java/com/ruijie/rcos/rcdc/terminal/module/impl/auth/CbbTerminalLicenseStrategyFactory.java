@@ -4,21 +4,16 @@ import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.enums.CbbTerminalLicenseStrategyEnums;
+import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.ResourceBundle;
 
 /**
  * Description: 授权策略工程类
@@ -33,17 +28,12 @@ public class CbbTerminalLicenseStrategyFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalLicenseStrategyFactory.class);
 
-    private static final String DEFAULT_AUTH_CONFIG_FILE = "/config/auth.json";
+    public static final String TERMINAL_AUTH_DEFAULT_STRATEGY_JSON = "terminal_auth_default_strategy_json";
 
     /**
-     *  业务设置的策略
+     * 业务设置的策略
      */
     private TerminalLicenseStrategyConfigDTO strategyConfig;
-
-    /**
-     * 默认的策略
-     */
-    private TerminalLicenseStrategyConfigDTO defaultStrategyConfig;
 
     @Autowired
     @Qualifier("overlayStrategyService")
@@ -52,6 +42,9 @@ public class CbbTerminalLicenseStrategyFactory {
     @Autowired
     @Qualifier("priorityStrategyService")
     private StrategyService priorityStrategyService;
+
+    @Autowired
+    private ConfigFacade configFacade;
 
     /**
      * 初始化授权策略配置
@@ -64,7 +57,18 @@ public class CbbTerminalLicenseStrategyFactory {
         this.strategyConfig = strategyConfig;
     }
 
-    public TerminalLicenseStrategyConfigDTO getStrategyConfig() {
+    /**
+     * 获取策略
+     *
+     * @return 配置策略
+     * @throws BusinessException 业务异常
+     */
+    public TerminalLicenseStrategyConfigDTO getStrategyConfig() throws BusinessException {
+        if (needLoadStrategyByConfig(strategyConfig)) {
+            LOGGER.error("授权分配策略为空，无法授权，使用默认授权策略");
+            strategyConfig = loadDefaultStrategyConfig();
+        }
+
         return strategyConfig;
     }
 
@@ -87,33 +91,23 @@ public class CbbTerminalLicenseStrategyFactory {
         }
     }
 
-    /**
-     *  获取默认策略
-     *
-     * @return 默认授权策略
-     * @throws BusinessException 业务异常
-     */
-    public TerminalLicenseStrategyConfigDTO getDefaultStrategyConfig() throws BusinessException {
-        if (defaultStrategyConfig == null) {
-            defaultStrategyConfig = loadDefaultStrategyConfig();
-        }
 
-        return defaultStrategyConfig;
+    private boolean needLoadStrategyByConfig(TerminalLicenseStrategyConfigDTO strategy) {
+        LOGGER.error("当前授权策略为：{}", JSON.toJSONString(strategy));
+
+        return strategy == null || CollectionUtils.isEmpty(strategy.getAllocateList()) || CollectionUtils.isEmpty(strategy.getRecycleList());
     }
 
     private TerminalLicenseStrategyConfigDTO loadDefaultStrategyConfig() throws BusinessException {
-        URL url = this.getClass().getResource(DEFAULT_AUTH_CONFIG_FILE);
-        File file = new File(url.getPath());
-        if (file.exists()) {
-            try {
-                String content = FileUtils.readFileToString(file, Charset.forName("UTF-8"));
-                return JSON.parseObject(content, TerminalLicenseStrategyConfigDTO.class);
-            } catch (IOException e) {
-                LOGGER.error("加载默认授权策略文件异常", e);
-            }
+
+        String strategyJson = configFacade.read(TERMINAL_AUTH_DEFAULT_STRATEGY_JSON);
+        LOGGER.info("加载默认授权策略配置:{}", strategyJson);
+
+        if (StringUtils.isEmpty(strategyJson)) {
+            LOGGER.warn("加载默认授权策略配置信息异常或文件不存在");
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_LOAD_DEFAULT_LICENSE_STRATEGY_ERROR);
         }
 
-        LOGGER.warn("加载默认授权策略配置文件异常或文件不存在");
-        throw new BusinessException(BusinessKey.RCDC_TERMINAL_LOAD_DEFAULT_LICENSE_STRATEGY_ERROR);
+        return JSON.parseObject(strategyJson, TerminalLicenseStrategyConfigDTO.class);
     }
 }
