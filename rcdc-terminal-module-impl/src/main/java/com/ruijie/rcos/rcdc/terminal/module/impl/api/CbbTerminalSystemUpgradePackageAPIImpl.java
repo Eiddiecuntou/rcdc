@@ -2,11 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -22,6 +19,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.util.Assert;
@@ -30,15 +28,15 @@ import org.springframework.util.CollectionUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 
  * Description: 终端系统升级实现类
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2018年11月19日
- * 
+ *
  * @author nt
  */
 public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystemUpgradePackageAPI {
@@ -86,7 +84,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         if (hasRunningTask) {
             LOGGER.info("system upgrade task is running");
             allowUpload = false;
-            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, new String[] {}));
+            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, new String[]{}));
         }
 
         // 判断磁盘大小是否满足
@@ -94,7 +92,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         final boolean isEnough = handler.checkServerDiskSpaceIsEnough(request.getFileSize(), handler.getUpgradePackageFileDir());
         if (!isEnough) {
             allowUpload = false;
-            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[] {}));
+            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[]{}));
         }
 
         CbbCheckAllowUploadPackageResultDTO respone = new CbbCheckAllowUploadPackageResultDTO();
@@ -102,6 +100,29 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         respone.setErrorList(errorList);
 
         return respone;
+    }
+
+    @Override
+    public List<CbbSystemUpgradePackageInfoDTO> listUpgradePackageByPackageTypeAndIsDelete(CbbTerminalTypeEnums packageType, Boolean isDelete) {
+        Assert.notNull(packageType, "id can not be null");
+        Assert.notNull(isDelete, "seedMd5 can not be null or empty");
+        LOGGER.info("升级包类型和是否删除状态，查询所有升级包信息，packageType {}，isDelete {}", packageType, isDelete);
+        List<TerminalSystemUpgradePackageEntity> terminalSystemUpgradePackageEntityList =
+                terminalSystemUpgradePackageDAO.findByPackageTypeAndIsDelete(packageType, isDelete);
+        return terminalSystemUpgradePackageEntityList.stream().map(terminalSystemUpgradePackageEntity -> {
+            CbbSystemUpgradePackageInfoDTO cbbSystemUpgradePackageInfoDTO = new CbbSystemUpgradePackageInfoDTO();
+            BeanUtils.copyProperties(terminalSystemUpgradePackageEntity, cbbSystemUpgradePackageInfoDTO);
+            return cbbSystemUpgradePackageInfoDTO;
+        }).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public void updateSeedMd5ById(UUID id, String seedMd5) {
+        Assert.notNull(id, "id can not be null");
+        Assert.hasText(seedMd5, "seedMd5 can not be null or empty");
+        LOGGER.info("更新升级包种子md5值，id {}，seedMd5 {}", id, seedMd5);
+        terminalSystemUpgradePackageDAO.updateSeedMd5ById(id, seedMd5);
     }
 
     @Override
@@ -192,7 +213,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
     private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
+                .asList(new CbbSystemUpgradeTaskStateEnums[]{CbbSystemUpgradeTaskStateEnums.UPGRADING});
         final List<TerminalSystemUpgradeEntity> upgradingTaskList =
                 systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {
