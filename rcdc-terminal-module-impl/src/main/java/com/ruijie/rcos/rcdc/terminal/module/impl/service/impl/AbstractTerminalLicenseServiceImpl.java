@@ -6,8 +6,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseCommonService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -41,14 +42,14 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     protected GlobalParameterAPI globalParameterAPI;
 
     @Autowired
-    private TerminalBasicInfoService basicInfoService;
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
     @Autowired
-    private TerminalAuthorizeDAO terminalAuthorizeDAO;
+    private TerminalLicenseCommonService terminalLicenseCommonService;
 
     protected final Object usedNumLock = new Object();
 
-    protected Integer usedNum;
+    protected Integer usedNum = null;
 
     @Override
     public Integer getUsedNum() {
@@ -70,23 +71,23 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     @Override
     public void increaseCacheLicenseUsedNum() {
         synchronized (usedNumLock) {
-            List<CbbTerminalLicenseInfoDTO> licenseInfoList = LICENSE_MAP.get(getLicenseType());
-            for (CbbTerminalLicenseInfoDTO licenseInfoDTO : licenseInfoList) {
-                if (licenseInfoDTO.getTotalNum() > licenseInfoDTO.getUsedNum()) {
-                    licenseInfoDTO.setUsedNum(licenseInfoDTO.getUsedNum() + 1);
-                }
+            if (usedNum == null) {
+                usedNum = getUsedNum();
             }
+
+            usedNum++;
         }
     }
 
     @Override
     public void decreaseCacheLicenseUsedNum() {
         synchronized (usedNumLock) {
-            List<CbbTerminalLicenseInfoDTO> licenseInfoList = LICENSE_MAP.get(getLicenseType());
-            for (CbbTerminalLicenseInfoDTO licenseInfoDTO : licenseInfoList) {
-                if (licenseInfoDTO.getUsedNum() > 0) {
-                    licenseInfoDTO.setUsedNum(licenseInfoDTO.getUsedNum() - 1);
-                }
+            if (usedNum == null) {
+                usedNum = getUsedNum();
+            }
+
+            if (usedNum > 0) {
+                usedNum--;
             }
         }
     }
@@ -193,7 +194,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         Assert.hasText(terminalId, "terminalId can not be empty");
         Assert.notNull(basicInfo, "basicInfo can not be null");
         synchronized (getLock()) {
-            if (basicInfoService.isAuthed(terminalId)) {
+            if (terminalLicenseCommonService.isTerminalAuthed(terminalId)) {
                 LOGGER.info("终端[{}]已授权成功，无须再次授权", terminalId);
                 return true;
             }
@@ -204,7 +205,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
                 return false;
             }
             LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);
-            basicInfoService.saveBasicInfo(terminalId, isNewConnection, basicInfo, Boolean.TRUE);
+
             this.increaseCacheLicenseUsedNum();
             return true;
         }

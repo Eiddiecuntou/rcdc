@@ -578,51 +578,6 @@ public class TerminalBasicInfoServiceImplTest {
     }
 
     /**
-     * 测试isNewTerminal
-     */
-    @Test
-    public void testIsNewTerminal() {
-        try {
-            ThrowExceptionTester.throwIllegalArgumentException(() -> basicInfoService.isAuthed(""), "terminalId can not be empty");
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        // 数据库中不存在终端数据
-        new Expectations() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
-                result = null;
-            }
-        };
-        boolean isAuthed = basicInfoService.isAuthed("123");
-        Assert.assertTrue(!isAuthed);
-
-        // 数据库中存在终端数据，但是未授权
-        TerminalEntity entity = new TerminalEntity();
-        entity.setAuthed(Boolean.FALSE);
-        new Expectations() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
-                result = entity;
-            }
-        };
-        isAuthed = basicInfoService.isAuthed("123");
-        Assert.assertTrue(!isAuthed);
-
-        // 授权成功
-        entity.setAuthed(Boolean.TRUE);
-        new Expectations() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(withEqual("123"));
-                result = entity;
-            }
-        };
-        isAuthed = basicInfoService.isAuthed("123");
-        Assert.assertTrue(isAuthed);
-    }
-
-    /**
      * 测试保存终端基本信息 - 终端类型为新类型
      */
     @Test

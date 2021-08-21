@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
+import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
  */
 public class CbbTerminalGroupNameDuplicationDTO {
 
-    @Nullable
+    @NotNull
     private UUID id;
 
     @Nullable

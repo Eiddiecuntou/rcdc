@@ -96,6 +96,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         }
         basicInfo.setPlatform(terminalBizConfigDTO.getTerminalPlatform());
         basicInfo.setAuthMode(terminalBizConfigDTO.getAuthMode());
+        basicInfo.setTerminalWorkSupportModeArr(terminalBizConfigDTO.getTerminalWorkModeArr());
 
         // 保存终端基本信息
         TerminalEntity terminalEntity =

@@ -1,28 +1,22 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import static org.junit.Assert.assertEquals;
-
-import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseCommonService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
-import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Description:TerminalLicenseVoiServiceImpl测试类
@@ -45,7 +39,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
     private TerminalLicenseServiceTx terminalLicenseServiceTx;
 
     @Injectable
-    private TerminalBasicInfoService basicInfoService;
+    private TerminalLicenseAuthService terminalLicenseAuthService;
 
     @Injectable
     private TerminalLicenseVoiUpgradeServiceImpl terminalLicenseVOIUpgradeServiceImpl;
@@ -57,7 +51,10 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
     private TerminalLicenseIDVServiceImpl terminalLicenseIDVServiceImpl;
 
     @Injectable
-    TerminalAuthorizeDAO terminalAuthorizeDAO;
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
+
+    @Injectable
+    private TerminalLicenseCommonService terminalLicenseCommonService;
 
     /**
      * 测试authedOrAuthSuccess方法，已授权终端接入
@@ -66,7 +63,7 @@ public class TerminalLicenseVoiUpgradeServiceImplTest {
     public void testOldTerminal() {
         new Expectations() {
             {
-                basicInfoService.isAuthed(withEqual("123"));
+                terminalLicenseCommonService.isTerminalAuthed(withEqual("123"));
                 result = true;
             }
         };

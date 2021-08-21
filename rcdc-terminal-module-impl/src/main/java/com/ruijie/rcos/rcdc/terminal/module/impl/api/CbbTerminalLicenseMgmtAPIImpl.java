@@ -17,6 +17,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -52,7 +53,14 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     @Override
     public CbbTerminalLicenseNumDTO getTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, @Nullable List<String> licenseCodeList) {
         Assert.notNull(licenseType, "licenseType can not be null");
-        Integer licenseNum = licenseFactoryProvider.getService(licenseType).getTerminalLicenseNum(licenseCodeList);
+
+        Integer licenseNum;
+        if (CollectionUtils.isEmpty(licenseCodeList)) {
+            licenseNum = licenseFactoryProvider.getService(licenseType).getAllTerminalLicenseNum();
+        } else {
+            licenseNum = licenseFactoryProvider.getService(licenseType).getTerminalLicenseNum(licenseCodeList);
+        }
+
         Integer usedNum = licenseFactoryProvider.getService(licenseType).getUsedNum();
 
         CbbTerminalLicenseNumDTO licenseNumDTO = new CbbTerminalLicenseNumDTO();

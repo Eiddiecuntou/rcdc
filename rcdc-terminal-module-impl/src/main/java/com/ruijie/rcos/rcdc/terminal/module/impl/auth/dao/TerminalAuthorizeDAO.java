@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +33,8 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
      *
      * @param terminalId 终端id
      */
+    @Modifying
+    @Transactional
     void deleteByTerminalId(String terminalId);
 
     /**
