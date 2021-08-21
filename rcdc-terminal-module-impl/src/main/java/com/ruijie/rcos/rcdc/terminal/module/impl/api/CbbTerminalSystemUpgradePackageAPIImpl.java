@@ -106,6 +106,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     public List<CbbSystemUpgradePackageInfoDTO> listUpgradePackageByPackageTypeAndIsDelete(CbbTerminalTypeEnums packageType, Boolean isDelete) {
         Assert.notNull(packageType, "id can not be null");
         Assert.notNull(isDelete, "seedMd5 can not be null or empty");
+        LOGGER.info("升级包类型和是否删除状态，查询所有升级包信息，packageType {}，isDelete {}", packageType, isDelete);
         List<TerminalSystemUpgradePackageEntity> terminalSystemUpgradePackageEntityList =
                 terminalSystemUpgradePackageDAO.findByPackageTypeAndIsDelete(packageType, isDelete);
         return terminalSystemUpgradePackageEntityList.stream().map(terminalSystemUpgradePackageEntity -> {
@@ -119,7 +120,8 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     @Override
     public void updateSeedMd5ById(UUID id, String seedMd5) {
         Assert.notNull(id, "id can not be null");
-        Assert.notNull(seedMd5, "seedMd5 can not be null or empty");
+        Assert.hasText(seedMd5, "seedMd5 can not be null or empty");
+        LOGGER.info("更新升级包种子md5值，id {}，seedMd5 {}", id, seedMd5);
         terminalSystemUpgradePackageDAO.updateSeedMd5ById(id, seedMd5);
     }
 

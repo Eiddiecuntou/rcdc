@@ -1,16 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-
-import javax.persistence.*;
-import java.util.Date;
 import java.util.UUID;
 
 /**
- * Description: Function Description
+ * Description: 系统升级包信息dto
  * Copyright: Copyright (c)
  * Company: Ruijie Co., Ltd.
  * Create Time: 2021/8/5 21:02
