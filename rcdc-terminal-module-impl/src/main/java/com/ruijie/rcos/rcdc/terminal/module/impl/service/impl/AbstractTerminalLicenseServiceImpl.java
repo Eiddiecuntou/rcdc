@@ -8,7 +8,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseType
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseCommonService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
@@ -143,7 +142,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
 
     @Override
     public void updateTerminalLicenseNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList) throws BusinessException {
-        Assert.notNull(licenseInfoList, "licenseNum can not be null");
+        Assert.notNull(licenseInfoList, "licenseInfoList can not be null");
 
         synchronized (getLock()) {
             updateLicenseNum(licenseInfoList);

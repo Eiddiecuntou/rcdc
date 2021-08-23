@@ -22,10 +22,14 @@ public class CbbUploadLogoDTO {
     @NotBlank
     private String logoMD5;
 
+    public CbbUploadLogoDTO() {
+
+    }
+
     public CbbUploadLogoDTO(String logoPath, String logoName, String logoMD5) {
-        Assert.notNull(logoPath, "logoPath can not be null");
-        Assert.notNull(logoName, "logoName can not be null");
-        Assert.notNull(logoMD5, "logoMD5 can not be null");
+        Assert.hasText(logoPath, "logoPath can not be blank");
+        Assert.hasText(logoName, "logoName can not be blank");
+        Assert.hasText(logoMD5, "logoMD5 can not be blank");
         this.logoPath = logoPath;
         this.logoName = logoName;
         this.logoMD5 = logoMD5;
