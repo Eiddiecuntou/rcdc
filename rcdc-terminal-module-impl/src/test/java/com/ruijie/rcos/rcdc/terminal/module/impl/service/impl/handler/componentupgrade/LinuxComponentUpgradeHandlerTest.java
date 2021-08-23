@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +27,8 @@ public class LinuxComponentUpgradeHandlerTest {
 
     @Test
     public void testGetTerminalType() {
-        CbbTerminalOsTypeEnums osType = handler.getTerminalOsType();
-        Assert.assertEquals(CbbTerminalOsTypeEnums.LINUX, osType);
+        TerminalOsArchType osArchType = handler.getTerminalOsArchType();
+        Assert.assertEquals(TerminalOsArchType.LINUX_X86, osArchType);
     }
 
 }

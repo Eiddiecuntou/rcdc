@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 
 /**
  * Description: Android终端组件升级处理
@@ -13,7 +14,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums
 public class AndroidComponentUpgradeHandler extends AbstractCommonComponentUpgradeHandler {
 
     @Override
-    protected CbbTerminalOsTypeEnums getTerminalOsType() {
-        return CbbTerminalOsTypeEnums.ANDROID;
+    protected TerminalOsArchType getTerminalOsArchType() {
+        return TerminalOsArchType.ANDROID_ARM;
     }
 }

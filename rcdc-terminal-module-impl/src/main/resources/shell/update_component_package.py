@@ -460,14 +460,12 @@ def deal_with_old_package(package_os_type):
     try:
         old_component_path_pre = "/opt/upgrade/app/terminal_component/terminal"
         torrent_path_prefix = "/opt/ftp/terminal/terminal_component/"
-        if package_os_type == 'linux':
-            stop_and_remove_package('%s%s%s' % (old_component_path_pre, '_vdi_', package_os_type),
-                                    '%s%s%s' % (torrent_path_prefix, package_os_type, '_vdi'))
-            stop_and_remove_package('%s%s%s' % (old_component_path_pre, '_idv_', package_os_type),
-                                    '%s%s%s' % (torrent_path_prefix, package_os_type, '_idv'))
-        if package_os_type == 'android':
-            stop_and_remove_package('%s%s%s' % (old_component_path_pre, '_vdi_', package_os_type),
-                                    '%s%s%s' % (torrent_path_prefix, package_os_type, '_vdi'))
+        if package_os_type == 'linux_x86':
+            stop_and_remove_package('%s%s' % (old_component_path_pre, '_linux'),
+                                    '%s%s' % (torrent_path_prefix, 'linux'))
+        if package_os_type == 'android_arm':
+            stop_and_remove_package('%s%s' % (old_component_path_pre, '_android'),
+                                    '%s%s' % (torrent_path_prefix,  'android'))
     except:
         LOGGER.error("deal with old package failed，package_os_type ： %s" % package_os_type)
         LOGGER.exception(traceback.format_exc())

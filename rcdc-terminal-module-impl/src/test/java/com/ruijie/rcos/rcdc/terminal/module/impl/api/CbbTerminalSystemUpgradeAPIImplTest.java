@@ -17,6 +17,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.UpgradeableTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.LinuxVDISystemUpgradeFileClearHandler;
@@ -283,7 +284,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = false;
                 terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request);
                 result = upgradeTaskId;
-                systemUpgradeHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                systemUpgradeHandlerFactory.getHandler((TerminalTypeArchType) any);
                 result = linuxVDISystemUpgradeHandler;
             }
         };
@@ -344,7 +345,7 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
                 result = false;
                 terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request);
                 result = upgradeTaskId;
-                systemUpgradeHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
+                systemUpgradeHandlerFactory.getHandler((TerminalTypeArchType) any);
                 result = linuxVDISystemUpgradeHandler;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
                 result = upgradeTerminalList;

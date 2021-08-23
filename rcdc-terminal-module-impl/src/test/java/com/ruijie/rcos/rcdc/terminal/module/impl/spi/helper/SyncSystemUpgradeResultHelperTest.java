@@ -13,6 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTermin
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.SystemUpgradeResultInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.StartSystemUpgradeResult;
@@ -73,7 +74,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, TerminalTypeArchType.LINUX_IDV_X86, handler, request);
 
         new Verifications() {
             {
@@ -119,7 +120,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, TerminalTypeArchType.LINUX_IDV_X86, handler, request);
 
         new Verifications() {
             {
@@ -183,7 +184,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, TerminalTypeArchType.LINUX_IDV_X86, handler, request);
 
         new Verifications() {
             {
@@ -236,7 +237,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, TerminalTypeArchType.LINUX_IDV_X86, handler, request);
 
         new Verifications() {
             {
@@ -286,7 +287,7 @@ public class SyncSystemUpgradeResultHelperTest {
             }
         };
 
-        helper.dealSystemUpgradeResult(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX, handler, request);
+        helper.dealSystemUpgradeResult(basicInfoEntity, TerminalTypeArchType.LINUX_IDV_X86, handler, request);
 
         new Verifications() {
             {

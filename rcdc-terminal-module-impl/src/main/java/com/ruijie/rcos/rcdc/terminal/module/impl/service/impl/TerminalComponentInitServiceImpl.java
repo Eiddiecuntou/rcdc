@@ -6,7 +6,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxArmUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentInitService;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
@@ -61,6 +63,9 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
     private LinuxUpdatelistCacheInit linuxUpdatelistCacheInit;
 
     @Autowired
+    private LinuxArmUpdatelistCacheInit linuxArmUpdatelistCacheInit;
+
+    @Autowired
     private AndroidUpdatelistCacheInit androidUpdatelistCacheInit;
 
     @Autowired
@@ -92,20 +97,25 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
     }
 
     private void initLinuxTerminalComponent() {
-        CbbTerminalOsTypeEnums osType = CbbTerminalOsTypeEnums.LINUX;
-        String tempPath = Constants.LINUX_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
+        TerminalOsArchType linuxX86 = TerminalOsArchType.LINUX_X86;
+        String linuxX86TempPath = Constants.LINUX_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
-        checkAndUpgrade(osType, tempPath);
+        checkAndUpgrade(linuxX86, linuxX86TempPath);
+
+        TerminalOsArchType linuxArm = TerminalOsArchType.LINUX_ARM;
+        String linuxArmTempPath = Constants.LINUX_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
+        // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
+        checkAndUpgrade(linuxArm, linuxArmTempPath);
     }
 
     private void initAndroidTerminalComponent() {
-        CbbTerminalOsTypeEnums osType = CbbTerminalOsTypeEnums.ANDROID;
+        TerminalOsArchType androidArm = TerminalOsArchType.ANDROID_ARM;
         String tempPath = Constants.ANDROID_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
-        checkAndUpgrade(osType, tempPath);
+        checkAndUpgrade(androidArm, tempPath);
     }
 
-    private void checkAndUpgrade(CbbTerminalOsTypeEnums osType, String upgradeTempPath) {
+    private void checkAndUpgrade(TerminalOsArchType osArchType, String upgradeTempPath) {
         // 添加操作系统判断，使初始化失败不影响开发阶段的调试
         boolean isDevelop = Enviroment.isDevelop();
         LOGGER.info("environment is develop: {}", isDevelop);
@@ -123,13 +133,13 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
             return;
         }
 
-        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + osType.name().toLowerCase();
+        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + osArchType.name().toLowerCase();
         String lastUpgradeStatus = globalParameterAPI.findParameter(globalParameterKey);
         if (needUpgrade(currentIp, upgradeTempPath, lastUpgradeStatus)) {
-            executeUpdate(currentIp, osType);
+            executeUpdate(currentIp, osArchType);
             return;
         }
-        updateCache(osType);
+        updateCache(osArchType);
     }
 
     private boolean needUpgrade(String currentIp, String upgradeTempPath, String lastUpgradeStatus) {
@@ -157,31 +167,31 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
         return TERMINAL_COMPONENT_PACKAGE_INIT_FAIL.equals(lastUpgradeStatus);
     }
 
-    private void executeUpdate(String currentIp, CbbTerminalOsTypeEnums osType) {
+    private void executeUpdate(String currentIp, TerminalOsArchType osArchType) {
 
-        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + osType.name().toLowerCase();
+        String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + osArchType.name().toLowerCase();
 
         // 先将执行结果设置为失败，防止异常中断不再执行脚本
         globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_FAIL);
 
         LOGGER.info("start invoke pythonScript...");
         ShellCommandRunner runner = new ShellCommandRunner();
-        String shellCmd = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH, currentIp, osType.name().toLowerCase());
+        String shellCmd = String.format(INIT_COMMAND, INIT_PYTHON_SCRIPT_PATH, currentIp, osArchType.name().toLowerCase());
         LOGGER.info("execute shell cmd : {}", shellCmd);
         runner.setCommand(shellCmd);
 
         try {
-            String outStr = runner.execute(new BtShareInitReturnValueResolver(osType));
+            String outStr = runner.execute(new BtShareInitReturnValueResolver(osArchType));
             LOGGER.debug("out String is :{}", outStr);
-            LOGGER.info("success invoke [{}] pythonScript...", osType.name());
+            LOGGER.info("success invoke [{}] pythonScript...", osArchType.name());
             globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_SUCCESS);
         } catch (BusinessException ex) {
             LOGGER.error("bt share init error", ex);
             // 脚本执行失败后进行重试
-            LOGGER.info("invoke [{}] pythonScript failed, retry", osType.name());
+            LOGGER.info("invoke [{}] pythonScript failed, retry", osArchType.name());
             globalParameterAPI.updateParameter(globalParameterKey, TERMINAL_COMPONENT_PACKAGE_INIT_FAIL);
             waitSeconds();
-            executeUpdate(currentIp, osType);
+            executeUpdate(currentIp, osArchType);
         }
 
     }
@@ -204,11 +214,11 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
      */
     public class BtShareInitReturnValueResolver implements ShellCommandRunner.ReturnValueResolver<String> {
 
-        private CbbTerminalOsTypeEnums osType;
+        private TerminalOsArchType osArchType;
 
-        public BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums osType) {
-            Assert.notNull(osType, "osType cannot be null");
-            this.osType = osType;
+        public BtShareInitReturnValueResolver(TerminalOsArchType osArchType) {
+            Assert.notNull(osArchType, "osArchType cannot be null");
+            this.osArchType = osArchType;
         }
 
         @Override
@@ -223,20 +233,24 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
             }
 
             // 更新缓存中的updatelist
-            updateCache(osType);
+            updateCache(osArchType);
             return outStr;
         }
     }
 
-    private void updateCache(CbbTerminalOsTypeEnums osType) {
+    private void updateCache(TerminalOsArchType osArchType) {
         // 更新缓存中的updatelist
-        if (osType == CbbTerminalOsTypeEnums.LINUX) {
-            LOGGER.info("init linux updatelist cache");
+        if (osArchType == TerminalOsArchType.LINUX_X86) {
+            LOGGER.info("init linux x86 updatelist cache");
             linuxUpdatelistCacheInit.init();
         }
-        if (osType == CbbTerminalOsTypeEnums.ANDROID) {
-            LOGGER.info("init android updatelist cache");
+        if (osArchType == TerminalOsArchType.ANDROID_ARM) {
+            LOGGER.info("init android x86 updatelist cache");
             androidUpdatelistCacheInit.init();
+        }
+        if (osArchType == TerminalOsArchType.LINUX_ARM) {
+            LOGGER.info("init linux arm updatelist cache");
+            linuxArmUpdatelistCacheInit.init();
         }
     }
 

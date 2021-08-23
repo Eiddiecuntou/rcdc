@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.GetVersionDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade.LinuxComponentUpgradeHandler;
@@ -71,7 +72,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         TerminalComponentUpgradeHandler handler = new LinuxComponentUpgradeHandler();
         new Expectations() {
             {
-                handlerFactory.getHandler((CbbTerminalOsTypeEnums) any);
+                handlerFactory.getHandler((TerminalOsArchType) any);
                 result = handler;
             }
         };
@@ -94,7 +95,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals("sss", versionDTO.getUpdatelist());
         new Verifications() {
             {
-                handlerFactory.getHandler((CbbTerminalOsTypeEnums) any);
+                handlerFactory.getHandler((TerminalOsArchType) any);
                 times = 1;
             }
         };
@@ -117,7 +118,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         TerminalComponentUpgradeHandler handler = new LinuxComponentUpgradeHandler();
         new Expectations() {
             {
-                handlerFactory.getHandler((CbbTerminalOsTypeEnums) any);
+                handlerFactory.getHandler((TerminalOsArchType) any);
                 result = new BusinessException("key");
             }
         };
@@ -127,7 +128,7 @@ public class TerminalComponentUpgradeServiceImplTest {
         assertEquals(1, versionDTO.getResult().intValue());
         new Verifications() {
             {
-                handlerFactory.getHandler((CbbTerminalOsTypeEnums) any);
+                handlerFactory.getHandler((TerminalOsArchType) any);
                 times = 1;
             }
         };

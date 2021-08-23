@@ -1,8 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.google.common.collect.Maps;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -26,7 +26,7 @@ public class TerminalSystemUpgradeHandlerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalSystemUpgradeHandlerFactory.class);
 
-    private static final Map<CbbTerminalTypeEnums, TerminalSystemUpgradeHandler> SYSTEM_UPGRADE_HANDLER = Maps.newHashMap();
+    private static final Map<TerminalTypeArchType, TerminalSystemUpgradeHandler> SYSTEM_UPGRADE_HANDLER = Maps.newHashMap();
 
     @Autowired
     private LinuxVDISystemUpgradeHandler linuxVDISystemUpgradeHandler;
@@ -37,12 +37,12 @@ public class TerminalSystemUpgradeHandlerFactory {
     /**
      * 获取终端组件升级处理对象
      *
-     * @param terminalType 终端类型
+     * @param terminalArchType 终端类型
      * @return 组件升级处理对象
      * @throws BusinessException 业务异常
      */
-    public TerminalSystemUpgradeHandler getHandler(CbbTerminalTypeEnums terminalType) throws BusinessException {
-        Assert.notNull(terminalType, "terminal type can not be null");
+    public TerminalSystemUpgradeHandler getHandler(TerminalTypeArchType terminalArchType) throws BusinessException {
+        Assert.notNull(terminalArchType, "terminalArchType can not be null");
 
         if (CollectionUtils.isEmpty(SYSTEM_UPGRADE_HANDLER)) {
             synchronized (SYSTEM_UPGRADE_HANDLER) {
@@ -53,20 +53,21 @@ public class TerminalSystemUpgradeHandlerFactory {
             }
         }
 
-        TerminalSystemUpgradeHandler handler = SYSTEM_UPGRADE_HANDLER.get(terminalType);
+        TerminalSystemUpgradeHandler handler = SYSTEM_UPGRADE_HANDLER.get(terminalArchType);
 
         if (handler == null) {
-            LOGGER.error("终端类型为[{}]的系统升级处理对象不存在", terminalType.name());
+            LOGGER.error("终端类型为[{}]的系统升级处理对象不存在", terminalArchType.name());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_HANDLER_NOT_EXIST,
-                    new String[] {terminalType.name()});
+                    new String[]{terminalArchType.name()});
         }
 
         return handler;
     }
 
     private void init() {
-        SYSTEM_UPGRADE_HANDLER.put(CbbTerminalTypeEnums.VDI_LINUX, linuxVDISystemUpgradeHandler);
-        SYSTEM_UPGRADE_HANDLER.put(CbbTerminalTypeEnums.VDI_ANDROID, systemOtaUpgradeHandler);
-        SYSTEM_UPGRADE_HANDLER.put(CbbTerminalTypeEnums.IDV_LINUX, systemOtaUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.LINUX_VDI_X86, linuxVDISystemUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.LINUX_VDI_ARM, systemOtaUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.ANDROID_VDI_ARM, systemOtaUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.LINUX_IDV_X86, systemOtaUpgradeHandler);
     }
 }

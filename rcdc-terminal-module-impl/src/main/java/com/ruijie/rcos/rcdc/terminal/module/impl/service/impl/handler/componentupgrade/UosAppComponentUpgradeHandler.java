@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 
 /**
  * Description:
@@ -18,8 +18,8 @@ public class UosAppComponentUpgradeHandler extends AbstractAppComponentUpgradeHa
      * @return 终端系统类型
      */
     @Override
-    protected CbbTerminalOsTypeEnums getTerminalOsType() {
-        return CbbTerminalOsTypeEnums.UOS;
+    protected TerminalOsArchType getTerminalOsArchType() {
+        return TerminalOsArchType.UOS_X86;
     }
 
 }

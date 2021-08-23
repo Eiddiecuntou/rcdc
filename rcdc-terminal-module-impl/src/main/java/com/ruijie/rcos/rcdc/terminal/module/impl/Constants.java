@@ -89,13 +89,18 @@ public interface Constants {
     /**
      * 存放终端系统vdi刷机包路径
      */
-    String TERMINAL_UPGRADE_ISO_PATH_VDI = "/opt/upgrade/linux_vdi/";
+    String TERMINAL_UPGRADE_ISO_PATH_VDI = "/opt/upgrade/ota/package/linux_vdi/";
 
 
     /**
      * 系统刷机包挂载路径
      */
     String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "/opt/upgrade/mount_dir/linux_vdi/";
+
+    /**
+     * linux vdi arm OTA包种子文件保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_VDI_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/linux_vdi";
 
     /**
      * 系统刷机包版本文件路径
@@ -151,12 +156,22 @@ public interface Constants {
     /**
      * 系统刷机包版本文件属性-包类型
      */
-    String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE = "plat";
+    String TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_PACKAGE_TYPE = "plat";
 
     /**
      * 系统刷机包版本文件属性-外部版本号
      */
-    String TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION = "version";
+    String TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_VERSION = "version";
+
+    /**
+     * ZIP系统刷机包版本文件属性-cpu架构
+     */
+    String TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_CPU_ARCH = "arch";
+
+    /**
+     * ZIP系统刷机包版本文件属性-平台
+     */
+    String TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_CPU = "cpu";
 
     /**
      * OTA 包的MD5值

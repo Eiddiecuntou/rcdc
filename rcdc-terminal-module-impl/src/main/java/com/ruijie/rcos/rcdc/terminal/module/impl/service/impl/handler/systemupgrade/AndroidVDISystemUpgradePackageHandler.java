@@ -160,7 +160,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         try {
             LOGGER.info("开始关闭Android VDI终端升级任务");
             terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(systemUpgradeTask.getId());
-            systemUpgradeHandlerFactory.getHandler(systemUpgradeTask.getPackageType()).afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
+            systemUpgradeHandlerFactory.getHandler(upgradePackage.getTerminalTypeArchType()).afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
         } catch (BusinessException e) {
             LOGGER.error("关闭Android VDI终端升级任务失败", e);
         }

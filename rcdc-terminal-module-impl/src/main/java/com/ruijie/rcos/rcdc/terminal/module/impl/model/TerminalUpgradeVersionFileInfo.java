@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.model;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
@@ -43,6 +44,10 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
      * 默认升级方式
      */
     private CbbSystemUpgradeModeEnums upgradeMode;
+
+    private String supportCpu;
+
+    private CbbCpuArchType cpuArch;
 
     public String getImgName() {
         return imgName;
@@ -148,6 +153,22 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
         this.upgradeMode = upgradeMode;
     }
 
+    public String getSupportCpu() {
+        return supportCpu;
+    }
+
+    public void setSupportCpu(String supportCpu) {
+        this.supportCpu = supportCpu;
+    }
+
+    public CbbCpuArchType getCpuArch() {
+        return cpuArch;
+    }
+
+    public void setCpuArch(CbbCpuArchType cpuArch) {
+        this.cpuArch = cpuArch;
+    }
+
     @Override
     public String toString() {
         return "TerminalUpgradeVersionFileInfo{" +
@@ -163,7 +184,9 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
                 ", realFileName='" + realFileName + '\'' +
                 ", otaScriptPath='" + otaScriptPath + '\'' +
                 ", otaScriptMD5='" + otaScriptMD5 + '\'' +
-                ", upgradeMode='" + upgradeMode + '\'' +
+                ", upgradeMode=" + upgradeMode +
+                ", supportCpu='" + supportCpu + '\'' +
+                ", cpuArch=" + cpuArch +
                 '}';
     }
 }

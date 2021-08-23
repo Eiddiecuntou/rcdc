@@ -7,6 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
@@ -62,7 +63,7 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
                 result = entity;
                 basicInfoService.obtainTerminalType(entity);
                 result = CbbTerminalTypeEnums.VDI_LINUX;
-                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 result = new BusinessException("123");
 
             }
@@ -80,13 +81,13 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 times = 1;
 
                 upgradeResultHelper.responseNotUpgrade(request);
                 times = 1;
 
-                upgradeResultHelper.dealSystemUpgradeResult(entity, (CbbTerminalTypeEnums) any, (TerminalSystemUpgradeHandler) any, request);
+                upgradeResultHelper.dealSystemUpgradeResult(entity, (TerminalTypeArchType) any, (TerminalSystemUpgradeHandler) any, request);
                 times = 0;
             }
         };
@@ -111,7 +112,7 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
                 result = entity;
                 basicInfoService.obtainTerminalType(entity);
                 result = CbbTerminalTypeEnums.IDV_LINUX;
-                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 result = handler;
 
             }
@@ -129,13 +130,13 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 times = 1;
 
                 upgradeResultHelper.responseNotUpgrade(request);
                 times = 0;
 
-                upgradeResultHelper.dealSystemUpgradeResult(entity, (CbbTerminalTypeEnums) any, handler, request);
+                upgradeResultHelper.dealSystemUpgradeResult(entity, (TerminalTypeArchType) any, handler, request);
                 times = 1;
             }
         };
@@ -161,7 +162,7 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
                 result = entity;
                 basicInfoService.obtainTerminalType(entity);
                 result = CbbTerminalTypeEnums.IDV_LINUX;
-                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 result = handler;
 
             }
@@ -179,13 +180,13 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.IDV_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 times = 1;
 
                 upgradeResultHelper.responseNotUpgrade(request);
                 times = 0;
 
-                upgradeResultHelper.dealSystemUpgradeResult(entity, (CbbTerminalTypeEnums) any, handler, request);
+                upgradeResultHelper.dealSystemUpgradeResult(entity, (TerminalTypeArchType) any, handler, request);
                 times = 1;
             }
         };

@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 
 import javax.persistence.*;
 import java.util.Date;

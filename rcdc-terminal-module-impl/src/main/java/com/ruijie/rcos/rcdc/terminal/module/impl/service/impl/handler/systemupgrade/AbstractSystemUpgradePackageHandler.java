@@ -42,9 +42,6 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
         LOGGER.info("上传终端升级包：{}", request.getFileName());
         TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(fileName, filePath);
         getSystemUpgradePackageService().saveTerminalUpgradePackage(upgradeInfo);
-
-        // 替换升级文件,清除原升级包目录下旧文件
-        FileOperateUtil.emptyDirectory(upgradeInfo.getFileSaveDir(), upgradeInfo.getRealFileName());
     }
 
     @Override

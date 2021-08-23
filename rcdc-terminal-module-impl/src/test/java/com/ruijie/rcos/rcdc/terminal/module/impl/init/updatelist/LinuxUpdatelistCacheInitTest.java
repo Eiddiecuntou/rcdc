@@ -4,11 +4,11 @@ import static org.junit.Assert.assertTrue;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 
 import mockit.Tested;
@@ -41,8 +41,8 @@ public class LinuxUpdatelistCacheInitTest {
      */
     @Test
     public void testGetTerminalType() {
-        CbbTerminalOsTypeEnums osType = cacheInit.getTerminalOsType();
-        Assert.assertEquals(CbbTerminalOsTypeEnums.LINUX, osType);
+        TerminalOsArchType osArch = cacheInit.getTerminalOsArch();
+        Assert.assertEquals(TerminalOsArchType.LINUX_X86, osArch);
     }
 
     /**

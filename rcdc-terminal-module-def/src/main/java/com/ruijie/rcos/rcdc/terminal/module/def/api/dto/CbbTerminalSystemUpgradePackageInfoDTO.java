@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
@@ -40,6 +41,11 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
     private Date uploadTime;
 
     private CbbSystemUpgradeModeEnums upgradeMode;
+
+    private CbbCpuArchType cpuArch;
+
+    private String supportCpu;
+
 
     public UUID getId() {
         return id;
@@ -111,5 +117,21 @@ public class CbbTerminalSystemUpgradePackageInfoDTO {
 
     public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
         this.upgradeMode = upgradeMode;
+    }
+
+    public CbbCpuArchType getCpuArch() {
+        return cpuArch;
+    }
+
+    public void setCpuArch(CbbCpuArchType cpuArch) {
+        this.cpuArch = cpuArch;
+    }
+
+    public String getSupportCpu() {
+        return supportCpu;
+    }
+
+    public void setSupportCpu(String supportCpu) {
+        this.supportCpu = supportCpu;
     }
 }

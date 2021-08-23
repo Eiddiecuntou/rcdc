@@ -19,6 +19,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.UpgradeableTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeTerminalGroupListService;
@@ -69,6 +70,10 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private static final String ENTITY_FILED_PLATFORM = "platform";
 
     private static final String ENTITY_FILED_TERMINAL_OS_TYPE = "terminalOsType";
+
+    private static final String ENTITY_FILED_TERMINAL_SUPPORT_CPU_ARCH_TYPE = "cpuArch";
+
+    private static final String ENTITY_FILED_TERMINAL_SUPPORT_CPU = "upgradeCpuType";
 
     private static ExecutorService SINGLE_THREAD_EXECUTOR =
             ThreadExecutors.newBuilder("singleSystemUpgradeThreadPool").maxThreadNum(5).queueSize(10).build();
@@ -141,7 +146,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         UUID upgradeTaskId = terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackage, request);
         // 添加升级任务成功后的处理
-        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.getPackageType());
+        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.getTerminalTypeArchType());
         handler.afterAddSystemUpgrade(upgradePackage);
 
         Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeTaskId);
@@ -158,12 +163,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     private void checkAllowCreateTask(TerminalSystemUpgradePackageEntity upgradePackage) throws BusinessException {
 
-        // 判断刷机包是否正在上传中
         UUID packageId = upgradePackage.getId();
-        boolean hasLoading = terminalSystemPackageUploadingService.isUpgradeFileUploading(upgradePackage.getPackageType());
-        if (hasLoading) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);
-        }
 
         // 判断是否已存在进行中的刷机任务
         final boolean hasUpgradingTask = terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageId);
@@ -365,7 +365,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         TerminalSystemUpgradeEntity systemUpgradeTask = terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
         TerminalSystemUpgradePackageEntity upgradePackage =
                 systemUpgradePackageService.getSystemUpgradePackage(systemUpgradeTask.getUpgradePackageId());
-        systemUpgradeHandlerFactory.getHandler(systemUpgradeTask.getPackageType()).afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
+        systemUpgradeHandlerFactory.getHandler(upgradePackage.getTerminalTypeArchType()).afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
     }
 
     @Override
@@ -373,7 +373,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        setMatchEqualArr(request);
+        // 升级包可升级终端过滤条件转换
+        if (ArrayUtils.isNotEmpty(request.getMatchEqualArr())) {
+            convertPackageId(request);
+        }
+
         Page<ViewUpgradeableTerminalEntity> upgradeableTerminalPage =
                 upgradeableTerminalListService.pageQuery(request, ViewUpgradeableTerminalEntity.class);
 
@@ -414,40 +418,41 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     /**
-     * 设置查询参数
+     * 获取request参数中的packageId，解析平台类型，cpu型号，过滤终端
      *
      * @param request 请求参数
      * @throws BusinessException 业务异常
      */
-    private void setMatchEqualArr(CbbUpgradeableTerminalPageSearchRequest request) throws BusinessException {
-        if (ArrayUtils.isEmpty(request.getMatchEqualArr())) {
-            return;
-        }
+    private void convertPackageId(CbbUpgradeableTerminalPageSearchRequest request) throws BusinessException {
 
-        List<MatchEqual> matchEqualList = new ArrayList<>(Arrays.asList(request.getMatchEqualArr()));
-        convertPackageId(matchEqualList);
-        request.setMatchEqualArr(matchEqualList.toArray(new MatchEqual[matchEqualList.size()]));
-    }
-
-    /**
-     * 获取request参数中的packageId，解析平台类型，过滤终端
-     *
-     * @param matchEqualList 匹配参数列表
-     * @throws BusinessException 业务异常
-     */
-    private void convertPackageId(List<MatchEqual> matchEqualList) throws BusinessException {
+        // TODO 添加cpu型号过滤
+        List<MatchEqual> matchEqualList = Lists.newArrayList(request.getMatchEqualArr());
         List<MatchEqual> convertMEList = Lists.newArrayList();
         for (Iterator<MatchEqual> iterator = matchEqualList.iterator(); iterator.hasNext();) {
             MatchEqual matchEqual = iterator.next();
             if (PARAM_FIELD_PACKAGE_ID.equals(matchEqual.getName())) {
                 UUID packageId = (UUID) matchEqual.getValueArr()[0];
                 TerminalSystemUpgradePackageEntity packageEntity = getUpgradePackageEntity(packageId);
+
+                // 设置精确查找参数， 平台类型、操作系统、cpu架构以及支持的cpu类型
                 CbbTerminalTypeEnums packageType = packageEntity.getPackageType();
                 MatchEqual platformME = new MatchEqual(ENTITY_FILED_PLATFORM,
                         obtainTerminalPlatform(packageType));
-                MatchEqual osTypeME = new MatchEqual(ENTITY_FILED_TERMINAL_OS_TYPE, new String[] {packageType.getOsType()});
+                MatchEqual osTypeME = new MatchEqual(ENTITY_FILED_TERMINAL_OS_TYPE,
+                        new String[] {packageType.getOsType()});
+                MatchEqual archTypeME = new MatchEqual(ENTITY_FILED_TERMINAL_SUPPORT_CPU_ARCH_TYPE,
+                        new String[] {packageEntity.getCpuArch().name()});
+
                 convertMEList.add(platformME);
                 convertMEList.add(osTypeME);
+                convertMEList.add(archTypeME);
+
+                // 非支持所有类型CPU需要添加cpu匹配参数
+                if (packageEntity.getSupportCpu() != null && !packageEntity.getSupportCpu().equals("ALL")) {
+                    MatchEqual supportCpuME = new MatchEqual(ENTITY_FILED_TERMINAL_SUPPORT_CPU,
+                            getSupportCpuValueArr(packageEntity.getSupportCpu()));
+                    convertMEList.add(supportCpuME);
+                }
 
                 iterator.remove();
                 break;
@@ -455,6 +460,12 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         }
 
         matchEqualList.addAll(convertMEList);
+        request.setMatchEqualArr(matchEqualList.stream().toArray(MatchEqual[]::new));
+        LOGGER.info("request 匹配条件：{}", JSON.toJSONString(request));
+    }
+
+    private String[] getSupportCpuValueArr(String supportCpuType) {
+        return supportCpuType.split(",");
     }
 
     CbbTerminalPlatformEnums[] obtainTerminalPlatform(CbbTerminalTypeEnums packageType) {
@@ -612,8 +623,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     }
 
     private void sendUpgradeMsg(CbbUpgradeTerminalDTO request, TerminalSystemUpgradeEntity upgradeEntity) throws BusinessException {
-        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradeEntity.getPackageType());
         TerminalSystemUpgradePackageEntity upgradePackage = systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
+        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.getTerminalTypeArchType());
         Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeEntity.getId());
         SINGLE_THREAD_EXECUTOR.execute(() -> sendSystemUpgradeMsg(new String[] {request.getTerminalId()}, upgradeMsg));
     }

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.util.StringUtils;
@@ -48,8 +49,8 @@ public class AppTerminalUpdateListCacheInitTest {
     @Test
     public void testGetTerminalOsType() {
         AppTerminalUpdateListCacheInit cacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.WINDOWS);
-        CbbTerminalOsTypeEnums osType = cacheInit.getTerminalOsType();
-        Assert.assertEquals(CbbTerminalOsTypeEnums.WINDOWS, osType);
+        TerminalOsArchType osArch = cacheInit.getTerminalOsArch();
+        Assert.assertEquals(TerminalOsArchType.WINDOWS_X86, osArch);
     }
 
     /**

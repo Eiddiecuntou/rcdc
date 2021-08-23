@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -84,4 +85,12 @@ public interface TerminalBasicInfoService {
      * @return true 在线，false 离线
      */
     boolean isTerminalOnline(String terminalId);
+
+    /**
+     *  根据终端信息获取终端架构类型
+     *
+     * @param basicInfoEntity 终端信息
+     * @return 终端架构类型
+     */
+    TerminalTypeArchType obtainTerminalArchType(TerminalEntity basicInfoEntity);
 }

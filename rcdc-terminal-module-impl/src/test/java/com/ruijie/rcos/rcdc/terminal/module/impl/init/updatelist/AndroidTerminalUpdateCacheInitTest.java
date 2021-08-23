@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import mockit.Tested;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,9 +29,9 @@ public class AndroidTerminalUpdateCacheInitTest {
     }
 
     @Test
-    public void testGetTerminalType() {
-        CbbTerminalOsTypeEnums osType = cacheInit.getTerminalOsType();
-        Assert.assertEquals(CbbTerminalOsTypeEnums.ANDROID, osType);
+    public void testGetTerminalOsArch() {
+        TerminalOsArchType osArch = cacheInit.getTerminalOsArch();
+        Assert.assertEquals(TerminalOsArchType.ANDROID_ARM, osArch);
     }
 
     @Test

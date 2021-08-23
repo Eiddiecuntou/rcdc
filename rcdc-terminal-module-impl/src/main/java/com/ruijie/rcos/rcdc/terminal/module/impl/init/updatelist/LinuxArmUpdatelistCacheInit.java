@@ -7,7 +7,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * Description: linux vdi x84架构终端updatelist缓存初始化
+ * Description: linux vdi arm架构终端updatelist缓存初始化
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019/8/1
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
  * @author ting
  */
 @Service
-public class LinuxUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CommonUpdateListDTO> {
+public class LinuxArmUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CommonUpdateListDTO> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxUpdatelistCacheInit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxArmUpdatelistCacheInit.class);
 
     private static final String UPDATE_LIST_PATH =
-            "/opt/upgrade/app/terminal_component/terminal_linux/origin/update.list";
+            "/opt/upgrade/app/terminal_component/terminal_linux_arm/origin/update.list";
 
     @Override
     protected String getUpdateListPath() {
@@ -35,7 +35,7 @@ public class LinuxUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplat
 
     @Override
     protected TerminalOsArchType getTerminalOsArch() {
-        return TerminalOsArchType.LINUX_X86;
+        return TerminalOsArchType.LINUX_ARM;
     }
 
 }

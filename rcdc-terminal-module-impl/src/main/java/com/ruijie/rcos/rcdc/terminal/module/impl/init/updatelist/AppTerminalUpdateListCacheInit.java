@@ -2,8 +2,10 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.AppTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -75,7 +77,7 @@ public class AppTerminalUpdateListCacheInit extends AbstractUpdatelistCacheInitT
     }
 
     @Override
-    protected CbbTerminalOsTypeEnums getTerminalOsType() {
-        return this.osType;
+    protected TerminalOsArchType getTerminalOsArch() {
+        return TerminalOsArchType.convert(osType, CbbCpuArchType.X86_64);
     }
 }

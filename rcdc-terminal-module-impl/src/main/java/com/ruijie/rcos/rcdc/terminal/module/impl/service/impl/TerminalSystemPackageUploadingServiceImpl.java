@@ -46,6 +46,8 @@ public class TerminalSystemPackageUploadingServiceImpl implements TerminalSystem
     public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadDTO request, CbbTerminalTypeEnums terminalType) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         Assert.notNull(terminalType, "terminalType can not be null");
+
+        // TODO 放开允许多个同时传
         synchronized (LOCK) {
             if (SYS_UPGRADE_PACKAGE_UPLOADING.contains(terminalType)) {
                 throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING);

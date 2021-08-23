@@ -10,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeCheckResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
@@ -64,7 +65,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = entity;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 result = new BusinessException("123");
 
                 try {
@@ -87,7 +88,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 times = 1;
 
                 CbbResponseShineMessage shineMessage;
@@ -123,7 +124,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = entity;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 result = handler;
 
                 handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, entity);
@@ -149,7 +150,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
 
-                handlerFactory.getHandler(CbbTerminalTypeEnums.VDI_LINUX);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
                 times = 1;
 
                 CbbResponseShineMessage shineMessage;

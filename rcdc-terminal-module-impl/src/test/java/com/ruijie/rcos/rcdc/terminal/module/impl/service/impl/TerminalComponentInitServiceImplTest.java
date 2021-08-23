@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.env.Enviroment;
@@ -306,7 +307,7 @@ public class TerminalComponentInitServiceImplTest {
     @Test
     public void testBtShareInitReturnValueResolverArgumentIsNull() throws Exception {
         TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolver =
-                initService.new BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums.LINUX);
+                initService.new BtShareInitReturnValueResolver(TerminalOsArchType.LINUX_X86);
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("", 1, "dsd"), "command can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", null, "dsd"), "existValue can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> resolver.resolve("sdsd", 1, ""), "outStr can not be null");
@@ -319,7 +320,7 @@ public class TerminalComponentInitServiceImplTest {
     @Test
     public void testBtShareInitReturnValueResolverExitValueNotZero() {
         TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolver =
-                initService.new BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums.LINUX);
+                initService.new BtShareInitReturnValueResolver(TerminalOsArchType.LINUX_X86);
         try {
             resolver.resolve("dsd", 1, "dsd");
             fail();
@@ -336,9 +337,9 @@ public class TerminalComponentInitServiceImplTest {
     @Test
     public void testBtShareInitReturnValueResolver() throws BusinessException {
         TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverLinux =
-                initService.new BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums.LINUX);
+                initService.new BtShareInitReturnValueResolver(TerminalOsArchType.LINUX_X86);
         TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver resolverAndroid =
-                initService.new BtShareInitReturnValueResolver(CbbTerminalOsTypeEnums.ANDROID);
+                initService.new BtShareInitReturnValueResolver(TerminalOsArchType.ANDROID_ARM);
         new MockUp<TerminalComponentInitServiceImpl>() {
             @Mock
             public String getLocalIP() {

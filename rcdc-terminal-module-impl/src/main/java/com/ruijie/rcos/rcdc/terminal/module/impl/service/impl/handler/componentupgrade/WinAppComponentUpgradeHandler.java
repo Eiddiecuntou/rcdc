@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
@@ -17,8 +17,8 @@ public class WinAppComponentUpgradeHandler extends AbstractAppComponentUpgradeHa
     private static final Logger LOGGER = LoggerFactory.getLogger(WinAppComponentUpgradeHandler.class);
 
     @Override
-    protected CbbTerminalOsTypeEnums getTerminalOsType() {
-        return CbbTerminalOsTypeEnums.WINDOWS;
+    protected TerminalOsArchType getTerminalOsArchType() {
+        return TerminalOsArchType.WINDOWS_X86;
     }
 
 }

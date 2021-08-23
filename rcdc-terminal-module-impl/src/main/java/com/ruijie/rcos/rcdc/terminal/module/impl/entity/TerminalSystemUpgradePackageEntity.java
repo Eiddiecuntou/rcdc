@@ -1,9 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -89,6 +91,20 @@ public class TerminalSystemUpgradePackageEntity {
 
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeModeEnums upgradeMode;
+
+    @Enumerated(EnumType.STRING)
+    private CbbCpuArchType cpuArch;
+
+    private String supportCpu;
+
+    /**
+     *  获取终端类型架构枚举对象
+     *
+     * @return 枚举对象
+     */
+    public TerminalTypeArchType getTerminalTypeArchType() {
+        return TerminalTypeArchType.convert(packageType, cpuArch);
+    }
 
     public UUID getId() {
         return id;
@@ -235,5 +251,21 @@ public class TerminalSystemUpgradePackageEntity {
 
     public void setUpgradeMode(CbbSystemUpgradeModeEnums upgradeMode) {
         this.upgradeMode = upgradeMode;
+    }
+
+    public String getSupportCpu() {
+        return supportCpu;
+    }
+
+    public void setSupportCpu(String supportCpu) {
+        this.supportCpu = supportCpu;
+    }
+
+    public CbbCpuArchType getCpuArch() {
+        return cpuArch;
+    }
+
+    public void setCpuArch(CbbCpuArchType cpuArchType) {
+        this.cpuArch = cpuArchType;
     }
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -25,34 +26,35 @@ public class TerminalComponentUpgradeHandlerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalComponentUpgradeHandlerFactory.class);
 
-    private static Map<CbbTerminalOsTypeEnums, TerminalComponentUpgradeHandler> upgradeHandlerHolder = Maps.newHashMap();
+    private static Map<TerminalOsArchType, TerminalComponentUpgradeHandler> upgradeHandlerHolder = Maps.newHashMap();
 
     static {
         LOGGER.info("=======================注册终端组件升级处理器=================");
-        upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.LINUX, new LinuxComponentUpgradeHandler());
-        upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.WINDOWS, new WinAppComponentUpgradeHandler());
-        upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.ANDROID, new AndroidComponentUpgradeHandler());
-        upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.UOS, new UosAppComponentUpgradeHandler());
-        upgradeHandlerHolder.put(CbbTerminalOsTypeEnums.NEOKYLIN, new NeoKylinAppComponentUpgradeHandler());
+        upgradeHandlerHolder.put(TerminalOsArchType.LINUX_X86, new LinuxComponentUpgradeHandler());
+        upgradeHandlerHolder.put(TerminalOsArchType.LINUX_ARM, new LinuxArmComponentUpgradeHandler());
+        upgradeHandlerHolder.put(TerminalOsArchType.WINDOWS_X86, new WinAppComponentUpgradeHandler());
+        upgradeHandlerHolder.put(TerminalOsArchType.ANDROID_ARM, new AndroidComponentUpgradeHandler());
+        upgradeHandlerHolder.put(TerminalOsArchType.UOS_X86, new UosAppComponentUpgradeHandler());
+        upgradeHandlerHolder.put(TerminalOsArchType.NEOKYLIN_X86, new NeoKylinAppComponentUpgradeHandler());
         LOGGER.info("=======================完成注册终端组件升级处理器=================");
     }
 
     /**
      * 获取终端组件升级处理对象
      * 
-     * @param osType 终端系统类型
+     * @param osArchType 终端系统架构类型
      * @return 组件升级处理对象
      * @throws BusinessException 业务异常
      */
-    public TerminalComponentUpgradeHandler getHandler(CbbTerminalOsTypeEnums osType) throws BusinessException {
-        Assert.notNull(osType, "osType can not be null");
+    public TerminalComponentUpgradeHandler getHandler(TerminalOsArchType osArchType) throws BusinessException {
+        Assert.notNull(osArchType, "osArchType can not be null");
 
-        TerminalComponentUpgradeHandler handler = upgradeHandlerHolder.get(osType);
+        TerminalComponentUpgradeHandler handler = upgradeHandlerHolder.get(osArchType);
 
         if (handler == null) {
-            LOGGER.error("终端系统类型为[{}]的组件升级处理对象不存在", osType.name());
+            LOGGER.error("终端系统类型为[{}]的组件升级处理对象不存在", osArchType.name());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST,
-                    new String[] {osType.name()});
+                    new String[] {osArchType.name()});
         }
 
         return handler;

@@ -3,10 +3,12 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.component
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonComponentVersionInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -30,19 +32,20 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCommonComponentUpgradeHandler.class);
 
+
     @Override
     public TerminalVersionResultDTO<CommonUpdateListDTO> getVersion(GetVersionDTO request) {
         Assert.notNull(request, "get version request can not be null");
 
-        CbbTerminalOsTypeEnums osType = getTerminalOsType();
+        TerminalOsArchType osArchType = getTerminalOsArchType();
 
-        LOGGER.debug("终端系统类型为[{}]的终端请求版本号", osType.name());
-        if (!TerminalUpdateListCacheManager.isCacheReady(osType)) {
-            LOGGER.debug("终端系统类型为[{}]的终端请求版本号未就绪", osType.name());
+        LOGGER.debug("终端系统类型为[{}]的终端请求版本号", osArchType.name());
+        if (!TerminalUpdateListCacheManager.isCacheReady(osArchType)) {
+            LOGGER.debug("终端系统类型为[{}]的终端请求版本号未就绪", osArchType.name());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult());
         }
 
-        CommonUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(osType);
+        CommonUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(osArchType);
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist or component is null, return not support");
@@ -85,11 +88,21 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
             clearDifferenceUpgradeInfo(copyUpdateList.getComponentList());
         }
 
+        filterByCpuArch(request.getCpuArch(), copyUpdateList);
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("终端[" + request.getTerminalId() + "]组件升级响应：" + JSON.toJSONString(copyUpdateList));
         }
 
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
+    }
+
+    private void filterByCpuArch(CbbCpuArchType cpuArch, CommonUpdateListDTO copyUpdateList) {
+
+        if (cpuArch == CbbCpuArchType.X86_64) {
+
+        }
+
     }
 
     private boolean isSupportUpgrade(CommonUpdateListDTO updateList, GetVersionDTO request) {
@@ -134,10 +147,10 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
     }
 
     /**
-     * 获取组件升级的终端系统类型
+     * 获取组件升级的终端系统架构类型
      *
-     * @return 终端系统类型
+     * @return 终端系统架构类型
      */
-    protected abstract CbbTerminalOsTypeEnums getTerminalOsType();
+    protected abstract TerminalOsArchType getTerminalOsArchType();
 
 }

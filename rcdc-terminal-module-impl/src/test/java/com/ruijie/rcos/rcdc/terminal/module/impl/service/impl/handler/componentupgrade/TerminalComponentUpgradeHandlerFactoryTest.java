@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +45,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
      */
     @Test
     public void testGetHandler() throws BusinessException {
-        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(CbbTerminalOsTypeEnums.LINUX);
+        TerminalComponentUpgradeHandler handler = handlerFactory.getHandler(TerminalOsArchType.LINUX_X86);
         Assert.assertTrue(handler instanceof LinuxComponentUpgradeHandler);
     }
 
@@ -56,7 +57,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
     public void testGetHandlerWhileTerminalTypeNotSupport() {
 
         try {
-            handlerFactory.getHandler(CbbTerminalOsTypeEnums.OTHER);
+            handlerFactory.getHandler(TerminalOsArchType.WINDOWS_ARM);
             Assert.fail();
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_COMPONENT_UPGRADE_HANDLER_NOT_EXIST, e.getKey());
