@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
-import org.springframework.util.Assert;
+import com.ruijie.rcos.sk.base.annotation.TextMedium;
 
 /**
  * Description: 上传Logo请求
@@ -17,15 +17,18 @@ public class CbbUploadLogoDTO {
     private String logoPath;
 
     @NotBlank
+    @TextMedium
     private String logoName;
 
     @NotBlank
+    @TextMedium
     private String logoMD5;
 
+    public CbbUploadLogoDTO() {
+
+    }
+
     public CbbUploadLogoDTO(String logoPath, String logoName, String logoMD5) {
-        Assert.notNull(logoPath, "logoPath can not be null");
-        Assert.notNull(logoName, "logoName can not be null");
-        Assert.notNull(logoMD5, "logoMD5 can not be null");
         this.logoPath = logoPath;
         this.logoName = logoName;
         this.logoMD5 = logoMD5;

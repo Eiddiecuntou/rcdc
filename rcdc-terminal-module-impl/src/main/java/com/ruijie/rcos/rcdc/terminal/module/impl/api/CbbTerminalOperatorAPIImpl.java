@@ -7,7 +7,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbModifyTerminalDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbOfflineLoginSettingDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBasicInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -29,7 +28,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 
@@ -242,7 +240,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         LOGGER.info("收到关闭终端[{}]连接请求", terminalId);
 
         Session session = sessionManager.getSessionByAlias(terminalId);
-        session.close();
+        if (session != null) {
+            session.close();
+        }
     }
 
     @Override

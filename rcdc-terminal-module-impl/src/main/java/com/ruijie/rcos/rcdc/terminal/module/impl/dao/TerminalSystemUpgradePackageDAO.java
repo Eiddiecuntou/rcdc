@@ -24,9 +24,8 @@ import java.util.UUID;
 public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<TerminalSystemUpgradePackageEntity, UUID> {
 
     /**
-     * 
      * 获取系统升级包信息
-     * 
+     *
      * @param packageType 升级包类型
      * @return 返回系统升级包信息
      */
@@ -34,16 +33,17 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
 
 
     /**
-     * 
      * 获取系统升级包列表信息
-     * 
+     *
      * @param packageType 升级包类型
+     * @param isDelete    是否被删除
      * @return 返回系统升级包信息
      */
-    List<TerminalSystemUpgradePackageEntity> findByPackageType(CbbTerminalTypeEnums packageType);
+    List<TerminalSystemUpgradePackageEntity> findByPackageTypeAndIsDelete(CbbTerminalTypeEnums packageType, boolean isDelete);
 
     /**
      * 查询终端系统升级包列表
+     *
      * @param isDelete 是否已删除
      * @return 升级包列表
      */
@@ -51,13 +51,12 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
 
 
     /**
-     * 
      * 修改升级包信息
-     * 
-     * @param packageType 升级包类型
-     * @param imgName 镜像名称
+     *
+     * @param packageType    升级包类型
+     * @param imgName        镜像名称
      * @param packageVersion 升级包版本号
-     * @param version 版本号
+     * @param version        版本号
      * @return 修改受影响行数
      */
     @Modifying
@@ -65,7 +64,19 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
     @Query("update TerminalSystemUpgradePackageEntity set packageVersion=:packageVersion "
             + ",imgName=:imgName,version = version + 1 where packageType=:packageType and version=:version")
     int modifyTerminalUpgradePackageVersion(@Param("imgName") String imgName, @Param("packageType") CbbTerminalPlatformEnums packageType,
-            @Param("packageVersion") String packageVersion, @Param("version") int version);
+                                            @Param("packageVersion") String packageVersion, @Param("version") int version);
+
+
+    /**
+     * 根据id 更新seed的md5
+     *
+     * @param id      升级包id
+     * @param seedMd5 种子md5值
+     */
+    @Modifying
+    @Transactional
+    @Query(value = "update TerminalSystemUpgradePackageEntity set seedMd5=?2,version = version + 1  where id=?1 and version = version")
+    void updateSeedMd5ById(UUID id, String seedMd5);
 
     /**
      *  根据升级包类型和架构获取升级包

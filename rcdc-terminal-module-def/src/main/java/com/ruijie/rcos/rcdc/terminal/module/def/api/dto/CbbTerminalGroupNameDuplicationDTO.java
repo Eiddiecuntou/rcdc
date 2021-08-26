@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.sk.base.annotation.NotBlank;
-import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -17,7 +16,7 @@ import java.util.UUID;
  */
 public class CbbTerminalGroupNameDuplicationDTO {
 
-    @NotNull
+    @Nullable
     private UUID id;
 
     @Nullable
@@ -26,7 +25,11 @@ public class CbbTerminalGroupNameDuplicationDTO {
     @NotBlank
     private String groupName;
 
-    public CbbTerminalGroupNameDuplicationDTO(@Nullable UUID id, @Nullable UUID parentId, String groupName) {
+    public CbbTerminalGroupNameDuplicationDTO() {
+
+    }
+
+    public CbbTerminalGroupNameDuplicationDTO(UUID id, UUID parentId, String groupName) {
         Assert.hasText(groupName, "groupName can not be blank");
 
         this.id = id;
@@ -57,5 +60,4 @@ public class CbbTerminalGroupNameDuplicationDTO {
     public void setId(UUID id) {
         this.id = id;
     }
-
 }
