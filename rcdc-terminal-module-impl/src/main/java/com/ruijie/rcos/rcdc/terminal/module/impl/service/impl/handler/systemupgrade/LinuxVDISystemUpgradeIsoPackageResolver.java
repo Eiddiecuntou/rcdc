@@ -19,7 +19,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.IsoFileUtil;
 
 /**
- * Description: Function Description
+ * Description: LINUX VDI的ISO升级包处理类
  * Copyright: Copyright (c) 2021
  * Company: Ruijie Co., Ltd.
  * Create Time: 2021/8/25 13:51

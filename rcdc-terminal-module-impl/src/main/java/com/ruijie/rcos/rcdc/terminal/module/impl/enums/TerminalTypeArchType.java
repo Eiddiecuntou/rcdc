@@ -17,27 +17,27 @@ public enum TerminalTypeArchType {
     /**
      * linux vdi x86架构终端
      */
-    LINUX_VDI_X86(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64),
+    VDI_LINUX_X86(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64),
 
     /**
      * linux vdi arm架构终端
      */
-    LINUX_VDI_ARM(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.ARM),
+    VDI_LINUX_ARM(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.ARM),
 
     /**
      * adndroid vdi arm架构终端
      */
-    ANDROID_VDI_ARM(CbbTerminalTypeEnums.VDI_ANDROID, CbbCpuArchType.ARM),
+    VDI_ANDROID_ARM(CbbTerminalTypeEnums.VDI_ANDROID, CbbCpuArchType.ARM),
 
     /**
      * linux idv x86架构终端
      */
-    LINUX_IDV_X86(CbbTerminalTypeEnums.IDV_LINUX, CbbCpuArchType.X86_64),
+    IDV_LINUX_X86(CbbTerminalTypeEnums.IDV_LINUX, CbbCpuArchType.X86_64),
 
     /**
      * linux idv arm架构终端
      */
-    LINUX_IDV_ARM(CbbTerminalTypeEnums.IDV_LINUX, CbbCpuArchType.ARM);
+    IDV_LINUX_ARM(CbbTerminalTypeEnums.IDV_LINUX, CbbCpuArchType.ARM);
 
     TerminalTypeArchType(CbbTerminalTypeEnums terminalType, CbbCpuArchType archType) {
         this.terminalType = terminalType;

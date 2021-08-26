@@ -23,7 +23,7 @@ import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.base.zip.ZipUtil;
 
 /**
- * Description: Function Description
+ * Description: LINUX VDI的ZIP升级包处理类
  * Copyright: Copyright (c) 2021
  * Company: Ruijie Co., Ltd.
  * Create Time: 2021/8/25 13:51

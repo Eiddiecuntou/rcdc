@@ -15,7 +15,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
-import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -27,7 +26,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeRes
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.*;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -142,7 +140,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 basicInfoService.obtainTerminalType(terminalEntity);
                 result = CbbTerminalTypeEnums.VDI_LINUX;
 
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_VDI_X86);
+                handlerFactory.getHandler(TerminalTypeArchType.VDI_LINUX_X86);
                 result = new BusinessException("123");
 
                 try {
@@ -172,7 +170,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 times = 1;
 
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_VDI_X86);
+                handlerFactory.getHandler(TerminalTypeArchType.VDI_LINUX_X86);
                 times = 1;
 
                 CbbResponseShineMessage cbbShineMessageRequest;

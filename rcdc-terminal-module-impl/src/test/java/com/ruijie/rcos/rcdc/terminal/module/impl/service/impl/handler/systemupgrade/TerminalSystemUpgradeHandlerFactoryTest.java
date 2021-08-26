@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -50,7 +49,7 @@ public class TerminalSystemUpgradeHandlerFactoryTest {
      */
     @Test
     public void testGetHandler() throws BusinessException {
-        TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(TerminalTypeArchType.LINUX_VDI_X86);
+        TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(TerminalTypeArchType.VDI_LINUX_X86);
         Assert.assertTrue(handler instanceof LinuxVDISystemUpgradeHandler);
     }
 
@@ -63,7 +62,7 @@ public class TerminalSystemUpgradeHandlerFactoryTest {
     public void testGetHandlerWhileTerminalTypeNotSupport() {
 
         try {
-            handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_ARM);
+            handlerFactory.getHandler(TerminalTypeArchType.IDV_LINUX_ARM);
             Assert.fail();
         } catch (BusinessException e) {
             Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_HANDLER_NOT_EXIST, e.getKey());

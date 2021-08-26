@@ -65,9 +65,9 @@ public class TerminalSystemUpgradeHandlerFactory {
     }
 
     private void init() {
-        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.LINUX_VDI_X86, linuxVDISystemUpgradeHandler);
-        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.LINUX_VDI_ARM, systemOtaUpgradeHandler);
-        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.ANDROID_VDI_ARM, systemOtaUpgradeHandler);
-        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.LINUX_IDV_X86, systemOtaUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.VDI_LINUX_X86, linuxVDISystemUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.VDI_LINUX_ARM, systemOtaUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.VDI_ANDROID_ARM, systemOtaUpgradeHandler);
+        SYSTEM_UPGRADE_HANDLER.put(TerminalTypeArchType.IDV_LINUX_X86, systemOtaUpgradeHandler);
     }
 }

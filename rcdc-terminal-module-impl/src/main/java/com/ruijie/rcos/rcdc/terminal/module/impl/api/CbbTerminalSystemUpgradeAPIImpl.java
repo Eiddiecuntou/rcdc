@@ -74,9 +74,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     private static final String ENTITY_FILED_TERMINAL_SUPPORT_CPU = "upgradeCpuType";
 
-    private static ExecutorService SINGLE_THREAD_EXECUTOR =
-            ThreadExecutors.newBuilder("singleSystemUpgradeThreadPool").maxThreadNum(5).queueSize(10).build();
-
     private static final ExecutorService SEND_SYSTEM_UPGRADE_MSG_THREAD_POOL =
             ThreadExecutors.newBuilder("sendSystemUpgradeMsgThreadPool").maxThreadNum(10).queueSize(1).build();
 
@@ -152,7 +149,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         // 向在线终端发送升级消息
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
         String[] upgradeTerminalIdArr = upgradeTerminalList.stream().map(upgradeTerminal -> upgradeTerminal.getTerminalId()).toArray(String[]::new);
-        SINGLE_THREAD_EXECUTOR.execute(() -> sendSystemUpgradeMsg(upgradeTerminalIdArr, upgradeMsg));
+        sendSystemUpgradeMsg(upgradeTerminalIdArr, upgradeMsg);
 
         CbbAddSystemUpgradeTaskResultDTO response = new CbbAddSystemUpgradeTaskResultDTO();
         response.setUpgradeTaskId(upgradeTaskId);
@@ -375,7 +372,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         // 升级包可升级终端过滤条件转换
         if (ArrayUtils.isNotEmpty(request.getMatchEqualArr())) {
-            convertPackageId(request);
+            setSearchConditionByPackageId(request);
         }
 
         Page<ViewUpgradeableTerminalEntity> upgradeableTerminalPage =
@@ -423,12 +420,11 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
      * @param request 请求参数
      * @throws BusinessException 业务异常
      */
-    private void convertPackageId(CbbUpgradeableTerminalPageSearchRequest request) throws BusinessException {
+    private void setSearchConditionByPackageId(CbbUpgradeableTerminalPageSearchRequest request) throws BusinessException {
 
-        // TODO 添加cpu型号过滤
-        List<MatchEqual> matchEqualList = Lists.newArrayList(request.getMatchEqualArr());
-        List<MatchEqual> convertMEList = Lists.newArrayList();
-        for (Iterator<MatchEqual> iterator = matchEqualList.iterator(); iterator.hasNext();) {
+        List<MatchEqual> oldMatchEqualList = Lists.newArrayList(request.getMatchEqualArr());
+        List<MatchEqual> matchEqualList = Lists.newArrayList();
+        for (Iterator<MatchEqual> iterator = oldMatchEqualList.iterator(); iterator.hasNext();) {
             MatchEqual matchEqual = iterator.next();
             if (PARAM_FIELD_PACKAGE_ID.equals(matchEqual.getName())) {
                 UUID packageId = (UUID) matchEqual.getValueArr()[0];
@@ -443,15 +439,15 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
                 MatchEqual archTypeME = new MatchEqual(ENTITY_FILED_TERMINAL_SUPPORT_CPU_ARCH_TYPE,
                         new String[] {packageEntity.getCpuArch().name()});
 
-                convertMEList.add(platformME);
-                convertMEList.add(osTypeME);
-                convertMEList.add(archTypeME);
+                matchEqualList.add(platformME);
+                matchEqualList.add(osTypeME);
+                matchEqualList.add(archTypeME);
 
                 // 非支持所有类型CPU需要添加cpu匹配参数
                 if (packageEntity.getSupportCpu() != null && !packageEntity.getSupportCpu().equals("ALL")) {
                     MatchEqual supportCpuME = new MatchEqual(ENTITY_FILED_TERMINAL_SUPPORT_CPU,
                             getSupportCpuValueArr(packageEntity.getSupportCpu()));
-                    convertMEList.add(supportCpuME);
+                    matchEqualList.add(supportCpuME);
                 }
 
                 iterator.remove();
@@ -459,7 +455,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             }
         }
 
-        matchEqualList.addAll(convertMEList);
+        matchEqualList.addAll(matchEqualList);
         request.setMatchEqualArr(matchEqualList.stream().toArray(MatchEqual[]::new));
         LOGGER.info("request 匹配条件：{}", JSON.toJSONString(request));
     }
@@ -626,7 +622,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         TerminalSystemUpgradePackageEntity upgradePackage = systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
         TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.obtainTerminalTypeArchType());
         Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeEntity.getId());
-        SINGLE_THREAD_EXECUTOR.execute(() -> sendSystemUpgradeMsg(new String[] {request.getTerminalId()}, upgradeMsg));
+        sendSystemUpgradeMsg(new String[] {request.getTerminalId()}, upgradeMsg);
     }
 
     private void sendSystemUpgradeMsg(String[] terminalIdArr, Object upgradeMsg) {

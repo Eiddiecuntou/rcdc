@@ -10,7 +10,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeCheckResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
@@ -71,7 +70,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = entity;
 
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_VDI_X86);
+                handlerFactory.getHandler(TerminalTypeArchType.VDI_LINUX_X86);
                 result = handler;
 
                 handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, entity);
@@ -97,7 +96,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
 
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_VDI_X86);
+                handlerFactory.getHandler(TerminalTypeArchType.VDI_LINUX_X86);
                 times = 1;
 
                 CbbResponseShineMessage shineMessage;

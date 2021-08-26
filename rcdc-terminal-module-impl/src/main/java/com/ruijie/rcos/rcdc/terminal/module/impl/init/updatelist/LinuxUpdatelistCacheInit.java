@@ -20,7 +20,7 @@ public class LinuxUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplat
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxUpdatelistCacheInit.class);
 
     private static final String UPDATE_LIST_PATH =
-            "/opt/upgrade/app/terminal_component/terminal_linux/origin/update.list";
+            "/opt/upgrade/app/terminal_component/terminal_linux_x86/origin/update.list";
 
     @Override
     protected String getUpdateListPath() {

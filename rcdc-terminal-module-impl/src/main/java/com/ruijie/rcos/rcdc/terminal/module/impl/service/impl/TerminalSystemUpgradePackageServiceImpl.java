@@ -94,9 +94,12 @@ public class TerminalSystemUpgradePackageServiceImpl implements TerminalSystemUp
         for (String fileName : fileNameArr) {
             String fileNameWithoutSuffix = getFileNameWithoutSuffix(fileName);
             if (StringUtils.isBlank(fileNameWithoutSuffix)) {
+                LOGGER.warn("读取到的文件名称为空");
                 continue;
             }
 
+            // 此处定时任务调用，打印频繁，因此用debug级别
+            LOGGER.debug("读取到文件名为【{}】", fileNameWithoutSuffix);
             TerminalSystemUpgradeInfo upgradeInfo = new TerminalSystemUpgradeInfo();
             upgradeInfo.setTerminalId(fileNameWithoutSuffix.toLowerCase());
             upgradeInfo.setState(state);
@@ -123,6 +126,7 @@ public class TerminalSystemUpgradePackageServiceImpl implements TerminalSystemUp
         terminalSystemUpgradePackageDAO.save(systemUpgradePackage);
 
         // 删除升级包文件
+        LOGGER.info("删除终端升级包【{}】", systemUpgradePackage.getPackageName());
         deletePackageFile(systemUpgradePackage.getFilePath());
     }
 

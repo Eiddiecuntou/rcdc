@@ -25,7 +25,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 
 /**
- * Description: Function Description
+ * Description: 升级包处理对象
  * Copyright: Copyright (c) 2021
  * Company: Ruijie Co., Ltd.
  * Create Time: 2021/8/18 15:02
@@ -52,7 +52,7 @@ public abstract class AbstractSystemUpgradePackageResolver implements SystemUpgr
     }
 
     @Override
-    public TerminalUpgradeVersionFileInfo getPackageConfig(String fileName, String filePath) throws BusinessException {
+    public TerminalUpgradeVersionFileInfo dealAndReadPackageConfig(String fileName, String filePath) throws BusinessException {
         Assert.hasText(fileName, "fileName can not be blank");
         Assert.hasText(filePath, "filePath can not be blank");
 

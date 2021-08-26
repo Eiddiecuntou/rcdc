@@ -79,7 +79,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         // 深拷贝对象
         CommonUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
 
-        LOGGER.info("start upgrade");
+        LOGGER.info("终端【{}】需要进行组件升级", request.getTerminalId());
         // 判断是否差异升级,终端update.list的版本号(VER)与服务器update.list的BASE版本号相同则为差异升级
         String rainUpgradeVersion = request.getRainUpgradeVersion();
         if (!rainUpgradeVersion.equals(copyUpdateList.getBaseVersion())) {

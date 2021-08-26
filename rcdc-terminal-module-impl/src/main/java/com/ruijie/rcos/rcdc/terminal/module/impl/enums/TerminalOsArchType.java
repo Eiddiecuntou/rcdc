@@ -40,12 +40,28 @@ public enum TerminalOsArchType {
     ANDROID_ARM(CbbTerminalOsTypeEnums.ANDROID, CbbCpuArchType.ARM),
 
     /**
+     * android 操作系统， x86架构
+     */
+    ANDROID_X86(CbbTerminalOsTypeEnums.ANDROID, CbbCpuArchType.X86_64),
+
+    /**
+     * UOS 操作系统，arm架构
+     */
+    UOS_ARM(CbbTerminalOsTypeEnums.UOS, CbbCpuArchType.ARM),
+
+
+    /**
      * UOS 操作系统，x86架构
      */
     UOS_X86(CbbTerminalOsTypeEnums.UOS, CbbCpuArchType.X86_64),
 
     /**
-     * NEOKYLIN_X86 操作系统， x86架构
+     * NEOKYLIN 操作系统， arm架构
+     */
+    NEOKYLIN_ARM(CbbTerminalOsTypeEnums.NEOKYLIN, CbbCpuArchType.ARM),
+
+    /**
+     * NEOKYLIN 操作系统， x86架构
      */
     NEOKYLIN_X86(CbbTerminalOsTypeEnums.NEOKYLIN, CbbCpuArchType.X86_64);
 

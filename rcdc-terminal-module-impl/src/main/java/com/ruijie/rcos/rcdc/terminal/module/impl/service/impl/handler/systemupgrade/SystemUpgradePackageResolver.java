@@ -29,6 +29,6 @@ public interface SystemUpgradePackageResolver {
      * @return 升级包文件信息
      * @throws BusinessException 业务异常
      */
-    TerminalUpgradeVersionFileInfo getPackageConfig(String fileName, String filePath) throws BusinessException;
+    TerminalUpgradeVersionFileInfo dealAndReadPackageConfig(String fileName, String filePath) throws BusinessException;
 
 }

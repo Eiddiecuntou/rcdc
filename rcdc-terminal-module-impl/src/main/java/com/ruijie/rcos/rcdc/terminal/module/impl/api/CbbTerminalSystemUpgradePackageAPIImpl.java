@@ -70,13 +70,13 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     public CbbCheckAllowUploadPackageResultDTO checkAllowUploadPackage(CbbCheckAllowUploadPackageDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        boolean allowUpload = true;
         List<String> errorList = Lists.newArrayList();
         LOGGER.info("上传升级包类型[{}]", request.getTerminalType());
 
         // 判断磁盘大小是否满足
         TerminalSystemUpgradePackageHandler handler = terminalSystemUpgradePackageHandlerFactory.getHandler(request.getTerminalType());
         final boolean isEnough = handler.checkServerDiskSpaceIsEnough(request.getFileSize(), handler.getUpgradePackageFileDir());
+        boolean allowUpload = true;
         if (!isEnough) {
             allowUpload = false;
             errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[] {}));

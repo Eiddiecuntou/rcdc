@@ -61,9 +61,18 @@ def update(os_type):
 
 
 def set_work_mode(new_component_list):
+    vdi_key = 'VDI'
+    idv_key = 'IDV'
     for component in new_component_list:
+        work_mode_list = []
         support_work_modes = component['platform']
-        component['workModeArr'] = support_work_modes.split("-")
+        if vdi_key in support_work_modes:
+            work_mode_list.append(vdi_key)
+        if idv_key in support_work_modes:
+            work_mode_list.append(idv_key)
+        if len(work_mode_list) == 0:
+            work_mode_list.append(vdi_key)
+        component['workModeArr'] = work_mode_list
 
 
 def package_update(os_type):
