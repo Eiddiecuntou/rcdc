@@ -99,7 +99,7 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
             ZipUtil.unzipFile(new File(filePath), new File(unzipPath));
         } catch (IOException e) {
             LOGGER.error("解压ZIP包【" + filePath + "】异常", e);
-            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL);
+            throw new BusinessException(BusinessKey.RCDC_FILE_OPERATE_FAIL, e);
         }
     }
 

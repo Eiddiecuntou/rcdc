@@ -169,7 +169,7 @@ public abstract class AbstractSystemUpgradePackageResolver implements SystemUpgr
             return StringUtils.bytes2Hex(Md5Builder.computeFileMd5(new File(filePath)));
         } catch (IOException e) {
             LOGGER.error("计算文件【" + filePath + "】MD5值异常", e);
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_FILE_MD5_FAIL);
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_FILE_MD5_FAIL, e);
         }
     }
 
