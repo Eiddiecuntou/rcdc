@@ -35,7 +35,7 @@ public class TerminalComponentUpgradeHandlerFactoryTest {
     @Test
     public void testGetHandlerArgIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> handlerFactory.getHandler( null),
-                "osType can not be null");
+                "osArchType can not be null");
         Assert.assertTrue(true);
     }
 

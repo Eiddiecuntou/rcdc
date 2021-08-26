@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -388,6 +389,8 @@ public class AndroidVDISystemUpgradePackageHandlerTest {
     public void testPreUploadPackage() throws BusinessException {
         TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
         upgradePackage.setId(UUID.randomUUID());
+        upgradePackage.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+        upgradePackage.setCpuArch(CbbCpuArchType.X86_64);
 
         TerminalSystemUpgradeEntity systemUpgradeTask = new TerminalSystemUpgradeEntity();
         systemUpgradeTask.setId(UUID.randomUUID());

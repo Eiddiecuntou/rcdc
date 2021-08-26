@@ -102,7 +102,7 @@ public class TerminalSystemUpgradePackageEntity {
      *
      * @return 枚举对象
      */
-    public TerminalTypeArchType getTerminalTypeArchType() {
+    public TerminalTypeArchType obtainTerminalTypeArchType() {
         return TerminalTypeArchType.convert(packageType, cpuArch);
     }
 

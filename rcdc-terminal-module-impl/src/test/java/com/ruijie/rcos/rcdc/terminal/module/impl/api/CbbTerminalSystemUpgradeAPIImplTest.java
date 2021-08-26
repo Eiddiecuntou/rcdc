@@ -9,6 +9,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateE
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.request.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskResultDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -159,105 +160,6 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         }
     }
 
-
-    /**
-     * 测试升级包上传，升级包正在上传中
-     */
-    @Test
-    public void testAddSystemUpgradeTaskUpgradePackageIsUploading() {
-        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
-        request.setTerminalIdArr(new String[] {"123", "456"});
-        TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
-        upgradePackageEntity.setIsDelete(false);
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findById(request.getPackageId());
-                result = Optional.of(upgradePackageEntity);
-                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
-                result = true;
-            }
-        };
-        try {
-            upgradeAPIImpl.addSystemUpgradeTask(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_IS_UPLOADING, e.getKey());
-        }
-    }
-
-    /**
-     * 测试升级包上传，已存在进行中的刷机任务
-     */
-    @Test
-    public void testAddSystemUpgradeTaskHasUploadingTask() {
-        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
-        request.setTerminalIdArr(new String[] {"123", "456"});
-
-        TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
-        upgradePackageEntity.setIsDelete(false);
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findById(request.getPackageId());
-                result = Optional.of(upgradePackageEntity);
-                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
-                result = false;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
-                result = true;
-            }
-        };
-        try {
-            upgradeAPIImpl.addSystemUpgradeTask(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, e.getKey());
-        }
-    }
-
-    /**
-     * 测试升级包上传，升级包文件不存在
-     */
-    @Test
-    public void testAddSystemUpgradeTaskPackageNotExist() {
-        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
-        request.setTerminalIdArr(new String[] {"123", "456"});
-
-        TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
-        upgradePackageEntity.setIsDelete(false);
-        upgradePackageEntity.setFilePath("aaa");
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findById(request.getPackageId());
-                result = Optional.of(upgradePackageEntity);
-                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
-                result = false;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
-                result = false;
-            }
-        };
-
-        new MockUp<File>() {
-            @Mock
-            public Path toPath() {
-                // file toPath 返回null
-                return null;
-            }
-        };
-
-        new MockUp<Files>() {
-            @Mock
-            public boolean exists(Path path, LinkOption... options) {
-                return false;
-            }
-        };
-
-        try {
-            upgradeAPIImpl.addSystemUpgradeTask(request);
-            fail();
-        } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_FILE_NOT_EXIST, e.getKey());
-        }
-    }
-
     /**
      * 测试升级包上传，
      * 
@@ -271,7 +173,9 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
         upgradePackageEntity.setIsDelete(false);
         upgradePackageEntity.setFilePath("/opt");
+        upgradePackageEntity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = Optional.of(upgradePackageEntity);
+        upgradePackageEntity.setCpuArch(CbbCpuArchType.X86_64);
 
         UUID upgradeTaskId = UUID.randomUUID();
         new Expectations() {
@@ -328,6 +232,8 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         upgradePackageEntity.setIsDelete(false);
         upgradePackageEntity.setFilePath("/opt");
         Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = Optional.of(upgradePackageEntity);
+        upgradePackageEntity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+        upgradePackageEntity.setCpuArch(CbbCpuArchType.X86_64);
 
         List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
         TerminalSystemUpgradeTerminalEntity terminalSystemUpgradeTerminalEntity = new TerminalSystemUpgradeTerminalEntity();
@@ -724,54 +630,6 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
     public void testListUpgradeableTerminalArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> upgradeAPIImpl.pageQueryUpgradeableTerminal(null), "request can not be null");
         assertTrue(true);
-    }
-
-    /**
-     * 测试listSystemUpgradeTaskTerminal，
-     *
-     * @throws BusinessException
-     *         异常
-     */
-    @Test
-    public void testListUpgradeableTerminalMatchEqualsIsNotEmpty() throws BusinessException {
-        CbbUpgradeableTerminalPageSearchRequest request = new CbbUpgradeableTerminalPageSearchRequest(new PageWebRequest());
-        MatchEqual matchEqual = new MatchEqual();
-        matchEqual.setName("packageId");
-        matchEqual.setValueArr(new UUID[] {UUID.randomUUID()});
-        request.setMatchEqualArr(new MatchEqual[] {matchEqual});
-
-        TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
-        packageEntity.setIsDelete(false);
-        packageEntity.setPackageType(CbbTerminalTypeEnums.IDV_LINUX);
-
-        List<ViewUpgradeableTerminalEntity> entityList = new ArrayList<>();
-        entityList.add(new ViewUpgradeableTerminalEntity());
-        Pageable pageable = PageRequest.of(1, 10);
-        Page<ViewUpgradeableTerminalEntity> upgradeableTerminalPage = new PageImpl<>(entityList, pageable, 100);
-
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findById((UUID) any);
-                result = Optional.of(packageEntity);
-
-                upgradeableTerminalListService.pageQuery((PageSearchRequest) any, ViewUpgradeableTerminalEntity.class);
-                result = upgradeableTerminalPage;
-            }
-        };
-        DefaultPageResponse<CbbUpgradeableTerminalListDTO> pageResponse = upgradeAPIImpl.pageQueryUpgradeableTerminal(request);
-        assertEquals(Status.SUCCESS, pageResponse.getStatus());
-        assertEquals(pageResponse.getTotal(), upgradeableTerminalPage.getTotalElements());
-        assertEquals(pageResponse.getItemArr().length, upgradeableTerminalPage.getContent().size());
-
-        new Verifications() {
-            {
-                terminalSystemUpgradePackageDAO.findById((UUID) any);
-                times = 1;
-
-                upgradeableTerminalListService.pageQuery((PageSearchRequest) any, ViewUpgradeableTerminalEntity.class);
-                times = 1;
-            }
-        };
     }
 
     /**

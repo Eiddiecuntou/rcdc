@@ -59,6 +59,8 @@ public enum TerminalTypeArchType {
     /**
      * 枚举转换
      *
+     * @param archType 架构类型
+     * @param terminalType 终端类型
      * @return 枚举对象
      */
     public static TerminalTypeArchType convert(CbbTerminalTypeEnums terminalType, CbbCpuArchType archType) {

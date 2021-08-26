@@ -146,6 +146,7 @@ public class SystemOtaUpgradeHandlerTest {
         content.setTaskId(upgradeEntity.getId());
         content.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         content.setFlashMode(CbbFlashModeEnums.FAST);
+        content.setPackageObtainMode(PackageObtainModeEnums.OTA);
         return content;
     }
 

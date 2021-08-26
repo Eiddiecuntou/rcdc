@@ -7,6 +7,7 @@ import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
@@ -715,6 +716,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         info.setCpuType("intel5");
         info.setPlatform(CbbTerminalPlatformEnums.IDV);
         info.setTerminalOsType("Linux");
+        info.setCpuArch(CbbCpuArchType.X86_64);
         return JSON.toJSONString(info);
     }
 

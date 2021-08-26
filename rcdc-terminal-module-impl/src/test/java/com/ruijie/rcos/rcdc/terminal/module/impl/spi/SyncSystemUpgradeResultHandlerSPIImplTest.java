@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -56,6 +57,7 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
         entity.setCpuType("intel");
         entity.setTerminalOsType("Linux");
         entity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        entity.setCpuArch(CbbCpuArchType.X86_64);
 
         new Expectations() {
             {
@@ -94,55 +96,6 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
     }
 
     /**
-     * 测试检查组件升级- 更新终端信息
-     */
-    @Test
-    public void testDispatchUpdateTerminalBasicInfo(@Mocked TerminalSystemUpgradeHandler handler) throws BusinessException {
-        String terminalId = "123";
-        TerminalEntity entity = new TerminalEntity();
-        entity.setTerminalId("123456");
-        entity.setTerminalName("t-box3");
-        entity.setCpuType("intel");
-        entity.setTerminalOsType("Linux");
-        entity.setPlatform(CbbTerminalPlatformEnums.VOI);
-
-        new Expectations() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                result = entity;
-                basicInfoService.obtainTerminalType(entity);
-                result = CbbTerminalTypeEnums.IDV_LINUX;
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
-                result = handler;
-
-            }
-        };
-
-        CbbDispatcherRequest request = new CbbDispatcherRequest();
-        request.setTerminalId(terminalId);
-        request.setRequestId("456");
-        request.setData(generateJson());
-
-        syncSystemUpgradeResultHandlerSPI.dispatch(request);
-
-        new Verifications() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
-                times = 1;
-
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
-                times = 1;
-
-                upgradeResultHelper.responseNotUpgrade(request);
-                times = 0;
-
-                upgradeResultHelper.dealSystemUpgradeResult(entity, (TerminalTypeArchType) any, handler, request);
-                times = 1;
-            }
-        };
-    }
-
-    /**
      * 测试检查组件升级- CT3120终端
      */
     @Test
@@ -155,6 +108,7 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
         entity.setTerminalOsType("Linux");
         entity.setPlatform(CbbTerminalPlatformEnums.VOI);
         entity.setProductId("80020101");
+        entity.setCpuArch(CbbCpuArchType.X86_64);
 
         new Expectations() {
             {
@@ -197,6 +151,7 @@ public class SyncSystemUpgradeResultHandlerSPIImplTest {
         info.setTerminalId("123");
         info.setTerminalName("t-box2");
         info.setCpuType("intel5");
+        info.setCpuArch(CbbCpuArchType.X86_64);
         return JSON.toJSONString(info);
     }
 

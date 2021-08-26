@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -46,61 +47,6 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
     @Injectable
     private TerminalSystemUpgradeHandlerFactory handlerFactory;
 
-
-    /**
-     * 测试检查组件升级- 更新终端信息
-     */
-    @Test
-    public void testDispatchUpdateTerminalBasicInfo() throws BusinessException {
-        String terminalId = "123";
-        TerminalEntity entity = new TerminalEntity();
-        entity.setTerminalId("123456");
-        entity.setTerminalName("t-box3");
-        entity.setCpuType("intel");
-        entity.setTerminalOsType("Linux");
-        entity.setPlatform(CbbTerminalPlatformEnums.VDI);
-
-        new Expectations() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                result = entity;
-
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
-                result = new BusinessException("123");
-
-                try {
-                    messageHandlerAPI.response((CbbResponseShineMessage) any);
-                } catch (Exception e) {
-                    fail();
-                }
-            }
-        };
-
-        CbbDispatcherRequest request = new CbbDispatcherRequest();
-        request.setTerminalId(terminalId);
-        request.setRequestId("456");
-        request.setData(generateJson());
-
-        checkSystemUpgradeHandlerSPI.dispatch(request);
-
-        new Verifications() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(anyString);
-                times = 1;
-
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
-                times = 1;
-
-                CbbResponseShineMessage shineMessage;
-                messageHandlerAPI.response(shineMessage = withCapture());
-                times = 1;
-                assertEquals(terminalId, shineMessage.getTerminalId());
-                SystemUpgradeCheckResult content = (SystemUpgradeCheckResult) shineMessage.getContent();
-                assertEquals(CheckSystemUpgradeResultEnums.UNSUPPORT.getResult(), content.getSystemUpgradeCode().intValue());
-                assertEquals(null, content.getContent());
-            }
-        };
-    }
 
     /**
      * 测试检查组件升级- 更新终端信息
@@ -170,6 +116,8 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
         info.setTerminalId("123");
         info.setTerminalName("t-box2");
         info.setCpuType("intel5");
+        info.setCpuArch(CbbCpuArchType.X86_64);
+
         return JSON.toJSONString(info);
     }
 

@@ -41,7 +41,7 @@ public class TerminalUpdateListCacheManagerTest {
     @Test
     public void testAddArgumentIsNull() throws Exception {
         ThrowExceptionTester.throwIllegalArgumentException(() -> manager.add(null, new AppUpdateListDTO()),
-                "osType can not be null");
+                "osArch can not be null");
         ThrowExceptionTester.throwIllegalArgumentException(() -> manager.add(TerminalOsArchType.WINDOWS_X86, null),
                 "updatelist can not be null");
         assertTrue(true);

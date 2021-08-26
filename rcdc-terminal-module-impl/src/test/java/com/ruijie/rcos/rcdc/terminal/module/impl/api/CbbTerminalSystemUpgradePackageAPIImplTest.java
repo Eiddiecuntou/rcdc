@@ -90,115 +90,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     }
 
     /**
-     * 测试uploadUpgradeFile，系统升级任务未在进行中
-     * 
-     * @throws Exception 异常
-     */
-    @Test
-    public void testUploadUpgradePackage() throws Exception {
-
-        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
-        request.setFileName("123.iso");
-        request.setFilePath("/temp");
-        request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
-        new Expectations() {
-            {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = null;
-            }
-        };
-
-        upgradePackageAPIImpl.uploadUpgradePackage(request);
-        new Verifications() {
-            {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
-                times = 1;
-            }
-        };
-
-    }
-
-    /**
-     * 测试uploadUpgradeFile，系统升级任务在进行中
-     *
-     * @throws Exception 异常
-     */
-    @Test
-    public void testUploadUpgradePackageInTask() throws Exception {
-
-        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
-        request.setFileName("123.iso");
-        request.setFilePath("/temp");
-        request.setTerminalType(CbbTerminalTypeEnums.VDI_LINUX);
-
-        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
-        upgradePackage.setId(UUID.randomUUID());
-
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = upgradePackage;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                result = true;
-            }
-        };
-
-        try {
-            upgradePackageAPIImpl.uploadUpgradePackage(request);
-            Assert.fail();
-        } catch (BusinessException e) {
-            Assert.assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, e.getKey());
-        }
-
-        new Verifications() {
-            {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
-                times = 0;
-            }
-        };
-
-    }
-
-    /**
-     * 测试uploadUpgradeFile，系统升级任务在进行中，安卓包
-     *
-     * @throws Exception 异常
-     */
-    @Test
-    public void testUploadUpgradePackageInTaskAndroid() throws Exception {
-
-        CbbTerminalUpgradePackageUploadDTO request = new CbbTerminalUpgradePackageUploadDTO();
-        request.setFileName("123.iso");
-        request.setFilePath("/temp");
-        request.setTerminalType(CbbTerminalTypeEnums.VDI_ANDROID);
-
-        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
-        upgradePackage.setId(UUID.randomUUID());
-
-        new Expectations() {
-            {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
-                terminalSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = upgradePackage;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                result = true;
-            }
-        };
-
-        upgradePackageAPIImpl.uploadUpgradePackage(request);
-
-        new Verifications() {
-            {
-                terminalSystemPackageUploadingService.uploadUpgradePackage((CbbTerminalUpgradePackageUploadDTO) any, (CbbTerminalTypeEnums) any);
-                times = 1;
-            }
-        };
-
-    }
-
-
-    /**
      * 测试listSystemUpgradePackage-无进行中的升级任务
      *
      * @throws ParseException exception
@@ -531,49 +422,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
     }
 
     /**
-     * 测试检查是否允许上传升级包- 刷机任务在运行、磁盘空间不足
-     *
-     * @throws Exception 异常
-     */
-    @Test
-    public void testCheckAllowUploadPackageHasRunningTaskDiskSpaceEnough() throws Exception {
-        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO(10L);
-
-        new Expectations() {
-            {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                result = true;
-            }
-        };
-
-        new MockUp<File>() {
-            @Mock
-            public long getUsableSpace() {
-                return 5L;
-            }
-        };
-
-        new MockUp<LocaleI18nResolver>() {
-            @Mock
-            public String resolve(String key, String... args) {
-                return key;
-            }
-        };
-
-        CbbCheckAllowUploadPackageResultDTO response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
-        assertEquals(false, response.getAllowUpload());
-        assertEquals(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, response.getErrorList().get(0));
-        assertEquals(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, response.getErrorList().get(1));
-
-        new Verifications() {
-            {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                times = 1;
-            }
-        };
-    }
-
-    /**
      * 测试检查是否允许上传升级包- 请求参数为空
      *
      * @throws Exception 异常
@@ -584,8 +432,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Expectations() {
             {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                result = false;
                 terminalSystemUpgradePackageHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = handler;
                 handler.checkServerDiskSpaceIsEnough(anyLong, anyString);
@@ -596,52 +442,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
         CbbCheckAllowUploadPackageResultDTO response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
         assertEquals(true, response.getAllowUpload());
         assertEquals(0, response.getErrorList().size());
-
-        new Verifications() {
-            {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     * 测试检查是否允许上传升级包- 磁盘容量不足
-     *
-     * @throws Exception 异常
-     */
-    @Test
-    public void testCheckAllowUploadPackageWithServerDiskNotEnough(@Injectable TerminalSystemUpgradePackageHandler handler) throws Exception {
-        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO(10L);
-
-        new Expectations() {
-            {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                result = false;
-                terminalSystemUpgradePackageHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
-                result = handler;
-                handler.checkServerDiskSpaceIsEnough(anyLong, anyString);
-                result = false;
-            }
-        };
-
-        new MockUp<LocaleI18nResolver>() {
-            @Mock
-            public String resolve(String key, String... args) {
-                return key;
-            }
-        };
-
-        CbbCheckAllowUploadPackageResultDTO response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
-        assertEquals(false, response.getAllowUpload());
-        assertEquals(1, response.getErrorList().size());
-
-        new Verifications() {
-            {
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                times = 1;
-            }
-        };
     }
 
     /**
@@ -655,8 +455,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         new Expectations() {
             {
-                termianlSystemUpgradePackageDAO.findFirstByPackageType((CbbTerminalTypeEnums) any);
-                result = null;
                 terminalSystemUpgradePackageHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = handler;
                 handler.checkServerDiskSpaceIsEnough(anyLong, anyString);

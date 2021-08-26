@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.AndroidUpdatelistCacheInit;
+import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxArmUpdatelistCacheInit;
 import com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist.LinuxUpdatelistCacheInit;
 import com.ruijie.rcos.sk.base.env.Enviroment;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -51,6 +52,9 @@ public class TerminalComponentInitServiceImplTest {
 
     @Injectable
     private CloudPlatformMgmtAPI cloudPlatformMgmtAPI;
+
+    @Injectable
+    private LinuxArmUpdatelistCacheInit linuxArmUpdatelistCacheInit;
 
     @Before
     public void before() {

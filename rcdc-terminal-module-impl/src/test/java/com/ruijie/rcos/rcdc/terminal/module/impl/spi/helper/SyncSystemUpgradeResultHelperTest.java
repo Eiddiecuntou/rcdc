@@ -320,6 +320,7 @@ public class SyncSystemUpgradeResultHelperTest {
         terminalEntity.setPlatform(CbbTerminalPlatformEnums.VDI);
         terminalEntity.setTerminalOsType("Linux");
         terminalEntity.setTerminalId("123");
+        terminalEntity.setCpuArch(CbbCpuArchType.X86_64);
 
         return terminalEntity;
     }

@@ -54,60 +54,6 @@ public class TerminalSystemUpgradePackageServiceImplTest {
     }
 
     /**
-     * 测试saveTerminalUpgradePackage，upgradePackage为空
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testSaveTerminalUpgradePackageUpgradePackageIsNull() throws BusinessException {
-        TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
-        new Expectations() {
-            {
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
-                result = null;
-            }
-        };
-        servicePackageImpl.saveTerminalUpgradePackage(versionInfo);
-
-        new Verifications() {
-            {
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
-                times = 1;
-                termianlSystemUpgradePackageDAO.save((TerminalSystemUpgradePackageEntity) any);
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     * 测试saveTerminalUpgradePackage
-     * 
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testSaveTerminalUpgradePackage() throws BusinessException {
-        TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
-        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
-        new Expectations() {
-            {
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
-                result = upgradePackage;
-            }
-        };
-        servicePackageImpl.saveTerminalUpgradePackage(versionInfo);
-        assertEquals(versionInfo.getPackageName(), upgradePackage.getPackageName());
-        assertEquals(versionInfo.getImgName(), upgradePackage.getImgName());
-        new Verifications() {
-            {
-                termianlSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
-                times = 1;
-                termianlSystemUpgradePackageDAO.save(upgradePackage);
-                times = 1;
-            }
-        };
-    }
-
-    /**
      * 测试readSystemUpgradeSuccessStateFromFile，目录不存在
      */
     @Test

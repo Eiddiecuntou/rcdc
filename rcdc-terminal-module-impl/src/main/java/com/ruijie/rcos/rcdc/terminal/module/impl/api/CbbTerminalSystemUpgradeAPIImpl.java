@@ -19,7 +19,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackag
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.UpgradeableTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.*;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.*;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeListService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.QuerySystemUpgradeTerminalGroupListService;
@@ -146,7 +145,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
         UUID upgradeTaskId = terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackage, request);
         // 添加升级任务成功后的处理
-        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.getTerminalTypeArchType());
+        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.obtainTerminalTypeArchType());
         handler.afterAddSystemUpgrade(upgradePackage);
 
         Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeTaskId);
@@ -365,7 +364,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         TerminalSystemUpgradeEntity systemUpgradeTask = terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
         TerminalSystemUpgradePackageEntity upgradePackage =
                 systemUpgradePackageService.getSystemUpgradePackage(systemUpgradeTask.getUpgradePackageId());
-        systemUpgradeHandlerFactory.getHandler(upgradePackage.getTerminalTypeArchType()).afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
+        systemUpgradeHandlerFactory.getHandler(upgradePackage.obtainTerminalTypeArchType()).afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
     }
 
     @Override
@@ -624,7 +623,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
 
     private void sendUpgradeMsg(CbbUpgradeTerminalDTO request, TerminalSystemUpgradeEntity upgradeEntity) throws BusinessException {
         TerminalSystemUpgradePackageEntity upgradePackage = systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
-        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.getTerminalTypeArchType());
+        TerminalSystemUpgradeHandler handler = systemUpgradeHandlerFactory.getHandler(upgradePackage.obtainTerminalTypeArchType());
         Object upgradeMsg = handler.getSystemUpgradeMsg(upgradePackage, upgradeEntity.getId());
         SINGLE_THREAD_EXECUTOR.execute(() -> sendSystemUpgradeMsg(new String[] {request.getTerminalId()}, upgradeMsg));
     }

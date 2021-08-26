@@ -73,45 +73,6 @@ public class EntityBeanTest {
     }
 
     /**
-     * 测试TerminalUpgradeVersionFileInfo
-     */
-    @Test
-    public void testTerminalUpgradeVersionFileInfo() {
-        GetSetTester tester = new GetSetTester(TerminalUpgradeVersionFileInfo.class);
-        tester.runTest();
-        TerminalUpgradeVersionFileInfo info = new TerminalUpgradeVersionFileInfo();
-        info.setFilePath("filePath");
-        info.setImgName("imgName");
-        info.setPackageName("packageName");
-        info.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
-        info.setVersion("version");
-        info.setFileMD5("fileMD5");
-        info.setSeedLink("seedLink");
-        info.setSeedMD5("seedMD5");
-        info.setOtaScriptPath("otaScriptPath");
-        info.setOtaScriptMD5("otaScriptMD5");
-        info.setFileSaveDir("fileSaveDir");
-        info.setRealFileName("realFileName");
-        info.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
-        String result = "TerminalUpgradeVersionFileInfo{" +
-                "packageName='" + "packageName" + '\'' +
-                ", imgName='" + "imgName" + '\'' +
-                ", version='" + "version" + '\'' +
-                ", filePath='" + "filePath" + '\'' +
-                ", packageType=" + "VDI_LINUX" +
-                ", fileMD5='" + "fileMD5" + '\'' +
-                ", seedLink='" + "seedLink" + '\'' +
-                ", seedMD5='" + "seedMD5" + '\'' +
-                ", fileSaveDir='" + "fileSaveDir" + '\'' +
-                ", realFileName='" + "realFileName" + '\'' +
-                ", otaScriptPath='" + "otaScriptPath" + '\'' +
-                ", otaScriptMD5='" + "otaScriptMD5" + '\'' +
-                ", upgradeMode='" + "AUTO" + '\'' +
-                '}';
-        assertEquals(result, info.toString());
-    }
-
-    /**
      * 测试TerminalGroupEntity
      */
     @Test

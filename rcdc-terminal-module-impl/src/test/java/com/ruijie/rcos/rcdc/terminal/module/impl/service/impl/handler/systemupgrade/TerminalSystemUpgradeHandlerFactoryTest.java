@@ -39,7 +39,7 @@ public class TerminalSystemUpgradeHandlerFactoryTest {
      */
     @Test
     public void testGetHandlerArgIsNull() throws Exception {
-        ThrowExceptionTester.throwIllegalArgumentException(() -> handlerFactory.getHandler(null), "terminal type can not be null");
+        ThrowExceptionTester.throwIllegalArgumentException(() -> handlerFactory.getHandler(null), "terminalArchType can not be null");
         Assert.assertTrue(true);
     }
 

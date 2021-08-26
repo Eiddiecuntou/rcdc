@@ -1,8 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeTerminalDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -15,8 +18,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeSe
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 /**
  * Description: Function Description
@@ -50,11 +51,12 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
             return buildNoNeedCheckResult(checkSystemUpgradeResult, terminalEntity);
         }
 
-        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
+        TerminalSystemUpgradePackageEntity upgradePackage =
+                getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         SystemUpgradeCheckResult<T> checkResult = getCheckResult(upgradePackage, upgradeTask);
         checkResult.setSystemUpgradeCode(checkSystemUpgradeResult.getResult());
-        
+
         return checkResult;
     }
 
@@ -67,7 +69,8 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         }
 
         // TODO 需优化
-        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
+        TerminalSystemUpgradePackageEntity upgradePackage =
+                getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
                 getSystemUpgradeService().getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeTask.getId());
@@ -109,7 +112,8 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         String terminalId = terminalEntity.getTerminalId();
 
         // TODO fixme
-        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
+        TerminalSystemUpgradePackageEntity upgradePackage =
+                getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
 
         if (upgradePackage == null || upgradePackage.getIsDelete() == true) {
             LOGGER.info("终端[{}]的可用刷机包不存在", terminalId);
