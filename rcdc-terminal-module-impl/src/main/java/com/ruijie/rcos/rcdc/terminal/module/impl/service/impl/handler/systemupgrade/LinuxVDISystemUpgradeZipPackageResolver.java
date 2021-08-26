@@ -107,9 +107,11 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
     protected void movePackage(String filePath, TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
         Assert.notNull(versionInfo, "versionInfo can not be null");
 
-        String storePackagePath = Constants.TERMINAL_UPGRADE_VDI_OTA_PACKAGE_PATH + versionInfo.getRealFileName();
+        String imgFilePath = versionInfo.getUnzipPath()+ File.separator + versionInfo.getRealFileName();
+        moveUpgradePackage(versionInfo.getFilePath(), imgFilePath);
 
-        moveUpgradePackage(storePackagePath, filePath);
+        FileOperateUtil.deleteFile(new File(filePath));
+        FileOperateUtil.deleteFile(new File(versionInfo.getUnzipPath()));
     }
 
     @Override
@@ -146,14 +148,16 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
 
         versionInfo.setPackageName(fileName);
         versionInfo.setRealFileName(imgFileName);
+        versionInfo.setUnzipPath(unzipPath);
         versionInfo.setOtaScriptMD5(calFileMd5(scriptFilePath));
         // TODO 比对MD5值，校验
-        versionInfo.setFileMD5(calFileMd5(imgFilePath));
+        String fileMD5 = calFileMd5(imgFilePath);
+        versionInfo.setFileMD5(fileMD5);
         versionInfo.setUpgradeMode(DEFAULT_UPGRADE_MODE);
         versionInfo.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         versionInfo.setFileSaveDir(Constants.TERMINAL_UPGRADE_VDI_OTA_PACKAGE_PATH);
-        versionInfo.setFilePath(Constants.TERMINAL_UPGRADE_VDI_OTA_PACKAGE_PATH + imgFileName);
         versionInfo.setOtaScriptPath(Constants.TERMINAL_UPGRADE_LINUX_VDI_OTA_SCRIPT_DIR + scriptFileName);
+        versionInfo.setFilePath(Constants.TERMINAL_UPGRADE_VDI_OTA_PACKAGE_PATH + versionInfo.getRealFileName());
     }
 
     private String getUnzipPath() {

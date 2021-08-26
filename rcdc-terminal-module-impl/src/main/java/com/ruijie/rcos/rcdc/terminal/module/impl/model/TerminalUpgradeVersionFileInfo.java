@@ -49,6 +49,10 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
 
     private CbbCpuArchType cpuArch;
 
+    private String unzipPath;
+
+    private String mountPath;
+
     public String getImgName() {
         return imgName;
     }
@@ -169,6 +173,22 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
         this.cpuArch = cpuArch;
     }
 
+    public String getUnzipPath() {
+        return unzipPath;
+    }
+
+    public void setUnzipPath(String unzipPath) {
+        this.unzipPath = unzipPath;
+    }
+
+    public String getMountPath() {
+        return mountPath;
+    }
+
+    public void setMountPath(String mountPath) {
+        this.mountPath = mountPath;
+    }
+
     @Override
     public String toString() {
         return "TerminalUpgradeVersionFileInfo{" +
@@ -187,6 +207,8 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
                 ", upgradeMode=" + upgradeMode +
                 ", supportCpu='" + supportCpu + '\'' +
                 ", cpuArch=" + cpuArch +
+                ", unzipPath='" + unzipPath + '\'' +
+                ", mountPath='" + mountPath + '\'' +
                 '}';
     }
 }
