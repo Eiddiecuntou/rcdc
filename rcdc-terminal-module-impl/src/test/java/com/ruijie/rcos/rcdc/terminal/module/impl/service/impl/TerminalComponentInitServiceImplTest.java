@@ -177,9 +177,9 @@ public class TerminalComponentInitServiceImplTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 1;
+                times = 2;
                 runner.setCommand(String.format("python %s %s %s", "/data/web/rcdc/shell/update_component_package.py", "172.12.22.45", "linux"));
-                times = 1;
+                times = 0;
             }
         };
     }
@@ -259,9 +259,9 @@ public class TerminalComponentInitServiceImplTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 1;
+                times = 2;
                 runner.setCommand(String.format("python %s %s %s", "/data/web/rcdc/shell/update_component_package.py", "172.12.22.45", "linux"));
-                times = 1;
+                times = 0;
             }
         };
     }
@@ -294,9 +294,9 @@ public class TerminalComponentInitServiceImplTest {
         new Verifications() {
             {
                 globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 1;
+                times = 2;
                 runner.execute((TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver) any);
-                times = 1;
+                times = 2;
                 linuxUpdatelistCacheInit.init();
                 times = 0;
             }

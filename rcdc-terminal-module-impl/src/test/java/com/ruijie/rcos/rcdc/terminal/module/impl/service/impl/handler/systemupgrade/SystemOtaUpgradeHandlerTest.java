@@ -118,6 +118,7 @@ public class SystemOtaUpgradeHandlerTest {
 
         OtaCheckResultContent expectContent = buildExpectedAndroidVDICheckResultContent(upgradeEntity);
 
+        result.setPackageObtainMode(PackageObtainModeEnums.OTA);
         assertEquals(expectContent, result);
     }
 

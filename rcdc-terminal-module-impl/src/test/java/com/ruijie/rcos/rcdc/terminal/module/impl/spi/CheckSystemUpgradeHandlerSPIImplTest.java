@@ -60,6 +60,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
         entity.setCpuType("intel");
         entity.setTerminalOsType("Linux");
         entity.setPlatform(CbbTerminalPlatformEnums.VDI);
+        entity.setCpuArch(CbbCpuArchType.X86_64);
 
         SystemUpgradeCheckResult checkResult = new SystemUpgradeCheckResult();
         checkResult.setSystemUpgradeCode(100);
@@ -70,7 +71,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = entity;
 
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_VDI_X86);
                 result = handler;
 
                 handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, entity);
@@ -96,7 +97,7 @@ public class CheckSystemUpgradeHandlerSPIImplTest {
                 basicInfoDAO.findTerminalEntityByTerminalId(anyString);
                 times = 1;
 
-                handlerFactory.getHandler(TerminalTypeArchType.LINUX_IDV_X86);
+                handlerFactory.getHandler(TerminalTypeArchType.LINUX_VDI_X86);
                 times = 1;
 
                 CbbResponseShineMessage shineMessage;

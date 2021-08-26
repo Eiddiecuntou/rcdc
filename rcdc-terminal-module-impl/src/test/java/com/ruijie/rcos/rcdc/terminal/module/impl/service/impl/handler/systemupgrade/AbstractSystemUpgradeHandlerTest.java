@@ -118,65 +118,6 @@ public class AbstractSystemUpgradeHandlerTest {
     }
 
     /**
-     * 测试CheckSystemUpgrade
-     */
-    @Test
-    public void testCheckSystemUpgrade() throws BusinessException {
-        TestedSystemUpgradeHandler handler = new TestedSystemUpgradeHandler();
-
-        TerminalEntity terminalEntity = buildTerminalEntity();
-
-        TerminalSystemUpgradePackageEntity packageEntity = buildPackageEntity();
-
-        TerminalSystemUpgradeEntity upgradeEntity = buildUpgradeEntity();
-
-        TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = buildUpgradeTerminalEntity(terminalEntity, upgradeEntity);
-        upgradeTerminalEntity.setState(CbbSystemUpgradeStateEnums.WAIT);
-
-        new MockUp<TestedSystemUpgradeHandler>() {
-            @Mock
-            public boolean isTerminalEnableUpgrade(TerminalEntity terminal, CbbTerminalTypeEnums terminalType) {
-                return true;
-            }
-
-            @Mock
-            public boolean upgradingNumLimit() {
-                return false;
-            }
-        };
-
-
-        new Expectations() {
-            {
-
-                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
-                result = upgradeEntity;
-
-                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
-                result = upgradeTerminalEntity;
-
-            }
-        };
-
-        SystemUpgradeCheckResult checkResult = handler.checkSystemUpgrade(CbbTerminalTypeEnums.VDI_LINUX, terminalEntity);
-
-        SystemUpgradeCheckResult  expectedResult = new SystemUpgradeCheckResult();
-        expectedResult.setSystemUpgradeCode(1);
-
-        assertEquals(expectedResult, checkResult);
-
-        new Verifications() {
-            {
-                systemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
-                times = 2;
-
-                systemUpgradeService.getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeEntity.getId());
-                times = 1;
-            }
-        };
-    }
-
-    /**
      * 测试添加升级任务后
      *
      * @throws BusinessException 业务异常
