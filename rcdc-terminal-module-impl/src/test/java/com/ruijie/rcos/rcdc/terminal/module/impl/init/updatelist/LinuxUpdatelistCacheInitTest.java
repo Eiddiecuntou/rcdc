@@ -33,7 +33,7 @@ public class LinuxUpdatelistCacheInitTest {
     @Test
     public void testGetUpdateListPath() {
         String updateListPath = cacheInit.getUpdateListPath();
-        Assert.assertEquals("/opt/upgrade/app/terminal_component/terminal_linux/origin/update.list", updateListPath);
+        Assert.assertEquals("/opt/upgrade/app/terminal_component/terminal_linux_x86/origin/update.list", updateListPath);
     }
 
     /**
