@@ -146,14 +146,14 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         String versionFilePath = getVersionFilePath();
         Properties prop = helper.getVersionProperties(versionFilePath);
 
-        String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_PACKAGE_TYPE);
+        String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_PACKAGE_TYPE);
         if (!StringUtils.hasText(platType) || !platType.equals(CbbTerminalPlatformEnums.IDV.name())) {
             LOGGER.debug("升级包类型错误，期望[IDV]，实际[{}]", platType);
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_PACKAGE_TYPE_ERROR,
                     CbbTerminalPlatformEnums.IDV.name(), platType);
         }
 
-        versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_KEY_VERSION));
+        versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_VERSION));
     }
 
     private String getVersionFilePath() {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
@@ -60,8 +61,8 @@ public class SystemUpgradeQuartzHandler implements Runnable {
     private void dealAllUpgradingTask() {
         List<CbbSystemUpgradeTaskStateEnums> stateList =
                 Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
-        List<TerminalSystemUpgradeEntity> upgradeTaskList =
-                systemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList);
+        List<TerminalSystemUpgradeEntity> upgradeTaskList = systemUpgradeDAO
+                .findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64, stateList);
         if (CollectionUtils.isEmpty(upgradeTaskList)) {
             LOGGER.info("无正在进行中的刷机任务");
             return;

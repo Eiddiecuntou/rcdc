@@ -14,8 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -150,6 +150,11 @@ public class TerminalEntity {
 
     @Enumerated(EnumType.STRING)
     private CbbTerminalPlatformEnums authMode;
+
+    private String upgradeCpuType;
+
+    @Enumerated(EnumType.STRING)
+    private CbbCpuArchType cpuArch;
 
     /**
      * 获取网络信息对象数组
@@ -592,5 +597,21 @@ public class TerminalEntity {
 
     public void setAuthMode(CbbTerminalPlatformEnums authMode) {
         this.authMode = authMode;
+    }
+
+    public String getUpgradeCpuType() {
+        return upgradeCpuType;
+    }
+
+    public void setUpgradeCpuType(String upgradeCpuType) {
+        this.upgradeCpuType = upgradeCpuType;
+    }
+
+    public CbbCpuArchType getCpuArch() {
+        return cpuArch;
+    }
+
+    public void setCpuArch(CbbCpuArchType cpuArchType) {
+        this.cpuArch = cpuArchType;
     }
 }

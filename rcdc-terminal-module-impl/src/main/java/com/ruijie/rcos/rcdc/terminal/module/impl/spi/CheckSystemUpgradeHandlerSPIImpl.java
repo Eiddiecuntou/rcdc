@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.SystemUpgradeCheckResult;
@@ -51,10 +52,11 @@ public class CheckSystemUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI
         String terminalId = request.getTerminalId();
         TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         CbbTerminalTypeEnums terminalType = CbbTerminalTypeEnums.convert(terminalEntity.getPlatform().name(), terminalEntity.getTerminalOsType());
+        TerminalTypeArchType terminalArchType = TerminalTypeArchType.convert(terminalType, terminalEntity.getCpuArch());
 
         SystemUpgradeCheckResult systemUpgradeCheckResult;
         try {
-            TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
+            TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalArchType);
             systemUpgradeCheckResult = handler.checkSystemUpgrade(terminalType, terminalEntity);
         } catch (BusinessException e) {
             // 这里有不支持系统升级的终端接入，如软终端，为避免大量的日志级别改为debug

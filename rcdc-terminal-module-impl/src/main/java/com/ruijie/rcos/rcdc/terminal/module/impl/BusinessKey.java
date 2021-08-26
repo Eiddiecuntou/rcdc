@@ -310,6 +310,8 @@ public interface BusinessKey {
 
     /************ 终端系统升级***************/
     String RCDC_TERMINAL_SYSTEM_UPGRADE_HANDLER_NOT_EXIST = "rcdc_terminal_system_upgrade_handler_not_exist";
+    String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_RESOLVER_NOT_EXIST = "rcdc_terminal_system_upgrade_package_resolver_not_exist";
+    String RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_FILE_MD5_FAIL = "rcdc_terminal_ota_upgrade_computer_file_md5_fail";
 
     /************Android终端OTA升级**************************/
     String RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL = "rcdc_terminal_ota_upgrade_computer_seed_file_md5_fail";

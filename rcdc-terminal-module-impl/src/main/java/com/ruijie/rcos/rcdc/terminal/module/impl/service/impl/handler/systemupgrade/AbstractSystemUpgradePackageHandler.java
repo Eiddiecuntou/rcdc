@@ -1,23 +1,23 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.base.util.StringUtils;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.springframework.util.Assert;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.util.StringUtils;
 
 /**
  * Description: Function Description
@@ -42,9 +42,6 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
         LOGGER.info("上传终端升级包：{}", request.getFileName());
         TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(fileName, filePath);
         getSystemUpgradePackageService().saveTerminalUpgradePackage(upgradeInfo);
-
-        // 替换升级文件,清除原升级包目录下旧文件
-        FileOperateUtil.emptyDirectory(upgradeInfo.getFileSaveDir(), upgradeInfo.getRealFileName());
     }
 
     @Override
@@ -59,12 +56,14 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
         return usableSpace >= fileSize;
     }
 
-    protected abstract TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException;
-
-    protected abstract TerminalSystemUpgradePackageService getSystemUpgradePackageService();
-
-    // FIXME zyc 需要下沉到框架
-    void checkISOMd5(String filePath) throws BusinessException {
+    /**
+     * 校验文件MD%
+     * FIXME zyc 需要下沉到框架
+     *
+     * @param filePath 文件路径
+     * @throws BusinessException 业务异常
+     */
+    protected void checkISOMd5(String filePath) throws BusinessException {
         LOGGER.debug("check iso md5，file path: {}", filePath);
         String mountCmd = String.format(Constants.SYSTEM_CMD_CHECK_ISO_MD5, filePath);
 
@@ -72,16 +71,23 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
         String outStr = executeCommand(mountCmd);
         LOGGER.info("check iso md5, outStr: {}", outStr);
 
-        if (StringUtils.isBlank(outStr) || !outStr.contains("PASS") ) {
+        if (StringUtils.isBlank(outStr) || !outStr.contains(Constants.ISO_MD5_CHECK_SUCCESS_VALUE)) {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR);
         }
         LOGGER.info("check iso md5 success");
     }
 
-    private String executeCommand(String mountCmd) throws BusinessException {
+    /**
+     * 执行shell命令
+     *
+     * @param cmd 命令
+     * @return 执行结果
+     * @throws BusinessException 业务异常
+     */
+    protected String executeCommand(String cmd) throws BusinessException {
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         PumpStreamHandler psh = new PumpStreamHandler(stdout);
-        CommandLine cl = CommandLine.parse(mountCmd);
+        CommandLine cl = CommandLine.parse(cmd);
         DefaultExecutor exec = new DefaultExecutor();
         exec.setStreamHandler(psh);
         try {
@@ -98,4 +104,9 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
             }
         }
     }
+
+    protected abstract TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException;
+
+    protected abstract TerminalSystemUpgradePackageService getSystemUpgradePackageService();
+
 }

@@ -13,6 +13,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
@@ -693,12 +694,15 @@ public class TerminalBasicInfoServiceImplTest {
         basicInfo.setMemorySize(213L);
         basicInfo.setNetworkAccessMode(CbbNetworkModeEnums.WIRED);
         basicInfo.setTerminalId("123");
+        basicInfo.setCpuArch(CbbCpuArchType.X86_64);
+        basicInfo.setCpuType("AMD1");
         return basicInfo;
     }
 
     private TerminalEntity buildTerminalEntity() {
         TerminalEntity terminalEntity = new TerminalEntity();
         terminalEntity.setTerminalId("123");
+        terminalEntity.setCpuType("AMD1");
 
         return terminalEntity;
     }

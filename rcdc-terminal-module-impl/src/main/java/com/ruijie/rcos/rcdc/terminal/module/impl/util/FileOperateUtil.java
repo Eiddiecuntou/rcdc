@@ -276,6 +276,18 @@ public class FileOperateUtil {
     }
 
     /**
+     *  根据文件名称获取文件类型
+     *
+     * @param fileName 文件名称
+     * @return 文件类型
+     */
+    public static String getFileTypeByFileName(String fileName) {
+        Assert.hasText(fileName, "fileName can not be blank");
+
+        return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+    }
+
+    /**
      * 创建多级目录，并设置文件可执行可读权限
      *
      * @param file 文件

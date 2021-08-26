@@ -1,6 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 
 /**
  * Description:
@@ -13,13 +13,13 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums
 public class NeoKylinAppComponentUpgradeHandler extends AbstractAppComponentUpgradeHandler {
 
     /**
-     * 获取组件升级的终端系统类型
+     * 获取组件升级的终端系统架构类型
      *
-     * @return 终端系统类型
+     * @return 终端系统架构类型
      */
     @Override
-    protected CbbTerminalOsTypeEnums getTerminalOsType() {
-        return CbbTerminalOsTypeEnums.NEOKYLIN;
+    protected TerminalOsArchType getTerminalOsArchType() {
+        return TerminalOsArchType.NEOKYLIN_X86;
     }
 
 }

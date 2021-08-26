@@ -3,8 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.BaseUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.sk.base.filesystem.common.FileUtils;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -36,9 +36,9 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends BaseUpdateLi
     public final void init() {
         // 开始初始化，将缓存就绪状态设为未就绪
         LOGGER.info("start init updatelist...");
-        CbbTerminalOsTypeEnums osType = getTerminalOsType();
-        LOGGER.info("terminal type: {}", osType.name());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(osType);
+        TerminalOsArchType osArch = getTerminalOsArch();
+        LOGGER.info("terminal os arch type: {}", osArch.name());
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(osArch);
         String filePath = getUpdateListPath();
         File updateListFile = new File(filePath);
         if (!updateListFile.isFile()) {
@@ -54,7 +54,7 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends BaseUpdateLi
         T updatelist = JSON.parseObject(updateListContent, getTClass());
         putInCache(updatelist);
         // 完成初始化后将updatelist缓存状态更新为false
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(osType);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(osArch);
         LOGGER.info("finish init updatelist...");
 
 
@@ -102,7 +102,7 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends BaseUpdateLi
         updatelist.setComponentSize(updatelist.getComponentList().size());
 
         // 将组件升级updatelist按终端类型，存入缓存中
-        TerminalUpdateListCacheManager.add(getTerminalOsType(), updatelist);
+        TerminalUpdateListCacheManager.add(getTerminalOsArch(), updatelist);
     }
 
     /**
@@ -120,10 +120,10 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends BaseUpdateLi
     protected abstract void fillUpdateList(T updatelist);
 
     /**
-     * 获取终端系统类型
+     * 获取终端系统架构类型
      * 
-     * @return 终端系统类型
+     * @return 终端系统架构类型
      */
-    protected abstract CbbTerminalOsTypeEnums getTerminalOsType();
+    protected abstract TerminalOsArchType getTerminalOsArch();
 
 }

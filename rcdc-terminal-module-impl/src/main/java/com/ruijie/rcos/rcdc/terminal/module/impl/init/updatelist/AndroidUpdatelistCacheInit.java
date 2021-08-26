@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,8 +30,8 @@ public class AndroidUpdatelistCacheInit extends AbstractUpdatelistCacheInitTempl
     }
 
     @Override
-    protected CbbTerminalOsTypeEnums getTerminalOsType() {
-        return CbbTerminalOsTypeEnums.ANDROID;
+    protected TerminalOsArchType getTerminalOsArch() {
+        return TerminalOsArchType.ANDROID_ARM;
     }
 
 }

@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
@@ -20,6 +21,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalModelDriverDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalModelDriverEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeHostNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
@@ -30,12 +32,12 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -175,7 +177,35 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         if (shineTerminalBasicInfo.getTerminalWorkSupportModeArr() != null) {
             basicInfoEntity.setSupportWorkMode(JSON.toJSONString(shineTerminalBasicInfo.getTerminalWorkSupportModeArr()));
         }
+
+        // 设置支持升级的cpu类型
+        basicInfoEntity.setUpgradeCpuType(convertCpuType(shineTerminalBasicInfo.getCpuType()));
+        if (basicInfoEntity.getCpuType().toUpperCase().contains(Constants.ARM_CPU_PREFFIX)) {
+            LOGGER.info("终端[{}]的cpu[{}]是arm cpu", basicInfoEntity.getTerminalId(), basicInfoEntity.getCpuType());
+            basicInfoEntity.setCpuArch(CbbCpuArchType.ARM);
+        }
+
         return basicInfoEntity;
+    }
+
+    private String convertCpuType(String cpu) {
+        if (StringUtils.isEmpty(cpu)) {
+            LOGGER.warn("cpu型号为空");
+            return StringUtils.EMPTY;
+        }
+
+        if (cpu.toUpperCase().contains(Constants.CPU_TYPE_AMD)) {
+            LOGGER.info("cpu型号为AMD");
+            return Constants.CPU_TYPE_AMD;
+        }
+
+        if (cpu.toUpperCase().contains(Constants.CPU_TYPE_INTEL)) {
+            LOGGER.info("cpu型号为INTEL");
+            return Constants.CPU_TYPE_INTEL;
+        }
+
+        return cpu;
+
     }
 
     private CbbTerminalNetworkInfoDTO[] obtainNetworkInfo(CbbShineTerminalBasicInfo basicInfo) {
@@ -330,5 +360,12 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         Assert.hasText(terminalId, "terminalId can not empty");
         Session session = sessionManager.getSessionByAlias(terminalId);
         return session != null;
+    }
+
+    @Override
+    public TerminalTypeArchType obtainTerminalArchType(TerminalEntity basicInfoEntity) {
+        Assert.notNull(basicInfoEntity, "basicInfoEntity can not be null");
+
+        return TerminalTypeArchType.convert(obtainTerminalType(basicInfoEntity), basicInfoEntity.getCpuArch());
     }
 }

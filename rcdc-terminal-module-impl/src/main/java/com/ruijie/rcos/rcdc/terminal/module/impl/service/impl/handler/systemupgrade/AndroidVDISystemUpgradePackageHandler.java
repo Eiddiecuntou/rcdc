@@ -1,11 +1,22 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
 import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbAddSystemUpgradeTaskDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -24,16 +35,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Description: Function Description
@@ -115,7 +116,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
             isSuccess = destSeedFile.setExecutable(true, false);
             LOGGER.info("操作结果：[{}]", isSuccess);
             isSuccess = destSeedFile.setWritable(true, false);
-            LOGGER.info("操作结果：[{}]", isSuccess);  
+            LOGGER.info("操作结果：[{}]", isSuccess);
 
             upgradeInfo.setPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
             upgradeInfo.setPackageName(fileName);
@@ -140,8 +141,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         LOGGER.info("开始执行Android VDI终端升级包上传前处理");
 
         // 获取升级包信息
-        TerminalSystemUpgradePackageEntity upgradePackage =
-                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         if (upgradePackage == null) {
             LOGGER.info("Android VDI终端升级包不存在，返回");
             return;
@@ -149,8 +149,7 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         LOGGER.info("升级包信息: [{}]", upgradePackage.toString());
 
         // 获取进行中的升级任务信息
-        TerminalSystemUpgradeEntity systemUpgradeTask =
-                terminalSystemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
+        TerminalSystemUpgradeEntity systemUpgradeTask = terminalSystemUpgradeService.getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         if (systemUpgradeTask == null) {
             LOGGER.info("未开启Android VDI终端升级任务，返回");
             return;
@@ -160,7 +159,8 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
         try {
             LOGGER.info("开始关闭Android VDI终端升级任务");
             terminalSystemUpgradeServiceTx.closeSystemUpgradeTask(systemUpgradeTask.getId());
-            systemUpgradeHandlerFactory.getHandler(systemUpgradeTask.getPackageType()).afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
+            systemUpgradeHandlerFactory.getHandler(upgradePackage.obtainTerminalTypeArchType()).afterCloseSystemUpgrade(upgradePackage,
+                    systemUpgradeTask);
         } catch (BusinessException e) {
             LOGGER.error("关闭Android VDI终端升级任务失败", e);
         }
@@ -170,20 +170,18 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
     public void postUploadPackage() {
         LOGGER.info("开始执行Android VDI终端升级包上传后处理");
         // 查询所有android终端ID
-        List<ViewUpgradeableTerminalEntity> terminalEntityList =
-                upgradeableTerminalDAO.findAllByPlatformEqualsAndTerminalOsTypeEquals(CbbTerminalPlatformEnums.VDI,
-                        CbbTerminalTypeEnums.VDI_ANDROID.getOsType());
+        List<ViewUpgradeableTerminalEntity> terminalEntityList = upgradeableTerminalDAO
+                .findAllByPlatformEqualsAndTerminalOsTypeEquals(CbbTerminalPlatformEnums.VDI, CbbTerminalTypeEnums.VDI_ANDROID.getOsType());
 
         String[] terminalIdArr = new String[0];
         if (!CollectionUtils.isEmpty(terminalEntityList)) {
-            terminalIdArr = terminalEntityList.stream()
-                    .map(ViewUpgradeableTerminalEntity::getTerminalId).collect(Collectors.toList()).toArray(new String[]{});
+            terminalIdArr = terminalEntityList.stream().map(ViewUpgradeableTerminalEntity::getTerminalId).collect(Collectors.toList())
+                    .toArray(new String[] {});
             LOGGER.info("需要升级的终端ID: [{}]", Arrays.toString(terminalIdArr));
         }
 
         // 获取升级包信息
-        TerminalSystemUpgradePackageEntity upgradePackage =
-                terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
+        TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_ANDROID);
         LOGGER.info("升级包信息: [{}]", upgradePackage.toString());
 
         // 添加升级任务
@@ -198,10 +196,9 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
             logAPI.recordLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_SUCCESS_LOG, upgradePackage.getPackageName());
         } catch (BusinessException e) {
             LOGGER.error("自动添加Android VDI升级任务失败", e);
-            logAPI.recordLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG,
-                    upgradePackage.getPackageName(), e.getI18nMessage());
+            logAPI.recordLog(BusinessKey.RCDC_TERMINAL_CREATE_UPGRADE_TASK_FAIL_LOG, upgradePackage.getPackageName(), e.getI18nMessage());
         }
-        
+
     }
 
     @Override

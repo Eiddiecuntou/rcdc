@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -274,8 +275,8 @@ public class AbstractUpdatelistCacheInitTemplateTest {
         }
 
         @Override
-        protected CbbTerminalOsTypeEnums getTerminalOsType() {
-            return CbbTerminalOsTypeEnums.WINDOWS;
+        protected TerminalOsArchType getTerminalOsArch() {
+            return TerminalOsArchType.WINDOWS_X86;
         }
     }
 }

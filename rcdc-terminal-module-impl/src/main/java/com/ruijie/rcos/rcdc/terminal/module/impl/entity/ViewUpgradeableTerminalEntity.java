@@ -7,6 +7,7 @@ import javax.persistence.*;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 
 /**
@@ -87,6 +88,11 @@ public class ViewUpgradeableTerminalEntity {
     private Date lastUpgradeTime;
 
     private UUID groupId;
+
+    private String upgradeCpuType;
+
+    @Enumerated(EnumType.STRING)
+    private CbbCpuArchType cpuArch;
 
     public UUID getId() {
         return id;
@@ -327,5 +333,21 @@ public class ViewUpgradeableTerminalEntity {
 
     public void setGroupId(UUID groupId) {
         this.groupId = groupId;
+    }
+
+    public String getUpgradeCpuType() {
+        return upgradeCpuType;
+    }
+
+    public void setUpgradeCpuType(String upgradeCpuType) {
+        this.upgradeCpuType = upgradeCpuType;
+    }
+
+    public CbbCpuArchType getCpuArch() {
+        return cpuArch;
+    }
+
+    public void setCpuArch(CbbCpuArchType cpuArch) {
+        this.cpuArch = cpuArch;
     }
 }

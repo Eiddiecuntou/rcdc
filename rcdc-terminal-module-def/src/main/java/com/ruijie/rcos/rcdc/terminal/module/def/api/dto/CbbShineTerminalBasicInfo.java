@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.*;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -135,6 +136,9 @@ public class CbbShineTerminalBasicInfo {
 
     @Nullable
     private CbbTerminalPlatformEnums authMode;
+
+    @Nullable
+    private CbbCpuArchType cpuArch = CbbCpuArchType.X86_64;
 
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
@@ -446,5 +450,14 @@ public class CbbShineTerminalBasicInfo {
 
     public void setAuthMode(@Nullable CbbTerminalPlatformEnums authMode) {
         this.authMode = authMode;
+    }
+
+    @Nullable
+    public CbbCpuArchType getCpuArch() {
+        return cpuArch;
+    }
+
+    public void setCpuArch(@Nullable CbbCpuArchType cpuArch) {
+        this.cpuArch = cpuArch;
     }
 }

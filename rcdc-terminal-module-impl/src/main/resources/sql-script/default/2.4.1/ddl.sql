@@ -38,3 +38,26 @@ alter table t_cbb_terminal_model_driver  alter column product_id type text;
 alter table t_cbb_terminal_model_driver  alter column product_model type text;
 
 alter table t_cbb_terminal_model_driver  alter column cpu_type type text;
+
+
+-- 添加终端表升级支持的cpu类型、架构信息
+alter table t_cbb_terminal add column IF NOT EXISTS upgrade_cpu_type text;
+
+COMMENT ON COLUMN t_cbb_terminal.upgrade_cpu_type IS '终端升级cpu类型';
+
+alter table t_cbb_terminal add column IF NOT EXISTS cpu_arch varchar(32);
+
+COMMENT ON COLUMN t_cbb_terminal.cpu_arch IS '终端cpu架构类型';
+
+ALTER TABLE "public"."t_cbb_sys_upgrade_package"
+  ADD COLUMN IF NOT EXISTS "cpu_arch" varchar(32),
+  ADD COLUMN IF NOT EXISTS "support_cpu" text;
+
+COMMENT ON COLUMN "public"."t_cbb_sys_upgrade_package"."cpu_arch" IS 'cpu架构类型（x86_64、arm）';
+
+COMMENT ON COLUMN "public"."t_cbb_sys_upgrade_package"."support_cpu" IS '支持的cpu';
+
+ALTER TABLE "public"."t_cbb_sys_upgrade"
+  ADD COLUMN IF NOT EXISTS "cpu_arch" varchar(32);
+
+COMMENT ON COLUMN "public"."t_cbb_sys_upgrade"."cpu_arch" IS 'cpu架构';

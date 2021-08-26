@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -182,10 +183,11 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private SystemUpgradeCheckResult getSystemUpgradeCheckResult(TerminalEntity terminalEntity, CbbTerminalBizConfigDTO configDTO) {
 
         CbbTerminalTypeEnums terminalType = basicInfoService.obtainTerminalType(terminalEntity);
+        TerminalTypeArchType terminalArchType = TerminalTypeArchType.convert(terminalType, terminalEntity.getCpuArch());
 
         SystemUpgradeCheckResult systemUpgradeCheckResult;
         try {
-            TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalType);
+            TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalArchType);
             systemUpgradeCheckResult = handler.checkSystemUpgrade(terminalType, terminalEntity);
         } catch (Exception e) {
             // 这里有不支持系统升级的终端接入，如软终端，为避免大量的日志级别改为debug

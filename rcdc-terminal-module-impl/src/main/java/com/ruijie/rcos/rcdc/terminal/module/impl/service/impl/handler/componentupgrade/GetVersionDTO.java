@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import org.springframework.lang.Nullable;
 
@@ -24,6 +25,9 @@ public class GetVersionDTO {
 
     @NotNull
     private String osInnerVersion;
+
+    @Nullable
+    private CbbCpuArchType cpuArch;
 
     public String getTerminalId() {
         return terminalId;
@@ -56,5 +60,13 @@ public class GetVersionDTO {
 
     public void setOsInnerVersion(String osInnerVersion) {
         this.osInnerVersion = osInnerVersion;
+    }
+
+    public CbbCpuArchType getCpuArch() {
+        return cpuArch;
+    }
+
+    public void setCpuArch(CbbCpuArchType cpuArch) {
+        this.cpuArch = cpuArch;
     }
 }

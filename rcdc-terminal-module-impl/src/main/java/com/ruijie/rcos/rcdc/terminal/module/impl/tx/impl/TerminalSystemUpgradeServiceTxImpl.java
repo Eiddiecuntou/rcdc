@@ -178,6 +178,7 @@ public class TerminalSystemUpgradeServiceTxImpl implements TerminalSystemUpgrade
         entity.setCreateTime(new Date());
         entity.setState(CbbSystemUpgradeTaskStateEnums.UPGRADING);
         entity.setFlashMode(flashModeEnums);
+        entity.setCpuArch(upgradePackage.getCpuArch());
         systemUpgradeDAO.save(entity);
         return entity;
     }

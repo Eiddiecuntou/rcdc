@@ -5,6 +5,7 @@ import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
@@ -49,17 +50,17 @@ public class SyncSystemUpgradeResultHandlerSPIImpl implements CbbDispatcherHandl
         Assert.hasText(request.getData(), "request.getData() can not be blank");
 
         TerminalEntity basicInfoEntity = basicInfoDAO.findTerminalEntityByTerminalId(request.getTerminalId());
-        CbbTerminalTypeEnums terminalType = basicInfoService.obtainTerminalType(basicInfoEntity);
+        TerminalTypeArchType terminalArchType = basicInfoService.obtainTerminalArchType(basicInfoEntity);
 
         TerminalSystemUpgradeHandler handler;
         try {
-            handler = handlerFactory.getHandler(terminalType);
+            handler = handlerFactory.getHandler(terminalArchType);
         } catch (BusinessException e) {
-            LOGGER.error("终端类型[" + terminalType.name() + "]获取系统升级处理对象失败", e);
+            LOGGER.error("终端类型[" + terminalArchType.name() + "]获取系统升级处理对象失败", e);
             upgradeResultHelper.responseNotUpgrade(request);
             return;
         }
 
-        upgradeResultHelper.dealSystemUpgradeResult(basicInfoEntity, terminalType, handler, request);
+        upgradeResultHelper.dealSystemUpgradeResult(basicInfoEntity, terminalArchType, handler, request);
     }
 }

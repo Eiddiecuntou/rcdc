@@ -244,39 +244,6 @@ public class AndroidVDISystemUpgradePackageHelperTest {
     }
 
     /**
-     * 测试校验版本
-     *
-     * @throws BusinessException 业务异常
-     */
-    @Test
-    public void testCheckVersionInfo() throws BusinessException {
-        String path = this.getClass().getResource("/testAndroidVersion.properties").getPath();
-
-        new MockUp<Md5Builder>() {
-            @Mock
-            public byte[] computeFileMd5(File file) {
-                return "abc123".getBytes();
-            }
-        };
-
-        new MockUp<StringUtils>() {
-            @Mock
-            public String bytes2Hex(byte[] bytes) {
-                return "abc";
-            }
-        };
-
-        String packagePath = "/aaa/bbb.zip";
-        TerminalUpgradeVersionFileInfo result = helper.checkVersionInfo(packagePath, path);
-
-        TerminalUpgradeVersionFileInfo expectedPackageInfo = new TerminalUpgradeVersionFileInfo();
-        expectedPackageInfo.setFileMD5("abc");
-        expectedPackageInfo.setVersion("1001");
-
-        assertEquals(expectedPackageInfo, result);
-    }
-
-    /**
      * 测试校验版本 - 加载配置文件异常
      *
      * @throws BusinessException 业务异常

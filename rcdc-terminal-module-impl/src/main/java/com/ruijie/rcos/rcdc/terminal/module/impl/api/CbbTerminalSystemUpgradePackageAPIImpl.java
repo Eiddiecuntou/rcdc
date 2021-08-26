@@ -1,5 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradePackageAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
@@ -19,17 +31,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Description: 终端系统升级实现类
@@ -59,9 +60,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
     @Autowired
-    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
-
-    @Autowired
     private TerminalSystemPackageUploadingService terminalSystemPackageUploadingService;
 
     @Autowired
@@ -71,28 +69,16 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     public CbbCheckAllowUploadPackageResultDTO checkAllowUploadPackage(CbbCheckAllowUploadPackageDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
 
-        boolean allowUpload = true;
-        boolean hasRunningTask = false;
         List<String> errorList = Lists.newArrayList();
-        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(request.getTerminalType());
         LOGGER.info("上传升级包类型[{}]", request.getTerminalType());
-        // Android VDI升级包不校验升级任务开启情况
-        if (upgradePackage != null && request.getTerminalType() != CbbTerminalTypeEnums.VDI_ANDROID) {
-            LOGGER.info("检查升级包是否存在进行中的升级任务");
-            hasRunningTask = terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
-        }
-        if (hasRunningTask) {
-            LOGGER.info("system upgrade task is running");
-            allowUpload = false;
-            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, new String[]{}));
-        }
 
         // 判断磁盘大小是否满足
         TerminalSystemUpgradePackageHandler handler = terminalSystemUpgradePackageHandlerFactory.getHandler(request.getTerminalType());
         final boolean isEnough = handler.checkServerDiskSpaceIsEnough(request.getFileSize(), handler.getUpgradePackageFileDir());
+        boolean allowUpload = true;
         if (!isEnough) {
             allowUpload = false;
-            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[]{}));
+            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[] {}));
         }
 
         CbbCheckAllowUploadPackageResultDTO respone = new CbbCheckAllowUploadPackageResultDTO();
@@ -129,29 +115,10 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");
         CbbTerminalTypeEnums terminalType = request.getTerminalType();
-        // 根据升级包类型判断是否存在旧升级包，及是否存在旧升级包的正在进行中的升级任务，是则不允许替换升级包（Android VDI升级包除外）
-        boolean hasRunningTask = isExistRunningTask(terminalType);
-        if (hasRunningTask && request.getTerminalType() != CbbTerminalTypeEnums.VDI_ANDROID) {
-            LOGGER.info("system upgrade task is running, can not upload file ");
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING);
-        }
+
         terminalSystemPackageUploadingService.uploadUpgradePackage(request, terminalType);
     }
 
-    /**
-     * 检验是否存在正在进行的升级任务
-     *
-     * @param packageType 升级包类型
-     * @return
-     */
-    private boolean isExistRunningTask(CbbTerminalTypeEnums packageType) {
-        TerminalSystemUpgradePackageEntity upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(packageType);
-        if (upgradePackage == null) {
-            return false;
-        }
-
-        return terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
-    }
 
     @Override
     public CbbTerminalSystemUpgradePackageInfoDTO[] listSystemUpgradePackage() throws BusinessException {
@@ -190,8 +157,7 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     public CbbTerminalSystemUpgradePackageInfoDTO findById(UUID packageId) throws BusinessException {
         Assert.notNull(packageId, "packageId can not be null");
 
-        final TerminalSystemUpgradePackageEntity packageEntity =
-                terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
+        final TerminalSystemUpgradePackageEntity packageEntity = terminalSystemUpgradePackageService.getSystemUpgradePackage(packageId);
         CbbTerminalSystemUpgradePackageInfoDTO dto = new CbbTerminalSystemUpgradePackageInfoDTO();
         PACKAGE_BEAN_COPIER.copy(packageEntity, dto, null);
         dto.setName(packageEntity.getPackageName());
@@ -212,8 +178,8 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     }
 
     private TerminalSystemUpgradeEntity getUpgradingTask(UUID packageId) {
-        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays
-                .asList(new CbbSystemUpgradeTaskStateEnums[]{CbbSystemUpgradeTaskStateEnums.UPGRADING});
+        List<CbbSystemUpgradeTaskStateEnums> stateList =
+                Arrays.asList(new CbbSystemUpgradeTaskStateEnums[] {CbbSystemUpgradeTaskStateEnums.UPGRADING});
         final List<TerminalSystemUpgradeEntity> upgradingTaskList =
                 systemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(packageId, stateList);
         if (CollectionUtils.isEmpty(upgradingTaskList)) {

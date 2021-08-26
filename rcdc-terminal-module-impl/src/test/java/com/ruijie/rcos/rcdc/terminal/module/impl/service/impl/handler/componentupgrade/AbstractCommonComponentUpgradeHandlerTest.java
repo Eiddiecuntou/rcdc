@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +75,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
             }
         };
 
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalOsTypeEnums.ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalOsArchType.ANDROID_ARM);
         GetVersionDTO request = new GetVersionDTO();
         request.setRainUpgradeVersion("123");
         request.setValidateMd5("xxx");
@@ -82,7 +83,7 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO.getResult().intValue());
         TerminalVersionResultDTO terminalVersionResultDTO1 = handler.getVersion(request);
         assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO1.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalOsTypeEnums.ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalOsArchType.ANDROID_ARM);
     }
 
     /**
@@ -112,10 +113,10 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("1.1.0.1");
         request.setValidateMd5("123");
         request.setOsInnerVersion("1.1.0.1");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalOsTypeEnums.ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalOsArchType.ANDROID_ARM);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalOsTypeEnums.ANDROID);
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO.getResult().intValue());
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalOsArchType.ANDROID_ARM);
     }
 
     /**
@@ -146,10 +147,10 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("111");
         request.setValidateMd5("123");
         request.setOsInnerVersion("1.1.1.1.1");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalOsTypeEnums.ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalOsArchType.ANDROID_ARM);
         TerminalVersionResultDTO<CommonUpdateListDTO> version = handler.getVersion(request);
-        assertEquals(0, version.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalOsTypeEnums.ANDROID);
+        assertEquals(-1, version.getResult().intValue());
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalOsArchType.ANDROID_ARM);
     }
 
     /**
@@ -187,144 +188,11 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         request.setRainUpgradeVersion("1.0.0.1");
         request.setValidateMd5("123");
         request.setOsInnerVersion("1.0.1");
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalOsTypeEnums.ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheReady(TerminalOsArchType.ANDROID_ARM);
         TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.NOT_SUPPORT_FOR_LOWER_OS_VERSION.getResult(),
+        assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(),
                 terminalVersionResultDTO.getResult().intValue());
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalOsTypeEnums.ANDROID);
-    }
-
-    /**
-     * 测试getVersion,正处于更新中
-     */
-    @Test
-    public void testGetVersionIsUpdating() {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-
-        new MockUp<TerminalUpdateListCacheManager>() {
-            @Mock
-            public boolean isCacheReady(CbbTerminalTypeEnums terminalType) {
-                return false;
-            }
-        };
-
-        CommonUpdateListDTO updatelist = new CommonUpdateListDTO();
-        List<CommonComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CommonComponentVersionInfoDTO());
-        updatelist.setComponentList(componentList);
-        updatelist.setVersion("1.1.0.1");
-        updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.2.1");
-        updatelist.setLimitVersion("1.0.1.1");
-
-        GetVersionDTO request = new GetVersionDTO();
-        request.setRainUpgradeVersion("1.0.0.1");
-        request.setValidateMd5("123");
-        TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), terminalVersionResultDTO.getResult().intValue());
-
-    }
-
-    /**
-     * 测试getVersion - 进行差异升级
-     */
-    @Test
-    public void testGetVersionStartDiffUpgrade() {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-
-        CommonUpdateListDTO updatelist = new CommonUpdateListDTO();
-        List<CommonComponentVersionInfoDTO> componentList = getCbbCommonComponentVersionInfoDTOS();
-        updatelist.setComponentList(componentList);
-        updatelist.setVersion("1.1.0.1");
-        updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.2.1");
-        updatelist.setLimitVersion("1.0.1.1");
-        updatelist.setOsLimit("1.0.2");
-
-        new MockUp(Logger.class) {
-            @Mock
-            public boolean isDebugEnabled() {
-                return true;
-            }
-        };
-
-        new MockUp(TerminalUpdateListCacheManager.class) {
-            @Mock
-            public CommonUpdateListDTO get(CbbTerminalOsTypeEnums osType) {
-                return updatelist;
-            }
-        };
-
-        GetVersionDTO request = new GetVersionDTO();
-        request.setRainUpgradeVersion("1.0.2.1");
-        request.setValidateMd5("123");
-        request.setOsInnerVersion("1.0.2");
-
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalOsTypeEnums.ANDROID);
-        TerminalVersionResultDTO<CommonUpdateListDTO> terminalVersionResultDTO = handler.getVersion(request);
-
-        CommonComponentVersionInfoDTO expectComponent = new CommonComponentVersionInfoDTO();
-        expectComponent.setCompletePackageName("abc");
-        expectComponent.setIncrementalPackageMd5("123");
-        expectComponent.setIncrementalPackageName("234");
-        expectComponent.setIncrementalTorrentMd5("345");
-        expectComponent.setIncrementalTorrentUrl("456");
-        expectComponent.setBasePackageName("567");
-        expectComponent.setBasePackageMd5("678");
-
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
-                terminalVersionResultDTO.getResult().intValue());
-        assertEquals(1, terminalVersionResultDTO.getUpdatelist().getComponentList().size());
-        assertEquals(expectComponent, terminalVersionResultDTO.getUpdatelist().getComponentList().get(0));
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalOsTypeEnums.ANDROID);
-    }
-
-    /**
-     * 测试getVersion - 进行完整升级
-     */
-    @Test
-    public void testGetVersionStartCompleteUpgrade() {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-
-        CommonUpdateListDTO updatelist = new CommonUpdateListDTO();
-        List<CommonComponentVersionInfoDTO> componentList = getCbbCommonComponentVersionInfoDTOS();
-        updatelist.setComponentList(componentList);
-        updatelist.setVersion("1.1.0.1");
-        updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.3.1");
-        updatelist.setLimitVersion("1.0.1.1");
-        updatelist.setOsLimit("1.0.2");
-
-        new MockUp(Logger.class) {
-            @Mock
-            public boolean isDebugEnabled() {
-                return true;
-            }
-        };
-
-        new MockUp(TerminalUpdateListCacheManager.class) {
-            @Mock
-            public CommonUpdateListDTO get(CbbTerminalOsTypeEnums osType) {
-                return updatelist;
-            }
-        };
-
-        GetVersionDTO request = new GetVersionDTO();
-        request.setRainUpgradeVersion("1.0.2.1");
-        request.setValidateMd5("123");
-        request.setOsInnerVersion("1.0.2");
-
-        TerminalUpdateListCacheManager.setUpdatelistCacheReady(CbbTerminalOsTypeEnums.ANDROID);
-        TerminalVersionResultDTO<CommonUpdateListDTO> terminalVersionResultDTO = handler.getVersion(request);
-
-        CommonComponentVersionInfoDTO expectComponent = new CommonComponentVersionInfoDTO();
-        expectComponent.setCompletePackageName("abc");
-
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.START.getResult(),
-                terminalVersionResultDTO.getResult().intValue());
-        assertEquals(1, terminalVersionResultDTO.getUpdatelist().getComponentList().size());
-        assertEquals(expectComponent, terminalVersionResultDTO.getUpdatelist().getComponentList().get(0));
-        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(CbbTerminalOsTypeEnums.ANDROID);
+        TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalOsArchType.ANDROID_ARM);
     }
 
     private List<CommonComponentVersionInfoDTO> getCbbCommonComponentVersionInfoDTOS() {
@@ -352,8 +220,8 @@ public class AbstractCommonComponentUpgradeHandlerTest {
     private class TestedComponentUpgradeHandler extends AbstractCommonComponentUpgradeHandler {
 
         @Override
-        protected CbbTerminalOsTypeEnums getTerminalOsType() {
-            return CbbTerminalOsTypeEnums.ANDROID;
+        protected TerminalOsArchType getTerminalOsArchType() {
+            return TerminalOsArchType.ANDROID_ARM;
         }
     }
 }

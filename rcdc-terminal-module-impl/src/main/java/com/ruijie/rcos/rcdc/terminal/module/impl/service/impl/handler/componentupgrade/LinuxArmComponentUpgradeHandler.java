@@ -6,14 +6,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
  * Description: Function Description
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
- * Create Time: 2019/8/2
+ * Create Time: 2021/8/18
  *
- * @author nt
+ * @author ting
  */
-public class LinuxComponentUpgradeHandler extends AbstractCommonComponentUpgradeHandler {
+public class LinuxArmComponentUpgradeHandler extends AbstractCommonComponentUpgradeHandler {
 
     @Override
     protected TerminalOsArchType getTerminalOsArchType() {
-        return TerminalOsArchType.LINUX_X86;
+        return TerminalOsArchType.LINUX_ARM;
     }
 }

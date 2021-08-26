@@ -27,6 +27,8 @@ CREATE VIEW v_cbb_upgradeable_terminal AS
     t_cbb_terminal.last_online_time,
     t_cbb_terminal.last_offline_time,
     t_cbb_terminal.version,
+    t_cbb_terminal.cpu_arch,
+    t_cbb_terminal.upgrade_cpu_type,
     t_cbb_terminal.state,
     t_cbb_terminal.platform,
     sut_suc.last_upgrade_time,

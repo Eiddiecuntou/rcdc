@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTermin
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.SystemUpgradeResultInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
@@ -58,20 +59,20 @@ public class SyncSystemUpgradeResultHelper {
      * 处理终端系统升级状态消息
      *
      * @param basicInfoEntity 终端信息
-     * @param terminalType 平台类型
+     * @param terminalArchType 平台类型
      * @param handler 系统升级处理对象
      * @param request 请求信息
      */
-    public void dealSystemUpgradeResult(TerminalEntity basicInfoEntity, CbbTerminalTypeEnums terminalType, TerminalSystemUpgradeHandler handler
-            , CbbDispatcherRequest request) {
+    public void dealSystemUpgradeResult(TerminalEntity basicInfoEntity, TerminalTypeArchType terminalArchType, TerminalSystemUpgradeHandler handler,
+            CbbDispatcherRequest request) {
         Assert.notNull(basicInfoEntity, "basicInfoEntity can not be null");
-        Assert.notNull(terminalType, "terminalType can not be null");
+        Assert.notNull(terminalArchType, "terminalType can not be null");
         Assert.notNull(handler, "handler can not be null");
         Assert.notNull(request, "request can not be null");
         Assert.notNull(basicInfoEntity.getTerminalId(), "terminalId can not be null");
         Assert.notNull(basicInfoEntity.getTerminalOsType(), "osType can not be null");
 
-        boolean enableUpgrade = handler.isTerminalEnableUpgrade(basicInfoEntity, terminalType);
+        boolean enableUpgrade = handler.isTerminalEnableUpgrade(basicInfoEntity, terminalArchType.getTerminalType());
 
         if (!enableUpgrade) {
             // 终端不可升级
@@ -79,7 +80,7 @@ public class SyncSystemUpgradeResultHelper {
             return;
         }
 
-        TerminalSystemUpgradeEntity upgradingTask = obtainTerminalSystemUpgradingTask(terminalType);
+        TerminalSystemUpgradeEntity upgradingTask = obtainTerminalSystemUpgradingTask(terminalArchType);
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = saveUpgradeTerminalIfNotExist(basicInfoEntity, upgradingTask);
 
         SystemUpgradeResultInfo upgradeResultInfo = convertJsonData(request);
@@ -137,12 +138,11 @@ public class SyncSystemUpgradeResultHelper {
         return systemUpgradeTerminalDAO.save(upgradeTerminalEntity);
     }
 
-    private TerminalSystemUpgradeEntity obtainTerminalSystemUpgradingTask(CbbTerminalTypeEnums terminalType) {
+    private TerminalSystemUpgradeEntity obtainTerminalSystemUpgradingTask(TerminalTypeArchType terminalArchType) {
 
-        List<CbbSystemUpgradeTaskStateEnums> stateList =
-                Arrays.asList(CbbSystemUpgradeTaskStateEnums.UPGRADING);
-        List<TerminalSystemUpgradeEntity> upgradingTaskList =
-                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(terminalType, stateList);
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(
+                terminalArchType.getTerminalType(), terminalArchType.getArchType(), stateList);
         Assert.notEmpty(upgradingTaskList, "upgradingTask can not be null");
 
         // 同一类型的升级中任务仅会存在一个

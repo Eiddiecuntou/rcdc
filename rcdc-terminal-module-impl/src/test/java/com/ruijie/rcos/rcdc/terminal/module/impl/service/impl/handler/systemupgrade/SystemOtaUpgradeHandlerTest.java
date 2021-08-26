@@ -118,6 +118,7 @@ public class SystemOtaUpgradeHandlerTest {
 
         OtaCheckResultContent expectContent = buildExpectedAndroidVDICheckResultContent(upgradeEntity);
 
+        result.setPackageObtainMode(PackageObtainModeEnums.OTA);
         assertEquals(expectContent, result);
     }
 
@@ -146,6 +147,7 @@ public class SystemOtaUpgradeHandlerTest {
         content.setTaskId(upgradeEntity.getId());
         content.setUpgradeMode(CbbSystemUpgradeModeEnums.AUTO);
         content.setFlashMode(CbbFlashModeEnums.FAST);
+        content.setPackageObtainMode(PackageObtainModeEnums.OTA);
         return content;
     }
 

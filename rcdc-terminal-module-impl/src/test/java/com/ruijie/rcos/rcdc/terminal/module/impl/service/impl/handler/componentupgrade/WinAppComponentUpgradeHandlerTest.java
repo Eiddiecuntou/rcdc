@@ -1,7 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.Tested;
 import org.junit.Assert;
@@ -28,8 +28,8 @@ public class WinAppComponentUpgradeHandlerTest {
      */
     @Test
     public void testGetTerminalType() {
-        CbbTerminalOsTypeEnums osType = handler.getTerminalOsType();
-        Assert.assertEquals(CbbTerminalOsTypeEnums.WINDOWS, osType);
+        TerminalOsArchType osArchType = handler.getTerminalOsArchType();
+        Assert.assertEquals(TerminalOsArchType.WINDOWS_X86, osArchType);
     }
 
 }

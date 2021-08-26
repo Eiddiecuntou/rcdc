@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.PackageObtainModeEnums;
 import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
 import java.util.UUID;
@@ -37,6 +38,8 @@ public class OtaCheckResultContent extends EqualsHashcodeSupport {
     private CbbFlashModeEnums flashMode;
 
     private UUID taskId;
+
+    private PackageObtainModeEnums packageObtainMode;
 
     public String getPackageVersion() {
         return packageVersion;
@@ -124,5 +127,13 @@ public class OtaCheckResultContent extends EqualsHashcodeSupport {
 
     public void setFlashMode(CbbFlashModeEnums flashMode) {
         this.flashMode = flashMode;
+    }
+
+    public PackageObtainModeEnums getPackageObtainMode() {
+        return packageObtainMode;
+    }
+
+    public void setPackageObtainMode(PackageObtainModeEnums packageObtainMode) {
+        this.packageObtainMode = packageObtainMode;
     }
 }

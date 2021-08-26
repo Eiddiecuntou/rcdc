@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.junit.Test;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradeService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -55,8 +58,8 @@ public class SystemUpgradeQuartzHandlerTest {
     public void testRunNoUpgradeTask() {
         new Expectations() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = null;
             }
         };
@@ -64,8 +67,8 @@ public class SystemUpgradeQuartzHandlerTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId((UUID) any);
                 times = 0;
@@ -85,8 +88,8 @@ public class SystemUpgradeQuartzHandlerTest {
         upgradeTaskList.add(upgradeTask);
         new Expectations() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradeTaskList;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 result = null;
@@ -96,8 +99,8 @@ public class SystemUpgradeQuartzHandlerTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 times = 1;
@@ -121,8 +124,8 @@ public class SystemUpgradeQuartzHandlerTest {
         upgradeTaskList.add(upgradeTask);
         new Expectations() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradeTaskList;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 result = null;
@@ -132,8 +135,8 @@ public class SystemUpgradeQuartzHandlerTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 times = 1;
@@ -163,8 +166,8 @@ public class SystemUpgradeQuartzHandlerTest {
         upgradeTerminalList.add(upgradeTerminal1);
         new Expectations() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradeTaskList;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 result = upgradeTerminalList;
@@ -174,8 +177,8 @@ public class SystemUpgradeQuartzHandlerTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 times = 1;
@@ -206,8 +209,8 @@ public class SystemUpgradeQuartzHandlerTest {
         upgradeTerminalList.add(upgradeTerminal);
         new Expectations() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = upgradeTaskList;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 result = upgradeTerminalList;
@@ -217,8 +220,8 @@ public class SystemUpgradeQuartzHandlerTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTask.getId());
                 times = 1;

@@ -1,22 +1,23 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
-import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonComponentVersionInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import java.util.List;
+import java.util.Objects;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Objects;
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonComponentVersionInfoDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 
 /**
  * Description: 终端组件升级通用handler
@@ -30,19 +31,20 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCommonComponentUpgradeHandler.class);
 
+
     @Override
     public TerminalVersionResultDTO<CommonUpdateListDTO> getVersion(GetVersionDTO request) {
         Assert.notNull(request, "get version request can not be null");
 
-        CbbTerminalOsTypeEnums osType = getTerminalOsType();
+        TerminalOsArchType osArchType = getTerminalOsArchType();
 
-        LOGGER.debug("终端系统类型为[{}]的终端请求版本号", osType.name());
-        if (!TerminalUpdateListCacheManager.isCacheReady(osType)) {
-            LOGGER.debug("终端系统类型为[{}]的终端请求版本号未就绪", osType.name());
+        LOGGER.debug("终端系统类型为[{}]的终端请求版本号", osArchType.name());
+        if (!TerminalUpdateListCacheManager.isCacheReady(osArchType)) {
+            LOGGER.debug("终端系统类型为[{}]的终端请求版本号未就绪", osArchType.name());
             return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult());
         }
 
-        CommonUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(osType);
+        CommonUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(osArchType);
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist or component is null, return not support");
@@ -77,13 +79,14 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
         // 深拷贝对象
         CommonUpdateListDTO copyUpdateList = SerializationUtils.clone(updatelist);
 
-        LOGGER.info("start upgrade");
+        LOGGER.info("终端【{}】需要进行组件升级", request.getTerminalId());
         // 判断是否差异升级,终端update.list的版本号(VER)与服务器update.list的BASE版本号相同则为差异升级
         String rainUpgradeVersion = request.getRainUpgradeVersion();
         if (!rainUpgradeVersion.equals(copyUpdateList.getBaseVersion())) {
             LOGGER.debug("终端[{}]组件进行非差异升级, 清理差异升级信息", request.getTerminalId());
             clearDifferenceUpgradeInfo(copyUpdateList.getComponentList());
         }
+
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("终端[" + request.getTerminalId() + "]组件升级响应：" + JSON.toJSONString(copyUpdateList));
@@ -134,10 +137,10 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
     }
 
     /**
-     * 获取组件升级的终端系统类型
+     * 获取组件升级的终端系统架构类型
      *
-     * @return 终端系统类型
+     * @return 终端系统架构类型
      */
-    protected abstract CbbTerminalOsTypeEnums getTerminalOsType();
+    protected abstract TerminalOsArchType getTerminalOsArchType();
 
 }

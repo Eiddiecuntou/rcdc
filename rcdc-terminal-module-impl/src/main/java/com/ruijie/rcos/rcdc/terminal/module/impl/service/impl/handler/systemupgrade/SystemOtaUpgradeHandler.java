@@ -71,6 +71,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
         resultContent.setPackageName(new File(upgradePackage.getFilePath()).getName());
         resultContent.setOtaScriptPath(upgradePackage.getOtaScriptPath());
         resultContent.setOtaScriptMD5(upgradePackage.getOtaScriptMd5());
+        resultContent.setPackageObtainMode(PackageObtainModeEnums.OTA);
 
         SystemUpgradeCheckResult<OtaCheckResultContent> checkResult = new SystemUpgradeCheckResult<>();
         checkResult.setSystemUpgradeCode(CheckSystemUpgradeResultEnums.NEED_UPGRADE.getResult());

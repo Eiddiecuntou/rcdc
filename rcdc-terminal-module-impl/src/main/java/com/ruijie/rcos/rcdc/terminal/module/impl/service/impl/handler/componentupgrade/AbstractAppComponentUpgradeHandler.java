@@ -2,9 +2,9 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.component
 
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -37,14 +37,14 @@ public abstract class AbstractAppComponentUpgradeHandler extends AbstractTermina
     public TerminalVersionResultDTO getVersion(GetVersionDTO request) {
         Assert.notNull(request, "get version request can not be null");
 
-        CbbTerminalOsTypeEnums osType = getTerminalOsType();
-        LOGGER.debug("[{}]软终端请求版本号", osType.name());
-        if (!TerminalUpdateListCacheManager.isCacheReady(osType)) {
-            LOGGER.debug("[{}]软终端请求版本号服务端未就绪", osType.name());
+        TerminalOsArchType osArchType = getTerminalOsArchType();
+        LOGGER.debug("[{}]软终端请求版本号", osArchType.name());
+        if (!TerminalUpdateListCacheManager.isCacheReady(osArchType)) {
+            LOGGER.debug("[{}]软终端请求版本号服务端未就绪", osArchType.name());
             return new TerminalVersionResultDTO<>(CbbTerminalComponentUpgradeResultEnums.PREPARING.getResult(), new AppUpdateListDTO());
         }
 
-        AppUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(osType);
+        AppUpdateListDTO updatelist = TerminalUpdateListCacheManager.get(osArchType);
         // 判断终端类型升级包是否存在或是否含有组件信息
         if (updatelist == null || CollectionUtils.isEmpty(updatelist.getComponentList())) {
             LOGGER.debug("updatelist不存在或updatelist中组件信息不存在，返回服务器异常响应");
@@ -102,10 +102,10 @@ public abstract class AbstractAppComponentUpgradeHandler extends AbstractTermina
     }
 
     /**
-     * 获取组件升级的终端类型
+     * 获取组件升级的终端系统架构类型
      *
-     * @return 终端类型
+     * @return 终端系统架构类型
      */
-    protected abstract CbbTerminalOsTypeEnums getTerminalOsType();
+    protected abstract TerminalOsArchType getTerminalOsArchType();
 
 }
