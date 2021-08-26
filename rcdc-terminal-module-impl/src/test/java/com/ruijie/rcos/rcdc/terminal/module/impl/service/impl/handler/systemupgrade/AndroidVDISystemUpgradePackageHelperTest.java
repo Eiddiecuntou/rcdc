@@ -418,7 +418,7 @@ public class AndroidVDISystemUpgradePackageHelperTest {
             helper.checkVersionInfo(packagePath, path);
             fail();
         } catch (BusinessException e) {
-            assertEquals(BusinessKey.RCDC_FILE_OPERATE_FAIL, e.getKey());
+            assertEquals(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_COMPUTE_SEED_FILE_MD5_FAIL, e.getKey());
         }
 
     }
