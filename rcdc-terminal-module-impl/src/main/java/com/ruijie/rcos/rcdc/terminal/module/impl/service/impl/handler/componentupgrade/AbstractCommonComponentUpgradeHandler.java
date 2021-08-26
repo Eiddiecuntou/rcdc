@@ -1,9 +1,15 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.componentupgrade;
 
+import java.util.List;
+import java.util.Objects;
+
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CommonComponentVersionInfoDTO;
@@ -12,13 +18,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Description: 终端组件升级通用handler
@@ -88,21 +87,12 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
             clearDifferenceUpgradeInfo(copyUpdateList.getComponentList());
         }
 
-        filterByCpuArch(request.getCpuArch(), copyUpdateList);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("终端[" + request.getTerminalId() + "]组件升级响应：" + JSON.toJSONString(copyUpdateList));
         }
 
         return new TerminalVersionResultDTO(CbbTerminalComponentUpgradeResultEnums.START.getResult(), copyUpdateList);
-    }
-
-    private void filterByCpuArch(CbbCpuArchType cpuArch, CommonUpdateListDTO copyUpdateList) {
-
-        if (cpuArch == CbbCpuArchType.X86_64) {
-
-        }
-
     }
 
     private boolean isSupportUpgrade(CommonUpdateListDTO updateList, GetVersionDTO request) {
