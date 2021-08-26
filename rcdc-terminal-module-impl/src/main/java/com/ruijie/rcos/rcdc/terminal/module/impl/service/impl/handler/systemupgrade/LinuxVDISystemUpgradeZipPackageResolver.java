@@ -107,7 +107,7 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
     protected void movePackage(String filePath, TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
         Assert.notNull(versionInfo, "versionInfo can not be null");
 
-        String imgFilePath = versionInfo.getUnzipPath()+ File.separator + versionInfo.getRealFileName();
+        String imgFilePath = versionInfo.getUnzipPath() + File.separator + versionInfo.getRealFileName();
         moveUpgradePackage(versionInfo.getFilePath(), imgFilePath);
 
         FileOperateUtil.deleteFile(new File(filePath));
