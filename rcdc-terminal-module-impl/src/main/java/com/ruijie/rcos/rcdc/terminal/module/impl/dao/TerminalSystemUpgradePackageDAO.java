@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dao;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
@@ -65,5 +66,14 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
             + ",imgName=:imgName,version = version + 1 where packageType=:packageType and version=:version")
     int modifyTerminalUpgradePackageVersion(@Param("imgName") String imgName, @Param("packageType") CbbTerminalPlatformEnums packageType,
             @Param("packageVersion") String packageVersion, @Param("version") int version);
+
+    /**
+     *  根据升级包类型和架构获取升级包
+     *
+     * @param terminalType 终端类型
+     * @param cpuArch 架构
+     * @return 升级包对象
+     */
+    TerminalSystemUpgradePackageEntity findFirstByPackageTypeAndCpuArch(CbbTerminalTypeEnums terminalType, CbbCpuArchType cpuArch);
 
 }

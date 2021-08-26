@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
@@ -174,6 +175,10 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
         // 设置支持升级的cpu类型
         basicInfoEntity.setUpgradeCpuType(convertCpuType(shineTerminalBasicInfo.getCpuType()));
+        if (basicInfoEntity.getCpuType().toUpperCase().contains(Constants.ARM_CPU_PREFFIX)) {
+            LOGGER.info("终端[{}]的cpu[{}]是arm cpu", basicInfoEntity.getTerminalId(), basicInfoEntity.getCpuType());
+            basicInfoEntity.setCpuArch(CbbCpuArchType.ARM);
+        }
 
         return basicInfoEntity;
     }
@@ -184,12 +189,14 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             return StringUtils.EMPTY;
         }
 
-        if (cpu.toUpperCase().contains("AMD")) {
-            return "AMD";
+        if (cpu.toUpperCase().contains(Constants.CPU_TYPE_AMD)) {
+            LOGGER.info("cpu型号为AMD");
+            return Constants.CPU_TYPE_AMD;
         }
 
-        if (cpu.toUpperCase().contains("INTEL")) {
-            return "INTEL";
+        if (cpu.toUpperCase().contains(Constants.CPU_TYPE_INTEL)) {
+            LOGGER.info("cpu型号为INTEL");
+            return Constants.CPU_TYPE_INTEL;
         }
 
         return cpu;

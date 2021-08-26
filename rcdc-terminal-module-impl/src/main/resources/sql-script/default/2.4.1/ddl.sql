@@ -56,3 +56,8 @@ ALTER TABLE "public"."t_cbb_sys_upgrade_package"
 COMMENT ON COLUMN "public"."t_cbb_sys_upgrade_package"."cpu_arch" IS 'cpu架构类型（x86_64、arm）';
 
 COMMENT ON COLUMN "public"."t_cbb_sys_upgrade_package"."support_cpu" IS '支持的cpu';
+
+ALTER TABLE "public"."t_cbb_sys_upgrade"
+  ADD COLUMN "cpu_arch" varchar(32);
+
+COMMENT ON COLUMN "public"."t_cbb_sys_upgrade"."cpu_arch" IS 'cpu架构';

@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 /**
  * Description: Function Description
@@ -23,9 +24,11 @@ public interface SystemUpgradePackageResolver {
     /**
      *  获取升级包配置信息
      *
-     * @param fileName
-     * @return
+     * @param fileName 文件名
+     * @param filePath 文件路径
+     * @return 升级包文件信息
+     * @throws BusinessException 业务异常
      */
-    TerminalUpgradeVersionFileInfo getPackageConfig(String fileName);
+    TerminalUpgradeVersionFileInfo getPackageConfig(String fileName, String filePath) throws BusinessException;
 
 }

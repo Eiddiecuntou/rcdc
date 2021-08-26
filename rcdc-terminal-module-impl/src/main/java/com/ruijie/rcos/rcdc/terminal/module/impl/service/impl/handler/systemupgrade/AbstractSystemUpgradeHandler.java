@@ -50,7 +50,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
             return buildNoNeedCheckResult(checkSystemUpgradeResult, terminalEntity);
         }
 
-        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageType(terminalType);
+        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         SystemUpgradeCheckResult<T> checkResult = getCheckResult(upgradePackage, upgradeTask);
         checkResult.setSystemUpgradeCode(checkSystemUpgradeResult.getResult());
@@ -67,7 +67,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         }
 
         // TODO 需优化
-        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageType(terminalType);
+        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
                 getSystemUpgradeService().getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeTask.getId());
@@ -108,7 +108,9 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
 
         String terminalId = terminalEntity.getTerminalId();
 
-        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageType(terminalType);
+        // TODO fixme
+        TerminalSystemUpgradePackageEntity upgradePackage = getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
+
         if (upgradePackage == null || upgradePackage.getIsDelete() == true) {
             LOGGER.info("终端[{}]的可用刷机包不存在", terminalId);
             return false;

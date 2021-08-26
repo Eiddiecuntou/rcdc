@@ -89,18 +89,33 @@ public interface Constants {
     /**
      * 存放终端系统vdi刷机包路径
      */
-    String TERMINAL_UPGRADE_ISO_PATH_VDI = "/opt/upgrade/ota/package/linux_vdi/";
+    String TERMINAL_UPGRADE_VDI_OTA_PACKAGE_PATH = "/opt/upgrade/ota/package/linux_vdi/";
 
 
     /**
      * 系统刷机包挂载路径
      */
-    String TERMINAL_UPGRADE_ISO_MOUNT_PATH = "/opt/upgrade/mount_dir/linux_vdi/";
+    String TERMINAL_UPGRADE_LINUX_VDI_ISO_MOUNT_PATH = "/opt/upgrade/mount_dir/linux_vdi/";
 
     /**
      * linux vdi arm OTA包种子文件保存目录
      */
     String TERMINAL_UPGRADE_LINUX_VDI_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/linux_vdi";
+
+    /**
+     * Linux VDI OTA脚本文件保存目录
+     */
+    String TERMINAL_UPGRADE_LINUX_VDI_OTA_SCRIPT_DIR = "/opt/ftp/terminal/ota/bash/linux_vdi/";
+
+    /**
+     * 系统刷机包ZIP版本文件相对路径
+     */
+    String TERMINAL_UPGRADE_VDI_ZIP_PACKAGE_VERSION_FILE_RELATE_PATH = "/version";
+
+    /**
+     * 系统刷机包ZIP脚本文件相对路径
+     */
+    String TERMINAL_UPGRADE_VDI_ZIP_PACKAGE_SCRIPT_FILE_RELATE_PATH = "/OTAPreRunFun.bash";
 
     /**
      * 系统刷机包版本文件路径
@@ -171,12 +186,13 @@ public interface Constants {
     /**
      * ZIP系统刷机包版本文件属性-平台
      */
-    String TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_CPU = "cpu";
+    String TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_CPU = "cpu_list";
+
 
     /**
-     * OTA 包的MD5值
+     * 升级包支持所有类型的CPU
      */
-    String TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5 = "MD5";
+    String TERMINAL_SYSTEM_UPGRADE_CPU_SUPPORT_ALL = "ALL";
 
     /**
      * OTA包平台类型
@@ -192,6 +208,11 @@ public interface Constants {
      * OTA包版本号
      */
     String TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_PLAT = "PLAT";
+
+    /**
+     * OTA包版本号
+     */
+    String TERMINAL_UPGRADE_OTA_VERSION_FILE_KEY_PACKAGE_MD5 = "MD5";
 
     /**
      * 解压后Android VDI OTA包和Linux IDV OTA包存放的第二级目录，也是/dev/sdo文件系统挂载目录
@@ -254,9 +275,14 @@ public interface Constants {
     String TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR = "/opt/ftp/terminal/ota/bash/linux_idv/";
 
     /**
-     * Linux 终端组件升级包路径
+     * Linux x86 终端组件升级包路径
      */
-    String LINUX_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_linux/temp";
+    String LINUX_X86_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_linux_x86/temp";
+
+    /**
+     * Linux arm 终端组件升级包路径
+     */
+    String LINUX_ARM_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_linux_arm/temp";
 
     /**
      * Android 终端组件升级包路径
@@ -300,4 +326,34 @@ public interface Constants {
      * voi升级授权默认使用数量为0
      */
     Integer TERMINAL_AUTH_VOI_UPGRADE_USED_DEFAULT_NUM = 0;
+
+    /**
+     * 镜像文件类型后缀
+     */
+    String FILE_TYPE_IMG_SUFFIX = "img";
+
+    /**
+     * 镜像文件类型后缀
+     */
+    String FILE_TYPE_BASH_SUFFIX = "bash";
+
+    /**
+     *  arm架构的cpu前缀
+     */
+    String ARM_CPU_PREFFIX = "RK";
+
+    /**
+     *  AMD类型cpu
+     */
+    String CPU_TYPE_AMD = "AMD";
+
+    /**
+     *  INTEL类型cpu
+     */
+    String CPU_TYPE_INTEL = "INTEL";
+
+    /**
+     *  iso MD5校验成功返回值
+     */
+    String ISO_MD5_CHECK_SUCCESS_VALUE = "PASS";
 }

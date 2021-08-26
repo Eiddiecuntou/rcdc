@@ -1,13 +1,14 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
+
+import javax.persistence.*;
+
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbFlashModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
 /**
  * 
@@ -26,46 +27,49 @@ public class TerminalSystemUpgradeEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    /** 
-     * 系统刷机包id 
-    **/
+    /**
+     * 系统刷机包id
+     **/
     private UUID upgradePackageId;
 
-    /** 
-     * 刷机包版本号 
-    **/
+    /**
+     * 刷机包版本号
+     **/
     private String packageVersion;
 
-    /** 
-     * 刷机包镜像名称 
-    **/
+    /**
+     * 刷机包镜像名称
+     **/
     private String packageName;
 
     @Enumerated(EnumType.STRING)
     private CbbTerminalTypeEnums packageType;
 
-    /** 
-     * 生成时间 
-    **/
+    /**
+     * 生成时间
+     **/
     private Date createTime;
 
-    /** 
-     * 任务状态 
-    **/
+    /**
+     * 任务状态
+     **/
     @Enumerated(EnumType.STRING)
     private CbbSystemUpgradeTaskStateEnums state;
 
-    /** 
-     * 版本号，实现乐观锁 
-    **/
+    /**
+     * 版本号，实现乐观锁
+     **/
     @Version
     private Integer version;
 
-    /** 
-     * 刷机方式 
-    **/
+    /**
+     * 刷机方式
+     **/
     @Enumerated(EnumType.STRING)
     private CbbFlashModeEnums flashMode;
+
+    @Enumerated(EnumType.STRING)
+    private CbbCpuArchType cpuArch;
 
     public UUID getId() {
         return id;
@@ -137,5 +141,13 @@ public class TerminalSystemUpgradeEntity {
 
     public void setFlashMode(CbbFlashModeEnums flashMode) {
         this.flashMode = flashMode;
+    }
+
+    public CbbCpuArchType getCpuArch() {
+        return cpuArch;
+    }
+
+    public void setCpuArch(CbbCpuArchType cpuArch) {
+        this.cpuArch = cpuArch;
     }
 }

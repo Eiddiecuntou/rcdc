@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.junit.Test;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeSupportService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -51,8 +54,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Expectations() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = new ArrayList<>();
             }
         };
@@ -60,8 +63,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradePackageService.getSystemUpgradePackage((UUID) any);
                 times = 0;
@@ -84,8 +87,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Expectations() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = arrayList;
                 systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
                 result = new BusinessException("key");
@@ -95,8 +98,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
                 times = 1;
@@ -120,8 +123,8 @@ public class TerminalSystemUpgradeTaskInitTest {
         TerminalSystemUpgradePackageEntity systemUpgradePackage = new TerminalSystemUpgradePackageEntity();
         new Expectations() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 result = arrayList;
                 systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
                 result = systemUpgradePackage;
@@ -131,8 +134,8 @@ public class TerminalSystemUpgradeTaskInitTest {
 
         new Verifications() {
             {
-                systemUpgradeDAO
-                        .findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List<CbbSystemUpgradeTaskStateEnums>) any);
+                systemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64,
+                        (List<CbbSystemUpgradeTaskStateEnums>) any);
                 times = 1;
                 systemUpgradePackageService.getSystemUpgradePackage(upgradeEntity.getUpgradePackageId());
                 times = 1;

@@ -1,11 +1,20 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
@@ -19,14 +28,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.StartSystemUpgradeResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeServiceTx;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+
 import mockit.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Description:
@@ -107,7 +110,8 @@ public class SyncSystemUpgradeResultHelperTest {
                 handler.isTerminalEnableUpgrade(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX);
                 result = true;
 
-                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List) any);
+                terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX,
+                        CbbCpuArchType.X86_64, (List) any);
                 result = upgradeEntity;
 
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeEntity.getId(), basicInfoEntity.getTerminalId());
@@ -128,7 +132,8 @@ public class SyncSystemUpgradeResultHelperTest {
                 times = 1;
 
                 List<CbbSystemUpgradeTaskStateEnums> stateList;
-                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList = withCapture());
+                terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX,
+                        CbbCpuArchType.X86_64, stateList = withCapture());
                 times = 1;
                 assertEquals(1, stateList.size());
                 assertEquals(CbbSystemUpgradeTaskStateEnums.UPGRADING, stateList.get(0));
@@ -176,7 +181,8 @@ public class SyncSystemUpgradeResultHelperTest {
                 handler.isTerminalEnableUpgrade(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX);
                 result = true;
 
-                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List) any);
+                terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX,
+                        CbbCpuArchType.X86_64, (List) any);
                 result = upgradeEntity;
 
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeEntity.getId(), basicInfoEntity.getTerminalId());
@@ -192,7 +198,8 @@ public class SyncSystemUpgradeResultHelperTest {
                 times = 1;
 
                 List<CbbSystemUpgradeTaskStateEnums> stateList;
-                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList = withCapture());
+                terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX,
+                        CbbCpuArchType.X86_64, stateList = withCapture());
                 times = 1;
                 assertEquals(1, stateList.size());
                 assertEquals(CbbSystemUpgradeTaskStateEnums.UPGRADING, stateList.get(0));
@@ -229,7 +236,8 @@ public class SyncSystemUpgradeResultHelperTest {
                 handler.isTerminalEnableUpgrade(basicInfoEntity, CbbTerminalTypeEnums.VDI_LINUX);
                 result = true;
 
-                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List) any);
+                terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX,
+                        CbbCpuArchType.X86_64, (List) any);
                 result = upgradeEntity;
 
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeEntity.getId(), basicInfoEntity.getTerminalId());
@@ -245,7 +253,8 @@ public class SyncSystemUpgradeResultHelperTest {
                 times = 1;
 
                 List<CbbSystemUpgradeTaskStateEnums> stateList;
-                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, stateList = withCapture());
+                terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX,
+                        CbbCpuArchType.X86_64, stateList = withCapture());
                 times = 1;
                 assertEquals(1, stateList.size());
                 assertEquals(CbbSystemUpgradeTaskStateEnums.UPGRADING, stateList.get(0));
@@ -279,7 +288,8 @@ public class SyncSystemUpgradeResultHelperTest {
                 handler.checkAndHoldUpgradeQuota(request.getTerminalId());
                 result = true;
 
-                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX, (List) any);
+                terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(CbbTerminalTypeEnums.VDI_LINUX,
+                        CbbCpuArchType.X86_64, (List) any);
                 result = upgradeEntity;
 
                 systemUpgradeTerminalDAO.findFirstBySysUpgradeIdAndTerminalId(upgradeEntity.getId(), basicInfoEntity.getTerminalId());

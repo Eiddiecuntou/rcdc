@@ -2,8 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
 import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
@@ -98,12 +96,12 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
 
     private void initLinuxTerminalComponent() {
         TerminalOsArchType linuxX86 = TerminalOsArchType.LINUX_X86;
-        String linuxX86TempPath = Constants.LINUX_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
+        String linuxX86TempPath = Constants.LINUX_X86_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
         checkAndUpgrade(linuxX86, linuxX86TempPath);
 
         TerminalOsArchType linuxArm = TerminalOsArchType.LINUX_ARM;
-        String linuxArmTempPath = Constants.LINUX_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
+        String linuxArmTempPath = Constants.LINUX_ARM_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH;
         // 检查环境,判断是否需要升级,需要则进行升级并更新缓存
         checkAndUpgrade(linuxArm, linuxArmTempPath);
     }
@@ -136,9 +134,12 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
         String globalParameterKey = TERMINAL_COMPONENT_PACKAGE_INIT_STATUS_GLOBAL_PARAMETER_KEY_PREFIX + osArchType.name().toLowerCase();
         String lastUpgradeStatus = globalParameterAPI.findParameter(globalParameterKey);
         if (needUpgrade(currentIp, upgradeTempPath, lastUpgradeStatus)) {
+            LOGGER.info("执行初始化组件包【{}】", osArchType.name());
             executeUpdate(currentIp, osArchType);
             return;
         }
+
+        LOGGER.info("执行初始化组件包缓存【{}】", osArchType.name());
         updateCache(osArchType);
     }
 

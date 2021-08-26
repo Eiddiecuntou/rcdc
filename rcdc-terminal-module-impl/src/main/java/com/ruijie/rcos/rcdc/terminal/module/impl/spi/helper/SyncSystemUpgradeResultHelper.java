@@ -63,8 +63,8 @@ public class SyncSystemUpgradeResultHelper {
      * @param handler 系统升级处理对象
      * @param request 请求信息
      */
-    public void dealSystemUpgradeResult(TerminalEntity basicInfoEntity, TerminalTypeArchType terminalArchType, TerminalSystemUpgradeHandler handler
-            , CbbDispatcherRequest request) {
+    public void dealSystemUpgradeResult(TerminalEntity basicInfoEntity, TerminalTypeArchType terminalArchType, TerminalSystemUpgradeHandler handler,
+            CbbDispatcherRequest request) {
         Assert.notNull(basicInfoEntity, "basicInfoEntity can not be null");
         Assert.notNull(terminalArchType, "terminalType can not be null");
         Assert.notNull(handler, "handler can not be null");
@@ -80,7 +80,7 @@ public class SyncSystemUpgradeResultHelper {
             return;
         }
 
-        TerminalSystemUpgradeEntity upgradingTask = obtainTerminalSystemUpgradingTask(terminalArchType.getTerminalType());
+        TerminalSystemUpgradeEntity upgradingTask = obtainTerminalSystemUpgradingTask(terminalArchType);
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = saveUpgradeTerminalIfNotExist(basicInfoEntity, upgradingTask);
 
         SystemUpgradeResultInfo upgradeResultInfo = convertJsonData(request);
@@ -138,12 +138,11 @@ public class SyncSystemUpgradeResultHelper {
         return systemUpgradeTerminalDAO.save(upgradeTerminalEntity);
     }
 
-    private TerminalSystemUpgradeEntity obtainTerminalSystemUpgradingTask(CbbTerminalTypeEnums terminalType) {
+    private TerminalSystemUpgradeEntity obtainTerminalSystemUpgradingTask(TerminalTypeArchType terminalArchType) {
 
-        List<CbbSystemUpgradeTaskStateEnums> stateList =
-                Arrays.asList(CbbSystemUpgradeTaskStateEnums.UPGRADING);
-        List<TerminalSystemUpgradeEntity> upgradingTaskList =
-                terminalSystemUpgradeDAO.findByPackageTypeAndStateInOrderByCreateTimeAsc(terminalType, stateList);
+        List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(CbbSystemUpgradeTaskStateEnums.UPGRADING);
+        List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(
+                terminalArchType.getTerminalType(), terminalArchType.getArchType(), stateList);
         Assert.notEmpty(upgradingTaskList, "upgradingTask can not be null");
 
         // 同一类型的升级中任务仅会存在一个

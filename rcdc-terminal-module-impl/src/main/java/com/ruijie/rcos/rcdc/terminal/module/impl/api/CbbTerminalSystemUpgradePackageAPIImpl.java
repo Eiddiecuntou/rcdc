@@ -61,9 +61,6 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
     private TerminalSystemUpgradePackageService terminalSystemUpgradePackageService;
 
     @Autowired
-    private TerminalSystemUpgradePackageDAO termianlSystemUpgradePackageDAO;
-
-    @Autowired
     private TerminalSystemPackageUploadingService terminalSystemPackageUploadingService;
 
     @Autowired
@@ -74,20 +71,8 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
         Assert.notNull(request, "request can not be null");
 
         boolean allowUpload = true;
-        boolean hasRunningTask = false;
         List<String> errorList = Lists.newArrayList();
-        TerminalSystemUpgradePackageEntity upgradePackage = termianlSystemUpgradePackageDAO.findFirstByPackageType(request.getTerminalType());
         LOGGER.info("上传升级包类型[{}]", request.getTerminalType());
-        // Android VDI升级包不校验升级任务开启情况
-        if (upgradePackage != null && request.getTerminalType() != CbbTerminalTypeEnums.VDI_ANDROID) {
-            LOGGER.info("检查升级包是否存在进行中的升级任务");
-            hasRunningTask = terminalSystemUpgradeService.hasSystemUpgradeInProgress(upgradePackage.getId());
-        }
-        if (hasRunningTask) {
-            LOGGER.info("system upgrade task is running");
-            allowUpload = false;
-            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_TASK_IS_RUNNING, new String[] {}));
-        }
 
         // 判断磁盘大小是否满足
         TerminalSystemUpgradePackageHandler handler = terminalSystemUpgradePackageHandlerFactory.getHandler(request.getTerminalType());

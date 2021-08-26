@@ -53,4 +53,21 @@ public enum UpgradeFileTypeEnums {
         return false;
     }
 
+    /**
+     *  转换枚举
+     * @param fileType 文件类型
+     * @return 枚举对象
+     */
+    public static UpgradeFileTypeEnums convert(final String fileType) {
+        Assert.hasText(fileType, "fileType can not be empty");
+
+        for (UpgradeFileTypeEnums typeEnum : UpgradeFileTypeEnums.values()) {
+            if (typeEnum.getFileType().equals(fileType.toLowerCase())) {
+                return typeEnum;
+            }
+        }
+
+        throw new IllegalArgumentException("终端升级包文件类型[" + fileType + "]未定义，不支持该文件类型");
+    }
+
 }
