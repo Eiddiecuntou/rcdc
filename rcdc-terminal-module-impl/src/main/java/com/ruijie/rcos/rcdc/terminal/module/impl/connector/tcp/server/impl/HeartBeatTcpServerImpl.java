@@ -20,7 +20,7 @@ public class HeartBeatTcpServerImpl implements HeartBeatTcpServer {
     @Override
     public Object heartBeat() {
 
-        LOGGER.info("收到业务心跳报文");
+        LOGGER.debug("收到业务心跳报文");
         return new Object();
     }
 }
