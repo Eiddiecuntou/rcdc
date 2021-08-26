@@ -195,37 +195,6 @@ public class AbstractCommonComponentUpgradeHandlerTest {
         TerminalUpdateListCacheManager.setUpdatelistCacheNotReady(TerminalOsArchType.ANDROID_ARM);
     }
 
-    /**
-     * 测试getVersion,正处于更新中
-     */
-    @Test
-    public void testGetVersionIsUpdating() {
-        TestedComponentUpgradeHandler handler = new TestedComponentUpgradeHandler();
-
-        new MockUp<TerminalUpdateListCacheManager>() {
-            @Mock
-            public boolean isCacheReady(CbbTerminalTypeEnums terminalType) {
-                return false;
-            }
-        };
-
-        CommonUpdateListDTO updatelist = new CommonUpdateListDTO();
-        List<CommonComponentVersionInfoDTO> componentList = new ArrayList<>();
-        componentList.add(new CommonComponentVersionInfoDTO());
-        updatelist.setComponentList(componentList);
-        updatelist.setVersion("1.1.0.1");
-        updatelist.setComponentSize(1);
-        updatelist.setBaseVersion("1.0.2.1");
-        updatelist.setLimitVersion("1.0.1.1");
-
-        GetVersionDTO request = new GetVersionDTO();
-        request.setRainUpgradeVersion("1.0.0.1");
-        request.setValidateMd5("123");
-        TerminalVersionResultDTO terminalVersionResultDTO = handler.getVersion(request);
-        assertEquals(CbbTerminalComponentUpgradeResultEnums.ABNORMAL.getResult(), terminalVersionResultDTO.getResult().intValue());
-
-    }
-
     private List<CommonComponentVersionInfoDTO> getCbbCommonComponentVersionInfoDTOS() {
         List<CommonComponentVersionInfoDTO> componentList = new ArrayList<>();
         CommonComponentVersionInfoDTO component = new CommonComponentVersionInfoDTO();

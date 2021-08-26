@@ -182,8 +182,6 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
                 result = upgradePackageOpt;
-                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
-                result = false;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 result = false;
                 terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request);
@@ -207,73 +205,6 @@ public class CbbTerminalSystemUpgradeAPIImplTest {
         new Verifications() {
             {
                 terminalSystemUpgradePackageDAO.findById(request.getPackageId());
-                times = 1;
-                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
-                times = 1;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
-                times = 1;
-                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request);
-                times = 1;
-            }
-        };
-    }
-
-    /**
-     * 测试升级包上传，
-     *
-     * @throws BusinessException
-     *         异常
-     */
-    @Test
-    public void testAddSystemUpgradeTaskUpgradeTerminalNotNull(@Mocked LinuxVDISystemUpgradeHandler linuxVDISystemUpgradeHandler) throws BusinessException {
-        CbbAddSystemUpgradeTaskDTO request = new CbbAddSystemUpgradeTaskDTO();
-        request.setTerminalIdArr(new String[] {"123", "456"});
-        TerminalSystemUpgradePackageEntity upgradePackageEntity = new TerminalSystemUpgradePackageEntity();
-        upgradePackageEntity.setIsDelete(false);
-        upgradePackageEntity.setFilePath("/opt");
-        Optional<TerminalSystemUpgradePackageEntity> upgradePackageOpt = Optional.of(upgradePackageEntity);
-        upgradePackageEntity.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
-        upgradePackageEntity.setCpuArch(CbbCpuArchType.X86_64);
-
-        List<TerminalSystemUpgradeTerminalEntity> upgradeTerminalList = new ArrayList<>();
-        TerminalSystemUpgradeTerminalEntity terminalSystemUpgradeTerminalEntity = new TerminalSystemUpgradeTerminalEntity();
-        terminalSystemUpgradeTerminalEntity.setId(UUID.randomUUID());
-        upgradeTerminalList.add(terminalSystemUpgradeTerminalEntity);
-
-        UUID upgradeTaskId = UUID.randomUUID();
-        new Expectations() {
-            {
-                terminalSystemUpgradePackageDAO.findById(request.getPackageId());
-                result = upgradePackageOpt;
-                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
-                result = false;
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
-                result = false;
-                terminalSystemUpgradeServiceTx.addSystemUpgradeTask(upgradePackageOpt.get(), request);
-                result = upgradeTaskId;
-                systemUpgradeHandlerFactory.getHandler((TerminalTypeArchType) any);
-                result = linuxVDISystemUpgradeHandler;
-                systemUpgradeTerminalDAO.findBySysUpgradeId(upgradeTaskId);
-                result = upgradeTerminalList;
-            }
-        };
-
-        new MockUp<Files>() {
-            @Mock
-            public boolean exists(Path path, LinkOption... options) {
-                return true;
-            }
-        };
-
-        CbbAddSystemUpgradeTaskResultDTO upgradeTaskResponse = upgradeAPIImpl.addSystemUpgradeTask(request);
-        assertEquals(upgradeTaskId, upgradeTaskResponse.getUpgradeTaskId());
-        assertEquals(upgradePackageOpt.get().getPackageName(), upgradeTaskResponse.getImgName());
-
-        new Verifications() {
-            {
-                terminalSystemUpgradePackageDAO.findById(request.getPackageId());
-                times = 1;
-                terminalSystemPackageUploadingService.isUpgradeFileUploading((CbbTerminalTypeEnums) any);
                 times = 1;
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(request.getPackageId());
                 times = 1;

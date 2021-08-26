@@ -364,7 +364,8 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
         TerminalSystemUpgradeEntity systemUpgradeTask = terminalSystemUpgradeService.getSystemUpgradeTask(upgradeTaskId);
         TerminalSystemUpgradePackageEntity upgradePackage =
                 systemUpgradePackageService.getSystemUpgradePackage(systemUpgradeTask.getUpgradePackageId());
-        systemUpgradeHandlerFactory.getHandler(upgradePackage.obtainTerminalTypeArchType()).afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
+        systemUpgradeHandlerFactory.getHandler(upgradePackage.obtainTerminalTypeArchType()) //
+                .afterCloseSystemUpgrade(upgradePackage, systemUpgradeTask);
     }
 
     @Override
