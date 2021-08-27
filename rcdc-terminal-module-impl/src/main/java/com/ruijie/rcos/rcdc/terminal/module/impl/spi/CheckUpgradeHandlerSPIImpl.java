@@ -183,10 +183,10 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private SystemUpgradeCheckResult getSystemUpgradeCheckResult(TerminalEntity terminalEntity, CbbTerminalBizConfigDTO configDTO) {
 
         CbbTerminalTypeEnums terminalType = basicInfoService.obtainTerminalType(terminalEntity);
-        TerminalTypeArchType terminalArchType = TerminalTypeArchType.convert(terminalType, terminalEntity.getCpuArch());
 
         SystemUpgradeCheckResult systemUpgradeCheckResult;
         try {
+            TerminalTypeArchType terminalArchType = TerminalTypeArchType.convert(terminalType, terminalEntity.getCpuArch());
             TerminalSystemUpgradeHandler handler = handlerFactory.getHandler(terminalArchType);
             systemUpgradeCheckResult = handler.checkSystemUpgrade(terminalType, terminalEntity);
         } catch (Exception e) {
