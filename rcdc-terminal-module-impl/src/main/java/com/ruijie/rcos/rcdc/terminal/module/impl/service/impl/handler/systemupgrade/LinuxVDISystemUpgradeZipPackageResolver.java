@@ -108,7 +108,9 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
         Assert.notNull(versionInfo, "versionInfo can not be null");
 
         String imgFilePath = versionInfo.getUnzipPath() + File.separator + versionInfo.getRealFileName();
+        String imgScriptPath = versionInfo.getUnzipPath() + File.separator + versionInfo.getOtaScriptFileName();
         moveUpgradePackage(versionInfo.getFilePath(), imgFilePath);
+        moveUpgradePackage(versionInfo.getOtaScriptPath(), imgScriptPath);
 
         FileOperateUtil.deleteFile(new File(filePath));
         FileOperateUtil.deleteFile(new File(versionInfo.getUnzipPath()));
@@ -148,6 +150,7 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
 
         versionInfo.setPackageName(fileName);
         versionInfo.setRealFileName(imgFileName);
+        versionInfo.setOtaScriptFileName(scriptFileName);
         versionInfo.setUnzipPath(unzipPath);
         versionInfo.setOtaScriptMD5(calFileMd5(scriptFilePath));
         // TODO 比对MD5值，校验

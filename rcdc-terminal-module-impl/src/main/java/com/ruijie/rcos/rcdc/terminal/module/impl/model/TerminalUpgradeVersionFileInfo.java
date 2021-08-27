@@ -53,6 +53,8 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
 
     private String mountPath;
 
+    private String otaScriptFileName;
+
     public String getImgName() {
         return imgName;
     }
@@ -209,6 +211,16 @@ public class TerminalUpgradeVersionFileInfo extends EqualsHashcodeSupport {
                 ", cpuArch=" + cpuArch +
                 ", unzipPath='" + unzipPath + '\'' +
                 ", mountPath='" + mountPath + '\'' +
+                ", otaScriptFileName='" + otaScriptFileName + '\'' +
                 '}';
     }
+
+    public String getOtaScriptFileName() {
+        return otaScriptFileName;
+    }
+
+    public void setOtaScriptFileName(String otaScriptFileName) {
+        this.otaScriptFileName = otaScriptFileName;
+    }
+
 }
