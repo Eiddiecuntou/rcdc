@@ -25,7 +25,7 @@ public class AndroidTerminalUpdateCacheInitTest {
     @Test
     public void testGetUpdateListPath() {
         String updateListPath = cacheInit.getUpdateListPath();
-        Assert.assertEquals("/opt/upgrade/app/terminal_component/terminal_android/origin/update.list", updateListPath);
+        Assert.assertEquals("/opt/upgrade/app/terminal_component/terminal_android_arm/origin/update.list", updateListPath);
     }
 
     @Test
