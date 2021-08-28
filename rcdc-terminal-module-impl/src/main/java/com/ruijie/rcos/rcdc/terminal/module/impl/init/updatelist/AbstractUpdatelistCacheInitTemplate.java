@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.init.updatelist;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dto.BaseUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.cache.TerminalUpdateListCacheManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
@@ -14,7 +13,7 @@ import org.springframework.util.CollectionUtils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Description: Function Description
@@ -69,7 +68,7 @@ public abstract class AbstractUpdatelistCacheInitTemplate<T extends BaseUpdateLi
     private String readUpdateListContent(File updateListFile) {
         String updatelistStr = "";
         try {
-            updatelistStr = FileUtils.readFileToString(updateListFile, Charset.forName("UTF-8"));
+            updatelistStr = FileUtils.readFileToString(updateListFile, StandardCharsets.UTF_8);
         } catch (IOException e) {
             LOGGER.error("read updatelist file error", e);
         }

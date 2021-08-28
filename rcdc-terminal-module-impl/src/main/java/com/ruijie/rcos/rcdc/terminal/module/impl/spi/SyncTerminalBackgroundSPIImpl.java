@@ -28,7 +28,7 @@ import org.springframework.util.Assert;
 @DispatcherImplemetion(ShineAction.SYNC_TERMINAL_BACKGROUND)
 public class SyncTerminalBackgroundSPIImpl implements CbbDispatcherHandlerSPI {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SyncTerminalLogoHandlerSPIImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SyncTerminalBackgroundSPIImpl.class);
 
     @Autowired
     GlobalParameterAPI globalParameterAPI;

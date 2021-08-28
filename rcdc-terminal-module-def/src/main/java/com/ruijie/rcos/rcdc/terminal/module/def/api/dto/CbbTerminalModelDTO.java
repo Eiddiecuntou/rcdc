@@ -2,8 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.sk.base.support.EqualsHashcodeSupport;
 
-import java.util.Date;
-
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018

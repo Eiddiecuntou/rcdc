@@ -93,7 +93,7 @@ public class TerminalDetectionEntity {
         detectDTO.setIpConflict(ipConflict);
         detectDTO.setPacketLossRate(packetLossRate);
         detectDTO.setDetectTime(detectTime);
-        CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();;
+        CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();
         state.setState(detectState.name());
         state.setMessage(LocaleI18nResolver.resolve(detectState.getName()));
     }

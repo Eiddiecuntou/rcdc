@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 
 import javax.persistence.*;
 import java.util.Date;

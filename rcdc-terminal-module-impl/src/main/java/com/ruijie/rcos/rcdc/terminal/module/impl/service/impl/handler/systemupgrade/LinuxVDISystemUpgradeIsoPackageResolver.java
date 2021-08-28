@@ -29,7 +29,7 @@ import com.ruijie.rcos.sk.base.util.IsoFileUtil;
 @Service
 public class LinuxVDISystemUpgradeIsoPackageResolver extends AbstractSystemUpgradePackageResolver {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradePackageResolver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDISystemUpgradeIsoPackageResolver.class);
 
     public UpgradeFileTypeEnums getUpgradeFileType() {
         return UpgradeFileTypeEnums.ISO;
@@ -78,7 +78,7 @@ public class LinuxVDISystemUpgradeIsoPackageResolver extends AbstractSystemUpgra
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_INCORRECT);
         }
 
-        completeVersionInfo(fileName, filePath, mountPath, versionInfo);
+        completeVersionInfo(fileName, filePath, versionInfo);
 
         return versionInfo;
     }
@@ -107,7 +107,7 @@ public class LinuxVDISystemUpgradeIsoPackageResolver extends AbstractSystemUpgra
         // do nothing
     }
 
-    private void completeVersionInfo(String fileName, String filePath, String mountPath, TerminalUpgradeVersionFileInfo versionInfo)
+    private void completeVersionInfo(String fileName, String filePath, TerminalUpgradeVersionFileInfo versionInfo)
             throws BusinessException {
         String storePackageName = UUID.randomUUID() + getUpgradeFileType().getFileType();
         String toPath = Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH + storePackageName;

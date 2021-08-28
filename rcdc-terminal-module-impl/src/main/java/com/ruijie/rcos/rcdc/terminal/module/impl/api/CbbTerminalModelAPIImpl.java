@@ -27,8 +27,7 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
     public CbbTerminalModelDTO[] listTerminalModel(CbbTerminalPlatformEnums[] platformArr) {
         Assert.notNull(platformArr, "platformArr can not be null");
 
-        CbbTerminalModelDTO[] terminalModelArr = terminalModelService.queryTerminalModelByPlatform(platformArr);
-        return terminalModelArr;
+        return terminalModelService.queryTerminalModelByPlatform(platformArr);
     }
 
     @Override
@@ -36,15 +35,13 @@ public class CbbTerminalModelAPIImpl implements CbbTerminalModelAPI {
         Assert.notNull(productId, "productId can not be null");
         Assert.notNull(platformEnums, "platformEnums can not be null");
 
-        CbbTerminalModelDTO terminalModelDTO = terminalModelService.queryByProductIdAndPlatform(productId, platformEnums);
-        return terminalModelDTO;
+        return terminalModelService.queryByProductIdAndPlatform(productId, platformEnums);
     }
 
     @Override
     public List<String> listTerminalOsType(CbbTerminalPlatformEnums[] platformArr) {
         Assert.notNull(platformArr, "platformArr can not be null");
 
-        List<String> osTypeList = terminalModelService.queryTerminalOsTypeByPlatform(platformArr);
-        return osTypeList;
+        return terminalModelService.queryTerminalOsTypeByPlatform(platformArr);
     }
 }

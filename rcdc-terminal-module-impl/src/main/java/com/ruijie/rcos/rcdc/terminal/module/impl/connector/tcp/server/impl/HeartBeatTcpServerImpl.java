@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.server.impl;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.server.HeartBeatTcpServer;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.util.Assert;
 
 /**
  * Description: ShineRequestPartTypeSPIImpl

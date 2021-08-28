@@ -186,11 +186,6 @@ public class SessionManager {
     }
 
     private synchronized Lock getTerminalIdLock(String terminalId) {
-        Lock lock = sessionOperateLockMap.get(terminalId);
-        if (lock == null) {
-            lock = new ReentrantLock();
-            sessionOperateLockMap.put(terminalId, lock);
-        }
-        return lock;
+        return sessionOperateLockMap.computeIfAbsent(terminalId, k -> new ReentrantLock());
     }
 }

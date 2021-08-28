@@ -49,8 +49,7 @@ public class TerminalDetectInit implements SafetySingletonInitializer {
         TerminalDetectionEntity entity = new TerminalDetectionEntity();
         entity.setDetectState(DetectStateEnums.CHECKING);
         Example<TerminalDetectionEntity> example = Example.of(entity);
-        List<TerminalDetectionEntity> checkingList = detectionDAO.findAll(example);
-        return checkingList;
+        return detectionDAO.findAll(example);
     }
 
 }
