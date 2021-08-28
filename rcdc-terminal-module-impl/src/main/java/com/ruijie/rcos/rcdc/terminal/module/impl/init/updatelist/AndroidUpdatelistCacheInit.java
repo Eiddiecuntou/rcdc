@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AndroidUpdatelistCacheInit extends AbstractUpdatelistCacheInitTemplate<CommonUpdateListDTO> {
 
-    private static final String UPDATE_LIST_PATH = "/opt/upgrade/app/terminal_component/terminal_android/origin/update.list";
+    private static final String UPDATE_LIST_PATH = "/opt/upgrade/app/terminal_component/terminal_android_arm/origin/update.list";
 
     @Override
     protected String getUpdateListPath() {

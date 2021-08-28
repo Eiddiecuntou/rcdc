@@ -287,7 +287,7 @@ public interface Constants {
     /**
      * Android 终端组件升级包路径
      */
-    String ANDROID_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_android/temp";
+    String ANDROID_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_android_arm/temp";
 
     /**
      * 终端检测超时时间（单位:秒）
