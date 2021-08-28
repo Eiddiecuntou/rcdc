@@ -86,7 +86,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         TerminalBackgroundInfo.TerminalBackgroundDetailInfo detailInfo = terminalBackgroundInfo.getDetailInfo();
         File imageFile = new File(detailInfo.getFilePath());
 
-        if (imageFile.exists() == false) {
+        if (!imageFile.exists()) {
             return dto;
         }
         dto.setImagePath(imageFile.getAbsolutePath());
@@ -146,7 +146,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         }
         TerminalBackgroundInfo terminalBackgroundInfo = JSON.parseObject(parameter, TerminalBackgroundInfo.class);
         File imageFile = new File(terminalBackgroundInfo.getDetailInfo().getFilePath());
-        if (imageFile.exists() == false) {
+        if (!imageFile.exists()) {
             return;
         }
         SkyengineFile skyengineFile = new SkyengineFile(imageFile);
@@ -156,8 +156,7 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
     private File getBackGroundImageFile(String imageName) throws BusinessException {
         String fileNameSuffix = getFileNameSuffix(imageName);
         String saveBackgroundImagePath = BACKGROUND_IMAGE_FTP_DIR + BACKGROUND_IMAGE_NAME + fileNameSuffix;
-        File file = new File(saveBackgroundImagePath);
-        return file;
+        return new File(saveBackgroundImagePath);
     }
 
     private String getFileNameSuffix(String name) throws BusinessException {

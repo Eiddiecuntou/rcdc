@@ -1,12 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.*;
-import com.ruijie.rcos.sk.base.exception.BusinessException;
-
-import java.util.List;
-import java.util.UUID;
-
-
 /**
  * 
  * Description: 终端升级初始化API接口

@@ -33,7 +33,7 @@ import com.ruijie.rcos.sk.base.zip.ZipUtil;
 @Service
 public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgradePackageResolver {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradePackageResolver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxVDISystemUpgradeZipPackageResolver.class);
 
     @Autowired
     private BtClientService btClientService;
@@ -71,7 +71,7 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
             unZipUpgradePackage(filePath, unzipPath);
 
             // 读取校验文件内容
-            String packageConfigFilePath = getVersionFilePath(unzipPath, fileName);
+            String packageConfigFilePath = getVersionFilePath(unzipPath);
             versionInfo = getVersionInfo(packageConfigFilePath);
             versionInfo.setImgName(UUID.randomUUID().toString());
         } catch (Exception e) {
@@ -168,7 +168,7 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
 
     }
 
-    private String getVersionFilePath(String unzipPath, String fileName) {
+    private String getVersionFilePath(String unzipPath) {
         return unzipPath + Constants.TERMINAL_UPGRADE_VDI_ZIP_PACKAGE_VERSION_FILE_RELATE_PATH;
     }
 

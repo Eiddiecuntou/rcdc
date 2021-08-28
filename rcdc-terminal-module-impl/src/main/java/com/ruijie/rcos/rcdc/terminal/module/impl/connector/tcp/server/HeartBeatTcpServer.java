@@ -1,8 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.server;
 
 import com.ruijie.rcos.sk.connectkit.api.annotation.ApiAction;
-import com.ruijie.rcos.sk.connectkit.api.annotation.Timeout;
-import com.ruijie.rcos.sk.connectkit.api.annotation.tcp.SessionAlias;
 import com.ruijie.rcos.sk.connectkit.api.annotation.tcp.Tcp;
 
 /**

@@ -30,12 +30,7 @@ public class UpgradeTerminalLockManager {
     public synchronized Lock getAndCreateLock(String terminalId) {
         Assert.hasText(terminalId, "terminalId can not be empty");
 
-        Lock lock = terminalLockMap.get(terminalId);
-        if (lock == null) {
-            lock = new ReentrantLock();
-            terminalLockMap.put(terminalId, lock);
-        }
-        return lock;
+        return terminalLockMap.computeIfAbsent(terminalId, k -> new ReentrantLock());
     }
 
 

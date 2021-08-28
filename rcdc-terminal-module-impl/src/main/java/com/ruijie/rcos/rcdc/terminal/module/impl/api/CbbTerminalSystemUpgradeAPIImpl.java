@@ -108,9 +108,6 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
     private QueryUpgradeableTerminalListService upgradeableTerminalListService;
 
     @Autowired
-    private TerminalSystemPackageUploadingService terminalSystemPackageUploadingService;
-
-    @Autowired
     private TerminalSystemUpgradeHandlerFactory systemUpgradeHandlerFactory;
 
     @Autowired
@@ -455,7 +452,7 @@ public class CbbTerminalSystemUpgradeAPIImpl implements CbbTerminalSystemUpgrade
             }
         }
 
-        matchEqualList.addAll(matchEqualList);
+        oldMatchEqualList.addAll(matchEqualList);
         request.setMatchEqualArr(matchEqualList.stream().toArray(MatchEqual[]::new));
         LOGGER.info("request 匹配条件：{}", JSON.toJSONString(request));
     }

@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;

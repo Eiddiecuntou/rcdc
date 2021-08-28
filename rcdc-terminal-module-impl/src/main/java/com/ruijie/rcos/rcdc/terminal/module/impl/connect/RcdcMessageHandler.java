@@ -160,7 +160,7 @@ public class RcdcMessageHandler implements MessageHandler {
             LOGGER.info("分发消息，terminalId:{}; action: {}; data:{}", terminalId, message.getAction(), data);
             cbbDispatcherHandlerSPI.dispatch(request);
         } catch (Exception e) {
-            LOGGER.error("消息分发执行异常;", "action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + message.getData(), e);
+            LOGGER.error("消息分发执行异常;action:" + message.getAction() + ",terminalId:" + terminalId + ",data:" + message.getData(), e);
         }
     }
 

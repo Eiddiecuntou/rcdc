@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  */
 public class CbbTerminalDetectAPIImpl implements CbbTerminalDetectAPI {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalOperatorAPIImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalDetectAPIImpl.class);
 
     @Autowired
     private TerminalDetectService detectService;
@@ -85,9 +85,7 @@ public class CbbTerminalDetectAPIImpl implements CbbTerminalDetectAPI {
     public CbbTerminalDetectDTO getRecentDetect(String terminalId) throws BusinessException {
         Assert.hasText(terminalId, "terminalId can not be blank");
 
-        CbbTerminalDetectDTO detectInfo = detectService.getRecentDetect(terminalId);
-
-        return detectInfo;
+        return detectService.getRecentDetect(terminalId);
     }
 
     private void setThreshold(CbbTerminalDetectDTO detectDTO) {
@@ -120,9 +118,7 @@ public class CbbTerminalDetectAPIImpl implements CbbTerminalDetectAPI {
         threshold.setBandwidthThreshold(Constants.TERMINAL_DETECT_BINDWIDTH_NORM);
         threshold.setPacketLossRateThreshold(Constants.TERMINAL_DETECT_PACKET_LOSS_RATE);
         threshold.setDelayThreshold(Constants.TERMINAL_DETECT_DELAY_NORM);
-        CbbDetectResultDTO resp = new CbbDetectResultDTO(result, threshold);
-
-        return resp;
+        return new CbbDetectResultDTO(result, threshold);
     }
 
     @Override

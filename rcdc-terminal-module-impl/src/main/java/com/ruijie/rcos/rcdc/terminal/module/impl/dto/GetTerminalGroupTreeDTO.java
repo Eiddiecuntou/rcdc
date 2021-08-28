@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalGroupTreeNodeDTO;
-import com.ruijie.rcos.sk.modulekit.api.comm.DefaultResponse;
 
 /**
  * 

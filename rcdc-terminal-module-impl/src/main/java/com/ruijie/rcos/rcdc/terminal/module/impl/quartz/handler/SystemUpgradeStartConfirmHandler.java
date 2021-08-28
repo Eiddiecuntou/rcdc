@@ -28,7 +28,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 @Service
 public class SystemUpgradeStartConfirmHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeStateSynctHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemUpgradeStartConfirmHandler.class);
 
     private static final int START_CONFIRM_TIME_OUT = 5 * 60;
 
