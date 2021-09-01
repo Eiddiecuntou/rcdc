@@ -38,14 +38,15 @@ public class LinuxIDVSystemUpgradePackageHelper {
      * @param otaListItem OTA文件列表项
      * @param fileSaveDirPath 目标目录
      * @param fileName 目标文件名
+     * @param mountPath iso挂载路径
      * @return 文件当前路径、MD5
      * @throws BusinessException 业务异常
      */
-    OtaFileInfo handleOtaListItem(String otaListItem, String fileSaveDirPath, String fileName) throws BusinessException {
+    OtaFileInfo handleOtaListItem(String otaListItem, String fileSaveDirPath, String fileName, String mountPath) throws BusinessException {
         // 获取文件MD5、路径
         OtaFileInfo otaFileInfo = resolveOtaListItem(otaListItem);
 
-        File srcFile = new File(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH + otaFileInfo.getFilePath());
+        File srcFile = new File(mountPath + File.separator + otaFileInfo.getFilePath());
         if (!srcFile.isFile()) {
             LOGGER.error("ISO file is incomplete, [{}] not found!", srcFile.getPath());
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_FILE_INCOMPLETE, srcFile.getPath());
@@ -81,7 +82,7 @@ public class LinuxIDVSystemUpgradePackageHelper {
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH);
         }
 
-        File destFile = new File(destFileSaveDir + fileName);
+        File destFile = new File(destFileSaveDir + File.separator + fileName);
         try {
             FileOperateUtil.copyfile(srcFile.getPath(), destFile.getPath());
             Assert.isTrue(destFile.exists(), "destination file not exist!");

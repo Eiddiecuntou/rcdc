@@ -1,21 +1,24 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import java.io.*;
+import java.util.List;
+import java.util.Properties;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
+
 import mockit.Expectations;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Tested;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import java.io.*;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * Description: Function Description
@@ -84,7 +87,8 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
             }
         };
 
-        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo = helper.handleOtaListItem(otaListItem, rootPath, destFileName);
+        LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
+                helper.handleOtaListItem(otaListItem, rootPath, destFileName, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
 
         Assert.assertEquals(fileMD5, otaFileInfo.getMd5());
         Assert.assertFalse(otaFileInfo.getFilePath().startsWith(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH));
@@ -110,7 +114,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
             }
         };
 
-        helper.handleOtaListItem(otaListItem, rootPath, destFileName);
+        helper.handleOtaListItem(otaListItem, rootPath, destFileName, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
 
         Assert.fail();
     }
@@ -127,7 +131,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
         String destFileName = "IDVPackageHeplerDestFile.squashfs";
         String otaListItem = fileMD5 + "  " + fileMD5;
 
-        helper.handleOtaListItem(otaListItem, rootPath, destFileName);
+        helper.handleOtaListItem(otaListItem, rootPath, destFileName, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
 
         Assert.fail();
     }
@@ -162,7 +166,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
             }
         };
 
-        helper.handleOtaListItem(otaListItem, rootPath, destFileName);
+        helper.handleOtaListItem(otaListItem, rootPath, destFileName, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
 
         Assert.fail();
     }
@@ -208,7 +212,7 @@ public class LinuxIDVSystemUpgradePackageHelperTest {
             }
         };
 
-        helper.handleOtaListItem(otaListItem, rootPath, destFileName);
+        helper.handleOtaListItem(otaListItem, rootPath, destFileName, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
 
         Assert.fail();
     }

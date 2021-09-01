@@ -59,6 +59,7 @@ public class SystemOtaUpgradeHandler extends AbstractSystemUpgradeHandler<OtaChe
         Assert.notNull(upgradePackage, "upgradePackage can not be null");
         Assert.notNull(upgradeTask, "upgradeTask can not be null");
 
+        LOGGER.info("获取到ota升级信息");
         OtaCheckResultContent resultContent = new OtaCheckResultContent();
         resultContent.setPackageMD5(upgradePackage.getFileMd5());
         resultContent.setSeedLink(upgradePackage.getSeedPath());

@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -104,6 +105,14 @@ public class AndroidVDISystemUpgradePackageHelper {
         TerminalUpgradeVersionFileInfo upgradeInfo = new TerminalUpgradeVersionFileInfo();
         upgradeInfo.setFileMD5(fileMD5);
         upgradeInfo.setVersion(version);
+
+        // 获取架构及支持cpu
+        String cpuArch = prop.getProperty(Constants.TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_CPU_ARCH);
+        upgradeInfo.setCpuArch(StringUtils.isBlank(cpuArch) ? CbbCpuArchType.ARM : CbbCpuArchType.convert(cpuArch));
+
+        String cpu = prop.getProperty(Constants.TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_CPU);
+        upgradeInfo.setSupportCpu(StringUtils.isBlank(cpu) ? Constants.TERMINAL_SYSTEM_UPGRADE_CPU_SUPPORT_ALL : cpu);
+
         return upgradeInfo;
     }
 

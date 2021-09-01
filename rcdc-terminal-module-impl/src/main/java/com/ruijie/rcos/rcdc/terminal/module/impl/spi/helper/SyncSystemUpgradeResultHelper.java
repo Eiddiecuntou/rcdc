@@ -1,5 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi.helper;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
@@ -11,6 +19,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradeTerminalDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradeTerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
@@ -21,13 +30,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalSystemUpgradeService
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -76,17 +78,28 @@ public class SyncSystemUpgradeResultHelper {
 
         if (!enableUpgrade) {
             // 终端不可升级
+            LOGGER.info("终端不可升级，返回不可升级响应");
             responseNotUpgrade(request);
             return;
         }
 
-        TerminalSystemUpgradeEntity upgradingTask = obtainTerminalSystemUpgradingTask(terminalArchType);
+        TerminalSystemUpgradePackageEntity upgradePackage = handler.getEnableUpgradePackage(basicInfoEntity, terminalArchType.getTerminalType());
+        TerminalSystemUpgradeEntity upgradingTask = obtainTerminalSystemUpgradingTask(upgradePackage);
+        LOGGER.info("upgradePackage: {}", JSON.toJSONString(upgradePackage));
+        LOGGER.info("upgradingTask: {}", JSON.toJSONString(upgradingTask));
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity = saveUpgradeTerminalIfNotExist(basicInfoEntity, upgradingTask);
 
         SystemUpgradeResultInfo upgradeResultInfo = convertJsonData(request);
 
+        if (upgradingTask.getPackageType() != CbbTerminalTypeEnums.VDI_ANDROID
+                && upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.SUCCESS) {
+            LOGGER.info("非安卓终端升级成功后不可再升级");
+            responseNotUpgrade(request);
+        }
+
         // 状态为升级中需校验是否能够升级，且升级终端记录是否存在，不存在则添加
         if (upgradeResultInfo.getUpgradeState() == CbbSystemUpgradeStateEnums.UPGRADING) {
+            LOGGER.info("上报状态为升级中，更新升级状态");
             upgradeStart(request, upgradingTask, upgradeResultInfo, handler);
             return;
         }
@@ -138,11 +151,11 @@ public class SyncSystemUpgradeResultHelper {
         return systemUpgradeTerminalDAO.save(upgradeTerminalEntity);
     }
 
-    private TerminalSystemUpgradeEntity obtainTerminalSystemUpgradingTask(TerminalTypeArchType terminalArchType) {
+    private TerminalSystemUpgradeEntity obtainTerminalSystemUpgradingTask(TerminalSystemUpgradePackageEntity upgradePackage) {
 
         List<CbbSystemUpgradeTaskStateEnums> stateList = Arrays.asList(CbbSystemUpgradeTaskStateEnums.UPGRADING);
-        List<TerminalSystemUpgradeEntity> upgradingTaskList = terminalSystemUpgradeDAO.findByPackageTypeAndCpuArchAndStateInOrderByCreateTimeAsc(
-                terminalArchType.getTerminalType(), terminalArchType.getArchType(), stateList);
+        List<TerminalSystemUpgradeEntity> upgradingTaskList =
+                terminalSystemUpgradeDAO.findByUpgradePackageIdAndStateInOrderByCreateTimeAsc(upgradePackage.getId(), stateList);
         Assert.notEmpty(upgradingTaskList, "upgradingTask can not be null");
 
         // 同一类型的升级中任务仅会存在一个
@@ -204,7 +217,7 @@ public class SyncSystemUpgradeResultHelper {
 
     private void responseTerminal(CbbDispatcherRequest request, Object object) {
         CbbResponseShineMessage responseMessage = MessageUtils.buildResponseMessage(request, object);
-        LOGGER.debug("响应终端上报升级状态信息 ： {}", responseMessage.toString());
+        LOGGER.info("响应终端上报升级状态信息 ： {}", responseMessage.toString());
         messageHandlerAPI.response(responseMessage);
     }
 
