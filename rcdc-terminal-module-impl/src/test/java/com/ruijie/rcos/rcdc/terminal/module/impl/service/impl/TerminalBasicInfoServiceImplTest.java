@@ -33,6 +33,8 @@ import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.locks.ReentrantLock;
+
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
@@ -73,6 +75,9 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private TerminalModelDriverDAO terminalModelDriverDAO;
+
+    @Injectable
+    private TerminalLockHelper terminalLockHelper;
 
     private static final CbbTerminalPlatformEnums PLATFORM_ENUMS = CbbTerminalPlatformEnums.IDV;
 
@@ -485,6 +490,8 @@ public class TerminalBasicInfoServiceImplTest {
                 result = terminalEntity;
                 sessionManager.getSessionByAlias(terminalId);
                 result = null;
+                terminalLockHelper.putAndGetLock(terminalId);
+                result = new ReentrantLock();
             }
         };
 
@@ -539,6 +546,10 @@ public class TerminalBasicInfoServiceImplTest {
 
         new Expectations() {
             {
+
+                terminalLockHelper.putAndGetLock(anyString);
+                result = new ReentrantLock();
+
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = terminalEntity;
 
@@ -597,8 +608,13 @@ public class TerminalBasicInfoServiceImplTest {
 
         new Expectations() {
             {
+
+                terminalLockHelper.putAndGetLock(anyString);
+                result = new ReentrantLock();
+
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = terminalEntity;
+
 
                 terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
                 result = Lists.newArrayList();
@@ -654,6 +670,8 @@ public class TerminalBasicInfoServiceImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = null;
+                terminalLockHelper.putAndGetLock(terminalId);
+                result = new ReentrantLock();
             }
         };
 
