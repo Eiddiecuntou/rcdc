@@ -74,12 +74,11 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     @Autowired
     private TerminalModelDriverDAO terminalModelDriverDAO;
 
+    @Autowired
+    private TerminalLockHelper terminalLockHelper;
+
     private static final int FAIL_TRY_COUNT = 3;
 
-    /**
-     * key - lockKey , value - lock
-     */
-    private static final Map<String, Lock> LOCK_MAP = new ConcurrentHashMap<>();
 
     /**
      * 特殊终端-IDV用作VDI的productId (RG-CT3120：80020101、Rain400W：80060041、Rain400W V2：80060042、Rain300W：80060022)
@@ -95,7 +94,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         // 自学习终端型号
         saveTerminalModel(shineTerminalBasicInfo);
 
-        Lock lock = getLock(terminalId);
+        Lock lock = terminalLockHelper.putAndGetLock(terminalId);
         lock.lock();
         try {
             // 保存终端基础信息
@@ -232,7 +231,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         }
 
         String lockKey = basicInfo.getProductId() + basicInfo.getPlatform();
-        Lock lock = getLock(lockKey);
+        Lock lock = terminalLockHelper.putAndGetLock(lockKey);
         lock.lock();
 
         try {
@@ -263,14 +262,6 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     }
 
-    private synchronized Lock getLock(String lockKey) {
-        if (LOCK_MAP.containsKey(lockKey)) {
-            return LOCK_MAP.get(lockKey);
-        }
-        Lock lock = new ReentrantLock();
-        LOCK_MAP.put(lockKey, lock);
-        return LOCK_MAP.get(lockKey);
-    }
 
     @Override
     public void modifyTerminalName(String terminalId, String terminalName) throws BusinessException {

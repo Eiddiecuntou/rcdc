@@ -20,7 +20,7 @@ import java.util.UUID;
 public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAuthorizeEntity, UUID> {
 
     /**
-     *  查询授权终端数
+     * 查询授权终端数
      *
      * @param licenseType 授权证书类型
      * @param authMode 授权模式
@@ -29,7 +29,7 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
     int countByLicenseTypeAndAuthMode(String licenseType, CbbTerminalPlatformEnums authMode);
 
     /**
-     *  根据终端id删除授权记录
+     * 根据终端id删除授权记录
      *
      * @param terminalId 终端id
      */
@@ -38,7 +38,7 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
     void deleteByTerminalId(String terminalId);
 
     /**
-     *  根据终端id查找
+     * 根据终端id查找
      *
      * @param terminalId 终端id
      * @return 终端授权记录
@@ -46,7 +46,7 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
     TerminalAuthorizeEntity findByTerminalId(String terminalId);
 
     /**
-     *  查询授权终端记录
+     * 查询授权终端记录
      *
      * @param licenseType 证书类型
      * @param authMode 授权模式
@@ -55,10 +55,17 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
     List<TerminalAuthorizeEntity> findByLicenseTypeAndAuthMode(String licenseType, CbbTerminalPlatformEnums authMode);
 
     /**
-     *  查询授权终端数
+     * 查询授权终端数
      *
      * @param licenseType 授权证书类型
      * @return 数量
      */
     int countByLicenseTypeContaining(String licenseType);
+
+    /**
+     * 根据terminalId计算授权条目
+     * @param terminalId 终端id
+     * @return 终端在表中的记录数
+     */
+    int countByTerminalId(String terminalId);
 }

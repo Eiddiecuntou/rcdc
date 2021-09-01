@@ -47,7 +47,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
 
     }
 
-    private void saveAuthRecord(CbbTerminalPlatformEnums platform, List<TerminalEntity> terminalEntityList) {
+    private synchronized void saveAuthRecord(CbbTerminalPlatformEnums platform, List<TerminalEntity> terminalEntityList) {
         terminalEntityList.stream().forEach(terminalEntity -> {
             TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalEntity.getTerminalId());
             if (authorizeEntity == null) {
@@ -96,7 +96,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
      * 重试更新终端授权状态
      *
      * @param terminalId 终端id
-     * @param authed     是否授权
+     * @param authed 是否授权
      */
     private void retryUpdateAuthed(String terminalId, Boolean authed) {
         int retry = 0;
