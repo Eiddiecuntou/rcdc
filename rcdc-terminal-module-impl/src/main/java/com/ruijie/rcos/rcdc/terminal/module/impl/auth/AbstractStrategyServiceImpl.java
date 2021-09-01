@@ -1,16 +1,18 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
+import java.util.concurrent.locks.Lock;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TempLicCreateDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLockHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTerminalLicenseFactoryProvider;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 /**
  * Description: Function Description
@@ -22,14 +24,14 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractStrategyServiceImpl implements StrategyService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractStrategyServiceImpl.class);
-
     @Autowired
     private CbbTerminalLicenseFactoryProvider terminalLicenseFactoryProvider;
 
     @Autowired
     private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
+    @Autowired
+    private TerminalLockHelper terminalLockHelper;
 
     @Override
     public void init(TempLicCreateDTO tempLicCreateDTO) {
@@ -37,7 +39,7 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
     }
 
     /**
-     *  获取授权认证服务对象
+     * 获取授权认证服务对象
      *
      * @param licenseType 授权认证类型
      * @return 授权认证服务对象
@@ -49,12 +51,24 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
     }
 
     protected void saveTerminalAuthorize(String licenseTypeStr, CbbShineTerminalBasicInfo basicInfoDTO) {
-        TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
-        entity.setAuthed(true);
-        entity.setAuthMode(basicInfoDTO.getAuthMode());
-        entity.setLicenseType(licenseTypeStr);
-        entity.setTerminalId(basicInfoDTO.getTerminalId());
 
-        terminalAuthorizeDAO.save(entity);
+        Lock lock = terminalLockHelper.putAndGetLock(basicInfoDTO.getTerminalId());
+        lock.lock();
+        try {
+            int countTerminalAuth = terminalAuthorizeDAO.countByTerminalId(basicInfoDTO.getTerminalId());
+            if (countTerminalAuth > 0) {
+                return;
+            }
+            TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
+            entity.setAuthed(true);
+            entity.setAuthMode(basicInfoDTO.getAuthMode());
+            entity.setLicenseType(licenseTypeStr);
+            entity.setTerminalId(basicInfoDTO.getTerminalId());
+
+            terminalAuthorizeDAO.save(entity);
+        } finally {
+            lock.unlock();
+        }
+
     }
 }
