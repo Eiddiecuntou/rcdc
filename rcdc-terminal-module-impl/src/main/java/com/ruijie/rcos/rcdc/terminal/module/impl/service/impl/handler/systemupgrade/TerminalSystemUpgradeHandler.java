@@ -80,6 +80,15 @@ public interface TerminalSystemUpgradeHandler<T> {
     boolean isTerminalEnableUpgrade(TerminalEntity terminalEntity, CbbTerminalTypeEnums terminalType);
 
     /**
+     *  获取终端可刷机的升级包
+     *
+     * @param terminalEntity 终端信息
+     * @param terminalType 终端类型
+     * @return 可刷机的升级包
+     */
+    TerminalSystemUpgradePackageEntity getEnableUpgradePackage(TerminalEntity terminalEntity, CbbTerminalTypeEnums terminalType);
+
+    /**
      * 释放升级占用的位置
      *
      * @param terminalId 终端id

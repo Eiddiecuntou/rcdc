@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.exec.CommandLine;
@@ -230,5 +231,21 @@ public abstract class AbstractSystemUpgradePackageResolver implements SystemUpgr
         }
 
         return false;
+    }
+
+    /**
+     *  检验并创建文件目录
+     *
+     * @param filePathList 文件目录列表
+     */
+    protected void checkAndCreateNecessaryDir(List<String> filePathList) {
+        Assert.notNull(filePathList, "filePathList can not be null");
+
+        filePathList.stream().forEach(filePath -> {
+            File file = new File(filePath);
+            if (!file.isDirectory()) {
+                file.mkdirs();
+            }
+        });
     }
 }

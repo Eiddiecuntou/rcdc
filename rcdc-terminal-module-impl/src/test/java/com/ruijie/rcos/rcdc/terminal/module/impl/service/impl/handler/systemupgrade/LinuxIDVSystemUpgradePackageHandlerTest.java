@@ -139,7 +139,7 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
                 result = prop;
                 helper.getOtaFilesInfo(otaListPath);
                 result = otaFileInfoList;
-                helper.handleOtaListItem(anyString, anyString, anyString);
+                helper.handleOtaListItem(anyString, anyString, anyString, anyString);
                 result = otaFileInfo;
                 btClientService.makeBtSeed(anyString, anyString);
                 result = seedFileInfoDTO;
@@ -465,7 +465,7 @@ public class LinuxIDVSystemUpgradePackageHandlerTest {
 
         new Expectations() {
             {
-                helper.handleOtaListItem(anyString, anyString, anyString);
+                helper.handleOtaListItem(anyString, anyString, anyString, anyString);
                 result = otaFileInfo;
                 helper.getVersionProperties(versionFilePath);
                 result = prop;

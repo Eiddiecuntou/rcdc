@@ -83,8 +83,9 @@ public interface TerminalSystemUpgradePackageDAO extends SkyEngineJpaRepository<
      *
      * @param terminalType 终端类型
      * @param cpuArch 架构
-     * @return 升级包对象
+     * @param isDelete 是否删除
+     * @return 升级包对象列表
      */
-    TerminalSystemUpgradePackageEntity findFirstByPackageTypeAndCpuArch(CbbTerminalTypeEnums terminalType, CbbCpuArchType cpuArch);
+    List<TerminalSystemUpgradePackageEntity> findByPackageTypeAndCpuArchAndIsDelete(CbbTerminalTypeEnums terminalType, CbbCpuArchType cpuArch, boolean isDelete);
 
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -61,11 +62,10 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
     protected TerminalUpgradeVersionFileInfo readPackageConfig(String fileName, String filePath) throws BusinessException {
         TerminalUpgradeVersionFileInfo versionInfo;
         String unzipPath = getUnzipPath();
-        String otaScriptPath = Constants.TERMINAL_UPGRADE_LINUX_VDI_OTA_SCRIPT_DIR;
         try {
 
             // 校验目录
-            checkNecessaryDirExist(unzipPath, otaScriptPath);
+            checkAndCreateNecessaryDir(Lists.newArrayList(unzipPath));
 
             // 解压zip
             unZipUpgradePackage(filePath, unzipPath);
@@ -112,6 +112,12 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
         moveUpgradePackage(versionInfo.getFilePath(), imgFilePath);
         moveUpgradePackage(versionInfo.getOtaScriptPath(), imgScriptPath);
 
+
+        LOGGER.info("设置升级包脚本权限，路径【{}】", versionInfo.getOtaScriptPath());
+        File imgScriptFile = new File(versionInfo.getOtaScriptPath());
+        imgScriptFile.setReadable(true, false);
+        imgScriptFile.setExecutable(true, false);
+
         FileOperateUtil.deleteFile(new File(filePath));
         FileOperateUtil.deleteFile(new File(versionInfo.getUnzipPath()));
     }
@@ -149,6 +155,7 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
         }
 
         versionInfo.setPackageName(fileName);
+
         versionInfo.setRealFileName(imgFileName);
         versionInfo.setOtaScriptFileName(scriptFileName);
         versionInfo.setUnzipPath(unzipPath);
@@ -159,8 +166,12 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
         versionInfo.setUpgradeMode(DEFAULT_UPGRADE_MODE);
         versionInfo.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         versionInfo.setFileSaveDir(Constants.TERMINAL_UPGRADE_VDI_OTA_PACKAGE_PATH);
-        versionInfo.setOtaScriptPath(Constants.TERMINAL_UPGRADE_LINUX_VDI_OTA_SCRIPT_DIR + scriptFileName);
-        versionInfo.setFilePath(Constants.TERMINAL_UPGRADE_VDI_OTA_PACKAGE_PATH + versionInfo.getRealFileName());
+        String realFileName = UUID.randomUUID() + Constants.FILE_SUFFIX_DOT + Constants.FILE_TYPE_IMG_SUFFIX;
+        versionInfo.setFilePath(versionInfo.getFileSaveDir() + File.separator + realFileName);
+        String scriptSaveDir = Constants.TERMINAL_UPGRADE_LINUX_VDI_OTA_SCRIPT_DIR + UUID.randomUUID();
+        versionInfo.setOtaScriptPath(scriptSaveDir + File.separator + scriptFileName);
+
+        checkAndCreateNecessaryDir(Lists.newArrayList(versionInfo.getFileSaveDir(), scriptSaveDir));
     }
 
     private String getUnzipPath() {
@@ -170,27 +181,6 @@ public class LinuxVDISystemUpgradeZipPackageResolver extends AbstractSystemUpgra
 
     private String getVersionFilePath(String unzipPath) {
         return unzipPath + Constants.TERMINAL_UPGRADE_VDI_ZIP_PACKAGE_VERSION_FILE_RELATE_PATH;
-    }
-
-    private void checkNecessaryDirExist(String unzipPath, String otaScriptPath) {
-        // zip包解压路径
-        File unzipPathFile = new File(unzipPath);
-        if (!unzipPathFile.isDirectory()) {
-            unzipPathFile.mkdirs();
-        }
-
-        // zip脚本路径
-        File otaScriptPathFile = new File(otaScriptPath);
-        if (!otaScriptPathFile.isDirectory()) {
-            otaScriptPathFile.mkdirs();
-        }
-
-        // linux zip存放路径
-        File linuxArmVDIPackageDir = new File(Constants.TERMINAL_UPGRADE_VDI_OTA_PACKAGE_PATH);
-        if (!linuxArmVDIPackageDir.isDirectory()) {
-            linuxArmVDIPackageDir.mkdirs();
-        }
-
     }
 
 }

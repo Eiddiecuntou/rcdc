@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -43,11 +44,21 @@ public class TerminalSystemUpgradePackageServiceImpl implements TerminalSystemUp
     public void saveTerminalUpgradePackage(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
         Assert.notNull(versionInfo, "terminalUpgradeVersionFileInfo 不能为空");
 
-        terminalSystemUpgradePackageDAO.save(buildSystemUpgradePackageEntity(versionInfo));
+        TerminalSystemUpgradePackageEntity upgradePackage = null;
+        // 安卓\IDV升级包只允许存在一个，上传新的覆盖旧的
+        if (versionInfo.getPackageType() == CbbTerminalTypeEnums.VDI_ANDROID
+                || versionInfo.getPackageType() == CbbTerminalTypeEnums.IDV_LINUX) {
+            upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
+        }
+
+        if (upgradePackage == null) {
+            upgradePackage = new TerminalSystemUpgradePackageEntity();
+        }
+
+        terminalSystemUpgradePackageDAO.save(completeSystemUpgradePackageEntity(upgradePackage, versionInfo));
     }
 
-    private TerminalSystemUpgradePackageEntity buildSystemUpgradePackageEntity(TerminalUpgradeVersionFileInfo versionInfo) {
-        TerminalSystemUpgradePackageEntity upgradePackage = new TerminalSystemUpgradePackageEntity();
+    private TerminalSystemUpgradePackageEntity completeSystemUpgradePackageEntity(TerminalSystemUpgradePackageEntity upgradePackage, TerminalUpgradeVersionFileInfo versionInfo) {
 
         upgradePackage.setPackageName(versionInfo.getPackageName());
         upgradePackage.setImgName(versionInfo.getImgName());

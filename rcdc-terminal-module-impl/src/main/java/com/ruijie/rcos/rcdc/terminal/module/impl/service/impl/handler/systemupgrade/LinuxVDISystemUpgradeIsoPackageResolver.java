@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 import java.io.File;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -55,7 +56,7 @@ public class LinuxVDISystemUpgradeIsoPackageResolver extends AbstractSystemUpgra
         try {
 
             // 校验目录
-            checkNecessaryDirExist(mountPath);
+            checkAndCreateNecessaryDir(Lists.newArrayList(mountPath));
 
             // 挂载ISO
             IsoFileUtil.mountISOFile(filePath, mountPath);
@@ -91,13 +92,8 @@ public class LinuxVDISystemUpgradeIsoPackageResolver extends AbstractSystemUpgra
     protected void movePackage(String filePath, TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
         Assert.notNull(versionInfo, "versionInfo can not be null");
 
-        String storePackageName = UUID.randomUUID() + Constants.FILE_SUFFIX_DOT + getUpgradeFileType().getFileType();
-        String storePackagePath = Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH + storePackageName;
-        versionInfo.setFileSaveDir(Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH);
-        versionInfo.setFilePath(storePackagePath);
-
         // 移动iso包
-        moveUpgradePackage(storePackagePath, filePath);
+        moveUpgradePackage(versionInfo.getFilePath(), filePath);
     }
 
     @Override
@@ -109,17 +105,20 @@ public class LinuxVDISystemUpgradeIsoPackageResolver extends AbstractSystemUpgra
 
     private void completeVersionInfo(String fileName, String filePath, TerminalUpgradeVersionFileInfo versionInfo)
             throws BusinessException {
-        String storePackageName = UUID.randomUUID() + getUpgradeFileType().getFileType();
-        String toPath = Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH + storePackageName;
+        String storePackageName = UUID.randomUUID() + Constants.FILE_SUFFIX_DOT + getUpgradeFileType().getFileType();
+        String storePackageDir = Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH;
+        String storePackagePath = storePackageDir + File.separator + storePackageName;
 
-        versionInfo.setFilePath(toPath);
+        versionInfo.setFilePath(storePackagePath);
         versionInfo.setPackageName(fileName);
         versionInfo.setRealFileName(storePackageName);
         versionInfo.setFileMD5(calFileMd5(filePath));
         versionInfo.setPackageType(CbbTerminalTypeEnums.VDI_LINUX);
         versionInfo.setUpgradeMode(DEFAULT_UPGRADE_MODE);
-        versionInfo.setFileSaveDir(Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH);
-        versionInfo.setFileSaveDir(Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH);
+        versionInfo.setFileSaveDir(storePackageDir);
+
+        // 校验目录
+        checkAndCreateNecessaryDir(Lists.newArrayList(storePackageDir));
     }
 
     private String getISOMountPath() {
@@ -146,18 +145,5 @@ public class LinuxVDISystemUpgradeIsoPackageResolver extends AbstractSystemUpgra
         return fileNameArr[0];
     }
 
-    private void checkNecessaryDirExist(String mountPath) {
-        // iso挂载路径
-        File mountDir = new File(mountPath);
-        if (!mountDir.isDirectory()) {
-            mountDir.mkdirs();
-        }
-
-        // linux ISO存放路径
-        File linuxVDIPackageDir = new File(Constants.PXE_SAMBA_LINUX_VDI_ISO_PATH);
-        if (!linuxVDIPackageDir.isDirectory()) {
-            linuxVDIPackageDir.mkdirs();
-        }
-    }
 
 }

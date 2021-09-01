@@ -100,7 +100,7 @@ public interface Constants {
     /**
      * linux vdi arm OTA包种子文件保存目录
      */
-    String TERMINAL_UPGRADE_LINUX_VDI_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/linux_vdi";
+    String TERMINAL_UPGRADE_LINUX_VDI_OTA_SEED_FILE = "/opt/ftp/terminal/ota/seed/linux_vdi/";
 
     /**
      * Linux VDI OTA脚本文件保存目录

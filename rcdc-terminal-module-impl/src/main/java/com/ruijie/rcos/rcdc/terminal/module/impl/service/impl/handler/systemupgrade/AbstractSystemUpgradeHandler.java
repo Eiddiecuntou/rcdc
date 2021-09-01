@@ -1,7 +1,12 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalSystemUpgradeAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbUpgradeTerminalDTO;
@@ -51,9 +56,10 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
             return buildNoNeedCheckResult(checkSystemUpgradeResult, terminalEntity);
         }
 
-        TerminalSystemUpgradePackageEntity upgradePackage =
-                getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
+        TerminalSystemUpgradePackageEntity upgradePackage = getEnableUpgradePackage(terminalEntity, terminalType);
+        LOGGER.info("checkSystemUpgrade -> upgradePackage :{}", JSON.toJSONString(upgradePackage));
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
+        LOGGER.info("checkSystemUpgrade -> upgradeTask :{}", JSON.toJSONString(upgradeTask));
         SystemUpgradeCheckResult<T> checkResult = getCheckResult(upgradePackage, upgradeTask);
         checkResult.setSystemUpgradeCode(checkSystemUpgradeResult.getResult());
 
@@ -68,9 +74,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
             return CheckSystemUpgradeResultEnums.NOT_NEED_UPGRADE;
         }
 
-        // TODO 需优化
-        TerminalSystemUpgradePackageEntity upgradePackage =
-                getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
+        TerminalSystemUpgradePackageEntity upgradePackage = getEnableUpgradePackage(terminalEntity, terminalType);
         TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
                 getSystemUpgradeService().getSystemUpgradeTerminalByTaskId(terminalEntity.getTerminalId(), upgradeTask.getId());
@@ -95,6 +99,19 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
         return CheckSystemUpgradeResultEnums.NEED_UPGRADE;
     }
 
+    @Override
+    public TerminalSystemUpgradePackageEntity getEnableUpgradePackage(TerminalEntity terminalEntity, CbbTerminalTypeEnums terminalType) {
+        Assert.notNull(terminalEntity, "terminalEntity can not be null");
+        Assert.notNull(terminalType, "terminalType can not be null");
+
+        // 获取可刷机的升级包，只会有一个匹配
+        List<TerminalSystemUpgradePackageEntity> upgradePackageList =
+                getTerminalSystemUpgradePackageDAO().findByPackageTypeAndCpuArchAndIsDelete(terminalType, terminalEntity.getCpuArch(), false);
+        List<TerminalSystemUpgradePackageEntity> filterPackageList = upgradePackageList.stream()
+                .filter(packageEntity -> isTerminalEnableUpgradeByPackage(terminalEntity, packageEntity)).collect(Collectors.toList());
+        return filterPackageList.get(0);
+    }
+
     private boolean isNoNeedUpgrade(CbbSystemUpgradeStateEnums state, CbbTerminalTypeEnums terminalType) {
         if (!enableUpgradeOnlyOnce(terminalType)) {
             LOGGER.info("终端类型[{}]的升级任务可重复升级", terminalType.name());
@@ -111,16 +128,22 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
 
         String terminalId = terminalEntity.getTerminalId();
 
-        // TODO fixme
-        TerminalSystemUpgradePackageEntity upgradePackage =
-                getTerminalSystemUpgradePackageDAO().findFirstByPackageTypeAndCpuArch(terminalType, terminalEntity.getCpuArch());
+        // 查找可用刷机包
+        List<TerminalSystemUpgradePackageEntity> upgradePackageList =
+                getTerminalSystemUpgradePackageDAO().findByPackageTypeAndCpuArchAndIsDelete(terminalType, terminalEntity.getCpuArch(), false);
 
-        if (upgradePackage == null || upgradePackage.getIsDelete() == true) {
+        if (CollectionUtils.isEmpty(upgradePackageList)) {
             LOGGER.info("终端[{}]的可用刷机包不存在", terminalId);
             return false;
         }
 
-        TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(upgradePackage.getId());
+        // 查找开启任务，并添加到升级任务中的记录
+        return upgradePackageList.stream().anyMatch(packageEntity -> isTerminalEnableUpgradeByPackage(terminalEntity, packageEntity));
+    }
+
+    private Boolean isTerminalEnableUpgradeByPackage(TerminalEntity terminalEntity, TerminalSystemUpgradePackageEntity packageEntity) {
+        String terminalId = terminalEntity.getTerminalId();
+        TerminalSystemUpgradeEntity upgradeTask = getSystemUpgradeService().getUpgradingSystemUpgradeTaskByPackageId(packageEntity.getId());
         if (upgradeTask == null) {
             LOGGER.info("终端[{}]无进行中的升级任务", terminalId);
             return false;
@@ -128,6 +151,7 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
 
         TerminalSystemUpgradeTerminalEntity upgradeTerminalEntity =
                 getSystemUpgradeService().getSystemUpgradeTerminalByTaskId(terminalId, upgradeTask.getId());
+
         boolean isGroupInUpgrade = getSystemUpgradeService().isGroupInUpgradeTask(upgradeTask.getId(), terminalEntity.getGroupId());
 
         if (notInTask(upgradeTerminalEntity, isGroupInUpgrade)) {

@@ -1,7 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import java.io.File;
+import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import com.ruijie.rcos.base.sysmanage.module.def.dto.SeedFileInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
@@ -16,13 +26,6 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.IsoFileUtil;
 import com.ruijie.rcos.sk.base.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.io.File;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * Description: Linux IDV 终端系统升级包处理类
@@ -93,21 +96,26 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         checkISOMd5(filePath);
 
         // 解析ISO文件
-        prepareDirectories();
-        IsoFileUtil.mountISOFile(filePath, Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
+        String mountPath = getISOMountPath();
+        checkAndMakeDirs(mountPath);
+//        prepareDirectories();
+        IsoFileUtil.mountISOFile(filePath, mountPath);
         TerminalUpgradeVersionFileInfo versionInfo = new TerminalUpgradeVersionFileInfo();
+        versionInfo.setMountPath(mountPath);
         readVersionFile(versionInfo);
         readOtaList(versionInfo);
 
         // 取消ISO挂载、删除（此处不删除出厂自带的ISO）
-        IsoFileUtil.unmountISOFile(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
+        IsoFileUtil.unmountISOFile(mountPath);
         if (!filePath.contains(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA)) {
             FileOperateUtil.deleteFile(new File(filePath));
         }
 
         // 制作OTA包种子文件
+        String storeSeedDir = Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE;
+        checkAndMakeDirs(storeSeedDir);
         SeedFileInfoDTO seedInfo =
-                btClientService.makeBtSeed(versionInfo.getFilePath(), Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE);
+                btClientService.makeBtSeed(versionInfo.getFilePath(), storeSeedDir);
 
         // 组装升级包信息
         versionInfo.setPackageType(CbbTerminalTypeEnums.IDV_LINUX);
@@ -118,18 +126,8 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         return versionInfo;
     }
 
-    private void prepareDirectories() {
-        checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH);
-        checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR);
-        checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SEED_FILE);
-        checkAndMakeDirs(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR);
-    }
-
-    private void checkAndMakeDirs(String dirPath) {
-        File dir = new File(dirPath);
-        if (!dir.isDirectory()) {
-            FileOperateUtil.createFileDirectory(dir);
-        }
+    private String getISOMountPath() {
+        return Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH + UUID.randomUUID();
     }
 
     private void checkFileType(String fileName) throws BusinessException {
@@ -143,7 +141,7 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     private void readVersionFile(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
-        String versionFilePath = getVersionFilePath();
+        String versionFilePath = getVersionFilePath(versionInfo.getMountPath());
         Properties prop = helper.getVersionProperties(versionFilePath);
 
         String platType = prop.getProperty(Constants.TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_PACKAGE_TYPE);
@@ -154,14 +152,22 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         }
 
         versionInfo.setVersion(prop.getProperty(Constants.TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_VERSION));
+
+        // 获取架构及支持cpu
+        String cpuArch = prop.getProperty(Constants.TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_CPU_ARCH);
+        versionInfo.setCpuArch(StringUtils.isBlank(cpuArch) ? CbbCpuArchType.X86_64 : CbbCpuArchType.convert(cpuArch));
+
+        String cpu = prop.getProperty(Constants.TERMINAL_UPGRADE_PACKAGE_VERSION_FILE_KEY_CPU);
+        versionInfo.setSupportCpu(StringUtils.isBlank(cpu) ? Constants.TERMINAL_SYSTEM_UPGRADE_CPU_SUPPORT_ALL : cpu);
     }
 
-    private String getVersionFilePath() {
-        return Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH;
+    private String getVersionFilePath(String mountPath) {
+        return mountPath + Constants.TERMINAL_UPGRADE_ISO_VERSION_FILE_PATH;
     }
 
     private void readOtaList(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
-        String otaListPath = getOtaListPath();
+        String mountPath = versionInfo.getMountPath();
+        String otaListPath = getOtaListPath(mountPath);
 
         // 读取OTA文件列表
         List<String> otaFileList = helper.getOtaFilesInfo(otaListPath);
@@ -170,17 +176,21 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         for (String otaListItem : otaFileList) {
             if (otaListItem.endsWith(OTA_PACKAGE_NAME)) {
                 // 解析OTA包文件信息，并复制到对应目录
+                String storePackagePath = Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR;
+                checkAndMakeDirs(storePackagePath);
                 LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
-                        helper.handleOtaListItem(otaListItem, Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR, OTA_PACKAGE_NAME);
+                        helper.handleOtaListItem(otaListItem, storePackagePath, OTA_PACKAGE_NAME, mountPath);
                 versionInfo.setFileMD5(otaFileInfo.getMd5());
                 versionInfo.setFilePath(otaFileInfo.getFilePath());
-                versionInfo.setFileSaveDir(Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_PACKAGE_DIR);
+                versionInfo.setFileSaveDir(storePackagePath);
                 versionInfo.setRealFileName(OTA_PACKAGE_NAME);
 
             } else if (otaListItem.endsWith(OTA_SCRIPT_NAME)) {
                 // 解析OTA脚本文件信息，并复制到对应目录
+                String scriptStoreDir = Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR;
+                checkAndMakeDirs(scriptStoreDir);
                 LinuxIDVSystemUpgradePackageHelper.OtaFileInfo otaFileInfo =
-                        helper.handleOtaListItem(otaListItem, Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_SCRIPT_DIR, OTA_SCRIPT_NAME);
+                        helper.handleOtaListItem(otaListItem, scriptStoreDir, OTA_SCRIPT_NAME, mountPath);
                 versionInfo.setOtaScriptMD5(otaFileInfo.getMd5());
                 versionInfo.setOtaScriptPath(otaFileInfo.getFilePath());
 
@@ -191,7 +201,14 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
         }
     }
 
-    private String getOtaListPath() {
-        return Constants.TERMINAL_UPGRADE_LINUX_IDV_ISO_MOUNT_PATH + Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_LIST_PATH;
+    private String getOtaListPath(String mountPath) {
+        return mountPath + Constants.TERMINAL_UPGRADE_LINUX_IDV_OTA_LIST_PATH;
+    }
+
+    private void checkAndMakeDirs(String dirPath) {
+        File dir = new File(dirPath);
+        if (!dir.isDirectory()) {
+            FileOperateUtil.createFileDirectory(dir);
+        }
     }
 }
