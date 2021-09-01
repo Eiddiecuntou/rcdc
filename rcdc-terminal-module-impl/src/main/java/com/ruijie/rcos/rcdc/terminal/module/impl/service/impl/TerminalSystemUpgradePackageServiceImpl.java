@@ -1,5 +1,13 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import java.io.File;
+import java.util.*;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
@@ -15,13 +23,6 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.io.File;
-import java.util.*;
 
 /**
  * 
@@ -46,8 +47,7 @@ public class TerminalSystemUpgradePackageServiceImpl implements TerminalSystemUp
 
         TerminalSystemUpgradePackageEntity upgradePackage = null;
         // 安卓\IDV升级包只允许存在一个，上传新的覆盖旧的
-        if (versionInfo.getPackageType() == CbbTerminalTypeEnums.VDI_ANDROID
-                || versionInfo.getPackageType() == CbbTerminalTypeEnums.IDV_LINUX) {
+        if (versionInfo.getPackageType() == CbbTerminalTypeEnums.VDI_ANDROID || versionInfo.getPackageType() == CbbTerminalTypeEnums.IDV_LINUX) {
             upgradePackage = terminalSystemUpgradePackageDAO.findFirstByPackageType(versionInfo.getPackageType());
         }
 
@@ -58,7 +58,8 @@ public class TerminalSystemUpgradePackageServiceImpl implements TerminalSystemUp
         terminalSystemUpgradePackageDAO.save(completeSystemUpgradePackageEntity(upgradePackage, versionInfo));
     }
 
-    private TerminalSystemUpgradePackageEntity completeSystemUpgradePackageEntity(TerminalSystemUpgradePackageEntity upgradePackage, TerminalUpgradeVersionFileInfo versionInfo) {
+    private TerminalSystemUpgradePackageEntity completeSystemUpgradePackageEntity(TerminalSystemUpgradePackageEntity upgradePackage,
+            TerminalUpgradeVersionFileInfo versionInfo) {
 
         upgradePackage.setPackageName(versionInfo.getPackageName());
         upgradePackage.setImgName(versionInfo.getImgName());
