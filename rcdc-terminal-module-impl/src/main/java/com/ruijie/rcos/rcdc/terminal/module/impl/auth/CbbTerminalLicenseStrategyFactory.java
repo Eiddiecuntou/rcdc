@@ -93,7 +93,7 @@ public class CbbTerminalLicenseStrategyFactory {
 
 
     private boolean needLoadStrategyByConfig(TerminalLicenseStrategyConfigDTO strategy) {
-        LOGGER.error("当前授权策略为：{}", JSON.toJSONString(strategy));
+        LOGGER.info("当前授权策略为：{}", JSON.toJSONString(strategy));
 
         return strategy == null || CollectionUtils.isEmpty(strategy.getAllocateList()) || CollectionUtils.isEmpty(strategy.getRecycleList());
     }
