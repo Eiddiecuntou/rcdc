@@ -6,6 +6,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Properties;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -244,7 +245,8 @@ public abstract class AbstractSystemUpgradePackageResolver implements SystemUpgr
         filePathList.stream().forEach(filePath -> {
             File file = new File(filePath);
             if (!file.isDirectory()) {
-                file.mkdirs();
+                LOGGER.info("创建的目录文件路径：{}", filePath);
+                FileOperateUtil.createFileDirectory(file);
             }
         });
     }

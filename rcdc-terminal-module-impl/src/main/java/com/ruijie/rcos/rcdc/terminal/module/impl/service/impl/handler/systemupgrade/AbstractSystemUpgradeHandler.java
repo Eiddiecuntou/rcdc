@@ -160,6 +160,12 @@ public abstract class AbstractSystemUpgradeHandler<T> implements TerminalSystemU
             return shouldAddToUpgradeList(terminalEntity, terminalId, upgradeTask);
         }
 
+        if (upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.SUCCESS
+                && !SYSTEM_OS_TYPE_ANDROID.equals(terminalEntity.getTerminalOsType())) {
+            LOGGER.info("终端【{}】【{}】(非安卓)已升级成功，不可再升级", terminalEntity.getTerminalId(), packageEntity.getPackageType());
+            return false;
+        }
+
         return true;
     }
 
