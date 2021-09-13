@@ -490,8 +490,6 @@ public class TerminalBasicInfoServiceImplTest {
                 result = terminalEntity;
                 sessionManager.getSessionByAlias(terminalId);
                 result = null;
-                terminalLockHelper.putAndGetLock(terminalId);
-                result = new ReentrantLock();
             }
         };
 
@@ -670,8 +668,6 @@ public class TerminalBasicInfoServiceImplTest {
             {
                 basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
                 result = null;
-                terminalLockHelper.putAndGetLock(terminalId);
-                result = new ReentrantLock();
             }
         };
 

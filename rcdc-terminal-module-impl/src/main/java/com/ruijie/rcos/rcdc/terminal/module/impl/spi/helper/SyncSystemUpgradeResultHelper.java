@@ -95,6 +95,7 @@ public class SyncSystemUpgradeResultHelper {
                 && upgradeTerminalEntity.getState() == CbbSystemUpgradeStateEnums.SUCCESS) {
             LOGGER.info("非安卓终端升级成功后不可再升级");
             responseNotUpgrade(request);
+            return;
         }
 
         // 状态为升级中需校验是否能够升级，且升级终端记录是否存在，不存在则添加

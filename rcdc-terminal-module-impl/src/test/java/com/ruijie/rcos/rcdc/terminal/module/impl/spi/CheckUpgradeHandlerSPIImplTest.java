@@ -21,6 +21,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoServic
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLockHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeResult;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -28,6 +29,8 @@ import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -70,6 +73,9 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Injectable
     private TerminalAuthHelper terminalAuthHelper;
 
+    @Injectable
+    private TerminalLockHelper terminalLockHelper;
+
     @Test
     public void testDispatchUpdateTerminalWherePlatformTypeIsPc() {
         CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
@@ -83,6 +89,9 @@ public class CheckUpgradeHandlerSPIImplTest {
 
         new Expectations() {
             {
+                terminalLockHelper.putAndGetLock(anyString);
+                result = new ReentrantLock();
+
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 result = true;
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
@@ -128,6 +137,9 @@ public class CheckUpgradeHandlerSPIImplTest {
 
         new Expectations() {
             {
+                terminalLockHelper.putAndGetLock(terminalId);
+                result = new ReentrantLock();
+
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 result = true;
 
@@ -204,6 +216,8 @@ public class CheckUpgradeHandlerSPIImplTest {
 
         new Expectations() {
             {
+                terminalLockHelper.putAndGetLock(terminalId);
+                result = new ReentrantLock();
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 result = true;
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
@@ -246,6 +260,9 @@ public class CheckUpgradeHandlerSPIImplTest {
 
         new Expectations() {
             {
+                terminalLockHelper.putAndGetLock(anyString);
+                result = new ReentrantLock();
+
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 result = false;
             }

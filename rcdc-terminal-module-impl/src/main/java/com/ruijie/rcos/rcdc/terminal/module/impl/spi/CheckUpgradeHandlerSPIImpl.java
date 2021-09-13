@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLockHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -35,6 +36,8 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
+import java.util.concurrent.locks.Lock;
+
 /**
  * Description: 终端检查升级，同时需要保存终端基本信息
  * Copyright: Copyright (c) 2018
@@ -45,6 +48,8 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
  */
 @DispatcherImplemetion(ShineAction.CHECK_UPGRADE)
 public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerSPIImpl.class);
 
     @Autowired
     private CbbTranspondMessageHandlerAPI messageHandlerAPI;
@@ -67,13 +72,26 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     @Autowired
     private TerminalAuthHelper terminalAuthHelper;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CheckUpgradeHandlerSPIImpl.class);
+    @Autowired
+    private TerminalLockHelper terminalLockHelper;
+
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
         LOGGER.info("组件升级处理请求开始处理，请求参数为[{}]", JSON.toJSONString(request));
 
+        Lock lock = terminalLockHelper.putAndGetLock(request.getTerminalId());
+        lock.lock();
+
+        try {
+            doDispatch(request);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void doDispatch(CbbDispatcherRequest request) {
         CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
 
         // 通知上层组件终端接入，判断是否允许接入

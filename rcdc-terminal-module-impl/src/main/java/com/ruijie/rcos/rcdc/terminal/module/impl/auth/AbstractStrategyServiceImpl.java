@@ -30,8 +30,6 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
     @Autowired
     private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
-    @Autowired
-    private TerminalLockHelper terminalLockHelper;
 
     @Override
     public void init(TempLicCreateDTO tempLicCreateDTO) {
@@ -51,24 +49,16 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
     }
 
     protected void saveTerminalAuthorize(String licenseTypeStr, CbbShineTerminalBasicInfo basicInfoDTO) {
-
-        Lock lock = terminalLockHelper.putAndGetLock(basicInfoDTO.getTerminalId());
-        lock.lock();
-        try {
-            int countTerminalAuth = terminalAuthorizeDAO.countByTerminalId(basicInfoDTO.getTerminalId());
-            if (countTerminalAuth > 0) {
-                return;
-            }
-            TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
-            entity.setAuthed(true);
-            entity.setAuthMode(basicInfoDTO.getAuthMode());
-            entity.setLicenseType(licenseTypeStr);
-            entity.setTerminalId(basicInfoDTO.getTerminalId());
-
-            terminalAuthorizeDAO.save(entity);
-        } finally {
-            lock.unlock();
+        int countTerminalAuth = terminalAuthorizeDAO.countByTerminalId(basicInfoDTO.getTerminalId());
+        if (countTerminalAuth > 0) {
+            return;
         }
+        TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
+        entity.setAuthed(true);
+        entity.setAuthMode(basicInfoDTO.getAuthMode());
+        entity.setLicenseType(licenseTypeStr);
+        entity.setTerminalId(basicInfoDTO.getTerminalId());
 
+        terminalAuthorizeDAO.save(entity);
     }
 }

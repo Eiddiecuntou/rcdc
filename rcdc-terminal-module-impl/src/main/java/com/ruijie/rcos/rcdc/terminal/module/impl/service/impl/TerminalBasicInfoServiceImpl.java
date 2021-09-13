@@ -94,20 +94,15 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         // 自学习终端型号
         saveTerminalModel(shineTerminalBasicInfo);
 
-        Lock lock = terminalLockHelper.putAndGetLock(terminalId);
-        lock.lock();
-        try {
-            // 保存终端基础信息
-            boolean isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
-            int count = 0;
-            // 失败，尝试3次
-            while (!isSaveSuccess && count++ < FAIL_TRY_COUNT) {
-                LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, terminalId);
-                isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
-            }
-        } finally {
-            lock.unlock();
+        // 保存终端基础信息
+        boolean isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
+        int count = 0;
+        // 失败，尝试3次
+        while (!isSaveSuccess && count++ < FAIL_TRY_COUNT) {
+            LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, terminalId);
+            isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
         }
+
         // 通知其他组件终端为在线状态
         CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
         noticeRequest.setTerminalBasicInfo(shineTerminalBasicInfo);
