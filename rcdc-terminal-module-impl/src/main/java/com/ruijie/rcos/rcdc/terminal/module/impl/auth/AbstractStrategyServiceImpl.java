@@ -49,16 +49,16 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
     }
 
     protected void saveTerminalAuthorize(String licenseTypeStr, CbbShineTerminalBasicInfo basicInfoDTO) {
-            int countTerminalAuth = terminalAuthorizeDAO.countByTerminalId(basicInfoDTO.getTerminalId());
-            if (countTerminalAuth > 0) {
-                return;
-            }
-            TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
-            entity.setAuthed(true);
-            entity.setAuthMode(basicInfoDTO.getAuthMode());
-            entity.setLicenseType(licenseTypeStr);
-            entity.setTerminalId(basicInfoDTO.getTerminalId());
+        int countTerminalAuth = terminalAuthorizeDAO.countByTerminalId(basicInfoDTO.getTerminalId());
+        if (countTerminalAuth > 0) {
+            return;
+        }
+        TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
+        entity.setAuthed(true);
+        entity.setAuthMode(basicInfoDTO.getAuthMode());
+        entity.setLicenseType(licenseTypeStr);
+        entity.setTerminalId(basicInfoDTO.getTerminalId());
 
-            terminalAuthorizeDAO.save(entity);
+        terminalAuthorizeDAO.save(entity);
     }
 }
