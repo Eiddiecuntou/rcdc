@@ -10,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseCommonService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalAuthorizationWhitelistService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -45,6 +46,9 @@ public class TerminalAuthHelper {
     @Autowired
     private TerminalLicenseCommonService terminalLicenseCommonService;
 
+    @Autowired
+    private TerminalAuthorizationWhitelistService terminalAuthorizationWhitelistService;
+
     /**
      * 终端进行授权
      *
@@ -56,8 +60,9 @@ public class TerminalAuthHelper {
     public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
         Assert.notNull(basicInfo, "basicInfo can not be null");
 
-        boolean isInWhiteList = whiteListHandlerSPI.checkWhiteList(basicInfo);
-        if (isInWhiteList) {
+        //TCI OCS授权
+
+        if (terminalAuthorizationWhitelistService.checkWhiteList(basicInfo) || whiteListHandlerSPI.checkWhiteList(basicInfo)) {
             LOGGER.info("终端在白名单中，无需认证");
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
