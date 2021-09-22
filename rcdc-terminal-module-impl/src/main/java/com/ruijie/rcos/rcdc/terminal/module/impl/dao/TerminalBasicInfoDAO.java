@@ -134,4 +134,11 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @return 符合终端类型、授权情况的终端数量
      */
     long countByAuthModeAndAuthed(CbbTerminalPlatformEnums authMode, Boolean authed);
+
+    /**
+     * 根据终端ID获取OCS磁盘的SN，可以为空
+     * @param terminalId 终端id
+     * @return 磁盘SN
+     */
+    String getOcsSnByTerminalId(String terminalId);
 }

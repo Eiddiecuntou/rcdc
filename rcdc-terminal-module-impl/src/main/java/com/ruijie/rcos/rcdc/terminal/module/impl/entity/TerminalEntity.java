@@ -156,6 +156,8 @@ public class TerminalEntity {
     @Enumerated(EnumType.STRING)
     private CbbCpuArchType cpuArch;
 
+    private String ocsSn;
+
     /**
      * 获取网络信息对象数组
      *
@@ -208,7 +210,7 @@ public class TerminalEntity {
 
     /**
      * 获取终端网卡mac信息数组
-     * 
+     *
      * @return CbbTerminalNetCardInfoDTO[]
      * @throws BusinessException 业务异常
      */
@@ -229,7 +231,7 @@ public class TerminalEntity {
 
     /**
      * 设置终端网络信息
-     * 
+     *
      * @param networkInfoDTOArr 网络信息数组
      */
     public void setNetworkInfoArr(CbbTerminalNetworkInfoDTO[] networkInfoDTOArr) {
@@ -613,5 +615,13 @@ public class TerminalEntity {
 
     public void setCpuArch(CbbCpuArchType cpuArchType) {
         this.cpuArch = cpuArchType;
+    }
+
+    public String getOcsSn() {
+        return ocsSn;
+    }
+
+    public void setOcsSn(String ocsSn) {
+        this.ocsSn = ocsSn;
     }
 }
