@@ -301,6 +301,7 @@ public interface CbbTerminalOperatorAPI {
     /**
      * 判断终端组是否存在
      * @param groupId 终端组id
+     * @throws  BusinessException 业务异常，当终端不存在时
      */
     void checkGroupExist(UUID groupId) throws BusinessException;
 }
