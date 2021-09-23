@@ -6,6 +6,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Description: 终端操作接口
@@ -296,4 +297,10 @@ public interface CbbTerminalOperatorAPI {
      * @return 在线终端集合
      */
     List<String> getOnlineTerminalIdList();
+
+    /**
+     * 判断终端组是否存在
+     * @param groupId 终端组id
+     */
+    void checkGroupExist(UUID groupId) throws BusinessException;
 }
