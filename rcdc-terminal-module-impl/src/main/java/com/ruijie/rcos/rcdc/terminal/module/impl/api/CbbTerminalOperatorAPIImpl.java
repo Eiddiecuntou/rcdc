@@ -28,7 +28,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 
@@ -44,9 +43,9 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalOperatorAPIImpl.class);
 
-    private static final String REGEX_PASSWORD = "^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;"
-            + "'\\[\\]\\s]+$)(?![a-z0-9]+$)(?![a-z`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]+$)(?![0-9`~!@#$%^&*()_\\"
-            + "-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]+$)[a-zA-Z0-9`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]{8,16}$";
+    private static final String REGEX_PASSWORD = "^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;" +
+            "'\\[\\]\\s]+$)(?![a-z0-9]+$)(?![a-z`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]+$)(?![0-9`~!@#$%^&*()_\\" +
+            "-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]+$)[a-zA-Z0-9`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]{8,16}$";
 
     @Autowired
     private TerminalOperatorService operatorService;
@@ -102,11 +101,11 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         if (isOnline) {
             String terminalName = basicInfo.getTerminalName();
             String macAddr = basicInfo.getMacAddr();
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[] {terminalName, macAddr});
+            throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[]{terminalName, macAddr});
         }
 
         terminalBasicInfoServiceTx.deleteTerminal(terminalId);
-        // 处理终端授权扣除逻辑
+        //处理终端授权扣除逻辑
         terminalAuthHelper.processDecreaseTerminalLicense(terminalId, basicInfo.getAuthMode(), basicInfo.getAuthed());
     }
 
@@ -249,12 +248,5 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
     @Override
     public List<String> getOnlineTerminalIdList() {
         return sessionManager.getOnlineTerminalId();
-    }
-
-    @Override
-    public void checkGroupExist(UUID groupId) throws BusinessException {
-        Assert.notNull(groupId, "groupId can not be null");
-
-        terminalGroupService.checkGroupExist(groupId);
     }
 }
