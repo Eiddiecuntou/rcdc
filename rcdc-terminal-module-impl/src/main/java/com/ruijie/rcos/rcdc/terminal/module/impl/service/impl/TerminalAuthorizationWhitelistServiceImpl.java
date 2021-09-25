@@ -126,13 +126,28 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
         }
     }
 
+    /**
+     * Ocs磁盘免费授权的输入信息
+     *
+     * @author zhangsiming
+     */
     static final class OcsDiskAuthInputInfo {
+
+        /**
+         * 磁盘型号+Sn根据某种算法组成生成
+         */
         private String compositeProductType;
+
+        /**
+         * 磁盘型号
+         */
         private String rawProductType;
+
+        /**
+         * 磁盘序列号
+         */
         private String diskSn;
 
-        public OcsDiskAuthInputInfo() {
-        }
 
         public String getCompositeProductType() {
             return compositeProductType;
