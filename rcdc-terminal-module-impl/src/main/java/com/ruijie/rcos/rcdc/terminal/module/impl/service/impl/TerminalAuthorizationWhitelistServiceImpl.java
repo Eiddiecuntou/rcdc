@@ -1,9 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalAuthorizationWhitelistDao;
@@ -32,13 +34,15 @@ import java.util.List;
 public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthorizationWhitelistService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalAuthorizationWhitelistServiceImpl.class);
-    private static final String SYSTEM_DISK = "sysdisk";
+
+    private static final String CONSTANT_SYSTEM_DISK = "sysdisk";
 
     @Autowired
     private TerminalAuthorizationWhitelistDao terminalAuthorizationWhitelistDao;
 
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
+
 
     @Autowired
     private AuditLogAPI logAPI;
@@ -54,71 +58,104 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     public boolean checkWhiteList(CbbShineTerminalBasicInfo terminalBasicInfo) {
         List<TerminalAuthorizationWhitelistEntity> whitelist = terminalAuthorizationWhitelistDao.findAllByOrderByPriorityDesc();
         //只有是TCI的设备，才需要去关注是否安装了OCS磁盘
-        String[] compositeProductTypeAndSn = null;
+        OcsDiskAuthInputInfo ocsDiskAuthInputInfo = new OcsDiskAuthInputInfo();
         if (terminalBasicInfo.getPlatform() == CbbTerminalPlatformEnums.VOI) {
             String allDiskInfo = terminalBasicInfo.getAllDiskInfo();
-            compositeProductTypeAndSn = getCompositeProductType(allDiskInfo);
+            ocsDiskAuthInputInfo = getOcsDiskAuthInputInfo(allDiskInfo);
         }
 
         for (TerminalAuthorizationWhitelistEntity entity : whitelist) {
             if (entity.getProductType().equals(terminalBasicInfo.getProductType())) {
                 LOGGER.info("raw productType[{}] free authorization matched", terminalBasicInfo.getProductType());
                 return true;
-            } else {
-                if (compositeProductTypeAndSn != null && entity.getProductType().equals(compositeProductTypeAndSn[0])) {
-                    LOGGER.info("OCS productType[{}] free authorization matched", compositeProductTypeAndSn[0]);
-                    TerminalEntity terminalEntity = terminalBasicInfoDAO.findByOcsSn(compositeProductTypeAndSn[1]);
-                    if (terminalEntity != null && !terminalEntity.getMacAddr().equals(terminalBasicInfo.getMacAddr())) {
-                        terminalEntity.setOcsSn(null);
-                        terminalBasicInfoDAO.save(terminalEntity);
-                        logAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_KICK_OUT, terminalEntity.getTerminalName(),
-                                terminalEntity.getTerminalId(), terminalBasicInfo.getTerminalName(), terminalBasicInfo.getTerminalId());
-                    }
-                    return true;
-                }
             }
+            if (entity.getProductType().equals(ocsDiskAuthInputInfo.getCompositeProductType())) {
+                LOGGER.info("OCS productType[{}] sn[{}] free authorization matched", terminalBasicInfo.getProductType());
+                TerminalEntity terminalEntity = terminalBasicInfoDAO.findByOcsSn(ocsDiskAuthInputInfo.getDiskSn());
+                if (terminalEntity != null && !terminalEntity.getMacAddr().equals(terminalBasicInfo.getMacAddr())) {
+                    terminalEntity.setOcsSn(null);
+                    terminalBasicInfoDAO.save(terminalEntity);
+                    logAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_KICK_OUT, terminalEntity.getTerminalName(),
+                            terminalEntity.getTerminalId(), terminalBasicInfo.getTerminalName(), terminalBasicInfo.getTerminalId());
+                }
+                return true;
+            }
+
         }
         return false;
     }
 
     @Override
     public String getOcsSnFromDiskInfo(String diskInfos) {
-        String[] compositeProductTypeAndSn = getCompositeProductType(diskInfos);
-        if (compositeProductTypeAndSn != null) {
-            TerminalAuthorizationWhitelistEntity entity = terminalAuthorizationWhitelistDao.findByProductType(compositeProductTypeAndSn[0]);
-            if (entity != null) {
-                return compositeProductTypeAndSn[1];
+        OcsDiskAuthInputInfo ocsDiskAuthInputInfo = getOcsDiskAuthInputInfo(diskInfos);
+        if (ocsDiskAuthInputInfo.getCompositeProductType() != null) {
+            if (terminalAuthorizationWhitelistDao.findByProductType(ocsDiskAuthInputInfo.getCompositeProductType()) != null) {
+                return ocsDiskAuthInputInfo.getDiskSn();
             }
         }
         return null;
     }
 
-    private String[] getCompositeProductType(String diskInfos) {
+    private OcsDiskAuthInputInfo getOcsDiskAuthInputInfo(String diskInfos) {
+        OcsDiskAuthInputInfo ocsDiskAuthInputInfo = new OcsDiskAuthInputInfo();
         try {
             JSONArray diskArray = JSONObject.parseArray(diskInfos);
             for (int i = 0; i < diskArray.size(); i++) {
-                JSONObject disk = (JSONObject) diskArray.get(i);
-                String diskType = (String) disk.get("dev_type");
-                if (SYSTEM_DISK.equals(diskType)) {
-                    String diskModel = disk.getString("dev_model");
-                    String diskSn = disk.getString("dev_sn");
+                CbbTerminalDiskInfoDTO cbbTerminalDiskInfoDTO = JSONObject.toJavaObject((JSON) diskArray.get(i), CbbTerminalDiskInfoDTO.class);
+                if (CONSTANT_SYSTEM_DISK.equals(cbbTerminalDiskInfoDTO.getDevType())) {
+                    ocsDiskAuthInputInfo.setRawProductType(cbbTerminalDiskInfoDTO.getDevModel());
+                    ocsDiskAuthInputInfo.setDiskSn(cbbTerminalDiskInfoDTO.getDevSn());
+                    String diskSn = cbbTerminalDiskInfoDTO.getDevSn();
                     StringBuilder sb = new StringBuilder();
                     //获取序列号的第4、6、7位
-                    String cpt = sb.append(diskModel)
+                    String compositeProductType = sb.append(cbbTerminalDiskInfoDTO.getDevModel())
                             .append("_")
                             .append(diskSn.charAt(3))
                             .append(diskSn.charAt(5))
                             .append(diskSn.charAt(6))
                             .toString();
-                    LOGGER.info("composite productType[{}] is ", cpt);
-                    return new String[]{cpt, diskSn};
-
+                    LOGGER.info("compositeProductType[{}] is ", compositeProductType);
+                    ocsDiskAuthInputInfo.setCompositeProductType(compositeProductType);
+                    return ocsDiskAuthInputInfo;
                 }
             }
-            return null;
+            return new OcsDiskAuthInputInfo();
         } catch (Exception e) {
             LOGGER.error("getCompositeProductType error happened!!!", e);
-            return null;
+            return new OcsDiskAuthInputInfo();
+        }
+    }
+
+    static final class OcsDiskAuthInputInfo {
+        private String compositeProductType;
+        private String rawProductType;
+        private String diskSn;
+
+        public OcsDiskAuthInputInfo() {
+        }
+
+        public String getCompositeProductType() {
+            return compositeProductType;
+        }
+
+        public void setCompositeProductType(String compositeProductType) {
+            this.compositeProductType = compositeProductType;
+        }
+
+        public String getDiskSn() {
+            return diskSn;
+        }
+
+        public void setDiskSn(String diskSn) {
+            this.diskSn = diskSn;
+        }
+
+        public String getRawProductType() {
+            return rawProductType;
+        }
+
+        public void setRawProductType(String rawProductType) {
+            this.rawProductType = rawProductType;
         }
     }
 }

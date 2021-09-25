@@ -60,9 +60,13 @@ public class TerminalAuthHelper {
     public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
         Assert.notNull(basicInfo, "basicInfo can not be null");
 
-        //TCI OCS授权
+        //TCI OCS授权优先
+        if (terminalAuthorizationWhitelistService.checkWhiteList(basicInfo)) {
+            LOGGER.info("终端在白名单中，无需认证");
+            return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
+        }
 
-        if (terminalAuthorizationWhitelistService.checkWhiteList(basicInfo) || whiteListHandlerSPI.checkWhiteList(basicInfo)) {
+        if (whiteListHandlerSPI.checkWhiteList(basicInfo)) {
             LOGGER.info("终端在白名单中，无需认证");
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
