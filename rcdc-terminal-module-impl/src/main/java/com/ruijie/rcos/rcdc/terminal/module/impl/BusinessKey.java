@@ -392,4 +392,6 @@ public interface BusinessKey {
 
     String RCDC_TERMINAL_LICENSE_STRATEGY_ERROR = "rcdc_terminal_license_strategy_error";
     String RCDC_TERMINAL_LOAD_DEFAULT_LICENSE_STRATEGY_ERROR = "rcdc_terminal_load_default_license_strategy_error";
+
+    String RCDC_TERMINAL_OCS_AUTHORIZATION_KICK_OUT = "rcdc_terminal_ocs_authorization_kick_out";
 }

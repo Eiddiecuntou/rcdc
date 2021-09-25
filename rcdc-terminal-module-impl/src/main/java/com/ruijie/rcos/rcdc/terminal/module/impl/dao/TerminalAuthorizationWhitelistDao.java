@@ -21,4 +21,9 @@ public interface TerminalAuthorizationWhitelistDao extends SkyEngineJpaRepositor
      * @return 返回白名单列表
      */
     List<TerminalAuthorizationWhitelistEntity> findAllByOrderByPriorityDesc();
+
+    /**
+     * @return 找到匹配型号的授权白名单记录
+     */
+    TerminalAuthorizationWhitelistEntity findByProductType(String productType);
 }

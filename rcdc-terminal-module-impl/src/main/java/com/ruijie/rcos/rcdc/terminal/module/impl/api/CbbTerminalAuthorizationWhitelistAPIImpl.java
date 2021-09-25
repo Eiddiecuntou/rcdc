@@ -1,6 +1,11 @@
+
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalAuthorizationWhitelistAPI;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalAuthorizationWhitelistService;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Description:
@@ -11,8 +16,13 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalAuthorizationWhit
  * @author zhangsiming
  */
 public class CbbTerminalAuthorizationWhitelistAPIImpl implements CbbTerminalAuthorizationWhitelistAPI {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CbbTerminalAuthorizationWhitelistAPIImpl.class);
+
+    @Autowired
+    private TerminalAuthorizationWhitelistService terminalAuthorizationWhitelistService;
+
     @Override
     public Boolean isOCSFreeAuthorization(String terminalId) {
-        return null;
+        return terminalAuthorizationWhitelistService.isOCSFreeAuthorization(terminalId);
     }
 }

@@ -131,7 +131,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private void handleIdvProcess(CbbDispatcherRequest request, TerminalEntity terminalEntity, CbbShineTerminalBasicInfo basicInfo,
-            CbbTerminalBizConfigDTO terminalBizConfigDTO) {
+                                  CbbTerminalBizConfigDTO terminalBizConfigDTO) {
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
         TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
@@ -147,7 +147,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         }
 
         if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
-            LOGGER.info("终端授权失败");
+            LOGGER.info("终端[{}]授权失败", basicInfo.getTerminalId());
             versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
         }
 
@@ -155,7 +155,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private void handleVdiProcess(CbbDispatcherRequest request, TerminalEntity terminalEntity, CbbShineTerminalBasicInfo basicInfo,
-            CbbTerminalBizConfigDTO terminalBizConfigDTO) {
+                                  CbbTerminalBizConfigDTO terminalBizConfigDTO) {
 
         basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo, Boolean.TRUE);
 
@@ -167,7 +167,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private void responseToShine(CbbDispatcherRequest request, CbbTerminalBizConfigDTO terminalBizConfigDTO, TerminalVersionResultDTO versionResult,
-            SystemUpgradeCheckResult systemUpgradeCheckResult) {
+                                 SystemUpgradeCheckResult systemUpgradeCheckResult) {
         TerminalUpgradeResult terminalUpgradeResult = buildTerminalUpgradeResult(terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
         try {
             CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, terminalUpgradeResult);
@@ -187,7 +187,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private TerminalUpgradeResult buildTerminalUpgradeResult(CbbTerminalBizConfigDTO terminalBizConfig, TerminalVersionResultDTO versionResult,
-            SystemUpgradeCheckResult systemUpgradeCheckResult) {
+                                                             SystemUpgradeCheckResult systemUpgradeCheckResult) {
         TerminalUpgradeResult upgradeResult = new TerminalUpgradeResult();
         upgradeResult.setResult(versionResult.getResult());
         upgradeResult.setUpdatelist(versionResult.getUpdatelist());

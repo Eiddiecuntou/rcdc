@@ -4,9 +4,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
+
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +34,9 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
 
     /**
      * 获取符合平台类型、授权情况的终端列表
+     *
      * @param authMode 终端平台类型
-     * @param authed 终端是否授权
+     * @param authed   终端是否授权
      * @return 符合平台类型、授权情况的终端列表
      */
     List<TerminalEntity> findTerminalEntitiesByAuthModeAndAuthed(CbbTerminalPlatformEnums authMode, Boolean authed);
@@ -76,8 +79,8 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     /**
      * 修改终端名称
      *
-     * @param terminalId 终端id
-     * @param version 数据版本号
+     * @param terminalId   终端id
+     * @param version      数据版本号
      * @param terminalName 终端名称
      * @return 返回影响行数
      */
@@ -89,10 +92,10 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     /**
      * 修改终端状态为离线状态
      *
-     * @param state 终端状态，在线或离线
+     * @param state           终端状态，在线或离线
      * @param lastOfflineTime 最后离线时间
-     * @param terminalId 终端id
-     * @param version 数据版本号
+     * @param terminalId      终端id
+     * @param version         数据版本号
      * @return 返回影响行数
      */
     @Modifying
@@ -101,7 +104,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     int modifyTerminalStateOffline(CbbTerminalStateEnums state, Date lastOfflineTime, String terminalId, Integer version);
 
     /**
-     *  根据分组id查询终端
+     * 根据分组id查询终端
      *
      * @param groupId 分组id
      * @return 终端列表
@@ -109,11 +112,11 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     List<TerminalEntity> findByGroupId(UUID groupId);
 
     /**
-     *  根据分组id、平台类型、系统类型查询终端
+     * 根据分组id、平台类型、系统类型查询终端
      *
-     * @param groupId 分组id
+     * @param groupId  分组id
      * @param platform 平台类型
-     * @param osType 系统类型
+     * @param osType   系统类型
      * @return 终端列表
      */
     List<TerminalEntity> findByGroupIdAndAuthModeAndTerminalOsType(UUID groupId, CbbTerminalPlatformEnums platform, String osType);
@@ -121,6 +124,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
 
     /**
      * 终端类型查询运行平台类型
+     *
      * @param platformArr 终端类型
      * @return 运行平台类型列表
      */
@@ -129,16 +133,24 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
 
     /**
      * 根据授权类型、是否授权统计终端数量
+     *
      * @param authMode 终端平台类型
-     * @param authed 终端是否授权
+     * @param authed   终端是否授权
      * @return 符合终端类型、授权情况的终端数量
      */
     long countByAuthModeAndAuthed(CbbTerminalPlatformEnums authMode, Boolean authed);
 
     /**
      * 根据终端ID获取OCS磁盘的SN，可以为空
+     *
      * @param terminalId 终端id
      * @return 磁盘SN
      */
     String getOcsSnByTerminalId(String terminalId);
+
+    /**
+     * @param ocsSn ocs磁盘序列号
+     * @return 终端对象
+     */
+    TerminalEntity findByOcsSn(String ocsSn);
 }

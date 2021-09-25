@@ -25,4 +25,10 @@ public interface TerminalAuthorizationWhitelistService {
      */
     boolean checkWhiteList(CbbShineTerminalBasicInfo terminalBasicInfo);
 
+    /**
+     * @param diskInfo 磁盘信息
+     * @return 如果是ocs磁盘，则返回其sn
+     */
+    String getOcsSnFromDiskInfo(String diskInfo);
+
 }

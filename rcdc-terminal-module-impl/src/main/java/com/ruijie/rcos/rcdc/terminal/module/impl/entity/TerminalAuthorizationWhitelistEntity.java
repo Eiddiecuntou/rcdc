@@ -25,6 +25,7 @@ public class TerminalAuthorizationWhitelistEntity {
 
     private Date createTime;
 
+    @Version
     private Integer version;
 
     public UUID getId() {
