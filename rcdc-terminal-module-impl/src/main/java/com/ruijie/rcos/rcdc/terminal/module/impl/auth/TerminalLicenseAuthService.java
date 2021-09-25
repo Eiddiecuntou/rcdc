@@ -123,12 +123,7 @@ public class TerminalLicenseAuthService {
     }
 
     private boolean isFitStrategy(CbbTerminalLicenseTypeEnums licenseType, CbbTerminalPlatformEnums authMode) {
-
-        if (licenseType.name().equals(authMode.name())) {
-            return true;
-        }
-
-        return false;
+        return licenseType.name().equals(authMode.name());
     }
 
 

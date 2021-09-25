@@ -57,6 +57,9 @@ public class CbbTerminalDiskInfoDTO {
     @JSONField(name = "dev_writeIops")
     private Integer devWriteIops;
 
+    @JSONField(name = "dev_model")
+    private String devModel;
+
     public String getDevName() {
         return devName;
     }
@@ -159,5 +162,13 @@ public class CbbTerminalDiskInfoDTO {
 
     public void setDevWriteIops(Integer devWriteIops) {
         this.devWriteIops = devWriteIops;
+    }
+
+    public String getDevModel() {
+        return devModel;
+    }
+
+    public void setDevModel(String devModel) {
+        this.devModel = devModel;
     }
 }

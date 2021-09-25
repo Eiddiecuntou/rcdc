@@ -24,6 +24,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.SendTerminalEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ChangeHostNameRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalAuthorizationWhitelistService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
@@ -41,12 +42,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -76,6 +74,9 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     @Autowired
     private TerminalLockHelper terminalLockHelper;
+
+    @Autowired
+    private TerminalAuthorizationWhitelistService terminalAuthorizationWhitelistService;
 
     private static final int FAIL_TRY_COUNT = 3;
 
@@ -110,9 +111,12 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     }
 
     private synchronized boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
-            Boolean authed) {
+                                                       Boolean authed) {
         TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
         basicInfoEntity.setAuthed(authed);
+        if (basicInfoEntity.getPlatform() == CbbTerminalPlatformEnums.VOI) {
+            basicInfoEntity.setOcsSn(terminalAuthorizationWhitelistService.getOcsSnFromDiskInfo(basicInfoEntity.getAllDiskInfo()));
+        }
         try {
             basicInfoDAO.save(basicInfoEntity);
             return true;
@@ -145,7 +149,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     @Override
     public TerminalEntity convertBasicInfo2TerminalEntity(String terminalId, boolean isNewConnection,
-            CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
+                                                          CbbShineTerminalBasicInfo shineTerminalBasicInfo) {
         Assert.hasText(terminalId, "terminalId can not be empty");
         Assert.notNull(shineTerminalBasicInfo, "shineTerminalBasicInfo can not be null");
 
@@ -215,7 +219,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private CbbTerminalNetworkInfoDTO[] buildNetworkInfoArr(CbbShineTerminalBasicInfo basicInfo) {
         CbbTerminalNetworkInfoDTO networkInfoDTO = new CbbTerminalNetworkInfoDTO();
         BeanUtils.copyProperties(basicInfo, networkInfoDTO);
-        return new CbbTerminalNetworkInfoDTO[] {networkInfoDTO};
+        return new CbbTerminalNetworkInfoDTO[]{networkInfoDTO};
     }
 
     private void saveTerminalModel(CbbShineTerminalBasicInfo basicInfo) {
