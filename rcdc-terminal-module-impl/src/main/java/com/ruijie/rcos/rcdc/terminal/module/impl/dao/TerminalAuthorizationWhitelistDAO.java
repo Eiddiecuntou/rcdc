@@ -14,7 +14,7 @@ import java.util.UUID;
  *
  * @author zhangsiming
  */
-public interface TerminalAuthorizationWhitelistDao extends SkyEngineJpaRepository<TerminalAuthorizationWhitelistEntity, UUID> {
+public interface TerminalAuthorizationWhitelistDAO extends SkyEngineJpaRepository<TerminalAuthorizationWhitelistEntity, UUID> {
     /**
      * 返回终端授权白名单表中所有的型号，并按照优先级的大小降序排列
      *

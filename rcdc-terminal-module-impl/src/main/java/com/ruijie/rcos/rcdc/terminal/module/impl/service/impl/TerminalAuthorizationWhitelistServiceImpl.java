@@ -8,7 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalAuthorizationWhitelistDao;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalAuthorizationWhitelistDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalAuthorizationWhitelistEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -38,7 +38,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     private static final String CONSTANT_SYSTEM_DISK = "sysdisk";
 
     @Autowired
-    private TerminalAuthorizationWhitelistDao terminalAuthorizationWhitelistDao;
+    private TerminalAuthorizationWhitelistDAO terminalAuthorizationWhitelistDao;
 
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
@@ -56,7 +56,8 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
 
     @Override
     public boolean checkWhiteList(CbbShineTerminalBasicInfo terminalBasicInfo) {
-        List<TerminalAuthorizationWhitelistEntity> whitelist = terminalAuthorizationWhitelistDao.findAllByOrderByPriorityDesc();
+        Assert.isNull(terminalBasicInfo, "terminalBasicInfo is null");
+        List<TerminalAuthorizationWhitelistEntity> whitelistEntityList = terminalAuthorizationWhitelistDao.findAllByOrderByPriorityDesc();
         //只有是TCI的设备，才需要去关注是否安装了OCS磁盘
         OcsDiskAuthInputInfo ocsDiskAuthInputInfo = new OcsDiskAuthInputInfo();
         if (terminalBasicInfo.getPlatform() == CbbTerminalPlatformEnums.VOI) {
@@ -64,7 +65,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
             ocsDiskAuthInputInfo = getOcsDiskAuthInputInfo(allDiskInfo);
         }
 
-        for (TerminalAuthorizationWhitelistEntity entity : whitelist) {
+        for (TerminalAuthorizationWhitelistEntity entity : whitelistEntityList) {
             if (entity.getProductType().equals(terminalBasicInfo.getProductType())) {
                 LOGGER.info("raw productType[{}] free authorization matched", terminalBasicInfo.getProductType());
                 return true;
@@ -87,13 +88,14 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
 
     @Override
     public String getOcsSnFromDiskInfo(String diskInfos) {
+        Assert.isNull(diskInfos, "diskInfos is null");
         OcsDiskAuthInputInfo ocsDiskAuthInputInfo = getOcsDiskAuthInputInfo(diskInfos);
         if (ocsDiskAuthInputInfo.getCompositeProductType() != null) {
             if (terminalAuthorizationWhitelistDao.findByProductType(ocsDiskAuthInputInfo.getCompositeProductType()) != null) {
                 return ocsDiskAuthInputInfo.getDiskSn();
             }
         }
-        return null;
+        return "";
     }
 
     private OcsDiskAuthInputInfo getOcsDiskAuthInputInfo(String diskInfos) {

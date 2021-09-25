@@ -6,6 +6,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalAuthorizationWh
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 /**
  * Description:
@@ -23,6 +24,7 @@ public class CbbTerminalAuthorizationWhitelistAPIImpl implements CbbTerminalAuth
 
     @Override
     public Boolean isOCSFreeAuthorization(String terminalId) {
+        Assert.notNull(terminalId, "terminal id is null");
         return terminalAuthorizationWhitelistService.isOCSFreeAuthorization(terminalId);
     }
 }
