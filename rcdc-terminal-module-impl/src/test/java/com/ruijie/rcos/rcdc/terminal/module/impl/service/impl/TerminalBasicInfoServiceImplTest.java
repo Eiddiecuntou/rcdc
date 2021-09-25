@@ -25,12 +25,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalModelDriverDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalModelDriverEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineNetworkConfig;
+import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalAuthorizationWhitelistService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.i18n.LocaleI18nResolver;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.commkit.base.message.Message;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.locks.ReentrantLock;
@@ -79,6 +81,9 @@ public class TerminalBasicInfoServiceImplTest {
     @Injectable
     private TerminalLockHelper terminalLockHelper;
 
+    @Injectable
+    private TerminalAuthorizationWhitelistService terminalAuthorizationWhitelistService;
+
     private static final CbbTerminalPlatformEnums PLATFORM_ENUMS = CbbTerminalPlatformEnums.IDV;
 
     @Before
@@ -103,7 +108,7 @@ public class TerminalBasicInfoServiceImplTest {
     /**
      * 测试修改终端名称成功
      *
-     * @throws IOException exception
+     * @throws IOException          exception
      * @throws InterruptedException exception
      */
     @Test
@@ -266,7 +271,7 @@ public class TerminalBasicInfoServiceImplTest {
 
     /**
      * 测试modifyTerminalState，参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -331,7 +336,7 @@ public class TerminalBasicInfoServiceImplTest {
 
     /**
      * 测试modifyTerminalStateToOffline，参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -432,7 +437,7 @@ public class TerminalBasicInfoServiceImplTest {
 
     /**
      * 测试isTerminalOnline，参数为空
-     * 
+     *
      * @throws Exception 异常
      */
     @Test
@@ -459,7 +464,7 @@ public class TerminalBasicInfoServiceImplTest {
 
     /**
      * 测试isTerminalOnline，在线
-     * 
+     *
      * @param session mock对象
      */
     @Test
