@@ -49,14 +49,14 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
 
     @Override
     public Boolean isOCSFreeAuthorization(String terminalId) {
-        Assert.notNull(terminalId, "terminal id is null");
+        Assert.notNull(terminalId, "terminal id can not be null");
         String ocsSn = terminalBasicInfoDAO.getOcsSnByTerminalId(terminalId);
         return !StringUtils.isEmpty(ocsSn);
     }
 
     @Override
     public boolean checkWhiteList(CbbShineTerminalBasicInfo terminalBasicInfo) {
-        Assert.isNull(terminalBasicInfo, "terminalBasicInfo is null");
+        Assert.notNull(terminalBasicInfo, "terminalBasicInfo can not is null");
         List<TerminalAuthorizationWhitelistEntity> whitelistEntityList = terminalAuthorizationWhitelistDao.findAllByOrderByPriorityDesc();
         //只有是TCI的设备，才需要去关注是否安装了OCS磁盘
         OcsDiskAuthInputInfo ocsDiskAuthInputInfo = new OcsDiskAuthInputInfo();
@@ -71,7 +71,8 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
                 return true;
             }
             if (entity.getProductType().equals(ocsDiskAuthInputInfo.getCompositeProductType())) {
-                LOGGER.info("OCS productType[{}] sn[{}] free authorization matched", terminalBasicInfo.getProductType());
+                LOGGER.info("OCS productType[{}] sn[{}] free authorization matched",
+                        terminalBasicInfo.getProductType(), ocsDiskAuthInputInfo.getDiskSn());
                 TerminalEntity terminalEntity = terminalBasicInfoDAO.findByOcsSn(ocsDiskAuthInputInfo.getDiskSn());
                 if (terminalEntity != null && !terminalEntity.getMacAddr().equals(terminalBasicInfo.getMacAddr())) {
                     terminalEntity.setOcsSn(null);
@@ -88,7 +89,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
 
     @Override
     public String getOcsSnFromDiskInfo(String diskInfos) {
-        Assert.isNull(diskInfos, "diskInfos is null");
+        Assert.hasText(diskInfos, "diskInfos can not be empty");
         OcsDiskAuthInputInfo ocsDiskAuthInputInfo = getOcsDiskAuthInputInfo(diskInfos);
         if (ocsDiskAuthInputInfo.getCompositeProductType() != null) {
             if (terminalAuthorizationWhitelistDao.findByProductType(ocsDiskAuthInputInfo.getCompositeProductType()) != null) {
