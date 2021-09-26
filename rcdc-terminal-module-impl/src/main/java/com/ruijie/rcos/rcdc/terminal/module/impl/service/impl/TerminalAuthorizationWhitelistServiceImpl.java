@@ -7,6 +7,8 @@ import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalOcsAuthChangeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalOcsAuthChangeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalAuthorizationWhitelistDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -47,6 +49,9 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     @Autowired
     private AuditLogAPI logAPI;
 
+    @Autowired
+    private CbbTerminalOcsAuthChangeSPI cbbTerminalOcsAuthChangeSPI;
+
     @Override
     public Boolean isOCSFreeAuthorization(String terminalId) {
         Assert.notNull(terminalId, "terminal id can not be null");
@@ -58,7 +63,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     public boolean checkWhiteList(CbbShineTerminalBasicInfo terminalBasicInfo) {
         Assert.notNull(terminalBasicInfo, "terminalBasicInfo can not is null");
         List<TerminalAuthorizationWhitelistEntity> whitelistEntityList = terminalAuthorizationWhitelistDao.findAllByOrderByPriorityDesc();
-        //只有是TCI的设备，才需要去关注是否安装了OCS磁盘
+        //只有是TCI的设备，才需要去关注是否安装了作为系统盘的OCS磁盘
         OcsDiskAuthInputInfo ocsDiskAuthInputInfo = new OcsDiskAuthInputInfo();
         if (terminalBasicInfo.getPlatform() == CbbTerminalPlatformEnums.VOI) {
             String allDiskInfo = terminalBasicInfo.getAllDiskInfo();
@@ -77,6 +82,11 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
                 if (terminalEntity != null && !terminalEntity.getMacAddr().equals(terminalBasicInfo.getMacAddr())) {
                     terminalEntity.setOcsSn(null);
                     terminalBasicInfoDAO.save(terminalEntity);
+                    //通知业务层该ocs之前关联的设备被踢出
+                    CbbTerminalOcsAuthChangeRequest changeRequest = new CbbTerminalOcsAuthChangeRequest();
+                    changeRequest.setTerminalId(terminalEntity.getTerminalId());
+                    changeRequest.setOcsAuthed(false);
+                    cbbTerminalOcsAuthChangeSPI.notifyOcsAuthChange(changeRequest);
                     logAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_KICK_OUT, terminalEntity.getTerminalName(),
                             terminalEntity.getTerminalId(), terminalBasicInfo.getTerminalName(), terminalBasicInfo.getTerminalId());
                 }

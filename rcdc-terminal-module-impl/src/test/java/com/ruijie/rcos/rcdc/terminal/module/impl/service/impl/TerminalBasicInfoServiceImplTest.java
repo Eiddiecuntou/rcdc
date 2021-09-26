@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
@@ -83,6 +84,9 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private TerminalAuthorizationWhitelistService terminalAuthorizationWhitelistService;
+
+    @Injectable
+    private CbbTerminalLicenseMgmtAPI cbbTerminalLicenseMgmtAPI;
 
     private static final CbbTerminalPlatformEnums PLATFORM_ENUMS = CbbTerminalPlatformEnums.IDV;
 
