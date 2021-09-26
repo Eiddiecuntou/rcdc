@@ -89,7 +89,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
 
     @Override
     public String getOcsSnFromDiskInfo(String diskInfos) {
-        Assert.notNull(diskInfos, "diskInfos can not be null");
+        Assert.hasText(diskInfos, "diskInfos can not be empty");
         OcsDiskAuthInputInfo ocsDiskAuthInputInfo = getOcsDiskAuthInputInfo(diskInfos);
         if (ocsDiskAuthInputInfo.getCompositeProductType() != null) {
             if (terminalAuthorizationWhitelistDao.findByProductType(ocsDiskAuthInputInfo.getCompositeProductType()) != null) {
