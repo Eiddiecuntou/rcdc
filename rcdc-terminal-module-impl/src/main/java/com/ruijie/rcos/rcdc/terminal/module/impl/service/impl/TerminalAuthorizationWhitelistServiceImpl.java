@@ -71,7 +71,8 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
                 return true;
             }
             if (entity.getProductType().equals(ocsDiskAuthInputInfo.getCompositeProductType())) {
-                LOGGER.info("OCS productType[{}] sn[{}] free authorization matched", terminalBasicInfo.getProductType(), ocsDiskAuthInputInfo.getDiskSn());
+                LOGGER.info("OCS productType[{}] sn[{}] free authorization matched",
+                        terminalBasicInfo.getProductType(), ocsDiskAuthInputInfo.getDiskSn());
                 TerminalEntity terminalEntity = terminalBasicInfoDAO.findByOcsSn(ocsDiskAuthInputInfo.getDiskSn());
                 if (terminalEntity != null && !terminalEntity.getMacAddr().equals(terminalBasicInfo.getMacAddr())) {
                     terminalEntity.setOcsSn(null);
