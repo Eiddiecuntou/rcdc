@@ -9,7 +9,9 @@ package com.ruijie.rcos.rcdc.terminal.module.def.spi.request;
  * @author zhangsiming
  */
 public class CbbTerminalOcsAuthChangeRequest {
+
     private String terminalId;
+    
     private Boolean ocsAuthed;
 
     public String getTerminalId() {
