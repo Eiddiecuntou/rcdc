@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Sets;
 import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
@@ -79,9 +78,6 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     @Autowired
     private TerminalAuthorizationWhitelistService terminalAuthorizationWhitelistService;
 
-    @Autowired
-    private CbbTerminalLicenseMgmtAPI cbbTerminalLicenseMgmtAPI;
-
     private static final int FAIL_TRY_COUNT = 3;
 
 
@@ -117,18 +113,8 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private synchronized boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
                                                        Boolean authed) {
         TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
-        if (basicInfoEntity.getPlatform() == CbbTerminalPlatformEnums.VOI) {
-            String ocsSn = terminalAuthorizationWhitelistService.getOcsSnFromDiskInfo(basicInfoEntity.getAllDiskInfo());
-            basicInfoEntity.setOcsSn(ocsSn);
-            if (StringUtils.isNotEmpty(ocsSn)) {
-                //回收授权
-                try {
-                    cbbTerminalLicenseMgmtAPI.cancelTerminalAuth(terminalId);
-                } catch (BusinessException e) {
-                    LOGGER.error("ocs auth recycle error: ", e);
-                }
-            }
-        }
+        //为TCI设置字段ocsSn的值
+        terminalAuthorizationWhitelistService.fillOcsSnAndRecycleIfAuthed(basicInfoEntity, basicInfoEntity.getAllDiskInfo());
         basicInfoEntity.setAuthed(authed);
         try {
             basicInfoDAO.save(basicInfoEntity);

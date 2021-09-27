@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 
 /**
  * Description:
@@ -25,10 +26,11 @@ public interface TerminalAuthorizationWhitelistService {
      */
     boolean checkWhiteList(CbbShineTerminalBasicInfo terminalBasicInfo);
 
+
     /**
-     * @param diskInfo 磁盘信息
-     * @return 如果是ocs磁盘，则返回其sn
+     * @param terminalEntity 需要为该对象填充ocsSn字段
+     * @param diskInfo shine上报的磁盘信息
      */
-    String getOcsSnFromDiskInfo(String diskInfo);
+    void fillOcsSnAndRecycleIfAuthed(TerminalEntity terminalEntity, String diskInfo);
 
 }
