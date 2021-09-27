@@ -45,6 +45,8 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
 
     private static final String CONSTANT_SYSTEM_DISK = "sysdisk";
 
+    private static final String TERMINAL_MODE_TCI = "TCI";
+
     @Autowired
     private TerminalAuthorizationWhitelistDAO terminalAuthorizationWhitelistDao;
 
@@ -124,37 +126,40 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     @Override
     public void fillOcsSnAndRecycleIfAuthed(TerminalEntity terminalEntity, @Nullable String diskInfo) {
         Assert.notNull(terminalEntity, "terminalEntity can not be null");
-        if (terminalEntity.getPlatform() == CbbTerminalPlatformEnums.VOI) {
-            String ocsSn = null;
-            if (StringUtils.isNotBlank(diskInfo)) {
-                ocsSn = getOcsSnFromDiskInfo(terminalEntity.getAllDiskInfo());
-            }
-            terminalEntity.setOcsSn(ocsSn);
-            if (StringUtils.isNotBlank(ocsSn)) {
-                String terminalId = terminalEntity.getTerminalId();
-                //回收本终端的其他授权
-                TerminalEntity terminalEntityInDb = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                String authType = "";
-                try {
-                    if (terminalEntityInDb != null && terminalEntityInDb.getAuthed()) {
-                        TerminalAuthorizeEntity terminalAuthorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
-                        cbbTerminalLicenseMgmtAPI.cancelTerminalAuth(terminalId);
+        if (terminalEntity.getPlatform() != CbbTerminalPlatformEnums.VOI) {
+            return;
+        }
+        if (StringUtils.isBlank(diskInfo)) {
+            terminalEntity.setOcsSn(null);
+            return;
+        }
+        String ocsSn = getOcsSnFromDiskInfo(diskInfo);
+        terminalEntity.setOcsSn(ocsSn);
+        if (StringUtils.isBlank(ocsSn)) {
+            return;
+        }
 
-                        if (terminalAuthorizeEntity != null) {
-                            authType = CbbTerminalPlatformEnums.VOI.equals(terminalAuthorizeEntity.getAuthMode())
-                                    ? "TCI" : terminalAuthorizeEntity.getAuthMode().name();
-                            //其他授权回收需要记录审计日志
-                            LOGGER.info("终端[{}({})]的[{}]授权被回收", terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
-                            auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_SELF_OTHER_AUTH_RECYCLE,
-                                    terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
-                        }
-                    }
-                } catch (BusinessException e) {
-                    LOGGER.error("ocs auth recycle error: ", e);
-                    auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_RECYCLE_ERROR,
-                            terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType, e.getI18nMessage());
+        //回收本终端的其他授权
+        String terminalId = terminalEntity.getTerminalId();
+        TerminalEntity terminalEntityInDb = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        String authType = "";
+        try {
+            if (terminalEntityInDb != null && terminalEntityInDb.getAuthed()) {
+                TerminalAuthorizeEntity terminalAuthorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+                if (terminalAuthorizeEntity != null) {
+                    cbbTerminalLicenseMgmtAPI.cancelTerminalAuth(terminalId);
+                    authType = CbbTerminalPlatformEnums.VOI.equals(terminalAuthorizeEntity.getAuthMode())
+                            ? TERMINAL_MODE_TCI : terminalAuthorizeEntity.getAuthMode().name();
+                    //其他授权回收需要记录审计日志
+                    LOGGER.info("终端[{}({})]的[{}]授权被回收", terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
+                    auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_SELF_OTHER_AUTH_RECYCLE,
+                            terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
                 }
             }
+        } catch (BusinessException e) {
+            LOGGER.error("ocs auth recycle error: ", e);
+            auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_RECYCLE_ERROR,
+                    terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType, e.getI18nMessage());
         }
     }
 
