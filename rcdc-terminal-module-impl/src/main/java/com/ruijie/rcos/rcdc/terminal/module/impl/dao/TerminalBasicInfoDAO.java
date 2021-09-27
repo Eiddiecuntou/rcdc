@@ -148,9 +148,10 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      */
     String getOcsSnByTerminalId(String terminalId);
 
+
     /**
-     * @param ocsSn ocs磁盘序列号
-     * @return 终端对象
+     * @param ocsSn ocs磁盘sn
+     * @return 终端列表
      */
-    TerminalEntity findByOcsSn(String ocsSn);
+    List<TerminalEntity> findByOcsSn(String ocsSn);
 }

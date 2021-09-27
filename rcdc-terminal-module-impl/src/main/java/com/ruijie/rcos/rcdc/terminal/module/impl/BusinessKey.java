@@ -15,16 +15,24 @@ public interface BusinessKey {
      */
     String RCDC_TERMINAL_NOT_FOUND_TERMINAL = "rcdc_terminal_not_found_terminal";
 
-    /** 终端在线状态不允许删除 */
+    /**
+     * 终端在线状态不允许删除
+     */
     String RCDC_TERMINAL_ONLINE_CANNOT_DELETE = "rcdc_terminal_online_cannot_delete";
 
-    /** 终端离线状态不能进行重启操作 */
+    /**
+     * 终端离线状态不能进行重启操作
+     */
     String RCDC_TERMINAL_OFFLINE_CANNOT_RESTART = "rcdc_terminal_offline_cannot_restart";
 
-    /** 终端离线状态不能进行收集日志操作 */
+    /**
+     * 终端离线状态不能进行收集日志操作
+     */
     String RCDC_TERMINAL_OFFLINE_CANNOT_COLLECT_LOG = "rcdc_terminal_offline_cannot_collect_log";
 
-    /** 终端离线状态不能进行检测操作 */
+    /**
+     * 终端离线状态不能进行检测操作
+     */
     String RCDC_TERMINAL_OFFLINE_CANNOT_DETECT = "rcdc_terminal_offline_cannot_detect";
 
     /**
@@ -84,12 +92,12 @@ public interface BusinessKey {
     String RCDC_SYSTEM_CMD_EXECUTE_FAIL = "rcdc_system_cmd_execute_fail";
 
     /**
-     *  文件不合法，请上传正确的ISO文件
+     * 文件不合法，请上传正确的ISO文件
      */
     String RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_ILLEGAL = "rcdc_terminal_upgrade_package_file_illegal";
 
     /**
-     *  ISO升级包md5校验失败
+     * ISO升级包md5校验失败
      */
     String RCDC_TERMINAL_UPGRADE_PACKAGE_FILE_MD5_CHECK_ERROR = "rcdc_terminal_upgrade_package_file_md5_check_error";
 
@@ -189,7 +197,9 @@ public interface BusinessKey {
      */
     String RCDC_FILE_OPERATE_FAIL = "rcdc_file_operate_fail";
 
-    /** 不合法的文件名后缀 */
+    /**
+     * 不合法的文件名后缀
+     */
     String RCDC_FILE_INVALID_SUFFIX = "rcdc_file_invalid_suffix";
 
     /**
@@ -253,7 +263,7 @@ public interface BusinessKey {
     String RCDC_TERMINAL_DETECT_COMMAND_SEND_QUARTZ_FAIL_SYSTEM_LOG = "rcdc_terminal_detect_command_send_quartz_fail_system_log";
 
     /**
-     *  发送终端检测指令失败
+     * 发送终端检测指令失败
      */
     String RCDC_TERMINAL_SEND_DETECT_COMMAND_FAIL = "rcdc_terminal_send_detect_command_fail";
 
@@ -377,10 +387,14 @@ public interface BusinessKey {
     String RCDC_TERMINAL_MAINTENANCE_PRE_VALIDATE_FAIL_FOR_LINUX_VDI_UPGRADING_TASK =
             "rcdc_terminal_maintenance_pre_validate_fail_for_linux_vdi_upgrading_task";
 
-    /** 安卓OTA升级文件不合法 */
+    /**
+     * 安卓OTA升级文件不合法
+     */
     String RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_ILLEGAL = "rcdc_terminal_ota_upgrade_package_illegal";
 
-    /** IDV升级包 */
+    /**
+     * IDV升级包
+     */
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_VERSION_FILE_ERROR = "rcdc_terminal_system_upgrade_package_version_file_error";
     String RCDC_TERMINAL_SYSTEM_UPGRADE_PACKAGE_OTA_FILE_ERROR = "rcdc_terminal_system_upgrade_package_ota_file_error";
 
@@ -394,4 +408,8 @@ public interface BusinessKey {
     String RCDC_TERMINAL_LOAD_DEFAULT_LICENSE_STRATEGY_ERROR = "rcdc_terminal_load_default_license_strategy_error";
 
     String RCDC_TERMINAL_OCS_AUTHORIZATION_KICK_OUT = "rcdc_terminal_ocs_authorization_kick_out";
+
+    String RCDC_TERMINAL_OCS_AUTHORIZATION_SELF_OTHER_AUTH_RECYCLE = "rcdc_terminal_ocs_authorization_self_other_auth_recycle";
+
+    String RCDC_TERMINAL_OCS_AUTHORIZATION_RECYCLE_ERROR = "rcdc_terminal_ocs_authorization_recycle_error";
 }

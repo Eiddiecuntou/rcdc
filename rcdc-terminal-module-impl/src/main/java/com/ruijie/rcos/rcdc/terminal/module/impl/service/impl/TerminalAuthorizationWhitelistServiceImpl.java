@@ -4,24 +4,30 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruijie.rcos.base.aaa.module.def.api.AuditLogAPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalDiskInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalOcsAuthChangeSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbTerminalOcsAuthChangeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalAuthorizationWhitelistDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalAuthorizationWhitelistEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalAuthorizationWhitelistService;
+import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -52,6 +58,18 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     @Autowired
     private CbbTerminalOcsAuthChangeSPI cbbTerminalOcsAuthChangeSPI;
 
+    @Autowired
+    private TerminalBasicInfoDAO basicInfoDAO;
+
+    @Autowired
+    private CbbTerminalLicenseMgmtAPI cbbTerminalLicenseMgmtAPI;
+
+    @Autowired
+    private AuditLogAPI auditLogAPI;
+
+    @Autowired
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
+
     @Override
     public Boolean isOCSFreeAuthorization(String terminalId) {
         Assert.notNull(terminalId, "terminal id can not be null");
@@ -77,18 +95,24 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
             }
             if (entity.getProductType().equals(ocsDiskAuthInputInfo.getCompositeProductType())) {
                 LOGGER.info("OCS productType[{}] sn[{}] free authorization matched",
-                        terminalBasicInfo.getProductType(), ocsDiskAuthInputInfo.getDiskSn());
-                TerminalEntity terminalEntity = terminalBasicInfoDAO.findByOcsSn(ocsDiskAuthInputInfo.getDiskSn());
-                if (terminalEntity != null && !terminalEntity.getMacAddr().equals(terminalBasicInfo.getMacAddr())) {
-                    terminalEntity.setOcsSn(null);
-                    terminalBasicInfoDAO.save(terminalEntity);
-                    //通知业务层该ocs之前关联的设备被踢出
-                    CbbTerminalOcsAuthChangeRequest changeRequest = new CbbTerminalOcsAuthChangeRequest();
-                    changeRequest.setTerminalId(terminalEntity.getTerminalId());
-                    changeRequest.setOcsAuthed(false);
-                    cbbTerminalOcsAuthChangeSPI.notifyOcsAuthChange(changeRequest);
-                    logAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_KICK_OUT, terminalEntity.getTerminalName(),
-                            terminalEntity.getTerminalId(), terminalBasicInfo.getTerminalName(), terminalBasicInfo.getTerminalId());
+                        ocsDiskAuthInputInfo.getRawProductType(), ocsDiskAuthInputInfo.getDiskSn());
+                List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findByOcsSn(ocsDiskAuthInputInfo.getDiskSn());
+                if (!CollectionUtils.isEmpty(terminalEntityList)) {
+                    terminalEntityList.stream()
+                            .filter(terminalEntity -> !terminalEntity.getMacAddr().equals(terminalBasicInfo.getMacAddr()))
+                            .forEach(terminalEntity -> {
+                                terminalEntity.setOcsSn(null);
+                                terminalBasicInfoDAO.save(terminalEntity);
+                                LOGGER.info("终端[{}] OCS授权被取消", terminalEntity.getTerminalId());
+                                //通知业务层该ocs之前关联的设备被踢出
+                                CbbTerminalOcsAuthChangeRequest changeRequest = new CbbTerminalOcsAuthChangeRequest();
+                                changeRequest.setTerminalId(terminalEntity.getTerminalId());
+                                changeRequest.setOcsAuthed(false);
+                                cbbTerminalOcsAuthChangeSPI.notifyOcsAuthChange(changeRequest);
+                                LOGGER.info("终端[{}({})]OCS磁盘免费授权失效", terminalEntity.getTerminalName(), terminalEntity.getTerminalId());
+                                logAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_KICK_OUT, terminalEntity.getTerminalName(),
+                                        terminalEntity.getTerminalId(), terminalBasicInfo.getTerminalName(), terminalBasicInfo.getTerminalId());
+                            });
                 }
                 return true;
             }
@@ -98,8 +122,43 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     }
 
     @Override
-    public String getOcsSnFromDiskInfo(String diskInfos) {
-        Assert.hasText(diskInfos, "diskInfos can not be empty");
+    public void fillOcsSnAndRecycleIfAuthed(TerminalEntity terminalEntity, @Nullable String diskInfo) {
+        Assert.notNull(terminalEntity, "terminalEntity can not be null");
+        if (terminalEntity.getPlatform() == CbbTerminalPlatformEnums.VOI) {
+            String ocsSn = null;
+            if (!StringUtils.isEmpty(diskInfo)) {
+                ocsSn = getOcsSnFromDiskInfo(terminalEntity.getAllDiskInfo());
+            }
+            terminalEntity.setOcsSn(ocsSn);
+            if (!StringUtils.isEmpty(ocsSn)) {
+                String terminalId = terminalEntity.getTerminalId();
+                //回收本终端的其他授权
+                TerminalEntity terminalEntityInDb = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+                String authType = "";
+                try {
+                    if (terminalEntityInDb != null && terminalEntityInDb.getAuthed()) {
+                        TerminalAuthorizeEntity terminalAuthorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+                        cbbTerminalLicenseMgmtAPI.cancelTerminalAuth(terminalId);
+
+                        if (terminalAuthorizeEntity != null) {
+                            authType = CbbTerminalPlatformEnums.VOI.equals(terminalAuthorizeEntity.getAuthMode())
+                                    ? "TCI" : terminalAuthorizeEntity.getAuthMode().name();
+                            //其他授权回收需要记录审计日志
+                            LOGGER.info("终端[{}({})]的[{}]授权被回收", terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
+                            auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_SELF_OTHER_AUTH_RECYCLE,
+                                    terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
+                        }
+                    }
+                } catch (BusinessException e) {
+                    LOGGER.error("ocs auth recycle error: ", e);
+                    auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_RECYCLE_ERROR,
+                            terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType, e.getI18nMessage());
+                }
+            }
+        }
+    }
+
+    private String getOcsSnFromDiskInfo(String diskInfos) {
         OcsDiskAuthInputInfo ocsDiskAuthInputInfo = getOcsDiskAuthInputInfo(diskInfos);
         if (ocsDiskAuthInputInfo.getCompositeProductType() != null) {
             if (terminalAuthorizationWhitelistDao.findByProductType(ocsDiskAuthInputInfo.getCompositeProductType()) != null) {
@@ -127,7 +186,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
                             .append(diskSn.charAt(5))
                             .append(diskSn.charAt(6))
                             .toString();
-                    LOGGER.info("compositeProductType[{}] is ", compositeProductType);
+                    LOGGER.info("compositeProductType is [{}] ", compositeProductType);
                     ocsDiskAuthInputInfo.setCompositeProductType(compositeProductType);
                     return ocsDiskAuthInputInfo;
                 }
