@@ -21,11 +21,11 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalAuthorizationWh
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -74,7 +74,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     public Boolean isOCSFreeAuthorization(String terminalId) {
         Assert.notNull(terminalId, "terminal id can not be null");
         String ocsSn = terminalBasicInfoDAO.getOcsSnByTerminalId(terminalId);
-        return !StringUtils.isEmpty(ocsSn);
+        return StringUtils.isNotBlank(ocsSn);
     }
 
     @Override
@@ -126,11 +126,11 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
         Assert.notNull(terminalEntity, "terminalEntity can not be null");
         if (terminalEntity.getPlatform() == CbbTerminalPlatformEnums.VOI) {
             String ocsSn = null;
-            if (!StringUtils.isEmpty(diskInfo)) {
+            if (StringUtils.isNotBlank(diskInfo)) {
                 ocsSn = getOcsSnFromDiskInfo(terminalEntity.getAllDiskInfo());
             }
             terminalEntity.setOcsSn(ocsSn);
-            if (!StringUtils.isEmpty(ocsSn)) {
+            if (StringUtils.isNotBlank(ocsSn)) {
                 String terminalId = terminalEntity.getTerminalId();
                 //回收本终端的其他授权
                 TerminalEntity terminalEntityInDb = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
