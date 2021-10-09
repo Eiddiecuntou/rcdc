@@ -146,6 +146,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @param terminalId 终端id
      * @return 磁盘SN
      */
+    @Query("select ocsSn from TerminalEntity where terminalId = ?1")
     String getOcsSnByTerminalId(String terminalId);
 
 
