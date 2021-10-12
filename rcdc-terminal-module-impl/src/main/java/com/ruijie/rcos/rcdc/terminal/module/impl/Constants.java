@@ -1,9 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl;
 
-import java.util.Set;
 import java.util.UUID;
-
-import com.google.common.collect.Sets;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalGroupMgmtAPI;
 
 /**

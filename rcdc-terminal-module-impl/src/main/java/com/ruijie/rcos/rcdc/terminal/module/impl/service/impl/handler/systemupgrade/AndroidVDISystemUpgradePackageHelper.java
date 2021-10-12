@@ -7,6 +7,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFil
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.io.IoUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
@@ -67,7 +68,8 @@ public class AndroidVDISystemUpgradePackageHelper {
 
         File savePackageFile = new File(savePackagePath);
         try {
-            Files.move(rainrcdFile.toPath(), savePackageFile.toPath());
+            IoUtil.copy(rainrcdFile, savePackageFile);
+            Files.deleteIfExists(rainrcdFile.toPath());
         } catch (IOException e) {
             LOGGER.debug("move upgrade file to target directory fail");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_OTA_UPGRADE_PACKAGE_MOVE_FAIL, e);

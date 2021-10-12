@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.io.Files;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalBackgroundAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundImageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBackgroundSaveDTO;
@@ -11,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBackgroundServi
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import com.ruijie.rcos.sk.base.io.IoUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 /**
  * Description: Function Description
@@ -126,7 +127,8 @@ public class CbbTerminalBackgroundAPIImpl implements CbbTerminalBackgroundAPI {
         FileOperateUtil.checkAndGetDirectory(BACKGROUND_IMAGE_FTP_DIR);
         try {
             File temporaryImageFile = new File(temporaryImagePath);
-            Files.move(temporaryImageFile, imageFile);
+            IoUtil.copy(temporaryImageFile, imageFile);
+            Files.deleteIfExists(temporaryImageFile.toPath());
             // 必须给文件加上读和可执行权限,让其他用户可读、可执行，否则会导致ftp账号没有权限下载:
             boolean isSuccess = imageFile.setReadable(true, false);
             LOGGER.info("操作结果：[{}]", isSuccess);

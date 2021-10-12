@@ -31,8 +31,6 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSystemUpgradePackageHandler.class);
 
-    private static final String ISO_FILE_MD5_CHECK_SUCCESS_FLAG = "PASS";
-
     @Override
     public void uploadUpgradePackage(CbbTerminalUpgradePackageUploadDTO request) throws BusinessException {
         Assert.notNull(request, "request can not be null");

@@ -10,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import com.ruijie.rcos.sk.base.io.IoUtil;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
@@ -17,9 +18,14 @@ import mockit.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+import org.springframework.lang.Nullable;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -62,7 +68,11 @@ public class CbbTerminalBackgroundAPIImplTest {
     @Mocked
     private FileOperateUtil fileOperateUtil;
 
-    private static final String CONFIG_FACADE = "file.busiz.dir.terminal.background";
+    @Injectable
+    private FileInputStream fileInput;
+
+    @Injectable
+    private FileOutputStream fileOutput;
 
     private static final String REQUEST_DATA = "{'isDefaultImage':false,detailInfo:{'md5':'123','imageName':'123.png'" +
             ",'imagePath':'abc/background.png','filePath':'/opt/ftp/terminal/background/background.png'}}";
@@ -85,32 +95,31 @@ public class CbbTerminalBackgroundAPIImplTest {
             {
                 mockFile.exists();
                 result = true;
-                Files.move((File) any, (File) any);
-                returns(new Delegate<Files>() {
-                    public void move(File from, File to) throws IOException {
-
-                    }
-                }, new Delegate<Files>() {
-                    public void move(File from, File to) throws IOException {
-                        throw new IOException("abc");
-                    }
-                });
                 globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
                 result = REQUEST_DATA;
             }
         };
-        cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request);
+        new MockUp<IoUtil>() {
+            @Mock
+            public void copy(@Nullable final InputStream input, @Nullable final OutputStream output) throws IOException {
+                throw new IOException("abc");
+            }
+
+            @Mock
+            public FileOutputStream toFileOutputStream(@Nullable final File to) throws FileNotFoundException {
+                return fileOutput;
+            }
+
+            @Mock
+            public FileInputStream toFileInputStream(@Nullable final File from) throws FileNotFoundException {
+                return fileInput;
+            }
+        };
         try {
             cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request);
         } catch (BusinessException e) {
             Assert.assertEquals(e.getMessage(), "abc");
         }
-        new Verifications() {
-            {
-                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo) any);
-                times = 1;
-            }
-        };
     }
 
     /**
@@ -248,59 +257,6 @@ public class CbbTerminalBackgroundAPIImplTest {
             }
         };
     }
-
-    @Test
-    public void testUploadNoNeedDelete() throws IOException, BusinessException {
-        CbbTerminalBackgroundSaveDTO request = new CbbTerminalBackgroundSaveDTO();
-        request.setImageName("abc.png");
-        request.setImagePath("123");
-        killThreadLocal(CbbTerminalBackgroundAPIImpl.class.getName(), "LOGGER");
-        Deencapsulation.setField(cbbTerminalBackgroundAPI, "LOGGER", logger);
-        Delegate<Files> delegateNormal = new Delegate<Files>() {
-            public void move(File from, File to) throws IOException {
-
-            }
-        };
-        Delegate<Files> delegateException = new Delegate<Files>() {
-            public void move(File from, File to) throws IOException {
-                throw new IOException("abc");
-            }
-        };
-        new Expectations(Files.class) {
-            {
-                // 前两次返回空，不需要删除图片，后两次文件不存在。
-                globalParameterAPI.findParameter(TerminalBackgroundService.TERMINAL_BACKGROUND);
-                returns(null, REQUEST_DATA, null, REQUEST_DATA);
-                Files.move((File) any, (File) any);
-                returns(delegateNormal, delegateNormal, delegateException, delegateException);
-                mockFile.exists();
-                result = false;
-            }
-        };
-
-        for (int i = 0; i < 2; i++) {
-            cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            try {
-                cbbTerminalBackgroundAPI.saveBackgroundImageConfig(request);
-                Assert.fail();
-            } catch (BusinessException e) {
-                Assert.assertEquals(e.getKey(), BusinessKey.RCDC_FILE_OPERATE_FAIL);
-            }
-        }
-
-
-        new Verifications() {
-            {
-                terminalBackgroundService.syncTerminalBackground((TerminalBackgroundInfo) any);
-                times = 2;
-            }
-        };
-    }
-
-
 
     /**
      * 测试上传时，需要删除文件的情况,文件名后缀异常

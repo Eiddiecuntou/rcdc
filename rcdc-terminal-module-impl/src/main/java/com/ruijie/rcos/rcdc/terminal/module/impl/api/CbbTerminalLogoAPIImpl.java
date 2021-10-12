@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import com.ruijie.rcos.sk.base.io.IoUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
@@ -91,7 +92,8 @@ public class CbbTerminalLogoAPIImpl implements CbbTerminalLogoAPI {
         File saveLogo = new File(saveLogoPath);
         FileOperateUtil.checkAndGetDirectory(saveLogoFile);
         try {
-            Files.move(logo.toPath(), saveLogo.toPath());
+            IoUtil.copy(logo, saveLogo);
+            Files.deleteIfExists(logo.toPath());
             boolean isSuccess = saveLogo.setReadable(true, false);
             LOGGER.info("操作结果：[{}]", isSuccess);
             isSuccess = saveLogo.setExecutable(true, false);

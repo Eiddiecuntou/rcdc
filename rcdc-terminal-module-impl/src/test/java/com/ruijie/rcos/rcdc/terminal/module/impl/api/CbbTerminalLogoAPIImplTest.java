@@ -9,17 +9,22 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLogoService;
 import com.ruijie.rcos.sk.base.config.ConfigFacade;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.filesystem.SkyengineFile;
+import com.ruijie.rcos.sk.base.io.IoUtil;
 import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import mockit.*;
 import mockit.integration.junit4.JMockit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+import org.springframework.lang.Nullable;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.junit.Assert.*;
 
@@ -45,6 +50,12 @@ public class CbbTerminalLogoAPIImplTest {
 
     @Injectable
     TerminalLogoService terminalLogoService;
+
+    @Injectable
+    private FileInputStream fileInput;
+
+    @Injectable
+    private FileOutputStream fileOutput;
 
     /**
      * 测试uploadLogo，参数为空
@@ -92,17 +103,31 @@ public class CbbTerminalLogoAPIImplTest {
                 result = null;
                 configFacade.read("file.busiz.dir.terminal.logo");
                 result = "/opt/ftp/terminal/logo/";
-                Files.move((Path) any, (Path) any);
                 globalParameterAPI.updateParameter("terminalLogo", anyString);
                 terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
             }
         };
+
+        new MockUp<IoUtil>() {
+            @Mock
+            public void copy(final File from, final File to) throws IOException {
+            }
+
+            @Mock
+            public FileOutputStream toFileOutputStream(@Nullable final File to) throws FileNotFoundException {
+                return fileOutput;
+            }
+
+            @Mock
+            public FileInputStream toFileInputStream(@Nullable final File from) throws FileNotFoundException {
+                return fileInput;
+            }
+        };
+
         terminalLogoAPI.uploadLogo(request);
         new Verifications() {
             {
                 configFacade.read("file.busiz.dir.terminal.logo");
-                times = 1;
-                Files.move((Path) any, (Path) any);
                 times = 1;
                 globalParameterAPI.updateParameter("terminalLogo", anyString);
                 times = 1;
@@ -139,17 +164,30 @@ public class CbbTerminalLogoAPIImplTest {
                 result = null;
                 configFacade.read("file.busiz.dir.terminal.logo");
                 result = "/opt/ftp/terminal/logo/";
-                Files.move((Path) any, (Path) any);
                 globalParameterAPI.updateParameter("terminalLogo", anyString);
                 terminalLogoService.syncTerminalLogo((TerminalLogoInfo) any, SendTerminalEventEnums.CHANGE_TERMINAL_LOGO);
+            }
+        };
+        new MockUp<IoUtil>() {
+            @Mock
+            public void copy(final File from, final File to) throws IOException {
+                
+            }
+
+            @Mock
+            public FileOutputStream toFileOutputStream(@Nullable final File to) throws FileNotFoundException {
+                return fileOutput;
+            }
+
+            @Mock
+            public FileInputStream toFileInputStream(@Nullable final File from) throws FileNotFoundException {
+                return fileInput;
             }
         };
         terminalLogoAPI.uploadLogo(request);
         new Verifications() {
             {
                 configFacade.read("file.busiz.dir.terminal.logo");
-                times = 1;
-                Files.move((Path) any, (Path) any);
                 times = 1;
                 globalParameterAPI.updateParameter("terminalLogo", anyString);
                 times = 1;
@@ -195,8 +233,22 @@ public class CbbTerminalLogoAPIImplTest {
                 result = null;
                 configFacade.read("file.busiz.dir.terminal.logo");
                 result = "/opt/ftp/terminal/logo/";
-                Files.move((Path) any, (Path) any);
-                result = new IOException();
+            }
+        };
+        new MockUp<IoUtil>() {
+            @Mock
+            public void copy(final File from, final File to) throws IOException {
+                throw new IOException();
+            }
+
+            @Mock
+            public FileOutputStream toFileOutputStream(@Nullable final File to) throws FileNotFoundException {
+                return fileOutput;
+            }
+
+            @Mock
+            public FileInputStream toFileInputStream(@Nullable final File from) throws FileNotFoundException {
+                return fileInput;
             }
         };
         try {
@@ -208,8 +260,6 @@ public class CbbTerminalLogoAPIImplTest {
         new Verifications() {
             {
                 configFacade.read("file.busiz.dir.terminal.logo");
-                times = 1;
-                Files.move((Path) any, (Path) any);
                 times = 1;
             }
         };

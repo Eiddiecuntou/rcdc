@@ -2,7 +2,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Properties;
 
@@ -22,6 +21,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.io.IoUtil;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
@@ -57,9 +57,6 @@ public abstract class AbstractSystemUpgradePackageResolver implements SystemUpgr
     public TerminalUpgradeVersionFileInfo dealAndReadPackageConfig(String fileName, String filePath) throws BusinessException {
         Assert.hasText(fileName, "fileName can not be blank");
         Assert.hasText(filePath, "filePath can not be blank");
-
-        // 获取类型
-        UpgradeFileTypeEnums fileType = getFileType(fileName);
 
         // 校验升级包
         validatePackage(fileName, filePath);
@@ -157,7 +154,8 @@ public abstract class AbstractSystemUpgradePackageResolver implements SystemUpgr
         }
 
         try {
-            Files.move(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            IoUtil.copy(from, to);
+            Files.deleteIfExists(from.toPath());
         } catch (Exception e) {
             LOGGER.debug("move upgrade file to target directory fail");
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_SYSTEM_UPGRADE_UPLOAD_FILE_FAIL, e);
