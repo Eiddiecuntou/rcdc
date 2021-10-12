@@ -2,21 +2,24 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupg
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.util.FileOperateUtil;
 import com.ruijie.rcos.sk.base.crypto.Md5Builder;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
+import com.ruijie.rcos.sk.base.io.IoUtil;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 import com.ruijie.rcos.sk.base.zip.ZipUtil;
 import mockit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+import org.springframework.lang.Nullable;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -35,6 +38,12 @@ public class AndroidVDISystemUpgradePackageHelperTest {
 
     @Tested
     private AndroidVDISystemUpgradePackageHelper helper;
+
+    @Injectable
+    private FileInputStream fileInput;
+
+    @Injectable
+    private FileOutputStream fileOutput;
 
     /**
      * 测试获取系统升级包信息
@@ -63,9 +72,19 @@ public class AndroidVDISystemUpgradePackageHelperTest {
             }
         };
 
-        new Expectations(Files.class) {
-            {
-                Files.move((Path) any, (Path) any);
+        new MockUp<IoUtil>() {
+            @Mock
+            public void copy(@Nullable final InputStream input, @Nullable final OutputStream output) throws IOException {
+            }
+
+            @Mock
+            public FileOutputStream toFileOutputStream(@Nullable final File to) throws FileNotFoundException {
+                return fileOutput;
+            }
+
+            @Mock
+            public FileInputStream toFileInputStream(@Nullable final File from) throws FileNotFoundException {
+                return fileInput;
             }
         };
 
@@ -98,13 +117,6 @@ public class AndroidVDISystemUpgradePackageHelperTest {
                 times = 1;
                 assertEquals(unzipFile2, new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE));
                 assertEquals(zipFile, new File(filePath));
-
-                Path rainrcdFilePath;
-                Path savePackageFilePath;
-                Files.move(rainrcdFilePath = withCapture(), savePackageFilePath = withCapture());
-                times = 1;
-                assertEquals(rainrcdFilePath.toFile(), new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP));
-                assertEquals(savePackageFilePath.toFile(), new File(savePackagePath));
             }
         };
     }
@@ -193,10 +205,20 @@ public class AndroidVDISystemUpgradePackageHelperTest {
             }
         };
 
-        new Expectations(Files.class) {
-            {
-                Files.move((Path) any, (Path) any);
-                result = new IOException("234");
+        new MockUp<IoUtil>() {
+            @Mock
+            public void copy(@Nullable final InputStream input, @Nullable final OutputStream output) throws IOException {
+                throw new IOException("234");
+            }
+
+            @Mock
+            public FileOutputStream toFileOutputStream(@Nullable final File to) throws FileNotFoundException {
+                return fileOutput;
+            }
+
+            @Mock
+            public FileInputStream toFileInputStream(@Nullable final File from) throws FileNotFoundException {
+                return fileInput;
             }
         };
 
@@ -210,7 +232,6 @@ public class AndroidVDISystemUpgradePackageHelperTest {
 
         String filePath = "/aa/123.zip";
         String savePackageName = id.toString() + ".zip";
-        String savePackagePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE + savePackageName;
 
         try {
             helper.unZipPackage(filePath, savePackageName);
@@ -232,13 +253,6 @@ public class AndroidVDISystemUpgradePackageHelperTest {
                 times = 1;
                 assertEquals(unzipFile2, new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE));
                 assertEquals(zipFile, new File(filePath));
-
-                Path rainrcdFilePath;
-                Path savePackageFilePath;
-                Files.move(rainrcdFilePath = withCapture(), savePackageFilePath = withCapture());
-                times = 1;
-                assertEquals(rainrcdFilePath.toFile(), new File(Constants.TERMINAL_UPGRADE_OTA_PACKAGE_ZIP));
-                assertEquals(savePackageFilePath.toFile(), new File(savePackagePath));
             }
         };
     }
@@ -298,7 +312,6 @@ public class AndroidVDISystemUpgradePackageHelperTest {
 
         String filePath = "/aa/123.zip";
         String savePackageName = id.toString() + ".zip";
-        String savePackagePath = Constants.TERMINAL_UPGRADE_OTA_PACKAGE + savePackageName;
 
         try {
             helper.unZipPackage(filePath, savePackageName);
