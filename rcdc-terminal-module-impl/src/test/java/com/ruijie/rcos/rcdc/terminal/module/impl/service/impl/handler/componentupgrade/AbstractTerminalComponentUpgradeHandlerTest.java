@@ -36,23 +36,6 @@ public class AbstractTerminalComponentUpgradeHandlerTest {
     }
 
     /**
-     * 测试比较版本 - 版本格式不一致
-     */
-    @Test
-    public void testCompareVersionLengthNotEquals() {
-        TestedTerminalComponentUpgradeHandler handler = new TestedTerminalComponentUpgradeHandler();
-
-        String versionStr1 = "2.0.3.1";
-        String versionStr2 = "1.9.4";
-        try {
-            handler.isVersionNotLess(versionStr1, versionStr2);
-            fail();
-        } catch (Exception e) {
-            Assert.assertEquals("版本格式不一致，无法进行比较，版本号为：2.0.3.1及1.9.4", e.getMessage());
-        }
-    }
-
-    /**
      * 测试比较版本 - 版本相同
      */
     @Test
