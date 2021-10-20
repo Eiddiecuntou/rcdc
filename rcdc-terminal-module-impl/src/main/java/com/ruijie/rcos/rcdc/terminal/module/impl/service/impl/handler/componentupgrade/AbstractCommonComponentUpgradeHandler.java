@@ -131,7 +131,7 @@ public abstract class AbstractCommonComponentUpgradeHandler extends AbstractTerm
      * @return: boolean 是否需要升级结果
      */
     private boolean isNeedToUpgrade(CommonUpdateListDTO updatelist, GetVersionDTO request) {
-        boolean isVersionEqual = request.getRainUpgradeVersion().equals(updatelist.getVersion());
+        boolean isVersionEqual = isVersionEquals(request.getRainUpgradeVersion(), updatelist.getVersion());
         boolean isMD5Equal = Objects.equals(request.getValidateMd5(), updatelist.getValidateMd5());
         return !isVersionEqual || !isMD5Equal;
     }
