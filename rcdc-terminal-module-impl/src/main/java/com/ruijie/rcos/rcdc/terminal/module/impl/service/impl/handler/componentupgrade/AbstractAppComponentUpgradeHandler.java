@@ -58,7 +58,7 @@ public abstract class AbstractAppComponentUpgradeHandler extends AbstractTermina
         String versionStr = updatelist.getVersion();
         String rainUpgradeVersion = request.getRainUpgradeVersion();
 
-        if (rainUpgradeVersion.equals(versionStr)) {
+        if (isVersionEquals(rainUpgradeVersion, versionStr)) {
             // 版本相同，不升级 0
             LOGGER.debug("版本号服务端相同，不需要升级");
             return new TerminalVersionResultDTO<>(CbbTerminalComponentUpgradeResultEnums.NOT.getResult(), new AppUpdateListDTO());
