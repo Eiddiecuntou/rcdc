@@ -44,6 +44,7 @@ public class TerminalLicenseAuthService {
      *
      * @param authMode 工作模式
      * @return 是否能够授权
+     * @throws BusinessException 业务异常
      */
     public boolean checkEnableAuth(CbbTerminalPlatformEnums authMode) throws BusinessException {
         Assert.notNull(authMode, "authMode can not be null");
