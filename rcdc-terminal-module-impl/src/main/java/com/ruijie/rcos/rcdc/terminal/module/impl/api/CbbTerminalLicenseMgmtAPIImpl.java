@@ -95,7 +95,7 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
         for (CbbTerminalLicenseInfoDTO licenseInfoDTO : licenseInfoList) {
             // 总数为-1则表示临时授权
             if (licenseInfoDTO.getTotalNum() == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
-                LOGGER.info("证书数量大于等于使用数量,{}", JSON.toJSONString(licenseInfoDTO));
+                LOGGER.info("证书为临时证书,{}", JSON.toJSONString(licenseInfoDTO));
                 licenseInfoDTO.setUsedNum(leftNum);
                 break;
             }
