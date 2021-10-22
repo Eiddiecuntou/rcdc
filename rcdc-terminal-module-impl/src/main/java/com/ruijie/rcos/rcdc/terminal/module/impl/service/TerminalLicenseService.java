@@ -34,6 +34,14 @@ public interface TerminalLicenseService {
     Integer getTerminalLicenseNum(List<String> licenseCodeList);
 
     /**
+     * 根据证书码获取终端授权数量
+     *
+     * @param licenseCodeList 证书码列表
+     * @return List<CbbTerminalLicenseInfoDTO> 授权信息
+     */
+    List<CbbTerminalLicenseInfoDTO> getTerminalLicenseInfo(List<String> licenseCodeList);
+
+    /**
      * 获取已使用的终端授权数量
      * 
      * @return 已使用授权数量

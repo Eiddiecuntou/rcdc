@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseNumDTO;
@@ -69,13 +70,39 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
 
         Integer usedNum = licenseFactoryProvider.getService(licenseType).getUsedNum();
 
+        List<CbbTerminalLicenseInfoDTO> licenseInfoList = licenseFactoryProvider.getService(licenseType)
+                .getTerminalLicenseInfo(CollectionUtils.isEmpty(licenseCodeList) ? Lists.newArrayList() : licenseCodeList);
+        setLicenseUsedNum(licenseInfoList, usedNum);
+
         CbbTerminalLicenseNumDTO licenseNumDTO = new CbbTerminalLicenseNumDTO();
         licenseNumDTO.setLicenseType(licenseType);
         licenseNumDTO.setLicenseNum(licenseNum);
         licenseNumDTO.setUsedNum(usedNum);
+        licenseNumDTO.setLicenseInfoList(licenseInfoList);
 
         LOGGER.info("终端授权数量：{}", JSON.toJSONString(licenseNumDTO, SerializerFeature.PrettyFormat));
         return licenseNumDTO;
+    }
+
+    private void setLicenseUsedNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList, Integer usedNum) {
+        if (CollectionUtils.isEmpty(licenseInfoList)) {
+            LOGGER.info("证书信息为空，无需处理");
+            return;
+        }
+
+        int leftNum = usedNum;
+        for (CbbTerminalLicenseInfoDTO licenseInfoDTO : licenseInfoList) {
+            if (licenseInfoDTO.getTotalNum() >= leftNum) {
+                LOGGER.info("证书数量大于等于使用数量,{}", JSON.toJSONString(licenseInfoDTO));
+                licenseInfoDTO.setUsedNum(leftNum);
+                break;
+            }
+
+            LOGGER.info("证书数量小于等于使用数量,{}", JSON.toJSONString(licenseInfoDTO));
+            licenseInfoDTO.setUsedNum(licenseInfoDTO.getTotalNum());
+            leftNum = leftNum - licenseInfoDTO.getTotalNum();
+        }
+
     }
 
     @Override

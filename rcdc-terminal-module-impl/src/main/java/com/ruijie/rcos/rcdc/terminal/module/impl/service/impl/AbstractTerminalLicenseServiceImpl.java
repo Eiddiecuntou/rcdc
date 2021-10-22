@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
@@ -22,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Description: TerminalLicenseService实现类
@@ -105,6 +107,24 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         return countLicenseNum(licenseCodeList);
     }
 
+    @Override
+    public List<CbbTerminalLicenseInfoDTO> getTerminalLicenseInfo(List<String> licenseCodeList) {
+        Assert.notNull(licenseCodeList, "licenseCodeList can not be null");
+
+        List<CbbTerminalLicenseInfoDTO> licenseInfoList = LICENSE_MAP.get(getLicenseType());
+        if (CollectionUtils.isEmpty(licenseInfoList)) {
+            return Lists.newArrayList();
+        }
+
+        if (CollectionUtils.isEmpty(licenseCodeList)) {
+            return licenseInfoList;
+        }
+
+        return licenseInfoList.stream()
+                .filter(licenseInfo -> licenseCodeList.stream().anyMatch(licenseCode -> licenseCode.equals(licenseInfo.getLicenseCode())))
+                .collect(Collectors.toList());
+    }
+
     private Integer countLicenseNum(List<String> licenseCodeList) {
         List<CbbTerminalLicenseInfoDTO> licenseInfoList = LICENSE_MAP.get(getLicenseType());
 
@@ -159,7 +179,8 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         Integer currentNum = getAllTerminalLicenseNum();
 
         if (Objects.equals(currentNum, licenseNum)) {
-            LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，无须更新授权数量", currentNum, licenseNum);
+            LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，只更新缓存及数据库", currentNum, licenseNum);
+            updateCacheAndDbLicenseNum(licenseInfoList, licenseNum, currentNum);
             return;
         }
 
