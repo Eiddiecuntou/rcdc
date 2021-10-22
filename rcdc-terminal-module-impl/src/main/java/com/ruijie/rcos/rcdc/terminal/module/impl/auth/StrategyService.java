@@ -24,6 +24,16 @@ public interface StrategyService {
      */
     void init(TempLicCreateDTO tempLicCreateDTO);
 
+
+    /**
+     *  授权分配
+     *
+     * @param licenseTypeList 证书类型列表
+     * @param authMode 授权模式
+     * @return 是否分配成功
+     */
+    boolean checkAllocate(List<CbbTerminalLicenseTypeEnums> licenseTypeList, CbbTerminalPlatformEnums authMode);
+
     /**
      *  授权分配
      *

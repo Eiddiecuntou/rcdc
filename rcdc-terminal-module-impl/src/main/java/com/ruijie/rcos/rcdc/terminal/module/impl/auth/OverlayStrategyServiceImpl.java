@@ -73,6 +73,36 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
     }
 
     @Override
+    public boolean checkAllocate(List<CbbTerminalLicenseTypeEnums> licenseTypeList, CbbTerminalPlatformEnums authMode) {
+        Assert.notNull(authMode, "authMode can not be null");
+        Assert.notNull(licenseTypeList, "licenseTypeList can not be null");
+
+        if (CollectionUtils.isEmpty(licenseTypeList)) {
+            LOGGER.info("授权策略的授权证书类型为空，不符合预期，返回授权失败");
+            return false;
+        }
+
+        List<CbbTerminalLicenseTypeEnums> authedList = Lists.newArrayList();
+        for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
+            TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
+            boolean enableAuth = licenseService.checkEnableAuth(authMode);
+            if (enableAuth) {
+                authedList.add(licenseType);
+            } else {
+                break;
+            }
+        }
+
+        if (authedList.size() == licenseTypeList.size()) {
+            LOGGER.info("[{}]允许叠加授权", authMode);
+            return true;
+        }
+
+        LOGGER.info("[{}]不允许叠加授权", authMode);
+        return false;
+    }
+
+    @Override
     public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
         Assert.notNull(licenseTypeList, "licenseTypeList can not be null");
         Assert.notNull(authMode, "authMode can not be null");

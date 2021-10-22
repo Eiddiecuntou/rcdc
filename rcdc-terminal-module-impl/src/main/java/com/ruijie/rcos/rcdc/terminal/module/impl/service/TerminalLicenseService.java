@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 
 import java.util.List;
@@ -87,6 +88,14 @@ public interface TerminalLicenseService {
      * @return true 已授权或者授权成功；false 授权数不足，无法授权
      */
     boolean auth(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo);
+
+    /**
+     * 授权1台终端；如果授权数量为-1，或者有授权剩余，则终端已使用授权数量+1
+     *
+     * @param authMode 授权模式
+     * @return boolean 是否允许授权
+     */
+    boolean checkEnableAuth(CbbTerminalPlatformEnums authMode);
 
     /**
      * 处理从终端授权数量为-1，导入正式授权证书场景。

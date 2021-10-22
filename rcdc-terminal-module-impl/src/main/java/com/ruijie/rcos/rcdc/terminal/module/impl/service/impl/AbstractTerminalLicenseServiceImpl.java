@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseCommonService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
@@ -208,6 +209,22 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
             this.increaseCacheLicenseUsedNum();
             return true;
         }
+    }
+
+    @Override
+    public boolean checkEnableAuth(CbbTerminalPlatformEnums authMode) {
+        Assert.notNull(authMode, "authMode can not be null");
+
+        Integer usedNum = getUsedNum();
+        Integer licenseNum = getAllTerminalLicenseNum();
+
+        if (!Objects.equals(licenseNum, Constants.TERMINAL_AUTH_DEFAULT_NUM) && usedNum >= licenseNum) {
+            LOGGER.info("{}类型终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", getLicenseType(), usedNum, licenseNum);
+            return false;
+        }
+
+        LOGGER.info("[{}]可以授权，当前licenseNum：{}，usedNum：{}", authMode, licenseNum, usedNum);
+        return true;
     }
 
     boolean isTempLicense(Integer licenseNum) {

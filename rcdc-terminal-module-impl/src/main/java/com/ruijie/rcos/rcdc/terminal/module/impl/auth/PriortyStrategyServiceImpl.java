@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
+import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -31,6 +32,29 @@ public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
     @Autowired
     private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
+
+    @Override
+    public boolean checkAllocate(List<CbbTerminalLicenseTypeEnums> licenseTypeList, CbbTerminalPlatformEnums authMode) {
+        Assert.notNull(licenseTypeList, "licenseTypeList can not be null");
+        Assert.notNull(authMode, "authMode can not be null");
+
+        if (CollectionUtils.isEmpty(licenseTypeList)) {
+            LOGGER.info("优先授权策略的授权证书类型为空，不符合预期，返回不允许授权");
+            return false;
+        }
+
+        for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
+            TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
+            boolean enableAuth = licenseService.checkEnableAuth(authMode);
+            if (enableAuth) {
+                LOGGER.info("校验[{}]是否允许授权完成，结果为允许，授权方式[{}]", authMode, licenseType);
+                return true;
+            }
+        }
+
+        LOGGER.info("校验[{}]是否允许授权完成，结果为不允许，授权方式[{}]", authMode, JSON.toJSONString(licenseTypeList));
+        return false;
+    }
 
     @Override
     public boolean allocate(List<CbbTerminalLicenseTypeEnums> licenseTypeList, Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfoDTO) {

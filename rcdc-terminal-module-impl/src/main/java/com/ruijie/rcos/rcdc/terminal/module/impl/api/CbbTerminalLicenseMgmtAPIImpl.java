@@ -6,7 +6,10 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseNumDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
@@ -42,6 +45,9 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     @Autowired
     private TerminalAuthHelper terminalAuthHelper;
 
+    @Autowired
+    private TerminalLicenseAuthService terminalLicenseAuthService;
+
     @Override
     public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, List<CbbTerminalLicenseInfoDTO> licenseInfoList)
             throws BusinessException {
@@ -70,6 +76,13 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
 
         LOGGER.info("终端授权数量：{}", JSON.toJSONString(licenseNumDTO, SerializerFeature.PrettyFormat));
         return licenseNumDTO;
+    }
+
+    @Override
+    public Boolean checkEnableAuthTerminal(CbbTerminalPlatformEnums authMode) throws BusinessException {
+        Assert.notNull(authMode, "authMode can not be null");
+
+        return terminalLicenseAuthService.checkEnableAuth(authMode);
     }
 
     @Override
