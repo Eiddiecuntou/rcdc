@@ -10,6 +10,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseType
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -92,6 +93,14 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
 
         int leftNum = usedNum;
         for (CbbTerminalLicenseInfoDTO licenseInfoDTO : licenseInfoList) {
+            // 总数为-1则表示临时授权
+            if (licenseInfoDTO.getTotalNum() == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
+                LOGGER.info("证书数量大于等于使用数量,{}", JSON.toJSONString(licenseInfoDTO));
+                licenseInfoDTO.setUsedNum(leftNum);
+                break;
+            }
+
+
             if (licenseInfoDTO.getTotalNum() >= leftNum) {
                 LOGGER.info("证书数量大于等于使用数量,{}", JSON.toJSONString(licenseInfoDTO));
                 licenseInfoDTO.setUsedNum(leftNum);
