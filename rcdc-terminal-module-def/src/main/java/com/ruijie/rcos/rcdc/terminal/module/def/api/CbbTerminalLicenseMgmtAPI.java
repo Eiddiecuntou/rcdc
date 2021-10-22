@@ -3,6 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseNumDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import org.springframework.lang.Nullable;
 
@@ -79,5 +81,22 @@ public interface CbbTerminalLicenseMgmtAPI {
      * @throws BusinessException 业务异常
      */
     void cancelTerminalAuth(String terminalId) throws BusinessException;
+
+    /**
+     * @api {GET} CbbTerminalLicenseMgmtAPI.checkEnableAuthTerminal 校验是否能够授权终端
+     * @apiName checkEnableAuthTerminal
+     * @apiGroup CbbTerminalLicenseMgmtAPI
+     * @apiDescription 校验是否能够授权终端
+     *
+     * @apiParam (请求体字段说明) {String} authMode 授权模式
+     */
+    /**
+     *  校验是否能够授权终端
+     *
+     * @param authMode 工作模式
+     * @return Boolean 是否允许授权
+     * @throws BusinessException 业务异常
+     */
+    Boolean checkEnableAuthTerminal(CbbTerminalPlatformEnums authMode) throws BusinessException;
 
 }

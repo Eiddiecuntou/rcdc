@@ -2,11 +2,16 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseNumDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
+import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
@@ -42,6 +47,9 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     @Autowired
     private TerminalAuthHelper terminalAuthHelper;
 
+    @Autowired
+    private TerminalLicenseAuthService terminalLicenseAuthService;
+
     @Override
     public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, List<CbbTerminalLicenseInfoDTO> licenseInfoList)
             throws BusinessException {
@@ -63,13 +71,54 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
 
         Integer usedNum = licenseFactoryProvider.getService(licenseType).getUsedNum();
 
+        List<CbbTerminalLicenseInfoDTO> licenseInfoList = licenseFactoryProvider.getService(licenseType)
+                .getTerminalLicenseInfo(CollectionUtils.isEmpty(licenseCodeList) ? Lists.newArrayList() : licenseCodeList);
+        setLicenseUsedNum(licenseInfoList, usedNum);
+
         CbbTerminalLicenseNumDTO licenseNumDTO = new CbbTerminalLicenseNumDTO();
         licenseNumDTO.setLicenseType(licenseType);
         licenseNumDTO.setLicenseNum(licenseNum);
         licenseNumDTO.setUsedNum(usedNum);
+        licenseNumDTO.setLicenseInfoList(licenseInfoList);
 
         LOGGER.info("终端授权数量：{}", JSON.toJSONString(licenseNumDTO, SerializerFeature.PrettyFormat));
         return licenseNumDTO;
+    }
+
+    private void setLicenseUsedNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList, Integer usedNum) {
+        if (CollectionUtils.isEmpty(licenseInfoList)) {
+            LOGGER.info("证书信息为空，无需处理");
+            return;
+        }
+
+        int leftNum = usedNum;
+        for (CbbTerminalLicenseInfoDTO licenseInfoDTO : licenseInfoList) {
+            // 总数为-1则表示临时授权
+            if (licenseInfoDTO.getTotalNum() == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
+                LOGGER.info("证书为临时证书,{}", JSON.toJSONString(licenseInfoDTO));
+                licenseInfoDTO.setUsedNum(leftNum);
+                break;
+            }
+
+
+            if (licenseInfoDTO.getTotalNum() >= leftNum) {
+                LOGGER.info("证书数量大于等于使用数量,{}", JSON.toJSONString(licenseInfoDTO));
+                licenseInfoDTO.setUsedNum(leftNum);
+                break;
+            }
+
+            LOGGER.info("证书数量小于等于使用数量,{}", JSON.toJSONString(licenseInfoDTO));
+            licenseInfoDTO.setUsedNum(licenseInfoDTO.getTotalNum());
+            leftNum = leftNum - licenseInfoDTO.getTotalNum();
+        }
+
+    }
+
+    @Override
+    public Boolean checkEnableAuthTerminal(CbbTerminalPlatformEnums authMode) throws BusinessException {
+        Assert.notNull(authMode, "authMode can not be null");
+
+        return terminalLicenseAuthService.checkEnableAuth(authMode);
     }
 
     @Override

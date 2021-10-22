@@ -3,6 +3,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyAuthConfigDTO;
@@ -37,6 +38,34 @@ public class TerminalLicenseAuthService {
 
     @Autowired
     private CbbTerminalLicenseStrategyFactory licenseStrategyFactory;
+
+    /**
+     *  校验是否能够授权
+     *
+     * @param authMode 工作模式
+     * @return 是否能够授权
+     * @throws BusinessException 业务异常
+     */
+    public boolean checkEnableAuth(CbbTerminalPlatformEnums authMode) throws BusinessException {
+        Assert.notNull(authMode, "authMode can not be null");
+
+        TerminalLicenseStrategyConfigDTO strategyConfig = licenseStrategyFactory.getStrategyConfig();
+        List<TerminalLicenseStrategyAuthConfigDTO> allocateList = strategyConfig.getAllocateList();
+
+        for (TerminalLicenseStrategyAuthConfigDTO allocateStrategy : allocateList) {
+            if (isFitStrategy(allocateStrategy.getLicenseType(), authMode)) {
+                LOGGER.info("进行[{}]是否允许授权校验", authMode);
+                boolean enableAuth = checkEnableAuth(allocateStrategy.getSupportLicenseTypeList(), authMode);
+                if (enableAuth) {
+                    LOGGER.info("进行[{}]是否允许授权校验,允许授权", authMode);
+                    return true;
+                }
+            }
+        }
+
+        LOGGER.info("进行[{}]是否允许授权校验,不允许授权", authMode);
+        return false;
+    }
 
     /**
      * 授权
@@ -122,9 +151,21 @@ public class TerminalLicenseAuthService {
         });
     }
 
+    private boolean checkEnableAuth(List<TerminalLicenseStrategyAuthSupportConfigDTO> supportLicenseTypeList,
+                           CbbTerminalPlatformEnums authMode) {
+
+        return supportLicenseTypeList.stream().anyMatch(supportType -> {
+            LOGGER.info("进行是否允许【{}】授权校验, 授权使用策略[{}]", authMode, JSON.toJSONString(supportType));
+            StrategyService service = licenseStrategyFactory.getService(supportType.getStrategyType());
+            return service.checkAllocate(supportType.getLicenseTypeList(), authMode);
+        });
+    }
+
     private boolean isFitStrategy(CbbTerminalLicenseTypeEnums licenseType, CbbTerminalPlatformEnums authMode) {
         return licenseType.name().equals(authMode.name());
     }
+
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.api;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
@@ -52,6 +53,8 @@ public class CbbTerminalLicenseMgmtAPIImplTest {
     @Injectable
     private TerminalAuthHelper terminalAuthHelper;
 
+    @Injectable
+    private TerminalLicenseAuthService terminalLicenseAuthService;
 
     @Test
     public void testCancelTerminalAuth() throws BusinessException {

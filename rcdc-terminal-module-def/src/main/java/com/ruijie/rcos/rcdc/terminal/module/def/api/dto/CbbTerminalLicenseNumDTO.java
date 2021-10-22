@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 
+import java.util.List;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2020
@@ -23,6 +25,8 @@ public class CbbTerminalLicenseNumDTO {
      * 已用授权数
      */
     private Integer usedNum;
+
+    private List<CbbTerminalLicenseInfoDTO> licenseInfoList;
 
     public CbbTerminalLicenseTypeEnums getLicenseType() {
         return licenseType;
@@ -46,5 +50,13 @@ public class CbbTerminalLicenseNumDTO {
 
     public void setUsedNum(Integer usedNum) {
         this.usedNum = usedNum;
+    }
+
+    public List<CbbTerminalLicenseInfoDTO> getLicenseInfoList() {
+        return licenseInfoList;
+    }
+
+    public void setLicenseInfoList(List<CbbTerminalLicenseInfoDTO> licenseInfoList) {
+        this.licenseInfoList = licenseInfoList;
     }
 }
