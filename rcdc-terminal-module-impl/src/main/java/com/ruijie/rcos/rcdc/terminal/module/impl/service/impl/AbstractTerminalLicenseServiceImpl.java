@@ -220,9 +220,13 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
                 return true;
             }
             Integer licenseNum = getAllTerminalLicenseNum();
+            if (licenseNum < Constants.TERMINAL_AUTH_DEFAULT_NUM) {
+                LOGGER.info("获取到的总授权数小于临时授权数，说明有多个临时授权，设置数量为临时授权数量");
+                licenseNum = Constants.TERMINAL_AUTH_DEFAULT_NUM;
+            }
             Integer usedNum = getUsedNum();
             if (!Objects.equals(licenseNum, Constants.TERMINAL_AUTH_DEFAULT_NUM) && usedNum >= licenseNum) {
-                LOGGER.info("{}类型终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", getLicenseType(), usedNum, licenseNum);
+                LOGGER.info("{}类型终端授权已经没有剩余，当前licenseNum：{}，usedNum：{}", getLicenseType(), licenseNum, usedNum);
                 return false;
             }
             LOGGER.info("终端[{}]可以授权，当前licenseNum：{}，usedNum：{}", terminalId, licenseNum, usedNum);
