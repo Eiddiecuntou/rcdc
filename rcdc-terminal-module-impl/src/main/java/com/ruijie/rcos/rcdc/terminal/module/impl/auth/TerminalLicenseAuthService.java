@@ -3,16 +3,12 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 import com.alibaba.fastjson.JSON;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyAuthConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyAuthSupportConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyConfigDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -51,9 +47,10 @@ public class TerminalLicenseAuthService {
 
         TerminalLicenseStrategyConfigDTO strategyConfig = licenseStrategyFactory.getStrategyConfig();
         List<TerminalLicenseStrategyAuthConfigDTO> allocateList = strategyConfig.getAllocateList();
-
+        boolean isFit = false;
         for (TerminalLicenseStrategyAuthConfigDTO allocateStrategy : allocateList) {
             if (isFitStrategy(allocateStrategy.getLicenseType(), authMode)) {
+                isFit = true;
                 LOGGER.info("进行[{}]是否允许授权校验", authMode);
                 boolean enableAuth = checkEnableAuth(allocateStrategy.getSupportLicenseTypeList(), authMode);
                 if (enableAuth) {
@@ -62,9 +59,12 @@ public class TerminalLicenseAuthService {
                 }
             }
         }
-
-        LOGGER.info("进行[{}]是否允许授权校验,不允许授权", authMode);
-        return false;
+        if (isFit) {
+            LOGGER.info("进行[{}]是否允许授权校验,不允许授权", authMode);
+            return false;
+        }
+        LOGGER.info("进行[{}]是否允许授权校验,未匹配中工作模式，直接允许授权", authMode);
+        return true;
     }
 
     /**
