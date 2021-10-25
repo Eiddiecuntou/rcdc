@@ -73,7 +73,7 @@
 		<dependency>
 			<groupId>com.ruijie.rcos.rcdc.hciadapter.module</groupId>
 			<artifactId>rcdc-hciadapter-module-impl</artifactId>
-			<version>${project.version}</version>
+			<version>${rcdc-hciadapter-module.version}</version>
 		</dependency>
 
 		<dependency>

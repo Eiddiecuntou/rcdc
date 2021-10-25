@@ -19,7 +19,7 @@
 		<dependency>
             <groupId>com.ruijie.rcos.rcdc.hciadapter.module</groupId>
             <artifactId>rcdc-hciadapter-module-def</artifactId>
-            <version>${project.version}</version>
+            <version>${rcdc-hciadapter-module.version}</version>
         </dependency>
         <dependency>
             <groupId>com.ruijie.rcos.sk.commkit</groupId>
