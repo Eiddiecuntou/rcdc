@@ -60,6 +60,9 @@ public class CbbTerminalDiskInfoDTO {
     @JSONField(name = "dev_model")
     private String devModel;
 
+    @JSONField(name = "dev_avil")
+    private String devAvil;
+
     public String getDevName() {
         return devName;
     }
@@ -170,5 +173,13 @@ public class CbbTerminalDiskInfoDTO {
 
     public void setDevModel(String devModel) {
         this.devModel = devModel;
+    }
+
+    public String getDevAvil() {
+        return devAvil;
+    }
+
+    public void setDevAvil(String devAvil) {
+        this.devAvil = devAvil;
     }
 }
