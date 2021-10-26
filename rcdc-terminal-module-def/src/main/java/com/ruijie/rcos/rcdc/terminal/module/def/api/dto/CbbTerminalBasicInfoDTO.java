@@ -4,6 +4,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbGetNetworkModeEnums
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalStartMode;
 
@@ -106,6 +107,12 @@ public class CbbTerminalBasicInfoDTO {
     private String productId;
 
     private CbbTerminalPlatformEnums authMode;
+
+    private String upgradeCpuType;
+
+    private CbbCpuArchType cpuArch;
+
+    private String ocsSn;
 
     public Long getDataDiskSize() {
         return dataDiskSize;
@@ -429,5 +436,29 @@ public class CbbTerminalBasicInfoDTO {
 
     public void setAuthMode(CbbTerminalPlatformEnums authMode) {
         this.authMode = authMode;
+    }
+
+    public String getUpgradeCpuType() {
+        return upgradeCpuType;
+    }
+
+    public void setUpgradeCpuType(String upgradeCpuType) {
+        this.upgradeCpuType = upgradeCpuType;
+    }
+
+    public CbbCpuArchType getCpuArch() {
+        return cpuArch;
+    }
+
+    public void setCpuArch(CbbCpuArchType cpuArch) {
+        this.cpuArch = cpuArch;
+    }
+
+    public String getOcsSn() {
+        return ocsSn;
+    }
+
+    public void setOcsSn(String ocsSn) {
+        this.ocsSn = ocsSn;
     }
 }
