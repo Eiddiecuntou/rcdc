@@ -120,7 +120,13 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
                 TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
                 licenseService.decreaseCacheLicenseUsedNum();
             }
-
+            LOGGER.info("终端授权回收成功");
+            // 如果当前终端的授权记录不是预期回收的，则将修改一个为删除终端的授权类型
+            TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+            if (!authorizeEntity.getLicenseType().equals(licenseTypeStr)) {
+                LOGGER.info("终端的授权记录不是预期回收的， 修改一个授权类型[{}]为删除终端的授权类型[{}]", licenseTypeStr, authorizeEntity.getLicenseType());
+                convertAuthLicenseType(authMode, licenseTypeStr, authorizeEntity.getLicenseType());
+            }
             // 删除授权记录
             terminalAuthorizeDAO.deleteByTerminalId(terminalId);
 
@@ -137,5 +143,13 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
         }
 
         return licenseTypeStr.toString().substring(1, licenseTypeStr.length());
+    }
+
+    private void convertAuthLicenseType(CbbTerminalPlatformEnums authMode, String licenseType, String updateLicenseType) {
+        List<TerminalAuthorizeEntity> authorizeEntityList = terminalAuthorizeDAO.findByLicenseTypeAndAuthMode(licenseType, authMode);
+
+        TerminalAuthorizeEntity authorizeEntity = authorizeEntityList.get(0);
+        authorizeEntity.setLicenseType(updateLicenseType);
+        terminalAuthorizeDAO.save(authorizeEntity);
     }
 }
