@@ -8,6 +8,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.dto.AppUpdateListDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -25,6 +26,8 @@ public class CbbTerminalVersionAPIImpl implements CbbTerminalVersionAPI {
 
     @Override
     public String getTerminalVersion(CbbCpuArchType cbbCpuArchType, String terminalOsType) {
+        Assert.notNull(cbbCpuArchType, "cbbCpuArchType不能为空");
+        Assert.hasText(terminalOsType, "terminalOsType不能为空");
 
         CbbTerminalOsTypeEnums osType = CbbTerminalOsTypeEnums.valueOf(terminalOsType.toUpperCase());
         TerminalOsArchType osArchType = TerminalOsArchType.convert(osType, cbbCpuArchType);
