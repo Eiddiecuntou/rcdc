@@ -52,22 +52,22 @@ public class TerminalAuthHelper {
     /**
      * 终端进行授权
      *
-     * @param isNewConnection    是否新连接
+     * @param isNewConnection 是否新连接
      * @param isInUpgradeProcess 是否处于升级进程中
-     * @param basicInfo          终端基本信息
+     * @param basicInfo 终端基本信息
      * @return TerminalAuthResult 授权结果
      */
     public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
         Assert.notNull(basicInfo, "basicInfo can not be null");
 
-        //TCI OCS授权优先
+        // TCI OCS授权优先
         if (terminalAuthorizationWhitelistService.checkWhiteList(basicInfo)) {
-            LOGGER.info("终端在白名单中，无需认证");
+            LOGGER.info("终端[{}]在白名单中，无需认证", basicInfo.getTerminalId());
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
         if (whiteListHandlerSPI.checkWhiteList(basicInfo)) {
-            LOGGER.info("终端在白名单中，无需认证");
+            LOGGER.info("终端[{}]在白名单中，无需认证", basicInfo.getTerminalId());
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
@@ -107,8 +107,8 @@ public class TerminalAuthHelper {
      * 处理终端授权扣除逻辑
      *
      * @param terminalId 终端id
-     * @param authMode   平台类型
-     * @param authed     是否授权
+     * @param authMode 平台类型
+     * @param authed 是否授权
      * @throws BusinessException 业务异常
      */
     public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums authMode, Boolean authed) throws BusinessException {
