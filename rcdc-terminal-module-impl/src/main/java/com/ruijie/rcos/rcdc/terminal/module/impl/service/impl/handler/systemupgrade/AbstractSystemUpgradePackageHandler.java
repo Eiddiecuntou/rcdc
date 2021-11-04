@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -40,6 +41,13 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
         LOGGER.info("上传终端升级包：{}", request.getFileName());
         TerminalUpgradeVersionFileInfo upgradeInfo = getPackageInfo(fileName, filePath);
         getSystemUpgradePackageService().saveTerminalUpgradePackage(upgradeInfo);
+    }
+
+    @Override
+    public boolean checkFileNameDuplicate(String fileName) {
+
+        Assert.notNull(fileName, "fileName can not be null");
+        return !getSystemUpgradePackageService().existsTerminalUpdatePackage(getPackageType(), fileName);
     }
 
     @Override
@@ -102,6 +110,8 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
             }
         }
     }
+
+    protected abstract CbbTerminalTypeEnums getPackageType();
 
     protected abstract TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException;
 

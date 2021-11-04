@@ -13,7 +13,10 @@ import java.util.List;
  */
 public class CbbCheckAllowUploadPackageResultDTO {
 
-    private Boolean allowUpload;
+    /**
+     * 是否允许上传
+     */
+    private Boolean allowUpload = true;
 
     private List<String> errorList;
 

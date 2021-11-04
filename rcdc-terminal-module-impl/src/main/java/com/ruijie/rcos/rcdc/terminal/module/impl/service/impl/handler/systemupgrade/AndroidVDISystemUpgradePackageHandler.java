@@ -94,6 +94,11 @@ public class AndroidVDISystemUpgradePackageHandler extends AbstractSystemUpgrade
     }
 
     @Override
+    protected CbbTerminalTypeEnums getPackageType() {
+        return CbbTerminalTypeEnums.VDI_ANDROID;
+    }
+
+    @Override
     protected TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.hasText(fileName, "fileName can not be blank");
         Assert.hasText(filePath, "filePath can not be blank");

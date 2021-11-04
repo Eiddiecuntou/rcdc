@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalSystemUpgradePackageService;
@@ -62,6 +63,12 @@ public class AbstractSystemUpgradePackageHandlerTest {
     }
 
     private class MockSystemUpgradePackageHandler extends AbstractSystemUpgradePackageHandler {
+
+        @Override
+        protected CbbTerminalTypeEnums getPackageType() {
+            return null;
+        }
+
         @Override
         protected TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
             return new TerminalUpgradeVersionFileInfo();

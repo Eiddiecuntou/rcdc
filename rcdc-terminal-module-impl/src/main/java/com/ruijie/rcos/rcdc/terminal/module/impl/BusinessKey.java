@@ -133,6 +133,11 @@ public interface BusinessKey {
     String RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH = "rcdc_terminal_upgrade_package_disk_space_not_enough";
 
     /**
+     * 系统刷机包文件是否重复
+     */
+    String RCDC_TERMINAL_UPGRADE_PACKAGE_NAME_DUPLICATE = "rcdc_terminal_upgrade_package_name_duplicate";
+
+    /**
      * 存在进行中的升级任务，不允许删除
      */
     String RCDC_TERMINAL_UPGRADE_PACKAGE_HAS_RUNNING_TASK_NOT_ALLOW_DELETE = "rcdc_terminal_upgrade_package_has_running_task_not_allow_delete";

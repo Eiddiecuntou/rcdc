@@ -38,6 +38,14 @@ public interface TerminalSystemUpgradePackageHandler {
     String getUpgradePackageFileDir();
 
     /**
+     * 检验上传文件名称是否重复
+     *
+     * @param fileName 文件大小
+     * @return 上传文件名称是否重复
+     */
+    boolean checkFileNameDuplicate(String fileName);
+
+    /**
      * 检验磁盘空间是否满足升级包上传
      *
      * @param fileSize 文件大小

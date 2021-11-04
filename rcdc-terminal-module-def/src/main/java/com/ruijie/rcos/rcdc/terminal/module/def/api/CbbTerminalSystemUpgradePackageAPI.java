@@ -131,6 +131,7 @@ public interface CbbTerminalSystemUpgradePackageAPI {
      * @apiDescription 校验升级包是否允许上传
      * @apiParam (请求体字段说明) {CbbCheckAllowUploadPackageDTO} request CbbCheckAllowUploadPackageDTO
      * @apiParam (请求体字段说明) {Long} request.fileSize 文件大小
+     * @apiParam (请求体字段说明) {String} request.fileName 文件名称
      * @apiParam (请求体字段说明) {CbbTerminalTypeEnums="VDI_LINUX","VDI_ANDROID","VDI_WINDOWS","IDV_LINUX","APP_WINDOWS","APP_ANDROID","APP_MACOS",
      * "APP_IOS","APP_LINUX"} request.terminalType 终端类型
      *

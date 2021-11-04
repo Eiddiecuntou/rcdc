@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalSystemUpgradePackageInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbSystemUpgradeTaskStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalUpgradePackageUploadDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbCheckAllowUploadPackageResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradeDistributionModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbSystemUpgradePackageOriginEnums;
@@ -428,7 +427,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testCheckAllowUploadPackage(@Injectable TerminalSystemUpgradePackageHandler handler) throws Exception {
-        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO(10L);
+        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO("20211104144107.zip", 10L);
 
         new Expectations() {
             {
@@ -451,13 +450,14 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testCheckAllowUploadPackageWithPackageNull(@Injectable TerminalSystemUpgradePackageHandler handler) throws Exception {
-        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO(10L);
+        CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO("20211104144107.zip", 10L);
 
         new Expectations() {
             {
                 terminalSystemUpgradePackageHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = handler;
                 handler.checkServerDiskSpaceIsEnough(anyLong, anyString);
+                handler.checkFileNameDuplicate(anyString);
                 result = false;
             }
         };
@@ -471,6 +471,6 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
 
         CbbCheckAllowUploadPackageResultDTO response = upgradePackageAPIImpl.checkAllowUploadPackage(request);
         assertEquals(false, response.getAllowUpload());
-        assertEquals(1, response.getErrorList().size());
+        assertEquals(2, response.getErrorList().size());
     }
 }
