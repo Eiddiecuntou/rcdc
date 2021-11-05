@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -43,7 +44,17 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
     }
 
     @Override
-    public boolean checkServerDiskSpaceIsEnough(Long fileSize, String fileStorePath) {
+    public synchronized boolean checkFileNameNotDuplicate(String fileName) {
+
+        Assert.notNull(fileName, "fileName can not be null");
+        final boolean isExist = getSystemUpgradePackageService().existsTerminalUpdatePackage(getPackageType(), fileName);
+
+        LOGGER.info("升级包文件：{}，类型：{}，是否名称重复：{}", fileName, getPackageType(), isExist);
+        return !isExist;
+    }
+
+    @Override
+    public synchronized boolean checkServerDiskSpaceIsEnough(Long fileSize, String fileStorePath) {
         Assert.notNull(fileSize, "fileSize can not be null");
         Assert.notNull(fileStorePath, "fileStorePath can not be null");
 
@@ -102,6 +113,8 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
             }
         }
     }
+
+    protected abstract CbbTerminalTypeEnums getPackageType();
 
     protected abstract TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException;
 

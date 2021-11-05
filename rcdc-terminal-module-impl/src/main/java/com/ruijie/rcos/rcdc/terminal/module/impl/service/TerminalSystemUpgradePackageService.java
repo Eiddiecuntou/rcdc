@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePackageEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalSystemUpgradeInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalUpgradeVersionFileInfo;
@@ -18,6 +19,16 @@ import java.util.UUID;
  * @author nt
  */
 public interface TerminalSystemUpgradePackageService {
+
+    /**
+     *
+     * 终端升级版本包文件名是否重复
+     *
+     * @param packageType 升级版本信息
+     * @param packageName 升级版本信息
+     * @return 是否存在重复
+     */
+    boolean existsTerminalUpdatePackage(CbbTerminalTypeEnums packageType, String packageName);
 
     /**
      * 

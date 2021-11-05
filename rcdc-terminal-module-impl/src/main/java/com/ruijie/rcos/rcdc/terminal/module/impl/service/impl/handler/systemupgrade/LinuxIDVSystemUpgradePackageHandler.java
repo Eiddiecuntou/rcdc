@@ -87,6 +87,11 @@ public class LinuxIDVSystemUpgradePackageHandler extends AbstractSystemUpgradePa
     }
 
     @Override
+    protected CbbTerminalTypeEnums getPackageType() {
+        return CbbTerminalTypeEnums.IDV_LINUX;
+    }
+
+    @Override
     protected TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException {
         Assert.hasText(fileName, "fileName must have text!");
         Assert.hasText(filePath, "filePath must have text!");

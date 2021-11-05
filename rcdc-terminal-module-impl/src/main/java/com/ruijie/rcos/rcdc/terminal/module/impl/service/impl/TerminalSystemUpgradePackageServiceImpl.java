@@ -42,6 +42,17 @@ public class TerminalSystemUpgradePackageServiceImpl implements TerminalSystemUp
     private TerminalSystemUpgradePackageDAO terminalSystemUpgradePackageDAO;
 
     @Override
+    public boolean existsTerminalUpdatePackage(CbbTerminalTypeEnums packageType, String packageName) {
+
+        Assert.notNull(packageType, "packageType must not be null");
+        Assert.notNull(packageName, "packageName must not be null");
+
+        TerminalSystemUpgradePackageEntity terminalSystemUpgradePackageEntity = terminalSystemUpgradePackageDAO
+                .findByPackageTypeAndPackageNameAndIsDelete(packageType, packageName, false);
+        return terminalSystemUpgradePackageEntity != null;
+    }
+
+    @Override
     public void saveTerminalUpgradePackage(TerminalUpgradeVersionFileInfo versionInfo) throws BusinessException {
         Assert.notNull(versionInfo, "terminalUpgradeVersionFileInfo 不能为空");
 

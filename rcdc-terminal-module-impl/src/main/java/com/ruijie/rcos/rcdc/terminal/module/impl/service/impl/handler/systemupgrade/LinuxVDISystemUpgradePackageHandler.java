@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.UpgradeFileTypeEnums;
@@ -51,6 +52,11 @@ public class LinuxVDISystemUpgradePackageHandler extends AbstractSystemUpgradePa
     @Override
     public String getUpgradePackageFileDir() {
         return Constants.PXE_SAMBA_PACKAGE_PATH;
+    }
+
+    @Override
+    protected CbbTerminalTypeEnums getPackageType() {
+        return CbbTerminalTypeEnums.VDI_LINUX;
     }
 
     @Override

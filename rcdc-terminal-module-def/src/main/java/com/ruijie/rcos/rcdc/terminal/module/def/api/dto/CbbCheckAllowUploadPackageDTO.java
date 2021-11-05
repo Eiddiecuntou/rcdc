@@ -1,16 +1,17 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
+import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.base.annotation.Range;
+import com.ruijie.rcos.sk.base.annotation.TextMedium;
 
 /**
- * 
  * Description: 校验是否允许上传升级包
  * Copyright: Copyright (c) 2018
  * Company: Ruijie Co., Ltd.
  * Create Time: 2019年3月24日
- * 
+ *
  * @author nt
  */
 public class CbbCheckAllowUploadPackageDTO {
@@ -19,11 +20,24 @@ public class CbbCheckAllowUploadPackageDTO {
     @Range(min = "1")
     private Long fileSize;
 
+    @NotBlank
+    @TextMedium
+    private String fileName;
+
     @NotNull
     private CbbTerminalTypeEnums terminalType;
 
-    public CbbCheckAllowUploadPackageDTO(Long fileSize) {
+    public CbbCheckAllowUploadPackageDTO(String fileName, Long fileSize) {
+        this.fileName = fileName;
         this.fileSize = fileSize;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public Long getFileSize() {
