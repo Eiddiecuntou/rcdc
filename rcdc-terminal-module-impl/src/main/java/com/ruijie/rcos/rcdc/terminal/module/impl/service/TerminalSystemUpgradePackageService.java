@@ -26,6 +26,7 @@ public interface TerminalSystemUpgradePackageService {
      *
      * @param packageType 升级版本信息
      * @param packageName 升级版本信息
+     * @return 是否存在重复
      */
     boolean existsTerminalUpdatePackage(CbbTerminalTypeEnums packageType, String packageName);
 

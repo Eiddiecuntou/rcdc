@@ -26,10 +26,8 @@ import com.ruijie.rcos.sk.base.test.ThrowExceptionTester;
 import com.ruijie.rcos.sk.modulekit.api.comm.IdRequest;
 import mockit.*;
 import org.apache.commons.lang3.time.DateUtils;
-import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
@@ -457,7 +455,7 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
                 terminalSystemUpgradePackageHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = handler;
                 handler.checkServerDiskSpaceIsEnough(anyLong, anyString);
-                handler.checkFileNameDuplicate(anyString);
+                handler.checkFileNameNotDuplicate(anyString);
                 result = false;
             }
         };

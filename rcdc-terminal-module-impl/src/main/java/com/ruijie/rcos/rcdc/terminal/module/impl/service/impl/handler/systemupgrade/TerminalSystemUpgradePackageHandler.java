@@ -43,7 +43,7 @@ public interface TerminalSystemUpgradePackageHandler {
      * @param fileName 文件大小
      * @return 上传文件名称是否重复
      */
-    boolean checkFileNameDuplicate(String fileName);
+    boolean checkFileNameNotDuplicate(String fileName);
 
     /**
      * 检验磁盘空间是否满足升级包上传

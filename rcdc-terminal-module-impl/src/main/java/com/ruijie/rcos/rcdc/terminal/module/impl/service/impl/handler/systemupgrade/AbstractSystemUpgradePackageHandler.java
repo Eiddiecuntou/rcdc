@@ -44,10 +44,13 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
     }
 
     @Override
-    public boolean checkFileNameDuplicate(String fileName) {
+    public boolean checkFileNameNotDuplicate(String fileName) {
 
         Assert.notNull(fileName, "fileName can not be null");
-        return !getSystemUpgradePackageService().existsTerminalUpdatePackage(getPackageType(), fileName);
+        final boolean flag = getSystemUpgradePackageService().existsTerminalUpdatePackage(getPackageType(), fileName);
+
+        LOGGER.info("升级包文件：{}，类型：{}，是否名称重复：{}", fileName, getPackageType(), flag);
+        return !flag;
     }
 
     @Override
