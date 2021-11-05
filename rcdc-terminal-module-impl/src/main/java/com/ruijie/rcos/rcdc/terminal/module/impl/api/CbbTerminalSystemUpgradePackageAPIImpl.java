@@ -74,17 +74,14 @@ public class CbbTerminalSystemUpgradePackageAPIImpl implements CbbTerminalSystem
 
         TerminalSystemUpgradePackageHandler handler = terminalSystemUpgradePackageHandlerFactory.getHandler(request.getTerminalType());
 
-        synchronized (request.getTerminalType()) {
+        // 判断磁盘大小是否满足
+        if (!handler.checkServerDiskSpaceIsEnough(request.getFileSize(), handler.getUpgradePackageFileDir())) {
+            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[]{}));
+        }
 
-            // 判断磁盘大小是否满足
-            if (!handler.checkServerDiskSpaceIsEnough(request.getFileSize(), handler.getUpgradePackageFileDir())) {
-                errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_DISK_SPACE_NOT_ENOUGH, new String[] {}));
-            }
-
-            // 判断文件是否重复
-            if (!handler.checkFileNameNotDuplicate(request.getFileName())) {
-                errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_NAME_DUPLICATE, new String[] {}));
-            }
+        // 判断文件是否重复
+        if (!handler.checkFileNameNotDuplicate(request.getFileName())) {
+            errorList.add(LocaleI18nResolver.resolve(BusinessKey.RCDC_TERMINAL_UPGRADE_PACKAGE_NAME_DUPLICATE, new String[]{}));
         }
 
         CbbCheckAllowUploadPackageResultDTO respone = new CbbCheckAllowUploadPackageResultDTO();

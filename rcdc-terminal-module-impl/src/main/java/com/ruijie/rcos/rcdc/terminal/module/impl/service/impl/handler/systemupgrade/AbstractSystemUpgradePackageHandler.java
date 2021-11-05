@@ -44,7 +44,7 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
     }
 
     @Override
-    public boolean checkFileNameNotDuplicate(String fileName) {
+    public synchronized boolean checkFileNameNotDuplicate(String fileName) {
 
         Assert.notNull(fileName, "fileName can not be null");
         final boolean isExist = getSystemUpgradePackageService().existsTerminalUpdatePackage(getPackageType(), fileName);
@@ -54,7 +54,7 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
     }
 
     @Override
-    public boolean checkServerDiskSpaceIsEnough(Long fileSize, String fileStorePath) {
+    public synchronized boolean checkServerDiskSpaceIsEnough(Long fileSize, String fileStorePath) {
         Assert.notNull(fileSize, "fileSize can not be null");
         Assert.notNull(fileStorePath, "fileStorePath can not be null");
 
