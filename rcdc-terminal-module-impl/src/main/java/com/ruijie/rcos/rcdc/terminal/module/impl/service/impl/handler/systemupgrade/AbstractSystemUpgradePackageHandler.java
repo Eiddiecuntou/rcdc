@@ -20,6 +20,8 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
 
+import javax.annotation.Nullable;
+
 /**
  * Description: Function Description
  * Copyright: Copyright (c) 2018
@@ -44,9 +46,13 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
     }
 
     @Override
-    public synchronized boolean checkFileNameNotDuplicate(String fileName) {
+    public synchronized boolean checkFileNameNotDuplicate(@Nullable String fileName) {
 
-        Assert.notNull(fileName, "fileName can not be null");
+        if (StringUtils.isBlank(fileName)) {
+            LOGGER.info("升级包名称未传入，无需校验");
+            return true;
+        }
+
         final boolean isExist = getSystemUpgradePackageService().existsTerminalUpdatePackage(getPackageType(), fileName);
 
         LOGGER.info("升级包文件：{}，类型：{}，是否名称重复：{}", fileName, getPackageType(), isExist);

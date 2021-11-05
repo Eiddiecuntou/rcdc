@@ -1,10 +1,10 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.sk.base.annotation.NotBlank;
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 import com.ruijie.rcos.sk.base.annotation.Range;
-import com.ruijie.rcos.sk.base.annotation.TextMedium;
+
+import javax.annotation.Nullable;
 
 /**
  * Description: 校验是否允许上传升级包
@@ -20,12 +20,15 @@ public class CbbCheckAllowUploadPackageDTO {
     @Range(min = "1")
     private Long fileSize;
 
-    @NotBlank
-    @TextMedium
+    @Nullable
     private String fileName;
 
     @NotNull
     private CbbTerminalTypeEnums terminalType;
+
+    public CbbCheckAllowUploadPackageDTO(Long fileSize) {
+        this.fileSize = fileSize;
+    }
 
     public CbbCheckAllowUploadPackageDTO(String fileName, Long fileSize) {
         this.fileName = fileName;
