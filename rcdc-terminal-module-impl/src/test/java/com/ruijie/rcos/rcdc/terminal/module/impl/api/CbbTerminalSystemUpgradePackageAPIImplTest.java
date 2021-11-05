@@ -425,13 +425,17 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testCheckAllowUploadPackage(@Injectable TerminalSystemUpgradePackageHandler handler) throws Exception {
+
         CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO("20211104144107.zip", 10L);
+        request.setTerminalType(CbbTerminalTypeEnums.IDV_LINUX);
 
         new Expectations() {
             {
                 terminalSystemUpgradePackageHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = handler;
                 handler.checkServerDiskSpaceIsEnough(anyLong, anyString);
+                result = true;
+                handler.checkFileNameNotDuplicate(anyString);
                 result = true;
             }
         };
@@ -448,13 +452,16 @@ public class CbbTerminalSystemUpgradePackageAPIImplTest {
      */
     @Test
     public void testCheckAllowUploadPackageWithPackageNull(@Injectable TerminalSystemUpgradePackageHandler handler) throws Exception {
+
         CbbCheckAllowUploadPackageDTO request = new CbbCheckAllowUploadPackageDTO("20211104144107.zip", 10L);
+        request.setTerminalType(CbbTerminalTypeEnums.IDV_LINUX);
 
         new Expectations() {
             {
                 terminalSystemUpgradePackageHandlerFactory.getHandler((CbbTerminalTypeEnums) any);
                 result = handler;
                 handler.checkServerDiskSpaceIsEnough(anyLong, anyString);
+                result = false;
                 handler.checkFileNameNotDuplicate(anyString);
                 result = false;
             }
