@@ -66,7 +66,7 @@ public class AbstractSystemUpgradePackageHandlerTest {
 
         @Override
         protected CbbTerminalTypeEnums getPackageType() {
-            return null;
+            return CbbTerminalTypeEnums.VDI_LINUX;
         }
 
         @Override
