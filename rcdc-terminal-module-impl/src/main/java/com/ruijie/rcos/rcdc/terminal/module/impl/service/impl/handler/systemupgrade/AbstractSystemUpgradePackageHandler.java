@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
@@ -18,6 +19,8 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
+
+import javax.annotation.Nullable;
 
 /**
  * Description: Function Description
@@ -43,7 +46,21 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
     }
 
     @Override
-    public boolean checkServerDiskSpaceIsEnough(Long fileSize, String fileStorePath) {
+    public synchronized boolean checkFileNameNotDuplicate(@Nullable String fileName) {
+
+        if (StringUtils.isBlank(fileName)) {
+            LOGGER.info("升级包名称未传入，无需校验");
+            return true;
+        }
+
+        final boolean isExist = getSystemUpgradePackageService().existsTerminalUpdatePackage(getPackageType(), fileName);
+
+        LOGGER.info("升级包文件：{}，类型：{}，是否名称重复：{}", fileName, getPackageType(), isExist);
+        return !isExist;
+    }
+
+    @Override
+    public synchronized boolean checkServerDiskSpaceIsEnough(Long fileSize, String fileStorePath) {
         Assert.notNull(fileSize, "fileSize can not be null");
         Assert.notNull(fileStorePath, "fileStorePath can not be null");
 
@@ -102,6 +119,8 @@ public abstract class AbstractSystemUpgradePackageHandler implements TerminalSys
             }
         }
     }
+
+    protected abstract CbbTerminalTypeEnums getPackageType();
 
     protected abstract TerminalUpgradeVersionFileInfo getPackageInfo(String fileName, String filePath) throws BusinessException;
 
