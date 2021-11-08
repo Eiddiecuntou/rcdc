@@ -2,12 +2,10 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi.maintenance;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
 import java.util.UUID;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalSystemUpgradePackageDAO;
@@ -15,7 +13,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalSystemUpgradePac
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalSystemUpgradeServiceImpl;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
@@ -51,7 +48,7 @@ public class BeforeEnteringMaintenanceHandlerTest {
 
         new Expectations() {
             {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                systemUpgradePackageDAO.findByPackageTypeAndCpuArchAndIsDelete(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64, false);
                 result = null;
             }
         };
@@ -60,38 +57,7 @@ public class BeforeEnteringMaintenanceHandlerTest {
 
         new Verifications() {
             {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
-                times = 1;
-
-                terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
-                times = 0;
-            }
-        };
-    }
-
-
-    /**
-     * testHandleVDIPackageIsDelete
-     *
-     * @throws BusinessException BusinessException
-     */
-    @Test
-    public void testHandleVDIPackageIsDelete() throws BusinessException {
-
-        TerminalSystemUpgradePackageEntity packageEntity = new TerminalSystemUpgradePackageEntity();
-        packageEntity.setIsDelete(true);
-        new Expectations() {
-            {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
-                result = packageEntity;
-            }
-        };
-
-        handler.handle();
-
-        new Verifications() {
-            {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                systemUpgradePackageDAO.findByPackageTypeAndCpuArchAndIsDelete(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64, false);
                 times = 1;
 
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
@@ -113,7 +79,7 @@ public class BeforeEnteringMaintenanceHandlerTest {
         packageEntity.setIsDelete(false);
         new Expectations() {
             {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                systemUpgradePackageDAO.findByPackageTypeAndCpuArchAndIsDelete(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64, false);
                 result = packageEntity;
 
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageEntity.getId());
@@ -130,7 +96,7 @@ public class BeforeEnteringMaintenanceHandlerTest {
 
         new Verifications() {
             {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                systemUpgradePackageDAO.findByPackageTypeAndCpuArchAndIsDelete(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64, false);
                 times = 1;
 
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
@@ -152,7 +118,7 @@ public class BeforeEnteringMaintenanceHandlerTest {
         packageEntity.setIsDelete(false);
         new Expectations() {
             {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                systemUpgradePackageDAO.findByPackageTypeAndCpuArchAndIsDelete(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64, false);
                 result = packageEntity;
 
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageEntity.getId());
@@ -164,7 +130,7 @@ public class BeforeEnteringMaintenanceHandlerTest {
 
         new Verifications() {
             {
-                systemUpgradePackageDAO.findFirstByPackageType(CbbTerminalTypeEnums.VDI_LINUX);
+                systemUpgradePackageDAO.findByPackageTypeAndCpuArchAndIsDelete(CbbTerminalTypeEnums.VDI_LINUX, CbbCpuArchType.X86_64, false);
                 times = 1;
 
                 terminalSystemUpgradeService.hasSystemUpgradeInProgress((UUID) any);
