@@ -139,12 +139,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         boolean isInUpgradeProcess = isNeedUpgradeOrAbnormalUpgradeResult(versionResult, systemUpgradeCheckResult);
         TerminalAuthResult authResult = terminalAuthHelper.processTerminalAuth(request.getNewConnection(), isInUpgradeProcess, basicInfo);
-
-        if (authResult.isAuthed()) {
-            basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo, Boolean.TRUE);
-        } else {
-            basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo, Boolean.FALSE);
-        }
+        basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo, authResult.isAuthed());
 
         if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
             LOGGER.info("终端[{}]授权失败", basicInfo.getTerminalId());
