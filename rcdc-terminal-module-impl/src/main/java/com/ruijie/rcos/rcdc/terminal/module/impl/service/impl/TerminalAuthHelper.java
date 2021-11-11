@@ -68,6 +68,12 @@ public class TerminalAuthHelper {
 
         if (whiteListHandlerSPI.checkWhiteList(basicInfo)) {
             LOGGER.info("终端[{}]在白名单中，无需认证", basicInfo.getTerminalId());
+            // 查找终端授权表是否有该终端信息，有的话则处理终端授权扣除逻辑
+            try {
+                terminalLicenseAuthService.recycle(basicInfo.getTerminalId(), basicInfo.getAuthMode());
+            } catch (BusinessException e) {
+                LOGGER.error("white list auth recycle error: ", e);
+            }
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
