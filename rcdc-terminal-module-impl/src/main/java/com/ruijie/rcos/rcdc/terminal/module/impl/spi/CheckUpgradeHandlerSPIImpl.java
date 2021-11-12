@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLockHelper;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -36,6 +37,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -75,20 +77,18 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     @Autowired
     private TerminalLockHelper terminalLockHelper;
 
+    private static final ExecutorService CHECK_UPGRADE_THREAD_POOL =
+            ThreadExecutors.newBuilder("checkUpgradeTreadPool").maxThreadNum(80).queueSize(1).build();
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
-        LOGGER.info("组件升级处理请求开始处理，请求参数为[{}]", JSON.toJSONString(request));
+        LOGGER.info("终端[{}]组件升级处理请求", request.getTerminalId());
 
-        Lock lock = terminalLockHelper.putAndGetLock(request.getTerminalId());
-        lock.lock();
-
-        try {
+        CHECK_UPGRADE_THREAD_POOL.execute(() -> {
+            LOGGER.info("开始处理终端[{}]组件升级", request.getTerminalId());
             doDispatch(request);
-        } finally {
-            lock.unlock();
-        }
+        });
     }
 
     private void doDispatch(CbbDispatcherRequest request) {
@@ -131,7 +131,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private void handleIdvProcess(CbbDispatcherRequest request, TerminalEntity terminalEntity, CbbShineTerminalBasicInfo basicInfo,
-                                  CbbTerminalBizConfigDTO terminalBizConfigDTO) {
+            CbbTerminalBizConfigDTO terminalBizConfigDTO) {
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
         TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
@@ -150,7 +150,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private void handleVdiProcess(CbbDispatcherRequest request, TerminalEntity terminalEntity, CbbShineTerminalBasicInfo basicInfo,
-                                  CbbTerminalBizConfigDTO terminalBizConfigDTO) {
+            CbbTerminalBizConfigDTO terminalBizConfigDTO) {
 
         basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo, Boolean.TRUE);
 
@@ -162,14 +162,12 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private void responseToShine(CbbDispatcherRequest request, CbbTerminalBizConfigDTO terminalBizConfigDTO, TerminalVersionResultDTO versionResult,
-                                 SystemUpgradeCheckResult systemUpgradeCheckResult) {
+            SystemUpgradeCheckResult systemUpgradeCheckResult) {
         TerminalUpgradeResult terminalUpgradeResult = buildTerminalUpgradeResult(terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
         try {
             CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, terminalUpgradeResult);
 
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("response check upgrade : {}", JSON.toJSONString(cbbShineMessageRequest));
-            }
+            LOGGER.debug("终端[{}]升级处理结束 : {}", request.getTerminalId(), JSON.toJSONString(versionResult));
             messageHandlerAPI.response(cbbShineMessageRequest);
         } catch (Exception e) {
             LOGGER.error("升级检查消息应答失败", e);
@@ -182,7 +180,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private TerminalUpgradeResult buildTerminalUpgradeResult(CbbTerminalBizConfigDTO terminalBizConfig, TerminalVersionResultDTO versionResult,
-                                                             SystemUpgradeCheckResult systemUpgradeCheckResult) {
+            SystemUpgradeCheckResult systemUpgradeCheckResult) {
         TerminalUpgradeResult upgradeResult = new TerminalUpgradeResult();
         upgradeResult.setResult(versionResult.getResult());
         upgradeResult.setUpdatelist(versionResult.getUpdatelist());
