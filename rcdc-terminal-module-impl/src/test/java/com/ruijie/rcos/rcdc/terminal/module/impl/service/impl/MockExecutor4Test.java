@@ -134,4 +134,10 @@ public class MockExecutor4Test implements ThreadExecutor {
         Assert.notNull(command, "command can not be null");
         command.run();
     }
+
+    @Override
+    public String getThreadPoolName() {
+        // for test
+        return "MockExecutor4Test";
+    }
 }
