@@ -1,7 +1,11 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 /**
  * Description:
@@ -29,8 +33,15 @@ public interface TerminalAuthorizationWhitelistService {
 
     /**
      * @param terminalEntity 需要为该对象填充ocsSn字段
-     * @param diskInfo shine上报的磁盘信息
+     * @return 终端授权信息
      */
-    void fillOcsSnAndRecycleIfAuthed(TerminalEntity terminalEntity, String diskInfo);
+    TerminalAuthorizeEntity fillOcsSnAndReturnAuthInfo(TerminalEntity terminalEntity, TerminalEntity terminalEntityInDb);
+
+    /**
+     * 回收权限
+     * @param terminalEntity terminalEntity 终端信息
+     * @param terminalAuthorize 终端授权信息
+     */
+    void recycleAuth(TerminalEntity terminalEntity, TerminalAuthorizeEntity terminalAuthorize);
 
 }

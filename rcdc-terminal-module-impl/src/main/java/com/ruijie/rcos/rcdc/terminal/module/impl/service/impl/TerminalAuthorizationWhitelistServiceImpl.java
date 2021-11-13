@@ -29,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Description:
@@ -53,15 +54,11 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     @Autowired
     private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
-
     @Autowired
     private AuditLogAPI logAPI;
 
     @Autowired
     private CbbTerminalOcsAuthChangeSPI cbbTerminalOcsAuthChangeSPI;
-
-    @Autowired
-    private TerminalBasicInfoDAO basicInfoDAO;
 
     @Autowired
     private CbbTerminalLicenseMgmtAPI cbbTerminalLicenseMgmtAPI;
@@ -124,42 +121,67 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     }
 
     @Override
-    public void fillOcsSnAndRecycleIfAuthed(TerminalEntity terminalEntity, @Nullable String diskInfo) {
+    public TerminalAuthorizeEntity fillOcsSnAndReturnAuthInfo(TerminalEntity terminalEntity, @Nullable TerminalEntity terminalEntityInDb) {
         Assert.notNull(terminalEntity, "terminalEntity can not be null");
         if (terminalEntity.getPlatform() != CbbTerminalPlatformEnums.VOI) {
-            return;
+            return null;
         }
+        String diskInfo = terminalEntity.getAllDiskInfo();
         if (StringUtils.isBlank(diskInfo)) {
             terminalEntity.setOcsSn(null);
-            return;
+            return null;
         }
         String ocsSn = getOcsSnFromDiskInfo(diskInfo);
         terminalEntity.setOcsSn(ocsSn);
         if (StringUtils.isBlank(ocsSn)) {
-            return;
+            return null;
         }
 
         //回收本终端的其他授权
         String terminalId = terminalEntity.getTerminalId();
-        TerminalEntity terminalEntityInDb = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        if (terminalEntityInDb != null && terminalEntityInDb.getAuthed()) {
+            return terminalAuthorizeDAO.findByTerminalId(terminalId);
+        }
+        return null;
+//        String authType = "";
+//        try {
+//            if (terminalEntityInDb != null && terminalEntityInDb.getAuthed()) {
+//                TerminalAuthorizeEntity terminalAuthorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+//                if (terminalAuthorizeEntity != null) {
+//                    cbbTerminalLicenseMgmtAPI.cancelTerminalAuth(terminalId);
+//                    authType = CbbTerminalPlatformEnums.VOI.equals(terminalAuthorizeEntity.getAuthMode())
+//                            ? TERMINAL_MODE_TCI : terminalAuthorizeEntity.getAuthMode().name();
+//                    //其他授权回收需要记录审计日志
+//                    LOGGER.info("终端[{}({})]的[{}]授权被回收", terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
+//                    auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_SELF_OTHER_AUTH_RECYCLE,
+//                            terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
+//                }
+//            }
+//        } catch (BusinessException e) {
+//            LOGGER.error("ocs auth recycle error: ", e);
+//            auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_RECYCLE_ERROR,
+//                    terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType, e.getI18nMessage());
+//        }
+    }
+
+    @Override
+    public void recycleAuth(TerminalEntity terminalEntity, @Nullable TerminalAuthorizeEntity terminalAuthorizeEntity) {
+        Assert.notNull(terminalEntity, "terminalEntity can not be null");
         String authType = "";
         try {
-            if (terminalEntityInDb != null && terminalEntityInDb.getAuthed()) {
-                TerminalAuthorizeEntity terminalAuthorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
-                if (terminalAuthorizeEntity != null) {
-                    cbbTerminalLicenseMgmtAPI.cancelTerminalAuth(terminalId);
-                    authType = CbbTerminalPlatformEnums.VOI.equals(terminalAuthorizeEntity.getAuthMode())
-                            ? TERMINAL_MODE_TCI : terminalAuthorizeEntity.getAuthMode().name();
-                    //其他授权回收需要记录审计日志
-                    LOGGER.info("终端[{}({})]的[{}]授权被回收", terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
-                    auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_SELF_OTHER_AUTH_RECYCLE,
-                            terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType);
-                }
+            if (terminalAuthorizeEntity != null) {
+                cbbTerminalLicenseMgmtAPI.cancelTerminalAuth(terminalAuthorizeEntity.getTerminalId());
+                authType = CbbTerminalPlatformEnums.VOI.equals(terminalAuthorizeEntity.getAuthMode())
+                        ? TERMINAL_MODE_TCI : terminalAuthorizeEntity.getAuthMode().name();
+                //其他授权回收需要记录审计日志
+                LOGGER.info("终端[{}({})]的[{}]授权被回收", terminalEntity.getTerminalName(), terminalEntity.getTerminalId(), authType);
+                auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_SELF_OTHER_AUTH_RECYCLE,
+                        terminalEntity.getTerminalName(), terminalEntity.getTerminalId(), authType);
             }
         } catch (BusinessException e) {
             LOGGER.error("ocs auth recycle error: ", e);
             auditLogAPI.recordLog(BusinessKey.RCDC_TERMINAL_OCS_AUTHORIZATION_RECYCLE_ERROR,
-                    terminalEntityInDb.getTerminalName(), terminalEntityInDb.getTerminalId(), authType, e.getI18nMessage());
+                    terminalEntity.getTerminalName(), terminalEntity.getTerminalId(), authType, e.getI18nMessage());
         }
     }
 
