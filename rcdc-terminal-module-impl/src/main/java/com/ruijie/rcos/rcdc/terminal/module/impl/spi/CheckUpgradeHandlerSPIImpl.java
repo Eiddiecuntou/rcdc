@@ -12,10 +12,13 @@ import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
 import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
@@ -72,8 +75,14 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     @Autowired
     private TerminalAuthHelper terminalAuthHelper;
 
+    @Autowired
+    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
+
     private static final ExecutorService CHECK_UPGRADE_THREAD_POOL =
-            ThreadExecutors.newBuilder("checkUpgradeTreadPool").maxThreadNum(80).queueSize(1).build();
+            ThreadExecutors.newBuilder("checkUpgradeThreadPool").maxThreadNum(80).queueSize(1).build();
+
+    private static final ExecutorService TERMINAL_EVENT_NOTICE_THREAD_POOL =
+            ThreadExecutors.newBuilder("terminalEventNoticeThreadPool").maxThreadNum(80).queueSize(1).build();
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
@@ -123,6 +132,11 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             LOGGER.info("平台类型为[{}],进行升级处理", terminalEntity.getPlatform().name());
             handleVdiProcess(request, terminalEntity, basicInfo, terminalBizConfigDTO);
         }
+
+        TERMINAL_EVENT_NOTICE_THREAD_POOL.execute(() -> {
+            LOGGER.debug("开始通知其他组件终端为在线状态[{}]", request.getTerminalId());
+            doNotice(basicInfo);
+        });
     }
 
     private void handleIdvProcess(CbbDispatcherRequest request, TerminalEntity terminalEntity, CbbShineTerminalBasicInfo basicInfo,
@@ -212,4 +226,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         return basicInfo;
     }
 
+    private void doNotice(CbbShineTerminalBasicInfo basicInfo) {
+        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
+        noticeRequest.setTerminalBasicInfo(basicInfo);
+        terminalEventNoticeSPI.notify(noticeRequest);
+    }
 }
