@@ -6,13 +6,10 @@ import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSende
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalNetworkInfoDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -67,9 +64,6 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private TerminalBasicInfoDAO basicInfoDAO;
 
     @Autowired
-    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
-
-    @Autowired
     private TerminalModelDriverDAO terminalModelDriverDAO;
 
     @Autowired
@@ -103,11 +97,6 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
             LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, terminalId);
             isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
         }
-
-        // 通知其他组件终端为在线状态
-        CbbNoticeRequest noticeRequest = new CbbNoticeRequest(CbbNoticeEventEnums.ONLINE);
-        noticeRequest.setTerminalBasicInfo(shineTerminalBasicInfo);
-        terminalEventNoticeSPI.notify(noticeRequest);
     }
 
     private synchronized boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
@@ -187,17 +176,17 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     private String convertCpuType(String cpu) {
         if (StringUtils.isEmpty(cpu)) {
-            LOGGER.warn("cpu型号为空");
+            LOGGER.debug("cpu型号为空");
             return StringUtils.EMPTY;
         }
 
         if (cpu.toUpperCase().contains(Constants.CPU_TYPE_AMD)) {
-            LOGGER.info("cpu型号为AMD");
+            LOGGER.debug("cpu型号为AMD");
             return Constants.CPU_TYPE_AMD;
         }
 
         if (cpu.toUpperCase().contains(Constants.CPU_TYPE_INTEL)) {
-            LOGGER.info("cpu型号为INTEL");
+            LOGGER.debug("cpu型号为INTEL");
             return Constants.CPU_TYPE_INTEL;
         }
 
