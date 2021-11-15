@@ -20,7 +20,7 @@
     
     <properties>
         <rcdc-hciadapter-module.version>2.4.12-SNAPSHOT</rcdc-hciadapter-module.version>
-        <rcdc-codec-adapter.version>1.0.0-SNAPSHOT</rcdc-codec-adapter.version>
+        <rcdc-codec-adapter.version>1.0.1-SNAPSHOT</rcdc-codec-adapter.version>
     </properties>
 
     <!--定义依赖包版本号-->
