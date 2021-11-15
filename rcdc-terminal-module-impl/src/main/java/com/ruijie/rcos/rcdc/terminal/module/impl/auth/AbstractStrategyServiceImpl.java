@@ -1,7 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
-import java.util.concurrent.locks.Lock;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -11,7 +9,6 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TempLicCreateDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLockHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTerminalLicenseFactoryProvider;
 
 /**

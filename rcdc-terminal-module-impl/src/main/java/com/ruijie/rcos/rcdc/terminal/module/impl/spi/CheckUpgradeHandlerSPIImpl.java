@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLockHelper;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -38,7 +37,6 @@ import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.locks.Lock;
 
 /**
  * Description: 终端检查升级，同时需要保存终端基本信息
@@ -73,9 +71,6 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired
     private TerminalAuthHelper terminalAuthHelper;
-
-    @Autowired
-    private TerminalLockHelper terminalLockHelper;
 
     private static final ExecutorService CHECK_UPGRADE_THREAD_POOL =
             ThreadExecutors.newBuilder("checkUpgradeTreadPool").maxThreadNum(80).queueSize(1).build();
