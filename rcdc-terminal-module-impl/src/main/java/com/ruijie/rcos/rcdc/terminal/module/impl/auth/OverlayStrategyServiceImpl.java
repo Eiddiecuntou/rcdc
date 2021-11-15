@@ -123,7 +123,7 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
             LOGGER.info("终端授权回收成功");
             // 如果当前终端的授权记录不是预期回收的，则将修改一个为删除终端的授权类型
             TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
-            if (!authorizeEntity.getLicenseType().equals(licenseTypeStr)) {
+            if (authorizeEntity != null && !authorizeEntity.getLicenseType().equals(licenseTypeStr)) {
                 LOGGER.info("终端的授权记录不是预期回收的， 修改一个授权类型[{}]为删除终端的授权类型[{}]", licenseTypeStr, authorizeEntity.getLicenseType());
                 convertAuthLicenseType(authMode, licenseTypeStr, authorizeEntity.getLicenseType());
             }

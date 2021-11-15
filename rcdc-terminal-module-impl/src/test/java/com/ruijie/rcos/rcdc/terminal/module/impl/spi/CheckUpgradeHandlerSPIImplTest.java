@@ -13,15 +13,11 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
-import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalVersionResultDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalBasicInfoService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalComponentUpgradeService;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
-import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalLockHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeResult;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -29,9 +25,6 @@ import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import mockit.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.concurrent.locks.ReentrantLock;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -62,9 +55,6 @@ public class CheckUpgradeHandlerSPIImplTest {
     private TerminalSystemUpgradeHandlerFactory handlerFactory;
 
     @Injectable
-    private TerminalLicenseService terminalLicenseService;
-
-    @Injectable
     private CbbTerminalConnectHandlerSPI connectHandlerSPI;
 
     @Injectable
@@ -73,11 +63,8 @@ public class CheckUpgradeHandlerSPIImplTest {
     @Injectable
     private TerminalAuthHelper terminalAuthHelper;
 
-    @Injectable
-    private TerminalLockHelper terminalLockHelper;
-
     @Test
-    public void testDispatchUpdateTerminalWherePlatformTypeIsPc() {
+    public void testDispatchUpdateTerminalWherePlatformTypeIsPc() throws InterruptedException {
         CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
         info.setTerminalId("123");
         info.setPlatform(CbbTerminalPlatformEnums.PC);
@@ -89,9 +76,6 @@ public class CheckUpgradeHandlerSPIImplTest {
 
         new Expectations() {
             {
-                terminalLockHelper.putAndGetLock(anyString);
-                result = new ReentrantLock();
-
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 result = true;
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
@@ -103,7 +87,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         request.setData(JSON.toJSONString(info));
         request.setNewConnection(true);
         checkUpgradeHandler.dispatch(request);
-
+        Thread.sleep(1000);
         new Verifications() {
             {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
@@ -137,9 +121,6 @@ public class CheckUpgradeHandlerSPIImplTest {
 
         new Expectations() {
             {
-                terminalLockHelper.putAndGetLock(terminalId);
-                result = new ReentrantLock();
-
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 result = true;
 
@@ -170,6 +151,7 @@ public class CheckUpgradeHandlerSPIImplTest {
             request.setData(generateLinuxIDVJson());
             request.setNewConnection(false);
             checkUpgradeHandler.dispatch(request);
+            Thread.sleep(1000);
         } catch (Exception e) {
             fail();
         }
@@ -197,9 +179,10 @@ public class CheckUpgradeHandlerSPIImplTest {
 
     /**
      * 测试idv场景、新终端接入需要升级、无授权
+     * @throws InterruptedException 
      */
     @Test
-    public void testDispatcherWorkModeIllegal() {
+    public void testDispatcherWorkModeIllegal() throws InterruptedException {
         String terminalId = "123";
 
         TerminalEntity terminalEntity = new TerminalEntity();
@@ -216,8 +199,6 @@ public class CheckUpgradeHandlerSPIImplTest {
 
         new Expectations() {
             {
-                terminalLockHelper.putAndGetLock(terminalId);
-                result = new ReentrantLock();
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 result = true;
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
@@ -237,7 +218,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         request.setData(generateLinuxIDVJson());
         request.setNewConnection(true);
         checkUpgradeHandler.dispatch(request);
-
+        Thread.sleep(1000);
         new Verifications() {
             {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
@@ -254,15 +235,13 @@ public class CheckUpgradeHandlerSPIImplTest {
 
     /**
      *  不允许接入
+     * @throws InterruptedException 
      */
     @Test
-    public void testDispatchNotAllowConnect() {
+    public void testDispatchNotAllowConnect() throws InterruptedException {
 
         new Expectations() {
             {
-                terminalLockHelper.putAndGetLock(anyString);
-                result = new ReentrantLock();
-
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 result = false;
             }
@@ -271,7 +250,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         request.setData(generateLinuxIDVJson());
         request.setTerminalId("123");
         checkUpgradeHandler.dispatch(request);
-
+        Thread.sleep(1000);
         new Verifications() {
             {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
@@ -285,47 +264,12 @@ public class CheckUpgradeHandlerSPIImplTest {
 
     }
 
-    private void authHelperExpectations(boolean needSave, TerminalAuthResultEnums authResult) {
-        TerminalAuthResult resultInfo = new TerminalAuthResult(needSave, authResult);
-
-        new Expectations() {
-            {
-                terminalAuthHelper.processTerminalAuth(anyBoolean, anyBoolean, (CbbShineTerminalBasicInfo) any);
-                result = resultInfo;
-            }
-        };
-    }
-
-
-    private void saveVerifications() {
-        new Verifications() {
-            {
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
-                times = 1;
-                basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
-                times = 1;
-            }
-        };
-    }
-
-
     private String generateLinuxIDVJson() {
         CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
         info.setTerminalId("123");
         info.setTerminalName("t-box2");
         info.setCpuType("intel5");
         info.setPlatform(CbbTerminalPlatformEnums.IDV);
-        info.setTerminalOsType("Linux");
-        info.setCpuArch(CbbCpuArchType.X86_64);
-        return JSON.toJSONString(info);
-    }
-
-    private String generateLinuxVDIJson() {
-        CbbShineTerminalBasicInfo info = new CbbShineTerminalBasicInfo();
-        info.setTerminalId("123");
-        info.setTerminalName("t-box2");
-        info.setCpuType("intel5");
-        info.setPlatform(CbbTerminalPlatformEnums.VDI);
         info.setTerminalOsType("Linux");
         info.setCpuArch(CbbCpuArchType.X86_64);
         return JSON.toJSONString(info);
