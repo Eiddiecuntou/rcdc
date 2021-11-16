@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TempLicCreateDTO;
@@ -38,11 +37,11 @@ public interface StrategyService {
      *  授权分配
      *
      * @param licenseTypeList 证书类型列表
-     * @param basicInfoDTO 终端信息
-     * @param isNewConnection 是否新连接
+     * @param authMode 授权类型
+     * @param terminalId 终端id
      * @return 是否分配成功
      */
-    boolean allocate(List<CbbTerminalLicenseTypeEnums> licenseTypeList, Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfoDTO);
+    boolean allocate(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList);
 
     /**
      *  授权回收

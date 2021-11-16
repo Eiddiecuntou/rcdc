@@ -52,12 +52,11 @@ public class TerminalAuthHelper {
     /**
      * 终端进行授权
      *
-     * @param isNewConnection 是否新连接
      * @param isInUpgradeProcess 是否处于升级进程中
      * @param basicInfo 终端基本信息
      * @return TerminalAuthResult 授权结果
      */
-    public TerminalAuthResult processTerminalAuth(boolean isNewConnection, boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
+    public TerminalAuthResult processTerminalAuth(boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
         Assert.notNull(basicInfo, "basicInfo can not be null");
 
         // TCI OCS授权优先
@@ -101,7 +100,7 @@ public class TerminalAuthHelper {
         }
 
         try {
-            return terminalLicenseAuthService.auth(isNewConnection, basicInfo);
+            return terminalLicenseAuthService.auth(terminalId, basicInfo.getAuthMode());
         } catch (BusinessException e) {
             LOGGER.error("终端[" + basicInfo.getTerminalId() + "]授权异常", e);
             return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);

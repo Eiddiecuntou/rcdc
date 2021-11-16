@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -91,11 +90,9 @@ public interface TerminalLicenseService {
      * 授权1台终端；如果授权数量为-1，或者有授权剩余，则终端已使用授权数量+1
      * 
      * @param terminalId 终端id
-     * @param isNewConnection 是否是新终端接入
-     * @param basicInfo shine上报的终端基本信息
      * @return true 已授权或者授权成功；false 授权数不足，无法授权
      */
-    boolean auth(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo);
+    boolean auth(String terminalId);
 
     /**
      * 授权1台终端；如果授权数量为-1，或者有授权剩余，则终端已使用授权数量+1

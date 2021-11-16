@@ -3,7 +3,6 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
@@ -211,9 +210,8 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     }
 
     @Override
-    public boolean auth(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo basicInfo) {
+    public boolean auth(String terminalId) {
         Assert.hasText(terminalId, "terminalId can not be empty");
-        Assert.notNull(basicInfo, "basicInfo can not be null");
         synchronized (getLock()) {
             if (terminalLicenseCommonService.isTerminalAuthed(terminalId)) {
                 LOGGER.info("终端[{}]已授权成功，无须再次授权", terminalId);
