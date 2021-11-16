@@ -147,7 +147,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalBizConfigDTO);
 
         boolean isInUpgradeProcess = isNeedUpgradeOrAbnormalUpgradeResult(versionResult, systemUpgradeCheckResult);
-        TerminalAuthResult authResult = terminalAuthHelper.processTerminalAuth(request.getNewConnection(), isInUpgradeProcess, basicInfo);
+        TerminalAuthResult authResult = terminalAuthHelper.processTerminalAuth(isInUpgradeProcess, basicInfo);
         basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo, authResult.isAuthed());
 
         if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
