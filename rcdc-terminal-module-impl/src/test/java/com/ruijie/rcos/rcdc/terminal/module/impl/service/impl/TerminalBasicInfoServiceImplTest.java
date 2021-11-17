@@ -12,12 +12,9 @@ import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNetworkModeEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.request.CbbNoticeRequest;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
@@ -45,7 +42,6 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,9 +68,6 @@ public class TerminalBasicInfoServiceImplTest {
 
     @Injectable
     private DefaultRequestMessageSender sender;
-
-    @Injectable
-    private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
     @Injectable
     private TerminalModelDriverDAO terminalModelDriverDAO;
@@ -522,12 +515,6 @@ public class TerminalBasicInfoServiceImplTest {
 
                 terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
                 times = 0;
-
-                CbbNoticeRequest noticeRequest;
-                terminalEventNoticeSPI.notify(noticeRequest = withCapture());
-                times = 1;
-                assertEquals(CbbNoticeEventEnums.ONLINE.getName(), noticeRequest.getDispatcherKey());
-                assertEquals(terminalId, noticeRequest.getTerminalBasicInfo().getTerminalId());
             }
         };
     }
@@ -586,12 +573,6 @@ public class TerminalBasicInfoServiceImplTest {
 
                 terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
                 times = 0;
-
-                CbbNoticeRequest noticeRequest;
-                terminalEventNoticeSPI.notify(noticeRequest = withCapture());
-                times = 1;
-                assertEquals(CbbNoticeEventEnums.ONLINE.getName(), noticeRequest.getDispatcherKey());
-                assertEquals(terminalId, noticeRequest.getTerminalBasicInfo().getTerminalId());
             }
         };
     }
@@ -604,8 +585,6 @@ public class TerminalBasicInfoServiceImplTest {
         String terminalId = "123";
 
         TerminalEntity terminalEntity = buildTerminalEntity();
-
-        TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
 
         CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
         basicInfo.setProductId("aaaa");
@@ -654,12 +633,6 @@ public class TerminalBasicInfoServiceImplTest {
                 assertEquals("bbbb", driverEntity.getProductModel());
                 assertEquals("cccc", driverEntity.getCpuType());
                 assertEquals(CbbTerminalPlatformEnums.VDI, driverEntity.getPlatform());
-
-                CbbNoticeRequest noticeRequest;
-                terminalEventNoticeSPI.notify(noticeRequest = withCapture());
-                times = 1;
-                assertEquals(CbbNoticeEventEnums.ONLINE.getName(), noticeRequest.getDispatcherKey());
-                assertEquals(terminalId, noticeRequest.getTerminalBasicInfo().getTerminalId());
             }
         };
     }
@@ -701,12 +674,6 @@ public class TerminalBasicInfoServiceImplTest {
 
                 terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
                 times = 0;
-
-                CbbNoticeRequest noticeRequest;
-                terminalEventNoticeSPI.notify(noticeRequest = withCapture());
-                times = 1;
-                assertEquals(CbbNoticeEventEnums.ONLINE.getName(), noticeRequest.getDispatcherKey());
-                assertEquals(terminalId, noticeRequest.getTerminalBasicInfo().getTerminalId());
             }
         };
     }

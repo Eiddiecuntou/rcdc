@@ -1,11 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
 import com.google.common.collect.Lists;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -35,10 +33,10 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
     private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
     @Override
-    public boolean allocate(List<CbbTerminalLicenseTypeEnums> licenseTypeList, Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfoDTO) {
+    public boolean allocate(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
         Assert.notNull(licenseTypeList, "licenseTypeList can not be null");
-        Assert.notNull(isNewConnection, "isNewConnection can not be null");
-        Assert.notNull(basicInfoDTO, "basicInfoDTO can not be null");
+        Assert.notNull(authMode, "authMode can not be null");
+        Assert.hasText(terminalId, "terminalId can not be blank");
 
         if (CollectionUtils.isEmpty(licenseTypeList)) {
             LOGGER.info("授权策略的授权证书类型为空，不符合预期，返回授权失败");
@@ -48,7 +46,7 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
         List<CbbTerminalLicenseTypeEnums> authedList = Lists.newArrayList();
         for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
             TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
-            boolean isAuthed = licenseService.auth(basicInfoDTO.getTerminalId(), isNewConnection, basicInfoDTO);
+            boolean isAuthed = licenseService.auth(terminalId);
             if (isAuthed) {
                 authedList.add(licenseType);
             } else {
@@ -56,18 +54,17 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
             }
         }
         if (authedList.size() == licenseTypeList.size()) {
-            LOGGER.info("终端[{}]叠加授权成功", basicInfoDTO.getTerminalId());
-            saveTerminalAuthorize(buildQueryLicenseType(licenseTypeList), basicInfoDTO);
+            LOGGER.info("终端[{}]叠加授权成功", terminalId);
+            saveTerminalAuthorize(terminalId, buildQueryLicenseType(licenseTypeList), authMode);
             return true;
         }
 
         // TODO 考虑优化
-        LOGGER.info("终端[{}]叠加授权失败", basicInfoDTO.getTerminalId());
+        LOGGER.info("终端[{}]叠加授权失败", terminalId);
         for (CbbTerminalLicenseTypeEnums licenseType : authedList) {
             LOGGER.info("叠加授权失败，减去已用[{}]的授权数", licenseType);
             getTerminalLicenseService(licenseType).decreaseCacheLicenseUsedNum();
         }
-
 
         return false;
     }
@@ -120,16 +117,8 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
                 TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
                 licenseService.decreaseCacheLicenseUsedNum();
             }
-            LOGGER.info("终端授权回收成功");
-            // 如果当前终端的授权记录不是预期回收的，则将修改一个为删除终端的授权类型
-            TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
-            if (!authorizeEntity.getLicenseType().equals(licenseTypeStr)) {
-                LOGGER.info("终端的授权记录不是预期回收的， 修改一个授权类型[{}]为删除终端的授权类型[{}]", licenseTypeStr, authorizeEntity.getLicenseType());
-                convertAuthLicenseType(authMode, licenseTypeStr, authorizeEntity.getLicenseType());
-            }
-            // 删除授权记录
-            terminalAuthorizeDAO.deleteByTerminalId(terminalId);
-
+            LOGGER.info("终端授权回收成功，回收授权[{}][{}]", terminalId, licenseTypeStr);
+            deleteTerminalAuthorize(terminalId, licenseTypeStr, authMode);
             return true;
         }
 
@@ -143,13 +132,5 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
         }
 
         return licenseTypeStr.toString().substring(1, licenseTypeStr.length());
-    }
-
-    private void convertAuthLicenseType(CbbTerminalPlatformEnums authMode, String licenseType, String updateLicenseType) {
-        List<TerminalAuthorizeEntity> authorizeEntityList = terminalAuthorizeDAO.findByLicenseTypeAndAuthMode(licenseType, authMode);
-
-        TerminalAuthorizeEntity authorizeEntity = authorizeEntityList.get(0);
-        authorizeEntity.setLicenseType(updateLicenseType);
-        terminalAuthorizeDAO.save(authorizeEntity);
     }
 }

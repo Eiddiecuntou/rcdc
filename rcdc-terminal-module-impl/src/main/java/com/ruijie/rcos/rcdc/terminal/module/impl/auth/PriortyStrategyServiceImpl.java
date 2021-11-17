@@ -1,11 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalLicenseService;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -57,10 +55,10 @@ public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
     }
 
     @Override
-    public boolean allocate(List<CbbTerminalLicenseTypeEnums> licenseTypeList, Boolean isNewConnection, CbbShineTerminalBasicInfo basicInfoDTO) {
+    public boolean allocate(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
         Assert.notNull(licenseTypeList, "licenseTypeList can not be null");
-        Assert.notNull(isNewConnection, "isNewConnection can not be null");
-        Assert.notNull(basicInfoDTO, "basicInfoDTO can not be null");
+        Assert.notNull(authMode, "authMode can not be null");
+        Assert.hasText(terminalId, "terminalId can not be blank");
 
         if (CollectionUtils.isEmpty(licenseTypeList)) {
             LOGGER.info("优先授权策略的授权证书类型为空，不符合预期，返回授权失败");
@@ -69,10 +67,10 @@ public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
 
         for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
             TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
-            boolean isAuthed = licenseService.auth(basicInfoDTO.getTerminalId(), isNewConnection, basicInfoDTO);
+            boolean isAuthed = licenseService.auth(terminalId);
             if (isAuthed) {
-                LOGGER.info("终端[{}]授权成功，授权方式[{}]", basicInfoDTO.getTerminalId(), licenseType);
-                saveTerminalAuthorize(licenseType.name(), basicInfoDTO);
+                LOGGER.info("终端[{}]授权成功，授权方式[{}]", terminalId, licenseType);
+                saveTerminalAuthorize(terminalId, licenseType.name(), authMode);
                 return true;
             }
         }
@@ -97,29 +95,12 @@ public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
             int count = terminalAuthorizeDAO.countByLicenseTypeAndAuthMode(licenseType.name(), authMode);
             if (count > 0) {
                 licenseService.decreaseCacheLicenseUsedNum();
-                LOGGER.info("终端授权回收成功，回收授权[{}]", licenseType);
-
-                // 如果当前终端的授权记录不是预期回收的，则将修改一个为删除终端的授权类型
-                TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
-                if (!authorizeEntity.getLicenseType().equals(licenseType.name())) {
-                    LOGGER.info("终端的授权记录不是预期回收的， 修改一个授权类型[{}]为删除终端的授权类型[{}]", licenseType, authorizeEntity.getLicenseType());
-                    convertAuthLicenseType(authMode, licenseType, authorizeEntity.getLicenseType());
-                }
-
-                terminalAuthorizeDAO.deleteByTerminalId(terminalId);
-
+                LOGGER.info("终端授权回收成功，回收授权[{}][{}]", terminalId, licenseType.name());
+                deleteTerminalAuthorize(terminalId, licenseType.name(), authMode);
                 return true;
             }
         }
 
         return false;
-    }
-
-    private void convertAuthLicenseType(CbbTerminalPlatformEnums authMode, CbbTerminalLicenseTypeEnums licenseType, String updateLicenseType) {
-        List<TerminalAuthorizeEntity> authorizeEntityList = terminalAuthorizeDAO.findByLicenseTypeAndAuthMode(licenseType.name(), authMode);
-
-        TerminalAuthorizeEntity authorizeEntity = authorizeEntityList.get(0);
-        authorizeEntity.setLicenseType(updateLicenseType);
-        terminalAuthorizeDAO.save(authorizeEntity);
     }
 }
