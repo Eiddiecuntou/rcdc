@@ -47,7 +47,7 @@ public class BeforeEnteringMaintenanceHandler {
                     systemUpgradePackageDAO.findByPackageTypeAndCpuArchAndIsDelete(type.getTerminalType(), type.getArchType(), false);
             if (CollectionUtils.isEmpty(upgradePackageList)) {
                 LOGGER.info("终端组件进入维护模式校验： 无可用的[{}]刷机包，校验通过", type.name());
-                return;
+                continue;
             }
             for (TerminalSystemUpgradePackageEntity packageEntity : upgradePackageList) {
                 boolean hasUpgradingTask = terminalSystemUpgradeService.hasSystemUpgradeInProgress(packageEntity.getId());
