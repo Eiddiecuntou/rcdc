@@ -61,7 +61,7 @@ public class TerminalAuthHelper {
 
         // TCI OCS授权优先
         if (terminalAuthorizationWhitelistService.checkWhiteList(basicInfo)) {
-            LOGGER.info("终端[{}]在白名单中，无需认证", basicInfo.getTerminalId());
+            LOGGER.info("终端[{}]在OCS白名单中，无需认证", basicInfo.getTerminalId());
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
