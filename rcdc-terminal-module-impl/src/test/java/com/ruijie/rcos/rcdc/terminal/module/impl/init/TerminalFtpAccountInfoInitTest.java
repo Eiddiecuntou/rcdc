@@ -62,31 +62,7 @@ public class TerminalFtpAccountInfoInitTest {
         };
     }
 
-    /**
-     * 测试sateInit方法
-     */
-    @Test
-    public void testSafeInit() {
-        UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
-        new Expectations(UUID.class) {
-            {
 
-                globalParameterAPI.findParameter("terminal_ftp_config");
-                result = "{\"ftpPort\": 2021,\"ftpUserName\": \"shine\",\"ftpUserPassword\": \"21Wq_Er\"," + "\"ftpPath\": \"/\",\"fileDir\": \"/\"}";
-                UUID.randomUUID();
-                result = uuid;
-            }
-        };
-        terminalFtpAccountInfoInit.safeInit();
-        new Verifications() {
-            {
-                String info;
-                globalParameterAPI.updateParameter(withEqual("terminal_ftp_config"), info = withCapture());
-                times = 1;
-                Assert.assertTrue(info.contains("00000000"));
-            }
-        };
-    }
 
     /**
      * 测试sateInit方法, 执行系统命令失败
