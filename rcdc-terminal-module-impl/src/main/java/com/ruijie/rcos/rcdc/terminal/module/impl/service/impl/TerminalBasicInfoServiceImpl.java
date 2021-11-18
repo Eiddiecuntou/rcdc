@@ -89,27 +89,28 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         // 自学习终端型号
         saveTerminalModel(shineTerminalBasicInfo);
 
+        TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
+
+        //为TCI设置字段ocsSn的值
+        terminalAuthorizationWhitelistService.fillOcsSnIfExists(basicInfoEntity);
+
         // 保存终端基础信息
-        boolean isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
+        boolean isSaveSuccess = saveTerminalBasicInfo(basicInfoEntity, authed);
         int count = 0;
         // 失败，尝试3次
         while (!isSaveSuccess && count++ < FAIL_TRY_COUNT) {
-            LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, terminalId);
-            isSaveSuccess = saveTerminalBasicInfo(terminalId, isNewConnection, shineTerminalBasicInfo, authed);
+            LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, basicInfoEntity.getTerminalId());
+            isSaveSuccess = saveTerminalBasicInfo(basicInfoEntity, authed);
         }
     }
 
-    private synchronized boolean saveTerminalBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
-                                                       Boolean authed) {
-        TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
-        //为TCI设置字段ocsSn的值
-        terminalAuthorizationWhitelistService.fillOcsSnAndRecycleIfAuthed(basicInfoEntity, basicInfoEntity.getAllDiskInfo());
+    private synchronized boolean saveTerminalBasicInfo(TerminalEntity basicInfoEntity, Boolean authed) {
         basicInfoEntity.setAuthed(authed);
         try {
             basicInfoDAO.save(basicInfoEntity);
             return true;
         } catch (Exception e) {
-            LOGGER.error("保存终端[" + terminalId + "]信息失败！将进行重试", e);
+            LOGGER.error("保存终端[" + basicInfoEntity.getTerminalId() + "]信息失败！将进行重试", e);
             return false;
         }
     }

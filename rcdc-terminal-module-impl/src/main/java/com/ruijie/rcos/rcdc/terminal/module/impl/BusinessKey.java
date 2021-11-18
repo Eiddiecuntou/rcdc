@@ -414,7 +414,7 @@ public interface BusinessKey {
 
     String RCDC_TERMINAL_OCS_AUTHORIZATION_KICK_OUT = "rcdc_terminal_ocs_authorization_kick_out";
 
-    String RCDC_TERMINAL_OCS_AUTHORIZATION_SELF_OTHER_AUTH_RECYCLE = "rcdc_terminal_ocs_authorization_self_other_auth_recycle";
+    String RCDC_TERMINAL_FREE_AUTHORIZATION_SELF_OTHER_AUTH_RECYCLE = "rcdc_terminal_free_authorization_self_other_auth_recycle";
 
-    String RCDC_TERMINAL_OCS_AUTHORIZATION_RECYCLE_ERROR = "rcdc_terminal_ocs_authorization_recycle_error";
+    String RCDC_TERMINAL_AUTHORIZATION_RECYCLE_ERROR = "rcdc_terminal_authorization_recycle_error";
 }
