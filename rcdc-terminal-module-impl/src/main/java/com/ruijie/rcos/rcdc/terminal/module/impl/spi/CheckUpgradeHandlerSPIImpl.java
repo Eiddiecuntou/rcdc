@@ -109,7 +109,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         // 获取业务配置，将上层设置的终端类型存入数据库
         CbbTerminalBizConfigDTO terminalBizConfigDTO = connectHandlerSPI.notifyTerminalSupport(basicInfo);
-        LOGGER.info("terminalBizConfigDTO: {}", JSON.toJSONString(terminalBizConfigDTO));
+        LOGGER.info("terminalId:{},terminalBizConfigDTO: {}", request.getTerminalId(), JSON.toJSONString(terminalBizConfigDTO));
         Assert.notEmpty(terminalBizConfigDTO.getTerminalWorkModeArr(), "TerminalWorkModeArr can not empty");
         Assert.notNull(terminalBizConfigDTO.getTerminalPlatform(), "TerminalPlatform can not null");
 
