@@ -49,14 +49,14 @@ public class RcdcMessageHandler implements MessageHandler {
     private static final ExecutorService NON_BUSINESS_HANDLER_THREAD_POOL =
             ThreadExecutors.newBuilder("noBusinessMessageHandleThread").maxThreadNum(80).queueSize(1000).build();
 
-    private static final List<String> nonBusinessActionList = Lists.newArrayList(ShineAction.HEARTBEAT, ShineAction.SYNC_SERVER_TIME);
+    private static final List<String> NON_BUSINESS_ACTION_LIST = Lists.newArrayList(ShineAction.HEARTBEAT, ShineAction.SYNC_SERVER_TIME);
 
     @Override
     public void onReceive(ResponseMessageSender sender, BaseMessage message) {
         Assert.notNull(sender, "ResponseMessageSender不能为null");
         Assert.notNull(message, "BaseMessage不能为null");
 
-        if (nonBusinessActionList.contains(message.getAction())) {
+        if (NON_BUSINESS_ACTION_LIST.contains(message.getAction())) {
             NON_BUSINESS_HANDLER_THREAD_POOL.execute(() -> handleNonBusinessMessage(sender, message));
             return;
         }
