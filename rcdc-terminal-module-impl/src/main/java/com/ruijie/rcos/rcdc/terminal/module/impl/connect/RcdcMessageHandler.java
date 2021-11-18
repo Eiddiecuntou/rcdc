@@ -103,8 +103,8 @@ public class RcdcMessageHandler implements MessageHandler {
         // 同步服务器时间，直接应答
         if (ShineAction.SYNC_SERVER_TIME.equals(message.getAction())) {
             SyncServerTimeResponse syncServerTimeResponse = SyncServerTimeResponse.build();
-            sender.response(new Message(Constants.SYSTEM_TYPE, ShineAction.SYNC_SERVER_TIME, syncServerTimeResponse));
             LOGGER.debug("同步服务器时间，{}", JSON.toJSONString(syncServerTimeResponse));
+            sender.response(new Message(Constants.SYSTEM_TYPE, ShineAction.SYNC_SERVER_TIME, syncServerTimeResponse));
             return true;
         }
 
