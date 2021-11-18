@@ -22,15 +22,15 @@ public interface TerminalAuthorizationWhitelistService {
      * 检验终端是否在白名单中
      *
      * @param terminalBasicInfo 终端信息
+     * @param terminalEntityInDb 库中的终端信息
      * @return boolean 是否在终端白名单中
      */
-    boolean checkWhiteList(CbbShineTerminalBasicInfo terminalBasicInfo);
+    boolean checkWhiteList(CbbShineTerminalBasicInfo terminalBasicInfo, TerminalEntity terminalEntityInDb);
 
 
     /**
      * @param terminalEntity 需要为该对象填充ocsSn字段
-     * @param diskInfo shine上报的磁盘信息
      */
-    void fillOcsSnAndRecycleIfAuthed(TerminalEntity terminalEntity, String diskInfo);
+    void fillOcsSnIfExists(TerminalEntity terminalEntity);
 
 }

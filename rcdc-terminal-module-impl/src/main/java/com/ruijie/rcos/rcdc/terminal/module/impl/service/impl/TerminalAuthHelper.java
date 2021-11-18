@@ -8,6 +8,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseCommonService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalAuthorizationWhitelistService;
@@ -49,19 +51,24 @@ public class TerminalAuthHelper {
     @Autowired
     private TerminalAuthorizationWhitelistService terminalAuthorizationWhitelistService;
 
+    @Autowired
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
+
     /**
      * 终端进行授权
      *
      * @param isInUpgradeProcess 是否处于升级进程中
-     * @param basicInfo 终端基本信息
+     * @param basicInfo          终端基本信息
      * @return TerminalAuthResult 授权结果
      */
     public TerminalAuthResult processTerminalAuth(boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
         Assert.notNull(basicInfo, "basicInfo can not be null");
 
+
+        TerminalEntity terminalEntity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(basicInfo.getTerminalId());
         // TCI OCS授权优先
-        if (terminalAuthorizationWhitelistService.checkWhiteList(basicInfo)) {
-            LOGGER.info("终端[{}]在OCS白名单中，无需认证", basicInfo.getTerminalId());
+        if (terminalAuthorizationWhitelistService.checkWhiteList(basicInfo, terminalEntity)) {
+            LOGGER.info("终端[{}]在CBB白名单中，无需认证", basicInfo.getTerminalId());
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
@@ -112,8 +119,8 @@ public class TerminalAuthHelper {
      * 处理终端授权扣除逻辑
      *
      * @param terminalId 终端id
-     * @param authMode 平台类型
-     * @param authed 是否授权
+     * @param authMode   平台类型
+     * @param authed     是否授权
      * @throws BusinessException 业务异常
      */
     public void processDecreaseTerminalLicense(String terminalId, CbbTerminalPlatformEnums authMode, Boolean authed) throws BusinessException {

@@ -23,9 +23,9 @@ import java.util.List;
  * @author TING
  */
 @Service("priorityStrategyService")
-public class PriortyStrategyServiceImpl extends AbstractStrategyServiceImpl {
+public class PriorityStrategyServiceImpl extends AbstractStrategyServiceImpl {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PriortyStrategyServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PriorityStrategyServiceImpl.class);
 
     @Autowired
     private TerminalAuthorizeDAO terminalAuthorizeDAO;
