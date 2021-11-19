@@ -39,6 +39,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -125,11 +126,10 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         TerminalEntity terminalEntity =
                 basicInfoService.convertBasicInfo2TerminalEntity(request.getTerminalId(), request.getNewConnection(), basicInfo);
 
+        LOGGER.info("终端[{}]平台类型为[{}],进行升级包处理（包含授权）", terminalEntity.getTerminalId(), terminalEntity.getPlatform());
         if (terminalEntity.getAuthMode() == CbbTerminalPlatformEnums.IDV || terminalEntity.getAuthMode() == CbbTerminalPlatformEnums.VOI) {
-            LOGGER.info("平台类型为[{}],进行升级包处理（包含授权）", terminalEntity.getPlatform());
             handleIdvProcess(request, terminalEntity, basicInfo, terminalBizConfigDTO);
         } else {
-            LOGGER.info("平台类型为[{}],进行升级处理", terminalEntity.getPlatform().name());
             handleVdiProcess(request, terminalEntity, basicInfo, terminalBizConfigDTO);
         }
 
@@ -140,26 +140,31 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private void handleIdvProcess(CbbDispatcherRequest request, TerminalEntity terminalEntity, CbbShineTerminalBasicInfo basicInfo,
-            CbbTerminalBizConfigDTO terminalBizConfigDTO) {
+                                  CbbTerminalBizConfigDTO terminalBizConfigDTO) {
 
         // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
-        SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalBizConfigDTO);
-
-        boolean isInUpgradeProcess = isNeedUpgradeOrAbnormalUpgradeResult(versionResult, systemUpgradeCheckResult);
-        TerminalAuthResult authResult = terminalAuthHelper.processTerminalAuth(isInUpgradeProcess, basicInfo);
-        basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo, authResult.isAuthed());
-
-        if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
-            LOGGER.info("终端[{}]授权失败", basicInfo.getTerminalId());
-            versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
+        TerminalVersionResultDTO versionResult = null;
+        SystemUpgradeCheckResult systemUpgradeCheckResult = null;
+        if (!Objects.equals(Boolean.TRUE, basicInfo.getTciEnvironment())) {
+            versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
+            systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity, terminalBizConfigDTO);
+            boolean isInUpgradeProcess = isNeedUpgradeOrAbnormalUpgradeResult(versionResult, systemUpgradeCheckResult);
+            TerminalAuthResult authResult = terminalAuthHelper.processTerminalAuth(isInUpgradeProcess, basicInfo);
+            basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo, authResult.isAuthed());
+            if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
+                LOGGER.info("终端[{}]授权失败", basicInfo.getTerminalId());
+                versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
+            }
+        } else {
+            versionResult = new TerminalVersionResultDTO();
+            systemUpgradeCheckResult = new SystemUpgradeCheckResult();
+            versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NOT.getResult());
         }
-
         responseToShine(request, terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
     }
 
     private void handleVdiProcess(CbbDispatcherRequest request, TerminalEntity terminalEntity, CbbShineTerminalBasicInfo basicInfo,
-            CbbTerminalBizConfigDTO terminalBizConfigDTO) {
+                                  CbbTerminalBizConfigDTO terminalBizConfigDTO) {
 
         basicInfoService.saveBasicInfo(request.getTerminalId(), request.getNewConnection(), basicInfo, Boolean.TRUE);
 
@@ -171,7 +176,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private void responseToShine(CbbDispatcherRequest request, CbbTerminalBizConfigDTO terminalBizConfigDTO, TerminalVersionResultDTO versionResult,
-            SystemUpgradeCheckResult systemUpgradeCheckResult) {
+                                 SystemUpgradeCheckResult systemUpgradeCheckResult) {
         TerminalUpgradeResult terminalUpgradeResult = buildTerminalUpgradeResult(terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
         try {
             CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, terminalUpgradeResult);
@@ -189,7 +194,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     }
 
     private TerminalUpgradeResult buildTerminalUpgradeResult(CbbTerminalBizConfigDTO terminalBizConfig, TerminalVersionResultDTO versionResult,
-            SystemUpgradeCheckResult systemUpgradeCheckResult) {
+                                                             SystemUpgradeCheckResult systemUpgradeCheckResult) {
         TerminalUpgradeResult upgradeResult = new TerminalUpgradeResult();
         upgradeResult.setResult(versionResult.getResult());
         upgradeResult.setUpdatelist(versionResult.getUpdatelist());

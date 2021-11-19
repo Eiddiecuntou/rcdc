@@ -86,6 +86,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
             if (entity.getProductType().equals(terminalBasicInfo.getProductType())) {
                 LOGGER.info("terminalId[{}] raw productType[{}] free authorization matched", terminalBasicInfo.getTerminalId(),
                         terminalBasicInfo.getProductType());
+                //todo 将来业务的白名单移到cbb后，需要在这里加上回收授权的逻辑
                 return true;
             }
             if (entity.getProductType().equals(ocsDiskAuthInputInfo.getCompositeProductType())) {
@@ -109,7 +110,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
                                         terminalEntity.getTerminalId(), terminalBasicInfo.getTerminalName(), terminalBasicInfo.getTerminalId());
                             });
                 }
-                recycleWhiteListTerminalAuth(terminalEntityInDb, "OCS");
+                recycleWhiteListTerminalAuth(terminalEntityInDb, "OCS磁盘");
                 return true;
             }
 
@@ -140,6 +141,7 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
     public void fillOcsSnIfExists(TerminalEntity terminalEntity) {
         Assert.notNull(terminalEntity, "terminalEntity can not be null");
         if (terminalEntity.getPlatform() != CbbTerminalPlatformEnums.VOI) {
+            terminalEntity.setOcsSn(null);
             return;
         }
         String diskInfo = terminalEntity.getAllDiskInfo();

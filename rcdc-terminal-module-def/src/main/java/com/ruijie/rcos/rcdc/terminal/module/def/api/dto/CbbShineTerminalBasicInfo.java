@@ -140,6 +140,10 @@ public class CbbShineTerminalBasicInfo {
     @Nullable
     private CbbCpuArchType cpuArch = CbbCpuArchType.X86_64;
 
+    @Nullable
+    private Boolean isTciEnvironment;
+
+
     public CbbTerminalPlatformEnums getPlatform() {
         return platform;
     }
@@ -459,5 +463,14 @@ public class CbbShineTerminalBasicInfo {
 
     public void setCpuArch(@Nullable CbbCpuArchType cpuArch) {
         this.cpuArch = cpuArch;
+    }
+
+    @Nullable
+    public Boolean getTciEnvironment() {
+        return isTciEnvironment;
+    }
+
+    public void setTciEnvironment(@Nullable Boolean tciEnvironment) {
+        isTciEnvironment = tciEnvironment;
     }
 }
