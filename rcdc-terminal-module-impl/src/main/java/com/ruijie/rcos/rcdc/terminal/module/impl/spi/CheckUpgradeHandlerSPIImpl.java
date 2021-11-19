@@ -79,10 +79,10 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
 
     private static final ExecutorService CHECK_UPGRADE_THREAD_POOL =
-            ThreadExecutors.newBuilder("checkUpgradeThreadPool").maxThreadNum(80).queueSize(1).build();
+            ThreadExecutors.newBuilder("checkUpgradeThreadPool").maxThreadNum(80).queueSize(1000).build();
 
     private static final ExecutorService TERMINAL_EVENT_NOTICE_THREAD_POOL =
-            ThreadExecutors.newBuilder("terminalEventNoticeThreadPool").maxThreadNum(80).queueSize(1).build();
+            ThreadExecutors.newBuilder("terminalEventNoticeThreadPool").maxThreadNum(80).queueSize(1000).build();
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
@@ -123,15 +123,15 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
         if (terminalBizConfigDTO.getAuthMode() == CbbTerminalPlatformEnums.IDV
                 || terminalBizConfigDTO.getAuthMode() == CbbTerminalPlatformEnums.VOI) {
-            LOGGER.info("平台类型为[{}],进行升级包处理（包含授权）", terminalBizConfigDTO.getTerminalPlatform().name());
+            LOGGER.info("终端[{}]平台类型为[{}],进行升级包处理（包含授权）", basicInfo.getTerminalId(), terminalBizConfigDTO.getTerminalPlatform().name());
             handleIdvProcess(request, basicInfo, terminalBizConfigDTO);
         } else {
-            LOGGER.info("平台类型为[{}],进行升级处理", terminalBizConfigDTO.getTerminalPlatform().name());
+            LOGGER.info("终端[{}]平台类型为[{}],进行升级处理", basicInfo.getTerminalId(), terminalBizConfigDTO.getTerminalPlatform().name());
             handleVdiProcess(request, basicInfo, terminalBizConfigDTO);
         }
 
         TERMINAL_EVENT_NOTICE_THREAD_POOL.execute(() -> {
-            LOGGER.debug("开始通知其他组件终端为在线状态[{}]", request.getTerminalId());
+            LOGGER.info("开始通知其他组件终端为在线状态[{}]", basicInfo.getTerminalId());
             doNotice(basicInfo);
         });
     }
@@ -176,7 +176,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         try {
             CbbResponseShineMessage cbbShineMessageRequest = MessageUtils.buildResponseMessage(request, terminalUpgradeResult);
 
-            LOGGER.debug("终端[{}]升级处理结束 : {}", request.getTerminalId(), JSON.toJSONString(versionResult));
+            LOGGER.info("终端[{}]升级处理结束 : {}", request.getTerminalId(), versionResult.getResult().toString());
             messageHandlerAPI.response(cbbShineMessageRequest);
         } catch (Exception e) {
             LOGGER.error("升级检查消息应答失败", e);
