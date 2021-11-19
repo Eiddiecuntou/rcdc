@@ -81,26 +81,24 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
     private static final Set<String> IDV_USE_AS_VDI_PRODUCT_ID_SET = Sets.newHashSet("80020101", "80060041", "80060042", "80060022");
 
     @Override
-    public void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo, Boolean authed) {
-        Assert.hasText(terminalId, "terminalId 不能为空");
+    public void saveBasicInfo(TerminalEntity terminalEntity, CbbShineTerminalBasicInfo shineTerminalBasicInfo, Boolean authed) {
+        Assert.notNull(terminalEntity, "terminalEntity can not be null");
         Assert.notNull(shineTerminalBasicInfo, "终端信息不能为空");
         Assert.notNull(authed, "authed can not be null");
 
         // 自学习终端型号
         saveTerminalModel(shineTerminalBasicInfo);
 
-        TerminalEntity basicInfoEntity = convertBasicInfo2TerminalEntity(terminalId, isNewConnection, shineTerminalBasicInfo);
-
         //为TCI设置字段ocsSn的值
-        terminalAuthorizationWhitelistService.fillOcsSnIfExists(basicInfoEntity);
+        terminalAuthorizationWhitelistService.fillOcsSnIfExists(terminalEntity);
 
         // 保存终端基础信息
-        boolean isSaveSuccess = saveTerminalBasicInfo(basicInfoEntity, authed);
+        boolean isSaveSuccess = saveTerminalBasicInfo(terminalEntity, authed);
         int count = 0;
         // 失败，尝试3次
         while (!isSaveSuccess && count++ < FAIL_TRY_COUNT) {
-            LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, basicInfoEntity.getTerminalId());
-            isSaveSuccess = saveTerminalBasicInfo(basicInfoEntity, authed);
+            LOGGER.error("开始第{}次保存终端基础信息，terminalId=[{}]", count, terminalEntity.getTerminalId());
+            isSaveSuccess = saveTerminalBasicInfo(terminalEntity, authed);
         }
     }
 

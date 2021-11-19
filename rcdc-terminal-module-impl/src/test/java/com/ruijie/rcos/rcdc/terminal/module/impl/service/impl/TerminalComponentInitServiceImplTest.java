@@ -1,9 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
-import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
@@ -18,11 +15,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import mockit.*;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-
 import static org.junit.Assert.*;
 
 /**
@@ -55,11 +48,6 @@ public class TerminalComponentInitServiceImplTest {
 
     @Injectable
     private LinuxArmUpdatelistCacheInit linuxArmUpdatelistCacheInit;
-
-    @Before
-    public void before() {
-        Deencapsulation.setField(TerminalComponentInitServiceImpl.class, "EXECUTOR_SERVICE", new MockExecutor4Test());
-    }
 
     /**
      * 测试safeInit，开发环境
@@ -149,159 +137,7 @@ public class TerminalComponentInitServiceImplTest {
         };
     }
 
-    /**
-     * 测试safeInit，ip为空
-     *
-     * @throws BusinessException 异常
-     */
-    @Test
-    public void testSafeInitIpIsBlank() throws BusinessException {
-        setEnviromentDevelop(false);
-        ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
-        dto.setClusterVirtualIpIp("172.12.22.45");
-        new Expectations() {
-            {
-                cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
-                result = DtoResponse.success(dto);
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                result = "";
-            }
-        };
 
-        try {
-            initService.initLinux();
-        } catch (Exception e) {
-            fail();
-        }
-
-        new Verifications() {
-            {
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 2;
-                runner.setCommand(String.format("python %s %s %s", "/data/web/rcdc/shell/update_component_package.py", "172.12.22.45", "linux"));
-                times = 0;
-            }
-        };
-    }
-
-    /**
-     * 测试safeInit，ip和本地ip一致
-     *
-     * @throws BusinessException 异常
-     * @throws InterruptedException ex
-     */
-    @Test
-    public void testSafeInitIpEqualsCurrentIp() throws BusinessException, InterruptedException {
-        setEnviromentDevelop(false);
-        ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
-        dto.setClusterVirtualIpIp("172.12.22.45");
-
-        new Expectations() {
-            {
-                cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
-                result = DtoResponse.success(dto);
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                result = dto.getClusterVirtualIpIp();
-            }
-        };
-        try {
-            initService.initAndroid();
-        } catch (RuntimeException e) {
-            fail();
-        }
-
-        new Verifications() {
-            {
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 1;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateLinuxVDI.py", "172.12.22.45"));
-                times = 0;
-                runner.setCommand(String.format("python %s %s", "/data/web/rcdc/shell/updateAndroidVDI.py", "172.12.22.45"));
-                times = 0;
-                androidUpdatelistCacheInit.init();
-                times = 1;
-
-            }
-        };
-    }
-
-    /**
-     * 测试safeInit，ip和本地ip一致，upgradeTempPath不是目录
-     *
-     * @throws BusinessException 异常
-     * @throws InterruptedException ex
-     */
-    @Test
-    public void testSafeInitIpEqualsCurrentIpButNotDirectory() throws BusinessException, InterruptedException {
-        setEnviromentDevelop(false);
-        ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
-        dto.setClusterVirtualIpIp("172.12.22.45");
-        new MockUp<File>() {
-            @Mock
-            public boolean isDirectory() {
-                return true;
-            }
-        };
-        new Expectations() {
-            {
-                cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
-                result = DtoResponse.success(dto);
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                result = dto.getClusterVirtualIpIp();
-            }
-        };
-        try {
-            initService.initLinux();
-        } catch (RuntimeException e) {
-            fail();
-        }
-
-        new Verifications() {
-            {
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 2;
-                runner.setCommand(String.format("python %s %s %s", "/data/web/rcdc/shell/update_component_package.py", "172.12.22.45", "linux"));
-                times = 0;
-            }
-        };
-    }
-    
-    /**
-     * 测试safeInit，ip和本地ip不同
-     *
-     * @throws BusinessException 异常
-     * @throws InterruptedException ex
-     */
-    @Test
-    public void testSafeInitIpDifferentCurrentIp() throws BusinessException, InterruptedException {
-        setEnviromentDevelop(false);
-        ClusterVirtualIpDTO dto = new ClusterVirtualIpDTO();
-        dto.setClusterVirtualIpIp("172.12.22.45");
-        new Expectations() {
-            {
-                cloudPlatformMgmtAPI.getClusterVirtualIp((Request) any);
-                result = DtoResponse.success(dto);
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                result = "172.22.25.45";
-            }
-        };
-        try {
-            initService.initLinux();
-        } catch (RuntimeException e) {
-            fail();
-        }
-
-        new Verifications() {
-            {
-                globalParameterAPI.findParameter(Constants.RCDC_CLUSTER_VIRTUAL_IP_GLOBAL_PARAMETER_KEY);
-                times = 2;
-                runner.execute((TerminalComponentInitServiceImpl.BtShareInitReturnValueResolver) any);
-                times = 2;
-                linuxUpdatelistCacheInit.init();
-                times = 0;
-            }
-        };
-    }
 
     /**
      * 测试BtShareInitReturnValueResolver的resolve方法,参数为空

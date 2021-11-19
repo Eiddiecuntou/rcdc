@@ -198,6 +198,7 @@ public class CheckUpgradeHandlerSPIImplTest {
         versionResultDTO.setResult(2);
 
         CbbTerminalBizConfigDTO config = new CbbTerminalBizConfigDTO();
+        config.setAuthMode(CbbTerminalPlatformEnums.IDV);
         config.setTerminalPlatform(CbbTerminalPlatformEnums.IDV);
         config.setTerminalWorkModeArr(new CbbTerminalWorkModeEnums[] {CbbTerminalWorkModeEnums.UNKNOWN});
 
@@ -207,7 +208,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 result = true;
                 connectHandlerSPI.notifyTerminalSupport((CbbShineTerminalBasicInfo) any);
                 result = config;
-                basicInfoService.convertBasicInfo2TerminalEntity(anyString,anyBoolean,(CbbShineTerminalBasicInfo)any);
+                basicInfoService.convertBasicInfo2TerminalEntity(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any);
                 result = terminalEntity;
                 basicInfoService.obtainTerminalType(terminalEntity);
                 result = CbbTerminalTypeEnums.IDV_LINUX;
@@ -228,7 +229,7 @@ public class CheckUpgradeHandlerSPIImplTest {
                 connectHandlerSPI.isAllowConnect((CbbShineTerminalBasicInfo) any);
                 times = 1;
 
-                basicInfoService.saveBasicInfo(anyString, anyBoolean, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
+                basicInfoService.saveBasicInfo((TerminalEntity) any, (CbbShineTerminalBasicInfo) any, Boolean.TRUE);
                 times = 0;
 
                 messageHandlerAPI.response((CbbResponseShineMessage) any);

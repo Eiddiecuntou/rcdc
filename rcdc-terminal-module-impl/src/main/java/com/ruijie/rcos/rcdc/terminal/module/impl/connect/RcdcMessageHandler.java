@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.codec.adapter.base.handler.MessageHandler;
 import com.ruijie.rcos.rcdc.codec.adapter.base.sender.ResponseMessageSender;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
@@ -18,6 +19,7 @@ import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 
@@ -42,12 +44,22 @@ public class RcdcMessageHandler implements MessageHandler {
      * 接收报文处理线程池,分配50个线程数
      */
     private static final ExecutorService MESSAGE_HANDLER_THREAD_POOL =
-            ThreadExecutors.newBuilder("messageHandleThread").maxThreadNum(50).queueSize(1).build();
+            ThreadExecutors.newBuilder("messageHandleThread").maxThreadNum(80).queueSize(1000).build();
+
+    private static final ExecutorService NON_BUSINESS_HANDLER_THREAD_POOL =
+            ThreadExecutors.newBuilder("noBusinessMessageHandleThread").maxThreadNum(80).queueSize(1000).build();
+
+    private static final List<String> NON_BUSINESS_ACTION_LIST = Lists.newArrayList(ShineAction.HEARTBEAT, ShineAction.SYNC_SERVER_TIME);
 
     @Override
     public void onReceive(ResponseMessageSender sender, BaseMessage message) {
         Assert.notNull(sender, "ResponseMessageSender不能为null");
         Assert.notNull(message, "BaseMessage不能为null");
+
+        if (NON_BUSINESS_ACTION_LIST.contains(message.getAction())) {
+            NON_BUSINESS_HANDLER_THREAD_POOL.execute(() -> handleNonBusinessMessage(sender, message));
+            return;
+        }
 
         // 使用线程池处理接收到的报文
         MESSAGE_HANDLER_THREAD_POOL.execute(() -> handleMessage(sender, message));
@@ -60,12 +72,8 @@ public class RcdcMessageHandler implements MessageHandler {
      * @param message 报文对象
      */
     private void handleMessage(ResponseMessageSender sender, BaseMessage message) {
-        // 处理非业务报文
-        if (handleNonBusinessMessage(sender, message)) {
-            return;
-        }
 
-        // 检查session是否已绑定终端，未绑定且不是升级报文则不处理报文
+        // 检查session是否已绑定终端，
         if (!hasBindSession(sender.getSession(), message.getAction())) {
             LOGGER.warn("终端未绑定session，不处理报文。action：{};data:{}", message.getAction(), String.valueOf(message.getData()));
             return;
@@ -75,7 +83,6 @@ public class RcdcMessageHandler implements MessageHandler {
         boolean isNewConnection = false;
         // 处理升级报文，获取terminalId绑定终端
         if (ShineAction.CHECK_UPGRADE.equals(message.getAction())) {
-            LOGGER.info("开始处理检查升级报文[{}]", ShineAction.CHECK_UPGRADE);
             String terminalId = parseTerminalInfo(message.getData());
             // 判断终端是否是新上线
             isNewConnection = isNewConnection(terminalId, sender.getSession());
@@ -96,8 +103,8 @@ public class RcdcMessageHandler implements MessageHandler {
         // 同步服务器时间，直接应答
         if (ShineAction.SYNC_SERVER_TIME.equals(message.getAction())) {
             SyncServerTimeResponse syncServerTimeResponse = SyncServerTimeResponse.build();
-            sender.response(new Message(Constants.SYSTEM_TYPE, ShineAction.SYNC_SERVER_TIME, syncServerTimeResponse));
             LOGGER.debug("同步服务器时间，{}", JSON.toJSONString(syncServerTimeResponse));
+            sender.response(new Message(Constants.SYSTEM_TYPE, ShineAction.SYNC_SERVER_TIME, syncServerTimeResponse));
             return true;
         }
 
@@ -123,7 +130,6 @@ public class RcdcMessageHandler implements MessageHandler {
         CbbShineTerminalBasicInfo basicInfo;
         try {
             basicInfo = JSON.parseObject(data, CbbShineTerminalBasicInfo.class);
-            LOGGER.info("终端基本信息：{}", JSON.toJSONString(basicInfo));
         } catch (Exception e) {
             throw new IllegalArgumentException("接收到的报文格式错误;data:" + data, e);
         }
