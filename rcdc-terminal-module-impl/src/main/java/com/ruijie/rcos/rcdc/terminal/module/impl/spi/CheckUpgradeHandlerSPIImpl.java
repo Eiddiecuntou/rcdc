@@ -39,6 +39,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -138,20 +139,29 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     private void handleIdvProcess(CbbDispatcherRequest request, CbbShineTerminalBasicInfo basicInfo, CbbTerminalBizConfigDTO terminalBizConfigDTO) {
         // 保存终端基本信息
-        TerminalEntity terminalEntity =
-                basicInfoService.convertBasicInfo2TerminalEntity(request.getTerminalId(), request.getNewConnection(), basicInfo);
-        // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
-        TerminalVersionResultDTO versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
-        SystemUpgradeCheckResult systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity);
+        TerminalVersionResultDTO versionResult = null;
+        SystemUpgradeCheckResult systemUpgradeCheckResult = null;
+        if (!Objects.equals(Boolean.TRUE, basicInfo.getTciEnvironment())) {
+            TerminalEntity terminalEntity =
+                    basicInfoService.convertBasicInfo2TerminalEntity(request.getTerminalId(), request.getNewConnection(), basicInfo);
+            // 检查终端升级包版本与RCDC中的升级包版本号，判断是否升级
+            versionResult = componentUpgradeService.getVersion(terminalEntity, basicInfo.getValidateMd5());
+            systemUpgradeCheckResult = getSystemUpgradeCheckResult(terminalEntity);
 
-        boolean isInUpgradeProcess = isNeedUpgradeOrAbnormalUpgradeResult(versionResult, systemUpgradeCheckResult);
-        TerminalAuthResult authResult = terminalAuthHelper.processTerminalAuth(isInUpgradeProcess, basicInfo);
-        basicInfoService.saveBasicInfo(terminalEntity, basicInfo, authResult.isAuthed());
+            boolean isInUpgradeProcess = isNeedUpgradeOrAbnormalUpgradeResult(versionResult, systemUpgradeCheckResult);
+            TerminalAuthResult authResult = terminalAuthHelper.processTerminalAuth(isInUpgradeProcess, basicInfo);
+            basicInfoService.saveBasicInfo(terminalEntity, basicInfo, authResult.isAuthed());
 
-        if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
-            LOGGER.info("终端[{}]授权失败", basicInfo.getTerminalId());
-            versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
+            if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
+                LOGGER.info("终端[{}]授权失败", basicInfo.getTerminalId());
+                versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
+            }
+        } else {
+            versionResult = new TerminalVersionResultDTO();
+            systemUpgradeCheckResult = new SystemUpgradeCheckResult();
+            versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NOT.getResult());
         }
+
 
         responseToShine(request, terminalBizConfigDTO, versionResult, systemUpgradeCheckResult);
     }
