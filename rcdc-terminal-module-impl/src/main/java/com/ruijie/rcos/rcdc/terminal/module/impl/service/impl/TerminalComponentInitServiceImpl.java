@@ -161,8 +161,13 @@ public class TerminalComponentInitServiceImpl implements TerminalComponentInitSe
         LOGGER.info("upgradeTempPath: {}", upgradeTempPath);
         LOGGER.info("tempDir.isDirectory() {}", tempDir.isDirectory());
         if (tempDir.isDirectory()) {
-            // 系统补丁包升级后，需要制作新版本的升级业务
-            return true;
+            String updateListPath = upgradeTempPath + File.separator + Constants.UPDATE_LIST;
+            File updateListFile = new File(updateListPath);
+            LOGGER.info("updateListFile path:{},{}", updateListPath, updateListFile.exists());
+            if (updateListFile.exists()) {
+                // 系统补丁包升级后，需要制作新版本的升级业务
+                return true;
+            }
         }
 
         return TERMINAL_COMPONENT_PACKAGE_INIT_FAIL.equals(lastUpgradeStatus);

@@ -20,13 +20,11 @@ public interface TerminalBasicInfoService {
 
     /**
      *
-     * @param terminalId 终端id
-     * @param isNewConnection 是否终端上线信息
+     * @param terminalEntity 终端实体类
      * @param shineTerminalBasicInfo 终端信息
      * @param authed 是否授权
      */
-    void saveBasicInfo(String terminalId, boolean isNewConnection, CbbShineTerminalBasicInfo shineTerminalBasicInfo,
-        Boolean authed);
+    void saveBasicInfo(TerminalEntity terminalEntity, CbbShineTerminalBasicInfo shineTerminalBasicInfo, Boolean authed);
 
     /**
      * 根据终端信息获取终端类型

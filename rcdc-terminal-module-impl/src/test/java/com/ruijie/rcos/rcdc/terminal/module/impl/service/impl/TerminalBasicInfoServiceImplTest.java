@@ -16,7 +16,6 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
-import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalModelDriverDAO;
@@ -480,36 +479,14 @@ public class TerminalBasicInfoServiceImplTest {
      */
     @Test
     public void testSaveBasicInfo() {
-        String terminalId = "123";
-
         TerminalEntity terminalEntity = buildTerminalEntity();
 
         CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
 
-        new Expectations() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                result = terminalEntity;
-                sessionManager.getSessionByAlias(terminalId);
-                result = null;
-            }
-        };
-
-        basicInfoService.saveBasicInfo(terminalId, false, basicInfo, Boolean.TRUE);
+        basicInfoService.saveBasicInfo(terminalEntity, basicInfo, Boolean.TRUE);
 
         new Verifications() {
             {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                times = 1;
-
-                TerminalEntity saveEntity;
-                basicInfoDAO.save(saveEntity = withCapture());
-                times = 1;
-                assertEquals(213L, saveEntity.getMemorySize().longValue());
-                assertEquals("gateway", saveEntity.getGateway());
-                assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
-                assertEquals(CbbTerminalStateEnums.OFFLINE, saveEntity.getState());
-
                 terminalModelDriverDAO.findByProductIdAndPlatform(anyString, PLATFORM_ENUMS);
                 times = 0;
 
@@ -524,8 +501,6 @@ public class TerminalBasicInfoServiceImplTest {
      */
     @Test
     public void testSaveBasicInfoProductExist() {
-        String terminalId = "123";
-
         TerminalEntity terminalEntity = buildTerminalEntity();
 
         TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
@@ -544,30 +519,16 @@ public class TerminalBasicInfoServiceImplTest {
                 terminalLockHelper.putAndGetLock(anyString);
                 result = new ReentrantLock();
 
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                result = terminalEntity;
-
                 terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
                 result = Lists.newArrayList(modelDriverEntity);
 
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, false, basicInfo, Boolean.TRUE);
+        basicInfoService.saveBasicInfo(terminalEntity, basicInfo, Boolean.TRUE);
 
         new Verifications() {
             {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                times = 1;
-
-                TerminalEntity saveEntity;
-                basicInfoDAO.save(saveEntity = withCapture());
-                times = 1;
-                assertEquals(213L, saveEntity.getMemorySize().longValue());
-                assertEquals("gateway", saveEntity.getGateway());
-                assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
-                assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
-
                 terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
                 times = 1;
 
@@ -582,8 +543,6 @@ public class TerminalBasicInfoServiceImplTest {
      */
     @Test
     public void testSaveBasicInfoProductNotExist() {
-        String terminalId = "123";
-
         TerminalEntity terminalEntity = buildTerminalEntity();
 
         CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
@@ -598,31 +557,16 @@ public class TerminalBasicInfoServiceImplTest {
                 terminalLockHelper.putAndGetLock(anyString);
                 result = new ReentrantLock();
 
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                result = terminalEntity;
-
-
                 terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
                 result = Lists.newArrayList();
 
             }
         };
 
-        basicInfoService.saveBasicInfo(terminalId, false, basicInfo, Boolean.TRUE);
+        basicInfoService.saveBasicInfo(terminalEntity, basicInfo, Boolean.TRUE);
 
         new Verifications() {
             {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                times = 1;
-
-                TerminalEntity saveEntity;
-                basicInfoDAO.save(saveEntity = withCapture());
-                times = 1;
-                assertEquals(213L, saveEntity.getMemorySize().longValue());
-                assertEquals("gateway", saveEntity.getGateway());
-                assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
-                assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
-
                 terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
                 times = 1;
 
@@ -642,33 +586,13 @@ public class TerminalBasicInfoServiceImplTest {
      */
     @Test
     public void testSaveBasicInfoIsNewTerminal() {
-        String terminalId = "123";
-
+        TerminalEntity terminalEntity = buildTerminalEntity();
         CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
 
-        new Expectations() {
-            {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                result = null;
-            }
-        };
-
-        basicInfoService.saveBasicInfo(terminalId, false, basicInfo, Boolean.TRUE);
+        basicInfoService.saveBasicInfo(terminalEntity, basicInfo, Boolean.TRUE);
 
         new Verifications() {
             {
-                basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-                times = 1;
-
-                TerminalEntity saveEntity;
-                basicInfoDAO.save(saveEntity = withCapture());
-                times = 1;
-                assertEquals(213L, saveEntity.getMemorySize().longValue());
-                assertEquals("gateway", saveEntity.getGateway());
-                assertEquals(CbbNetworkModeEnums.WIRED, saveEntity.getNetworkAccessMode());
-                assertEquals(CbbTerminalStateEnums.ONLINE, saveEntity.getState());
-                assertEquals(Constants.DEFAULT_TERMINAL_GROUP_UUID, saveEntity.getGroupId());
-
                 terminalModelDriverDAO.findByProductIdAndPlatform(anyString, PLATFORM_ENUMS);
                 times = 0;
 

@@ -286,6 +286,8 @@ public interface Constants {
      */
     String ANDROID_TERMINAL_TERMINAL_COMPONET_UPGRADE_TEMP_PATH = "/opt/upgrade/app/terminal_component/terminal_android_arm/temp";
 
+    String UPDATE_LIST = "update.list";
+
     /**
      * 终端检测超时时间（单位:秒）
      */

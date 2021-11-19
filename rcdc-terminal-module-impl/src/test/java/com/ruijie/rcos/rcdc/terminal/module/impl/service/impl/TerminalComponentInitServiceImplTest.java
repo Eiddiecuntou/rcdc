@@ -1,9 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-
 import com.ruijie.rcos.rcdc.hciadapter.module.def.api.CloudPlatformMgmtAPI;
-import com.ruijie.rcos.rcdc.hciadapter.module.def.dto.ClusterVirtualIpDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalOsTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalOsArchType;
@@ -18,11 +15,7 @@ import com.ruijie.rcos.sk.modulekit.api.comm.DtoResponse;
 import com.ruijie.rcos.sk.modulekit.api.comm.Request;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
 import mockit.*;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-
 import static org.junit.Assert.*;
 
 /**
