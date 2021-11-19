@@ -99,6 +99,10 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
                 break;
             }
 
+            if (licenseInfoDTO.getTotalNum() == 0) {
+                licenseInfoDTO.setUsedNum(0);
+                continue;
+            }
 
             if (licenseInfoDTO.getTotalNum() >= leftNum) {
                 LOGGER.info("证书数量大于等于使用数量,{}", JSON.toJSONString(licenseInfoDTO));
