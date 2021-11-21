@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,6 +161,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             versionResult = new TerminalVersionResultDTO();
             systemUpgradeCheckResult = new SystemUpgradeCheckResult();
             versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NOT.getResult());
+            Session session = sessionManager.getSessionByAlias(request.getTerminalId());
+            CbbTerminalStateEnums state = session == null ? CbbTerminalStateEnums.OFFLINE : CbbTerminalStateEnums.ONLINE;
+            basicInfoService.modifyTerminalState(request.getTerminalId(), state);
         }
 
 
