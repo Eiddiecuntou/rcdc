@@ -1,6 +1,8 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyAuthConfigDTO;
@@ -33,6 +35,11 @@ public class TerminalLicenseAuthService {
 
     @Autowired
     private CbbTerminalLicenseStrategyFactory licenseStrategyFactory;
+
+    @Autowired
+    private TerminalLicenseCommonService terminalLicenseCommonService;
+
+    private final Interner<String> terminalIdInterner = Interners.newWeakInterner();
 
     /**
      *  校验是否能够授权
@@ -81,13 +88,15 @@ public class TerminalLicenseAuthService {
         TerminalLicenseStrategyConfigDTO strategyConfig = licenseStrategyFactory.getStrategyConfig();
         List<TerminalLicenseStrategyAuthConfigDTO> allocateList = strategyConfig.getAllocateList();
 
-        for (TerminalLicenseStrategyAuthConfigDTO allocateStrategy : allocateList) {
-            if (isFitStrategy(allocateStrategy.getLicenseType(), authMode)) {
-                LOGGER.info("终端[{}]进行[{}]授权", terminalId, authMode);
-                boolean isSuccess = doAuth(allocateStrategy.getSupportLicenseTypeList(), terminalId, authMode);
-                if (isSuccess) {
-                    LOGGER.info("终端[{}]进行[{}]授权成功", terminalId, authMode);
-                    return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
+        synchronized (terminalIdInterner.intern(terminalId)) {
+            for (TerminalLicenseStrategyAuthConfigDTO allocateStrategy : allocateList) {
+                if (isFitStrategy(allocateStrategy.getLicenseType(), authMode)) {
+                    LOGGER.info("终端[{}]进行[{}]授权", terminalId, authMode);
+                    boolean isSuccess = doAuth(allocateStrategy.getSupportLicenseTypeList(), terminalId, authMode);
+                    if (isSuccess) {
+                        LOGGER.info("终端[{}]进行[{}]授权成功", terminalId, authMode);
+                        return new TerminalAuthResult(true, TerminalAuthResultEnums.SUCCESS);
+                    }
                 }
             }
         }
@@ -115,17 +124,26 @@ public class TerminalLicenseAuthService {
             return false;
         }
 
-        for (TerminalLicenseStrategyAuthConfigDTO recycle : recycleList) {
-            if (isFitStrategy(recycle.getLicenseType(), authMode)) {
-                LOGGER.info("终端[{}]进行[{}]授权回收", terminalId, authMode);
-                boolean isSuccess = doRecycle(recycle.getSupportLicenseTypeList(), terminalId, authMode);
-                if (isSuccess) {
-                    LOGGER.info("终端[{}]进行[{}]授权回收成功", terminalId, authMode);
-                    return true;
+        synchronized (terminalIdInterner.intern(terminalId)) {
+            // 判断终端是否存在授权
+            boolean isAuthed = terminalLicenseCommonService.isTerminalAuthed(terminalId);
+            if (!isAuthed) {
+                LOGGER.info("终端【{}】未授权， 不需回收", terminalId);
+                return false;
+            }
+
+            for (TerminalLicenseStrategyAuthConfigDTO recycle : recycleList) {
+                if (isFitStrategy(recycle.getLicenseType(), authMode)) {
+                    LOGGER.info("终端[{}]进行[{}]授权回收", terminalId, authMode);
+                    boolean isSuccess = doRecycle(recycle.getSupportLicenseTypeList(), terminalId, authMode);
+                    if (isSuccess) {
+                        LOGGER.info("终端[{}]进行[{}]授权回收成功", terminalId, authMode);
+                        return true;
+                    }
                 }
             }
-        }
 
+        }
         return false;
     }
 

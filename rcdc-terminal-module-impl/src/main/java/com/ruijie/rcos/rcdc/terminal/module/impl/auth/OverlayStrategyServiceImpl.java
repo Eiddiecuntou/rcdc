@@ -67,6 +67,7 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
         }
 
         return false;
+        
     }
 
     @Override
