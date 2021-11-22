@@ -43,30 +43,33 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
             return false;
         }
 
-        List<CbbTerminalLicenseTypeEnums> authedList = Lists.newArrayList();
-        for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
-            TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
-            boolean isAuthed = licenseService.auth(terminalId);
-            if (isAuthed) {
-                authedList.add(licenseType);
-            } else {
-                break;
+        synchronized (terminalIdInterner.intern(terminalId)) {
+
+            List<CbbTerminalLicenseTypeEnums> authedList = Lists.newArrayList();
+            for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
+                TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
+                boolean isAuthed = licenseService.auth(terminalId);
+                if (isAuthed) {
+                    authedList.add(licenseType);
+                } else {
+                    break;
+                }
             }
-        }
-        if (authedList.size() == licenseTypeList.size()) {
-            LOGGER.info("终端[{}]叠加授权成功", terminalId);
-            saveTerminalAuthorize(terminalId, buildQueryLicenseType(licenseTypeList), authMode);
-            return true;
-        }
+            if (authedList.size() == licenseTypeList.size()) {
+                LOGGER.info("终端[{}]叠加授权成功", terminalId);
+                saveTerminalAuthorize(terminalId, buildQueryLicenseType(licenseTypeList), authMode);
+                return true;
+            }
 
-        // TODO 考虑优化
-        LOGGER.info("终端[{}]叠加授权失败", terminalId);
-        for (CbbTerminalLicenseTypeEnums licenseType : authedList) {
-            LOGGER.info("叠加授权失败，减去已用[{}]的授权数", licenseType);
-            getTerminalLicenseService(licenseType).decreaseCacheLicenseUsedNum();
-        }
+            // TODO 考虑优化
+            LOGGER.info("终端[{}]叠加授权失败", terminalId);
+            for (CbbTerminalLicenseTypeEnums licenseType : authedList) {
+                LOGGER.info("叠加授权失败，减去已用[{}]的授权数", licenseType);
+                getTerminalLicenseService(licenseType).decreaseCacheLicenseUsedNum();
+            }
 
-        return false;
+            return false;
+        }
     }
 
     @Override

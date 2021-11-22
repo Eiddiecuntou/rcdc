@@ -33,7 +33,7 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
     @Autowired
     private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
-    private final Interner<String> terminalIdInterner = Interners.newWeakInterner();
+    protected final Interner<String> terminalIdInterner = Interners.newWeakInterner();
 
     @Override
     public void init(TempLicCreateDTO tempLicCreateDTO) {
@@ -53,18 +53,17 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
     }
 
     protected void saveTerminalAuthorize(String terminalId, String licenseTypeStr, CbbTerminalPlatformEnums authMode) {
-        synchronized (terminalIdInterner.intern(terminalId)) {
-            int countTerminalAuth = terminalAuthorizeDAO.countByTerminalId(terminalId);
-            if (countTerminalAuth > 0) {
-                return;
-            }
-            TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
-            entity.setAuthed(true);
-            entity.setAuthMode(authMode);
-            entity.setLicenseType(licenseTypeStr);
-            entity.setTerminalId(terminalId);
-            terminalAuthorizeDAO.save(entity);
+        int countTerminalAuth = terminalAuthorizeDAO.countByTerminalId(terminalId);
+        if (countTerminalAuth > 0) {
+            return;
         }
+        TerminalAuthorizeEntity entity = new TerminalAuthorizeEntity();
+        entity.setAuthed(true);
+        entity.setAuthMode(authMode);
+        entity.setLicenseType(licenseTypeStr);
+        entity.setTerminalId(terminalId);
+        terminalAuthorizeDAO.save(entity);
+
     }
 
     protected void deleteTerminalAuthorize(String terminalId, String licenseTypeStr, CbbTerminalPlatformEnums authMode) {

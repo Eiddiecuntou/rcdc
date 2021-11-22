@@ -65,16 +65,17 @@ public class PriorityStrategyServiceImpl extends AbstractStrategyServiceImpl {
             return false;
         }
 
-        for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
-            TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
-            boolean isAuthed = licenseService.auth(terminalId);
-            if (isAuthed) {
-                LOGGER.info("终端[{}]授权成功，授权方式[{}]", terminalId, licenseType);
-                saveTerminalAuthorize(terminalId, licenseType.name(), authMode);
-                return true;
+        synchronized (terminalIdInterner.intern(terminalId)) {
+            for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
+                TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
+                boolean isAuthed = licenseService.auth(terminalId);
+                if (isAuthed) {
+                    LOGGER.info("终端[{}]授权成功，授权方式[{}]", terminalId, licenseType);
+                    saveTerminalAuthorize(terminalId, licenseType.name(), authMode);
+                    return true;
+                }
             }
         }
-
         return false;
     }
 
