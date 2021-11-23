@@ -62,12 +62,12 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     private List<TerminalEntity> filterLicenseFreeTerminal(List<TerminalEntity> terminalEntityList) {
         return terminalEntityList.stream().filter(terminalEntity -> {
             if (StringUtils.isNotEmpty(terminalEntity.getOcsSn())) {
-                LOGGER.debug("终端【{}】为OCS授权终端，无需授权，过滤掉");
+                LOGGER.debug("终端【{}】为OCS授权终端，无需授权，过滤掉", terminalEntity.getTerminalId());
                 return false;
             }
 
             if (whiteListHandlerSPI.checkWhiteList(buildBasicInfo(terminalEntity))) {
-                LOGGER.debug("终端【{}】为白名单终端，无需授权，过滤掉");
+                LOGGER.debug("终端【{}】为白名单终端，无需授权，过滤掉", terminalEntity.getTerminalId());
                 return false;
             }
 
