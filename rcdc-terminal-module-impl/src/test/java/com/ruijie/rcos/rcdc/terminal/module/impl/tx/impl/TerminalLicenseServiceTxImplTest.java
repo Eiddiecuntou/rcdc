@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
@@ -37,6 +38,10 @@ public class TerminalLicenseServiceTxImplTest {
 
     @Injectable
     private TerminalAuthorizeDAO terminalAuthorizeDAO;
+
+    @Injectable
+    private CbbTerminalWhiteListHandlerSPI whiteListHandlerSPI;
+
 
 
     /**
