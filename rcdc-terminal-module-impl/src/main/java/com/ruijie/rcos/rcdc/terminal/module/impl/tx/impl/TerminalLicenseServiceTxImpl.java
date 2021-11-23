@@ -1,6 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
@@ -8,11 +11,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Description: TerminalLicenseServiceTx接口实现类
@@ -35,16 +41,45 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     @Autowired
     private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
+    @Autowired
+    private CbbTerminalWhiteListHandlerSPI whiteListHandlerSPI;
+
     @Override
     public void updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums platform, String licenseKey) {
         Assert.notNull(platform, "platform can not be empty");
         Assert.hasText(licenseKey, "licenseKey can not be empty");
 
         List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(platform, Boolean.FALSE);
-        updateTerminalAuthState(terminalEntityList, Boolean.TRUE);
-        // 临时授权需要添加记录到授权记录表
-        saveAuthRecord(platform, terminalEntityList);
 
+        List<TerminalEntity> needAuthTerminalList = filterLicenseFreeTerminal(terminalEntityList);
+
+        updateTerminalAuthState(needAuthTerminalList, Boolean.TRUE);
+        // 临时授权需要添加记录到授权记录表
+        saveAuthRecord(platform, needAuthTerminalList);
+
+    }
+
+    private List<TerminalEntity> filterLicenseFreeTerminal(List<TerminalEntity> terminalEntityList) {
+        return terminalEntityList.stream().filter(terminalEntity -> {
+            if (StringUtils.isNotEmpty(terminalEntity.getOcsSn())) {
+                LOGGER.info("终端【{}】为OCS授权终端，无需授权，过滤掉");
+                return false;
+            }
+
+            if (whiteListHandlerSPI.checkWhiteList(buildBasicInfo(terminalEntity))) {
+                LOGGER.info("终端【{}】为白名单终端，无需授权，过滤掉");
+                return false;
+            }
+
+            return true;
+        }).collect(Collectors.toList());
+    }
+
+    private CbbShineTerminalBasicInfo buildBasicInfo(TerminalEntity terminalEntity) {
+        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
+        BeanUtils.copyProperties(terminalEntity, basicInfo);
+        LOGGER.info("CbbShineTerminalBasicInfo ： {}", JSON.toJSONString(basicInfo));
+        return basicInfo;
     }
 
     private synchronized void saveAuthRecord(CbbTerminalPlatformEnums platform, List<TerminalEntity> terminalEntityList) {
@@ -69,6 +104,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
         Assert.notNull(licenseNum, "licenseNum can not null");
 
         List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(platform, Boolean.TRUE);
+
         updateTerminalAuthState(terminalEntityList, Boolean.FALSE);
         // 临时授权变更为正式授权需要删除授权记录
         terminalEntityList.stream().forEach(terminalEntity -> terminalAuthorizeDAO.deleteByTerminalId(terminalEntity.getTerminalId()));
