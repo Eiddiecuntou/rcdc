@@ -51,7 +51,8 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
 
         List<String> productTypeWhiteList = whiteListHandlerSPI.getProductTypeWhiteList();
         LOGGER.info("productTypeWhiteList ==>{}", JSON.toJSONString(productTypeWhiteList));
-        List<TerminalEntity> needAuthTerminalList = terminalBasicInfoDAO.findNoAuthedTerminalEntitiesByAuthMode(platform.name(), productTypeWhiteList);
+        List<TerminalEntity> needAuthTerminalList
+                = terminalBasicInfoDAO.findNoAuthedTerminalEntitiesByAuthMode(platform.name(), productTypeWhiteList);
 
         LOGGER.info("needAuthTerminalList ==>{}", needAuthTerminalList.size());
         terminalBasicInfoDAO.updateTerminalsByPlatformAndAuthed(platform, Boolean.FALSE, Boolean.TRUE, productTypeWhiteList);
