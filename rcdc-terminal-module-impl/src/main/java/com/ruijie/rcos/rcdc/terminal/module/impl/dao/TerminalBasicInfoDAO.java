@@ -155,4 +155,29 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
      * @return 终端列表
      */
     List<TerminalEntity> findByOcsSn(String ocsSn);
+
+
+    /**
+     * @param platform        终端类型枚举
+     * @param oldAuthed       旧授权
+     * @param newAuthed       新授权
+     * @param productTypeList 产品类型
+     */
+    @Transactional
+    @Modifying
+    @Query(value = "update TerminalEntity set authed=?3,version=version+1 where platform=?1 and authed=?2 and ocsSn is null " +
+            "and productType not in ?4")
+    void updateTerminalsByPlatformAndAuthed(CbbTerminalPlatformEnums platform, Boolean oldAuthed, Boolean newAuthed, List<String> productTypeList);
+
+    /**
+     * 获取符合平台类型的终端未授权的终端列表
+     *
+     * @param platform        终端平台类型
+     * @param productTypeList 产品类型
+     * @return 符合平台类型、授权情况的终端列表
+     */
+    @Query(value = "select t.* from t_cbb_terminal t where t.authed=false and t.platform=?1 and t.ocs_sn is null and t.product_type not in ?2 and " +
+            "not exists(select 1 from t_cbb_terminal_authorize a where a.terminal_id=t.terminal_id)",
+            nativeQuery = true)
+    List<TerminalEntity> findNoAuthedTerminalEntitiesByAuthMode(String platform, List<String> productTypeList);
 }

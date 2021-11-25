@@ -2,6 +2,8 @@ package com.ruijie.rcos.rcdc.terminal.module.def.spi;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 
+import java.util.List;
+
 /**
  * 终端白名单SPI接口定义
  * Description: Function Description
@@ -73,5 +75,13 @@ public interface CbbTerminalWhiteListHandlerSPI {
      * @return boolean 是否在终端白名单中
      */
     boolean checkWhiteList(CbbShineTerminalBasicInfo terminalBasicInfo);
+
+
+    /**
+     * 获取产品白名单
+     *
+     * @return List<String> 列表
+     */
+    List<String> getProductTypeWhiteList();
 
 }

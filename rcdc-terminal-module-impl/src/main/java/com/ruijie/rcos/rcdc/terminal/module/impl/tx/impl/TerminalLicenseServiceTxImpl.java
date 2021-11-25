@@ -49,51 +49,33 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
         Assert.notNull(platform, "platform can not be empty");
         Assert.hasText(licenseKey, "licenseKey can not be empty");
 
-        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(platform, Boolean.FALSE);
+        List<String> productTypeWhiteList = whiteListHandlerSPI.getProductTypeWhiteList();
+        LOGGER.info("productTypeWhiteList ==>{}", JSON.toJSONString(productTypeWhiteList));
+        List<TerminalEntity> needAuthTerminalList
+                = terminalBasicInfoDAO.findNoAuthedTerminalEntitiesByAuthMode(platform.name(), productTypeWhiteList);
 
-        List<TerminalEntity> needAuthTerminalList = filterLicenseFreeTerminal(terminalEntityList);
-
-        updateTerminalAuthState(needAuthTerminalList, Boolean.TRUE);
+        LOGGER.info("needAuthTerminalList ==>{}", needAuthTerminalList.size());
+        terminalBasicInfoDAO.updateTerminalsByPlatformAndAuthed(platform, Boolean.FALSE, Boolean.TRUE, productTypeWhiteList);
         // 临时授权需要添加记录到授权记录表
-        saveAuthRecord(platform, needAuthTerminalList);
+        saveAuthRecord(platform, needAuthTerminalList, productTypeWhiteList);
 
     }
 
-    private List<TerminalEntity> filterLicenseFreeTerminal(List<TerminalEntity> terminalEntityList) {
-        return terminalEntityList.stream().filter(terminalEntity -> {
-            if (StringUtils.isNotEmpty(terminalEntity.getOcsSn())) {
-                LOGGER.debug("终端【{}】为OCS授权终端，无需授权，过滤掉", terminalEntity.getTerminalId());
-                return false;
-            }
+    private synchronized void saveAuthRecord(CbbTerminalPlatformEnums platform, List<TerminalEntity> terminalEntityList,
+                                             List<String> productTypeWhiteList) {
+        LOGGER.info("update or save terminalAuthorize==>{}", platform, terminalEntityList.size());
+        terminalAuthorizeDAO.updateTerminalAuthorizesByPlatformAndAuthed(platform.name(), Boolean.FALSE, Boolean.TRUE, productTypeWhiteList);
 
-            if (whiteListHandlerSPI.checkWhiteList(buildBasicInfo(terminalEntity))) {
-                LOGGER.debug("终端【{}】为白名单终端，无需授权，过滤掉", terminalEntity.getTerminalId());
-                return false;
-            }
-
-            return true;
-        }).collect(Collectors.toList());
-    }
-
-    private CbbShineTerminalBasicInfo buildBasicInfo(TerminalEntity terminalEntity) {
-        CbbShineTerminalBasicInfo basicInfo = new CbbShineTerminalBasicInfo();
-        BeanUtils.copyProperties(terminalEntity, basicInfo);
-        return basicInfo;
-    }
-
-    private synchronized void saveAuthRecord(CbbTerminalPlatformEnums platform, List<TerminalEntity> terminalEntityList) {
-        terminalEntityList.stream().forEach(terminalEntity -> {
-            TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalEntity.getTerminalId());
-            if (authorizeEntity == null) {
-                LOGGER.debug("终端不存在");
-                authorizeEntity = new TerminalAuthorizeEntity();
-            }
+        terminalEntityList.forEach(terminalEntity -> {
+            TerminalAuthorizeEntity authorizeEntity = new TerminalAuthorizeEntity();
             authorizeEntity.setAuthMode(platform);
             authorizeEntity.setTerminalId(terminalEntity.getTerminalId());
             authorizeEntity.setAuthed(true);
             authorizeEntity.setLicenseType(platform.name());
             terminalAuthorizeDAO.save(authorizeEntity);
         });
+
+        LOGGER.info("update or save terminalAuthorize end");
     }
 
     @Override
@@ -131,7 +113,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
      * 重试更新终端授权状态
      *
      * @param terminalId 终端id
-     * @param authed 是否授权
+     * @param authed     是否授权
      */
     private void retryUpdateAuthed(String terminalId, Boolean authed) {
         int retry = 0;
