@@ -28,5 +28,5 @@ public interface TerminalLicenseServiceTx {
      * @param platform 终端类型
      * @param licenseKey 授权key
      */
-    void updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums platform, String licenseKey, Integer licenseNum);
+    void updateTerminalUnAuthedAndUpdateLicenseNum(CbbTerminalPlatformEnums platform, String licenseKey, Integer licenseNum);
 }

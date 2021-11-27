@@ -1,7 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.tx.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
@@ -11,14 +10,15 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
+import com.ruijie.rcos.sk.modulekit.api.ds.DataSourceNames;
+import com.ruijie.rcos.sk.repositorykit.api.ds.JdbcTemplateHolder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.StopWatch;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Description: TerminalLicenseServiceTx接口实现类
@@ -44,6 +44,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     @Autowired
     private CbbTerminalWhiteListHandlerSPI whiteListHandlerSPI;
 
+
     @Override
     public void updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums platform, String licenseKey) {
         Assert.notNull(platform, "platform can not be empty");
@@ -51,8 +52,8 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
 
         List<String> productTypeWhiteList = whiteListHandlerSPI.getProductTypeWhiteList();
         LOGGER.info("productTypeWhiteList ==>{}", JSON.toJSONString(productTypeWhiteList));
-        List<TerminalEntity> needAuthTerminalList
-                = terminalBasicInfoDAO.findNoAuthedTerminalEntitiesByAuthMode(platform.name(), productTypeWhiteList);
+        List<TerminalEntity> needAuthTerminalList =
+                terminalBasicInfoDAO.findNoAuthedTerminalEntitiesByAuthMode(platform.name(), productTypeWhiteList);
 
         LOGGER.info("needAuthTerminalList ==>{}", needAuthTerminalList.size());
         terminalBasicInfoDAO.updateTerminalsByPlatformAndAuthed(platform, Boolean.FALSE, Boolean.TRUE, productTypeWhiteList);
@@ -62,7 +63,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     }
 
     private synchronized void saveAuthRecord(CbbTerminalPlatformEnums platform, List<TerminalEntity> terminalEntityList,
-                                             List<String> productTypeWhiteList) {
+            List<String> productTypeWhiteList) {
         LOGGER.info("update or save terminalAuthorize==>{}", platform, terminalEntityList.size());
         terminalAuthorizeDAO.updateTerminalAuthorizesByPlatformAndAuthed(platform.name(), Boolean.FALSE, Boolean.TRUE, productTypeWhiteList);
 
@@ -74,68 +75,24 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
             authorizeEntity.setLicenseType(platform.name());
             terminalAuthorizeDAO.save(authorizeEntity);
         });
-
         LOGGER.info("update or save terminalAuthorize end");
     }
 
     @Override
-    public void updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums platform, String licenseKey, Integer licenseNum) {
+    public void updateTerminalUnAuthedAndUpdateLicenseNum(CbbTerminalPlatformEnums platform, String licenseKey, Integer licenseNum) {
         Assert.notNull(platform, "platform can not be empty");
         Assert.hasText(licenseKey, "licenseKey can not be empty");
         Assert.notNull(licenseNum, "licenseNum can not null");
 
-        List<TerminalEntity> terminalEntityList = terminalBasicInfoDAO.findTerminalEntitiesByAuthModeAndAuthed(platform, Boolean.TRUE);
-
-        updateTerminalAuthState(terminalEntityList, Boolean.FALSE);
+        List<String> productTypeWhiteList = whiteListHandlerSPI.getProductTypeWhiteList();
+        LOGGER.info("开始更新授权[{}]信息", platform);
+        terminalBasicInfoDAO.updateTerminalsByPlatformAndAuthed(platform, Boolean.TRUE, Boolean.FALSE, productTypeWhiteList);
+        LOGGER.info("结束更新授权[{}]信息", platform);
         // 临时授权变更为正式授权需要删除授权记录
-        terminalEntityList.stream().forEach(terminalEntity -> terminalAuthorizeDAO.deleteByTerminalId(terminalEntity.getTerminalId()));
-
+        LOGGER.info("开始删除授权信息[{}]", platform);
+        terminalAuthorizeDAO.deleteByAuthMode(platform);
+        LOGGER.info("结束删除授权信息[{}]", platform);
 
     }
 
-    private void updateTerminalAuthState(List<TerminalEntity> terminalEntityList, Boolean authed) {
-        terminalEntityList.stream().forEach(terminalEntity -> {
-            if (authed.equals(terminalEntity.getAuthed())) {
-                LOGGER.info("更新终端授权状态为{}时，发现终端此时的授权状态已经是{}。无须更新终端状态", authed, authed);
-                return;
-            }
-            terminalEntity.setAuthed(authed);
-            try {
-                terminalBasicInfoDAO.save(terminalEntity);
-            } catch (Exception e) {
-                LOGGER.error("更新终端[" + terminalEntity.getTerminalId() + "]的授权状态为" + authed + "失败！", e);
-                retryUpdateAuthed(terminalEntity.getTerminalId(), authed);
-            }
-        });
-    }
-
-    /**
-     * 重试更新终端授权状态
-     *
-     * @param terminalId 终端id
-     * @param authed     是否授权
-     */
-    private void retryUpdateAuthed(String terminalId, Boolean authed) {
-        int retry = 0;
-
-        while (retry++ < FAIL_TRY_COUNT) {
-            LOGGER.warn("第{}次重试更新终端[{}]的授权状态为{}", retry, terminalId, authed);
-            TerminalEntity entity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(terminalId);
-            if (authed.equals(entity.getAuthed())) {
-                LOGGER.info("重试更新终端授权状态为{}时，发现终端此时的授权状态已经是{}。无须重试更新终端状态", authed, authed);
-                return;
-            }
-            entity.setAuthed(authed);
-            try {
-                terminalBasicInfoDAO.save(entity);
-            } catch (Exception e) {
-                LOGGER.error("第" + retry + "次重试更新终端[" + terminalId + "]的授权状态为" + authed + "失败！", e);
-                continue;
-            }
-            LOGGER.info("成功通过重试更新终端[{}]的授权状态为：{}", terminalId, authed);
-            return;
-        }
-
-        LOGGER.error("重试{}次，仍然无法成功将终端[{}]的授权状态更新为：{}", FAIL_TRY_COUNT, terminalId, authed);
-    }
 }

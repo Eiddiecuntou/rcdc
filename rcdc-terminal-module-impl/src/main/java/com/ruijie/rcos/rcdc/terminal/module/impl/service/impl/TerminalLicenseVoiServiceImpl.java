@@ -1,11 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
-import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
@@ -48,7 +46,7 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
     public void processImportOfficialLicense(Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not be null");
         // 将所有已授权IDV终端置为未授权，并更新终端授权数量
-        terminalLicenseServiceTx.updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.VOI, getLicenseConstansKey(), licenseNum);
+        terminalLicenseServiceTx.updateTerminalUnAuthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.VOI, getLicenseConstansKey(), licenseNum);
         this.usedNum = 0;
     }
 
