@@ -73,6 +73,11 @@ public class CbbTerminalDetectDTO {
     private DetectState checkState = new DetectState();
 
     /**
+     * 是否开启协议代理
+     */
+    private Boolean enableProxy;
+
+    /**
      * 
      * Description: 检测状态
      * Copyright: Copyright (c) 2018
@@ -241,5 +246,13 @@ public class CbbTerminalDetectDTO {
 
     public void setMac(String mac) {
         this.mac = mac;
+    }
+
+    public Boolean getEnableProxy() {
+        return enableProxy;
+    }
+
+    public void setEnableProxy(Boolean enableProxy) {
+        this.enableProxy = enableProxy;
     }
 }

@@ -46,6 +46,7 @@ public interface CbbTerminalDetectAPI {
      * @apiSuccess (响应字段说明) {String} response.itemArr.checkState.state 响应实体数组DetectState类state状态
      * @apiSuccess (响应字段说明) {String} response.itemArr.checkState.message 响应实体数组DetectState类message信息
      * @apiSuccess (响应字段说明) {long} response.total 分页数据总数
+     * @apiSuccess (响应字段说明) {Boolean} detectInfo.enableProxy 是否开启协议代理
      *
      *
      */
@@ -82,6 +83,7 @@ public interface CbbTerminalDetectAPI {
      * @apiSuccess (响应字段说明) {DetectState} detectInfo.checkState 响应实体数组DetectState类
      * @apiSuccess (响应字段说明) {String} detectInfo.checkState.state 响应实体数组DetectState类state状态
      * @apiSuccess (响应字段说明) {String} detectInfo.checkState.message 响应实体数组DetectState类message信息
+     * @apiSuccess (响应字段说明) {Boolean} detectInfo.enableProxy 是否开启协议代理
      *
      */
     /**

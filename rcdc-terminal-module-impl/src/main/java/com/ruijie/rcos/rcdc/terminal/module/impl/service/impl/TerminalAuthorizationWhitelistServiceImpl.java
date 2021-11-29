@@ -157,10 +157,12 @@ public class TerminalAuthorizationWhitelistServiceImpl implements TerminalAuthor
         OcsDiskAuthInputInfo ocsDiskAuthInputInfo = getOcsDiskAuthInputInfo(terminalId, diskInfos);
         if (ocsDiskAuthInputInfo.getCompositeProductType() != null) {
             if (terminalAuthorizationWhitelistDao.findByProductType(ocsDiskAuthInputInfo.getCompositeProductType()) != null) {
-                return ocsDiskAuthInputInfo.getDiskSn();
+                String diskSn = ocsDiskAuthInputInfo.getDiskSn();
+                return StringUtils.isBlank(diskSn) ? null : diskSn;
             }
         }
-        return "";
+        //返回null
+        return null;
     }
 
     private OcsDiskAuthInputInfo getOcsDiskAuthInputInfo(String terminalId, String diskInfos) {
