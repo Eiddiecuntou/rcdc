@@ -178,7 +178,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         Integer currentNum = getAllTerminalLicenseNum();
 
         if (Objects.equals(currentNum, licenseNum)) {
-            LOGGER.info("当前授权数量[{}]等于准备授权的数量[{}]，只更新缓存及数据库", currentNum, licenseNum);
+            LOGGER.info("[{}]当前授权数量[{}]等于准备授权的数量[{}]，只更新缓存及数据库", this.getClass().getSimpleName(), currentNum, licenseNum);
             updateCacheAndDbLicenseNum(licenseInfoList, licenseNum, currentNum);
             return;
         }
@@ -186,14 +186,14 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         // 授权证书为-1分为两种情况：RCDC首次初始化sql时将licenseNum初始化为-1。已导入临时证书，产品调用cbb接口，设licenseNum值为-1。
         // 授权证书为-1时，不限制终端授权，可接入任意数量IDV终端。
         if (Objects.equals(currentNum, Constants.TERMINAL_AUTH_DEFAULT_NUM)) {
-            LOGGER.info("从终端授权数量为-1，导入正式授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+            LOGGER.info("[{}]从终端授权数量为-1，导入正式授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", this.getClass().getSimpleName(), currentNum, licenseNum);
             // fixMe 此处需考虑通知产品，断开shine连接
             processImportOfficialLicense(licenseNum);
         } else if (licenseNum == Constants.TERMINAL_AUTH_DEFAULT_NUM) {
-            LOGGER.info("从终端授权数量不是-1，导入临时授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", currentNum, licenseNum);
+            LOGGER.info("[{}]从终端授权数量不是-1，导入临时授权证书场景。当前授权数量为：{}，准备授权的数量为：{}", this.getClass().getSimpleName(), currentNum, licenseNum);
             processImportTempLicense();
         } else if (currentNum > licenseNum) {
-            LOGGER.info("当前授权数量为{}，准备更新授权数量为{}，当前授权数小于准备更新授权数，回收授权", currentNum, licenseNum);
+            LOGGER.info("[{}]当前授权数量为{}，准备更新授权数量为{}，当前授权数小于准备更新授权数，回收授权", this.getClass().getSimpleName(), currentNum, licenseNum);
             // fixMe 此处需考虑通知产品，断开shine连接
             processImportOfficialLicense(licenseNum);
         }
@@ -203,7 +203,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     }
 
     private void updateCacheAndDbLicenseNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList, int licenseNum, Integer currentNum) {
-        LOGGER.info("当前授权数量为{}, 准备更新授权数量为{}，当前授权数大于准备更新授权数，更新授权数量", currentNum, licenseNum);
+        LOGGER.info("[{}]当前授权数量为{}, 准备更新授权数量为{}，当前授权数大于准备更新授权数，更新授权数量", this.getClass().getSimpleName(), currentNum, licenseNum);
 
         globalParameterAPI.updateParameter(getLicenseConstansKey(), JSON.toJSONString(licenseInfoList));
         LICENSE_MAP.put(getLicenseType(), licenseInfoList);
