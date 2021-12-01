@@ -42,7 +42,7 @@ public class TerminalComponentUpgradeServiceImpl implements TerminalComponentUpg
         Assert.notNull(terminalEntity.getTerminalOsType(), "osType can not be null");
 
         CbbCpuArchType cpuArchType = terminalEntity.getCpuArch() == null ? CbbCpuArchType.X86_64 : terminalEntity.getCpuArch();
-        CbbTerminalOsTypeEnums osType = CbbTerminalOsTypeEnums.valueOf(terminalEntity.getTerminalOsType().toUpperCase());
+        CbbTerminalOsTypeEnums osType = CbbTerminalOsTypeEnums.convert(terminalEntity.getTerminalOsType().toUpperCase());
         TerminalOsArchType osArchType = TerminalOsArchType.convert(osType, cpuArchType);
         LOGGER.info("终端[{}]获取组件升级处理对象, 操作系统架构为：{}", terminalEntity.getTerminalId(), osArchType.name());
         TerminalComponentUpgradeHandler handler;
