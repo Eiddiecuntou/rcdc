@@ -1,6 +1,5 @@
 package com.ruijie.rcos.rcdc.terminal.module.def.api.enums;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import org.springframework.util.Assert;
 
 /**
@@ -35,7 +34,7 @@ public enum CbbTerminalOsTypeEnums {
         Assert.hasText(platform, "platform can not be blank");
 
         for (CbbTerminalOsTypeEnums type : CbbTerminalOsTypeEnums.values()) {
-            if (platform.equals(type.toString())) {
+            if (type.toString().equals(platform)) {
                 return type;
             }
         }
