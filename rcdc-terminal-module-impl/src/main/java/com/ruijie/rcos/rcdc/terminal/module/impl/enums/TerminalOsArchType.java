@@ -63,7 +63,12 @@ public enum TerminalOsArchType {
     /**
      * NEOKYLIN 操作系统， x86架构
      */
-    NEOKYLIN_X86(CbbTerminalOsTypeEnums.NEOKYLIN, CbbCpuArchType.X86_64);
+    NEOKYLIN_X86(CbbTerminalOsTypeEnums.NEOKYLIN, CbbCpuArchType.X86_64),
+
+    /**
+     *  其他
+     */
+    OTHER(CbbTerminalOsTypeEnums.OTHER, CbbCpuArchType.OTHER);
 
     private CbbTerminalOsTypeEnums osType;
 
@@ -99,6 +104,6 @@ public enum TerminalOsArchType {
             }
         }
 
-        throw new IllegalArgumentException("终端系统架构【" + osType + "】【" + cpuArch + "】未定义，不支持该系统架构");
+        return OTHER;
     }
 }
