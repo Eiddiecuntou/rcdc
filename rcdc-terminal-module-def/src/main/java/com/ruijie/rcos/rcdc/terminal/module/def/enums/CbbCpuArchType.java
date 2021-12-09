@@ -16,7 +16,9 @@ public enum CbbCpuArchType {
 
     ARM("aarch64"),
 
-    MIPS("mips");
+    MIPS("mips"),
+
+    OTHER("other");
 
     private String archName;
 
@@ -44,7 +46,7 @@ public enum CbbCpuArchType {
             }
         }
 
-        throw new IllegalArgumentException("CPU架构【" + archName + "】未定义，不支持该架构");
+        return OTHER;
     }
 
 }
