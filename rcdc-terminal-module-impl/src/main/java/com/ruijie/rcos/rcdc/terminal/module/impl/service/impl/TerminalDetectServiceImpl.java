@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,9 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
 
     @Autowired
     private TerminalDetectionDAO detectionDAO;
+
+    @Autowired
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     private static final String DETECT_FAIL_DEFAULT_MSG = "检测失败";
 
@@ -107,6 +111,9 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         entity.setTerminalId(terminalId);
         entity.setCreateTime(now);
         entity.setDetectState(DetectStateEnums.WAIT);
+        Boolean enableProxy = terminalBasicInfoDAO.obtainEnableProxyByTerminalId(terminalId);
+        LOGGER.info("终端[{}]是否开启代理[{}]", terminalId, enableProxy);
+        entity.setEnableProxy(enableProxy);
         detectionDAO.save(entity);
         return entity;
     }

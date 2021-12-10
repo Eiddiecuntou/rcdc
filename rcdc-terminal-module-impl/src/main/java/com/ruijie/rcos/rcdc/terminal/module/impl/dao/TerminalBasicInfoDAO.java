@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -180,4 +181,7 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
             "not exists(select 1 from t_cbb_terminal_authorize a where a.terminal_id=t.terminal_id)",
             nativeQuery = true)
     List<TerminalEntity> findNoAuthedTerminalEntitiesByAuthMode(String platform, List<String> productTypeList);
+
+    @Query(value = "select enableProxy  from TerminalEntity where terminalId = :terminalId")
+    Boolean obtainEnableProxyByTerminalId(@Param("terminalId") String terminalId);
 }
