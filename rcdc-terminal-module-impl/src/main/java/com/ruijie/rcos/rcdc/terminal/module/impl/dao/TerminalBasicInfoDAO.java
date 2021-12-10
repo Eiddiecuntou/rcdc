@@ -182,6 +182,12 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
             nativeQuery = true)
     List<TerminalEntity> findNoAuthedTerminalEntitiesByAuthMode(String platform, List<String> productTypeList);
 
+    /**
+     * 根据终端ID获取终端是否开启代理
+     *
+     * @param terminalId 终端ID
+     * @return 是否开启代理
+     */
     @Query(value = "select enableProxy  from TerminalEntity where terminalId = :terminalId")
     Boolean obtainEnableProxyByTerminalId(@Param("terminalId") String terminalId);
 }
