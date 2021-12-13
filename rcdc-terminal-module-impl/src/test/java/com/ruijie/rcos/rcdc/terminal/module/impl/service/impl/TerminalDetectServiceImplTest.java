@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.*;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectItemStateEnums;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +43,9 @@ public class TerminalDetectServiceImplTest {
 
     @Injectable
     private TerminalDetectionDAO detectionDAO;
+
+    @Injectable
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     /**
      * 测试检测信息,参数为空
