@@ -86,6 +86,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private static final ExecutorService TERMINAL_EVENT_NOTICE_THREAD_POOL =
             ThreadExecutors.newBuilder("terminalEventNoticeThreadPool").maxThreadNum(80).queueSize(1000).build();
 
+    private static final ExecutorService LEARN_TERMINAL_MODEL_THREAD_POOL =
+            ThreadExecutors.newBuilder("learnTerminalModelThreadPool").maxThreadNum(80).queueSize(1000).build();
+
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
@@ -135,8 +138,8 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         TERMINAL_EVENT_NOTICE_THREAD_POOL.execute(() -> {
             LOGGER.info("开始通知其他组件终端为在线状态[{}]", basicInfo.getTerminalId());
             doNotice(basicInfo);
-            basicInfoService.saveTerminalModel(basicInfo);
         });
+        LEARN_TERMINAL_MODEL_THREAD_POOL.execute(() -> basicInfoService.saveTerminalModel(basicInfo));
     }
 
     private void handleIdvProcess(CbbDispatcherRequest request, CbbShineTerminalBasicInfo basicInfo, CbbTerminalBizConfigDTO terminalBizConfigDTO) {
