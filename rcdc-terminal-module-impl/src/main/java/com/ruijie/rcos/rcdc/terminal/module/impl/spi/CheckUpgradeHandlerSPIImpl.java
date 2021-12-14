@@ -40,6 +40,7 @@ import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
@@ -94,14 +95,21 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
         LOGGER.info("终端[{}]组件升级处理请求", request.getTerminalId());
 
+        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
+        basicInfo.setReceiveDate(new Date());
         CHECK_UPGRADE_THREAD_POOL.execute(() -> {
             LOGGER.info("开始处理终端[{}]组件升级", request.getTerminalId());
-            doDispatch(request);
+            doDispatch(request, basicInfo);
         });
     }
 
-    private void doDispatch(CbbDispatcherRequest request) {
-        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
+    private void doDispatch(CbbDispatcherRequest request, CbbShineTerminalBasicInfo basicInfo) {
+        long receiveTime = new Date().getTime() - basicInfo.getReceiveDate().getTime();
+        if (receiveTime >= 1500L) {
+            LOGGER.warn("终端[{}]消息接收超过15s，丢弃", basicInfo.getTerminalId());
+            return;
+        }
+
 
         // 通知上层组件终端接入，判断是否允许接入
         boolean allowConnect = connectHandlerSPI.isAllowConnect(basicInfo);
