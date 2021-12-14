@@ -8,6 +8,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import org.springframework.lang.Nullable;
 
+import java.util.Date;
+
 /**
  * Description: shine上传的终端基本信息
  * Copyright: Copyright (c) 2018
@@ -142,6 +144,9 @@ public class CbbShineTerminalBasicInfo {
 
     @Nullable
     private Boolean isTciEnvironment;
+
+    @Nullable
+    private Date receiveDate;
 
 
     public CbbTerminalPlatformEnums getPlatform() {
@@ -472,5 +477,14 @@ public class CbbShineTerminalBasicInfo {
 
     public void setTciEnvironment(@Nullable Boolean tciEnvironment) {
         isTciEnvironment = tciEnvironment;
+    }
+
+    @Nullable
+    public Date getReceiveDate() {
+        return receiveDate;
+    }
+
+    public void setReceiveDate(@Nullable Date receiveDate) {
+        this.receiveDate = receiveDate;
     }
 }
