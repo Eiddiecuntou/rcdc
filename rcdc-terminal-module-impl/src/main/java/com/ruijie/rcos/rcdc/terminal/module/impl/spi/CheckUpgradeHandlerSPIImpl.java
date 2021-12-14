@@ -135,6 +135,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         TERMINAL_EVENT_NOTICE_THREAD_POOL.execute(() -> {
             LOGGER.info("开始通知其他组件终端为在线状态[{}]", basicInfo.getTerminalId());
             doNotice(basicInfo);
+            basicInfoService.saveTerminalModel(basicInfo);
         });
     }
 

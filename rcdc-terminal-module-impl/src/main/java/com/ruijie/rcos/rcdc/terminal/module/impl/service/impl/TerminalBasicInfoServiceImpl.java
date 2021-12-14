@@ -86,9 +86,6 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         Assert.notNull(shineTerminalBasicInfo, "终端信息不能为空");
         Assert.notNull(authed, "authed can not be null");
 
-        // 自学习终端型号
-        saveTerminalModel(shineTerminalBasicInfo);
-
         //为TCI设置字段ocsSn的值
         terminalAuthorizationWhitelistService.fillOcsSnIfExists(terminalEntity);
 
@@ -102,7 +99,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         }
     }
 
-    private synchronized boolean saveTerminalBasicInfo(TerminalEntity basicInfoEntity, Boolean authed) {
+    private boolean saveTerminalBasicInfo(TerminalEntity basicInfoEntity, Boolean authed) {
         basicInfoEntity.setAuthed(authed);
         try {
             basicInfoDAO.save(basicInfoEntity);
@@ -209,7 +206,8 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
         return new CbbTerminalNetworkInfoDTO[]{networkInfoDTO};
     }
 
-    private void saveTerminalModel(CbbShineTerminalBasicInfo basicInfo) {
+    @Override
+    public void saveTerminalModel(CbbShineTerminalBasicInfo basicInfo) {
 
         if (StringUtils.isEmpty(basicInfo.getProductId())) {
             // 无产品id, 一般为软终端
