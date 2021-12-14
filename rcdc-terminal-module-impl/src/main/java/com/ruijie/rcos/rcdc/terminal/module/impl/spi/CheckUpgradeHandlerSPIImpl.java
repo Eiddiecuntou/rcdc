@@ -90,7 +90,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private static final ExecutorService LEARN_TERMINAL_MODEL_THREAD_POOL =
             ThreadExecutors.newBuilder("learnTerminalModelThreadPool").maxThreadNum(80).queueSize(1000).build();
 
-    private static final Long DEFAULT_TIME = 1500L;
+    private static final Long DEFAULT_TIME = 15000L;
 
     @Override
     public void dispatch(CbbDispatcherRequest request) {
