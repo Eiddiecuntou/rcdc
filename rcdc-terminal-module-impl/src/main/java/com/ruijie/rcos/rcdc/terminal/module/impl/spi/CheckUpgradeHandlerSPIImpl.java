@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CheckUpgradeDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,21 +96,23 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
         LOGGER.info("终端[{}]组件升级处理请求", request.getTerminalId());
 
-        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
-        basicInfo.setReceiveDate(new Date());
+        CheckUpgradeDTO checkUpgradeDTO = new CheckUpgradeDTO();
+        checkUpgradeDTO.setReceiveDate(new Date());
         CHECK_UPGRADE_THREAD_POOL.execute(() -> {
             LOGGER.info("开始处理终端[{}]组件升级", request.getTerminalId());
-            doDispatch(request, basicInfo);
+            doDispatch(request,checkUpgradeDTO);
         });
     }
 
-    private void doDispatch(CbbDispatcherRequest request, CbbShineTerminalBasicInfo basicInfo) {
-        long receiveTime = new Date().getTime() - basicInfo.getReceiveDate().getTime();
-        if (receiveTime >= 1500L) {
-            LOGGER.warn("终端[{}]消息接收超过15s，丢弃", basicInfo.getTerminalId());
+    private void doDispatch(CbbDispatcherRequest request, CheckUpgradeDTO checkUpgradeDTO) {
+
+        long receiveTime = new Date().getTime() - checkUpgradeDTO.getReceiveDate().getTime();
+        if (receiveTime >= 1500L){
+            LOGGER.warn("终端[{}]消息接收超时",request.getTerminalId());
             return;
         }
 
+        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
 
         // 通知上层组件终端接入，判断是否允许接入
         boolean allowConnect = connectHandlerSPI.isAllowConnect(basicInfo);
