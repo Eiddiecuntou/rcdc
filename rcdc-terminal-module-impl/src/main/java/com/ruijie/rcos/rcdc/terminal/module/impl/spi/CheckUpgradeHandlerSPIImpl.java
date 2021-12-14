@@ -100,15 +100,15 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         checkUpgradeDTO.setReceiveDate(new Date());
         CHECK_UPGRADE_THREAD_POOL.execute(() -> {
             LOGGER.info("开始处理终端[{}]组件升级", request.getTerminalId());
-            doDispatch(request,checkUpgradeDTO);
+            doDispatch(request, checkUpgradeDTO);
         });
     }
 
     private void doDispatch(CbbDispatcherRequest request, CheckUpgradeDTO checkUpgradeDTO) {
 
         long receiveTime = new Date().getTime() - checkUpgradeDTO.getReceiveDate().getTime();
-        if (receiveTime >= 1500L){
-            LOGGER.warn("终端[{}]消息接收超时",request.getTerminalId());
+        if (receiveTime >= 1500L) {
+            LOGGER.warn("终端[{}]消息接收超时", request.getTerminalId());
             return;
         }
 
