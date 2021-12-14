@@ -90,6 +90,8 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private static final ExecutorService LEARN_TERMINAL_MODEL_THREAD_POOL =
             ThreadExecutors.newBuilder("learnTerminalModelThreadPool").maxThreadNum(80).queueSize(1000).build();
 
+    private static final Long DEFAULT_TIME = 1500L;
+
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
@@ -106,7 +108,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private void doDispatch(CbbDispatcherRequest request,CbbShineTerminalBasicInfo basicInfo) {
 
         long receiveTime = new Date().getTime() - basicInfo.getReceiveDate().getTime();
-        if (receiveTime >= 1500L) {
+        if (receiveTime >= DEFAULT_TIME) {
             LOGGER.warn("终端[{}]消息接收超时", request.getTerminalId());
             return;
         }
