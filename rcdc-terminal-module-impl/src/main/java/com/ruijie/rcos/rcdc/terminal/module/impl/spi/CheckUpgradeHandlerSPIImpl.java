@@ -1,9 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.dto.CheckUpgradeDTO;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
-import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
+import java.util.Date;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -16,6 +16,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
@@ -25,6 +26,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
@@ -36,14 +38,11 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeResult;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
-
-import java.util.Date;
-import java.util.Objects;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Description: 终端检查升级，同时需要保存终端基本信息
@@ -96,23 +95,21 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
         LOGGER.info("终端[{}]组件升级处理请求", request.getTerminalId());
 
-        CheckUpgradeDTO checkUpgradeDTO = new CheckUpgradeDTO();
-        checkUpgradeDTO.setReceiveDate(new Date());
+        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
+        basicInfo.setReceiveDate(new Date());
         CHECK_UPGRADE_THREAD_POOL.execute(() -> {
             LOGGER.info("开始处理终端[{}]组件升级", request.getTerminalId());
-            doDispatch(request, checkUpgradeDTO);
+            doDispatch(request, basicInfo);
         });
     }
 
-    private void doDispatch(CbbDispatcherRequest request, CheckUpgradeDTO checkUpgradeDTO) {
+    private void doDispatch(CbbDispatcherRequest request,CbbShineTerminalBasicInfo basicInfo) {
 
-        long receiveTime = new Date().getTime() - checkUpgradeDTO.getReceiveDate().getTime();
+        long receiveTime = new Date().getTime() - basicInfo.getReceiveDate().getTime();
         if (receiveTime >= 1500L) {
             LOGGER.warn("终端[{}]消息接收超时", request.getTerminalId());
             return;
         }
-
-        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
 
         // 通知上层组件终端接入，判断是否允许接入
         boolean allowConnect = connectHandlerSPI.isAllowConnect(basicInfo);
