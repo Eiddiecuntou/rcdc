@@ -178,6 +178,8 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         for (TerminalDetectionEntity detectEntity : detectList) {
             isDetectAbnormal = false;
             DetectStateEnums detectState = detectEntity.getDetectState();
+            Boolean enableProxy = detectEntity.getEnableProxy();
+
             if (detectState == DetectStateEnums.CHECKING || detectState == DetectStateEnums.WAIT) {
                 // 检测中的记录不统计异常数量
                 checking++;
@@ -208,12 +210,14 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
                 isDetectAbnormal = true;
             }
 
-            if (isPackageLossRateAbnormal(detectEntity.getPacketLossRate())) {
+            // 开启代理的时候，不统计丢包率是否正常
+            if (Boolean.FALSE.equals(enableProxy) && isPackageLossRateAbnormal(detectEntity.getPacketLossRate())) {
                 packetLossRate++;
                 isDetectAbnormal = true;
             }
 
-            if (isNetworkDelayAbnormal(detectEntity.getNetworkDelay())) {
+            // 开启代理的时候，不统计时延是否正常
+            if (Boolean.FALSE.equals(enableProxy) && isNetworkDelayAbnormal(detectEntity.getNetworkDelay())) {
                 delay++;
                 isDetectAbnormal = true;
             }
