@@ -208,7 +208,7 @@ public class TerminalBasicInfoServiceImpl implements TerminalBasicInfoService {
 
     @Override
     public void saveTerminalModel(CbbShineTerminalBasicInfo basicInfo) {
-
+        Assert.notNull(basicInfo, "basicInfo can not be null");
         if (StringUtils.isEmpty(basicInfo.getProductId())) {
             // 无产品id, 一般为软终端
             return;
