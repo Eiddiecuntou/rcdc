@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.*;
 
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.DetectItemStateEnums;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +43,9 @@ public class TerminalDetectServiceImplTest {
 
     @Injectable
     private TerminalDetectionDAO detectionDAO;
+
+    @Injectable
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     /**
      * 测试检测信息,参数为空
@@ -389,6 +393,7 @@ public class TerminalDetectServiceImplTest {
         // ip冲突
         TerminalDetectionEntity detectionEntity = new TerminalDetectionEntity();
         detectionEntity.setIpConflict(1);
+        detectionEntity.setEnableProxy(false);
 
         // 带宽检测异常
         TerminalDetectionEntity detectionEntity1 = new TerminalDetectionEntity();
@@ -396,6 +401,7 @@ public class TerminalDetectServiceImplTest {
         detectionEntity1.setAccessInternet(DetectItemStateEnums.TRUE.getState());
         detectionEntity1.setBandwidth(15.0);
         detectionEntity1.setIpConflict(null);
+        detectionEntity1.setEnableProxy(false);
 
         // 外网连通异常
         TerminalDetectionEntity detectionEntity2 = new TerminalDetectionEntity();
@@ -405,6 +411,7 @@ public class TerminalDetectServiceImplTest {
         detectionEntity2.setNetworkDelay(-1.0);
         detectionEntity2.setBandwidth(50.0);
         detectionEntity2.setIpConflict(Constants.TERMINAL_DETECT_ABNORMAL_COMMON_CODE);
+        detectionEntity2.setEnableProxy(false);
 
         // 丢包异常
         TerminalDetectionEntity detectionEntity3 = new TerminalDetectionEntity();
@@ -414,6 +421,7 @@ public class TerminalDetectServiceImplTest {
         detectionEntity3.setPacketLossRate(11.0);
         detectionEntity3.setIpConflict(0);
         detectionEntity3.setNetworkDelay(10.0);
+        detectionEntity3.setEnableProxy(false);
 
         // 时延异常
         TerminalDetectionEntity detectionEntity4 = new TerminalDetectionEntity();
@@ -423,6 +431,7 @@ public class TerminalDetectServiceImplTest {
         detectionEntity4.setPacketLossRate(0.0);
         detectionEntity4.setIpConflict(0);
         detectionEntity4.setNetworkDelay(20.0);
+        detectionEntity4.setEnableProxy(false);
 
         detectList.add(detectionEntity);
         detectList.add(detectionEntity1);

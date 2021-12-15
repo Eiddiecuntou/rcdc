@@ -78,6 +78,11 @@ public class TerminalDetectionEntity {
     private Integer version;
 
     /**
+     * 检测时，是否开启协议代理
+     */
+    private Boolean enableProxy;
+
+    /**
      * 对象转换
      * 
      * @param detectDTO 设值对象
@@ -96,6 +101,7 @@ public class TerminalDetectionEntity {
         CbbTerminalDetectDTO.DetectState state = detectDTO.getCheckState();
         state.setState(detectState.name());
         state.setMessage(LocaleI18nResolver.resolve(detectState.getName()));
+        detectDTO.setEnableProxy(enableProxy);
     }
 
     public UUID getId() {
@@ -200,5 +206,13 @@ public class TerminalDetectionEntity {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Boolean getEnableProxy() {
+        return enableProxy;
+    }
+
+    public void setEnableProxy(Boolean enableProxy) {
+        this.enableProxy = enableProxy;
     }
 }

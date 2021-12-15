@@ -74,7 +74,6 @@ public class CbbTerminalDetectAPIImpl implements CbbTerminalDetectAPI {
                 detectDTO.setIp(terminalEntity.getIp());
                 detectDTO.setTerminalName(terminalEntity.getTerminalName());
                 detectDTO.setMac(terminalEntity.getMacAddr());
-                detectDTO.setEnableProxy(terminalEntity.getEnableProxy());
             }
             detectDTOArr[i] = detectDTO;
         });

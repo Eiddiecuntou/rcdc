@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.TerminalDetectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,9 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
 
     @Autowired
     private TerminalDetectionDAO detectionDAO;
+
+    @Autowired
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     private static final String DETECT_FAIL_DEFAULT_MSG = "检测失败";
 
@@ -107,6 +111,9 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         entity.setTerminalId(terminalId);
         entity.setCreateTime(now);
         entity.setDetectState(DetectStateEnums.WAIT);
+        Boolean enableProxy = terminalBasicInfoDAO.obtainEnableProxyByTerminalId(terminalId);
+        LOGGER.info("终端[{}]是否开启代理[{}]", terminalId, enableProxy);
+        entity.setEnableProxy(enableProxy);
         detectionDAO.save(entity);
         return entity;
     }
@@ -171,6 +178,8 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
         for (TerminalDetectionEntity detectEntity : detectList) {
             isDetectAbnormal = false;
             DetectStateEnums detectState = detectEntity.getDetectState();
+            Boolean enableProxy = detectEntity.getEnableProxy();
+
             if (detectState == DetectStateEnums.CHECKING || detectState == DetectStateEnums.WAIT) {
                 // 检测中的记录不统计异常数量
                 checking++;
@@ -201,12 +210,14 @@ public class TerminalDetectServiceImpl implements TerminalDetectService {
                 isDetectAbnormal = true;
             }
 
-            if (isPackageLossRateAbnormal(detectEntity.getPacketLossRate())) {
+            // 开启代理的时候，不统计丢包率是否正常
+            if (Boolean.FALSE.equals(enableProxy) && isPackageLossRateAbnormal(detectEntity.getPacketLossRate())) {
                 packetLossRate++;
                 isDetectAbnormal = true;
             }
 
-            if (isNetworkDelayAbnormal(detectEntity.getNetworkDelay())) {
+            // 开启代理的时候，不统计时延是否正常
+            if (Boolean.FALSE.equals(enableProxy) && isNetworkDelayAbnormal(detectEntity.getNetworkDelay())) {
                 delay++;
                 isDetectAbnormal = true;
             }
