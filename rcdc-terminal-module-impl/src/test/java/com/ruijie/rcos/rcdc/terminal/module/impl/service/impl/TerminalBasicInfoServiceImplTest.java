@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.google.common.collect.Lists;
 import com.ruijie.rcos.rcdc.codec.adapter.base.sender.DefaultRequestMessageSender;
 import com.ruijie.rcos.rcdc.terminal.module.def.PublicBusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.CbbTerminalLicenseMgmtAPI;
@@ -32,7 +31,6 @@ import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.locks.ReentrantLock;
 
 import mockit.Expectations;
 import mockit.Injectable;
@@ -492,91 +490,6 @@ public class TerminalBasicInfoServiceImplTest {
 
                 terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
                 times = 0;
-            }
-        };
-    }
-
-    /**
-     * 测试保存终端基本信息 - 终端类型已存在
-     */
-    @Test
-    public void testSaveBasicInfoProductExist() {
-        TerminalEntity terminalEntity = buildTerminalEntity();
-
-        TerminalModelDriverEntity modelDriverEntity = new TerminalModelDriverEntity();
-        modelDriverEntity.setProductId("aaaa");
-        modelDriverEntity.setProductModel("sss");
-        modelDriverEntity.setCpuType("sss");
-
-        CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
-        basicInfo.setProductId("aaaa");
-        basicInfo.setProductType("sss");
-        basicInfo.setCpuType("sss");
-
-        new Expectations() {
-            {
-
-                terminalLockHelper.putAndGetLock(anyString);
-                result = new ReentrantLock();
-
-                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
-                result = Lists.newArrayList(modelDriverEntity);
-
-            }
-        };
-
-        basicInfoService.saveBasicInfo(terminalEntity, basicInfo, Boolean.TRUE);
-
-        new Verifications() {
-            {
-                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
-                times = 1;
-
-                terminalModelDriverDAO.save((TerminalModelDriverEntity) any);
-                times = 0;
-            }
-        };
-    }
-
-    /**
-     * 测试保存终端基本信息 - 终端类型为新类型
-     */
-    @Test
-    public void testSaveBasicInfoProductNotExist() {
-        TerminalEntity terminalEntity = buildTerminalEntity();
-
-        CbbShineTerminalBasicInfo basicInfo = buildShineTerminalBasicInfo();
-        basicInfo.setProductId("aaaa");
-        basicInfo.setProductType("bbbb");
-        basicInfo.setCpuType("cccc");
-        basicInfo.setPlatform(CbbTerminalPlatformEnums.VDI);
-
-        new Expectations() {
-            {
-
-                terminalLockHelper.putAndGetLock(anyString);
-                result = new ReentrantLock();
-
-                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
-                result = Lists.newArrayList();
-
-            }
-        };
-
-        basicInfoService.saveBasicInfo(terminalEntity, basicInfo, Boolean.TRUE);
-
-        new Verifications() {
-            {
-                terminalModelDriverDAO.findByProductIdAndPlatform(anyString, (CbbTerminalPlatformEnums) any);
-                times = 1;
-
-                TerminalModelDriverEntity driverEntity;
-                terminalModelDriverDAO.save(driverEntity = withCapture());
-                times = 1;
-                assertEquals("aaaa", driverEntity.getProductId());
-                assertEquals("bbbb", driverEntity.getProductModel());
-                assertEquals("cccc", driverEntity.getCpuType());
-                assertEquals(CbbTerminalPlatformEnums.VDI, driverEntity.getPlatform());
             }
         };
     }
