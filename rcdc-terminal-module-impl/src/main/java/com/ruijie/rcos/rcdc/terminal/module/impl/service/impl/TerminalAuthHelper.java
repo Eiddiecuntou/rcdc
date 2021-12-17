@@ -1,10 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInfo;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalWorkModeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
-import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalWhiteListHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseCommonService;
@@ -37,9 +34,6 @@ public class TerminalAuthHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalAuthHelper.class);
 
     @Autowired
-    private CbbTerminalConnectHandlerSPI connectHandlerSPI;
-
-    @Autowired
     private CbbTerminalWhiteListHandlerSPI whiteListHandlerSPI;
 
     @Autowired
@@ -64,6 +58,12 @@ public class TerminalAuthHelper {
     public TerminalAuthResult processTerminalAuth(boolean isInUpgradeProcess, CbbShineTerminalBasicInfo basicInfo) {
         Assert.notNull(basicInfo, "basicInfo can not be null");
 
+        LOGGER.info("终端[{}]{}接入", basicInfo.getTerminalId(), basicInfo.getTerminalName());
+        if (isInUpgradeProcess) {
+            LOGGER.info("终端处于升级过程中");
+            // 终端需要升级，或者异常升级结果（不属于需要升级、不需要升级范畴，如：服务器准备中），不保存终端信息
+            return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
+        }
 
         TerminalEntity terminalEntity = terminalBasicInfoDAO.findTerminalEntityByTerminalId(basicInfo.getTerminalId());
         // TCI OCS授权优先
@@ -87,31 +87,18 @@ public class TerminalAuthHelper {
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
-        // 获取业务配置
-        CbbTerminalBizConfigDTO bizConfigDTO = connectHandlerSPI.notifyTerminalSupport(basicInfo);
-
-        String terminalId = basicInfo.getTerminalId();
-
-        if (terminalLicenseCommonService.isTerminalAuthed(terminalId)) {
-            LOGGER.info("终端[{}]{}已授权，需要更新终端信息", terminalId, basicInfo.getTerminalName());
+        if (terminalLicenseCommonService.isTerminalAuthed(basicInfo.getTerminalId())) {
+            LOGGER.info("终端[{}]{}已授权，需要更新终端信息", basicInfo.getTerminalId(), basicInfo.getTerminalName());
             return new TerminalAuthResult(true, TerminalAuthResultEnums.SKIP);
         }
 
-        LOGGER.info("未授权终端[{}]{}接入", terminalId, basicInfo.getTerminalName());
-        if (isInUpgradeProcess) {
-            LOGGER.info("终端处于升级过程中");
-            // 终端需要升级，或者异常升级结果（不属于需要升级、不需要升级范畴，如：服务器准备中），不保存终端信息
-            return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
-        }
-
-        CbbTerminalWorkModeEnums[] workModeArr = bizConfigDTO.getTerminalWorkModeArr();
-        if (ArrayUtils.isEmpty(workModeArr)) {
+        if (ArrayUtils.isEmpty(basicInfo.getTerminalWorkSupportModeArr())) {
             LOGGER.error("终端工作模式为空，跳过授权");
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
         try {
-            return terminalLicenseAuthService.auth(terminalId, basicInfo.getAuthMode());
+            return terminalLicenseAuthService.auth(basicInfo.getTerminalId(), basicInfo.getAuthMode());
         } catch (BusinessException e) {
             LOGGER.error("终端[" + basicInfo.getTerminalId() + "]授权异常", e);
             return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);

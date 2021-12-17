@@ -1,8 +1,9 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 
-import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
-import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
-import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
+import java.util.Date;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -15,6 +16,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbShineTerminalBasicInf
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalBizConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbNoticeEventEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalComponentUpgradeResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalStateEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
@@ -24,6 +26,7 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.CheckSystemUpgradeResultEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.MessageUtils;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
@@ -35,13 +38,11 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgr
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandler;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.handler.systemupgrade.TerminalSystemUpgradeHandlerFactory;
 import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.TerminalUpgradeResult;
+import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.connectkit.api.tcp.session.Session;
 import com.ruijie.rcos.sk.modulekit.api.comm.DispatcherImplemetion;
-
-import java.util.Objects;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Description: 终端检查升级，同时需要保存终端基本信息
@@ -86,19 +87,31 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
     private static final ExecutorService TERMINAL_EVENT_NOTICE_THREAD_POOL =
             ThreadExecutors.newBuilder("terminalEventNoticeThreadPool").maxThreadNum(80).queueSize(1000).build();
 
+    private static final ExecutorService LEARN_TERMINAL_MODEL_THREAD_POOL =
+            ThreadExecutors.newBuilder("learnTerminalModelThreadPool").maxThreadNum(80).queueSize(1000).build();
+
+    private static final Long DEFAULT_TIME = 15000L;
+
     @Override
     public void dispatch(CbbDispatcherRequest request) {
         Assert.notNull(request, "CbbDispatcherRequest不能为空");
         LOGGER.info("终端[{}]组件升级处理请求", request.getTerminalId());
 
+        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
+        basicInfo.setReceiveDate(new Date());
         CHECK_UPGRADE_THREAD_POOL.execute(() -> {
             LOGGER.info("开始处理终端[{}]组件升级", request.getTerminalId());
-            doDispatch(request);
+            doDispatch(request, basicInfo);
         });
     }
 
-    private void doDispatch(CbbDispatcherRequest request) {
-        CbbShineTerminalBasicInfo basicInfo = convertJsondata(request);
+    private void doDispatch(CbbDispatcherRequest request,CbbShineTerminalBasicInfo basicInfo) {
+
+        long receiveTime = new Date().getTime() - basicInfo.getReceiveDate().getTime();
+        if (receiveTime >= DEFAULT_TIME) {
+            LOGGER.warn("终端[{}]消息接收超时", request.getTerminalId());
+            return;
+        }
 
         // 通知上层组件终端接入，判断是否允许接入
         boolean allowConnect = connectHandlerSPI.isAllowConnect(basicInfo);
@@ -136,6 +149,7 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             LOGGER.info("开始通知其他组件终端为在线状态[{}]", basicInfo.getTerminalId());
             doNotice(basicInfo);
         });
+        LEARN_TERMINAL_MODEL_THREAD_POOL.execute(() -> basicInfoService.saveTerminalModel(basicInfo));
     }
 
     private void handleIdvProcess(CbbDispatcherRequest request, CbbShineTerminalBasicInfo basicInfo, CbbTerminalBizConfigDTO terminalBizConfigDTO) {

@@ -44,6 +44,12 @@ public interface TerminalBasicInfoService {
         CbbShineTerminalBasicInfo shineTerminalBasicInfo);
 
     /**
+     * 自学习终端型号
+     * @param basicInfo shine上报的终端基本信息
+     */
+    void saveTerminalModel(CbbShineTerminalBasicInfo basicInfo);
+
+    /**
      * 修改终端名称
      * 
      * @param terminalId 终端id
