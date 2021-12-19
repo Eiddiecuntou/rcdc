@@ -123,7 +123,9 @@ def package_update(os_type):
     if old_version is not None:
         new_update_list['baseVersion'] = old_version
     # 计算updatelist初始MD5
-    new_update_list['validateMd5'] = md5_sum(src_update_list_path)
+    if 'validateMd5' not in new_update_list:
+        LOGGER.info("cal update list md5")
+        new_update_list['validateMd5'] = md5_sum(src_update_list_path)
 
     # 创建升级临时目录
     create_update_temp_directory(temp_dir)
