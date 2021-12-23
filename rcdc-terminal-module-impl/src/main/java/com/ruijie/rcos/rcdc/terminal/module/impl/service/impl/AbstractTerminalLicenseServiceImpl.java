@@ -60,13 +60,24 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
             final Integer terminalLicenseNum = this.getAllTerminalLicenseNum();
             final boolean isTempLicense = isTempLicense(terminalLicenseNum);
             if (usedNum == null || isTempLicense) {
-                long count = terminalAuthorizeDAO.countByLicenseTypeContaining(getLicenseType().name());
-                usedNum = (int) count;
-                LOGGER.info("从数据库同步[{}]授权已用数为：{},授权数为：{}", getLicenseType(), usedNum, terminalLicenseNum);
+                countUsedNumFromDB();
             }
         }
 
         return usedNum;
+    }
+
+    @Override
+    public void refreshLicenseUsedNum() {
+        synchronized (this.getLock()) {
+            countUsedNumFromDB();
+        }
+    }
+
+    private void countUsedNumFromDB() {
+        long count = terminalAuthorizeDAO.countByLicenseTypeContaining(getLicenseType().name());
+        usedNum = (int) count;
+        LOGGER.info("从数据库同步[{}]授权已用数为：{}", getLicenseType(), usedNum);
     }
 
     @Override

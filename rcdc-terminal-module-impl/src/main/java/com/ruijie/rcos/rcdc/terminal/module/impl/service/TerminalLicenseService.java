@@ -114,4 +114,8 @@ public interface TerminalLicenseService {
      */
     void processImportTempLicense();
 
+    /**
+     *  更新证书已使用数量
+     */
+    void refreshLicenseUsedNum();
 }
