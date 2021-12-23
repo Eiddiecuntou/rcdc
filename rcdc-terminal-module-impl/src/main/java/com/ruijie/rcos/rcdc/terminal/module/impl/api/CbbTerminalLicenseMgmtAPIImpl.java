@@ -55,6 +55,16 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
         Assert.notNull(licenseType, "licenseType can not be null");
         Assert.notNull(licenseInfoList, "licenseInfoList can not be null");
         licenseFactoryProvider.getService(licenseType).updateTerminalLicenseNum(licenseInfoList);
+
+        // 更新所有类型证书的已用授权数
+        refreshAllLicenseUsedNum();
+    }
+
+    private void refreshAllLicenseUsedNum() {
+        for (CbbTerminalLicenseTypeEnums licenseType : CbbTerminalLicenseTypeEnums.values()) {
+            LOGGER.info("更新证书类型【{}】的证书使用数量信息", licenseType.name());
+            licenseFactoryProvider.getService(licenseType).refreshLicenseUsedNum();
+        }
     }
 
     @Override

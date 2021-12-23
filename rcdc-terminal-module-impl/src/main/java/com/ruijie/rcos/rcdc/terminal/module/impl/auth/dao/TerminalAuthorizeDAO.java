@@ -47,6 +47,14 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
     void deleteByAuthMode(CbbTerminalPlatformEnums authMode);
 
     /**
+     * 根据AuthMode删除终端
+     * @param authMode authMode
+     */
+    @Modifying
+    @Transactional
+    void deleteByLicenseTypeContains(String authMode);
+
+    /**
      * 根据终端id查找
      *
      * @param terminalId 终端id

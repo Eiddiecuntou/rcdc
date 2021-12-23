@@ -47,7 +47,7 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
         Assert.notNull(licenseNum, "licenseNum can not be null");
         // 将所有已授权IDV终端置为未授权，并更新终端授权数量
         terminalLicenseServiceTx.updateTerminalUnAuthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.VOI, getLicenseConstansKey(), licenseNum);
-        this.usedNum = 0;
+
     }
 
     @Override

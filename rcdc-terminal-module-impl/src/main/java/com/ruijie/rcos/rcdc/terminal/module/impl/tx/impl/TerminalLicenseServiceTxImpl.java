@@ -10,13 +10,9 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.tx.TerminalLicenseServiceTx;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
-import com.ruijie.rcos.sk.modulekit.api.ds.DataSourceNames;
-import com.ruijie.rcos.sk.repositorykit.api.ds.JdbcTemplateHolder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.StopWatch;
 
 import java.util.List;
 
@@ -56,7 +52,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
                 terminalBasicInfoDAO.findNoAuthedTerminalEntitiesByAuthMode(platform.name(), productTypeWhiteList);
 
         LOGGER.info("needAuthTerminalList ==>{}", needAuthTerminalList.size());
-        terminalBasicInfoDAO.updateTerminalsByPlatformAndAuthed(platform, Boolean.FALSE, Boolean.TRUE, productTypeWhiteList);
+        terminalBasicInfoDAO.updateTerminalsByAuthModeAndAuthed(platform, Boolean.FALSE, Boolean.TRUE, productTypeWhiteList);
         // 临时授权需要添加记录到授权记录表
         saveAuthRecord(platform, needAuthTerminalList, productTypeWhiteList);
 
@@ -86,11 +82,12 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
 
         List<String> productTypeWhiteList = whiteListHandlerSPI.getProductTypeWhiteList();
         LOGGER.info("开始更新授权[{}]信息", platform);
-        terminalBasicInfoDAO.updateTerminalsByPlatformAndAuthed(platform, Boolean.TRUE, Boolean.FALSE, productTypeWhiteList);
+        terminalBasicInfoDAO.updateTerminalsByAuthModeAndAuthedJudgeByAuthorizeRecord(platform.name(), Boolean.TRUE, Boolean.FALSE,
+                productTypeWhiteList);
         LOGGER.info("结束更新授权[{}]信息", platform);
         // 临时授权变更为正式授权需要删除授权记录
         LOGGER.info("开始删除授权信息[{}]", platform);
-        terminalAuthorizeDAO.deleteByAuthMode(platform);
+        terminalAuthorizeDAO.deleteByLicenseTypeContains(platform.name());
         LOGGER.info("结束删除授权信息[{}]", platform);
 
     }
