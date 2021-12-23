@@ -82,7 +82,8 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
 
         List<String> productTypeWhiteList = whiteListHandlerSPI.getProductTypeWhiteList();
         LOGGER.info("开始更新授权[{}]信息", platform);
-        terminalBasicInfoDAO.updateTerminalsByAuthModeAndAuthedJudgeByAuthorizeRecord(platform.name(), Boolean.TRUE, Boolean.FALSE, productTypeWhiteList);
+        terminalBasicInfoDAO.updateTerminalsByAuthModeAndAuthedJudgeByAuthorizeRecord(platform.name(), Boolean.TRUE, Boolean.FALSE,
+                productTypeWhiteList);
         LOGGER.info("结束更新授权[{}]信息", platform);
         // 临时授权变更为正式授权需要删除授权记录
         LOGGER.info("开始删除授权信息[{}]", platform);

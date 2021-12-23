@@ -173,16 +173,17 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
     /**
      * 获取符合平台类型的终端未授权的终端列表
      *
-     * @param authMode        终端类型枚举
-     * @param oldAuthed       旧授权
-     * @param newAuthed       新授权
+     * @param authMode 终端类型枚举
+     * @param oldAuthed 旧授权
+     * @param newAuthed 新授权
      * @param productTypeList 产品类型
      * @return 更新数量
      */
     @Transactional
     @Modifying
-    @Query(value = "update t_cbb_terminal set authed=?3,version=version+1 where authed=?2 and ocs_sn is null and product_type not in ?4 " +
-            "and exists(select 1 from t_cbb_terminal_authorize a where a.terminal_id=t_cbb_terminal.terminal_id and license_type like CONCAT('%',?1,'%'))",
+    @Query(value = "update t_cbb_terminal set authed=?3,version=version+1 where authed=?2 and ocs_sn is null and product_type not in ?4 "
+            + "and exists(select 1 from t_cbb_terminal_authorize a where a.terminal_id=t_cbb_terminal.terminal_id "
+            + "and license_type like CONCAT('%',?1,'%'))",
             nativeQuery = true)
     int updateTerminalsByAuthModeAndAuthedJudgeByAuthorizeRecord(String authMode, Boolean oldAuthed, Boolean newAuthed, List<String> productTypeList);
 
