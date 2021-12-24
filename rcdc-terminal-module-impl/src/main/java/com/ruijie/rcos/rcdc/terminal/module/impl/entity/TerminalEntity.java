@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.entity;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbCpuArchType;
+import com.ruijie.rcos.sk.base.log.Logger;
+import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -43,6 +46,8 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 @Entity
 @Table(name = "t_cbb_terminal")
 public class TerminalEntity {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalEntity.class);
 
     public static final String BEAN_COPY_IGNORE_NETWORK_INFO_ARR = "networkInfoArr";
 
@@ -169,11 +174,11 @@ public class TerminalEntity {
             return new CbbTerminalNetworkInfoDTO[0];
         }
 
-        List<CbbTerminalNetworkInfoDTO> networkInfoDTOList;
+        List<CbbTerminalNetworkInfoDTO> networkInfoDTOList = null;
         try {
             networkInfoDTOList = JSON.parseArray(networkInfos, CbbTerminalNetworkInfoDTO.class);
         } catch (Exception e) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NETWORK_INFO_ERROR, e);
+            LOGGER.error("网络信息转换异常", e);
         }
 
         if (CollectionUtils.isEmpty(networkInfoDTOList)) {
@@ -194,11 +199,11 @@ public class TerminalEntity {
             return new CbbTerminalDiskInfoDTO[0];
         }
 
-        List<CbbTerminalDiskInfoDTO> diskInfoDTOList;
+        List<CbbTerminalDiskInfoDTO> diskInfoDTOList = null;
         try {
             diskInfoDTOList = JSON.parseArray(allDiskInfo, CbbTerminalDiskInfoDTO.class);
         } catch (Exception e) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_DISK_INFO_ERROR, e);
+            LOGGER.error("转换磁盘异常", e);
         }
 
         if (CollectionUtils.isEmpty(diskInfoDTOList)) {
@@ -219,11 +224,14 @@ public class TerminalEntity {
             return new CbbTerminalNetCardMacInfoDTO[0];
         }
 
-        List<CbbTerminalNetCardMacInfoDTO> netCardMacInfoDTOList;
+        List<CbbTerminalNetCardMacInfoDTO> netCardMacInfoDTOList = new ArrayList();
         try {
             netCardMacInfoDTOList = JSON.parseArray(allNetCardMacInfo, CbbTerminalNetCardMacInfoDTO.class);
         } catch (Exception e) {
-            throw new BusinessException(BusinessKey.RCDC_TERMINAL_NET_CARD_INFO_ERROR, e);
+            LOGGER.error("网卡信息转换异常");
+        }
+        if (CollectionUtils.isEmpty(netCardMacInfoDTOList)) {
+            return new CbbTerminalNetCardMacInfoDTO[0];
         }
 
         return netCardMacInfoDTOList.toArray(new CbbTerminalNetCardMacInfoDTO[netCardMacInfoDTOList.size()]);

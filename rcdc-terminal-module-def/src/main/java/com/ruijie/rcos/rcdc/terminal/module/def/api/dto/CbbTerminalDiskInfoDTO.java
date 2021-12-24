@@ -25,7 +25,7 @@ public class CbbTerminalDiskInfoDTO {
      * 磁盘空间总大小，单位是byte
      */
     @JSONField(name = "dev_totalsize")
-    private Long devTotalSize;
+    private String devTotalSize;
 
     @JSONField(name = "dev_media")
     private String devMedia;
@@ -43,19 +43,19 @@ public class CbbTerminalDiskInfoDTO {
     private String devHealth;
 
     @JSONField(name = "dev_powerOnhour")
-    private Integer devPowerOnhour;
+    private String devPowerOnhour;
 
     /**
      * 表示磁盘曾经写入过多少G
      */
     @JSONField(name = "dev_totalWritten")
-    private Long devTotalWritten;
+    private String devTotalWritten;
 
     @JSONField(name = "dev_readIops")
-    private Integer devReadIops;
+    private String devReadIops;
 
     @JSONField(name = "dev_writeIops")
-    private Integer devWriteIops;
+    private String devWriteIops;
 
     @JSONField(name = "dev_model")
     private String devModel;
@@ -87,11 +87,11 @@ public class CbbTerminalDiskInfoDTO {
         this.devForm = devForm;
     }
 
-    public Long getDevTotalSize() {
+    public String getDevTotalSize() {
         return devTotalSize;
     }
 
-    public void setDevTotalSize(Long devTotalSize) {
+    public void setDevTotalSize(String devTotalSize) {
         this.devTotalSize = devTotalSize;
     }
 
@@ -135,35 +135,35 @@ public class CbbTerminalDiskInfoDTO {
         this.devHealth = devHealth;
     }
 
-    public Integer getDevPowerOnhour() {
+    public String getDevPowerOnhour() {
         return devPowerOnhour;
     }
 
-    public void setDevPowerOnhour(Integer devPowerOnhour) {
+    public void setDevPowerOnhour(String devPowerOnhour) {
         this.devPowerOnhour = devPowerOnhour;
     }
 
-    public Long getDevTotalWritten() {
+    public String getDevTotalWritten() {
         return devTotalWritten;
     }
 
-    public void setDevTotalWritten(Long devTotalWritten) {
+    public void setDevTotalWritten(String devTotalWritten) {
         this.devTotalWritten = devTotalWritten;
     }
 
-    public Integer getDevReadIops() {
+    public String getDevReadIops() {
         return devReadIops;
     }
 
-    public void setDevReadIops(Integer devReadIops) {
+    public void setDevReadIops(String devReadIops) {
         this.devReadIops = devReadIops;
     }
 
-    public Integer getDevWriteIops() {
+    public String getDevWriteIops() {
         return devWriteIops;
     }
 
-    public void setDevWriteIops(Integer devWriteIops) {
+    public void setDevWriteIops(String devWriteIops) {
         this.devWriteIops = devWriteIops;
     }
 
