@@ -1,1 +1,0 @@
-update t_cbb_terminal set auth_mode=platform;
