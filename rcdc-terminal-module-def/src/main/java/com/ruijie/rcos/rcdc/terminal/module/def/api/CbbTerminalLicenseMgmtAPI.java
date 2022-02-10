@@ -99,4 +99,19 @@ public interface CbbTerminalLicenseMgmtAPI {
      */
     Boolean checkEnableAuthTerminal(CbbTerminalPlatformEnums authMode) throws BusinessException;
 
+    /**
+     * 校验终端证书可用数量是否足够
+     * @param licenseType 证书类型
+     * @return 证书数量是否足够
+     */
+    boolean checkTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType);
+
+    /**
+     * 校验终端当前使用的授权证书是否为指定的证书类型
+     * @param terminalId 终端id
+     * @param licenseType 证书类型
+     * @return 终端使用的是否为指定的证书类型
+     */
+    boolean checkTerminalCurrentLicenseType(String terminalId, CbbTerminalLicenseTypeEnums licenseType);
+
 }
