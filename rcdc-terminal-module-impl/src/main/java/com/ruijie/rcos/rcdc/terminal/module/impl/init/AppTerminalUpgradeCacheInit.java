@@ -22,12 +22,15 @@ public class AppTerminalUpgradeCacheInit implements SafetySingletonInitializer {
 
     private static AppTerminalUpdateListCacheInit neoKylinAppTerminalUpdateListCacheInit;
 
+    private static AppTerminalUpdateListCacheInit kylinAppTerminalUpdateListCacheInit;
+
     private static AppTerminalUpdateListCacheInit windowsAppTerminalUpdateListCacheInit;
 
     private static AppTerminalUpdateListCacheInit uosAppTerminalUpdateListCacheInit;
 
     static {
         neoKylinAppTerminalUpdateListCacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.NEOKYLIN);
+        kylinAppTerminalUpdateListCacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.KYLIN);
         windowsAppTerminalUpdateListCacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.WINDOWS);
         uosAppTerminalUpdateListCacheInit = new AppTerminalUpdateListCacheInit(CbbTerminalOsTypeEnums.UOS);
     }
@@ -37,6 +40,10 @@ public class AppTerminalUpgradeCacheInit implements SafetySingletonInitializer {
         LOGGER.info("开始中标麒麟软终端组件升级信息缓存初始化");
         neoKylinAppTerminalUpdateListCacheInit.init();
         LOGGER.info("完成中标麒麟软终端组件升级信息缓存初始化");
+
+        LOGGER.info("开始新麒麟软终端组件升级信息缓存初始化");
+        kylinAppTerminalUpdateListCacheInit.init();
+        LOGGER.info("完成新麒麟软终端组件升级信息缓存初始化");
 
         LOGGER.info("开始windows软终端组件升级信息缓存初始化");
         windowsAppTerminalUpdateListCacheInit.init();

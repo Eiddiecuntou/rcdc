@@ -59,6 +59,11 @@ public enum CbbTerminalTypeEnums {
     APP_LINUX("APP", "Linux"),
 
     /**
+     * linux新麒麟软终端
+     */
+    APP_KYLIN("APP", "KYLIN", AppTerminalOsTypeEnums.KYLIN),
+
+    /**
      * linux中标麒麟软终端
      */
     APP_NEOKYLIN("APP", "NeoKylin", AppTerminalOsTypeEnums.NEOKYLIN),
