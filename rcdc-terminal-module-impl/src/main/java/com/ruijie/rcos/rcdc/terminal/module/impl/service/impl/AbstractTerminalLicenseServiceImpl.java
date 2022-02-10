@@ -191,7 +191,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     public void updateTerminalLicenseNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList) throws BusinessException {
         Assert.notNull(licenseInfoList, "licenseInfoList can not be null");
 
-        synchronized (getLock()) {
+        synchronized (getLicenseNumLock()) {
             updateLicenseNum(licenseInfoList);
         }
     }

@@ -31,6 +31,17 @@ public class CbbTerminalLicenseFactoryProvider {
     @Qualifier("terminalLicenseVOIUpgradeServiceImpl")
     private TerminalLicenseService terminalLicenseVOIUpgradeService;
 
+    @Autowired
+    @Qualifier("terminalLicenseCvaIdvServiceImpl")
+    private TerminalLicenseService terminalLicenseCvaIdvService;
+
+    @Autowired
+    @Qualifier("terminalLicenseCvaServiceImpl")
+    private TerminalLicenseService terminalLicenseCvaService;
+
+    @Autowired
+    @Qualifier("terminalLicenseIDVUpgradeServiceImpl")
+    private TerminalLicenseService terminalLicenseIDVUpgradeService;
     /**
      * 根据授权类型获取授权服务器
      * 

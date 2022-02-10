@@ -11,32 +11,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.List;
-
 /**
- * Description: terminalLicenseIDVServiceImpl idv授权
- * Copyright: Copyright (c) 2020
+ * Description: Function Description
+ * Copyright: Copyright (c) 2021
  * Company: Ruijie Co., Ltd.
- * Create Time: 2021/1/19 5:35 下午
+ * Create Time: 2021/6/21 11:35
  *
- * @author lin
+ * @author yanlin
  */
-@Service("terminalLicenseIDVServiceImpl")
-public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServiceImpl {
+@Service("terminalLicenseCvaIdvServiceImpl")
+public class TerminalLicenseCvaIdvServiceImpl extends AbstractTerminalLicenseServiceImpl {
+    private static Logger LOGGER = LoggerFactory.getLogger(TerminalLicenseCvaIdvServiceImpl.class);
 
-    private static Logger LOGGER = LoggerFactory.getLogger(TerminalLicenseIDVServiceImpl.class);
+    @Autowired
+    private TerminalBasicInfoDAO terminalBasicInfoDAO;
 
     @Autowired
     private TerminalLicenseServiceTx terminalLicenseServiceTx;
 
+    private Integer licenseNum;
+
+    private Integer usedNum;
+
     @Override
     public CbbTerminalLicenseTypeEnums getLicenseType() {
-        return CbbTerminalLicenseTypeEnums.IDV;
+        return CbbTerminalLicenseTypeEnums.CVA_IDV;
     }
 
     @Override
     public String getLicenseConstansKey() {
-        return Constants.TEMINAL_LICENSE_NUM;
+        return Constants.CVA_TERMINAL_LICENSE_NUM;
     }
 
     @Override
@@ -52,18 +56,18 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
     @Override
     public void processImportOfficialLicense(Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not be null");
-
         // 将所有已授权IDV终端置为未授权，并更新终端授权数量
-        terminalLicenseServiceTx.updateTerminalUnAuthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.IDV, getLicenseConstansKey(), licenseNum);
-
-
+        terminalLicenseServiceTx.updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.IDV, getLicenseConstansKey(),
+            licenseNum, CbbTerminalLicenseTypeEnums.CVA_IDV);
+        this.usedNum = 0;
+        this.licenseNum = licenseNum;
     }
 
     @Override
     public void processImportTempLicense() {
         // 将所有未授权IDV终端置为已授权，并更新终端授权数量
-        terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, getLicenseConstansKey());
+        terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, getLicenseConstansKey(),
+            CbbTerminalLicenseTypeEnums.CVA_IDV);
+        this.licenseNum = Constants.TERMINAL_AUTH_DEFAULT_NUM;
     }
-
-
 }

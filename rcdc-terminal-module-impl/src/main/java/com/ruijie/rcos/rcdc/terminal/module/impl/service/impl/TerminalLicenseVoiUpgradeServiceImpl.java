@@ -35,6 +35,10 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
         return usedNumLock;
     }
 
+    @Override
+    public Object getLicenseNumLock() {
+        return usedNumLock;
+    }
 
     @Override
     public void processImportOfficialLicense(Integer licenseNum) {

@@ -43,6 +43,11 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
     }
 
     @Override
+    public Object getLicenseNumLock() {
+        return usedNumLock;
+    }
+
+    @Override
     public void processImportOfficialLicense(Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not be null");
         // 将所有已授权IDV终端置为未授权，并更新终端授权数量
