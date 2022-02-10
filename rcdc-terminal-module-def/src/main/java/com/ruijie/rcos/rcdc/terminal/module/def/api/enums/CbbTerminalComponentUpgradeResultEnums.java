@@ -41,6 +41,11 @@ public enum CbbTerminalComponentUpgradeResultEnums {
     NO_AUTH(5),
 
     /**
+     * 无云应用终端授权数
+     */
+    NO_CVA_AUTH(7),
+
+    /**
      * 服务器环境异常
      */
     ABNORMAL(-1);
