@@ -57,6 +57,12 @@ public class CbbTerminalLicenseFactoryProvider {
                 return terminalLicenseVOIService;
             case VOI_PLUS_UPGRADED:
                 return terminalLicenseVOIUpgradeService;
+            case CVA_IDV:
+                return terminalLicenseCvaIdvService;
+            case CVA:
+                return terminalLicenseCvaService;
+            case IDV_PLUS_UPGRADED:
+                return terminalLicenseIDVUpgradeService;
             default:
                 throw new IllegalStateException("不支持当前授权类型！licenseType=" + licenseType);
         }

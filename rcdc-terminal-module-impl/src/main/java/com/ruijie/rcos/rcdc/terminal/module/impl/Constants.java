@@ -55,6 +55,11 @@ public interface Constants {
     String VOI_UPGRADE_TEMINAL_LICENSE_NUM = "voi_upgrade_terminal_license_num";
 
     /**
+     * CVA_IDV_UP授权数在全局表的key
+     */
+    String IDV_UPGRADE_TEMINAL_LICENSE_NUM = "idv_upgrade_terminal_license_num";
+
+    /**
      * 终端授权数在全局表的key(IDV应用虚拟化)
      */
     String CVA_TERMINAL_LICENSE_NUM = "cva_terminal_license_num";
