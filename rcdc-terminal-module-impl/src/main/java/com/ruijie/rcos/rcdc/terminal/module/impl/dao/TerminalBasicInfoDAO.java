@@ -185,7 +185,8 @@ public interface TerminalBasicInfoDAO extends SkyEngineJpaRepository<TerminalEnt
             + "and exists(select 1 from t_cbb_terminal_authorize a where a.terminal_id=t_cbb_terminal.terminal_id "
             + "and license_type=?1 and auth_mode=?2)",
             nativeQuery = true)
-    int updateTerminalsByAuthModeAndAuthedJudgeByLicenseType(String licenseType, String authMode, Boolean oldAuthed, Boolean newAuthed, List<String> productTypeList);
+    int updateTerminalsByAuthModeAndAuthedJudgeByLicenseType(String licenseType, String authMode,
+                                                             Boolean oldAuthed, Boolean newAuthed, List<String> productTypeList);
 
     /**
      * 获取符合平台类型的终端未授权的终端列表
