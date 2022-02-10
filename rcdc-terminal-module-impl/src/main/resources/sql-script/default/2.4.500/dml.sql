@@ -25,4 +25,12 @@ INSERT INTO t_sk_global_parameter VALUES('f7ca0970-df0e-48d1-881d-0e8416c47fd5',
 INSERT INTO "public"."t_cbb_terminal_authorization_whitelist" VALUES ('9b5eca97-1ad2-43ed-938d-e77abea3d694','RG-OCS-128_PAA',10, now(),0);
 INSERT INTO "public"."t_cbb_terminal_authorization_whitelist" VALUES ('745f2751-cc85-4f66-b265-505ac44acdaf','RG-OCS-256_PA9',10, now(),0);
 
+-- 2.4.500
+-- 更新cva_license_num字段
+UPDATE t_sk_global_parameter SET param_value = '[]', default_value = '[]' WHERE param_key like 'cva_license_num';
+
+-- CVA_IDV_UP终端授权数
+INSERT INTO t_sk_global_parameter(id, param_key, param_value, default_value, create_time, update_time, version)
+VALUES ('a718338d-7b0e-4bbb-ada0-c8040e9d123b', 'idv_upgrade_terminal_license_num', '-1', '-1', now(), now(),
+ 0);
 
