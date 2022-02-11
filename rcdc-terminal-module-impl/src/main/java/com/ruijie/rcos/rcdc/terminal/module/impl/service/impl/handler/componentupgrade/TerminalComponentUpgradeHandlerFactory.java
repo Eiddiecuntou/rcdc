@@ -34,6 +34,7 @@ public class TerminalComponentUpgradeHandlerFactory {
         upgradeHandlerHolder.put(TerminalOsArchType.ANDROID_ARM, new AndroidComponentUpgradeHandler());
         upgradeHandlerHolder.put(TerminalOsArchType.UOS_X86, new UosAppComponentUpgradeHandler());
         upgradeHandlerHolder.put(TerminalOsArchType.NEOKYLIN_X86, new NeoKylinAppComponentUpgradeHandler());
+        upgradeHandlerHolder.put(TerminalOsArchType.KYLIN_X86, new KylinAppComponentUpgradeHandler());
         LOGGER.info("=======================完成注册终端组件升级处理器=================");
     }
 

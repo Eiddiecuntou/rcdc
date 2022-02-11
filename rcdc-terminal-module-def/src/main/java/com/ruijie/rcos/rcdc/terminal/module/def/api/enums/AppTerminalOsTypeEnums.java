@@ -14,6 +14,10 @@ public enum AppTerminalOsTypeEnums {
             "/opt/ftp/terminal/terminal_component/windows_app/update.list",
             "/terminal_component/windows_app/component/"),
 
+    KYLIN("/opt/ftp/terminal/terminal_component/linux_kylin_app/component/",
+        "/opt/ftp/terminal/terminal_component/linux_kylin_app/update.list",
+        "/terminal_component/linux_kylin_app/component/"),
+
     NEOKYLIN("/opt/ftp/terminal/terminal_component/linux_neokylin_app/component/",
             "/opt/ftp/terminal/terminal_component/linux_neokylin_app/update.list",
             "/terminal_component/linux_neokylin_app/component/"),
