@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -80,6 +83,9 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
 
     @Autowired
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
+
+    @Autowired
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
     private static final ExecutorService CHECK_UPGRADE_THREAD_POOL =
             ThreadExecutors.newBuilder("checkUpgradeThreadPool").maxThreadNum(80).queueSize(1000).build();
@@ -167,9 +173,16 @@ public class CheckUpgradeHandlerSPIImpl implements CbbDispatcherHandlerSPI {
             TerminalAuthResult authResult = terminalAuthHelper.processTerminalAuth(isInUpgradeProcess, basicInfo);
             basicInfoService.saveBasicInfo(terminalEntity, basicInfo, authResult.isAuthed());
 
+            TerminalAuthorizeEntity terminalAuthorizeEntity = terminalAuthorizeDAO.findByTerminalId(request.getTerminalId());
+
             if (authResult.getAuthResult() == TerminalAuthResultEnums.FAIL) {
                 LOGGER.info("终端[{}]授权失败", basicInfo.getTerminalId());
                 versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_AUTH.getResult());
+
+                if (terminalAuthorizeEntity.getLicenseType().equals(CbbTerminalLicenseTypeEnums.CVA_IDV.name())
+                        || terminalAuthorizeEntity.getLicenseType().equals(CbbTerminalLicenseTypeEnums.CVA.name())) {
+                    versionResult.setResult(CbbTerminalComponentUpgradeResultEnums.NO_CVA_AUTH.getResult());
+                }
             }
         } else {
             versionResult = new TerminalVersionResultDTO();

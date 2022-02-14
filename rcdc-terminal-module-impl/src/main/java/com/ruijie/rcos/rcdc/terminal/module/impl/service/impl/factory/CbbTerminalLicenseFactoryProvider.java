@@ -31,6 +31,18 @@ public class CbbTerminalLicenseFactoryProvider {
     @Qualifier("terminalLicenseVOIUpgradeServiceImpl")
     private TerminalLicenseService terminalLicenseVOIUpgradeService;
 
+    @Autowired
+    @Qualifier("terminalLicenseCvaIdvServiceImpl")
+    private TerminalLicenseService terminalLicenseCvaIdvService;
+
+    @Autowired
+    @Qualifier("terminalLicenseCvaServiceImpl")
+    private TerminalLicenseService terminalLicenseCvaService;
+
+    @Autowired
+    @Qualifier("terminalLicenseIDVUpgradeServiceImpl")
+    private TerminalLicenseService terminalLicenseIDVUpgradeService;
+
     /**
      * 根据授权类型获取授权服务器
      * 
@@ -46,6 +58,12 @@ public class CbbTerminalLicenseFactoryProvider {
                 return terminalLicenseVOIService;
             case VOI_PLUS_UPGRADED:
                 return terminalLicenseVOIUpgradeService;
+            case CVA_IDV:
+                return terminalLicenseCvaIdvService;
+            case CVA:
+                return terminalLicenseCvaService;
+            case IDV_PLUS_UPGRADED:
+                return terminalLicenseIDVUpgradeService;
             default:
                 throw new IllegalStateException("不支持当前授权类型！licenseType=" + licenseType);
         }

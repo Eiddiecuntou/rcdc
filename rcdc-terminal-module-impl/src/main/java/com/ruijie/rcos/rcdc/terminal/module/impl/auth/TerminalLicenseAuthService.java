@@ -179,6 +179,7 @@ public class TerminalLicenseAuthService {
     }
 
     private boolean isFitStrategy(CbbTerminalLicenseTypeEnums licenseType, CbbTerminalPlatformEnums authMode) {
-        return licenseType.name().equals(authMode.name());
+        return licenseType.name().equals(authMode.name()) || CbbTerminalLicenseTypeEnums.CVA == licenseType
+                || CbbTerminalLicenseTypeEnums.CVA_IDV == licenseType;
     }
 }

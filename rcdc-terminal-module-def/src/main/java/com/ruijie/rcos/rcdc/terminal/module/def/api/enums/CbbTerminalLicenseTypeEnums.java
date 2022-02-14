@@ -25,4 +25,18 @@ public enum CbbTerminalLicenseTypeEnums {
      */
     VOI_PLUS_UPGRADED,
 
+    /**
+     * IDV本地应用虚拟化授权
+     */
+    CVA_IDV,
+
+    /**
+     * 应用虚拟化合并授权
+     */
+    CVA,
+
+    /**
+     * IDV + 升级 = CVA
+     */
+    IDV_PLUS_UPGRADED;
 }

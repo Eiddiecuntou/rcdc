@@ -12,6 +12,7 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalConnectHandlerSPI;
 import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalEventNoticeSPI;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalTypeArchType;
@@ -66,6 +67,9 @@ public class CheckUpgradeHandlerSPIImplTest {
 
     @Injectable
     private CbbTerminalEventNoticeSPI terminalEventNoticeSPI;
+
+    @Injectable
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
 
     @Test
     public void testDispatchUpdateTerminalWherePlatformTypeIsPc() throws InterruptedException {

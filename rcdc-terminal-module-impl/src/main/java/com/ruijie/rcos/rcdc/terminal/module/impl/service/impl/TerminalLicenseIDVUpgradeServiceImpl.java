@@ -2,32 +2,28 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.service.impl;
 
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.sk.base.log.Logger;
-import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 /**
- * Description: terminalLicenseVOIServiceImpl voi升级授权
- * Copyright: Copyright (c) 2020
+ * Description: CVA_IDV升级授权
+ * Copyright: Copyright (c) 2021
  * Company: Ruijie Co., Ltd.
- * Create Time: 2021/1/19 5:35 下午
+ * Create Time: 2022/2/9 16:01
  *
- * @author lin
+ * @author chenjuan
  */
-@Service("terminalLicenseVOIUpgradeServiceImpl")
-public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicenseServiceImpl {
-
-    private static Logger LOGGER = LoggerFactory.getLogger(TerminalLicenseVoiUpgradeServiceImpl.class);
+@Service("terminalLicenseIDVUpgradeServiceImpl")
+public class TerminalLicenseIDVUpgradeServiceImpl extends AbstractTerminalLicenseServiceImpl {
 
     @Override
     public CbbTerminalLicenseTypeEnums getLicenseType() {
-        return CbbTerminalLicenseTypeEnums.VOI_PLUS_UPGRADED;
+        return CbbTerminalLicenseTypeEnums.IDV_PLUS_UPGRADED;
     }
 
     @Override
     public String getLicenseConstansKey() {
-        return Constants.VOI_UPGRADE_TEMINAL_LICENSE_NUM;
+        return Constants.IDV_UPGRADE_TEMINAL_LICENSE_NUM;
     }
 
     @Override
@@ -52,5 +48,4 @@ public class TerminalLicenseVoiUpgradeServiceImpl extends AbstractTerminalLicens
         // 将所有未授权IDV终端置为已授权，并更新终端授权数量
 
     }
-
 }

@@ -55,6 +55,12 @@ public interface TerminalLicenseService {
     Object getLock();
 
     /**
+     * 授权总数锁
+     * @return Object
+     */
+    Object getLicenseNumLock();
+
+    /**
      * 获取授权类型
      * 
      * @return 授权类型

@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.CbbTerminalLicenseInfoDTO;
 import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalCvaLicenseSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseCommonService;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
@@ -47,6 +48,9 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
 
     @Autowired
     private TerminalLicenseCommonService terminalLicenseCommonService;
+
+    @Autowired
+    private CbbTerminalCvaLicenseSPI terminalCvaLicenseSPI;
 
     protected final Object usedNumLock = new Object();
 
@@ -136,6 +140,11 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     }
 
     private Integer countLicenseNum(List<String> licenseCodeList) {
+
+        if (getLicenseType() == CbbTerminalLicenseTypeEnums.CVA) {
+            return terminalCvaLicenseSPI.getCvaLicenseNum();
+        }
+
         List<CbbTerminalLicenseInfoDTO> licenseInfoList = LICENSE_MAP.get(getLicenseType());
 
         if (CollectionUtils.isEmpty(licenseInfoList)) {
@@ -165,7 +174,14 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         // [{"licenseCode": 123}, {"licenseCode": 123}]
         List<CbbTerminalLicenseInfoDTO> licenseInfoList = JSON.parseArray(terminalLicenseNum, CbbTerminalLicenseInfoDTO.class);
         LOGGER.info("从数据库同步[{}]licenseNum的值为:{}", getLicenseType(), terminalLicenseNum);
-        LICENSE_MAP.put(getLicenseType(), licenseInfoList);
+
+        if (CbbTerminalLicenseTypeEnums.CVA == getLicenseType() && !CollectionUtils.isEmpty(licenseInfoList)) {
+            for (CbbTerminalLicenseInfoDTO cbbTerminalLicenseInfoDTO : licenseInfoList) {
+                terminalCvaLicenseSPI.updateCvaLicenseNumCache(cbbTerminalLicenseInfoDTO.getTotalNum());
+            }
+        } else {
+            LICENSE_MAP.put(getLicenseType(), licenseInfoList);
+        }
 
         return licenseInfoList;
     }
@@ -175,7 +191,7 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
     public void updateTerminalLicenseNum(List<CbbTerminalLicenseInfoDTO> licenseInfoList) throws BusinessException {
         Assert.notNull(licenseInfoList, "licenseInfoList can not be null");
 
-        synchronized (getLock()) {
+        synchronized (getLicenseNumLock()) {
             updateLicenseNum(licenseInfoList);
         }
     }
@@ -217,7 +233,12 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
         LOGGER.info("[{}]当前授权数量为{}, 准备更新授权数量为{}，当前授权数大于准备更新授权数，更新授权数量", this.getClass().getSimpleName(), currentNum, licenseNum);
 
         globalParameterAPI.updateParameter(getLicenseConstansKey(), JSON.toJSONString(licenseInfoList));
-        LICENSE_MAP.put(getLicenseType(), licenseInfoList);
+        if (CbbTerminalLicenseTypeEnums.CVA == getLicenseType()) {
+            terminalCvaLicenseSPI.updateCvaLicenseNumCache(licenseNum);
+        } else {
+            LICENSE_MAP.put(getLicenseType(), licenseInfoList);
+        }
+
     }
 
     @Override

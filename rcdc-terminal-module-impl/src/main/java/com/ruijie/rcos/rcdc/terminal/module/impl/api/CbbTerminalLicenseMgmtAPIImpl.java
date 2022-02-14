@@ -11,6 +11,8 @@ import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.TerminalLicenseAuthService;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
+import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
@@ -18,12 +20,14 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTermina
 import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
+import com.ruijie.rcos.sk.base.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Description: 终端授权管理apiImpl
@@ -49,6 +53,9 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     @Autowired
     private TerminalLicenseAuthService terminalLicenseAuthService;
 
+    @Autowired
+    private TerminalAuthorizeDAO terminalAuthorizeDAO;
+
     @Override
     public void setTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType, List<CbbTerminalLicenseInfoDTO> licenseInfoList)
             throws BusinessException {
@@ -65,6 +72,14 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
             LOGGER.info("更新证书类型【{}】的证书使用数量信息", licenseType.name());
             licenseFactoryProvider.getService(licenseType).refreshLicenseUsedNum();
         }
+    }
+
+    @Override
+    public boolean checkTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType) {
+        Assert.notNull(licenseType, "licenseType can not be null");
+        CbbTerminalLicenseNumDTO terminalLicenseNum = getTerminalLicenseNum(licenseType, null);
+        return Objects.equals(terminalLicenseNum.getLicenseNum(), Constants.TERMINAL_AUTH_DEFAULT_NUM)
+                || terminalLicenseNum.getUsedNum() < terminalLicenseNum.getLicenseNum();
     }
 
     @Override
@@ -165,5 +180,35 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
 
         //处理终端授权扣除逻辑
         terminalAuthHelper.processDecreaseTerminalLicense(terminalEntity.getTerminalId(), terminalEntity.getAuthMode(), Boolean.TRUE);
+    }
+
+    @Override
+    public boolean checkTerminalCurrentLicenseType(String terminalId, CbbTerminalLicenseTypeEnums licenseType) {
+        Assert.notNull(terminalId, "terminalId can not be null");
+        Assert.notNull(licenseType, "licenseType can not be null");
+        TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+        if (authorizeEntity == null) {
+            LOGGER.error("不存在终端:{}信息，无需添加授权", terminalId);
+            return false;
+        }
+        String licenseTypeByEntity = authorizeEntity.getLicenseType();
+        if (StringUtils.isBlank(licenseTypeByEntity)) {
+            return false;
+        }
+        switch (licenseType) {
+            case IDV:
+                return licenseTypeByEntity.equals(CbbTerminalLicenseTypeEnums.IDV.name());
+            case CVA:
+                return licenseTypeByEntity.equals(CbbTerminalLicenseTypeEnums.CVA_IDV.name())
+                        || licenseTypeByEntity.equals(CbbTerminalLicenseTypeEnums.CVA.name());
+            case VOI:
+                return licenseTypeByEntity.equals(CbbTerminalLicenseTypeEnums.VOI.name());
+            case VOI_PLUS_UPGRADED:
+                return licenseTypeByEntity.equals(CbbTerminalLicenseTypeEnums.VOI_PLUS_UPGRADED.name());
+            case IDV_PLUS_UPGRADED:
+                return licenseTypeByEntity.equals(CbbTerminalLicenseTypeEnums.IDV_PLUS_UPGRADED.name());
+            default:
+                return false;
+        }
     }
 }

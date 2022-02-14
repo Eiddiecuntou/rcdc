@@ -1,5 +1,6 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao;
 
+import com.ruijie.rcos.rcdc.terminal.module.def.api.enums.CbbTerminalLicenseTypeEnums;
 import com.ruijie.rcos.rcdc.terminal.module.def.enums.CbbTerminalPlatformEnums;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.sk.modulekit.api.ds.SkyEngineJpaRepository;
@@ -100,4 +101,13 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
     @Query(value = "update t_cbb_terminal_authorize SET authed=?3, version=version+1 where exists(select 1 from t_cbb_terminal t where" +
             " t.terminal_id=terminal_id and t.platform=?1 and t.ocs_sn is null and t.product_type not in ?4) and authed=?2", nativeQuery = true)
     void updateTerminalAuthorizesByPlatformAndAuthed(String platform, Boolean oldAuthed, Boolean newAuthed, List<String> productTypeList);
+
+    /**
+     * 根据终端类型、是否授权、证书类型统计终端数量
+     * @param authMode 终端授权模式
+     * @param authed 终端是否授权
+     * @param licenceType 终端证书类型
+     * @return 符合终端类型、授权情况的终端数量
+     */
+    int countByAuthModeAndAuthedAndLicenseType(CbbTerminalPlatformEnums authMode, Boolean authed, CbbTerminalLicenseTypeEnums licenceType);
 }

@@ -1,6 +1,7 @@
 package com.ruijie.rcos.rcdc.terminal.module.impl.auth;
 
 import com.alibaba.fastjson.JSON;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbTerminalLicenseStrategySPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dto.TerminalLicenseStrategyConfigDTO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.enums.CbbTerminalLicenseStrategyEnums;
@@ -45,6 +46,9 @@ public class CbbTerminalLicenseStrategyFactory {
 
     @Autowired
     private ConfigFacade configFacade;
+    
+    @Autowired
+    private CbbTerminalLicenseStrategySPI cbbTerminalLicenseStrategySPI;
 
     /**
      * 初始化授权策略配置
@@ -100,8 +104,13 @@ public class CbbTerminalLicenseStrategyFactory {
 
     private TerminalLicenseStrategyConfigDTO loadDefaultStrategyConfig() throws BusinessException {
 
-        String strategyJson = configFacade.read(TERMINAL_AUTH_DEFAULT_STRATEGY_JSON);
-        LOGGER.info("加载默认授权策略配置:{}", strategyJson);
+        String strategyJson = cbbTerminalLicenseStrategySPI.getTerminalLicenseStrategy();
+        LOGGER.info("加载rco授权策略配置:{}", strategyJson);
+
+        if (StringUtils.isEmpty(strategyJson)) {
+            strategyJson = configFacade.read(TERMINAL_AUTH_DEFAULT_STRATEGY_JSON);
+            LOGGER.info("加载默认授权策略配置:{}", strategyJson);
+        }
 
         if (StringUtils.isEmpty(strategyJson)) {
             LOGGER.warn("加载默认授权策略配置信息异常或文件不存在");
