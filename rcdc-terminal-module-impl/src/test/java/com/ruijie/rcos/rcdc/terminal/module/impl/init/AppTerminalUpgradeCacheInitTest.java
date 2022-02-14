@@ -37,7 +37,7 @@ public class AppTerminalUpgradeCacheInitTest {
         new Verifications() {
             {
                 windowsAppTerminalUpdatelistCacheInit.init();
-                times = 3;
+                times = 4;
             }
         };
     }

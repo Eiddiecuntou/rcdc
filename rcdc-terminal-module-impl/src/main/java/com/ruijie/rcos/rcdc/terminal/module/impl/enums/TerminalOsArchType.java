@@ -66,6 +66,16 @@ public enum TerminalOsArchType {
     NEOKYLIN_X86(CbbTerminalOsTypeEnums.NEOKYLIN, CbbCpuArchType.X86_64),
 
     /**
+     * KYLIN 操作系统， arm架构
+     */
+    KYLIN_ARM(CbbTerminalOsTypeEnums.KYLIN, CbbCpuArchType.ARM),
+
+    /**
+     * KYLIN 操作系统， x86架构
+     */
+    KYLIN_X86(CbbTerminalOsTypeEnums.KYLIN, CbbCpuArchType.X86_64),
+
+    /**
      *  其他
      */
     OTHER(CbbTerminalOsTypeEnums.OTHER, CbbCpuArchType.OTHER);
