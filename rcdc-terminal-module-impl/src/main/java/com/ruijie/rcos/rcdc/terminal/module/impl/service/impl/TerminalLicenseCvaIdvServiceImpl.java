@@ -24,9 +24,6 @@ public class TerminalLicenseCvaIdvServiceImpl extends AbstractTerminalLicenseSer
     private static Logger LOGGER = LoggerFactory.getLogger(TerminalLicenseCvaIdvServiceImpl.class);
 
     @Autowired
-    private TerminalBasicInfoDAO terminalBasicInfoDAO;
-
-    @Autowired
     private TerminalLicenseServiceTx terminalLicenseServiceTx;
 
     private Integer licenseNum;
