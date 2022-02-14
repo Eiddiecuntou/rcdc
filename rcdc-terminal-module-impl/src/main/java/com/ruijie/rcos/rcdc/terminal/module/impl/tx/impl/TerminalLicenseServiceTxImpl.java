@@ -41,24 +41,6 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
     @Autowired
     private CbbTerminalWhiteListHandlerSPI whiteListHandlerSPI;
 
-
-    @Override
-    public void updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums platform, String licenseKey) {
-        Assert.notNull(platform, "platform can not be empty");
-        Assert.hasText(licenseKey, "licenseKey can not be empty");
-
-        List<String> productTypeWhiteList = whiteListHandlerSPI.getProductTypeWhiteList();
-        LOGGER.info("productTypeWhiteList ==>{}", JSON.toJSONString(productTypeWhiteList));
-        List<TerminalEntity> needAuthTerminalList =
-                terminalBasicInfoDAO.findNoAuthedTerminalEntitiesByAuthMode(platform.name(), productTypeWhiteList);
-
-        LOGGER.info("needAuthTerminalList ==>{}", needAuthTerminalList.size());
-        terminalBasicInfoDAO.updateTerminalsByAuthModeAndAuthed(platform, Boolean.FALSE, Boolean.TRUE, productTypeWhiteList);
-        // 临时授权需要添加记录到授权记录表
-        saveAuthRecord(platform, needAuthTerminalList, productTypeWhiteList);
-
-    }
-
     @Override
     public void updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums platform, String licenseKey,
                                                            CbbTerminalLicenseTypeEnums licenseType) {
@@ -93,22 +75,6 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
         LOGGER.info("update or save terminalAuthorize end");
     }
 
-    private synchronized void saveAuthRecord(CbbTerminalPlatformEnums platform, List<TerminalEntity> terminalEntityList,
-            List<String> productTypeWhiteList) {
-        LOGGER.info("update or save terminalAuthorize==>{}", platform, terminalEntityList.size());
-        terminalAuthorizeDAO.updateTerminalAuthorizesByPlatformAndAuthed(platform.name(), Boolean.FALSE, Boolean.TRUE, productTypeWhiteList);
-
-        terminalEntityList.forEach(terminalEntity -> {
-            TerminalAuthorizeEntity authorizeEntity = new TerminalAuthorizeEntity();
-            authorizeEntity.setAuthMode(platform);
-            authorizeEntity.setTerminalId(terminalEntity.getTerminalId());
-            authorizeEntity.setAuthed(true);
-            authorizeEntity.setLicenseType(platform.name());
-            terminalAuthorizeDAO.save(authorizeEntity);
-        });
-        LOGGER.info("update or save terminalAuthorize end");
-    }
-
     @Override
     public void updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums platform, String licenseKey,
                                                           Integer licenseNum, CbbTerminalLicenseTypeEnums licenseType) {
@@ -127,23 +93,4 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
         terminalAuthorizeDAO.deleteByLicenseTypeContains(licenseType.name());
         LOGGER.info("结束删除授权信息[{}]", licenseType);
     }
-
-    @Override
-    public void updateTerminalUnAuthedAndUpdateLicenseNum(CbbTerminalPlatformEnums platform, String licenseKey, Integer licenseNum) {
-        Assert.notNull(platform, "platform can not be empty");
-        Assert.hasText(licenseKey, "licenseKey can not be empty");
-        Assert.notNull(licenseNum, "licenseNum can not null");
-
-        List<String> productTypeWhiteList = whiteListHandlerSPI.getProductTypeWhiteList();
-        LOGGER.info("开始更新授权[{}]信息", platform);
-        terminalBasicInfoDAO.updateTerminalsByAuthModeAndAuthedJudgeByAuthorizeRecord(platform.name(), Boolean.TRUE, Boolean.FALSE,
-                productTypeWhiteList);
-        LOGGER.info("结束更新授权[{}]信息", platform);
-        // 临时授权变更为正式授权需要删除授权记录
-        LOGGER.info("开始删除授权信息[{}]", platform);
-        terminalAuthorizeDAO.deleteByLicenseTypeContains(platform.name());
-        LOGGER.info("结束删除授权信息[{}]", platform);
-
-    }
-
 }

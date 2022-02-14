@@ -54,7 +54,8 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
         Assert.notNull(licenseNum, "licenseNum can not be null");
 
         // 将所有已授权IDV终端置为未授权，并更新终端授权数量
-        terminalLicenseServiceTx.updateTerminalUnAuthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.IDV, getLicenseConstansKey(), licenseNum);
+        terminalLicenseServiceTx.updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.IDV, getLicenseConstansKey(),
+                licenseNum, CbbTerminalLicenseTypeEnums.IDV);
 
 
     }
@@ -62,7 +63,8 @@ public class TerminalLicenseIDVServiceImpl extends AbstractTerminalLicenseServic
     @Override
     public void processImportTempLicense() {
         // 将所有未授权IDV终端置为已授权，并更新终端授权数量
-        terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV, getLicenseConstansKey());
+        terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.IDV,
+                getLicenseConstansKey(), CbbTerminalLicenseTypeEnums.IDV);
     }
 
 

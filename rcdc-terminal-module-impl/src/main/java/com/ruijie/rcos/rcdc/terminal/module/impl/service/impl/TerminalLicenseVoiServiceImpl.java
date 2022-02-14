@@ -51,14 +51,16 @@ public class TerminalLicenseVoiServiceImpl extends AbstractTerminalLicenseServic
     public void processImportOfficialLicense(Integer licenseNum) {
         Assert.notNull(licenseNum, "licenseNum can not be null");
         // 将所有已授权IDV终端置为未授权，并更新终端授权数量
-        terminalLicenseServiceTx.updateTerminalUnAuthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.VOI, getLicenseConstansKey(), licenseNum);
+        terminalLicenseServiceTx.updateTerminalUnauthedAndUpdateLicenseNum(CbbTerminalPlatformEnums.VOI, getLicenseConstansKey(),
+                licenseNum, CbbTerminalLicenseTypeEnums.VOI);
 
     }
 
     @Override
     public void processImportTempLicense() {
         // 将所有未授权IDV终端置为已授权，并更新终端授权数量
-        terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.VOI, getLicenseConstansKey());
+        terminalLicenseServiceTx.updateTerminalAuthedAndUnlimitTerminalAuth(CbbTerminalPlatformEnums.VOI,
+                getLicenseConstansKey(), CbbTerminalLicenseTypeEnums.VOI);
     }
 
 
