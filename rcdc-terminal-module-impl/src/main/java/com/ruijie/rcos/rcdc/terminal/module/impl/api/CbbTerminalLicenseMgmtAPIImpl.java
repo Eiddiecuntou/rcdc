@@ -211,4 +211,28 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
                 return false;
         }
     }
+
+    @Override
+    public void addTerminalCvaAuth(String terminalId, CbbTerminalLicenseTypeEnums terminalLicenseType) {
+        Assert.notNull(terminalId, "terminalId can not be null");
+        Assert.notNull(terminalLicenseType, "terminalLicenseType can not be null");
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+        if (terminalEntity == null) {
+            LOGGER.error("不存在终端:{}信息，无需添加授权", terminalId);
+            return;
+        }
+        if (authorizeEntity.getAuthed().equals(Boolean.FALSE)) {
+            LOGGER.info("应用虚拟化终端:{}，转换IDV为CVA证书类型", terminalId);
+            authorizeEntity.setLicenseType(terminalLicenseType.name());
+            authorizeEntity.setAuthed(Boolean.TRUE);
+            terminalAuthorizeDAO.save(authorizeEntity);
+        }
+        if (terminalLicenseType == CbbTerminalLicenseTypeEnums.CVA_IDV) {
+            licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.CVA_IDV).increaseCacheLicenseUsedNum();
+        }
+        if (terminalLicenseType == CbbTerminalLicenseTypeEnums.CVA) {
+            licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.CVA).increaseCacheLicenseUsedNum();
+        }
+    }
 }
