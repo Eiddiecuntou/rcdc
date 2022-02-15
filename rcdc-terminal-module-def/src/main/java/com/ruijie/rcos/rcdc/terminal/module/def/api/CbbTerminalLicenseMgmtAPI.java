@@ -114,4 +114,10 @@ public interface CbbTerminalLicenseMgmtAPI {
      */
     boolean checkTerminalCurrentLicenseType(String terminalId, CbbTerminalLicenseTypeEnums licenseType);
 
+    /**
+     * 增加终端云应用授权
+     * @param terminalId 终端id
+     * @param terminalLicenseType 终端使用的应用虚拟化授权类型
+     */
+    void addTerminalCvaAuth(String terminalId, CbbTerminalLicenseTypeEnums terminalLicenseType);
 }
