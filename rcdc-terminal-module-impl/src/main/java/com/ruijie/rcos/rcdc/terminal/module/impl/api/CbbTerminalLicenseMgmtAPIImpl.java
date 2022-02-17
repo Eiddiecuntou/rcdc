@@ -21,6 +21,7 @@ import com.ruijie.rcos.sk.base.exception.BusinessException;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.base.util.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -225,6 +226,13 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
         }
 
         TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+        //IDV转换为CVA时会回收IDV授权，删除authorize中的记录
+        if (authorizeEntity == null) {
+            authorizeEntity = new TerminalAuthorizeEntity();
+            authorizeEntity.setAuthed(Boolean.FALSE);
+            authorizeEntity.setAuthMode(terminalEntity.getAuthMode());
+            authorizeEntity.setTerminalId(terminalId);
+        }
         if (authorizeEntity.getAuthed().equals(Boolean.FALSE)) {
             LOGGER.info("应用虚拟化终端:{}，转换IDV为CVA证书类型", terminalId);
             authorizeEntity.setLicenseType(terminalLicenseType.name());
