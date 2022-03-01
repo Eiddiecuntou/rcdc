@@ -60,6 +60,7 @@ public abstract class AbstractStrategyServiceImpl implements StrategyService {
         entity.setAuthMode(authMode);
         entity.setLicenseType(licenseTypeStr);
         entity.setTerminalId(terminalId);
+        entity.setCvaAuthed(Boolean.FALSE);
         terminalAuthorizeDAO.save(entity);
 
     }

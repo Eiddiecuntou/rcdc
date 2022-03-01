@@ -22,13 +22,13 @@ import java.util.UUID;
 public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAuthorizeEntity, UUID> {
 
     /**
-     * 查询授权终端数
-     *
-     * @param licenseType 授权证书类型
-     * @param authMode    授权模式
-     * @return 数量
+     * 查询授权终端数(区分云应用授权)
+     * @param licenseType
+     * @param authMode
+     * @param isCvaAuth
+     * @return
      */
-    int countByLicenseTypeAndAuthMode(String licenseType, CbbTerminalPlatformEnums authMode);
+    int countByLicenseTypeAndAuthModeAndCvaAuthed(String licenseType, CbbTerminalPlatformEnums authMode, Boolean isCvaAuth);
 
     /**
      * 根据终端id删除授权记录
@@ -79,6 +79,13 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
      * @return 数量
      */
     int countByLicenseTypeContaining(String licenseType);
+
+    /**
+     * 查询授权终端数
+     * @param licenseType 授权证书类型
+     * @return 数量
+     */
+    int countByLicenseTypeStartingWith(String licenseType);
 
     /**
      * 根据terminalId计算授权条目

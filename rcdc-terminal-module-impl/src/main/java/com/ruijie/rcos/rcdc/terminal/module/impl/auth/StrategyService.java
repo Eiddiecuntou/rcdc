@@ -49,8 +49,10 @@ public interface StrategyService {
      * @param licenseTypeList 证书类型列表
      * @param authMode 授权类型
      * @param terminalId 终端id
+     * @param isCvaAuthed 是否云应用授权
      * @return 是否回收成功
      */
-    boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList);
+    boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList,
+                    Boolean isCvaAuthed);
 
 }

@@ -15,6 +15,8 @@ import com.ruijie.rcos.rcdc.terminal.module.impl.auth.dao.TerminalAuthorizeDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.auth.entity.TerminalAuthorizeEntity;
 import com.ruijie.rcos.rcdc.terminal.module.impl.dao.TerminalBasicInfoDAO;
 import com.ruijie.rcos.rcdc.terminal.module.impl.entity.TerminalEntity;
+import com.ruijie.rcos.rcdc.terminal.module.impl.enums.TerminalAuthResultEnums;
+import com.ruijie.rcos.rcdc.terminal.module.impl.model.TerminalAuthResult;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.TerminalAuthHelper;
 import com.ruijie.rcos.rcdc.terminal.module.impl.service.impl.factory.CbbTerminalLicenseFactoryProvider;
 import com.ruijie.rcos.sk.base.exception.BusinessException;
@@ -78,6 +80,7 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     @Override
     public boolean checkTerminalLicenseNum(CbbTerminalLicenseTypeEnums licenseType) {
         Assert.notNull(licenseType, "licenseType can not be null");
+
         CbbTerminalLicenseNumDTO terminalLicenseNum = getTerminalLicenseNum(licenseType, null);
         return Objects.equals(terminalLicenseNum.getLicenseNum(), Constants.TERMINAL_AUTH_DEFAULT_NUM)
                 || terminalLicenseNum.getUsedNum() < terminalLicenseNum.getLicenseNum();
@@ -214,10 +217,9 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
     }
 
     @Override
-    public void addTerminalCvaAuth(String terminalId, CbbTerminalLicenseTypeEnums terminalLicenseType) {
+    public void addTerminalCvaAuth(String terminalId) throws BusinessException {
 
         Assert.notNull(terminalId, "terminalId can not be null");
-        Assert.notNull(terminalLicenseType, "terminalLicenseType can not be null");
 
         TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
         if (terminalEntity == null) {
@@ -225,25 +227,17 @@ public class CbbTerminalLicenseMgmtAPIImpl implements CbbTerminalLicenseMgmtAPI 
             return;
         }
 
-        TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
-        //IDV转换为CVA时会回收IDV授权，删除authorize中的记录
-        if (authorizeEntity == null) {
-            authorizeEntity = new TerminalAuthorizeEntity();
-            authorizeEntity.setAuthed(Boolean.FALSE);
-            authorizeEntity.setAuthMode(terminalEntity.getAuthMode());
-            authorizeEntity.setTerminalId(terminalId);
-        }
-        if (authorizeEntity.getAuthed().equals(Boolean.FALSE)) {
-            LOGGER.info("应用虚拟化终端:{}，转换IDV为CVA证书类型", terminalId);
-            authorizeEntity.setLicenseType(terminalLicenseType.name());
-            authorizeEntity.setAuthed(Boolean.TRUE);
-            terminalAuthorizeDAO.save(authorizeEntity);
-        }
-        if (terminalLicenseType == CbbTerminalLicenseTypeEnums.CVA_IDV) {
-            licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.CVA_IDV).increaseCacheLicenseUsedNum();
-        }
-        if (terminalLicenseType == CbbTerminalLicenseTypeEnums.CVA) {
-            licenseFactoryProvider.getService(CbbTerminalLicenseTypeEnums.CVA).increaseCacheLicenseUsedNum();
+        TerminalAuthResult terminalAuthResult = terminalLicenseAuthService
+                .auth(terminalEntity.getTerminalId(), terminalEntity.getAuthMode(), Boolean.TRUE);
+        if (terminalAuthResult.getAuthResult() == TerminalAuthResultEnums.SUCCESS) {
+            //同步更新下basicInfo授权信息
+            terminalEntity.setAuthed(Boolean.TRUE);
+            basicInfoDAO.save(terminalEntity);
+            TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+            if (null != authorizeEntity) {
+                authorizeEntity.setCvaAuthed(Boolean.TRUE);
+                terminalAuthorizeDAO.save(authorizeEntity);
+            }
         }
     }
 }

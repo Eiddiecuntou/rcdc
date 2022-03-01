@@ -47,6 +47,10 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
             "'\\[\\]\\s]+$)(?![a-z0-9]+$)(?![a-z`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]+$)(?![0-9`~!@#$%^&*()_\\" +
             "-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]+$)[a-zA-Z0-9`~!@#$%^&*()_\\-+=<>?:\"{}|,./\\\\;'\\[\\]\\s]{8,16}$";
 
+    private static final long WAIT_TIME = 2000L;
+
+    private static final int RETRY_COUNTS = 3;
+
     @Autowired
     private TerminalOperatorService operatorService;
 
@@ -98,15 +102,31 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         // 在线终端不允许删除
         boolean isOnline = basicInfoService.isTerminalOnline(terminalId);
         CbbTerminalBasicInfoDTO basicInfo = findBasicInfoByTerminalId(terminalId);
+
+        int times = 0;
+        while (isOnline && times < RETRY_COUNTS) {
+            try {
+                Thread.sleep(WAIT_TIME);
+            } catch (InterruptedException e) {
+                LOGGER.error("获取终端在线状态等待异常", e.getMessage());
+            }
+            isOnline = basicInfoService.isTerminalOnline(terminalId);
+            LOGGER.warn("第{}次获取终端{}的在线状态为：{}", times, terminalId, isOnline);
+            times++;
+        }
+
         if (isOnline) {
             String terminalName = basicInfo.getTerminalName();
             String macAddr = basicInfo.getMacAddr();
             throw new BusinessException(BusinessKey.RCDC_TERMINAL_ONLINE_CANNOT_DELETE, new String[]{terminalName, macAddr});
         }
 
-        terminalBasicInfoServiceTx.deleteTerminal(terminalId);
-        //处理终端授权扣除逻辑
-        terminalAuthHelper.processDecreaseTerminalLicense(terminalId, basicInfo.getAuthMode(), basicInfo.getAuthed());
+        TerminalEntity terminalEntity = basicInfoDAO.findTerminalEntityByTerminalId(terminalId);
+        if (terminalEntity != null) {
+            terminalBasicInfoServiceTx.deleteTerminal(terminalId);
+            //处理终端授权扣除逻辑
+            terminalAuthHelper.processDecreaseTerminalLicense(terminalId, basicInfo.getAuthMode(), basicInfo.getAuthed());
+        }
     }
 
     @Override

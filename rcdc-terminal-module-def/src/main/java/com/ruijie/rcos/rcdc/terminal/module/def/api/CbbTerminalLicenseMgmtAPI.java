@@ -117,7 +117,7 @@ public interface CbbTerminalLicenseMgmtAPI {
     /**
      * 增加终端云应用授权
      * @param terminalId 终端id
-     * @param terminalLicenseType 终端使用的应用虚拟化授权类型
+     * @throws BusinessException 业务异常
      */
-    void addTerminalCvaAuth(String terminalId, CbbTerminalLicenseTypeEnums terminalLicenseType);
+    void addTerminalCvaAuth(String terminalId) throws BusinessException;
 }

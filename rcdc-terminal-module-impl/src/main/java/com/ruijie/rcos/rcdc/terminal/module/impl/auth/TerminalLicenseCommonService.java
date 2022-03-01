@@ -39,4 +39,17 @@ public class TerminalLicenseCommonService {
         return authorizeEntity != null && authorizeEntity.getAuthed();
     }
 
+    /**
+     * 判断终端是否是云应用授权
+     * @param terminalId 终端ID
+     * @return true 已云应用授权；false 未云应用授权
+     */
+    public boolean isTerminalCvaAuthed(String terminalId) {
+        Assert.hasText(terminalId, "terminalId can not be blank");
+
+        TerminalAuthorizeEntity authorizeEntity = terminalAuthorizeDAO.findByTerminalId(terminalId);
+        LOGGER.info("终端[{}]的授权信息为：{}", terminalId, JSON.toJSONString(authorizeEntity));
+        return authorizeEntity != null && authorizeEntity.getCvaAuthed();
+    }
+
 }
