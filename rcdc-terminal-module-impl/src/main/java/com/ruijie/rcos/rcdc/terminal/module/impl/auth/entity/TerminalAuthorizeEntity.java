@@ -32,6 +32,8 @@ public class TerminalAuthorizeEntity {
 
     private Boolean authed;
 
+    private Boolean cvaAuthed;
+
     @Version
     private Integer version;
 
@@ -73,6 +75,14 @@ public class TerminalAuthorizeEntity {
 
     public void setAuthed(Boolean authed) {
         this.authed = authed;
+    }
+
+    public Boolean getCvaAuthed() {
+        return cvaAuthed;
+    }
+
+    public void setCvaAuthed(Boolean cvaAuthed) {
+        this.cvaAuthed = cvaAuthed;
     }
 
     public Integer getVersion() {

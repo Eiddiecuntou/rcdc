@@ -101,7 +101,8 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
     }
 
     @Override
-    public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
+    public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList,
+                           Boolean isCvaAuthed) {
         Assert.notNull(licenseTypeList, "licenseTypeList can not be null");
         Assert.notNull(authMode, "authMode can not be null");
         Assert.hasText(terminalId, "terminalId can not be blank");
@@ -112,7 +113,12 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
         }
 
         String licenseTypeStr = buildQueryLicenseType(licenseTypeList);
-        int count = terminalAuthorizeDAO.countByLicenseTypeAndAuthMode(licenseTypeStr, authMode);
+        int count;
+        if (isCvaAuthed) {
+            count = terminalAuthorizeDAO.countByLicenseTypeAndAuthModeAndCvaAuthed(licenseTypeStr, authMode, Boolean.TRUE);
+        } else {
+            count = terminalAuthorizeDAO.countByLicenseTypeAndAuthModeAndCvaAuthed(licenseTypeStr, authMode, Boolean.FALSE);
+        }
         if (count > 0) {
             for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
                 TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);

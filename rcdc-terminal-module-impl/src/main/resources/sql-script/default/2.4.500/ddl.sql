@@ -101,3 +101,7 @@ ALTER TABLE t_cbb_terminal_authorize ADD CONSTRAINT terminal_auth_id_unique UNIQ
 -- 增加终端检测时，是否开启代理字段
 ALTER TABLE t_cbb_terminal_detection ADD COLUMN IF NOT EXISTS enable_proxy BOOLEAN DEFAULT FALSE;
 COMMENT ON COLUMN t_cbb_terminal_detection.enable_proxy IS '检测时，终端是否有开启代理';
+
+-- 添加终端授权表是否为云应用授权字段
+ALTER TABLE t_cbb_terminal_authorize add column IF NOT EXISTS cva_authed bool default false NOT NULL;
+COMMENT ON COLUMN t_cbb_terminal_authorize.cva_authed IS '终端是否为云应用授权';

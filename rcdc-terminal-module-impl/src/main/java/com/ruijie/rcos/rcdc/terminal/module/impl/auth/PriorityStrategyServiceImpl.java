@@ -80,7 +80,8 @@ public class PriorityStrategyServiceImpl extends AbstractStrategyServiceImpl {
 
 
     @Override
-    public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList) {
+    public boolean recycle(String terminalId, CbbTerminalPlatformEnums authMode, List<CbbTerminalLicenseTypeEnums> licenseTypeList,
+                           Boolean isCvaAuthed) {
         Assert.notNull(licenseTypeList, "licenseTypeList can not be null");
         Assert.notNull(authMode, "authMode can not be null");
         Assert.hasText(terminalId, "terminalId can not be blank");
@@ -92,7 +93,12 @@ public class PriorityStrategyServiceImpl extends AbstractStrategyServiceImpl {
 
         for (CbbTerminalLicenseTypeEnums licenseType : licenseTypeList) {
             TerminalLicenseService licenseService = getTerminalLicenseService(licenseType);
-            int count = terminalAuthorizeDAO.countByLicenseTypeAndAuthMode(licenseType.name(), authMode);
+            int count;
+            if (isCvaAuthed) {
+                count = terminalAuthorizeDAO.countByLicenseTypeAndAuthModeAndCvaAuthed(licenseType.name(), authMode, Boolean.TRUE);
+            } else {
+                count = terminalAuthorizeDAO.countByLicenseTypeAndAuthModeAndCvaAuthed(licenseType.name(), authMode, Boolean.FALSE);
+            }
             if (count > 0) {
                 licenseService.decreaseCacheLicenseUsedNum();
                 LOGGER.info("终端授权回收成功，回收授权[{}][{}]", terminalId, licenseType.name());

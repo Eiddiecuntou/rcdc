@@ -97,8 +97,9 @@ public class TerminalAuthHelper {
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
+        Boolean isCvaAuthed = terminalLicenseCommonService.isTerminalCvaAuthed(basicInfo.getTerminalId());
         try {
-            return terminalLicenseAuthService.auth(basicInfo.getTerminalId(), basicInfo.getAuthMode());
+            return terminalLicenseAuthService.auth(basicInfo.getTerminalId(), basicInfo.getAuthMode(), isCvaAuthed);
         } catch (BusinessException e) {
             LOGGER.error("终端[" + basicInfo.getTerminalId() + "]授权异常", e);
             return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
