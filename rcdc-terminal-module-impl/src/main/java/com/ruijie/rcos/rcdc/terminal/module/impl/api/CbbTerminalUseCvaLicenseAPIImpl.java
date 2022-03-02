@@ -22,6 +22,6 @@ public class CbbTerminalUseCvaLicenseAPIImpl implements CbbTerminalUseCvaLicense
     @Override
     public int obtainTerminalUseCvaLicenseNum() {
         return terminalAuthorizeDAO.countByAuthModeAndAuthedAndLicenseType(CbbTerminalPlatformEnums.IDV, Boolean.TRUE,
-            CbbTerminalLicenseTypeEnums.CVA);
+            CbbTerminalLicenseTypeEnums.CVA.name());
     }
 }

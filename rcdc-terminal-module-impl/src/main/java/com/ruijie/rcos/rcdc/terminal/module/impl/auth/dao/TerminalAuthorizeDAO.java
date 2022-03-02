@@ -48,12 +48,25 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
     void deleteByAuthMode(CbbTerminalPlatformEnums authMode);
 
     /**
-     * 根据AuthMode删除终端
-     * @param authMode authMode
+     * 根据LicenseType和cvaAuthed删除终端
+     * @param licenseType licenseType
+     * @param cvaAuthed 云应用授权状态
      */
     @Modifying
     @Transactional
-    void deleteByLicenseTypeContains(String authMode);
+    void deleteByLicenseTypeContainsAndCvaAuthed(String licenseType, Boolean cvaAuthed);
+
+    /**
+     * 根据LicenseType和CvaAuthed更新Authed
+     * @param licenseType 证书类型
+     * @param oldAuthed 终端授权状态（旧）
+     * @param cvaAuthed 云应用授权状态
+     * @param newAuthed 终端授权状态（新）
+     */
+    @Modifying
+    @Transactional
+    @Query(value = "update TerminalAuthorizeEntity SET authed=?4, version=version+1 where licenseType=?1 and authed=?2 and cvaAuthed=?3")
+    void updateAuthedByLicenseTypeAndCvaAuthed(String licenseType, Boolean oldAuthed, Boolean cvaAuthed, Boolean newAuthed);
 
     /**
      * 根据终端id查找
@@ -76,16 +89,18 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
      * 查询授权终端数
      *
      * @param licenseType 授权证书类型
+     * @param authed 终端授权状态
      * @return 数量
      */
-    int countByLicenseTypeContaining(String licenseType);
+    int countByLicenseTypeContainingAndAuthed(String licenseType, Boolean authed);
 
     /**
      * 查询授权终端数
      * @param licenseType 授权证书类型
+     * @param authed 终端授权状态
      * @return 数量
      */
-    int countByLicenseTypeStartingWith(String licenseType);
+    int countByLicenseTypeStartingWithAndAuthed(String licenseType, Boolean authed);
 
     /**
      * 根据terminalId计算授权条目
@@ -116,5 +131,5 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
      * @param licenceType 终端证书类型
      * @return 符合终端类型、授权情况的终端数量
      */
-    int countByAuthModeAndAuthedAndLicenseType(CbbTerminalPlatformEnums authMode, Boolean authed, CbbTerminalLicenseTypeEnums licenceType);
+    int countByAuthModeAndAuthedAndLicenseType(CbbTerminalPlatformEnums authMode, Boolean authed, String licenceType);
 }

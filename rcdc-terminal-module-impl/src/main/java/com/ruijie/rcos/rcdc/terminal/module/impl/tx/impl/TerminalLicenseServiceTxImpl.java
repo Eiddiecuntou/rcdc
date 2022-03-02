@@ -90,7 +90,8 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
         LOGGER.info("结束更新授权[{}]信息", licenseType);
         // 临时授权变更为正式授权需要删除授权记录
         LOGGER.info("开始删除授权信息[{}]", licenseType);
-        terminalAuthorizeDAO.deleteByLicenseTypeContains(licenseType.name());
+        terminalAuthorizeDAO.deleteByLicenseTypeContainsAndCvaAuthed(licenseType.name(), Boolean.FALSE);
+        terminalAuthorizeDAO.updateAuthedByLicenseTypeAndCvaAuthed(licenseType.name(), Boolean.TRUE, Boolean.TRUE, Boolean.FALSE);
         LOGGER.info("结束删除授权信息[{}]", licenseType);
     }
 }

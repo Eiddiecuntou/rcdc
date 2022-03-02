@@ -80,14 +80,14 @@ public abstract class AbstractTerminalLicenseServiceImpl implements TerminalLice
 
     private void countUsedNumFromDB() {
         //统计以某一证书名称开头的终端授权数
-        long count = terminalAuthorizeDAO.countByLicenseTypeStartingWith(getLicenseType().name());
+        long count = terminalAuthorizeDAO.countByLicenseTypeStartingWithAndAuthed(getLicenseType().name(), Boolean.TRUE);
         usedNum = (int) count;
         LOGGER.info("从数据库同步[{}]授权已用数为：{}", getLicenseType(), usedNum);
     }
 
     protected void countUpgradeLicenseUsedNumFromDB() {
         //统计包含某一证书名称的终端授权数
-        long count = terminalAuthorizeDAO.countByLicenseTypeContaining(getLicenseType().name());
+        long count = terminalAuthorizeDAO.countByLicenseTypeContainingAndAuthed(getLicenseType().name(), Boolean.TRUE);
         usedNum = (int) count;
         LOGGER.info("从数据库同步[{}]授权已用数为：{}", getLicenseType(), usedNum);
     }

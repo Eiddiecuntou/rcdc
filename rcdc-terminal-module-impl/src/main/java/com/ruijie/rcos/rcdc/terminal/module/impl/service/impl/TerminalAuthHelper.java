@@ -97,10 +97,9 @@ public class TerminalAuthHelper {
             return new TerminalAuthResult(false, TerminalAuthResultEnums.SKIP);
         }
 
-        //TODO yanlin 临时授权导入正式授权，终端置为未授权时，终端重新接入，
-        // 应该要判断下是否CVA授权，再进行云应用的授权分配，决定auth方法是传true还是false
+        Boolean isCvaAuthed = terminalLicenseCommonService.isTerminalCvaAuthed(basicInfo.getTerminalId());
         try {
-            return terminalLicenseAuthService.auth(basicInfo.getTerminalId(), basicInfo.getAuthMode(), Boolean.FALSE);
+            return terminalLicenseAuthService.auth(basicInfo.getTerminalId(), basicInfo.getAuthMode(), isCvaAuthed);
         } catch (BusinessException e) {
             LOGGER.error("终端[" + basicInfo.getTerminalId() + "]授权异常", e);
             return new TerminalAuthResult(false, TerminalAuthResultEnums.FAIL);
