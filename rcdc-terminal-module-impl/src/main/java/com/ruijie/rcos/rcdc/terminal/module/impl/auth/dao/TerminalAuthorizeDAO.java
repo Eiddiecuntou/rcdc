@@ -23,10 +23,10 @@ public interface TerminalAuthorizeDAO extends SkyEngineJpaRepository<TerminalAut
 
     /**
      * 查询授权终端数(区分云应用授权)
-     * @param licenseType
-     * @param authMode
-     * @param isCvaAuth
-     * @return
+     * @param licenseType 授权类型
+     * @param authMode 授权模式
+     * @param isCvaAuth 是否云应用授权
+     * @return 授权终端数
      */
     int countByLicenseTypeAndAuthModeAndCvaAuthed(String licenseType, CbbTerminalPlatformEnums authMode, Boolean isCvaAuth);
 

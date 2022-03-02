@@ -115,7 +115,7 @@ public class OverlayStrategyServiceImpl extends AbstractStrategyServiceImpl {
         String licenseTypeStr = buildQueryLicenseType(licenseTypeList);
         int count;
         if (isCvaAuthed) {
-            count= terminalAuthorizeDAO.countByLicenseTypeAndAuthModeAndCvaAuthed(licenseTypeStr, authMode, Boolean.TRUE);
+            count = terminalAuthorizeDAO.countByLicenseTypeAndAuthModeAndCvaAuthed(licenseTypeStr, authMode, Boolean.TRUE);
         } else {
             count = terminalAuthorizeDAO.countByLicenseTypeAndAuthModeAndCvaAuthed(licenseTypeStr, authMode, Boolean.FALSE);
         }
