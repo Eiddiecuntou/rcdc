@@ -70,6 +70,7 @@ public class TerminalLicenseServiceTxImpl implements TerminalLicenseServiceTx {
             authorizeEntity.setTerminalId(terminalEntity.getTerminalId());
             authorizeEntity.setAuthed(true);
             authorizeEntity.setLicenseType(licenseType.name());
+            authorizeEntity.setCvaAuthed(Boolean.FALSE);
             terminalAuthorizeDAO.save(authorizeEntity);
         });
         LOGGER.info("update or save terminalAuthorize end");
