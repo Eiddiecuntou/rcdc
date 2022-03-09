@@ -31,6 +31,6 @@ UPDATE t_sk_global_parameter SET param_value = '[]', default_value = '[]' WHERE 
 
 -- CVA_IDV_UP终端授权数
 INSERT INTO t_sk_global_parameter(id, param_key, param_value, default_value, create_time, update_time, version)
-VALUES ('a718338d-7b0e-4bbb-ada0-c8040e9d123b', 'idv_upgrade_terminal_license_num', '0', '0', now(), now(),
+VALUES ('a718338d-7b0e-4bbb-ada0-c8040e9d123b', 'idv_upgrade_terminal_license_num', '[]', '[]', now(), now(),
  0);
 
