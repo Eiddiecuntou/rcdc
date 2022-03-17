@@ -2,6 +2,7 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.connect;
 
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.def.spi.CbbDispatcherHandlerSPI;
+import com.ruijie.rcos.rcdc.terminal.module.def.spi.CbbRcaClientConnectionSPI;
 import com.ruijie.rcos.rcdc.terminal.module.impl.message.ShineAction;
 import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
@@ -28,6 +29,9 @@ public class DefaultConnectorListener implements ConnectorListener {
     @Autowired
     private CbbDispatcherHandlerSPI cbbDispatcherHandlerSPI;
 
+    @Autowired
+    private CbbRcaClientConnectionSPI cbbRcaClientConnectionSPI;
+
     @Override
     public void onOpen(ConnectInfo connectInfo) {
         Assert.notNull(connectInfo, "connectInfo can not be null");
@@ -41,6 +45,12 @@ public class DefaultConnectorListener implements ConnectorListener {
         Assert.notNull(connectInfo, "connectInfo can not be null");
 
         LOGGER.info("连接关闭, connectId : {}", connectInfo.getId());
+
+        if (cbbRcaClientConnectionSPI.isRcaClientConnection(connectInfo.getId())) {
+            LOGGER.info("rca-client连接[{}]关闭", connectInfo.getId());
+            cbbRcaClientConnectionSPI.notifyRcaClientDisconnect(connectInfo.getId());
+            return;
+        }
 
         String terminalId = sessionManager.getTerminalIdBySessionId(connectInfo.getId());
         // 移除Session绑定
