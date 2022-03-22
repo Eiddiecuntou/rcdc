@@ -20,6 +20,7 @@ public interface CbbRcaClientConnectionSPI {
     /**
      * 通知rca-client连接断开事件
      * @param id 会话id
+     * @return object 返回值无意义。spi所有方法的返回值只能全为void或者全不为void，因此添加的返回值
      */
-    void notifyRcaClientDisconnect(String id);
+    Object notifyRcaClientDisconnect(String id);
 }
