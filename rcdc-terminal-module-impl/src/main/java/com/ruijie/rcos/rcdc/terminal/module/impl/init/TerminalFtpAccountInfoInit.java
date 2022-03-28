@@ -2,11 +2,11 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.init;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalFtpConfigInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.BusinessKey;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connect.SessionManager;
 import com.ruijie.rcos.rcdc.terminal.module.impl.connector.tcp.api.TerminalFtpAccountInfoAPI;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.FtpConfigInfo;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutor;
 import com.ruijie.rcos.sk.base.concurrent.ThreadExecutors;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
@@ -15,11 +15,9 @@ import com.ruijie.rcos.sk.base.log.Logger;
 import com.ruijie.rcos.sk.base.log.LoggerFactory;
 import com.ruijie.rcos.sk.modulekit.api.bootstrap.SafetySingletonInitializer;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -36,8 +34,6 @@ import org.springframework.util.CollectionUtils;
 public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerminalFtpAccountInfoInit.class);
-
-    private static final String TERMINAL_FTP_CONFIG_KEY = "terminal_ftp_config";
 
     private static final String TERMINAL_FTP_DEFAULT_PASSWORD = "21Wq_Er";
 
@@ -75,8 +71,8 @@ public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
         }
 
         String passwd = getRandomFtpPasswd();
-        String ftpConfigInfo = globalParameterAPI.findParameter(TERMINAL_FTP_CONFIG_KEY);
-        FtpConfigInfo config = JSONObject.parseObject(ftpConfigInfo, FtpConfigInfo.class);
+        String ftpConfigInfo = globalParameterAPI.findParameter(Constants.TERMINAL_FTP_CONFIG_KEY);
+        TerminalFtpConfigInfo config = JSONObject.parseObject(ftpConfigInfo, TerminalFtpConfigInfo.class);
         String userName = config.getFtpUserName();
         config.setFtpUserPassword(passwd);
 
@@ -84,13 +80,12 @@ public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
             String command = String.format("echo %s|passwd --stdin %s", passwd, userName);
             String[] commandArr = new String[] {"sh", "-c", command};
             updatePasswd(commandArr);
-            globalParameterAPI.updateParameter(TERMINAL_FTP_CONFIG_KEY, JSON.toJSONString(config));
         } catch (Exception e) {
             LOGGER.error("执行系统命令修改用于终端的ftp账号的密码失败", e);
             config.setFtpUserPassword(TERMINAL_FTP_DEFAULT_PASSWORD);
-            globalParameterAPI.updateParameter(TERMINAL_FTP_CONFIG_KEY, JSON.toJSONString(config));
         }
 
+        globalParameterAPI.updateParameter(Constants.TERMINAL_FTP_CONFIG_KEY, JSON.toJSONString(config));
         LOGGER.info("向在线终端同步ftp账号信息");
         NOTICE_HANDLER_THREAD_POOL.execute(() -> sendFtpAccountInfoToOnlineTerminal());
     }
@@ -104,8 +99,8 @@ public class TerminalFtpAccountInfoInit implements SafetySingletonInitializer {
 
         for (String terminalId : onlineTerminalIdList) {
             try {
-                String ftpConfigInfo = globalParameterAPI.findParameter(TERMINAL_FTP_CONFIG_KEY);
-                FtpConfigInfo config = JSONObject.parseObject(ftpConfigInfo, FtpConfigInfo.class);
+                String ftpConfigInfo = globalParameterAPI.findParameter(Constants.TERMINAL_FTP_CONFIG_KEY);
+                TerminalFtpConfigInfo config = JSONObject.parseObject(ftpConfigInfo, TerminalFtpConfigInfo.class);
                 config.setFtpUserPassword(AesUtil.encrypt(config.getFtpUserPassword(), Constants.FTP_PASSWORD_KEY));
                 LOGGER.info("向终端:[{}]发送的ftp账号信息:{}", terminalId, JSON.toJSONString(config));
                 terminalFtpAccountInfoAPI.syncFtpAccountInfo(terminalId, config);

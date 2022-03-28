@@ -45,6 +45,11 @@ public interface Constants {
     String FTP_PASSWORD_KEY = "SHINEFTPPASSWORD";
 
     /**
+     * 终端ftp信息全局配置的key
+     */
+    String TERMINAL_FTP_CONFIG_KEY = "terminal_ftp_config";
+
+    /**
      * 终端授权数在全局表的key
      */
     String VOI_TEMINAL_LICENSE_NUM = "voi_terminal_license_num";
