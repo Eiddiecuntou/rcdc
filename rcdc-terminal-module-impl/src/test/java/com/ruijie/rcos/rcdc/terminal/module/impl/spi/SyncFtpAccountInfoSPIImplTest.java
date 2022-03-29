@@ -3,8 +3,8 @@ package com.ruijie.rcos.rcdc.terminal.module.impl.spi;
 import com.ruijie.rcos.rcdc.codec.adapter.def.api.CbbTranspondMessageHandlerAPI;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbDispatcherRequest;
 import com.ruijie.rcos.rcdc.codec.adapter.def.dto.CbbResponseShineMessage;
+import com.ruijie.rcos.rcdc.terminal.module.def.api.dto.TerminalFtpConfigInfo;
 import com.ruijie.rcos.rcdc.terminal.module.impl.Constants;
-import com.ruijie.rcos.rcdc.terminal.module.impl.spi.response.FtpConfigInfo;
 import com.ruijie.rcos.sk.base.crypto.AesUtil;
 import com.ruijie.rcos.sk.base.junit.SkyEngineRunner;
 import com.ruijie.rcos.sk.modulekit.api.tool.GlobalParameterAPI;
@@ -59,10 +59,10 @@ public class SyncFtpAccountInfoSPIImplTest {
                 messageHandlerAPI.response(message = withCapture());
                 times = 1;
                 Assert.assertTrue(0 == message.getCode());
-                Assert.assertTrue(2021 == ((FtpConfigInfo)message.getContent()).getFtpPort());
-                Assert.assertEquals("shine", ((FtpConfigInfo)message.getContent()).getFtpUserName());
-                Assert.assertEquals("/", ((FtpConfigInfo)message.getContent()).getFtpPath());
-                Assert.assertEquals("/", ((FtpConfigInfo)message.getContent()).getFileDir());
+                Assert.assertTrue(2021 == ((TerminalFtpConfigInfo)message.getContent()).getFtpPort());
+                Assert.assertEquals("shine", ((TerminalFtpConfigInfo)message.getContent()).getFtpUserName());
+                Assert.assertEquals("/", ((TerminalFtpConfigInfo)message.getContent()).getFtpPath());
+                Assert.assertEquals("/", ((TerminalFtpConfigInfo)message.getContent()).getFileDir());
             }
         };
 
