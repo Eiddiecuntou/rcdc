@@ -1,4 +1,4 @@
-package com.ruijie.rcos.rcdc.terminal.module.impl.spi.response;
+package com.ruijie.rcos.rcdc.terminal.module.def.api.dto;
 
 import com.ruijie.rcos.sk.base.annotation.NotNull;
 
@@ -10,7 +10,7 @@ import com.ruijie.rcos.sk.base.annotation.NotNull;
  *
  * @author zhouhuan
  */
-public class FtpConfigInfo {
+public class TerminalFtpConfigInfo {
 
     @NotNull
     private Integer ftpPort;
