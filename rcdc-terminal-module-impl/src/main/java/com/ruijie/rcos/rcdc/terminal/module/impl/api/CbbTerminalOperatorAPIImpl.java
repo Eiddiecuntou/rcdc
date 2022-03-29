@@ -87,6 +87,7 @@ public class CbbTerminalOperatorAPIImpl implements CbbTerminalOperatorAPI {
         basicInfoDTO.setNetworkInfoArr(basicInfoEntity.getNetworkInfoArr());
         basicInfoDTO.setDiskInfoArr(basicInfoEntity.getDiskInfoArr());
         basicInfoDTO.setNetCardMacInfoArr(basicInfoEntity.getNetCardMacInfoArr());
+        basicInfoDTO.setGroupId(basicInfoEntity.getGroupId());
         if (StringUtils.isNotBlank(basicInfoEntity.getSupportWorkMode())) {
             List<CbbTerminalWorkModeEnums> supportWorkModeList = JSONArray.parseArray( //
                     basicInfoEntity.getSupportWorkMode(), //
